@@ -6,14 +6,18 @@ import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import type { Json } from '@metamask/utils';
 
 import { DEFAULT_JSON_RPC_ENDPOINT } from '../constants';
-import type { MiddlewareHooks } from '../simulation';
+import type {
+  PermittedMiddlewareHooks,
+  RestrictedMiddlewareHooks,
+} from '../simulation';
 import type { Store } from '../store';
 import { createInternalMethodsMiddleware } from './internal-methods';
 import { createMockMiddleware } from './mock';
 
 export type CreateJsonRpcEngineOptions = {
   store: Store;
-  hooks: MiddlewareHooks;
+  restrictedHooks: RestrictedMiddlewareHooks;
+  permittedHooks: PermittedMiddlewareHooks;
   permissionMiddleware: JsonRpcMiddleware<RestrictedMethodParameters, Json>;
   endpoint?: string;
 };
@@ -26,21 +30,23 @@ export type CreateJsonRpcEngineOptions = {
  *
  * @param options - The options to use when creating the engine.
  * @param options.store - The Redux store to use.
- * @param options.hooks - Any hooks used by the middleware handlers.
+ * @param options.restrictedHooks - Any hooks used by the middleware handlers.
+ * @param options.permittedHooks - Any hooks used by the middleware handlers.
  * @param options.permissionMiddleware - The permission middleware to use.
  * @param options.endpoint - The JSON-RPC endpoint to use for Ethereum requests.
  * @returns A JSON-RPC engine.
  */
 export function createJsonRpcEngine({
   store,
-  hooks,
+  restrictedHooks,
+  permittedHooks,
   permissionMiddleware,
   endpoint = DEFAULT_JSON_RPC_ENDPOINT,
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
   engine.push(createMockMiddleware(store));
-  engine.push(createInternalMethodsMiddleware(hooks));
-  engine.push(createSnapsMethodMiddleware(true, hooks));
+  engine.push(createInternalMethodsMiddleware(restrictedHooks));
+  engine.push(createSnapsMethodMiddleware(true, permittedHooks));
   engine.push(permissionMiddleware);
   engine.push(
     createFetchMiddleware({

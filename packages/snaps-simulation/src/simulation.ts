@@ -39,6 +39,11 @@ import type { SnapHelpers } from './helpers';
 import { getHelpers } from './helpers';
 import { resolveWithSaga } from './interface';
 import { getEndowments } from './methods';
+import {
+  getPermittedClearSnapStateMethodImplementation,
+  getPermittedGetSnapStateMethodImplementation,
+  getPermittedUpdateSnapStateMethodImplementation,
+} from './methods/hooks';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
@@ -93,25 +98,13 @@ export type InstalledSnap = {
   runSaga: RunSagaFunction;
 };
 
-export type MiddlewareHooks = {
+export type RestrictedMiddlewareHooks = {
   /**
    * A hook that returns the user's secret recovery phrase.
    *
    * @returns The user's secret recovery phrase.
    */
   getMnemonic: () => Promise<Uint8Array>;
-
-  /**
-   * A hook that returns the Snap's auxiliary file for the given path.
-   *
-   * @param path - The path of the auxiliary file to get.
-   * @param encoding - The encoding to use when returning the file.
-   * @returns The Snap's auxiliary file for the given path.
-   */
-  getSnapFile: (
-    path: string,
-    encoding: AuxiliaryFileEncoding,
-  ) => Promise<string | null>;
 
   /**
    * A hook that returns whether the client is locked or not.
@@ -127,14 +120,97 @@ export type MiddlewareHooks = {
    * @returns The cryptographic functions to use for the client.
    */
   getClientCryptography: () => CryptographicFunctions;
+};
 
+export type PermittedMiddlewareHooks = {
+  /**
+   * A hook that returns the Snap's auxiliary file for the given path. This hook
+   * is bound to the Snap ID.
+   *
+   * @param path - The path of the auxiliary file to get.
+   * @param encoding - The encoding to use when returning the file.
+   * @returns The Snap's auxiliary file for the given path.
+   */
+  getSnapFile: (
+    path: string,
+    encoding: AuxiliaryFileEncoding,
+  ) => Promise<string | null>;
+
+  /**
+   * A hook that gets the state of the Snap. This hook is bound to the Snap ID.
+   *
+   * @param encrypted - Whether to get the encrypted or unencrypted state.
+   * @returns The current state of the Snap.
+   */
+  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
+
+  /**
+   * A hook that updates the state of the Snap. This hook is bound to the Snap
+   * ID.
+   *
+   * @param newState - The new state.
+   * @param encrypted - Whether to update the encrypted or unencrypted state.
+   */
+  updateSnapState: (
+    newState: Record<string, Json>,
+    encrypted: boolean,
+  ) => Promise<void>;
+
+  /**
+   * A hook that clears the state of the Snap. This hook is bound to the Snap
+   * ID.
+   *
+   * @param encrypted - Whether to clear the encrypted or unencrypted state.
+   */
+  clearSnapState: (encrypted: boolean) => Promise<void>;
+
+  /**
+   * A hook that creates an interface for the Snap. This hook is bound to the
+   * Snap ID.
+   *
+   * @param content - The content of the interface.
+   * @param context - The context of the interface.
+   * @returns The ID of the created interface.
+   */
   createInterface: (
     content: Component,
     context?: InterfaceContext,
   ) => Promise<string>;
+
+  /**
+   * A hook that updates an interface for the Snap. This hook is bound to the
+   * Snap ID.
+   *
+   * @param id - The ID of the interface to update.
+   * @param content - The content of the interface.
+   */
   updateInterface: (id: string, content: Component) => Promise<void>;
+
+  /**
+   * A hook that gets the state of an interface for the Snap. This hook is bound
+   * to the Snap ID.
+   *
+   * @param id - The ID of the interface to get.
+   * @returns The state of the interface.
+   */
   getInterfaceState: (id: string) => InterfaceState;
+
+  /**
+   * A hook that gets the context of an interface for the Snap. This hook is
+   * bound to the Snap ID.
+   *
+   * @param id - The ID of the interface to get.
+   * @returns The context of the interface.
+   */
   getInterfaceContext: (id: string) => InterfaceContext | null;
+
+  /**
+   * A hook that resolves an interface for the Snap. This hook is bound to the
+   * Snap ID.
+   *
+   * @param id - The ID of the interface to resolve.
+   * @param value - The value to resolve the interface with.
+   */
   resolveInterface: (id: string, value: Json) => Promise<void>;
 };
 
@@ -182,18 +258,25 @@ export async function installSnap<
   registerActions(controllerMessenger, runSaga);
 
   // Set up controllers and JSON-RPC stack.
-  const hooks = getHooks(options, snapFiles, snapId, controllerMessenger);
+  const restrictedHooks = getRestrictedHooks(options);
+  const permittedHooks = getPermittedHooks(
+    snapId,
+    snapFiles,
+    controllerMessenger,
+    runSaga,
+  );
 
   const { subjectMetadataController, permissionController } = getControllers({
     controllerMessenger,
-    hooks,
+    hooks: restrictedHooks,
     runSaga,
     options,
   });
 
   const engine = createJsonRpcEngine({
     store,
-    hooks,
+    restrictedHooks,
+    permittedHooks,
     permissionMiddleware: permissionController.createPermissionMiddleware({
       origin: snapId,
     }),
@@ -260,24 +343,38 @@ export async function installSnap<
  * Get the hooks for the simulation.
  *
  * @param options - The simulation options.
- * @param snapFiles - The Snap files.
- * @param snapId - The Snap ID.
- * @param controllerMessenger - The controller messenger.
  * @returns The hooks for the simulation.
  */
-export function getHooks(
+export function getRestrictedHooks(
   options: SimulationOptions,
-  snapFiles: FetchedSnapFiles,
-  snapId: SnapId,
-  controllerMessenger: RootControllerMessenger,
-): MiddlewareHooks {
+): RestrictedMiddlewareHooks {
   return {
     getMnemonic: async () =>
       Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
-    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
-      await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
+  };
+}
+
+/**
+ * Get the permitted hooks for the simulation.
+ *
+ * @param snapId - The ID of the Snap.
+ * @param snapFiles - The fetched Snap files.
+ * @param controllerMessenger - The controller messenger.
+ * @param runSaga - The run saga function.
+ * @returns The permitted hooks for the simulation.
+ */
+export function getPermittedHooks(
+  snapId: SnapId,
+  snapFiles: FetchedSnapFiles,
+  controllerMessenger: RootControllerMessenger,
+  runSaga: RunSagaFunction,
+): PermittedMiddlewareHooks {
+  return {
+    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
+      await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
+
     createInterface: async (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -308,6 +405,10 @@ export function getHooks(
         snapId,
         ...args,
       ),
+
+    getSnapState: getPermittedGetSnapStateMethodImplementation(runSaga),
+    updateSnapState: getPermittedUpdateSnapStateMethodImplementation(runSaga),
+    clearSnapState: getPermittedClearSnapStateMethodImplementation(runSaga),
   };
 }
 
