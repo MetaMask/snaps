@@ -125,16 +125,16 @@ async function setStateImplementation(
     const validatedParams = getValidatedParams(params);
     const { key, value, encrypted = true } = validatedParams;
 
-    if (encrypted) {
-      await getUnlockPromise(true);
-    }
-
     if (key === undefined && !isObject(value)) {
       return end(
         rpcErrors.invalidParams(
           'Invalid params: Value must be an object if key is not provided.',
         ),
       );
+    }
+
+    if (encrypted) {
+      await getUnlockPromise(true);
     }
 
     const newState = await getNewState(key, value, getSnapState);

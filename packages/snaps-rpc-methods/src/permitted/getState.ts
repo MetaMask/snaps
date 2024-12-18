@@ -160,7 +160,10 @@ export function get(
   const keys = key.split('.');
   let result: Json = value;
 
-  for (const currentKey of keys) {
+  // Intentionally using a classic for loop here for performance reasons.
+  // eslint-disable-next-line @typescript-eslint/prefer-for-of
+  for (let i = 0; i < keys.length; i++) {
+    const currentKey = keys[i];
     if (['__proto__', 'constructor'].includes(currentKey)) {
       throw rpcErrors.invalidParams(
         'Invalid params: Key contains forbidden characters.',
