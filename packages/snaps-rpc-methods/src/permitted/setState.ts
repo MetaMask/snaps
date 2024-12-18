@@ -245,9 +245,7 @@ export function set(
       currentObject[currentKey] === null
     ) {
       currentObject[currentKey] = {};
-    }
-
-    if (!isObject(currentObject[currentKey])) {
+    } else if (!isObject(currentObject[currentKey])) {
       throw rpcErrors.invalidParams(
         'Invalid params: Cannot overwrite non-object value.',
       );
