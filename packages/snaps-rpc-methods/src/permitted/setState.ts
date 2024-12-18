@@ -12,7 +12,13 @@ import {
   StructError,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
-import { isObject, assert, JsonStruct, type Json } from '@metamask/utils';
+import {
+  hasProperty,
+  isObject,
+  assert,
+  JsonStruct,
+  type Json,
+} from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
@@ -239,9 +245,18 @@ export function set(
       return requiredObject;
     }
 
-    currentObject[currentKey] = isObject(currentObject[currentKey])
-      ? currentObject[currentKey]
-      : {};
+    if (
+      !hasProperty(currentObject, currentKey) ||
+      currentObject[currentKey] === null
+    ) {
+      currentObject[currentKey] = {};
+    }
+
+    if (!isObject(currentObject[currentKey])) {
+      throw rpcErrors.invalidParams(
+        'Invalid params: Cannot overwrite non-object value.',
+      );
+    }
 
     currentObject = currentObject[currentKey] as Record<string, Json>;
   }

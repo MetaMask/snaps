@@ -487,6 +487,28 @@ describe('set', () => {
     });
   });
 
+  it('allows overwriting if a parent key is `null`', () => {
+    const object = {
+      nested: null,
+    };
+
+    expect(set(object, 'nested.key', 'newValue')).toStrictEqual({
+      nested: {
+        key: 'newValue',
+      },
+    });
+  });
+
+  it('throws if a parent key is not an object', () => {
+    const object = {
+      nested: 'value',
+    };
+
+    expect(() => set(object, 'nested.key', 'newValue')).toThrow(
+      'Invalid params: Cannot overwrite non-object value.',
+    );
+  });
+
   it('throws an error if the key is a prototype pollution attempt', () => {
     expect(() => set({}, '__proto__.polluted', 'value')).toThrow(
       'Invalid params: Key contains forbidden characters.',
