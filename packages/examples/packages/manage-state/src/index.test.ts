@@ -20,13 +20,13 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('setState', () => {
+  describe('legacy_setState', () => {
     it('sets the state to the params', async () => {
       const { request } = await installSnap();
 
       expect(
         await request({
-          method: 'setState',
+          method: 'legacy_setState',
           params: {
             items: ['foo'],
           },
@@ -35,7 +35,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'getState',
+          method: 'legacy_getState',
         }),
       ).toRespondWith({
         items: ['foo'],
@@ -47,7 +47,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'setState',
+          method: 'legacy_setState',
           params: {
             items: ['foo'],
             encrypted: false,
@@ -57,7 +57,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'getState',
+          method: 'legacy_getState',
         }),
       ).toRespondWith({
         items: [],
@@ -65,7 +65,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'getState',
+          method: 'legacy_getState',
           params: {
             encrypted: false,
           },
@@ -76,12 +76,12 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('getState', () => {
+  describe('legacy_getState', () => {
     it('returns the state if no state has been set', async () => {
       const { request } = await installSnap();
 
       const response = await request({
-        method: 'getState',
+        method: 'legacy_getState',
       });
 
       expect(response).toRespondWith({
@@ -93,14 +93,14 @@ describe('onRpcRequest', () => {
       const { request } = await installSnap();
 
       await request({
-        method: 'setState',
+        method: 'legacy_setState',
         params: {
           items: ['foo'],
         },
       });
 
       const response = await request({
-        method: 'getState',
+        method: 'legacy_getState',
       });
 
       expect(response).toRespondWith({
@@ -118,7 +118,7 @@ describe('onRpcRequest', () => {
       });
 
       const response = await request({
-        method: 'getState',
+        method: 'legacy_getState',
         params: {
           encrypted: false,
         },
@@ -130,12 +130,12 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('clearState', () => {
+  describe('legacy_clearState', () => {
     it('clears the state', async () => {
       const { request } = await installSnap();
 
       await request({
-        method: 'setState',
+        method: 'legacy_setState',
         params: {
           items: ['foo'],
         },
@@ -143,13 +143,13 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'clearState',
+          method: 'legacy_clearState',
         }),
       ).toRespondWith(true);
 
       expect(
         await request({
-          method: 'getState',
+          method: 'legacy_getState',
         }),
       ).toRespondWith({
         items: [],
@@ -160,7 +160,7 @@ describe('onRpcRequest', () => {
       const { request } = await installSnap();
 
       await request({
-        method: 'setState',
+        method: 'legacy_setState',
         params: {
           items: ['foo'],
           encrypted: false,
@@ -169,7 +169,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'clearState',
+          method: 'legacy_clearState',
           params: {
             encrypted: false,
           },
@@ -178,7 +178,7 @@ describe('onRpcRequest', () => {
 
       expect(
         await request({
-          method: 'getState',
+          method: 'legacy_getState',
           params: {
             encrypted: false,
           },
