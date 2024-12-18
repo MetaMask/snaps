@@ -45,8 +45,12 @@ export function createJsonRpcEngine({
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
   engine.push(createMockMiddleware(store));
+
+  // The hooks here do not match the hooks used by the clients, so this
+  // middleware should not be used outside of the simulation environment.
   engine.push(createInternalMethodsMiddleware(restrictedHooks));
   engine.push(createSnapsMethodMiddleware(true, permittedHooks));
+
   engine.push(permissionMiddleware);
   engine.push(
     createFetchMiddleware({
