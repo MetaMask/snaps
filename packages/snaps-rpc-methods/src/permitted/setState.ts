@@ -220,14 +220,9 @@ async function getNewState(
 export function set(
   // eslint-disable-next-line @typescript-eslint/default-param-last
   object: Record<string, Json> | null,
-  key: string | undefined,
+  key: string,
   value: Json,
 ): JsonObject {
-  if (key === undefined) {
-    assert(isObject(value));
-    return value;
-  }
-
   const keys = key.split('.');
   const requiredObject = object ?? {};
   let currentObject: Record<string, Json> = requiredObject;

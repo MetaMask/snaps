@@ -461,18 +461,6 @@ describe('set', () => {
     });
   });
 
-  it('overwrites the state in an existing object', () => {
-    const object = {
-      nested: {
-        key: 'oldValue',
-      },
-    };
-
-    expect(set(object, undefined, { foo: 'bar' })).toStrictEqual({
-      foo: 'bar',
-    });
-  });
-
   it('overwrites the nested state in an existing object', () => {
     const object = {
       nested: {
