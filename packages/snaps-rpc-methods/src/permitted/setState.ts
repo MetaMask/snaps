@@ -12,7 +12,7 @@ import {
   StructError,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
-import { assert, JsonStruct, isPlainObject, type Json } from '@metamask/utils';
+import { isObject, assert, JsonStruct, type Json } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
@@ -129,7 +129,7 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    if (key === undefined && !isPlainObject(value)) {
+    if (key === undefined && !isObject(value)) {
       return end(
         rpcErrors.invalidParams(
           'Invalid params: Value must be an object if key is not provided.',
@@ -189,7 +189,7 @@ async function getNewState(
   getSnapState: SetStateHooks['getSnapState'],
 ) {
   if (key === undefined) {
-    assert(isPlainObject(value));
+    assert(isObject(value));
     return value;
   }
 
@@ -218,7 +218,7 @@ export function set(
   value: Json,
 ): JsonObject {
   if (key === undefined) {
-    assert(isPlainObject(value));
+    assert(isObject(value));
     return value;
   }
 
@@ -239,7 +239,7 @@ export function set(
       return requiredObject;
     }
 
-    currentObject[currentKey] = isPlainObject(currentObject[currentKey])
+    currentObject[currentKey] = isObject(currentObject[currentKey])
       ? currentObject[currentKey]
       : {};
 
