@@ -63,6 +63,7 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
+      expect(getSnapState).toHaveBeenCalledWith(true);
       expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
 
       expect(response).toStrictEqual({
@@ -116,6 +117,7 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
+      expect(getSnapState).not.toHaveBeenCalled();
       expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
 
       expect(response).toStrictEqual({
@@ -169,6 +171,7 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).not.toHaveBeenCalled();
+      expect(getSnapState).toHaveBeenCalledWith(false);
       expect(updateSnapState).toHaveBeenCalledWith(
         {
           foo: 'baz',
