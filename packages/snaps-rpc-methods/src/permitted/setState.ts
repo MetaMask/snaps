@@ -66,7 +66,6 @@ export type SetStateHooks = {
   /**
    * Update the state of the requesting Snap.
    *
-   * @param snapId - The ID of the Snap.
    * @param newState - The new state of the Snap.
    * @param encrypted - Whether the state should be encrypted.
    */
