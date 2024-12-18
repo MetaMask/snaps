@@ -297,7 +297,7 @@ describe('get', () => {
     );
   });
 
-  it('returns `null` if the key is a constructor pollution attempt', () => {
+  it('throws an error if the key is a constructor pollution attempt', () => {
     expect(() => get(object, 'constructor.polluted')).toThrow(
       'Invalid params: Key contains forbidden characters.',
     );
