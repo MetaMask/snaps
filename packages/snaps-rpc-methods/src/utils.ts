@@ -21,6 +21,8 @@ import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
 const HARDENED_VALUE = 0x80000000;
 
+export const FORBIDDEN_KEYS = ['constructor', '__proto__', 'prototype'];
+
 /**
  * Maps an interface with method hooks to an object, using the keys of the
  * interface, and `true` as value. This ensures that the `methodHooks` object

@@ -15,7 +15,7 @@ import { hasProperty, isObject, type Json } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
-import { StateKeyStruct } from '../utils';
+import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
 const hookNames: MethodHooksObject<GetStateHooks> = {
   hasPermission: true,
@@ -164,7 +164,7 @@ export function get(
   // eslint-disable-next-line @typescript-eslint/prefer-for-of
   for (let i = 0; i < keys.length; i++) {
     const currentKey = keys[i];
-    if (['__proto__', 'constructor'].includes(currentKey)) {
+    if (FORBIDDEN_KEYS.includes(currentKey)) {
       throw rpcErrors.invalidParams(
         'Invalid params: Key contains forbidden characters.',
       );
