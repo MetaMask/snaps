@@ -233,6 +233,75 @@ describe('getPermittedHooks', () => {
   const { runSaga, store } = createStore(getMockOptions());
   const controllerMessenger = getRootControllerMessenger();
 
+  it('returns the `hasPermission` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { hasPermission } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(hasPermission('snap_manageState')).toBe(true);
+
+    await close();
+  });
+
+  it('returns the `getUnlockPromise` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getUnlockPromise } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(await getUnlockPromise(true)).toBeUndefined();
+
+    await close();
+  });
+
+  it('returns the `getIsLocked` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getIsLocked } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(getIsLocked()).toBe(false);
+
+    await close();
+  });
+
   it('returns the `getSnapFile` hook', async () => {
     const value = JSON.stringify({ bar: 'baz' });
     const { snapId, close } = await getMockServer({
