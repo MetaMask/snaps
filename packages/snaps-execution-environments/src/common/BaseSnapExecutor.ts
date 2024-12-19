@@ -1,8 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
-import type { RequestArguments } from '@metamask/providers';
-import { StreamProvider } from '@metamask/providers/stream-provider';
+import type { RequestArguments, StreamProvider } from '@metamask/providers';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
 import { getErrorData } from '@metamask/snaps-sdk';
@@ -40,6 +39,7 @@ import type { CommandMethodsMapping } from './commands';
 import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
+import { SnapProvider } from './SnapProvider';
 import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
@@ -369,12 +369,12 @@ export class BaseSnapExecutor {
       });
     };
 
-    const provider = new StreamProvider(this.rpcStream, {
+    const provider = new SnapProvider(this.rpcStream, {
       jsonRpcStreamName: 'metamask-provider',
       rpcMiddleware: [createIdRemapMiddleware()],
     });
 
-    await provider.initialize();
+    provider.initializeSync();
 
     const snap = this.createSnapGlobal(provider);
     const ethereum = this.createEIP1193Provider(provider);
