@@ -59,7 +59,7 @@ export function resolve(result: unknown) {
  * resolve with `undefined`.
  * @returns The function implementation.
  */
-export function asyncResolve(result?: unknown) {
+export function asyncResolve<Type>(result?: Type) {
   return async () => result;
 }
 

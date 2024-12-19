@@ -5,7 +5,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import { getControllers, registerSnap } from '../controllers';
-import type { MiddlewareHooks } from '../simulation';
+import type { RestrictedMiddlewareHooks } from '../simulation';
 import { getMockOptions } from '../test-utils/options';
 import {
   asyncResolve,
@@ -14,7 +14,7 @@ import {
   resolve,
 } from './specifications';
 
-const MOCK_HOOKS: MiddlewareHooks = {
+const MOCK_HOOKS: RestrictedMiddlewareHooks = {
   getMnemonic: jest.fn(),
   getSnapFile: jest.fn(),
   createInterface: jest.fn(),

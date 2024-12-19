@@ -7,7 +7,7 @@ import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
 import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
 
-export const ClearData: FunctionComponent<{ encrypted: boolean }> = ({
+export const ClearState: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,
 }) => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
@@ -24,20 +24,16 @@ export const ClearData: FunctionComponent<{ encrypted: boolean }> = ({
   return (
     <>
       <Button
-        id={encrypted ? 'clearManageState' : 'clearUnencryptedManageState'}
+        id={encrypted ? 'clearState' : 'clearStateUnencrypted'}
         onClick={handleClick}
         disabled={isLoading}
         className="mb-3"
       >
-        Clear Data
+        Clear State
       </Button>
       <Result className="mb-3">
         <span
-          id={
-            encrypted
-              ? 'clearManageStateResult'
-              : 'clearUnencryptedManageStateResult'
-          }
+          id={encrypted ? 'clearStateResult' : 'clearStateUnencryptedResult'}
         >
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
