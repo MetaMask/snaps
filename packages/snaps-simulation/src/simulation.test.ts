@@ -12,8 +12,13 @@ import { VirtualFile } from '@metamask/snaps-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 
 import { DEFAULT_SRP } from './constants';
-import { getHooks, installSnap, registerActions } from './simulation';
-import { createStore, setInterface } from './store';
+import {
+  getPermittedHooks,
+  getRestrictedHooks,
+  installSnap,
+  registerActions,
+} from './simulation';
+import { createStore, setInterface, setState } from './store';
 import {
   getMockOptions,
   getMockServer,
@@ -204,26 +209,95 @@ describe('installSnap', () => {
   });
 });
 
-describe('getHooks', () => {
+describe('getRestrictedHooks', () => {
+  it('returns the `getMnemonic` hook', async () => {
+    const { getMnemonic } = getRestrictedHooks(getMockOptions());
+    expect(await getMnemonic()).toStrictEqual(
+      mnemonicPhraseToBytes(DEFAULT_SRP),
+    );
+  });
+
+  it('returns the `getIsLocked` hook', async () => {
+    const { getIsLocked } = getRestrictedHooks(getMockOptions());
+    expect(getIsLocked()).toBe(false);
+  });
+
+  it('returns the `getClientCryptography` hook', async () => {
+    const { getClientCryptography } = getRestrictedHooks(getMockOptions());
+
+    expect(getClientCryptography()).toStrictEqual({});
+  });
+});
+
+describe('getPermittedHooks', () => {
+  const { runSaga, store } = createStore(getMockOptions());
   const controllerMessenger = getRootControllerMessenger();
 
-  it('returns the `getMnemonic` hook', async () => {
-    const { snapId, close } = await getMockServer();
+  it('returns the `hasPermission` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
 
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { getMnemonic } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { hasPermission } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
-    expect(await getMnemonic()).toStrictEqual(
-      mnemonicPhraseToBytes(DEFAULT_SRP),
+
+    expect(hasPermission('snap_manageState')).toBe(true);
+
+    await close();
+  });
+
+  it('returns the `getUnlockPromise` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getUnlockPromise } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
     );
+
+    expect(await getUnlockPromise(true)).toBeUndefined();
+
+    await close();
+  });
+
+  it('returns the `getIsLocked` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getIsLocked } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(getIsLocked()).toBe(false);
 
     await close();
   });
@@ -245,20 +319,108 @@ describe('getHooks', () => {
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { getSnapFile } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { getSnapFile } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
+
     const file = await getSnapFile('foo.json', AuxiliaryFileEncoding.Utf8);
     expect(file).toStrictEqual(value);
 
     await close();
   });
 
+  it('returns the `getSnapState` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getSnapState } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    store.dispatch(
+      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
+    );
+
+    expect(await getSnapState(true)).toStrictEqual({ foo: 'bar' });
+
+    await close();
+  });
+
+  it('returns the `updateSnapState` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { updateSnapState } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    store.dispatch(
+      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
+    );
+
+    await updateSnapState({ bar: 'baz' }, true);
+
+    expect(store.getState().state.encrypted).toStrictEqual(
+      JSON.stringify({ bar: 'baz' }),
+    );
+
+    await close();
+  });
+
+  it('returns the `clearSnapState` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { clearSnapState } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    store.dispatch(
+      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
+    );
+
+    await clearSnapState(true);
+
+    expect(store.getState().state.encrypted).toBeNull();
+
+    await close();
+  });
   it('returns the `createInterface` hook', async () => {
     // eslint-disable-next-line no-new
     new SnapInterfaceController({
@@ -276,14 +438,16 @@ describe('getHooks', () => {
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { createInterface } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { createInterface } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
+
     await createInterface(content);
 
     expect(controllerMessenger.call).toHaveBeenCalledWith(
@@ -312,13 +476,14 @@ describe('getHooks', () => {
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { createInterface, updateInterface } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { createInterface, updateInterface } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
 
     const id = await createInterface(text('foo'));
@@ -352,13 +517,14 @@ describe('getHooks', () => {
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { createInterface, getInterfaceState } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { createInterface, getInterfaceState } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
 
     const id = await createInterface(text('foo'));
@@ -392,13 +558,14 @@ describe('getHooks', () => {
     const location = detectSnapLocation(snapId, {
       allowLocal: true,
     });
+
     const snapFiles = await fetchSnap(snapId, location);
 
-    const { createInterface, getInterfaceContext } = getHooks(
-      getMockOptions(),
-      snapFiles,
+    const { createInterface, getInterfaceContext } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
 
     const id = await createInterface(text('foo'), { bar: 'baz' });
@@ -428,30 +595,23 @@ describe('getHooks', () => {
     const { snapId, close } = await getMockServer({
       manifest: getSnapManifest(),
     });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
     const id = await snapInterfaceController.createInterface(
       snapId,
       text('foo'),
     );
 
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { resolveInterface } = getHooks(
-      getMockOptions({
-        state: {
-          ui: {
-            current: {
-              id,
-              type: DIALOG_APPROVAL_TYPES.default,
-            },
-          },
-        },
-      }),
-      snapFiles,
+    const { resolveInterface } = getPermittedHooks(
       snapId,
+      snapFiles,
       controllerMessenger,
+      runSaga,
     );
 
     await resolveInterface(id, 'foobar');
@@ -463,45 +623,6 @@ describe('getHooks', () => {
       id,
       'foobar',
     );
-
-    await close();
-  });
-
-  it('returns the `getIsLocked` hook', async () => {
-    const { snapId, close } = await getMockServer();
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getIsLocked } = getHooks(
-      getMockOptions(),
-      snapFiles,
-      snapId,
-      controllerMessenger,
-    );
-    expect(getIsLocked()).toBe(false);
-
-    await close();
-  });
-
-  it('returns the `getClientCryptography` hook', async () => {
-    const { snapId, close } = await getMockServer();
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getClientCryptography } = getHooks(
-      getMockOptions(),
-      snapFiles,
-      snapId,
-      controllerMessenger,
-    );
-
-    expect(getClientCryptography()).toStrictEqual({});
 
     await close();
   });

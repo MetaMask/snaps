@@ -1,8 +1,15 @@
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
+import { create, is } from '@metamask/superstruct';
 
 import { ENTROPY_VECTORS } from './__fixtures__';
-import { deriveEntropy, getNode, getPathPrefix } from './utils';
+import {
+  deriveEntropy,
+  getNode,
+  getPathPrefix,
+  isValidStateKey,
+  StateKeyStruct,
+} from './utils';
 
 describe('deriveEntropy', () => {
   it.each(ENTROPY_VECTORS)(
@@ -14,6 +21,7 @@ describe('deriveEntropy', () => {
           salt,
           mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
           magic: SIP_6_MAGIC_VALUE,
+          cryptographicFunctions: {},
         }),
       ).toStrictEqual(entropy);
     },
@@ -47,6 +55,7 @@ describe('getNode', () => {
       curve: 'secp256k1',
       path: ['m', "44'", "1'"],
       secretRecoveryPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      cryptographicFunctions: {},
     });
 
     expect(node).toMatchInlineSnapshot(`
@@ -69,6 +78,7 @@ describe('getNode', () => {
       curve: 'ed25519',
       path: ['m', "44'", "1'"],
       secretRecoveryPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      cryptographicFunctions: {},
     });
 
     expect(node).toMatchInlineSnapshot(`
@@ -85,4 +95,35 @@ describe('getNode', () => {
       }
     `);
   });
+});
+
+describe('isValidStateKey', () => {
+  it.each(['foo', 'foo.bar', 'foo.bar.baz'])(
+    'returns `true` for "%s"',
+    (key) => {
+      expect(isValidStateKey(key)).toBe(true);
+    },
+  );
+
+  it.each(['', '.', '..', 'foo.', 'foo..bar', 'foo.bar.', 'foo.bar..baz'])(
+    'returns `false` for "%s"',
+    (key) => {
+      expect(isValidStateKey(key)).toBe(false);
+    },
+  );
+});
+
+describe('StateKeyStruct', () => {
+  it.each(['foo', 'foo.bar', 'foo.bar.baz'])('accepts "%s"', (key) => {
+    expect(is(key, StateKeyStruct)).toBe(true);
+  });
+
+  it.each(['', '.', '..', 'foo.', 'foo..bar', 'foo.bar.', 'foo.bar..baz'])(
+    'does not accept "%s"',
+    (key) => {
+      expect(() => create(key, StateKeyStruct)).toThrow(
+        'Invalid state key. Each part of the key must be non-empty.',
+      );
+    },
+  );
 });

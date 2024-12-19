@@ -111,7 +111,6 @@ export class TestSnapExecutor extends BaseSnapExecutor {
     code: string,
     endowments: string[],
   ) {
-    const providerRequestPromise = this.readRpc();
     await this.writeCommand({
       jsonrpc: '2.0',
       id,
@@ -121,26 +120,6 @@ export class TestSnapExecutor extends BaseSnapExecutor {
 
     // In case we are running fake timers, execute a tiny step that forces
     // `setTimeout` to execute, is required for stream communication.
-    if ('clock' in setTimeout) {
-      jest.advanceTimersByTime(1);
-    }
-
-    const providerRequest = await providerRequestPromise;
-    await this.writeRpc({
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        id: providerRequest.data.id!,
-        result: {
-          isUnlocked: false,
-          accounts: [],
-          chainId: '0x1',
-          networkVersion: '1',
-        },
-      },
-    });
-
     if ('clock' in setTimeout) {
       jest.advanceTimersByTime(1);
     }

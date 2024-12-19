@@ -5,10 +5,10 @@ import {
 } from '@metamask/permission-controller';
 
 import { getControllers } from './controllers';
-import type { MiddlewareHooks } from './simulation';
+import type { RestrictedMiddlewareHooks } from './simulation';
 import { getMockOptions } from './test-utils';
 
-const MOCK_HOOKS: MiddlewareHooks = {
+const MOCK_HOOKS: RestrictedMiddlewareHooks = {
   getIsLocked: jest.fn(),
   getMnemonic: jest.fn(),
   getSnapFile: jest.fn(),

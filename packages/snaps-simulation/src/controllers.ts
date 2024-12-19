@@ -29,7 +29,7 @@ import { getSafeJson } from '@metamask/utils';
 import { getPermissionSpecifications } from './methods';
 import { UNRESTRICTED_METHODS } from './methods/constants';
 import type { SimulationOptions } from './options';
-import type { MiddlewareHooks } from './simulation';
+import type { RestrictedMiddlewareHooks } from './simulation';
 import type { RunSagaFunction } from './store';
 
 export type RootControllerAllowedActions =
@@ -49,7 +49,7 @@ export type RootControllerMessenger = ControllerMessenger<
 
 export type GetControllersOptions = {
   controllerMessenger: ControllerMessenger<any, any>;
-  hooks: MiddlewareHooks;
+  hooks: RestrictedMiddlewareHooks;
   runSaga: RunSagaFunction;
   options: SimulationOptions;
 };

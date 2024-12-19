@@ -7,11 +7,18 @@ describe('createJsonRpcEngine', () => {
     const { store } = createStore(getMockOptions());
     const engine = createJsonRpcEngine({
       store,
-      hooks: {
+      restrictedHooks: {
         getMnemonic: jest.fn(),
-        getSnapFile: jest.fn().mockResolvedValue('foo'),
         getIsLocked: jest.fn(),
+        getClientCryptography: jest.fn(),
+      },
+      permittedHooks: {
+        getSnapFile: jest.fn().mockResolvedValue('foo'),
+        getSnapState: jest.fn(),
+        updateSnapState: jest.fn(),
+        clearSnapState: jest.fn(),
         getInterfaceState: jest.fn(),
+        getInterfaceContext: jest.fn(),
         createInterface: jest.fn(),
         updateInterface: jest.fn(),
         resolveInterface: jest.fn(),

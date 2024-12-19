@@ -39,16 +39,6 @@ export const createService = <
       const stream = mux.createStream('metamask-provider');
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
-        if (req.method === 'metamask_getProviderState') {
-          res.result = {
-            isUnlocked: false,
-            accounts: [],
-            chainId: '0x1',
-            networkVersion: '1',
-          };
-          return end();
-        }
-
         if (req.method === 'eth_blockNumber') {
           res.result = MOCK_BLOCK_NUMBER;
           return end();

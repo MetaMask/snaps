@@ -1,9 +1,18 @@
 import type { Method } from '../../internals';
 import type {
+  CancelBackgroundEventParams,
+  CancelBackgroundEventResult,
+} from './cancel-background-event';
+import type { ClearStateParams, ClearStateResult } from './clear-state';
+import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
 } from './create-interface';
 import type { DialogParams, DialogResult } from './dialog';
+import type {
+  GetBackgroundEventsParams,
+  GetBackgroundEventsResult,
+} from './get-background-events';
 import type {
   GetBip32EntropyParams,
   GetBip32EntropyResult,
@@ -40,6 +49,7 @@ import type {
   GetPreferencesResult,
 } from './get-preferences';
 import type { GetSnapsParams, GetSnapsResult } from './get-snaps';
+import type { GetStateParams, GetStateResult } from './get-state';
 import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
@@ -57,6 +67,11 @@ import type {
   ResolveInterfaceResult,
 } from './resolve-interface';
 import type {
+  ScheduleBackgroundEventParams,
+  ScheduleBackgroundEventResult,
+} from './schedule-background-event';
+import type { SetStateParams, SetStateResult } from './set-state';
+import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
@@ -67,6 +82,7 @@ import type {
  */
 export type SnapMethods = {
   /* eslint-disable @typescript-eslint/naming-convention */
+  snap_clearState: [ClearStateParams, ClearStateResult];
   snap_dialog: [DialogParams, DialogResult];
   snap_getBip32Entropy: [GetBip32EntropyParams, GetBip32EntropyResult];
   snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
@@ -77,9 +93,22 @@ export type SnapMethods = {
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
   snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
+  snap_getState: [GetStateParams, GetStateResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];
+  snap_scheduleBackgroundEvent: [
+    ScheduleBackgroundEventParams,
+    ScheduleBackgroundEventResult,
+  ];
+  snap_cancelBackgroundEvent: [
+    CancelBackgroundEventParams,
+    CancelBackgroundEventResult,
+  ];
+  snap_getBackgroundEvents: [
+    GetBackgroundEventsParams,
+    GetBackgroundEventsResult,
+  ];
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
@@ -88,6 +117,7 @@ export type SnapMethods = {
     GetInterfaceContextResult,
   ];
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
+  snap_setState: [SetStateParams, SetStateResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];

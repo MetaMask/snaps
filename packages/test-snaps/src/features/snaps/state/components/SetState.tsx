@@ -7,16 +7,19 @@ import { Tag, useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
 import { MANAGE_STATE_PORT, MANAGE_STATE_SNAP_ID } from '../constants';
-import { useSnapState } from '../hooks';
 
-export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
+export const SetState: FunctionComponent<{ encrypted: boolean }> = ({
   encrypted,
 }) => {
+  const [key, setKey] = useState('');
   const [value, setValue] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
-  const snapState = useSnapState(encrypted);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeKey = (event: ChangeEvent<HTMLInputElement>) => {
+    setKey(event.target.value);
+  };
+
+  const handleChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
@@ -26,7 +29,8 @@ export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
       snapId: getSnapId(MANAGE_STATE_SNAP_ID, MANAGE_STATE_PORT),
       method: 'setState',
       params: {
-        items: [...snapState.items, value],
+        key,
+        value: JSON.parse(value),
         encrypted,
       },
       tags: [encrypted ? Tag.TestState : Tag.UnencryptedTestState],
@@ -37,12 +41,24 @@ export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
     <>
       <Form onSubmit={handleSubmit} className="mb-3">
         <Form.Group>
+          <Form.Label>Key</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Key"
+            value={key}
+            onChange={handleChangeKey}
+            id={encrypted ? 'setStateKey' : 'setStateKeyUnencrypted'}
+            className="mb-3"
+          />
+        </Form.Group>
+
+        <Form.Group>
           <Form.Label>Value</Form.Label>
           <Form.Control
             type="text"
             placeholder="Value"
             value={value}
-            onChange={handleChange}
+            onChange={handleChangeValue}
             id={encrypted ? 'dataManageState' : 'dataUnencryptedManageState'}
             className="mb-3"
           />
@@ -53,7 +69,7 @@ export const SendData: FunctionComponent<{ encrypted: boolean }> = ({
           id={encrypted ? 'sendManageState' : 'sendUnencryptedManageState'}
           disabled={isLoading}
         >
-          Send Data
+          Set State
         </Button>
       </Form>
 

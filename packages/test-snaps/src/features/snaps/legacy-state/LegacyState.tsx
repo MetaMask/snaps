@@ -1,26 +1,27 @@
 import type { FunctionComponent } from 'react';
 
 import { Result, Snap } from '../../../components';
-import { ClearData, SendData } from './components';
 import {
   MANAGE_STATE_SNAP_ID,
   MANAGE_STATE_PORT,
   MANAGE_STATE_VERSION,
-} from './constants';
-import { useSnapState } from './hooks';
+} from '../state/constants';
+import { useSnapState } from '../state/hooks';
+import { ClearData, SendData } from './components';
 
-export const ManageState: FunctionComponent = () => {
-  const encryptedState = useSnapState(true);
-  const unencryptedState = useSnapState(false);
+export const LegacyState: FunctionComponent = () => {
+  const encryptedState = useSnapState('legacy_getState', true);
+  const unencryptedState = useSnapState('legacy_getState', false);
 
   return (
     <Snap
-      name="Manage State Snap"
+      name="Legacy State Snap"
       snapId={MANAGE_STATE_SNAP_ID}
       port={MANAGE_STATE_PORT}
       version={MANAGE_STATE_VERSION}
       testId="manage-state"
     >
+      <h3 className="h5">Encrypted state</h3>
       <Result className="mb-3">
         <span id="retrieveManageStateResult">
           {JSON.stringify(encryptedState, null, 2)}
@@ -30,6 +31,7 @@ export const ManageState: FunctionComponent = () => {
       <SendData encrypted={true} />
       <ClearData encrypted={true} />
 
+      <h3 className="h5">Unencrypted state</h3>
       <Result className="mb-3">
         <span id="retrieveManageStateUnencryptedResult">
           {JSON.stringify(unencryptedState, null, 2)}
