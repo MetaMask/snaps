@@ -1,12 +1,17 @@
-import type { Caveat } from '@metamask/permission-controller';
+import type {
+  Caveat,
+  PermissionConstraint,
+} from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 
 import {
   getCronjobCaveatMapper,
   cronjobEndowmentBuilder,
   validateCronjobCaveat,
   cronjobCaveatSpecifications,
+  getCronjobCaveatJobs,
 } from './cronjob';
 import { SnapEndowments } from './enum';
 
@@ -20,6 +25,7 @@ describe('endowment:cronjob', () => {
         endowmentGetter: expect.any(Function),
         allowedCaveats: [SnapCaveatType.SnapCronjob],
         subjectTypes: [SubjectType.Snap],
+        validator: expect.any(Function),
       });
 
       expect(specification.endowmentGetter()).toBeNull();
@@ -59,6 +65,132 @@ describe('endowment:cronjob', () => {
         ],
       });
     });
+
+    it.each([undefined, 2, {}])(
+      'returns a null caveats value for invalid values',
+      (val) => {
+        expect(getCronjobCaveatMapper(val as Json)).toStrictEqual({
+          caveats: null,
+        });
+      },
+    );
+  });
+});
+
+describe('getCronjobCaveatJobs', () => {
+  it('returns the jobs from a cronjob caveat', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(getCronjobCaveatJobs(permission)).toStrictEqual([
+      {
+        expression: '* * * * *',
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    ]);
+  });
+
+  it('returns null if there are no caveats', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: null,
+    };
+
+    expect(getCronjobCaveatJobs(permission)).toBeNull();
+  });
+
+  it('throws if there is more than one caveat', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+        {
+          type: SnapCaveatType.SnapCronjob,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
+  });
+
+  it('throws if the caveat type is wrong', () => {
+    const permission: PermissionConstraint = {
+      date: 0,
+      parentCapability: 'foo',
+      invoker: 'bar',
+      id: 'baz',
+      caveats: [
+        {
+          type: SnapCaveatType.ChainIds,
+          value: {
+            jobs: [
+              {
+                expression: '* * * * *',
+                request: {
+                  method: 'exampleMethodOne',
+                  params: ['p1'],
+                },
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
   });
 });
 
@@ -80,17 +212,6 @@ describe('validateCronjobCaveat', () => {
     };
 
     expect(() => validateCronjobCaveat(caveat)).not.toThrow();
-  });
-
-  it('should throw if caveat has no proper value', () => {
-    const caveat: Caveat<string, any> = {
-      type: SnapCaveatType.SnapCronjob,
-      value: {},
-    };
-
-    expect(() => validateCronjobCaveat(caveat)).toThrow(
-      `Expected a plain object.`,
-    );
   });
 
   it('should throw an error when cron specification is missing', () => {

@@ -5736,6 +5736,7 @@ __metadata:
     "@types/concat-stream": "npm:^2.0.0"
     "@types/gunzip-maybe": "npm:^1.4.0"
     "@types/jest": "npm:^27.5.1"
+    "@types/luxon": "npm:^3"
     "@types/mocha": "npm:^10.0.1"
     "@types/node": "npm:18.14.2"
     "@types/readable-stream": "npm:^4.0.15"
@@ -5773,6 +5774,7 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
+    luxon: "npm:^3.5.0"
     mkdirp: "npm:^1.0.4"
     nanoid: "npm:^3.1.31"
     prettier: "npm:^2.8.8"
@@ -6003,6 +6005,7 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@ts-bridge/cli": "npm:^0.6.1"
+    "@types/luxon": "npm:^3"
     "@types/node": "npm:18.14.2"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
@@ -6019,6 +6022,7 @@ __metadata:
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
+    luxon: "npm:^3.5.0"
     prettier: "npm:^2.8.8"
     prettier-plugin-packagejson: "npm:^2.5.2"
     typescript: "npm:~5.3.3"
@@ -7921,6 +7925,13 @@ __metadata:
   version: 4.17.7
   resolution: "@types/lodash@npm:4.17.7"
   checksum: 10/b8177f19cf962414a66989837481b13f546afc2e98e8d465bec59e6ac03a59c584eb7053ce511cde3a09c5f3096d22a5ae22cfb56b23f3b0da75b0743b6b1a44
+  languageName: node
+  linkType: hard
+
+"@types/luxon@npm:^3":
+  version: 3.4.2
+  resolution: "@types/luxon@npm:3.4.2"
+  checksum: 10/fd89566e3026559f2bc4ddcc1e70a2c16161905ed50be9473ec0cfbbbe919165041408c4f6e06c4bcf095445535052e2c099087c76b1b38e368127e618fc968d
   languageName: node
   linkType: hard
 
@@ -17236,6 +17247,13 @@ __metadata:
   version: 3.3.0
   resolution: "luxon@npm:3.3.0"
   checksum: 10/ff60904401caa2346da492c7776d8a17a8e5b3715d6246534c3c0ea3af07c22f9ba9f16730259749f6cafb3de02f0fdffb970d53d4139f0de66eb9ac16ea163c
+  languageName: node
+  linkType: hard
+
+"luxon@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "luxon@npm:3.5.0"
+  checksum: 10/48f86e6c1c96815139f8559456a3354a276ba79bcef0ae0d4f2172f7652f3ba2be2237b0e103b8ea0b79b47715354ac9fac04eb1db3485dcc72d5110491dd47f
   languageName: node
   linkType: hard
 

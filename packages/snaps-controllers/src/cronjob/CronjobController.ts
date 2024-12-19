@@ -9,7 +9,7 @@ import {
   getCronjobCaveatJobs,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { BackgroundEvent, SnapId } from '@metamask/snaps-sdk';
 import type {
   TruncatedSnap,
   CronjobSpecification,
@@ -18,8 +18,12 @@ import {
   HandlerType,
   parseCronExpression,
   logError,
+  logWarning,
 } from '@metamask/snaps-utils';
-import { Duration, inMilliseconds } from '@metamask/utils';
+import { assert, Duration, inMilliseconds } from '@metamask/utils';
+import { castDraft } from 'immer';
+import { DateTime } from 'luxon';
+import { nanoid } from 'nanoid';
 
 import type {
   GetAllSnaps,
@@ -41,11 +45,30 @@ export type CronjobControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
   CronjobControllerState
 >;
+
+export type ScheduleBackgroundEvent = {
+  type: `${typeof controllerName}:scheduleBackgroundEvent`;
+  handler: CronjobController['scheduleBackgroundEvent'];
+};
+
+export type CancelBackgroundEvent = {
+  type: `${typeof controllerName}:cancelBackgroundEvent`;
+  handler: CronjobController['cancelBackgroundEvent'];
+};
+
+export type GetBackgroundEvents = {
+  type: `${typeof controllerName}:getBackgroundEvents`;
+  handler: CronjobController['getBackgroundEvents'];
+};
+
 export type CronjobControllerActions =
   | GetAllSnaps
   | HandleSnapRequest
   | GetPermissions
-  | CronjobControllerGetStateAction;
+  | CronjobControllerGetStateAction
+  | ScheduleBackgroundEvent
+  | CancelBackgroundEvent
+  | GetBackgroundEvents;
 
 export type CronjobControllerEvents =
   | SnapInstalled
@@ -85,6 +108,7 @@ export type StoredJobInformation = {
 
 export type CronjobControllerState = {
   jobs: Record<string, StoredJobInformation>;
+  events: Record<string, BackgroundEvent>;
 };
 
 const controllerName = 'CronjobController';
@@ -105,17 +129,19 @@ export class CronjobController extends BaseController<
   #timers: Map<string, Timer>;
 
   // Mapping from jobId to snapId
-  #snapIds: Map<string, string>;
+  #snapIds: Map<string, SnapId>;
 
   constructor({ messenger, state }: CronjobControllerArgs) {
     super({
       messenger,
       metadata: {
         jobs: { persist: true, anonymous: false },
+        events: { persist: true, anonymous: false },
       },
       name: controllerName,
       state: {
         jobs: {},
+        events: {},
         ...state,
       },
     });
@@ -127,9 +153,11 @@ export class CronjobController extends BaseController<
     this._handleSnapUnregisterEvent =
       this._handleSnapUnregisterEvent.bind(this);
     this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
-
+    this._handleSnapDisabledEvent = this._handleSnapDisabledEvent.bind(this);
+    this._handleSnapEnabledEvent = this._handleSnapEnabledEvent.bind(this);
     // Subscribe to Snap events
     /* eslint-disable @typescript-eslint/unbound-method */
+
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
       this._handleSnapRegisterEvent,
@@ -142,12 +170,12 @@ export class CronjobController extends BaseController<
 
     this.messagingSystem.subscribe(
       'SnapController:snapEnabled',
-      this._handleSnapRegisterEvent,
+      this._handleSnapEnabledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapDisabled',
-      this._handleSnapUnregisterEvent,
+      this._handleSnapDisabledEvent,
     );
 
     this.messagingSystem.subscribe(
@@ -156,9 +184,26 @@ export class CronjobController extends BaseController<
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:scheduleBackgroundEvent`,
+      (...args) => this.scheduleBackgroundEvent(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:cancelBackgroundEvent`,
+      (...args) => this.cancelBackgroundEvent(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getBackgroundEvents`,
+      (...args) => this.getBackgroundEvents(...args),
+    );
+
     this.dailyCheckIn().catch((error) => {
       logError(error);
     });
+
+    this.#rescheduleBackgroundEvents(Object.values(this.state.events));
   }
 
   /**
@@ -166,11 +211,11 @@ export class CronjobController extends BaseController<
    *
    * @returns Array of Cronjob specifications.
    */
-  private getAllJobs(): Cronjob[] {
+  #getAllJobs(): Cronjob[] {
     const snaps = this.messagingSystem.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(snaps);
 
-    const jobs = filteredSnaps.map((snap) => this.getSnapJobs(snap.id));
+    const jobs = filteredSnaps.map((snap) => this.#getSnapJobs(snap.id));
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return jobs.flat().filter((job) => job !== undefined) as Cronjob[];
   }
@@ -181,7 +226,7 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a Snap.
    * @returns Array of Cronjob specifications.
    */
-  private getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
+  #getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
     const permissions = this.#messenger.call(
       'PermissionController:getPermissions',
       snapId,
@@ -202,8 +247,8 @@ export class CronjobController extends BaseController<
    * @param snapId - ID of a snap.
    */
   register(snapId: SnapId) {
-    const jobs = this.getSnapJobs(snapId);
-    jobs?.forEach((job) => this.schedule(job));
+    const jobs = this.#getSnapJobs(snapId);
+    jobs?.forEach((job) => this.#schedule(job));
   }
 
   /**
@@ -217,7 +262,7 @@ export class CronjobController extends BaseController<
    *
    * @param job - Cronjob specification.
    */
-  private schedule(job: Cronjob) {
+  #schedule(job: Cronjob) {
     if (this.#timers.has(job.id)) {
       return;
     }
@@ -234,17 +279,17 @@ export class CronjobController extends BaseController<
 
     const timer = new Timer(ms);
     timer.start(() => {
-      this.executeCronjob(job).catch((error) => {
+      this.#executeCronjob(job).catch((error) => {
         // TODO: Decide how to handle errors.
         logError(error);
       });
 
       this.#timers.delete(job.id);
-      this.schedule(job);
+      this.#schedule(job);
     });
 
     if (!this.state.jobs[job.id]?.lastRun) {
-      this.updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
+      this.#updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
     }
 
     this.#timers.set(job.id, timer);
@@ -256,8 +301,8 @@ export class CronjobController extends BaseController<
    *
    * @param job - Cronjob specification.
    */
-  private async executeCronjob(job: Cronjob) {
-    this.updateJobLastRunState(job.id, Date.now());
+  async #executeCronjob(job: Cronjob) {
+    this.#updateJobLastRunState(job.id, Date.now());
     await this.#messenger.call('SnapController:handleRequest', {
       snapId: job.snapId,
       origin: '',
@@ -267,24 +312,147 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Unregister all jobs related to the given snapId.
+   * Schedule a background event.
+   *
+   * @param backgroundEventWithoutId - Background event.
+   * @returns An id representing the background event.
+   */
+  scheduleBackgroundEvent(
+    backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
+  ) {
+    // Remove millisecond precision and convert to UTC.
+    const scheduledAt = DateTime.fromJSDate(new Date())
+      .toUTC()
+      .startOf('second')
+      .toISO({
+        suppressMilliseconds: true,
+      });
+
+    assert(scheduledAt);
+
+    const event = {
+      ...backgroundEventWithoutId,
+      id: nanoid(),
+      scheduledAt,
+    };
+
+    this.#setUpBackgroundEvent(event);
+    this.update((state) => {
+      state.events[event.id] = castDraft(event);
+    });
+
+    return event.id;
+  }
+
+  /**
+   * Cancel a background event.
+   *
+   * @param origin - The origin making the cancel call.
+   * @param id - The id of the background event to cancel.
+   * @throws If the event does not exist.
+   */
+  cancelBackgroundEvent(origin: string, id: string) {
+    assert(
+      this.state.events[id],
+      `A background event with the id of "${id}" does not exist.`,
+    );
+
+    assert(
+      this.state.events[id].snapId === origin,
+      'Only the origin that scheduled this event can cancel it.',
+    );
+
+    const timer = this.#timers.get(id);
+    timer?.cancel();
+    this.#timers.delete(id);
+    this.#snapIds.delete(id);
+    this.update((state) => {
+      delete state.events[id];
+    });
+  }
+
+  /**
+   * A helper function to handle setup of the background event.
+   *
+   * @param event - A background event.
+   */
+  #setUpBackgroundEvent(event: BackgroundEvent) {
+    const date = new Date(event.date);
+    const now = new Date();
+    const ms = date.getTime() - now.getTime();
+
+    if (ms <= 0) {
+      throw new Error('Cannot schedule an event in the past.');
+    }
+
+    const timer = new Timer(ms);
+    timer.start(() => {
+      this.#messenger
+        .call('SnapController:handleRequest', {
+          snapId: event.snapId,
+          origin: '',
+          handler: HandlerType.OnCronjob,
+          request: event.request,
+        })
+        .catch((error) => {
+          logError(error);
+        });
+
+      this.#timers.delete(event.id);
+      this.#snapIds.delete(event.id);
+      this.update((state) => {
+        delete state.events[event.id];
+      });
+    });
+
+    this.#timers.set(event.id, timer);
+    this.#snapIds.set(event.id, event.snapId);
+  }
+
+  /**
+   * Get a list of a Snap's background events.
+   *
+   * @param snapId - The id of the Snap to fetch background events for.
+   * @returns An array of background events.
+   */
+  getBackgroundEvents(snapId: SnapId): BackgroundEvent[] {
+    return Object.values(this.state.events).filter(
+      (snapEvent) => snapEvent.snapId === snapId,
+    );
+  }
+
+  /**
+   * Unregister all jobs and background events related to the given snapId.
    *
    * @param snapId - ID of a snap.
+   * @param skipEvents - Whether the unregistration process should skip scheduled background events.
    */
-  unregister(snapId: string) {
+  unregister(snapId: SnapId, skipEvents = false) {
     const jobs = [...this.#snapIds.entries()].filter(
       ([_, jobSnapId]) => jobSnapId === snapId,
     );
 
     if (jobs.length) {
+      const eventIds: string[] = [];
       jobs.forEach(([id]) => {
         const timer = this.#timers.get(id);
         if (timer) {
           timer.cancel();
           this.#timers.delete(id);
           this.#snapIds.delete(id);
+          if (!skipEvents && this.state.events[id]) {
+            eventIds.push(id);
+          }
         }
       });
+
+      if (eventIds.length > 0) {
+        this.update((state) => {
+          eventIds.forEach((id) => {
+            delete state.events[id];
+          });
+        });
+      }
     }
   }
 
@@ -294,7 +462,7 @@ export class CronjobController extends BaseController<
    * @param jobId - ID of a cron job.
    * @param lastRun - Unix timestamp when the job was last ran.
    */
-  private updateJobLastRunState(jobId: string, lastRun: number) {
+  #updateJobLastRunState(jobId: string, lastRun: number) {
     this.update((state) => {
       state.jobs[jobId] = {
         lastRun,
@@ -308,7 +476,7 @@ export class CronjobController extends BaseController<
    * This is necessary for longer running jobs that execute with more than 24 hours between them.
    */
   async dailyCheckIn() {
-    const jobs = this.getAllJobs();
+    const jobs = this.#getAllJobs();
 
     for (const job of jobs) {
       const parsed = parseCronExpression(job.expression);
@@ -319,11 +487,11 @@ export class CronjobController extends BaseController<
         parsed.hasPrev() &&
         parsed.prev().getTime() > lastRun
       ) {
-        await this.executeCronjob(job);
+        await this.#executeCronjob(job);
       }
 
       // Try scheduling, will fail if an existing scheduled job is found
-      this.schedule(job);
+      this.#schedule(job);
     }
 
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
@@ -333,6 +501,31 @@ export class CronjobController extends BaseController<
         logError(error);
       });
     });
+  }
+
+  /**
+   * Reschedule background events.
+   *
+   * @param backgroundEvents - A list of background events to reschdule.
+   */
+  #rescheduleBackgroundEvents(backgroundEvents: BackgroundEvent[]) {
+    for (const snapEvent of backgroundEvents) {
+      const { date } = snapEvent;
+      const now = new Date();
+      const then = new Date(date);
+      if (then.getTime() < now.getTime()) {
+        // Remove expired events from state
+        this.update((state) => {
+          delete state.events[snapEvent.id];
+        });
+
+        logWarning(
+          `Background event with id "${snapEvent.id}" not scheduled as its date has expired.`,
+        );
+      } else {
+        this.#setUpBackgroundEvent(snapEvent);
+      }
+    }
   }
 
   /**
@@ -354,12 +547,12 @@ export class CronjobController extends BaseController<
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapEnabled',
-      this._handleSnapRegisterEvent,
+      this._handleSnapEnabledEvent,
     );
 
     this.messagingSystem.unsubscribe(
       'SnapController:snapDisabled',
-      this._handleSnapUnregisterEvent,
+      this._handleSnapDisabledEvent,
     );
 
     this.messagingSystem.unsubscribe(
@@ -368,9 +561,7 @@ export class CronjobController extends BaseController<
     );
     /* eslint-enable @typescript-eslint/unbound-method */
 
-    this.#snapIds.forEach((snapId) => {
-      this.unregister(snapId);
-    });
+    this.#snapIds.forEach((snapId) => this.unregister(snapId));
   }
 
   /**
@@ -383,12 +574,33 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Handle events that should cause cronjobs to be unregistered.
+   * Handle events that could cause cronjobs to be registered
+   * and for background events to be rescheduled.
+   *
+   * @param snap - Basic Snap information.
+   */
+  private _handleSnapEnabledEvent(snap: TruncatedSnap) {
+    const events = this.getBackgroundEvents(snap.id);
+    this.#rescheduleBackgroundEvents(events);
+    this.register(snap.id);
+  }
+
+  /**
+   * Handle events that should cause cronjobs and background events to be unregistered.
    *
    * @param snap - Basic Snap information.
    */
   private _handleSnapUnregisterEvent(snap: TruncatedSnap) {
     this.unregister(snap.id);
+  }
+
+  /**
+   * Handle events that should cause cronjobs and background events to be unregistered.
+   *
+   * @param snap - Basic Snap information.
+   */
+  private _handleSnapDisabledEvent(snap: TruncatedSnap) {
+    this.unregister(snap.id, true);
   }
 
   /**

@@ -14,8 +14,9 @@ import {
   isCronjobSpecificationArray,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
+import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
 const permissionName = SnapEndowments.Cronjob;
@@ -44,6 +45,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
     allowedCaveats: [SnapCaveatType.SnapCronjob],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
+    validator: createGenericPermissionValidator([
+      { type: SnapCaveatType.SnapCronjob, optional: true },
+      { type: SnapCaveatType.MaxRequestTime, optional: true },
+    ]),
   };
 };
 
@@ -63,6 +68,10 @@ export const cronjobEndowmentBuilder = Object.freeze({
 export function getCronjobCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
+  if (!value || !isObject(value) || Object.keys(value).length === 0) {
+    return { caveats: null };
+  }
+
   return {
     caveats: [
       {

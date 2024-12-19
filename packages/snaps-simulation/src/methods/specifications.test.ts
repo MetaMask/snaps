@@ -59,6 +59,7 @@ describe('getPermissionSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:cronjob",
+          "validator": [Function],
         },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,

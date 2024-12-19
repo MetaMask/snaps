@@ -1,10 +1,18 @@
 import type { Method } from '../../internals';
+import type {
+  CancelBackgroundEventParams,
+  CancelBackgroundEventResult,
+} from './cancel-background-event';
 import type { ClearStateParams, ClearStateResult } from './clear-state';
 import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
 } from './create-interface';
 import type { DialogParams, DialogResult } from './dialog';
+import type {
+  GetBackgroundEventsParams,
+  GetBackgroundEventsResult,
+} from './get-background-events';
 import type {
   GetBip32EntropyParams,
   GetBip32EntropyResult,
@@ -58,6 +66,10 @@ import type {
   ResolveInterfaceParams,
   ResolveInterfaceResult,
 } from './resolve-interface';
+import type {
+  ScheduleBackgroundEventParams,
+  ScheduleBackgroundEventResult,
+} from './schedule-background-event';
 import type { SetStateParams, SetStateResult } from './set-state';
 import type {
   UpdateInterfaceParams,
@@ -85,6 +97,18 @@ export type SnapMethods = {
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];
+  snap_scheduleBackgroundEvent: [
+    ScheduleBackgroundEventParams,
+    ScheduleBackgroundEventResult,
+  ];
+  snap_cancelBackgroundEvent: [
+    CancelBackgroundEventParams,
+    CancelBackgroundEventResult,
+  ];
+  snap_getBackgroundEvents: [
+    GetBackgroundEventsParams,
+    GetBackgroundEventsResult,
+  ];
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];

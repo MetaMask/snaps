@@ -24,4 +24,7 @@ export * from './provider-request';
 export * from './request-snaps';
 export * from './update-interface';
 export * from './resolve-interface';
+export * from './schedule-background-event';
+export * from './cancel-background-event';
+export * from './get-background-events';
 export * from './set-state';
