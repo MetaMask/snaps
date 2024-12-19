@@ -1652,14 +1652,7 @@ describe('SnapController', () => {
         const stream = mux.createStream('metamask-provider');
         const engine = new JsonRpcEngine();
         const middleware = createAsyncMiddleware(async (req, res, _next) => {
-          if (req.method === 'metamask_getProviderState') {
-            res.result = {
-              isUnlocked: false,
-              accounts: [],
-              chainId: '0x1',
-              networkVersion: '1',
-            };
-          } else if (req.method === 'eth_blockNumber') {
+          if (req.method === 'eth_blockNumber') {
             await sleep(100);
             res.result = MOCK_BLOCK_NUMBER;
           }
@@ -1737,14 +1730,7 @@ describe('SnapController', () => {
         const stream = mux.createStream('metamask-provider');
         const engine = new JsonRpcEngine();
         const middleware = createAsyncMiddleware(async (req, res, _next) => {
-          if (req.method === 'metamask_getProviderState') {
-            res.result = {
-              isUnlocked: false,
-              accounts: [],
-              chainId: '0x1',
-              networkVersion: '1',
-            };
-          } else if (req.method === 'eth_blockNumber') {
+          if (req.method === 'eth_blockNumber') {
             await sleep(100);
             res.result = MOCK_BLOCK_NUMBER;
           }

@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-unassigned-import
 import 'ses';
 import { SNAP_STREAM_NAMES, HandlerType } from '@metamask/snaps-utils';
-import type { Json, JsonRpcRequest, JsonRpcSuccess } from '@metamask/utils';
+import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import { EventEmitter } from 'stream';
 import { parentPort } from 'worker_threads';
 
@@ -48,18 +48,6 @@ describe('ThreadSnapExecutor', () => {
     // Utility functions
     const emit = (data: Json) => parentEmitter.emit('message', { data });
     const emitChunk = (name: string, data: Json) => emit({ name, data });
-    const waitForOutbound = (request: Partial<JsonRpcRequest<any>>): any =>
-      new Promise((resolve) => {
-        childEmitter.on('message', ({ data: { name, data } }) => {
-          if (
-            name === SNAP_STREAM_NAMES.JSON_RPC &&
-            data.name === 'metamask-provider' &&
-            data.data.method === request.method
-          ) {
-            resolve(data.data);
-          }
-        });
-      });
 
     const waitForResponse = async (response: JsonRpcSuccess<string>) =>
       new Promise((resolve) => {
@@ -84,24 +72,6 @@ describe('ThreadSnapExecutor', () => {
       id: 1,
       method: 'executeSnap',
       params: [FAKE_SNAP_NAME, CODE, []],
-    });
-
-    const providerRequest = await waitForOutbound({
-      method: 'metamask_getProviderState',
-    });
-
-    emitChunk(SNAP_STREAM_NAMES.JSON_RPC, {
-      name: 'metamask-provider',
-      data: {
-        jsonrpc: '2.0',
-        id: providerRequest.id,
-        result: {
-          isUnlocked: false,
-          accounts: [],
-          chainId: '0x1',
-          networkVersion: '1',
-        },
-      },
     });
 
     expect(
