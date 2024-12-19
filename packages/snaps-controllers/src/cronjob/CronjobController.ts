@@ -328,6 +328,8 @@ export class CronjobController extends BaseController<
         suppressMilliseconds: true,
       });
 
+    assert(scheduledAt);
+
     const event = {
       ...backgroundEventWithoutId,
       id: nanoid(),
