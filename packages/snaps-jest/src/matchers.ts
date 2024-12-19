@@ -9,9 +9,9 @@ import type {
   EnumToUnion,
   ComponentOrElement,
   Component,
+  NotificationType,
 } from '@metamask/snaps-sdk';
-import { NotificationType } from '@metamask/snaps-sdk';
-import type { JSXElement } from '@metamask/snaps-sdk/jsx';
+import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { SnapInterface, SnapResponse } from '@metamask/snaps-simulation';
 import {
@@ -170,10 +170,10 @@ export const toSendNotification: MatcherFunction<
     expectedMessage: string,
     expectedType?: EnumToUnion<NotificationType> | undefined,
     expectedTitle?: string | undefined,
-    expectedContent?: ComponentOrElement,
+    expectedContent?: JSXElement,
     expectedFooterLink?: { text: string; href: string } | undefined,
   ]
-> = async function (
+> = function (
   actual,
   expectedMessage,
   expectedType,
@@ -184,43 +184,35 @@ export const toSendNotification: MatcherFunction<
   assertActualIsSnapResponse(actual, 'toSendNotification');
 
   const { notifications } = actual;
-  let jsxContent: ComponentOrElement;
+  let jsxContent: JSXElement;
 
   if (hasProperty(actual, 'getInterface')) {
-    jsxContent = (await (actual.getInterface as () => Promise<SnapInterface>)())
-      .content;
+    jsxContent = (actual.getInterface as () => SnapInterface)().content;
   }
 
-  const notificationValidator = async (
+  const notificationValidator = (
     notification: SnapResponse['notifications'][number],
   ) => {
     const { type, message, title, footerLink } = notification;
-    const hasExpectedType = expectedType !== undefined;
-    const hasExpectedTitle = expectedTitle !== undefined;
-    const hasExpectedFooterLink = expectedFooterLink !== undefined;
-    const hasContent = expectedContent !== undefined;
 
     if (!this.equals(message, expectedMessage)) {
       return false;
     }
 
-    if (hasExpectedType && type !== expectedType) {
+    if (type !== expectedType) {
       return false;
     }
 
-    if (type === NotificationType.InApp) {
-      if (hasExpectedTitle && !this.equals(title, expectedTitle)) {
+    if (title) {
+      if (!this.equals(title, expectedTitle)) {
         return false;
       }
 
-      if (hasContent && !this.equals(jsxContent, expectedContent)) {
+      if (!this.equals(jsxContent, expectedContent)) {
         return false;
       }
 
-      if (
-        hasExpectedFooterLink &&
-        !this.equals(footerLink, expectedFooterLink)
-      ) {
+      if (!this.equals(footerLink, expectedFooterLink)) {
         return false;
       }
     }
@@ -233,7 +225,7 @@ export const toSendNotification: MatcherFunction<
   const transformedNotifications = notifications.map((notification) => {
     return {
       ...notification,
-      content: jsxContent,
+      content: serialiseJsx(jsxContent),
     };
   });
 
@@ -242,31 +234,53 @@ export const toSendNotification: MatcherFunction<
       ? `${this.utils.matcherHint('.not.toSendNotification')}\n\n`
       : `${this.utils.matcherHint('.toSendNotification')}\n\n`;
 
+    const {
+      title,
+      type,
+      message: notifMessage,
+      footerLink,
+      content,
+    } = transformedNotifications[0];
+
     testMessage += `Expected message: ${this.utils.printExpected(
       expectedMessage,
     )}\n`;
 
-    testMessage += expectedType
-      ? `Expected type: ${this.utils.printExpected(expectedType)}\n`
+    testMessage += `Expected type: ${this.utils.printExpected(expectedType)}\n`;
+
+    testMessage += title
+      ? `Expected title: ${this.utils.printExpected(expectedTitle)}\n`
       : ``;
 
-    testMessage += expectedTitle
-      ? `Expected type: ${this.utils.printExpected(expectedType)}\n`
+    testMessage += title
+      ? `Expected content: ${this.utils.printExpected(
+          serialiseJsx(expectedContent as SnapNode),
+        )}\n`
       : ``;
 
-    testMessage += expectedContent
-      ? `Expected content: ${this.utils.printExpected(jsxContent)}\n`
-      : ``;
-
-    testMessage += expectedFooterLink
+    testMessage += footerLink
       ? `Expected footer link: ${this.utils.printExpected(
           expectedFooterLink,
         )}\n`
       : ``;
 
-    testMessage += `Received: ${this.utils.printReceived(
-      transformedNotifications,
-    )}`;
+    testMessage += `Received message: ${this.utils.printExpected(
+      notifMessage,
+    )}\n`;
+
+    testMessage += `Received type: ${this.utils.printReceived(type)}\n`;
+
+    testMessage += title
+      ? `Received title: ${this.utils.printReceived(title)}\n`
+      : ``;
+
+    testMessage += title
+      ? `Received content: ${this.utils.printReceived(serialiseJsx(content))}\n`
+      : ``;
+
+    testMessage += footerLink
+      ? `Expected footer link: ${this.utils.printReceived(footerLink)}\n`
+      : ``;
 
     return testMessage;
   };
