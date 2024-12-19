@@ -320,18 +320,20 @@ export class CronjobController extends BaseController<
   scheduleBackgroundEvent(
     backgroundEventWithoutId: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
   ) {
-    // removing milliseond precision and converting to UTC.
+    // Remove millisecond precision and convert to UTC.
     const scheduledAt = DateTime.fromJSDate(new Date())
       .toUTC()
       .startOf('second')
       .toISO({
         suppressMilliseconds: true,
-      }) as string;
+      });
+
     const event = {
       ...backgroundEventWithoutId,
       id: nanoid(),
       scheduledAt,
     };
+
     this.#setUpBackgroundEvent(event);
     this.update((state) => {
       state.events[event.id] = castDraft(event);
