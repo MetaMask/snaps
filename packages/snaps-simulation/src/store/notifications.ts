@@ -10,11 +10,17 @@ import type { ApplicationState } from './store';
  * @property id - A unique ID for the notification.
  * @property message - The notification message.
  * @property type - The notification type.
+ * @property title - The notification title (expanded view).
+ * @property content - The notification JSX content (expanded view).
+ * @property footerLink - The notification footer (expanded view).
  */
 export type Notification = {
   id: string;
   message: string;
   type: NotificationType;
+  title?: string;
+  content?: string;
+  footerLink?: { text: string; href: string };
 };
 
 /**

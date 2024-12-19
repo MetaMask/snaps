@@ -1,5 +1,6 @@
 import { MethodNotFoundError, NotificationType } from '@metamask/snaps-sdk';
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
+import { Box, Row, Address } from '@metamask/snaps-sdk/jsx';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -36,6 +37,28 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           // the string values directly, e.g. `type: 'native'`.
           type: NotificationType.Native,
           message: `Hello from the browser!`,
+        },
+      });
+
+    case 'inApp-expanded':
+      return await snap.request({
+        method: 'snap_notify',
+        params: {
+          type: NotificationType.InApp,
+          message: 'Hello from MetaMask, click here for an expanded view!',
+          title: 'Hello World!',
+          content: (
+            <Box>
+              <Row
+                label="From"
+                variant="warning"
+                tooltip="This address has been deemed dangerous."
+              >
+                <Address address="0x1234567890123456789012345678901234567890" />
+              </Row>
+            </Box>
+          ),
+          footerLink: { text: 'Go home', href: 'metamask://client/' },
         },
       });
 

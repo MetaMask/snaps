@@ -255,6 +255,14 @@ export const SnapResponseWithoutInterfaceStruct = object({
         enumValue(NotificationType.InApp),
         enumValue(NotificationType.Native),
       ]),
+      title: optional(string()),
+      content: optional(string()),
+      footerLink: optional(
+        object({
+          href: string(),
+          text: string(),
+        }),
+      ),
     }),
   ),
 });
