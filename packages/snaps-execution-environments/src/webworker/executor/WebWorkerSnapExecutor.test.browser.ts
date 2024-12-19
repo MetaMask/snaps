@@ -8,7 +8,6 @@ import {
   MockWindowPostMessageStream,
   spy,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest } from '@metamask/utils';
 
 import { WebWorkerSnapExecutor } from './WebWorkerSnapExecutor';
 
@@ -37,22 +36,6 @@ async function getResponse(
   return new Promise((resolve) => {
     stream.once('response', (data) => {
       resolve(data);
-    });
-  });
-}
-
-/**
- * Wait for a outbound request from the stream.
- *
- * @param stream - The stream to wait for a response on.
- * @returns The raw JSON-RPC response object.
- */
-async function getOutboundRequest(
-  stream: MockWindowPostMessageStream,
-): Promise<JsonRpcRequest> {
-  return new Promise((resolve) => {
-    stream.once('outbound', (data) => {
-      resolve(data.data);
     });
   });
 }
@@ -113,26 +96,6 @@ describe('WebWorkerSnapExecutor', () => {
         id: 2,
         method: 'executeSnap',
         params: [MOCK_SNAP_ID, CODE, []],
-      },
-    });
-
-    const outboundRequest = await getOutboundRequest(mockStream);
-    expect(outboundRequest.method).toBe('metamask_getProviderState');
-
-    writeMessage(mockStream, {
-      name: 'jsonRpc',
-      data: {
-        name: 'metamask-provider',
-        data: {
-          jsonrpc: '2.0',
-          id: outboundRequest.id,
-          result: {
-            isUnlocked: false,
-            accounts: [],
-            chainId: '0x1',
-            networkVersion: '1',
-          },
-        },
       },
     });
 
