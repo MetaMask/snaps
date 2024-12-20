@@ -33,6 +33,8 @@ JSON-RPC methods:
 - `getVersion`: Get the Ethereum network version from an Ethereum provider.
 - `getAccounts`: Get the Ethereum accounts made available to the snap from an
   Ethereum provider.
+- `personalSign`: Sign a message using an Ethereum account made available to the Snap.
+- `signTypedData`: Sign a struct using an Ethereum account made available to the Snap.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).

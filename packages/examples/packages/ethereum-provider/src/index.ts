@@ -5,7 +5,7 @@ import {
 import type { Hex } from '@metamask/utils';
 import { assert, stringToBytes, bytesToHex } from '@metamask/utils';
 
-import type { PersonalSignParams } from './types';
+import type { PersonalSignParams, SignTypedDataParams } from './types';
 
 /**
  * Get the current gas price using the `ethereum` global. This is essentially
@@ -92,12 +92,105 @@ async function personalSign(message: string, from: string) {
 }
 
 /**
+ * Sign a struct using the `eth_signTypedData_v4` JSON-RPC method.
+ *
+ * This uses the Ether Mail struct for example purposes.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @param message - The message include in Ether Mail a string.
+ * @param from - The account to sign the message with as a string.
+ * @returns A signature for the struct and account.
+ * @throws If the user rejects the prompt.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ * @see https://docs.metamask.io/wallet/concepts/signing-methods/#eth_signtypeddata_v4
+ */
+async function signTypedData(message: string, from: string) {
+  const signature = await ethereum.request<Hex>({
+    method: 'eth_signTypedData_v4',
+    params: [
+      from,
+      {
+        types: {
+          EIP712Domain: [
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'version',
+              type: 'string',
+            },
+            {
+              name: 'chainId',
+              type: 'uint256',
+            },
+            {
+              name: 'verifyingContract',
+              type: 'address',
+            },
+          ],
+          Person: [
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'wallet',
+              type: 'address',
+            },
+          ],
+          Mail: [
+            {
+              name: 'from',
+              type: 'Person',
+            },
+            {
+              name: 'to',
+              type: 'Person',
+            },
+            {
+              name: 'contents',
+              type: 'string',
+            },
+          ],
+        },
+        primaryType: 'Mail',
+        domain: {
+          name: 'Ether Mail',
+          version: '1',
+          chainId: 1,
+          verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        },
+        message: {
+          from: {
+            name: 'Snap',
+            wallet: from,
+          },
+          to: {
+            name: 'Bob',
+            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+          },
+          contents: message,
+        },
+      },
+    ],
+  });
+  assert(signature, 'Ethereum provider did not return a signature.');
+
+  return signature;
+}
+
+/**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles three methods:
+ * `wallet_invokeSnap` method. This handler handles five methods:
  *
  * - `getGasPrice`: Get the current Ethereum gas price as a hexadecimal string.
  * - `getVersion`: Get the current Ethereum network version as a string.
  * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
+ * - `personalSign`: Sign a message using an Ethereum account.
+ * - `signTypedData` Sign a struct using an Ethereum account.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -120,6 +213,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const params = request.params as PersonalSignParams;
       const accounts = await getAccounts();
       return await personalSign(params.message, accounts[0]);
+    }
+
+    case 'signTypedData': {
+      const params = request.params as SignTypedDataParams;
+      const accounts = await getAccounts();
+      return await signTypedData(params.message, accounts[0]);
     }
 
     default:

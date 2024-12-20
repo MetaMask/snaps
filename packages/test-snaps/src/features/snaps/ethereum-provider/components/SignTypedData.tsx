@@ -11,7 +11,7 @@ import {
   ETHEREUM_PROVIDER_SNAP_PORT,
 } from '../constants';
 
-export const SignMessage: FunctionComponent = () => {
+export const SignTypedData: FunctionComponent = () => {
   const [message, setMessage] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
@@ -24,7 +24,7 @@ export const SignMessage: FunctionComponent = () => {
 
     invokeSnap({
       snapId: getSnapId(ETHEREUM_PROVIDER_SNAP_ID, ETHEREUM_PROVIDER_SNAP_PORT),
-      method: 'personalSign',
+      method: 'signTypedData',
       params: {
         message,
       },
@@ -33,7 +33,7 @@ export const SignMessage: FunctionComponent = () => {
 
   return (
     <>
-      <h3 className="h5">Personal Sign</h3>
+      <h3 className="h5">Sign Typed Data</h3>
       <Form onSubmit={handleSubmit} className="mb-3">
         <Form.Label>Message</Form.Label>
         <Form.Control
@@ -41,16 +41,16 @@ export const SignMessage: FunctionComponent = () => {
           placeholder="Message"
           value={message}
           onChange={handleChange}
-          id="personalSignMessage"
+          id="signTypedData"
           className="mb-3"
         />
 
-        <Button type="submit" id="signPersonalSignMessage" disabled={isLoading}>
-          Sign Message
+        <Button type="submit" id="signTypedDataButton" disabled={isLoading}>
+          Sign Typed Data
         </Button>
       </Form>
-      <Result className="mb-3">
-        <span id="personalSignResult">
+      <Result>
+        <span id="signTypedDataResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
