@@ -374,6 +374,12 @@ export async function getDefaultConfiguration(
       minimize: config.output.minimize,
 
       /**
+       * We disable the nodeEnv optimization as we already add process.NODE_ENV
+       * via the DefinePlugin in the section above this.
+       */
+      nodeEnv: false,
+
+      /**
        * The minimizer to use. We set it to use the `TerserPlugin`.
        */
       minimizer: [
