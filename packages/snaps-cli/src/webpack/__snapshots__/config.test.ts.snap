@@ -84,6 +84,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -255,6 +256,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -426,6 +428,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -597,6 +600,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -767,6 +771,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -938,6 +943,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1109,6 +1115,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1280,6 +1287,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1459,6 +1467,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1623,6 +1632,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1794,6 +1804,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -1973,6 +1984,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -2152,6 +2164,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -2332,6 +2345,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -2503,6 +2517,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -2674,6 +2689,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -2854,6 +2870,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -3030,6 +3047,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -3187,6 +3205,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
@@ -3344,6 +3363,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         },
       },
     ],
+    "nodeEnv": false,
   },
   "output": {
     "chunkFormat": "commonjs",
