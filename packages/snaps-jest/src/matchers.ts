@@ -170,7 +170,7 @@ export const toSendNotification: MatcherFunction<
     expectedMessage: string,
     expectedType: EnumToUnion<NotificationType>,
     expectedTitle?: string | undefined,
-    expectedContent?: JSXElement,
+    expectedContent?: JSXElement | undefined,
     expectedFooterLink?: { text: string; href: string } | undefined,
   ]
 > = function (
