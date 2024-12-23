@@ -12,7 +12,7 @@ import type {
   NotificationType,
 } from '@metamask/snaps-sdk';
 import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
-import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
+import { isJSXElementUnsafe, JSXElementStruct } from '@metamask/snaps-sdk/jsx';
 import type { SnapInterface, SnapResponse } from '@metamask/snaps-simulation';
 import {
   InterfaceStruct,
@@ -35,8 +35,6 @@ import {
   printWithType,
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
-
-import { ElementStruct } from '../../snaps-sdk/src/jsx/validation';
 
 /**
  * Ensure that the actual value is a response from the `request` function.
@@ -258,7 +256,7 @@ export const toSendNotification: MatcherFunction<
       )}\n`;
 
       // We want to check if the expected content is actually JSX content, otherwise `serialiseJsx` won't return something useful.
-      if (is(expectedContent, ElementStruct)) {
+      if (is(expectedContent, JSXElementStruct)) {
         testMessage += `Expected content: ${this.utils.printExpected(
           serialiseJsx(expectedContent),
         )}\n`;
