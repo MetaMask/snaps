@@ -168,7 +168,7 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
 export const toSendNotification: MatcherFunction<
   [
     expectedMessage: string,
-    expectedType?: EnumToUnion<NotificationType> | undefined,
+    expectedType: EnumToUnion<NotificationType>,
     expectedTitle?: string | undefined,
     expectedContent?: JSXElement,
     expectedFooterLink?: { text: string; href: string } | undefined,
