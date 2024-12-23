@@ -195,7 +195,7 @@ export const toSendNotification: MatcherFunction<
   ) => {
     const { type, message, title, footerLink } = notification as Record<
       string,
-      any
+      unknown
     >;
 
     if (!this.equals(message, expectedMessage)) {
