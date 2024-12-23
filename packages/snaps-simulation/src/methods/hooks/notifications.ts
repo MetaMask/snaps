@@ -46,6 +46,14 @@ export function getShowNativeNotificationImplementation(
   };
 }
 
+type InAppNotificationParams = {
+  type: NotificationType;
+  message: string;
+  title?: string | undefined;
+  content?: string | undefined;
+  footerLink?: { text: string; href: string } | undefined;
+};
+
 /**
  * Show an in-app notification to the user.
  *
@@ -60,16 +68,7 @@ export function getShowNativeNotificationImplementation(
  */
 function* showInAppNotificationImplementation(
   _snapId: string,
-  {
-    message,
-    title,
-    content,
-    footerLink,
-  }: NotifyParams & {
-    title?: string;
-    content?: string;
-    footerLink?: { text: string; href: string };
-  },
+  { message, title, content, footerLink }: InAppNotificationParams,
 ): SagaIterator<null> {
   if (content) {
     yield put(setInterface({ type: 'Notification', id: content }));

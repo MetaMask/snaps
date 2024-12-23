@@ -43,8 +43,10 @@ interface SnapsMatchers {
    * `expect(response.notifications).toContainEqual({ message, type })`.
    *
    * @param message - The expected notification message.
-   * @param type - The expected notification type, i.e., 'inApp' or 'native'. If
-   * not provided, the type will be ignored.
+   * @param type - The expected notification type, i.e., 'inApp' or 'native'.
+   * @param title - The title of an expanded notification.
+   * @param content - The content of an expanded notification.
+   * @param footerLink - The footer link of an expanded notification (if it exists).
    * @throws If the snap did not send a notification with the expected message.
    * @example
    * const response = await request({ method: 'foo' });
@@ -52,7 +54,7 @@ interface SnapsMatchers {
    */
   toSendNotification(
     message: string,
-    type?: EnumToUnion<NotificationType>,
+    type: EnumToUnion<NotificationType>,
     title?: string,
     content?: JSXElement,
     footerLink?: { text: string; href: string },

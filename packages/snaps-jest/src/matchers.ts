@@ -193,7 +193,10 @@ export const toSendNotification: MatcherFunction<
   const notificationValidator = (
     notification: SnapResponse['notifications'][number],
   ) => {
-    const { type, message, title, footerLink } = notification;
+    const { type, message, title, footerLink } = notification as Record<
+      string,
+      any
+    >;
 
     if (!this.equals(message, expectedMessage)) {
       return false;
@@ -203,18 +206,16 @@ export const toSendNotification: MatcherFunction<
       return false;
     }
 
-    if (title) {
-      if (!this.equals(title, expectedTitle)) {
-        return false;
-      }
+    if (title && !this.equals(title, expectedTitle)) {
+      return false;
+    }
 
-      if (!this.equals(jsxContent, expectedContent)) {
-        return false;
-      }
+    if (jsxContent && !this.equals(jsxContent, expectedContent)) {
+      return false;
+    }
 
-      if (!this.equals(footerLink, expectedFooterLink)) {
-        return false;
-      }
+    if (footerLink && !this.equals(footerLink, expectedFooterLink)) {
+      return false;
     }
 
     return true;
@@ -248,21 +249,21 @@ export const toSendNotification: MatcherFunction<
 
     testMessage += `Expected type: ${this.utils.printExpected(expectedType)}\n`;
 
-    testMessage += title
-      ? `Expected title: ${this.utils.printExpected(expectedTitle)}\n`
-      : ``;
+    if (title) {
+      testMessage += `Expected title: ${this.utils.printExpected(
+        expectedTitle,
+      )}\n`;
 
-    testMessage += title
-      ? `Expected content: ${this.utils.printExpected(
-          serialiseJsx(expectedContent as SnapNode),
-        )}\n`
-      : ``;
+      testMessage += `Expected content: ${this.utils.printExpected(
+        serialiseJsx(expectedContent as SnapNode),
+      )}\n`;
+    }
 
-    testMessage += footerLink
-      ? `Expected footer link: ${this.utils.printExpected(
-          expectedFooterLink,
-        )}\n`
-      : ``;
+    if (footerLink) {
+      testMessage += `Expected footer link: ${this.utils.printExpected(
+        expectedFooterLink,
+      )}\n`;
+    }
 
     testMessage += `Received message: ${this.utils.printExpected(
       notifMessage,
@@ -270,17 +271,18 @@ export const toSendNotification: MatcherFunction<
 
     testMessage += `Received type: ${this.utils.printReceived(type)}\n`;
 
-    testMessage += title
-      ? `Received title: ${this.utils.printReceived(title)}\n`
-      : ``;
+    if (title) {
+      testMessage += `Received title: ${this.utils.printReceived(title)}\n`;
+      testMessage += `Received content: ${this.utils.printReceived(
+        serialiseJsx(content),
+      )}\n`;
+    }
 
-    testMessage += title
-      ? `Received content: ${this.utils.printReceived(serialiseJsx(content))}\n`
-      : ``;
-
-    testMessage += footerLink
-      ? `Expected footer link: ${this.utils.printReceived(footerLink)}\n`
-      : ``;
+    if (footerLink) {
+      testMessage += `Received footer link: ${this.utils.printReceived(
+        footerLink,
+      )}\n`;
+    }
 
     return testMessage;
   };

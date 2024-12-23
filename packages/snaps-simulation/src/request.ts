@@ -84,7 +84,7 @@ export function handleRequest({
     })
     .then(async (result) => {
       const notifications = getNotifications(store.getState());
-      const interfaceId = notifications[0].content;
+      const interfaceId = notifications[0]?.content;
       store.dispatch(clearNotifications());
 
       try {
@@ -174,13 +174,11 @@ export async function getInterfaceFromResult(
   }
 
   if (isPlainObject(result) && hasProperty(result, 'content')) {
-    if (typeof result.content === 'string') {
-      return result.content;
-    }
     assert(
       is(result.content, ComponentOrElementStruct),
       'The Snap returned an invalid interface.',
     );
+
     const id = await controllerMessenger.call(
       'SnapInterfaceController:createInterface',
       snapId,

@@ -30,26 +30,35 @@ describe('getShowNativeNotificationImplementation', () => {
 });
 
 describe('getShowInAppNotificationImplementation', () => {
-  it('returns the implementation of the `showInAppNotification` hook', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
-    const fn = getShowInAppNotificationImplementation(runSaga);
+  const baseRequest = {
+    title: undefined,
+    content: undefined,
+    footerLink: undefined,
+  };
 
-    expect(
-      await fn('snap-id', {
-        type: NotificationType.InApp,
-        message: 'message',
-      }),
-    ).toBeNull();
+  it.each([
+    { type: NotificationType.InApp, message: 'message' },
+    {
+      type: NotificationType.InApp,
+      content: 'abcd',
+      title: 'foo',
+      message: 'bar',
+    },
+  ])(
+    'returns the implementation of the `showInAppNotification` hook',
+    async (request) => {
+      const { store, runSaga } = createStore(getMockOptions());
+      const fn = getShowInAppNotificationImplementation(runSaga);
 
-    expect(store.getState().notifications.notifications).toStrictEqual([
-      {
-        id: expect.any(String),
-        type: NotificationType.InApp,
-        message: 'message',
-        content: undefined,
-        title: undefined,
-        footerLink: undefined,
-      },
-    ]);
-  });
+      expect(await fn('snap-id', request)).toBeNull();
+
+      expect(store.getState().notifications.notifications).toStrictEqual([
+        {
+          ...baseRequest,
+          ...request,
+          id: expect.any(String),
+        },
+      ]);
+    },
+  );
 });
