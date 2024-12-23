@@ -36,6 +36,8 @@ import {
   RECEIVED_COLOR,
 } from 'jest-matcher-utils';
 
+import { ElementStruct } from '../../snaps-sdk/src/jsx/validation';
+
 /**
  * Ensure that the actual value is a response from the `request` function.
  *
@@ -184,7 +186,7 @@ export const toSendNotification: MatcherFunction<
   assertActualIsSnapResponse(actual, 'toSendNotification');
 
   const { notifications } = actual;
-  let jsxContent: JSXElement;
+  let jsxContent: JSXElement | undefined;
 
   if (hasProperty(actual, 'getInterface')) {
     jsxContent = (actual.getInterface as () => SnapInterface)().content;
@@ -226,7 +228,8 @@ export const toSendNotification: MatcherFunction<
   const transformedNotifications = notifications.map((notification) => {
     return {
       ...notification,
-      content: serialiseJsx(jsxContent),
+      // Ok to cast here as the function returns if the param is falsy
+      content: serialiseJsx(jsxContent as SnapNode),
     };
   });
 
@@ -254,9 +257,16 @@ export const toSendNotification: MatcherFunction<
         expectedTitle,
       )}\n`;
 
-      testMessage += `Expected content: ${this.utils.printExpected(
-        serialiseJsx(expectedContent as SnapNode),
-      )}\n`;
+      // We want to check if the expected content is actually JSX content, otherwise `serialiseJsx` won't return something useful.
+      if (is(expectedContent, ElementStruct)) {
+        testMessage += `Expected content: ${this.utils.printExpected(
+          serialiseJsx(expectedContent),
+        )}\n`;
+      } else {
+        testMessage += `Expected content: ${this.utils.printExpected(
+          expectedContent,
+        )}\n`;
+      }
     }
 
     if (footerLink) {
