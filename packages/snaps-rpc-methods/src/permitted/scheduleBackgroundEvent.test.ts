@@ -120,6 +120,54 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
     });
 
+    it('schedules a background event using duration', async () => {
+      const { implementation } = scheduleBackgroundEventHandler;
+
+      const scheduleBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
+      const hooks = {
+        scheduleBackgroundEvent,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_scheduleBackgroundEvent',
+        params: {
+          date: 'PT30S',
+          request: {
+            method: 'handleExport',
+            params: ['p1'],
+          },
+        },
+      });
+
+      expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
+        date: expect.any(String),
+        request: {
+          method: 'handleExport',
+          params: ['p1'],
+        },
+      });
+    });
+
     it('throws if a snap does not have the "endowment:cronjob" permission', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 

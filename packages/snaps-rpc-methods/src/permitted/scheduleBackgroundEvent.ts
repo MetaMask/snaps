@@ -19,7 +19,7 @@ import {
   string,
 } from '@metamask/superstruct';
 import { assert, type PendingJsonRpcResponse } from '@metamask/utils';
-import { DateTime } from 'luxon';
+import { DateTime, Duration } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -58,11 +58,14 @@ const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
 const ScheduleBackgroundEventsParametersStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
+    const duration = Duration.fromISO(val);
     if (date.isValid) {
       // Luxon doesn't have a reliable way to check if timezone info was not provided
       if (!offsetRegex.test(val)) {
         return 'ISO 8601 string must have timezone information';
       }
+      return true;
+    } else if (duration.isValid) {
       return true;
     }
     return 'Not a valid ISO 8601 string';
@@ -109,12 +112,22 @@ async function getScheduleBackgroundEventImplementation(
 
     const { date, request } = validatedParams;
 
+    let truncatedDate;
+
+    const duration = Duration.fromISO(date);
+
+    // We have to check if the string is a duration or not
+    if (duration.isValid) {
+      truncatedDate = DateTime.fromJSDate(new Date()).toUTC().plus(duration);
+    } else {
+      truncatedDate = DateTime.fromISO(date, { setZone: true });
+    }
+
     // Make sure any millisecond precision is removed.
-    const truncatedDate = DateTime.fromISO(date, { setZone: true })
-      .startOf('second')
-      .toISO({
-        suppressMilliseconds: true,
-      });
+
+    truncatedDate = truncatedDate.startOf('second').toISO({
+      suppressMilliseconds: true,
+    });
 
     assert(truncatedDate);
 
