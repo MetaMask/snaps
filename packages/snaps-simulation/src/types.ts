@@ -419,6 +419,16 @@ export type Snap = {
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
+   * Run a background event in the snap. This is similar to {@link request}, but the
+   * request will be sent to the `onCronjob` method of the snap.
+   *
+   * @param backgroundEvent - The cronjob request. This is similar to a JSON-RPC
+   * request, and is normally specified as the `request` param in the `snap_scheduleBackgroundEvent` method.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  runBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
+
+  /**
    * Get the response from the snap's `onHomePage` method.
    *
    * @returns The response.

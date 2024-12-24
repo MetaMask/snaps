@@ -118,7 +118,6 @@ export type SnapHelpers = {
    * @param backgroundEvent - The background event request. This is similar to a JSON-RPC
    * request, and is normally specified in the `request` param of the `snap_scheduleBackgroundEvent` method.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
-   * @deprecated Use {@link onCronjob} instead.
    */
   runBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
 
