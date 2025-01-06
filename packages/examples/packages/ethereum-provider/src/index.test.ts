@@ -76,4 +76,48 @@ describe('onRpcRequest', () => {
       ]);
     });
   });
+
+  describe('personalSign', () => {
+    const MOCK_SIGNATURE =
+      '0x16f672a12220dc4d9e27671ef580cfc1397a9a4d5ee19eadea46c0f350b2f72a4922be7c1f16ed9b03ef1d3351eac469e33accf5a36194b1d88923701c2b163f1b';
+
+    it('returns a signature', async () => {
+      const { request, mockJsonRpc } = await installSnap();
+
+      // We can mock the signature request with the response we want.
+      mockJsonRpc({
+        method: 'personal_sign',
+        result: MOCK_SIGNATURE,
+      });
+
+      const response = await request({
+        method: 'personalSign',
+        params: { message: 'foo' },
+      });
+
+      expect(response).toRespondWith(MOCK_SIGNATURE);
+    });
+  });
+
+  describe('signTypedData', () => {
+    const MOCK_SIGNATURE =
+      '0x01b37713300d99fecf0274bcb0dfb586a23d56c4bf2ed700c5ecf4ada7a2a14825e7b1212b1cc49c9440c375337561f2b7a6e639ba25be6a6f5a16f60e6931d31c';
+
+    it('returns a signature', async () => {
+      const { request, mockJsonRpc } = await installSnap();
+
+      // We can mock the signature request with the response we want.
+      mockJsonRpc({
+        method: 'eth_signTypedData_v4',
+        result: MOCK_SIGNATURE,
+      });
+
+      const response = await request({
+        method: 'signTypedData',
+        params: { message: 'foo' },
+      });
+
+      expect(response).toRespondWith(MOCK_SIGNATURE);
+    });
+  });
 });

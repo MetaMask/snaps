@@ -751,6 +751,36 @@ describe('installSnap', () => {
     });
   });
 
+  describe('onBackgroundEvent', () => {
+    it('runs a cronjob and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onCronjob = async ({ request }) => {
+            return request.method;
+          };
+         `,
+      });
+
+      const { onBackgroundEvent, close } = await installSnap(snapId);
+      const response = await onBackgroundEvent({
+        method: 'foo',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'foo',
+          },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('getHomePage', () => {
     it('sends a OnHomePage request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
