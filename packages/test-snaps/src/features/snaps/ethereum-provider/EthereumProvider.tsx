@@ -5,7 +5,7 @@ import { Button, ButtonGroup } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
-import { SignMessage } from './components/SignMessage';
+import { SignMessage, SignTypedData } from './components';
 import {
   ETHEREUM_PROVIDER_SNAP_ID,
   ETHEREUM_PROVIDER_SNAP_PORT,
@@ -60,6 +60,7 @@ export const EthereumProvider: FunctionComponent = () => {
         </span>
       </Result>
       <SignMessage />
+      <SignTypedData />
     </Snap>
   );
 };
