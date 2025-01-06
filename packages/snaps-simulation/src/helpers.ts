@@ -112,6 +112,16 @@ export type SnapHelpers = {
   runCronjob(cronjob: CronjobOptions): SnapRequest;
 
   /**
+   * Run a background event in the snap. This is similar to {@link request}, but the
+   * request will be sent to the `onCronjob` method of the snap.
+   *
+   * @param backgroundEvent - The background event request. This is similar to a JSON-RPC
+   * request, and is normally specified in the `request` param of the `snap_scheduleBackgroundEvent` method.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  onBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
+
+  /**
    * Get the response from the snap's `onHomePage` method.
    *
    * @returns The response.
@@ -388,6 +398,7 @@ export function getHelpers({
 
     onCronjob,
     runCronjob: onCronjob,
+    onBackgroundEvent: onCronjob,
 
     onHomePage: async (): Promise<SnapResponseWithInterface> => {
       log('Rendering home page.');
