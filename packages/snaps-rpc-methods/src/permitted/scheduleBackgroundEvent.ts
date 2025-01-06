@@ -1,10 +1,11 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type {
-  JsonRpcRequest,
-  ScheduleBackgroundEventParams,
-  ScheduleBackgroundEventResult,
+import {
+  selectiveUnion,
+  type JsonRpcRequest,
+  type ScheduleBackgroundEventParams,
+  type ScheduleBackgroundEventResult,
 } from '@metamask/snaps-sdk';
 import type { CronjobRpcRequest } from '@metamask/snaps-utils';
 import {
@@ -18,7 +19,11 @@ import {
   refine,
   string,
 } from '@metamask/superstruct';
-import { assert, type PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  assert,
+  hasProperty,
+  type PendingJsonRpcResponse,
+} from '@metamask/utils';
 import { DateTime, Duration } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
@@ -55,26 +60,42 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
 };
 
 const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
-const ScheduleBackgroundEventsParametersStruct = object({
+
+const ScheduleBackgroundEventParametersWithDateStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
-    const duration = Duration.fromISO(val);
     if (date.isValid) {
       // Luxon doesn't have a reliable way to check if timezone info was not provided
       if (!offsetRegex.test(val)) {
-        return 'ISO 8601 string must have timezone information';
+        return 'ISO 8601 date must have timezone information';
       }
       return true;
-    } else if (duration.isValid) {
-      return true;
     }
-    return 'Not a valid ISO 8601 string';
+    return 'Not a valid ISO 8601 date';
   }),
   request: CronjobRpcRequestStruct,
 });
 
+const ScheduleBackgroundEventParametersWithDurationStruct = object({
+  duration: refine(string(), 'duration', (val) => {
+    const duration = Duration.fromISO(val);
+    if (!duration.isValid) {
+      return 'Not a valid ISO 8601 duration';
+    }
+    return true;
+  }),
+  request: CronjobRpcRequestStruct,
+});
+
+const ScheduleBackgroundEventParametersStruct = selectiveUnion((val) => {
+  if (hasProperty(val, 'date')) {
+    return ScheduleBackgroundEventParametersWithDateStruct;
+  }
+  return ScheduleBackgroundEventParametersWithDurationStruct;
+});
+
 export type ScheduleBackgroundEventParameters = InferMatching<
-  typeof ScheduleBackgroundEventsParametersStruct,
+  typeof ScheduleBackgroundEventParametersStruct,
   ScheduleBackgroundEventParams
 >;
 
@@ -110,17 +131,16 @@ async function getScheduleBackgroundEventImplementation(
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { date, request } = validatedParams;
+    const { request } = validatedParams;
 
     let truncatedDate;
 
-    const duration = Duration.fromISO(date);
-
-    // We have to check if the string is a duration or not
-    if (duration.isValid) {
-      truncatedDate = DateTime.fromJSDate(new Date()).toUTC().plus(duration);
+    if ('duration' in validatedParams) {
+      truncatedDate = DateTime.fromJSDate(new Date())
+        .toUTC()
+        .plus(Duration.fromISO(validatedParams.duration));
     } else {
-      truncatedDate = DateTime.fromISO(date, { setZone: true });
+      truncatedDate = DateTime.fromISO(validatedParams.date, { setZone: true });
     }
 
     // Make sure any millisecond precision is removed.
@@ -151,7 +171,7 @@ function getValidatedParams(
   params: unknown,
 ): ScheduleBackgroundEventParameters {
   try {
-    return create(params, ScheduleBackgroundEventsParametersStruct);
+    return create(params, ScheduleBackgroundEventParametersStruct);
   } catch (error) {
     if (error instanceof StructError) {
       throw rpcErrors.invalidParams({

@@ -151,7 +151,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         id: 1,
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          date: 'PT30S',
+          duration: 'PT30S',
           request: {
             method: 'handleExport',
             params: ['p1'],
@@ -165,6 +165,57 @@ describe('snap_scheduleBackgroundEvent', () => {
           method: 'handleExport',
           params: ['p1'],
         },
+      });
+    });
+
+    it('throws on an invalid duration', async () => {
+      const { implementation } = scheduleBackgroundEventHandler;
+
+      const scheduleBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
+      const hooks = {
+        scheduleBackgroundEvent,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_scheduleBackgroundEvent',
+        params: {
+          duration: 'PQ30S',
+          request: {
+            method: 'handleExport',
+            params: ['p1'],
+          },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: duration -- Not a valid ISO 8601 duration.',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
       });
     });
 
@@ -219,7 +270,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
     });
 
-    it('throws if no timezone information is provided in the ISO8601 string', async () => {
+    it('throws if no timezone information is provided in the ISO 8601 date', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
       const scheduleBackgroundEvent = jest.fn();
@@ -262,7 +313,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: date -- ISO 8601 string must have timezone information.',
+            'Invalid params: At path: date -- ISO 8601 date must have timezone information.',
           stack: expect.any(String),
         },
         id: 1,
@@ -313,7 +364,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: date -- Not a valid ISO 8601 string.',
+            'Invalid params: At path: date -- Not a valid ISO 8601 date.',
           stack: expect.any(String),
         },
         id: 1,
