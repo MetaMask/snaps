@@ -119,7 +119,7 @@ export type SnapHelpers = {
    * request, and is normally specified in the `request` param of the `snap_scheduleBackgroundEvent` method.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
-  runBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
+  onBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
 
   /**
    * Get the response from the snap's `onHomePage` method.
@@ -398,7 +398,7 @@ export function getHelpers({
 
     onCronjob,
     runCronjob: onCronjob,
-    runBackgroundEvent: onCronjob,
+    onBackgroundEvent: onCronjob,
 
     onHomePage: async (): Promise<SnapResponseWithInterface> => {
       log('Rendering home page.');

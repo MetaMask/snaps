@@ -525,7 +525,7 @@ describe('helpers', () => {
     });
   });
 
-  describe('runBackgroundEvent', () => {
+  describe('onBackgroundEvent', () => {
     it('runs a cronjob and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
@@ -537,8 +537,8 @@ describe('helpers', () => {
          `,
       });
 
-      const { runBackgroundEvent, close } = await installSnap(snapId);
-      const response = await runBackgroundEvent({
+      const { onBackgroundEvent, close } = await installSnap(snapId);
+      const response = await onBackgroundEvent({
         method: 'foo',
       });
 

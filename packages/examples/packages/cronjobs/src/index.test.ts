@@ -32,11 +32,11 @@ describe('onCronjob', () => {
 
   describe('fireNotification', () => {
     it('shows an inApp notification', async () => {
-      const { runBackgroundEvent } = await installSnap();
+      const { onBackgroundEvent } = await installSnap();
 
-      const response = await runBackgroundEvent({
+      const response = await onBackgroundEvent({
         // This would normally be called by the MetaMask extension, but to make
-        // this testable, `@metamask/snaps-jest` exposes a `runBackgroundEvent` method.
+        // this testable, `@metamask/snaps-jest` exposes a `onBackgroundEvent` method.
         method: 'fireNotification',
       });
 

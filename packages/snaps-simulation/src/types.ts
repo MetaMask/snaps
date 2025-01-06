@@ -426,7 +426,7 @@ export type Snap = {
    * request, and is normally specified as the `request` param in the `snap_scheduleBackgroundEvent` method.
    * @returns The response promise, with extra {@link SnapRequestObject} fields.
    */
-  runBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
+  onBackgroundEvent(backgroundEvent: CronjobOptions): SnapRequest;
 
   /**
    * Get the response from the snap's `onHomePage` method.
