@@ -1,10 +1,11 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type {
-  JsonRpcRequest,
-  ScheduleBackgroundEventParams,
-  ScheduleBackgroundEventResult,
+import {
+  selectiveUnion,
+  type JsonRpcRequest,
+  type ScheduleBackgroundEventParams,
+  type ScheduleBackgroundEventResult,
 } from '@metamask/snaps-sdk';
 import type { CronjobRpcRequest } from '@metamask/snaps-utils';
 import {
@@ -18,8 +19,12 @@ import {
   refine,
   string,
 } from '@metamask/superstruct';
-import { assert, type PendingJsonRpcResponse } from '@metamask/utils';
-import { DateTime } from 'luxon';
+import {
+  assert,
+  hasProperty,
+  type PendingJsonRpcResponse,
+} from '@metamask/utils';
+import { DateTime, Duration } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -55,25 +60,60 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
 };
 
 const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
-const ScheduleBackgroundEventsParametersStruct = object({
+
+const ScheduleBackgroundEventParametersWithDateStruct = object({
   date: refine(string(), 'date', (val) => {
     const date = DateTime.fromISO(val);
     if (date.isValid) {
       // Luxon doesn't have a reliable way to check if timezone info was not provided
       if (!offsetRegex.test(val)) {
-        return 'ISO 8601 string must have timezone information';
+        return 'ISO 8601 date must have timezone information';
       }
       return true;
     }
-    return 'Not a valid ISO 8601 string';
+    return 'Not a valid ISO 8601 date';
   }),
   request: CronjobRpcRequestStruct,
 });
 
+const ScheduleBackgroundEventParametersWithDurationStruct = object({
+  duration: refine(string(), 'duration', (val) => {
+    const duration = Duration.fromISO(val);
+    if (!duration.isValid) {
+      return 'Not a valid ISO 8601 duration';
+    }
+    return true;
+  }),
+  request: CronjobRpcRequestStruct,
+});
+
+const ScheduleBackgroundEventParametersStruct = selectiveUnion((val) => {
+  if (hasProperty(val, 'date')) {
+    return ScheduleBackgroundEventParametersWithDateStruct;
+  }
+  return ScheduleBackgroundEventParametersWithDurationStruct;
+});
+
 export type ScheduleBackgroundEventParameters = InferMatching<
-  typeof ScheduleBackgroundEventsParametersStruct,
+  typeof ScheduleBackgroundEventParametersStruct,
   ScheduleBackgroundEventParams
 >;
+
+/**
+ * Generates a `DateTime` object based on if a duration or date is provided.
+ *
+ * @param params - The validated params from the `snap_scheduleBackgroundEvent` call.
+ * @returns A `DateTime` object.
+ */
+function getStartDate(params: ScheduleBackgroundEventParams) {
+  if ('duration' in params) {
+    return DateTime.fromJSDate(new Date())
+      .toUTC()
+      .plus(Duration.fromISO(params.duration));
+  }
+
+  return DateTime.fromISO(params.date, { setZone: true });
+}
 
 /**
  * The `snap_scheduleBackgroundEvent` method implementation.
@@ -107,14 +147,14 @@ async function getScheduleBackgroundEventImplementation(
   try {
     const validatedParams = getValidatedParams(params);
 
-    const { date, request } = validatedParams;
+    const { request } = validatedParams;
+
+    const date = getStartDate(validatedParams);
 
     // Make sure any millisecond precision is removed.
-    const truncatedDate = DateTime.fromISO(date, { setZone: true })
-      .startOf('second')
-      .toISO({
-        suppressMilliseconds: true,
-      });
+    const truncatedDate = date.startOf('second').toISO({
+      suppressMilliseconds: true,
+    });
 
     assert(truncatedDate);
 
@@ -138,7 +178,7 @@ function getValidatedParams(
   params: unknown,
 ): ScheduleBackgroundEventParameters {
   try {
-    return create(params, ScheduleBackgroundEventsParametersStruct);
+    return create(params, ScheduleBackgroundEventParametersStruct);
   } catch (error) {
     if (error instanceof StructError) {
       throw rpcErrors.invalidParams({
