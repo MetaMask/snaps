@@ -1,5 +1,6 @@
 import type { Infer } from '@metamask/superstruct';
 import {
+  boolean,
   create,
   defaulted,
   nullable,
@@ -21,6 +22,7 @@ const SimulationOptionsStruct = object({
     optional(nullable(record(string(), JsonStruct))),
     null,
   ),
+  hideBalances: defaulted(optional(boolean()), false),
 });
 
 /**

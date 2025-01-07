@@ -10,4 +10,8 @@ export type GetPreferencesParams = never;
  *
  * It is the user selected preferences from the MetaMask extension.
  */
-export type GetPreferencesResult = { locale: string; currency: string };
+export type GetPreferencesResult = {
+  locale: string;
+  currency: string;
+  hideBalances: boolean;
+};
