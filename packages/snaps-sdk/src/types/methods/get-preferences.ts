@@ -8,7 +8,7 @@ export type GetPreferencesParams = never;
 /**
  * The result returned by the `snap_getPreferences` method.
  *
- * It is the user selected preferences from the MetaMask extension.
+ * It is the user selected preferences from the MetaMask client.
  *
  * @property locale - The user's selected locale.
  * @property currency - The user's selected currency.
