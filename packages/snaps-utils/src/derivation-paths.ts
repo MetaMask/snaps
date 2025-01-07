@@ -180,6 +180,11 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     curve: 'ed25519',
     name: 'Kadena',
   },
+  {
+    path: ['m', `44'`, `632'`],
+    curve: 'ed25519',
+    name: 'Massa',
+  },
 ];
 
 /**
