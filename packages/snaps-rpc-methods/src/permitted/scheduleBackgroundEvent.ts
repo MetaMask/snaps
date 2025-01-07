@@ -100,26 +100,19 @@ export type ScheduleBackgroundEventParameters = InferMatching<
 >;
 
 /**
- * Generates an ISO 8601 date based on if a duration or date is provided.
+ * Generates a `DateTime` object based on if a duration or date is provided.
  *
  * @param params - The validated params from the `snap_scheduleBackgroundEvent` call.
- * @returns An ISO 8601 date string.
+ * @returns A `DateTime` object.
  */
-function getTruncatedDate(params: ScheduleBackgroundEventParams) {
-  let date;
-
+function getStartDate(params: ScheduleBackgroundEventParams) {
   if ('duration' in params) {
-    date = DateTime.fromJSDate(new Date())
+    return DateTime.fromJSDate(new Date())
       .toUTC()
       .plus(Duration.fromISO(params.duration));
-  } else {
-    date = DateTime.fromISO(params.date, { setZone: true });
   }
 
-  // Make sure any millisecond precision is removed.
-  return date.startOf('second').toISO({
-    suppressMilliseconds: true,
-  });
+  return DateTime.fromISO(params.date, { setZone: true });
 }
 
 /**
@@ -156,11 +149,16 @@ async function getScheduleBackgroundEventImplementation(
 
     const { request } = validatedParams;
 
-    const date = getTruncatedDate(validatedParams);
+    const date = getStartDate(validatedParams);
 
-    assert(date);
+    // Make sure any millisecond precision is removed.
+    const truncatedDate = date.startOf('second').toISO({
+      suppressMilliseconds: true,
+    });
 
-    const id = scheduleBackgroundEvent({ date, request });
+    assert(truncatedDate);
+
+    const id = scheduleBackgroundEvent({ date: truncatedDate, request });
     res.result = id;
   } catch (error) {
     return end(error);
