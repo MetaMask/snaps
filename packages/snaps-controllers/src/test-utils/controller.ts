@@ -1,4 +1,8 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
+import type {
+  ControllerMessenger,
+  RestrictedControllerMessenger,
+} from '@metamask/base-controller';
 import {
   encryptWithKey,
   decryptWithKey,
@@ -48,16 +52,17 @@ import type {
   SnapInterfaceControllerEvents,
   StoredInterface,
 } from '../interface/SnapInterfaceController';
+import { SnapController } from '../snaps';
 import type {
   AllowedActions,
   AllowedEvents,
   PersistedSnapControllerState,
   SnapControllerActions,
   SnapControllerEvents,
+  SnapControllerStateChangeEvent,
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
-import { SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
@@ -830,3 +835,27 @@ export const getRestrictedSnapInsightsControllerMessenger = (
 
   return controllerMessenger;
 };
+
+/**
+ * Wait for the state change event to be emitted by the messenger.
+ *
+ * @param messenger - The messenger to listen to.
+ * @returns A promise that resolves when the state change event is emitted.
+ */
+export async function waitForStateChange(
+  messenger:
+    | ControllerMessenger<any, SnapControllerStateChangeEvent>
+    | RestrictedControllerMessenger<
+        'SnapController',
+        any,
+        SnapControllerStateChangeEvent,
+        any,
+        'SnapController:stateChange'
+      >,
+) {
+  return new Promise<void>((resolve) => {
+    messenger.subscribe('SnapController:stateChange', () => {
+      resolve();
+    });
+  });
+}

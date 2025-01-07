@@ -65,6 +65,7 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
+  withMutex,
   logWarning,
   getPlatformVersion,
   assertIsSnapManifest,
@@ -252,6 +253,16 @@ export interface SnapRuntimeData {
    * A boolean flag to determine whether the Snap is currently being stopped.
    */
   stopping: boolean;
+
+  /**
+   * Cached encrypted state of the Snap.
+   */
+  state: Record<string, Json> | null;
+
+  /**
+   * Cached unencrypted state of the Snap.
+   */
+  unencryptedState: Record<string, Json> | null;
 }
 
 export type SnapError = {
@@ -906,6 +917,7 @@ export class SnapController extends BaseController<
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
+
     this.#pollForLastRequestStatus();
 
     /* eslint-disable @typescript-eslint/unbound-method */
@@ -1861,6 +1873,68 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Get the new Snap state to persist based on the given state and encryption
+   * flag.
+   *
+   * - If the state is null, return null.
+   * - If the state should not be encrypted, return the JSON stringified state.
+   * - Otherwise if the state should be encrypted, return the encrypted state.
+   *
+   * @param snapId - The Snap ID.
+   * @param state - The state to persist.
+   * @param encrypted - A flag to indicate whether to use encrypted storage or
+   * not.
+   * @returns The state to persist.
+   */
+  async #getStateToPersist(
+    snapId: SnapId,
+    state: Record<string, Json> | null,
+    encrypted: boolean,
+  ) {
+    if (state === null) {
+      return null;
+    }
+
+    if (encrypted) {
+      return await this.#encryptSnapState(snapId, state);
+    }
+
+    return JSON.stringify(state);
+  }
+
+  /**
+   * Persist the state of a Snap.
+   *
+   * @param snapId - The Snap ID.
+   * @param newSnapState - The new state of the Snap.
+   * @param encrypted - A flag to indicate whether to use encrypted storage or
+   * not.
+   */
+  #persistSnapState = withMutex(
+    async (
+      snapId: SnapId,
+      newSnapState: Record<string, Json> | null,
+      encrypted: boolean,
+    ) => {
+      const newState = await this.#getStateToPersist(
+        snapId,
+        newSnapState,
+        encrypted,
+      );
+
+      if (encrypted) {
+        return this.update((state) => {
+          state.snapStates[snapId] = newState;
+        });
+      }
+
+      return this.update((state) => {
+        state.unencryptedSnapStates[snapId] = newState;
+      });
+    },
+  );
+
+  /**
    * Updates the own state of the snap with the given id.
    * This is distinct from the state MetaMask uses to manage snaps.
    *
@@ -1873,17 +1947,19 @@ export class SnapController extends BaseController<
     newSnapState: Record<string, Json>,
     encrypted: boolean,
   ) {
-    if (encrypted) {
-      const encryptedState = await this.#encryptSnapState(snapId, newSnapState);
+    const runtime = this.#getRuntimeExpect(snapId);
 
-      this.update((state) => {
-        state.snapStates[snapId] = encryptedState;
-      });
+    if (encrypted) {
+      runtime.state = newSnapState;
     } else {
-      this.update((state) => {
-        state.unencryptedSnapStates[snapId] = JSON.stringify(newSnapState);
-      });
+      runtime.unencryptedState = newSnapState;
     }
+
+    // This is intentionally run asynchronously to avoid blocking the main
+    // thread.
+    this.#persistSnapState(snapId, newSnapState, encrypted).catch((error) => {
+      logError(error);
+    });
   }
 
   /**
@@ -1894,12 +1970,17 @@ export class SnapController extends BaseController<
    * @param encrypted - A flag to indicate whether to use encrypted storage or not.
    */
   clearSnapState(snapId: SnapId, encrypted: boolean) {
-    this.update((state) => {
-      if (encrypted) {
-        state.snapStates[snapId] = null;
-      } else {
-        state.unencryptedSnapStates[snapId] = null;
-      }
+    const runtime = this.#getRuntimeExpect(snapId);
+    if (encrypted) {
+      runtime.state = null;
+    } else {
+      runtime.unencryptedState = null;
+    }
+
+    // This is intentionally run asynchronously to avoid blocking the main
+    // thread.
+    this.#persistSnapState(snapId, null, encrypted).catch((error) => {
+      logError(error);
     });
   }
 
@@ -1912,6 +1993,13 @@ export class SnapController extends BaseController<
    * @returns The requested snap state or null if no state exists.
    */
   async getSnapState(snapId: SnapId, encrypted: boolean): Promise<Json> {
+    const runtime = this.#getRuntimeExpect(snapId);
+    const cachedState = encrypted ? runtime.state : runtime.unencryptedState;
+
+    if (cachedState !== undefined) {
+      return cachedState;
+    }
+
     const state = encrypted
       ? this.state.snapStates[snapId]
       : this.state.unencryptedSnapStates[snapId];
@@ -1921,11 +2009,17 @@ export class SnapController extends BaseController<
     }
 
     if (!encrypted) {
-      // For performance reasons, we do not validate that the state is JSON, since we control serialization.
-      return JSON.parse(state);
+      // For performance reasons, we do not validate that the state is JSON,
+      // since we control serialization.
+      const json = JSON.parse(state);
+      runtime.unencryptedState = json;
+
+      return json;
     }
 
     const decrypted = await this.#decryptSnapState(snapId, state);
+    runtime.state = decrypted;
+
     return decrypted;
   }
 
@@ -3706,6 +3800,8 @@ export class SnapController extends BaseController<
       pendingOutboundRequests: 0,
       interpreter,
       stopping: false,
+      state: undefined,
+      unencryptedState: undefined,
     });
   }
 

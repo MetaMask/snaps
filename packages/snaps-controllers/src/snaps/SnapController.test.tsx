@@ -97,6 +97,7 @@ import {
   MOCK_WALLET_SNAP_PERMISSION,
   MockSnapsRegistry,
   sleep,
+  waitForStateChange,
 } from '../test-utils';
 import { delay } from '../utils';
 import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
@@ -8801,6 +8802,7 @@ describe('SnapController', () => {
       );
 
       const newState = { myVariable: 2 };
+      const promise = waitForStateChange(messenger);
 
       await messenger.call(
         'SnapController:updateSnapState',
@@ -8817,6 +8819,8 @@ describe('SnapController', () => {
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
 
+      await promise;
+
       const result = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
@@ -8831,7 +8835,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('different snaps use different encryption keys', async () => {
+    it('uses different encryption keys for different snaps', async () => {
       const messenger = getSnapControllerMessenger();
 
       const state = { foo: 'bar' };
@@ -8857,12 +8861,16 @@ describe('SnapController', () => {
         true,
       );
 
+      const promise = waitForStateChange(messenger);
+
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_LOCAL_SNAP_ID,
         state,
         true,
       );
+
+      await promise;
 
       const encryptedState1 = await encrypt(
         ENCRYPTION_KEY,
@@ -9073,12 +9081,16 @@ describe('SnapController', () => {
         undefined,
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
+
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
         true,
       );
+
+      await promise;
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
@@ -9137,12 +9149,16 @@ describe('SnapController', () => {
       );
 
       const state = { foo: 'bar' };
+
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
         true,
       );
+
+      await promise;
 
       expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
 
