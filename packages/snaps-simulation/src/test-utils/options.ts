@@ -10,11 +10,13 @@ import type { SimulationOptions } from '../options';
  * @param options.secretRecoveryPhrase - The secret recovery phrase to use.
  * @param options.state - The state to use.
  * @param options.unencryptedState - The unencrypted state to use.
+ * @param options.hideBalances - Whether to hide balances.
  * @returns The options for the simulation.
  */
 export function getMockOptions({
   currency = 'usd',
   locale = 'en',
+  hideBalances = false,
   secretRecoveryPhrase = DEFAULT_SRP,
   state = null,
   unencryptedState = null,
@@ -25,5 +27,6 @@ export function getMockOptions({
     secretRecoveryPhrase,
     state,
     unencryptedState,
+    hideBalances,
   };
 }
