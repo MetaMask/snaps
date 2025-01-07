@@ -7,6 +7,7 @@ describe('getOptions', () => {
     expect(options).toMatchInlineSnapshot(`
       {
         "currency": "usd",
+        "hideBalances": false,
         "locale": "en",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,
@@ -24,6 +25,7 @@ describe('getOptions', () => {
     expect(options).toMatchInlineSnapshot(`
       {
         "currency": "eur",
+        "hideBalances": false,
         "locale": "nl",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
         "state": null,
