@@ -257,12 +257,12 @@ export interface SnapRuntimeData {
   /**
    * Cached encrypted state of the Snap.
    */
-  state: Record<string, Json> | null;
+  state?: Record<string, Json> | null;
 
   /**
    * Cached unencrypted state of the Snap.
    */
-  unencryptedState: Record<string, Json> | null;
+  unencryptedState?: Record<string, Json> | null;
 }
 
 export type SnapError = {
@@ -3800,8 +3800,6 @@ export class SnapController extends BaseController<
       pendingOutboundRequests: 0,
       interpreter,
       stopping: false,
-      state: undefined,
-      unencryptedState: undefined,
     });
   }
 
