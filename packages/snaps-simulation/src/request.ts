@@ -213,7 +213,7 @@ export async function getInterfaceApi(
     controllerMessenger,
   );
 
-  const id = interfaceId || contentId;
+  const id = interfaceId ?? contentId;
 
   if (id) {
     return () => {

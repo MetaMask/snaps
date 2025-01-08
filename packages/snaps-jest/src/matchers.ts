@@ -13,7 +13,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe, JSXElementStruct } from '@metamask/snaps-sdk/jsx';
-import type { SnapInterface, SnapResponse } from '@metamask/snaps-simulation';
+import type { SnapResponse } from '@metamask/snaps-simulation';
 import {
   InterfaceStruct,
   SnapResponseStruct,
@@ -186,8 +186,8 @@ export const toSendNotification: MatcherFunction<
   const { notifications } = actual;
   let jsxContent: JSXElement | undefined;
 
-  if (hasProperty(actual, 'getInterface')) {
-    jsxContent = (actual.getInterface as () => SnapInterface)().content;
+  if ('getInterface' in actual) {
+    jsxContent = actual.getInterface().content;
   }
 
   const notificationValidator = (

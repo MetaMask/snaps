@@ -386,7 +386,7 @@ describe('getInterfaceResponse', () => {
     });
   });
 
-  it('returns the interface actions and content for a Notification', () => {
+  it('returns the interface actions and content for a notification', () => {
     const { runSaga } = createStore(getMockOptions());
     const response = getInterfaceResponse(
       runSaga,
