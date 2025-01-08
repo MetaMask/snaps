@@ -1325,12 +1325,15 @@ describe('SpinnerStruct', () => {
 });
 
 describe('ValueStruct', () => {
-  it.each([<Value extra="foo" value="bar" />])(
-    'validates a value element',
-    (value) => {
-      expect(is(value, ValueStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Value extra="foo" value="bar" />,
+    <Value
+      value={<Text color="error">0.05 ETH</Text>}
+      extra={<Text color="error">$200</Text>}
+    />,
+  ])('validates a value element', (value) => {
+    expect(is(value, ValueStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
@@ -1343,6 +1346,10 @@ describe('ValueStruct', () => {
     <Value />,
     // @ts-expect-error - Invalid props.
     <Value left="foo" />,
+    <Value
+      value={<Heading>0.05 ETH</Heading>}
+      extra={<Heading>$200</Heading>}
+    />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
