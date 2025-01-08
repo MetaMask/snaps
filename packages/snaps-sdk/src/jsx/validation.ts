@@ -668,14 +668,6 @@ export const CopyableStruct: Describe<CopyableElement> = element('Copyable', {
 export const DividerStruct: Describe<DividerElement> = element('Divider');
 
 /**
- * A struct for the {@link ValueElement} type.
- */
-export const ValueStruct: Describe<ValueElement> = element('Value', {
-  value: string(),
-  extra: string(),
-});
-
-/**
  * A struct for the {@link HeadingElement} type.
  */
 export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
@@ -726,6 +718,26 @@ export const TextStruct: Describe<TextElement> = element('Text', {
   fontWeight: optional(
     nullUnion([literal('regular'), literal('medium'), literal('bold')]),
   ),
+});
+
+/**
+ * A struct for the {@link ValueElement} type.
+ */
+export const ValueStruct: Describe<ValueElement> = element('Value', {
+  value: selectiveUnion((value) => {
+    if (typeof value === 'string') {
+      return string();
+    }
+
+    return TextStruct;
+  }),
+  extra: selectiveUnion((value) => {
+    if (typeof value === 'string') {
+      return string();
+    }
+
+    return TextStruct;
+  }),
 });
 
 /**
