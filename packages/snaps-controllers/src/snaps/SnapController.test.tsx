@@ -60,6 +60,7 @@ import {
   AssertionError,
   base64ToBytes,
   stringToBytes,
+  createDeferredPromise,
 } from '@metamask/utils';
 import { File } from 'buffer';
 import { webcrypto } from 'crypto';
@@ -78,6 +79,7 @@ import {
   getNodeEESMessenger,
   getPersistedSnapsState,
   getSnapController,
+  getSnapControllerEncryptor,
   getSnapControllerMessenger,
   getSnapControllerOptions,
   getSnapControllerWithEES,
@@ -9164,6 +9166,40 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('logs an error message if the state fails to persist', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const errorValue = new Error('Failed to persist state.');
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          // @ts-expect-error - Missing required properties.
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            encryptWithKey: jest.fn().mockRejectedValue(errorValue),
+          },
+        }),
+      );
+
+      const { promise, resolve } = createDeferredPromise();
+      const error = jest.spyOn(console, 'error').mockImplementation(resolve);
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'bar' },
+        true,
+      );
+
+      await promise;
+      expect(error).toHaveBeenCalledWith(errorValue);
+
+      snapController.destroy();
+    });
   });
 
   describe('SnapController:clearSnapState', () => {
@@ -9219,6 +9255,41 @@ describe('SnapController', () => {
         false,
       );
       expect(clearedState).toBeNull();
+
+      snapController.destroy();
+    });
+
+    it('logs an error message if the state fails to persist', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const errorValue = new Error('Failed to persist state.');
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          // @ts-expect-error - Missing required properties.
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            encryptWithKey: jest.fn().mockRejectedValue(errorValue),
+          },
+        }),
+      );
+
+      const { promise, resolve } = createDeferredPromise();
+      const error = jest.spyOn(console, 'error').mockImplementation(resolve);
+
+      // @ts-expect-error - Property `update` is protected.
+      // eslint-disable-next-line jest/prefer-spy-on
+      snapController.update = jest.fn().mockImplementation(() => {
+        throw errorValue;
+      });
+
+      await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
+
+      await promise;
+      expect(error).toHaveBeenCalledWith(errorValue);
 
       snapController.destroy();
     });
