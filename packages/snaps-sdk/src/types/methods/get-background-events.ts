@@ -5,6 +5,8 @@ import type { SnapId } from '../snap';
 /**
  * Background event type
  *
+ * Note: The date generated when scheduling an event with a duration will be represented in UTC.
+ *
  * @property id - The unique id representing the event.
  * @property scheduledAt - The ISO 8601 time stamp of when the event was scheduled.
  * @property snapId - The id of the snap that scheduled the event.

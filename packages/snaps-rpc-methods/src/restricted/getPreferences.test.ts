@@ -26,9 +26,11 @@ describe('snap_getPreferences', () => {
   describe('getImplementation', () => {
     it('returns the preferences', async () => {
       const methodHooks = {
-        getPreferences: jest
-          .fn()
-          .mockReturnValue({ locale: 'en', currency: 'usd' }),
+        getPreferences: jest.fn().mockReturnValue({
+          locale: 'en',
+          currency: 'usd',
+          hideBalances: false,
+        }),
       };
 
       const implementation = getImplementation(methodHooks);
@@ -40,7 +42,7 @@ describe('snap_getPreferences', () => {
           },
           method: 'snap_getPreferences',
         }),
-      ).toStrictEqual({ locale: 'en', currency: 'usd' });
+      ).toStrictEqual({ locale: 'en', currency: 'usd', hideBalances: false });
     });
   });
 });

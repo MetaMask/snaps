@@ -37,6 +37,7 @@
     "test:clean": "yarn workspaces foreach --all --parallel --verbose run test:clean",
     "test:verbose": "yarn workspaces foreach --all --parallel --verbose run test:verbose",
     "test:watch": "yarn workspaces foreach --all --parallel --verbose run test:watch",
+    "update-chrome": "./scripts/update-chrome.sh",
     "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
@@ -88,7 +89,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",
     "@yarnpkg/types": "^4.0.0",
-    "chromedriver": "^129.0.2",
+    "chromedriver": "^131.0.5",
     "depcheck": "^1.4.7",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",

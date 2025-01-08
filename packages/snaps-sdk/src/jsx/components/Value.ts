@@ -1,4 +1,5 @@
 import { createSnapComponent } from '../component';
+import type { TextElement } from './Text';
 
 /**
  * The props of the {@link Value} component.
@@ -7,8 +8,8 @@ import { createSnapComponent } from '../component';
  * @property extra - The extra text shown on the left side.
  */
 export type ValueProps = {
-  value: string;
-  extra: string;
+  value: TextElement | string;
+  extra: TextElement | string;
 };
 
 const TYPE = 'Value';
@@ -26,6 +27,8 @@ const TYPE = 'Value';
  * @returns A value element.
  * @example
  * <Value value="0.05 ETH" extra="$200" />
+ * @example
+ * <Value value={<Text color='error'>0.05 ETH</Text>} extra={<Text color='error'>$200</Text>} />
  */
 export const Value = createSnapComponent<ValueProps, typeof TYPE>(TYPE);
 
