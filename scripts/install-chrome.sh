@@ -4,7 +4,7 @@ set -e
 set -u
 set -o pipefail
 
-# To get the latest version, see <https://www.ubuntuupdates.org/ppa/google_chrome?dist=stable>
+# To get the latest version, run `yarn update-chrome`
 CHROME_VERSION='131.0.6778.264-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"

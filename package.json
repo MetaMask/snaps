@@ -37,6 +37,7 @@
     "test:clean": "yarn workspaces foreach --all --parallel --verbose run test:clean",
     "test:verbose": "yarn workspaces foreach --all --parallel --verbose run test:verbose",
     "test:watch": "yarn workspaces foreach --all --parallel --verbose run test:watch",
+    "update-chrome": "./scripts/update-chrome.sh",
     "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
