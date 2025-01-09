@@ -41,7 +41,7 @@
     "update-readme-content": "tsx ./scripts/update-readme-content.mts"
   },
   "simple-git-hooks": {
-    "pre-commit": "yarn lint-staged && yarn dedupe --check && yarn update-readme-content"
+    "pre-commit": "yarn lint-staged && yarn update-readme-content"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
@@ -49,6 +49,9 @@
     ],
     "!(CHANGELOG).{json,yml,md}": [
       "prettier --write"
+    ],
+    "yarn.lock": [
+      "yarn dedupe"
     ]
   },
   "resolutions": {
