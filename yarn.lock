@@ -4462,15 +4462,15 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-block-tracker@npm:^11.0.1":
-  version: 11.0.1
-  resolution: "@metamask/eth-block-tracker@npm:11.0.1"
+  version: 11.0.4
+  resolution: "@metamask/eth-block-tracker@npm:11.0.4"
   dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^4.1.1"
+    "@metamask/eth-json-rpc-provider": "npm:^4.1.5"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
-    "@metamask/utils": "npm:^9.1.0"
+    "@metamask/utils": "npm:^11.0.1"
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^5.0.0"
-  checksum: 10/6a5143dcd20ea87cd674efb25870275d97d4ffe921e843391a5b85876ebe074e5a587a128c268d27520904c74c9feecf91218ea086bd65cc6096f8501bdf8f32
+  checksum: 10/56b60255a3ae23a378570a49c30d0c13bd74094c0509a978cad20ef57079c80bae91fd35749acb9ac5feef2922eec45a6fef8c0ee6e754cbf3722f8e5d0d771e
   languageName: node
   linkType: hard
 
@@ -4493,7 +4493,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^4.1.1, @metamask/eth-json-rpc-provider@npm:^4.1.5":
+"@metamask/eth-json-rpc-provider@npm:^4.1.5":
   version: 4.1.6
   resolution: "@metamask/eth-json-rpc-provider@npm:4.1.6"
   dependencies:
