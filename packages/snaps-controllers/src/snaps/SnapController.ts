@@ -9,7 +9,6 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { CryptographicFunctions } from '@metamask/key-tree';
-import type { KeyringControllerLockEvent } from '@metamask/keyring-controller';
 import type {
   Caveat,
   GetEndowments,
@@ -564,6 +563,11 @@ export type SnapControllerStateChangeEvent = ControllerStateChangeEvent<
   SnapControllerState
 >;
 
+type KeyringControllerLock = {
+  type: 'KeyringController:lock';
+  payload: [];
+};
+
 export type SnapControllerEvents =
   | SnapBlocked
   | SnapInstalled
@@ -609,7 +613,7 @@ export type AllowedEvents =
   | ExecutionServiceEvents
   | SnapInstalled
   | SnapUpdated
-  | KeyringControllerLockEvent;
+  | KeyringControllerLock;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
