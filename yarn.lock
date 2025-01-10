@@ -4204,7 +4204,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.26"
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
-    async-mutex: "npm:^0.4.0"
+    async-mutex: "npm:^0.5.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
@@ -6281,7 +6281,7 @@ __metadata:
     "@wdio/spec-reporter": "npm:^8.19.0"
     "@wdio/static-server-service": "npm:^8.19.0"
     "@wdio/types": "npm:^8.19.0"
-    async-mutex: "npm:^0.4.0"
+    async-mutex: "npm:^0.5.0"
     chalk: "npm:^4.1.2"
     cron-parser: "npm:^4.5.0"
     deepmerge: "npm:^4.2.2"
@@ -9646,12 +9646,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-mutex@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "async-mutex@npm:0.4.0"
+"async-mutex@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "async-mutex@npm:0.5.0"
   dependencies:
     tslib: "npm:^2.4.0"
-  checksum: 10/4a55065aae8c7283e45e2a8ac38ba9812f030696640d650c4ec62cfd67e5d61bd698e67b758a81fcb845e2d5ea1d857106f9235cc4282ad40cd1944b26fde1b2
+  checksum: 10/4c6bfce1cc9cd43f723c4d96403ac5f4757f885c953b839cde6956ec8817ff39623b82d67614de10c7933e21626925882fb9bac367db7d15d7cb4f84228722c9
   languageName: node
   linkType: hard
 
