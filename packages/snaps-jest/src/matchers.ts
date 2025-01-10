@@ -168,7 +168,7 @@ export const toRespondWithError: MatcherFunction<[expected: Json]> = function (
 export const toSendNotification: MatcherFunction<
   [
     expectedMessage: string,
-    expectedType: EnumToUnion<NotificationType>,
+    expectedType?: EnumToUnion<NotificationType>,
     expectedTitle?: string | undefined,
     expectedContent?: JSXElement | undefined,
     expectedFooterLink?: { text: string; href: string } | undefined,
@@ -202,7 +202,7 @@ export const toSendNotification: MatcherFunction<
       return false;
     }
 
-    if (type !== expectedType) {
+    if (expectedType && type !== expectedType) {
       return false;
     }
 
@@ -248,7 +248,11 @@ export const toSendNotification: MatcherFunction<
       expectedMessage,
     )}\n`;
 
-    testMessage += `Expected type: ${this.utils.printExpected(expectedType)}\n`;
+    if (expectedType) {
+      testMessage += `Expected type: ${this.utils.printExpected(
+        expectedType,
+      )}\n`;
+    }
 
     if (title) {
       testMessage += `Expected title: ${this.utils.printExpected(
@@ -277,7 +281,9 @@ export const toSendNotification: MatcherFunction<
       notifMessage,
     )}\n`;
 
-    testMessage += `Received type: ${this.utils.printReceived(type)}\n`;
+    if (expectedType) {
+      testMessage += `Received type: ${this.utils.printReceived(type)}\n`;
+    }
 
     if (title) {
       testMessage += `Received title: ${this.utils.printReceived(title)}\n`;
