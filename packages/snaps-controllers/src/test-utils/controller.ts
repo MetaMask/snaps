@@ -11,8 +11,6 @@ import {
   exportKey,
   generateSalt,
   isVaultUpdated,
-  encrypt,
-  decrypt,
 } from '@metamask/browser-passworder';
 import type {
   PermissionConstraint,
@@ -545,8 +543,6 @@ export const DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
 
 export const getSnapControllerEncryptor = () => {
   return {
-    encrypt,
-    decrypt,
     encryptWithKey,
     decryptWithKey,
     keyFromPassword: async (
