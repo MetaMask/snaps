@@ -386,6 +386,33 @@ describe('getInterfaceResponse', () => {
     });
   });
 
+  it('returns the interface actions and content for a notification', () => {
+    const { runSaga } = createStore(getMockOptions());
+    const response = getInterfaceResponse(
+      runSaga,
+      'Notification',
+      <Box>
+        <Text>Foo</Text>
+      </Box>,
+      interfaceActions,
+    );
+
+    expect(response).toStrictEqual({
+      content: (
+        <Box>
+          <Text>Foo</Text>
+        </Box>
+      ),
+      clickElement: expect.any(Function),
+      typeInField: expect.any(Function),
+      selectInDropdown: expect.any(Function),
+      selectFromRadioGroup: expect.any(Function),
+      selectFromSelector: expect.any(Function),
+      uploadFile: expect.any(Function),
+      waitForUpdate: expect.any(Function),
+    });
+  });
+
   it('throws an error for unknown dialog types', () => {
     const { runSaga } = createStore(getMockOptions());
 

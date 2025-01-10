@@ -523,6 +523,9 @@ export type SnapResponseWithInterface = {
     id: string;
     message: string;
     type: EnumToUnion<NotificationType>;
+    title?: string | undefined;
+    content?: string | undefined;
+    footerLink?: { text: string; href: string } | undefined;
   }[];
   getInterface(): SnapHandlerInterface;
 };

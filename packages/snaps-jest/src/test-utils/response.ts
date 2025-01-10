@@ -2,6 +2,7 @@ import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type {
   SnapHandlerInterface,
   SnapResponse,
+  SnapResponseWithInterface,
 } from '@metamask/snaps-simulation';
 
 /**
@@ -11,6 +12,7 @@ import type {
  * @param options.id - The ID to use.
  * @param options.response - The response to use.
  * @param options.notifications - The notifications to use.
+ * @param options.getInterface - The `getInterface` function to use.
  * @returns The mock response.
  */
 export function getMockResponse({
@@ -19,11 +21,13 @@ export function getMockResponse({
     result: 'foo',
   },
   notifications = [],
-}: Partial<SnapResponse>): SnapResponse {
+  getInterface,
+}: Partial<SnapResponseWithInterface>): SnapResponse {
   return {
     id,
     response,
     notifications,
+    ...(getInterface ? { getInterface } : {}),
   };
 }
 
