@@ -4162,7 +4162,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^11.4.1, @metamask/controller-utils@npm:^11.4.4":
+"@metamask/controller-utils@npm:^11.4.4":
   version: 11.4.4
   resolution: "@metamask/controller-utils@npm:11.4.4"
   dependencies:
@@ -5303,12 +5303,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^11.0.3":
-  version: 11.0.3
-  resolution: "@metamask/permission-controller@npm:11.0.3"
+"@metamask/permission-controller@npm:^11.0.4":
+  version: 11.0.4
+  resolution: "@metamask/permission-controller@npm:11.0.4"
   dependencies:
     "@metamask/base-controller": "npm:^7.0.2"
-    "@metamask/controller-utils": "npm:^11.4.1"
+    "@metamask/controller-utils": "npm:^11.4.4"
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/rpc-errors": "npm:^7.0.1"
     "@metamask/utils": "npm:^10.0.0"
@@ -5318,7 +5318,7 @@ __metadata:
     nanoid: "npm:^3.1.31"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
-  checksum: 10/e90411ae34410176945e79c8e863ff2d78a12c01e98837a7298dc94d4815c65fec2cd338d4ae0026f91899acfe21bfe8b857a3b2f12c3d96719e5afb68df0e68
+  checksum: 10/89bc5c3ffbcddca8cd3a8fa1e73d4196544223b59f69ece549f7459198960e8068fd96412ee3b28353b2a53ea38d8c370bd14df937aebddceed6a87cb5652f8c
   languageName: node
   linkType: hard
 
@@ -5337,13 +5337,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/post-message-stream@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@metamask/post-message-stream@npm:8.1.1"
+"@metamask/post-message-stream@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/post-message-stream@npm:9.0.0"
   dependencies:
-    "@metamask/utils": "npm:^9.0.0"
+    "@metamask/utils": "npm:^11.0.1"
     readable-stream: "npm:3.6.2"
-  checksum: 10/8218d321abe734522aefaf6b44e4203966c3feaf83e2de6e68eef9dbe92b7fb47fe7fd82eae362147b1d741cc58d78bcc95d8bf02058e260ad2fb978104c96cf
+  checksum: 10/5da711d3274e724452322939a5a77c60ed1d7ed73cdaa62e95c16debc443804d5a16de116dce742e05b3fbfa962e009dfeafc3a12a66f20e163617567f2cace5
   languageName: node
   linkType: hard
 
@@ -5720,9 +5720,9 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
     "@metamask/key-tree": "npm:^10.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
-    "@metamask/permission-controller": "npm:^11.0.3"
+    "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/phishing-controller": "npm:^12.3.1"
-    "@metamask/post-message-stream": "npm:^8.1.1"
+    "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-registry": "npm:^3.2.2"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -5819,7 +5819,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/object-multiplex": "npm:^2.0.0"
-    "@metamask/post-message-stream": "npm:^8.1.1"
+    "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/providers": "npm:^18.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5996,7 +5996,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/key-tree": "npm:^10.0.1"
-    "@metamask/permission-controller": "npm:^11.0.3"
+    "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -6086,7 +6086,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
     "@metamask/key-tree": "npm:^10.0.1"
-    "@metamask/permission-controller": "npm:^11.0.3"
+    "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/phishing-controller": "npm:^12.3.1"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -6148,7 +6148,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.1"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
     "@metamask/key-tree": "npm:^10.0.1"
-    "@metamask/permission-controller": "npm:^11.0.3"
+    "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -6254,8 +6254,8 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/key-tree": "npm:^10.0.1"
-    "@metamask/permission-controller": "npm:^11.0.3"
-    "@metamask/post-message-stream": "npm:^8.1.1"
+    "@metamask/permission-controller": "npm:^11.0.4"
+    "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/slip44": "npm:^4.1.0"
     "@metamask/snaps-registry": "npm:^3.2.2"
