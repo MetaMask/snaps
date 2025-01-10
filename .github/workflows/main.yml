@@ -96,7 +96,7 @@ jobs:
   re-run:
     name: Re-run failed jobs
     needs: lint-build-test
-    if: failure() && fromJSON(github.run_attempt) < 3
+    if: failure() && fromJSON(github.run_attempt) < 3 && github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     permissions:
       actions: write
