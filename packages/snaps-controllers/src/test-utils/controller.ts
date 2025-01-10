@@ -469,6 +469,7 @@ export const getSnapControllerMessenger = (
       'SnapController:snapUpdated',
       'SnapController:stateChange',
       'SnapController:snapRolledback',
+      'KeyringController:lock',
     ],
     allowedActions: [
       'ApprovalController:addRequest',

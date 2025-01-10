@@ -9,6 +9,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import type { KeyringControllerLockEvent } from '@metamask/keyring-controller';
 import type {
   Caveat,
   GetEndowments,
@@ -607,7 +608,8 @@ export type AllowedActions =
 export type AllowedEvents =
   | ExecutionServiceEvents
   | SnapInstalled
-  | SnapUpdated;
+  | SnapUpdated
+  | KeyringControllerLockEvent;
 
 type SnapControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -965,6 +967,11 @@ export class SnapController extends BaseController<
           },
         );
       },
+    );
+
+    this.messagingSystem.subscribe(
+      'KeyringController:lock',
+      this.#handleLock.bind(this),
     );
 
     this.#initializeStateMachine();
@@ -1832,6 +1839,7 @@ export class SnapController extends BaseController<
       const useCache =
         this.#hasCachedEncryptionKey(snapId) ||
         this.#encryptor.isVaultUpdated(state);
+
       const { key } = await this.#getSnapEncryptionKey({
         snapId,
         salt,
@@ -4006,5 +4014,18 @@ export class SnapController extends BaseController<
         method: handler,
       },
     });
+  }
+
+  /**
+   * Handle the `KeyringController:lock` event.
+   *
+   * Currently this clears the cached encrypted state (if any) for all Snaps.
+   */
+  #handleLock() {
+    for (const runtime of this.#snapsRuntimeData.values()) {
+      runtime.encryptionKey = null;
+      runtime.encryptionSalt = null;
+      runtime.state = undefined;
+    }
   }
 }

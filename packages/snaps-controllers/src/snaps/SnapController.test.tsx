@@ -52,6 +52,7 @@ import {
   MOCK_SNAP_NAME,
   DEFAULT_SOURCE_PATH,
   DEFAULT_ICON_PATH,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
@@ -2118,6 +2119,59 @@ describe('SnapController', () => {
 
     snapController.destroy();
     await service.terminateAllSnaps();
+  });
+
+  it('clears encrypted state of Snaps when the client is locked', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    const state = { myVariable: 1 };
+
+    const mockEncryptedState = await encrypt(
+      ENCRYPTION_KEY,
+      state,
+      undefined,
+      undefined,
+      DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+    );
+
+    const getMnemonic = jest
+      .fn()
+      .mockReturnValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: {
+            [MOCK_SNAP_ID]: getPersistedSnapObject(),
+          },
+          snapStates: {
+            [MOCK_SNAP_ID]: mockEncryptedState,
+          },
+        },
+        getMnemonic,
+      }),
+    );
+
+    expect(
+      await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+    ).toStrictEqual(state);
+    expect(getMnemonic).toHaveBeenCalledTimes(1);
+
+    rootMessenger.publish('KeyringController:lock');
+
+    expect(
+      await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+    ).toStrictEqual(state);
+
+    // We assume `getMnemonic` is called again because the controller needs to
+    // decrypt the state again. This is not an ideal way to test this, but it
+    // is the easiest to test this without exposing the internal state of the
+    // `SnapController`.
+    expect(getMnemonic).toHaveBeenCalledTimes(2);
+
+    snapController.destroy();
   });
 
   describe('handleRequest', () => {
