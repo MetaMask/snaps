@@ -5030,6 +5030,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/json-rpc-middleware-stream@npm:^8.0.6":
+  version: 8.0.6
+  resolution: "@metamask/json-rpc-middleware-stream@npm:8.0.6"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.0.1"
+    readable-stream: "npm:^3.6.2"
+  checksum: 10/4df2ddf068ee935b5ea29b833df243ee43e0a17ea0151bc312d4eaeec541612f7416761be2b66f316c0b12f577f0257831b83844f6b9addbaf5fe9d9c5638262
+  languageName: node
+  linkType: hard
+
 "@metamask/jsx-example-snap@workspace:^, @metamask/jsx-example-snap@workspace:packages/examples/packages/jsx":
   version: 0.0.0-use.local
   resolution: "@metamask/jsx-example-snap@workspace:packages/examples/packages/jsx"
@@ -5741,7 +5753,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.1"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^11.0.4"
@@ -6109,7 +6121,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.1"
     "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/phishing-controller": "npm:^12.3.1"
@@ -6171,7 +6183,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
-    "@metamask/json-rpc-middleware-stream": "npm:^8.0.5"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.1"
     "@metamask/permission-controller": "npm:^11.0.4"
     "@metamask/snaps-controllers": "workspace:^"
