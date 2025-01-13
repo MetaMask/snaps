@@ -89,7 +89,7 @@
     "@metamask/phishing-controller": "^12.3.1",
     "@metamask/post-message-stream": "^9.0.0",
     "@metamask/rpc-errors": "^7.0.2",
-    "@metamask/snaps-registry": "^3.2.2",
+    "@metamask/snaps-registry": "^3.2.3",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
