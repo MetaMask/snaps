@@ -281,8 +281,9 @@ describe('snap_setState', () => {
         jsonrpc: '2.0',
         id: 1,
         error: {
-          code: errorCodes.rpc.internal,
-          message: 'Internal JSON-RPC error.',
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: At path: value -- Expected a value of type `JSON`, but received: `undefined`.',
           stack: expect.any(String),
         },
       });
