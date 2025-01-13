@@ -2055,7 +2055,7 @@ describe('BaseSnapExecutor', () => {
       error: {
         code: -32603,
         message:
-          'Received non-JSON-serializable value: Expected a value of type `JSON`, but received: `0`.',
+          'Received non-JSON-serializable value: Expected a value of type `JSON`, but received: `0`',
         stack: expect.any(String),
       },
     });
