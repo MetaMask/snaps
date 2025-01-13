@@ -6282,7 +6282,6 @@ __metadata:
     "@wdio/spec-reporter": "npm:^8.19.0"
     "@wdio/static-server-service": "npm:^8.19.0"
     "@wdio/types": "npm:^8.19.0"
-    async-mutex: "npm:^0.5.0"
     chalk: "npm:^4.1.2"
     cron-parser: "npm:^4.5.0"
     deepmerge: "npm:^4.2.2"
