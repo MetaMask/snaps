@@ -9285,6 +9285,10 @@ describe('SnapController', () => {
 
       expect(encryptWithKey).toHaveBeenCalledTimes(2);
 
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual({ bar: 'baz' });
+
       snapController.destroy();
     });
 

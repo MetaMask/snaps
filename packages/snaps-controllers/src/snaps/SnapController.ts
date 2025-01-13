@@ -1894,8 +1894,9 @@ export class SnapController extends BaseController<
    * flag.
    *
    * - If the state is null, return null.
-   * - If the state should not be encrypted, return the JSON stringified state.
-   * - Otherwise if the state should be encrypted, return the encrypted state.
+   * - If the state should be encrypted, return the encrypted state.
+   * - Otherwise, if the state should not be encrypted, return the JSON-
+   * stringified state.
    *
    * @param snapId - The Snap ID.
    * @param state - The state to persist.
