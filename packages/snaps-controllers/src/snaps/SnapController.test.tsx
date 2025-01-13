@@ -9221,6 +9221,73 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('queues multiple state updates', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      jest.useFakeTimers();
+
+      const encryptor = getSnapControllerEncryptor();
+      const { promise, resolve } = createDeferredPromise();
+      const encryptWithKey = jest
+        .fn<
+          ReturnType<typeof encryptor.encryptWithKey>,
+          Parameters<typeof encryptor.encryptWithKey>
+        >()
+        .mockImplementation(async (...args) => {
+          resolve();
+          await sleep(1);
+          return await encryptor.encryptWithKey(...args);
+        });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            // @ts-expect-error - Missing required properties.
+            encryptWithKey,
+          },
+        }),
+      );
+
+      const firstStateChange = waitForStateChange(messenger);
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'bar' },
+        true,
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { bar: 'baz' },
+        true,
+      );
+
+      // We await this promise to ensure the timer is queued.
+      await promise;
+      jest.advanceTimersByTime(1);
+
+      // After this point the second update should be queued.
+      await firstStateChange;
+      const secondStateChange = waitForStateChange(messenger);
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(1);
+
+      // This is a bit hacky, but we can't simply advance the timer by 1ms
+      // because the second timer is not running yet.
+      jest.useRealTimers();
+      await secondStateChange;
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(2);
+
+      snapController.destroy();
+    });
+
     it('logs an error message if the state fails to persist', async () => {
       const messenger = getSnapControllerMessenger();
 

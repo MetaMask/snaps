@@ -20,7 +20,6 @@ export * from './json-rpc';
 export * from './localization';
 export * from './logging';
 export * from './manifest';
-export * from './mutex';
 export * from './namespace';
 export * from './path';
 export * from './platform-version';

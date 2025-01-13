@@ -65,7 +65,6 @@ import type {
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
 import {
-  withMutex,
   logWarning,
   getPlatformVersion,
   assertIsSnapManifest,
@@ -110,6 +109,7 @@ import {
 } from '@metamask/utils';
 import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
+import { Mutex } from 'async-mutex';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 import semver from 'semver';
@@ -263,6 +263,11 @@ export interface SnapRuntimeData {
    * Cached unencrypted state of the Snap.
    */
   unencryptedState?: Record<string, Json> | null;
+
+  /**
+   * A mutex to prevent concurrent state updates.
+   */
+  stateMutex: Mutex;
 }
 
 export type SnapError = {
@@ -1917,17 +1922,21 @@ export class SnapController extends BaseController<
   /**
    * Persist the state of a Snap.
    *
+   * This is run with a mutex to ensure that only one state update per Snap is
+   * processed at a time, avoiding possible race conditions.
+   *
    * @param snapId - The Snap ID.
    * @param newSnapState - The new state of the Snap.
    * @param encrypted - A flag to indicate whether to use encrypted storage or
    * not.
    */
-  #persistSnapState = withMutex(
-    async (
-      snapId: SnapId,
-      newSnapState: Record<string, Json> | null,
-      encrypted: boolean,
-    ) => {
+  async #persistSnapState(
+    snapId: SnapId,
+    newSnapState: Record<string, Json> | null,
+    encrypted: boolean,
+  ) {
+    const runtime = this.#getRuntimeExpect(snapId);
+    await runtime.stateMutex.runExclusive(async () => {
       const newState = await this.#getStateToPersist(
         snapId,
         newSnapState,
@@ -1943,8 +1952,8 @@ export class SnapController extends BaseController<
       return this.update((state) => {
         state.unencryptedSnapStates[snapId] = newState;
       });
-    },
-  );
+    });
+  }
 
   /**
    * Updates the own state of the snap with the given id.
@@ -3812,6 +3821,7 @@ export class SnapController extends BaseController<
       pendingOutboundRequests: 0,
       interpreter,
       stopping: false,
+      stateMutex: new Mutex(),
     });
   }
 

@@ -5752,6 +5752,7 @@ __metadata:
     "@wdio/spec-reporter": "npm:^8.19.0"
     "@wdio/static-server-service": "npm:^8.19.0"
     "@xstate/fsm": "npm:^2.0.0"
+    async-mutex: "npm:^0.5.0"
     browserify-zlib: "npm:^0.2.0"
     concat-stream: "npm:^2.0.0"
     deepmerge: "npm:^4.2.2"
