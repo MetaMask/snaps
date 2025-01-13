@@ -31,7 +31,6 @@ export const Notifications: FunctionComponent = () => {
     >
       <ButtonGroup>
         <Button
-          variant="primary"
           id="sendInAppNotification"
           disabled={isLoading}
           onClick={handleClick('inApp')}
@@ -39,7 +38,13 @@ export const Notifications: FunctionComponent = () => {
           Send In-App Notification
         </Button>
         <Button
-          variant="secondary"
+          id="sendExpandedViewNotification"
+          disabled={isLoading}
+          onClick={handleClick('inApp-extended')}
+        >
+          Send In-App Notification With Expanded View
+        </Button>
+        <Button
           id="sendNativeNotification"
           disabled={isLoading}
           onClick={handleClick('native')}

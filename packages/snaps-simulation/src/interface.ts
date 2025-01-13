@@ -51,7 +51,7 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
  */
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
-  type: DialogApprovalTypes[DialogType | 'default'],
+  type: DialogApprovalTypes[DialogType | 'default'] | 'Notification',
   content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
@@ -109,6 +109,13 @@ export function getInterfaceResponse(
       }
 
       // We have two buttons in the footer so we assume the snap handles the approval of the interface.
+      return {
+        ...interfaceActions,
+        content,
+      };
+    }
+
+    case 'Notification': {
       return {
         ...interfaceActions,
         content,

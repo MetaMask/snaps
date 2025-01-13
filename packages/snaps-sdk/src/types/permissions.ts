@@ -37,7 +37,7 @@ export type RequestedSnap = {
 
 export type InitialPermissions = Partial<{
   'endowment:cronjob': {
-    jobs: Cronjob[];
+    jobs?: Cronjob[];
     maxRequestTime?: number;
   };
   'endowment:ethereum-provider': EmptyObject;

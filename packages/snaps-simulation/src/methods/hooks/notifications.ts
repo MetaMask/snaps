@@ -5,7 +5,7 @@ import type { SagaIterator } from 'redux-saga';
 import { put } from 'redux-saga/effects';
 
 import type { RunSagaFunction } from '../../store';
-import { addNotification } from '../../store';
+import { addNotification, setInterface } from '../../store';
 
 /**
  * Show a native notification to the user.
@@ -46,21 +46,43 @@ export function getShowNativeNotificationImplementation(
   };
 }
 
+type InAppNotificationParams = {
+  type: NotificationType;
+  message: string;
+  title?: string | undefined;
+  content?: string | undefined;
+  footerLink?: { text: string; href: string } | undefined;
+};
+
 /**
  * Show an in-app notification to the user.
  *
  * @param _snapId - The ID of the Snap that created the notification.
  * @param options - The notification options.
  * @param options.message - The message to show in the notification.
+ * @param options.title - The title to show in the notification.
+ * @param options.content - The JSX content to show in the notification.
+ * @param options.footerLink - The footer to show in the notification.
  * @yields Adds the notification to the store.
  * @returns `null`.
  */
 function* showInAppNotificationImplementation(
   _snapId: string,
-  { message }: NotifyParams,
+  { message, title, content, footerLink }: InAppNotificationParams,
 ): SagaIterator<null> {
+  if (content) {
+    yield put(setInterface({ type: 'Notification', id: content }));
+  }
+
   yield put(
-    addNotification({ id: nanoid(), type: NotificationType.InApp, message }),
+    addNotification({
+      id: nanoid(),
+      type: NotificationType.InApp,
+      message,
+      title,
+      content,
+      footerLink,
+    }),
   );
 
   return null;

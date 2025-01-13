@@ -1,6 +1,9 @@
 import { expect } from '@jest/globals';
-import { panel, text } from '@metamask/snaps-sdk';
+import { NotificationType, panel, text } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
+import { getInterfaceActions } from '@metamask/snaps-simulation';
+import type { RootControllerMessenger } from '@metamask/snaps-simulation';
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
   toRender,
@@ -8,7 +11,11 @@ import {
   toRespondWithError,
   toSendNotification,
 } from './matchers';
-import { getMockInterfaceResponse, getMockResponse } from './test-utils';
+import {
+  getMockInterfaceResponse,
+  getMockResponse,
+  getRootControllerMessenger,
+} from './test-utils';
 
 expect.extend({
   toRespondWith,
@@ -160,18 +167,115 @@ describe('toRespondWithError', () => {
 });
 
 describe('toSendNotification', () => {
-  it('passes when the notification is correct', () => {
+  it('passes when a notification is correct', () => {
     expect(
       getMockResponse({
         notifications: [
           {
             id: '1',
-            type: 'native',
+            type: NotificationType.Native,
             message: 'foo',
           },
         ],
       }),
-    ).toSendNotification('foo');
+    ).toSendNotification('foo', 'native');
+  });
+
+  it('passes when an expanded view notification is correct', () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const actions = getInterfaceActions(
+      MOCK_SNAP_ID,
+      controllerMessenger as unknown as RootControllerMessenger,
+      {
+        content: (
+          <Box>
+            <Text>Foo</Text>
+          </Box>
+        ),
+        id: 'abcd',
+      },
+    );
+    expect(
+      getMockResponse({
+        notifications: [
+          {
+            id: '1',
+            type: NotificationType.InApp,
+            message: 'foo',
+            title: 'bar',
+            content: 'abcd',
+            footerLink: { text: 'foo', href: 'https://metamask.io' },
+          },
+        ],
+        getInterface: () => {
+          return {
+            content: (
+              <Box>
+                <Text>Foo</Text>
+              </Box>
+            ),
+            ...actions,
+          };
+        },
+      }),
+    ).toSendNotification(
+      'foo',
+      'inApp',
+      'bar',
+      <Box>
+        <Text>Foo</Text>
+      </Box>,
+      {
+        text: 'foo',
+        href: 'https://metamask.io',
+      },
+    );
+  });
+
+  it('passes when an expanded view notification without footer is correct', () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const actions = getInterfaceActions(
+      MOCK_SNAP_ID,
+      controllerMessenger as unknown as RootControllerMessenger,
+      {
+        content: (
+          <Box>
+            <Text>Foo</Text>
+          </Box>
+        ),
+        id: 'abcd',
+      },
+    );
+    expect(
+      getMockResponse({
+        notifications: [
+          {
+            id: '1',
+            type: NotificationType.InApp,
+            message: 'foo',
+            title: 'bar',
+            content: 'abcd',
+          },
+        ],
+        getInterface: () => {
+          return {
+            content: (
+              <Box>
+                <Text>Foo</Text>
+              </Box>
+            ),
+            ...actions,
+          };
+        },
+      }),
+    ).toSendNotification(
+      'foo',
+      'inApp',
+      'bar',
+      <Box>
+        <Text>Foo</Text>
+      </Box>,
+    );
   });
 
   it('passes when the notification is correct with a type', () => {
@@ -180,7 +284,7 @@ describe('toSendNotification', () => {
         notifications: [
           {
             id: '1',
-            type: 'native',
+            type: NotificationType.Native,
             message: 'foo',
           },
         ],
@@ -188,7 +292,7 @@ describe('toSendNotification', () => {
     ).toSendNotification('foo', 'native');
   });
 
-  it('fails when the notification is incorrect', () => {
+  it('fails when a notification message is incorrect', () => {
     expect(() =>
       expect(
         getMockResponse({
@@ -200,11 +304,11 @@ describe('toSendNotification', () => {
             },
           ],
         }),
-      ).toSendNotification('bar'),
-    ).toThrow('Received:');
+      ).toSendNotification('bar', 'native'),
+    ).toThrow('Received');
   });
 
-  it('fails when the notification is incorrect with a type', () => {
+  it('fails when a notification type is incorrect', () => {
     expect(() =>
       expect(
         getMockResponse({
@@ -217,7 +321,153 @@ describe('toSendNotification', () => {
           ],
         }),
       ).toSendNotification('foo', 'inApp'),
-    ).toThrow('Received:');
+    ).toThrow('Received');
+  });
+
+  it("fails when an expanded view notification's title is incorrect", () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const actions = getInterfaceActions(
+      MOCK_SNAP_ID,
+      controllerMessenger as unknown as RootControllerMessenger,
+      {
+        content: (
+          <Box>
+            <Text>Foo</Text>
+          </Box>
+        ),
+        id: 'abcd',
+      },
+    );
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              content: 'abcd',
+            },
+          ],
+          getInterface: () => {
+            return {
+              content: (
+                <Box>
+                  <Text>Foo</Text>
+                </Box>
+              ),
+              ...actions,
+            };
+          },
+        }),
+      ).toSendNotification(
+        'foo',
+        'inApp',
+        'baz',
+        <Box>
+          <Text>Foo</Text>
+        </Box>,
+      ),
+    ).toThrow('Received');
+  });
+
+  it("fails when an expanded view notification's footerLink is incorrect", () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const actions = getInterfaceActions(
+      MOCK_SNAP_ID,
+      controllerMessenger as unknown as RootControllerMessenger,
+      {
+        content: (
+          <Box>
+            <Text>Foo</Text>
+          </Box>
+        ),
+        id: 'abcd',
+      },
+    );
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              content: 'abcd',
+              footerLink: { text: 'Leave site', href: 'https://metamask.io' },
+            },
+          ],
+          getInterface: () => {
+            return {
+              content: (
+                <Box>
+                  <Text>Foo</Text>
+                </Box>
+              ),
+              ...actions,
+            };
+          },
+        }),
+      ).toSendNotification(
+        'foo',
+        'inApp',
+        'bar',
+        <Box>
+          <Text>Foo</Text>
+        </Box>,
+        {
+          text: 'Go back',
+          href: 'metamask://client/',
+        },
+      ),
+    ).toThrow('Received');
+  });
+
+  it("fails when an expanded view notification's content is missing", () => {
+    const controllerMessenger = getRootControllerMessenger();
+    const actions = getInterfaceActions(
+      MOCK_SNAP_ID,
+      controllerMessenger as unknown as RootControllerMessenger,
+      {
+        content: (
+          <Box>
+            <Text>Foo</Text>
+          </Box>
+        ),
+        id: 'abcd',
+      },
+    );
+    expect(() =>
+      expect(
+        getMockResponse({
+          notifications: [
+            {
+              id: '1',
+              type: 'inApp',
+              message: 'foo',
+              title: 'bar',
+              content: 'abcd',
+              footerLink: { text: 'Leave site', href: 'https://metamask.io' },
+            },
+          ],
+          getInterface: () => {
+            return {
+              content: (
+                <Box>
+                  <Text>Foo</Text>
+                </Box>
+              ),
+              ...actions,
+            };
+          },
+        }),
+      ).toSendNotification('foo', 'inApp', 'bar', undefined, {
+        text: 'Leave site',
+        href: 'https://metamask.io',
+      }),
+    ).toThrow('Received');
   });
 
   describe('not', () => {
@@ -232,21 +482,7 @@ describe('toSendNotification', () => {
             },
           ],
         }),
-      ).not.toSendNotification('bar');
-    });
-
-    it('passes when the notification is correct with a type', () => {
-      expect(
-        getMockResponse({
-          notifications: [
-            {
-              id: '1',
-              type: 'native',
-              message: 'foo',
-            },
-          ],
-        }),
-      ).not.toSendNotification('foo', 'inApp');
+      ).not.toSendNotification('bar', 'native');
     });
 
     it('fails when the notification is incorrect', () => {
@@ -261,24 +497,8 @@ describe('toSendNotification', () => {
               },
             ],
           }),
-        ).not.toSendNotification('foo'),
-      ).toThrow('Received:');
-    });
-
-    it('fails when the notification is incorrect with a type', () => {
-      expect(() =>
-        expect(
-          getMockResponse({
-            notifications: [
-              {
-                id: '1',
-                type: 'native',
-                message: 'foo',
-              },
-            ],
-          }),
         ).not.toSendNotification('foo', 'native'),
-      ).toThrow('Received:');
+      ).toThrow('Received');
     });
   });
 });
