@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0]
+
 ### Uncategorized
 
 - Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
@@ -98,7 +100,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.2.0...HEAD
+[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.4...@metamask/cronjob-example-snap@2.2.0
 [2.1.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.3...@metamask/cronjob-example-snap@2.1.4
 [2.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.2...@metamask/cronjob-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/cronjob-example-snap@2.1.1...@metamask/cronjob-example-snap@2.1.2

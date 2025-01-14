@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0]
+
 ### Uncategorized
 
 - Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
@@ -104,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@2.2.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@3.0.0...HEAD
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@2.2.3...@metamask/manage-state-example-snap@3.0.0
 [2.2.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@2.2.2...@metamask/manage-state-example-snap@2.2.3
 [2.2.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@2.2.1...@metamask/manage-state-example-snap@2.2.2
 [2.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/manage-state-example-snap@2.2.0...@metamask/manage-state-example-snap@2.2.1

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.17.0]
+
 ### Uncategorized
 
 - Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
@@ -255,7 +257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.17.0...HEAD
+[2.17.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.16.0...@metamask/test-snaps@2.17.0
 [2.16.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.4...@metamask/test-snaps@2.16.0
 [2.15.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.3...@metamask/test-snaps@2.15.4
 [2.15.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.2...@metamask/test-snaps@2.15.3
