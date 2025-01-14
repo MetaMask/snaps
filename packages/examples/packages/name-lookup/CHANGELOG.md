@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Release 81.0.0 ([#2964](https://github.com/MetaMask/snaps-skunkworks.git/pull/2964))
+- feat: Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps-skunkworks.git/pull/2938))
+- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
+- Add onNameLookup to snaps-jest ([#2857](https://github.com/MetaMask/snaps-skunkworks.git/pull/2857))
+- Add TypeScript typechecking to snaps-cli ([#2783](https://github.com/MetaMask/snaps-skunkworks.git/pull/2783))
+- Format Snap manifests with Prettier ([#2787](https://github.com/MetaMask/snaps-skunkworks.git/pull/2787))
+- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps-skunkworks.git/pull/2740))
+- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps-skunkworks.git/pull/2748))
+- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps-skunkworks.git/pull/2744))
+- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps-skunkworks.git/pull/2745))
+- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps-skunkworks.git/pull/2742))
+- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps-skunkworks.git/pull/2741))
+
 ## [3.1.1]
 
 ### Fixed
@@ -64,13 +79,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add name lookup example snap ([#1768](https://github.com/MetaMask/snaps/pull/1768), [#1754](https://github.com/MetaMask/snaps/pull/1754))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@3.1.1...HEAD
-[3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@3.1.0...@metamask/name-lookup-example-snap@3.1.1
-[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@3.0.2...@metamask/name-lookup-example-snap@3.1.0
-[3.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@3.0.1...@metamask/name-lookup-example-snap@3.0.2
-[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@3.0.0...@metamask/name-lookup-example-snap@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.1.0...@metamask/name-lookup-example-snap@3.0.0
-[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.0.1...@metamask/name-lookup-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@2.0.0...@metamask/name-lookup-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/name-lookup-example-snap@1.0.0...@metamask/name-lookup-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/name-lookup-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@3.1.1...HEAD
+[3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@3.1.0...@metamask/name-lookup-example-snap@3.1.1
+[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@3.0.2...@metamask/name-lookup-example-snap@3.1.0
+[3.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@3.0.1...@metamask/name-lookup-example-snap@3.0.2
+[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@3.0.0...@metamask/name-lookup-example-snap@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@2.1.0...@metamask/name-lookup-example-snap@3.0.0
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@2.0.1...@metamask/name-lookup-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@2.0.0...@metamask/name-lookup-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/name-lookup-example-snap@1.0.0...@metamask/name-lookup-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/name-lookup-example-snap@1.0.0
