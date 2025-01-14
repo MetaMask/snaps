@@ -23,6 +23,6 @@ describe('getNetworkVersionHandler', () => {
     );
 
     expect(end).toHaveBeenCalled();
-    expect(result.result).toBe('0x01');
+    expect(result.result).toBe('1');
   });
 });

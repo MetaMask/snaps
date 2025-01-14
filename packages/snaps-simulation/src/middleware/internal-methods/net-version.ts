@@ -28,7 +28,7 @@ export async function getNetworkVersionHandler(
 ) {
   // For now this will return a mocked result, this should probably match
   // whatever network the simulation is using.
-  response.result = '0x01';
+  response.result = '1';
 
   return end();
 }
