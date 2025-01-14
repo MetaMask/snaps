@@ -6728,7 +6728,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.9"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    webpack: "npm:^5.88.0"
+    webpack: "npm:^5.94.0"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
   linkType: soft
