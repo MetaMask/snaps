@@ -3,6 +3,8 @@ import { logError } from '@metamask/snaps-utils';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 
 import { getAccountsHandler } from './accounts';
+import { getChainIdHandler } from './chain-id';
+import { getNetworkVersionHandler } from './net-version';
 import { getProviderStateHandler } from './provider-state';
 
 export type InternalMethodsMiddlewareHooks = {
@@ -19,6 +21,8 @@ const methodHandlers = {
   metamask_getProviderState: getProviderStateHandler,
   eth_requestAccounts: getAccountsHandler,
   eth_accounts: getAccountsHandler,
+  eth_chainId: getChainIdHandler,
+  net_version: getNetworkVersionHandler,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
