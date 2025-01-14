@@ -59,14 +59,14 @@ export const SetState: FunctionComponent<{ encrypted: boolean }> = ({
             placeholder="Value"
             value={value}
             onChange={handleChangeValue}
-            id={encrypted ? 'dataManageState' : 'dataUnencryptedManageState'}
+            id={encrypted ? 'dataState' : 'dataUnencryptedState'}
             className="mb-3"
           />
         </Form.Group>
 
         <Button
           type="submit"
-          id={encrypted ? 'sendManageState' : 'sendUnencryptedManageState'}
+          id={encrypted ? 'sendState' : 'sendUnencryptedState'}
           disabled={isLoading}
         >
           Set State
@@ -74,13 +74,7 @@ export const SetState: FunctionComponent<{ encrypted: boolean }> = ({
       </Form>
 
       <Result className="mb-3">
-        <span
-          id={
-            encrypted
-              ? 'sendManageStateResult'
-              : 'sendUnencryptedManageStateResult'
-          }
-        >
+        <span id={encrypted ? 'sendStateResult' : 'sendUnencryptedStateResult'}>
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
