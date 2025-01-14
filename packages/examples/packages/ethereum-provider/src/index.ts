@@ -3,7 +3,12 @@ import {
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 import type { Hex } from '@metamask/utils';
-import { assert, stringToBytes, bytesToHex } from '@metamask/utils';
+import {
+  assert,
+  stringToBytes,
+  bytesToHex,
+  hexToNumber,
+} from '@metamask/utils';
 
 import type { PersonalSignParams, SignTypedDataParams } from './types';
 
@@ -107,6 +112,9 @@ async function personalSign(message: string, from: string) {
  * @see https://docs.metamask.io/wallet/concepts/signing-methods/#eth_signtypeddata_v4
  */
 async function signTypedData(message: string, from: string) {
+  const chainId = (await ethereum.request<string>({
+    method: 'eth_chainId',
+  })) as string;
   const signature = await ethereum.request<Hex>({
     method: 'eth_signTypedData_v4',
     params: [
@@ -160,7 +168,7 @@ async function signTypedData(message: string, from: string) {
         domain: {
           name: 'Ether Mail',
           version: '1',
-          chainId: 1,
+          chainId: hexToNumber(chainId),
           verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
         },
         message: {
