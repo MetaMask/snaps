@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support for expanded-view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
 - Add support for `eth_signTypedData` ([#2969](https://github.com/MetaMask/snaps/pull/2969))
-- Add support for background events events ([#2941](https://github.com/MetaMask/snaps/pull/2941))
+- Add support for background events ([#2941](https://github.com/MetaMask/snaps/pull/2941))
 - Add support for `snap_getState`, `snap_setState`, `snap_clearState` methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
 
 ### Changed
