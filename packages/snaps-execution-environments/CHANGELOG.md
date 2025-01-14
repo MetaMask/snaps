@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unblock `eth_signTypedData` ([#2969](https://github.com/MetaMask/snaps/pull/2969))
 
 ### Fixed
+
 - Skip unnecesary provider initialization ([#2967](https://github.com/MetaMask/snaps/pull/2967))
 
 ## [6.11.0]

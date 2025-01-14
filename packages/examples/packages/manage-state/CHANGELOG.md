@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **BREAKING:** Use `snap_getState`, `snap_setState`, `snap_clearState` methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
-  - The methods previously exposed by this Snap have been renamed with a `legacy_` prefix. 
+  - The methods previously exposed by this Snap have been renamed with a `legacy_` prefix.
 
 ### Changed
 
