@@ -9,6 +9,7 @@ import {
 import normalFs from 'fs';
 import { dirname, resolve } from 'path';
 import type { Configuration } from 'webpack';
+import type webpackModule from 'webpack';
 
 import { getMockConfig } from '../../test-utils';
 import { getCompiler } from '../../webpack';
@@ -36,8 +37,10 @@ jest.mock('../../webpack', () => ({
       .requireActual<typeof webpack>('../../webpack')
       .getCompiler(...args);
 
-    compiler.inputFileSystem = normalFs;
-    compiler.outputFileSystem = normalFs;
+    compiler.inputFileSystem =
+      normalFs as unknown as webpackModule.InputFileSystem;
+    compiler.outputFileSystem =
+      normalFs as unknown as webpackModule.OutputFileSystem;
 
     return compiler;
   }),
@@ -48,11 +51,14 @@ jest.mock('../../webpack/utils', () => ({
   getDefaultLoader: jest.fn<
     ReturnType<typeof utils.getDefaultLoader>,
     Parameters<typeof utils.getDefaultLoader>
-  >(async (config) => {
+  >(async (config): ReturnType<typeof utils.getDefaultLoader> => {
     if (config.legacy) {
       return {
         loader: BROWSERIFY_LOADER_PATH,
-        options: config.legacy,
+        options: {
+          ...config.legacy,
+          fn: jest.fn(),
+        },
       };
     }
 
