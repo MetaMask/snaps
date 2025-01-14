@@ -165,7 +165,10 @@ module.exports = defineConfig({
           getRelativePath(workspace, 'scripts', 'since-latest-release.sh'),
         );
 
-        if (workspace.cwd !== 'packages/examples') {
+        if (
+          workspace.cwd !== 'packages/examples' &&
+          workspace.cwd !== 'packages/snaps-simulator'
+        ) {
           // All non-root packages must have the same "test" script.
           if (workspace.manifest.scripts['test:browser']) {
             expectWorkspaceField(

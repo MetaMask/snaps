@@ -34,11 +34,11 @@
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "webpack serve --config-name main --mode development",
     "start:e2e": "webpack serve --config-name test --mode development",
-    "test": "node --experimental-vm-modules $(yarn bin jest) --reporters=jest-silent-reporter",
-    "test:clean": "node --experimental-vm-modules $(yarn bin jest) --clearCache",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
     "test:post": "jest-it-up",
-    "test:verbose": "node --experimental-vm-modules $(yarn bin jest) --verbose",
-    "test:watch": "node --experimental-vm-modules $(yarn bin jest) --watch"
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@chakra-ui/anatomy": "^2.1.1",
