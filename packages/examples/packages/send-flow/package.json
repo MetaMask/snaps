@@ -37,10 +37,10 @@
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../../../scripts/since-latest-release.sh",
     "start": "mm-snap watch",
-    "test": "jest --reporters=jest-silent-reporter",
-    "test:clean": "jest --clearCache",
-    "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test": "node --experimental-vm-modules $(yarn bin jest) --reporters=jest-silent-reporter",
+    "test:clean": "node --experimental-vm-modules $(yarn bin jest) --clearCache",
+    "test:verbose": "node --experimental-vm-modules $(yarn bin jest) --verbose",
+    "test:watch": "node --experimental-vm-modules $(yarn bin jest) --watch"
   },
   "dependencies": {
     "@metamask/rpc-errors": "^7.0.2",

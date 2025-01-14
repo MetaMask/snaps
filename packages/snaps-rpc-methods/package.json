@@ -48,11 +48,11 @@
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../scripts/since-latest-release.sh",
-    "test": "jest --reporters=jest-silent-reporter",
-    "test:clean": "jest --clearCache",
+    "test": "node --experimental-vm-modules $(yarn bin jest) --reporters=jest-silent-reporter",
+    "test:clean": "node --experimental-vm-modules $(yarn bin jest) --clearCache",
     "test:post": "jest-it-up",
-    "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:verbose": "node --experimental-vm-modules $(yarn bin jest) --verbose",
+    "test:watch": "node --experimental-vm-modules $(yarn bin jest) --watch"
   },
   "dependencies": {
     "@metamask/key-tree": "^10.0.2",

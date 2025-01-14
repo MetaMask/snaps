@@ -56,12 +56,12 @@
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "node scripts/start.js",
-    "test": "jest --reporters=jest-silent-reporter && yarn test:browser",
+    "test": "node --experimental-vm-modules $(yarn bin jest) --reporters=jest-silent-reporter && yarn test:browser",
     "test:browser": "wdio run wdio.config.js",
-    "test:clean": "jest --clearCache",
+    "test:clean": "node --experimental-vm-modules $(yarn bin jest) --clearCache",
     "test:post": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
-    "test:verbose": "jest --verbose",
-    "test:watch": "jest --watch"
+    "test:verbose": "node --experimental-vm-modules $(yarn bin jest) --verbose",
+    "test:watch": "node --experimental-vm-modules $(yarn bin jest) --watch"
   },
   "dependencies": {
     "@metamask/json-rpc-engine": "^10.0.2",
