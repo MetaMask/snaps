@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.8.0]
+
+### Added
+
+- Add Massa derivation path ([#2979](https://github.com/MetaMask/snaps/pull/2979))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2999](https://github.com/MetaMask/snaps/pull/2999), [#3003](https://github.com/MetaMask/snaps/pull/3003), [#2996](https://github.com/MetaMask/snaps/pull/2996), [#2989](https://github.com/MetaMask/snaps/pull/2989))
+- Make `jobs` property fully optional in the cronjob endowment ([#3005](https://github.com/MetaMask/snaps/pull/3005))
+
 ## [8.7.0]
 
 ### Added
@@ -504,7 +515,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.8.0...HEAD
+[8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...@metamask/snaps-utils@8.8.0
 [8.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.1...@metamask/snaps-utils@8.7.0
 [8.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.0...@metamask/snaps-utils@8.6.1
 [8.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.5.2...@metamask/snaps-utils@8.6.0

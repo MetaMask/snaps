@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.10.0]
+
+### Added
+
+- Allow unit testing of expanded-view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
+- Add `onBackgroundEvent` alias ([#2974](https://github.com/MetaMask/snaps/pull/2974))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946))
+
 ## [8.9.0]
 
 ### Added
@@ -313,7 +324,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.10.0...HEAD
+[8.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.9.0...@metamask/snaps-jest@8.10.0
 [8.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.8.1...@metamask/snaps-jest@8.9.0
 [8.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.8.0...@metamask/snaps-jest@8.8.1
 [8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.1...@metamask/snaps-jest@8.8.0

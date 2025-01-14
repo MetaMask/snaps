@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.9.0]
+
+### Added
+
+- Add support for non-recurring cronjobs via `snap_scheduleBackgroundEvent` ([#2941](https://github.com/MetaMask/snaps/pull/2941), [#2975](https://github.com/MetaMask/snaps/pull/2975))
+- Add `snap_getState`, `snap_setState`, `snap_clearState` RPC methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
+- Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps/pull/2978))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2999](https://github.com/MetaMask/snaps/pull/2999), [#2989](https://github.com/MetaMask/snaps/pull/2989))
+
 ## [11.8.0]
 
 ### Added
@@ -349,7 +361,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.0...HEAD
+[11.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0
 [11.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
 [11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
 [11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.1...@metamask/snaps-rpc-methods@11.6.0
