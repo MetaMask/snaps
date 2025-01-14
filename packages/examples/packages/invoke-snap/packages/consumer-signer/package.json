@@ -51,7 +51,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^3.0.4",
-    "@metamask/auto-changelog": "^3.4.4",
+    "@metamask/auto-changelog": "^4.0.0",
     "@metamask/eslint-config": "^12.1.0",
     "@metamask/eslint-config-jest": "^12.1.0",
     "@metamask/eslint-config-nodejs": "^12.1.0",
