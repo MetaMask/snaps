@@ -49,6 +49,7 @@ export const State: FunctionComponent = () => {
         </pre>
       </Result>
 
+      <GetState encrypted={false} />
       <SetState encrypted={false} />
       <ClearState encrypted={false} />
     </Snap>
