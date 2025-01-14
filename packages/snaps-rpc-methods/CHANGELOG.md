@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.9.0]
 
-### Uncategorized
+### Added
 
-- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
-- chore(deps): bump @metamask/permission-controller from 11.0.3 to 11.0.4 ([#2999](https://github.com/MetaMask/snaps-skunkworks.git/pull/2999))
-- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps-skunkworks.git/pull/2989))
-- Add logic to allow ISO 8601 duration strings ([#2975](https://github.com/MetaMask/snaps-skunkworks.git/pull/2975))
-- feat: Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps-skunkworks.git/pull/2978))
-- Feat: Add background events ([#2941](https://github.com/MetaMask/snaps-skunkworks.git/pull/2941))
-- Add `snap_getState`, `snap_setState`, `snap_clearState` methods ([#2916](https://github.com/MetaMask/snaps-skunkworks.git/pull/2916))
+- Add support for non-recurring cronjobs via `snap_scheduleBackgroundEvent` ([#2941](https://github.com/MetaMask/snaps/pull/2941), [#2975](https://github.com/MetaMask/snaps/pull/2975))
+- Add `snap_getState`, `snap_setState`, `snap_clearState` RPC methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
+- Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps/pull/2978))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2999](https://github.com/MetaMask/snaps/pull/2999), [#2989](https://github.com/MetaMask/snaps/pull/2989))
 
 ## [11.8.0]
 
@@ -361,47 +361,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.9.0...HEAD
-[11.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0
-[11.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
-[11.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
-[11.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.5.1...@metamask/snaps-rpc-methods@11.6.0
-[11.5.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.5.0...@metamask/snaps-rpc-methods@11.5.1
-[11.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.4.0...@metamask/snaps-rpc-methods@11.5.0
-[11.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.3.0...@metamask/snaps-rpc-methods@11.4.0
-[11.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.2.0...@metamask/snaps-rpc-methods@11.3.0
-[11.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.1.1...@metamask/snaps-rpc-methods@11.2.0
-[11.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.1.0...@metamask/snaps-rpc-methods@11.1.1
-[11.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.0.0...@metamask/snaps-rpc-methods@11.1.0
-[11.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@10.0.1...@metamask/snaps-rpc-methods@11.0.0
-[10.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@10.0.0...@metamask/snaps-rpc-methods@10.0.1
-[10.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@10.0.0
-[9.1.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
-[9.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
-[9.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.1.1...@metamask/snaps-rpc-methods@9.1.2
-[9.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.1.0...@metamask/snaps-rpc-methods@9.1.1
-[9.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@9.0.0...@metamask/snaps-rpc-methods@9.1.0
-[9.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@8.1.0...@metamask/snaps-rpc-methods@9.0.0
-[8.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@8.0.0...@metamask/snaps-rpc-methods@8.1.0
-[8.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@7.0.2...@metamask/snaps-rpc-methods@8.0.0
-[7.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@7.0.1...@metamask/snaps-rpc-methods@7.0.2
-[7.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@7.0.0...@metamask/snaps-rpc-methods@7.0.1
-[7.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@6.0.0...@metamask/snaps-rpc-methods@7.0.0
-[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
-[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
-[4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
-[4.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3
-[4.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.1...@metamask/snaps-rpc-methods@4.0.2
-[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@4.0.0...@metamask/snaps-rpc-methods@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.3.0...@metamask/snaps-rpc-methods@4.0.0
-[3.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.2.1...@metamask/snaps-rpc-methods@3.3.0
-[3.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.2.0...@metamask/snaps-rpc-methods@3.2.1
-[3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.1.0...@metamask/snaps-rpc-methods@3.2.0
-[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@3.0.0...@metamask/snaps-rpc-methods@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@2.0.0...@metamask/snaps-rpc-methods@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.3-flask.1...@metamask/snaps-rpc-methods@2.0.0
-[0.38.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.2-flask.1...@metamask/snaps-rpc-methods@0.38.3-flask.1
-[0.38.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.1-flask.1...@metamask/snaps-rpc-methods@0.38.2-flask.1
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.38.0-flask.1...@metamask/snaps-rpc-methods@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@0.37.2-flask.1...@metamask/snaps-rpc-methods@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-rpc-methods@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.0...HEAD
+[11.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0
+[11.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
+[11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
+[11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.1...@metamask/snaps-rpc-methods@11.6.0
+[11.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.5.0...@metamask/snaps-rpc-methods@11.5.1
+[11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.4.0...@metamask/snaps-rpc-methods@11.5.0
+[11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.3.0...@metamask/snaps-rpc-methods@11.4.0
+[11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.2.0...@metamask/snaps-rpc-methods@11.3.0
+[11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.1.1...@metamask/snaps-rpc-methods@11.2.0
+[11.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.1.0...@metamask/snaps-rpc-methods@11.1.1
+[11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.0.0...@metamask/snaps-rpc-methods@11.1.0
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.1...@metamask/snaps-rpc-methods@11.0.0
+[10.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@10.0.0...@metamask/snaps-rpc-methods@10.0.1
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.4...@metamask/snaps-rpc-methods@10.0.0
+[9.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.3...@metamask/snaps-rpc-methods@9.1.4
+[9.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.2...@metamask/snaps-rpc-methods@9.1.3
+[9.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.1...@metamask/snaps-rpc-methods@9.1.2
+[9.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.1.0...@metamask/snaps-rpc-methods@9.1.1
+[9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@9.0.0...@metamask/snaps-rpc-methods@9.1.0
+[9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@8.1.0...@metamask/snaps-rpc-methods@9.0.0
+[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@8.0.0...@metamask/snaps-rpc-methods@8.1.0
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.2...@metamask/snaps-rpc-methods@8.0.0
+[7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.1...@metamask/snaps-rpc-methods@7.0.2
+[7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@7.0.0...@metamask/snaps-rpc-methods@7.0.1
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@6.0.0...@metamask/snaps-rpc-methods@7.0.0
+[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@5.0.0...@metamask/snaps-rpc-methods@6.0.0
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.1.0...@metamask/snaps-rpc-methods@5.0.0
+[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.3...@metamask/snaps-rpc-methods@4.1.0
+[4.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.2...@metamask/snaps-rpc-methods@4.0.3
+[4.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.1...@metamask/snaps-rpc-methods@4.0.2
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@4.0.0...@metamask/snaps-rpc-methods@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.3.0...@metamask/snaps-rpc-methods@4.0.0
+[3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.2.1...@metamask/snaps-rpc-methods@3.3.0
+[3.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.2.0...@metamask/snaps-rpc-methods@3.2.1
+[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.1.0...@metamask/snaps-rpc-methods@3.2.0
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@3.0.0...@metamask/snaps-rpc-methods@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@2.0.0...@metamask/snaps-rpc-methods@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.3-flask.1...@metamask/snaps-rpc-methods@2.0.0
+[0.38.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.2-flask.1...@metamask/snaps-rpc-methods@0.38.3-flask.1
+[0.38.2-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.1-flask.1...@metamask/snaps-rpc-methods@0.38.2-flask.1
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.38.0-flask.1...@metamask/snaps-rpc-methods@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@0.37.2-flask.1...@metamask/snaps-rpc-methods@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-rpc-methods@0.37.2-flask.1

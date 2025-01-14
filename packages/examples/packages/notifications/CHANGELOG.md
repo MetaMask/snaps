@@ -9,14 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0]
 
-### Uncategorized
+### Added
 
-- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
-- Expand testing for expanded-view notifications ([#2956](https://github.com/MetaMask/snaps-skunkworks.git/pull/2956))
-- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps-skunkworks.git/pull/2989))
-- Release 81.0.0 ([#2964](https://github.com/MetaMask/snaps-skunkworks.git/pull/2964))
-- feat: Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps-skunkworks.git/pull/2938))
-- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
+- Add support for expanded view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2989](https://github.com/MetaMask/snaps/pull/2989))
 
 ## [2.2.0]
 
@@ -101,17 +100,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.3.0...HEAD
-[2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.2.0...@metamask/notification-example-snap@2.3.0
-[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.1.4...@metamask/notification-example-snap@2.2.0
-[2.1.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.1.3...@metamask/notification-example-snap@2.1.4
-[2.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.1.2...@metamask/notification-example-snap@2.1.3
-[2.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.1.1...@metamask/notification-example-snap@2.1.2
-[2.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.1.0...@metamask/notification-example-snap@2.1.1
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.0.1...@metamask/notification-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@2.0.0...@metamask/notification-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@1.0.0...@metamask/notification-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@0.38.1-flask.1...@metamask/notification-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@0.38.0-flask.1...@metamask/notification-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/notification-example-snap@0.37.2-flask.1...@metamask/notification-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/notification-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.3.0...HEAD
+[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.2.0...@metamask/notification-example-snap@2.3.0
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.4...@metamask/notification-example-snap@2.2.0
+[2.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.3...@metamask/notification-example-snap@2.1.4
+[2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.2...@metamask/notification-example-snap@2.1.3
+[2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.1...@metamask/notification-example-snap@2.1.2
+[2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.1.0...@metamask/notification-example-snap@2.1.1
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.0.1...@metamask/notification-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@2.0.0...@metamask/notification-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@1.0.0...@metamask/notification-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@0.38.1-flask.1...@metamask/notification-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@0.38.0-flask.1...@metamask/notification-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/notification-example-snap@0.37.2-flask.1...@metamask/notification-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/notification-example-snap@0.37.2-flask.1

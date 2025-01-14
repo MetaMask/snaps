@@ -9,16 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0]
 
-### Uncategorized
+### Added
 
-- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
-- Expand testing for expanded-view notifications ([#2956](https://github.com/MetaMask/snaps-skunkworks.git/pull/2956))
-- chore(deps): bump @metamask/permission-controller from 11.0.3 to 11.0.4 ([#2999](https://github.com/MetaMask/snaps-skunkworks.git/pull/2999))
-- chore(deps): bump @metamask/phishing-controller from 12.0.2 to 12.3.1 ([#2991](https://github.com/MetaMask/snaps-skunkworks.git/pull/2991))
-- feat: Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps-skunkworks.git/pull/2978))
-- Add helper for background events ([#2974](https://github.com/MetaMask/snaps-skunkworks.git/pull/2974))
-- Feat: Add background events ([#2941](https://github.com/MetaMask/snaps-skunkworks.git/pull/2941))
-- BREAKING: Add support for new state methods to `snaps-simulation` ([#2966](https://github.com/MetaMask/snaps-skunkworks.git/pull/2966))
+- **BREAKING:** Add support for new state methods to `snaps-simulation` ([#2966](https://github.com/MetaMask/snaps/pull/2966))
+  - The `MiddlewareHooks` type was removed.
+- Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps/pull/2978))
+- Allow unit testing of expanded-view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
+- Add `onBackgroundEvent` alias ([#2974](https://github.com/MetaMask/snaps/pull/2974))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2991](https://github.com/MetaMask/snaps/pull/2991), [#2999](https://github.com/MetaMask/snaps/pull/2999))
 
 ## [1.5.0]
 
@@ -94,15 +95,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.0.0...HEAD
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
-[1.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.4.1...@metamask/snaps-simulation@1.5.0
-[1.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.4.0...@metamask/snaps-simulation@1.4.1
-[1.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.3.1...@metamask/snaps-simulation@1.4.0
-[1.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.3.0...@metamask/snaps-simulation@1.3.1
-[1.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.2.0...@metamask/snaps-simulation@1.3.0
-[1.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.1.1...@metamask/snaps-simulation@1.2.0
-[1.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.1.0...@metamask/snaps-simulation@1.1.1
-[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.0.1...@metamask/snaps-simulation@1.1.0
-[1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.0.0...@metamask/snaps-simulation@1.0.1
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-simulation@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.0.0...HEAD
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
+[1.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.1...@metamask/snaps-simulation@1.5.0
+[1.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.0...@metamask/snaps-simulation@1.4.1
+[1.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.3.1...@metamask/snaps-simulation@1.4.0
+[1.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.3.0...@metamask/snaps-simulation@1.3.1
+[1.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.2.0...@metamask/snaps-simulation@1.3.0
+[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.1.1...@metamask/snaps-simulation@1.2.0
+[1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.1.0...@metamask/snaps-simulation@1.1.1
+[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.0.1...@metamask/snaps-simulation@1.1.0
+[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.0.0...@metamask/snaps-simulation@1.0.1
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-simulation@1.0.0
