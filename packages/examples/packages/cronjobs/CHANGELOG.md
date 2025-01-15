@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **BREAKING:** Add new method to cronjob example snap to test durations ([#3016](https://github.com/MetaMask/snaps/pull/3016))
-  - One of the existing RPC methods was renamed as part of this change.
+  - The `scheduleNotification` RPC method was renamed to `scheduleNotificationWithDate`.
 
 ## [2.2.0]
 
