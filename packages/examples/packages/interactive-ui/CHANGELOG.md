@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Release 82.0.0 ([#3012](https://github.com/MetaMask/snaps-skunkworks.git/pull/3012))
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
+- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps-skunkworks.git/pull/2989))
+- Release 81.0.0 ([#2964](https://github.com/MetaMask/snaps-skunkworks.git/pull/2964))
+- feat: Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps-skunkworks.git/pull/2938))
+- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
+- chore: Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps-skunkworks.git/pull/2853))
+- Add TypeScript typechecking to snaps-cli ([#2783](https://github.com/MetaMask/snaps-skunkworks.git/pull/2783))
+- Set target back to ES2020 ([#2767](https://github.com/MetaMask/snaps-skunkworks.git/pull/2767))
+
 ## [2.3.0]
 
 ### Added
@@ -60,12 +72,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add interactive UI example Snap ([#2171](https://github.com/MetaMask/snaps/pull/2171))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.3.0...HEAD
-[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.2.1...@metamask/interactive-ui-example-snap@2.3.0
-[2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.2.0...@metamask/interactive-ui-example-snap@2.2.1
-[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.1.0...@metamask/interactive-ui-example-snap@2.2.0
-[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@2.0.0...@metamask/interactive-ui-example-snap@2.1.0
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.2...@metamask/interactive-ui-example-snap@2.0.0
-[1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.1...@metamask/interactive-ui-example-snap@1.0.2
-[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/interactive-ui-example-snap@1.0.0...@metamask/interactive-ui-example-snap@1.0.1
-[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/interactive-ui-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.3.0...HEAD
+[2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.2.1...@metamask/interactive-ui-example-snap@2.3.0
+[2.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.2.0...@metamask/interactive-ui-example-snap@2.2.1
+[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.1.0...@metamask/interactive-ui-example-snap@2.2.0
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@2.0.0...@metamask/interactive-ui-example-snap@2.1.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.2...@metamask/interactive-ui-example-snap@2.0.0
+[1.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.1...@metamask/interactive-ui-example-snap@1.0.2
+[1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/interactive-ui-example-snap@1.0.0...@metamask/interactive-ui-example-snap@1.0.1
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/interactive-ui-example-snap@1.0.0
