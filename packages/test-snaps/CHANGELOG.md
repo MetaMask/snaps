@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.0]
+
 ### Uncategorized
 
 - BREAKING: Added new method to cronjob example snap to test durations ([#3016](https://github.com/MetaMask/snaps-skunkworks.git/pull/3016))
@@ -265,7 +267,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.18.0...HEAD
+[2.18.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.17.0...@metamask/test-snaps@2.18.0
 [2.17.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.16.0...@metamask/test-snaps@2.17.0
 [2.16.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.4...@metamask/test-snaps@2.16.0
 [2.15.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.3...@metamask/test-snaps@2.15.4
