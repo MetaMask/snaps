@@ -4,10 +4,12 @@ import { Box, Row, Address } from '@metamask/snaps-sdk/jsx';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles three methods:
  *
  * - `inApp`: Show an in-app notification to the user.
  * - `native`: Show a desktop notification to the user.
+ * - `inApp-expanded`: Show an expanded view in-app notification to the user.
+ *
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

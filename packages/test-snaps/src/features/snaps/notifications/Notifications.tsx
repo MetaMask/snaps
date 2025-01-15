@@ -40,7 +40,7 @@ export const Notifications: FunctionComponent = () => {
         <Button
           id="sendExpandedViewNotification"
           disabled={isLoading}
-          onClick={handleClick('inApp-extended')}
+          onClick={handleClick('inApp-expanded')}
         >
           Send In-App Notification With Expanded View
         </Button>
