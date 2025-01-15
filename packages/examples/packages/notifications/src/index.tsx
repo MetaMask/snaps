@@ -10,7 +10,6 @@ import { Box, Row, Address } from '@metamask/snaps-sdk/jsx';
  * - `native`: Show a desktop notification to the user.
  * - `inApp-expanded`: Show an expanded view in-app notification to the user.
  *
- *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
  * @returns The JSON-RPC response.
