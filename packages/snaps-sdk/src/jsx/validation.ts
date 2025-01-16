@@ -221,6 +221,9 @@ function elementWithSelectiveProps<
 export const ImageStruct: Describe<ImageElement> = element('Image', {
   src: svg(),
   alt: optional(string()),
+  borderRadius: optional(
+    nullUnion([literal('none'), literal('medium'), literal('full')]),
+  ),
 });
 
 const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
