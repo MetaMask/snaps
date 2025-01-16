@@ -12,7 +12,7 @@ import { createSnapComponent } from '../component';
 type ImageProps = {
   src: string;
   alt?: string | undefined;
-  borderRadius?: 'square' | 'rounded' | 'circular' | undefined;
+  borderRadius?: 'none' | 'medium' | 'full' | undefined;
 };
 
 const TYPE = 'Image';
