@@ -34,6 +34,7 @@ import {
   Section,
   Avatar,
   Banner,
+  Skeleton,
 } from './components';
 import {
   AddressStruct,
@@ -72,6 +73,7 @@ import {
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1616,5 +1618,37 @@ describe('BannerStruct', () => {
     </Banner>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BannerStruct)).toBe(false);
+  });
+});
+
+describe('SkeletonStruct', () => {
+  it.each([
+    <Skeleton width={320} height={32} />,
+    <Skeleton width="30%" height="30%" />,
+    <Skeleton width={32} height="30%" />,
+    <Skeleton width="30%" height={32} />,
+    <Skeleton width="30%" height={32} borderRadius="full" />,
+    <Skeleton width={32} height="30%" borderRadius="medium" />,
+  ])(`validates a Skeleton element`, (value) => {
+    expect(is(value, SkeletonStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Skeleton />,
+    // @ts-expect-error - Invalid props.
+    <Skeleton foo="bar">foo</Skeleton>,
+    // @ts-expect-error - Invalid props.
+    <Skeleton title={<Copyable value="bar" />} severity="info">
+      <Text>foo</Text>
+    </Skeleton>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, SkeletonStruct)).toBe(false);
   });
 });

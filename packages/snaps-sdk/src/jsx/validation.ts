@@ -48,7 +48,7 @@ import type {
   SnapsChildren,
   StringElement,
 } from './component';
-import type { AvatarElement } from './components';
+import type { AvatarElement, SkeletonElement } from './components';
 import {
   type AddressElement,
   type BoldElement,
@@ -808,6 +808,17 @@ export const BannerStruct: Describe<BannerElement> = element('Banner', {
 });
 
 /**
+ * A struct for the {@link SkeletonElement} type.
+ */
+export const SkeletonStruct: Describe<SkeletonElement> = element('Skeleton', {
+  width: union([number(), string()]),
+  height: union([number(), string()]),
+  borderRadius: optional(
+    nullUnion([literal('none'), literal('medium'), literal('full')]),
+  ),
+});
+
+/**
  * A struct for the {@link RowElement} type.
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
@@ -818,6 +829,7 @@ export const RowStruct: Describe<RowElement> = element('Row', {
     TextStruct,
     ValueStruct,
     LinkStruct,
+    SkeletonStruct,
   ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),
@@ -863,6 +875,7 @@ export const BoxChildStruct = typedUnion([
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 ]);
 
 /**
@@ -932,6 +945,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 ]);
 
 /**
