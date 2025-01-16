@@ -1075,12 +1075,13 @@ describe('HeadingStruct', () => {
 });
 
 describe('ImageStruct', () => {
-  it.each([<Image src="<svg />" alt="alt" />, <Image src="<svg />" />])(
-    'validates an image element',
-    (value) => {
-      expect(is(value, ImageStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Image src="<svg />" alt="alt" />,
+    <Image src="<svg />" />,
+    <Image src="<svg />" alt="alt" borderRadius="medium" />,
+  ])('validates an image element', (value) => {
+    expect(is(value, ImageStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
@@ -1093,6 +1094,8 @@ describe('ImageStruct', () => {
     <Image />,
     // @ts-expect-error - Invalid props.
     <Image src="<svg />" alt={42} />,
+    // @ts-expect-error - Invalid props.
+    <Image src="<svg />" borderRadius="52px" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
