@@ -1,4 +1,5 @@
 import { createSnapComponent } from '../component';
+import type { BorderRadius } from './utils';
 
 /**
  * The props of the {@link Image} component.
@@ -12,7 +13,7 @@ import { createSnapComponent } from '../component';
 type ImageProps = {
   src: string;
   alt?: string | undefined;
-  borderRadius?: 'none' | 'medium' | 'full' | undefined;
+  borderRadius?: BorderRadius | undefined;
 };
 
 const TYPE = 'Image';
