@@ -1623,6 +1623,7 @@ describe('BannerStruct', () => {
 
 describe('SkeletonStruct', () => {
   it.each([
+    <Skeleton />,
     <Skeleton width={320} height={32} />,
     <Skeleton width="30%" height="30%" />,
     <Skeleton width={32} height="30%" />,
@@ -1640,8 +1641,6 @@ describe('SkeletonStruct', () => {
     undefined,
     {},
     [],
-    // @ts-expect-error - Invalid props.
-    <Skeleton />,
     // @ts-expect-error - Invalid props.
     <Skeleton foo="bar">foo</Skeleton>,
     // @ts-expect-error - Invalid props.

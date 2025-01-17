@@ -3,6 +3,7 @@ import type { ButtonElement } from './form/Button';
 import type { StandardFormattingElement } from './formatting';
 import type { IconElement } from './Icon';
 import type { LinkElement } from './Link';
+import type { SkeletonElement } from './Skeleton';
 import type { TextElement } from './Text';
 
 /**
@@ -14,6 +15,7 @@ export type BannerChildren = SnapsChildren<
   | LinkElement
   | IconElement
   | ButtonElement
+  | SkeletonElement
 >;
 
 /**

@@ -9,8 +9,8 @@ import type { BorderRadius } from './utils';
  * @param borderRadius - Border radius of the Skeleton.
  */
 export type SkeletonProps = {
-  width: number | string;
-  height: number | string;
+  width?: number | string | undefined;
+  height?: number | string | undefined;
   borderRadius?: BorderRadius | undefined;
 };
 
