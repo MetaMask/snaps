@@ -1,9 +1,5 @@
 import { createSnapComponent } from '../component';
-
-/**
- * Definition of Skeleton border radius.
- */
-export type SkeletonBorderRadius = 'none' | 'medium' | 'full' | undefined;
+import type { BorderRadius } from './utils';
 
 /**
  * The props of the {@link Skeleton} component.
@@ -15,7 +11,7 @@ export type SkeletonBorderRadius = 'none' | 'medium' | 'full' | undefined;
 export type SkeletonProps = {
   width: number | string;
   height: number | string;
-  borderRadius?: SkeletonBorderRadius | undefined;
+  borderRadius?: BorderRadius | undefined;
 };
 
 const TYPE = 'Skeleton';
@@ -28,7 +24,7 @@ const TYPE = 'Skeleton';
  * @param props.width - Height of the Skeleton.
  * @param props.borderRadius - Border radius of the Skeleton.
  * @example
- * <Skeleton height={32} width={50%} />
+ * <Skeleton height={32} width="50%" />
  */
 export const Skeleton = createSnapComponent<SkeletonProps, typeof TYPE>(TYPE);
 
