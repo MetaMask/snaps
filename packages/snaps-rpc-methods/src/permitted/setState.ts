@@ -13,6 +13,7 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import {
+  getJsonSize,
   hasProperty,
   isObject,
   assert,
@@ -20,7 +21,10 @@ import {
   type Json,
 } from '@metamask/utils';
 
-import { manageStateBuilder } from '../restricted/manageState';
+import {
+  manageStateBuilder,
+  STORAGE_SIZE_LIMIT,
+} from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
@@ -142,6 +146,16 @@ async function setStateImplementation(
     }
 
     const newState = await getNewState(key, value, encrypted, getSnapState);
+
+    const size = getJsonSize(newState);
+    if (size > STORAGE_SIZE_LIMIT) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: The new state must not exceed ${
+          STORAGE_SIZE_LIMIT / 1_000_000
+        } MB in size.`,
+      });
+    }
+
     await updateSnapState(newState, encrypted);
     response.result = null;
   } catch (error) {
