@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.9.1]
+
+### Fixed
+
+- Validate state size in `snap_setState` method ([#3025](https://github.com/MetaMask/snaps/pull/3025))
+- Improve error messages for `snap_manageState` and `snap_setState` methods ([#3025](https://github.com/MetaMask/snaps/pull/3025))
+
 ## [11.9.0]
 
 ### Added
@@ -361,7 +368,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.1...HEAD
+[11.9.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.0...@metamask/snaps-rpc-methods@11.9.1
 [11.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0
 [11.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
 [11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.6.0...@metamask/snaps-rpc-methods@11.7.0
