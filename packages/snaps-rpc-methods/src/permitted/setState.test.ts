@@ -1,7 +1,11 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { SetStateResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 
 import { setStateHandler, type SetStateParameters, set } from './setState';
 
@@ -392,6 +396,111 @@ describe('snap_setState', () => {
           code: errorCodes.rpc.invalidParams,
           message:
             'Invalid params: Value must be an object if key is not provided.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
+    it('throws if the new state is not JSON serialisable', async () => {
+      const { implementation } = setStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue(null);
+      const updateSnapState = jest.fn().mockReturnValue(null);
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        updateSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          value: {
+            // @ts-expect-error - BigInt is not JSON serializable.
+            foo: 1n as Json,
+          },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: At path: value -- Expected a value of type `JSON`, but received: `[object Object]`.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
+    it('throws if the new state exceeds the size limit', async () => {
+      const { implementation } = setStateHandler;
+
+      const getSnapState = jest.fn().mockReturnValue(null);
+      const updateSnapState = jest.fn().mockReturnValue(null);
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+
+      const hooks = {
+        getSnapState,
+        updateSnapState,
+        getUnlockPromise,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          value: {
+            foo: 'foo'.repeat(21_500_000), // 64.5 MB
+          },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: The new state must not exceed 64 MB in size.',
           stack: expect.any(String),
         },
       });

@@ -107,7 +107,7 @@ export const manageStateBuilder = Object.freeze({
   methodHooks,
 } as const);
 
-export const STORAGE_SIZE_LIMIT = 104857600; // In bytes (100MB)
+export const STORAGE_SIZE_LIMIT = 64_000_000; // In bytes (64 MB)
 
 type GetEncryptionKeyArgs = {
   snapId: string;
@@ -257,10 +257,6 @@ export function getValidatedParams(
     if (!isObject(newState)) {
       throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
-        data: {
-          receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
-        },
       });
     }
 
@@ -271,20 +267,14 @@ export function getValidatedParams(
     } catch {
       throw rpcErrors.invalidParams({
         message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
-        data: {
-          receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
-        },
       });
     }
 
     if (size > storageSizeLimit) {
       throw rpcErrors.invalidParams({
-        message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${storageSizeLimit} bytes in size.`,
-        data: {
-          receivedNewState:
-            typeof newState === 'undefined' ? 'undefined' : newState,
-        },
+        message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${
+          storageSizeLimit / 1_000_000
+        } MB in size.`,
       });
     }
   }

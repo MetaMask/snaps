@@ -498,7 +498,9 @@ describe('snap_manageState', () => {
           MOCK_SMALLER_STORAGE_SIZE_LIMIT,
         ),
       ).toThrow(
-        `Invalid snap_manageState "updateState" parameter: The new state must not exceed ${MOCK_SMALLER_STORAGE_SIZE_LIMIT} bytes in size.`,
+        `Invalid snap_manageState "updateState" parameter: The new state must not exceed ${
+          MOCK_SMALLER_STORAGE_SIZE_LIMIT / 1_000_000
+        } MB in size.`,
       );
     });
   });
