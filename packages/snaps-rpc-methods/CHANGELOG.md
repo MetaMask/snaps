@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Improve state size validation ([#3025](https://github.com/MetaMask/snaps/pull/3025))
+
 ## [11.9.0]
 
 ### Added
