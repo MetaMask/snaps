@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Release 82.0.0 ([#3012](https://github.com/MetaMask/snaps/pull/3012))
-- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946))
-- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps/pull/2989))
-
 ## [0.3.0]
 
 ### Added

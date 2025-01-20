@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Fix typo in `test-snaps` ([#3020](https://github.com/MetaMask/snaps/pull/3020))
-
 ## [2.18.0]
 
 ### Added
