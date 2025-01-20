@@ -216,14 +216,21 @@ function elementWithSelectiveProps<
 }
 
 /**
+ * Shared struct used to validate border radius values used by various Snaps components.
+ */
+export const BorderRadiusStruct = nullUnion([
+  literal('none'),
+  literal('medium'),
+  literal('full'),
+]);
+
+/**
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
   src: svg(),
   alt: optional(string()),
-  borderRadius: optional(
-    nullUnion([literal('none'), literal('medium'), literal('full')]),
-  ),
+  borderRadius: optional(BorderRadiusStruct),
 });
 
 const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
@@ -698,9 +705,7 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
 export const SkeletonStruct: Describe<SkeletonElement> = element('Skeleton', {
   width: optional(union([number(), string()])),
   height: optional(union([number(), string()])),
-  borderRadius: optional(
-    nullUnion([literal('none'), literal('medium'), literal('full')]),
-  ),
+  borderRadius: optional(BorderRadiusStruct),
 });
 
 /**
