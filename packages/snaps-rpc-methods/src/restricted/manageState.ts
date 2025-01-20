@@ -256,7 +256,7 @@ export function getValidatedParams(
   if (operation === ManageStateOperation.UpdateState) {
     if (!isObject(newState)) {
       throw rpcErrors.invalidParams({
-        message: `Invalid ${method} "updateState" parameter: The new state must be a plain object.`,
+        message: `Invalid ${method} "newState" parameter: The new state must be a plain object.`,
       });
     }
 
@@ -266,13 +266,13 @@ export function getValidatedParams(
       size = getJsonSize(newState);
     } catch {
       throw rpcErrors.invalidParams({
-        message: `Invalid ${method} "updateState" parameter: The new state must be JSON serializable.`,
+        message: `Invalid ${method} "newState" parameter: The new state must be JSON serializable.`,
       });
     }
 
     if (size > storageSizeLimit) {
       throw rpcErrors.invalidParams({
-        message: `Invalid ${method} "updateState" parameter: The new state must not exceed ${
+        message: `Invalid ${method} "newState" parameter: The new state must not exceed ${
           storageSizeLimit / 1_000_000
         } MB in size.`,
       });
