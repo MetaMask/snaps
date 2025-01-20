@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.9.1]
 
-### Uncategorized
+### Fixed
 
-- Improve state size validation ([#3025](https://github.com/MetaMask/snaps/pull/3025))
+- Validate state size in `snap_setState` method ([#3025](https://github.com/MetaMask/snaps/pull/3025))
+- Improve error messages for `snap_manageState` and `snap_setState` methods ([#3025](https://github.com/MetaMask/snaps/pull/3025))
 
 ## [11.9.0]
 
