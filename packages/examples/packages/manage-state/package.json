@@ -1,6 +1,6 @@
 {
   "name": "@metamask/manage-state-example-snap",
-  "version": "2.2.3",
+  "version": "3.0.0",
   "description": "MetaMask example snap demonstrating the use of `snap_manageState`",
   "keywords": [
     "MetaMask",
@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^10.0.0"
+    "@metamask/utils": "^11.0.1"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

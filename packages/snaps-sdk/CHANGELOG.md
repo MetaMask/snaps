@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.15.0]
+
+### Added
+
+- Add support for non-recurring cronjobs via `snap_scheduleBackgroundEvent` ([#2941](https://github.com/MetaMask/snaps/pull/2941), [#2975](https://github.com/MetaMask/snaps/pull/2975))
+- Add `snap_getState`, `snap_setState`, `snap_clearState` methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
+- Add `backgroundColor` property to `Container` component ([#2950](https://github.com/MetaMask/snaps/pull/2950))
+- Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps/pull/2978))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2989](https://github.com/MetaMask/snaps/pull/2989))
+- Make `jobs` property fully optional in the cronjob endowment ([#3005](https://github.com/MetaMask/snaps/pull/3005))
+- Allow usage of `Text` in `Value` props ([#2984](https://github.com/MetaMask/snaps/pull/2984))
+
 ## [6.14.0]
 
 ### Added
@@ -448,7 +463,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...HEAD
+[6.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
 [6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0
 [6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
 [6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0

@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.18.0]
+
+### Added
+
+- Added UI to test scheduling background events with durations ([#3016](https://github.com/MetaMask/snaps/pull/3016))
+
+### Fixed
+
+- Correct some mistakes in the State example section ([#3014](https://github.com/MetaMask/snaps/pull/3014))
+
+## [2.17.0]
+
+### Added
+
+- Add support for expanded-view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
+- Add support for `eth_signTypedData` ([#2969](https://github.com/MetaMask/snaps/pull/2969))
+- Add support for background events ([#2941](https://github.com/MetaMask/snaps/pull/2941))
+- Add support for `snap_getState`, `snap_setState`, `snap_clearState` methods ([#2916](https://github.com/MetaMask/snaps/pull/2916))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946))
+
 ## [2.16.0]
 
 ### Added
@@ -247,7 +270,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.0...HEAD
+[2.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.17.0...@metamask/test-snaps@2.18.0
+[2.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.16.0...@metamask/test-snaps@2.17.0
 [2.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.4...@metamask/test-snaps@2.16.0
 [2.15.4]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.3...@metamask/test-snaps@2.15.4
 [2.15.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.2...@metamask/test-snaps@2.15.3

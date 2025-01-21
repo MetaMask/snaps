@@ -45,14 +45,7 @@ describe('onRpcRequest', () => {
     const MOCK_VERSION = '1'; // Ethereum Mainnet
 
     it('returns the current network version', async () => {
-      const { request, mockJsonRpc } = await installSnap();
-
-      // To avoid relying on the network, we mock the response from the Ethereum
-      // provider.
-      mockJsonRpc({
-        method: 'net_version',
-        result: MOCK_VERSION,
-      });
+      const { request } = await installSnap();
 
       const response = await request({
         method: 'getVersion',

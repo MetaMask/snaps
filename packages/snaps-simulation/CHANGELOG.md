@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0]
+
+### Added
+
+- Mock `eth_chainId` and `net_version` calls automatically ([#3017](https://github.com/MetaMask/snaps/pull/3017))
+
+## [2.0.0]
+
+### Added
+
+- **BREAKING:** Add support for new state methods to `snaps-simulation` ([#2966](https://github.com/MetaMask/snaps/pull/2966))
+  - The `MiddlewareHooks` type was removed.
+- Add `hideBalances` to `snap_getPreferences` ([#2978](https://github.com/MetaMask/snaps/pull/2978))
+- Allow unit testing of expanded-view notifications ([#2956](https://github.com/MetaMask/snaps/pull/2956))
+- Add `onBackgroundEvent` alias ([#2974](https://github.com/MetaMask/snaps/pull/2974))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2991](https://github.com/MetaMask/snaps/pull/2991), [#2999](https://github.com/MetaMask/snaps/pull/2999))
+
 ## [1.5.0]
 
 ### Added
@@ -81,7 +101,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.1.0...HEAD
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
 [1.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.1...@metamask/snaps-simulation@1.5.0
 [1.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.0...@metamask/snaps-simulation@1.4.1
 [1.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.3.1...@metamask/snaps-simulation@1.4.0

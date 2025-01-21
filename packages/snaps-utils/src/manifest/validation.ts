@@ -191,7 +191,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:cronjob': optional(
     mergeStructs(
       HandlerCaveatsStruct,
-      object({ jobs: CronjobSpecificationArrayStruct }),
+      object({ jobs: optional(CronjobSpecificationArrayStruct) }),
     ),
   ),
   'endowment:ethereum-provider': optional(EmptyObjectStruct),

@@ -2,7 +2,7 @@ import { Image } from './Image';
 
 describe('Image', () => {
   it('renders an image', () => {
-    const result = <Image src="<svg />" alt="Foo" />;
+    const result = <Image src="<svg />" alt="Foo" borderRadius="medium" />;
 
     expect(result).toStrictEqual({
       type: 'Image',
@@ -10,6 +10,7 @@ describe('Image', () => {
       props: {
         src: '<svg />',
         alt: 'Foo',
+        borderRadius: 'medium',
       },
     });
   });

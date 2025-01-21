@@ -66,7 +66,7 @@ describe('typedUnion', () => {
     const result = validate(Text({}), unionStruct);
 
     expect(result[0]?.message).toBe(
-      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", but received: undefined',
+      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", "Skeleton", but received: undefined',
     );
   });
 
@@ -75,7 +75,7 @@ describe('typedUnion', () => {
     const result = validate(Text({}), nestedUnionStruct);
 
     expect(result[0]?.message).toBe(
-      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", but received: undefined',
+      'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", "Skeleton", but received: undefined',
     );
   });
 

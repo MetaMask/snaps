@@ -1,4 +1,5 @@
 import { createSnapComponent } from '../component';
+import type { BorderRadius } from './utils';
 
 /**
  * The props of the {@link Image} component.
@@ -12,6 +13,7 @@ import { createSnapComponent } from '../component';
 type ImageProps = {
   src: string;
   alt?: string | undefined;
+  borderRadius?: BorderRadius | undefined;
 };
 
 const TYPE = 'Image';
@@ -27,6 +29,7 @@ const TYPE = 'Image';
  * You can use the `data:` URL scheme to embed images inside the SVG.
  * @param props.alt - The alternative text of the image, which describes the
  * image for users who cannot see it.
+ * @param props.borderRadius - The border radius applied to the image.
  * @returns An image element.
  * @example
  * <Image src="<svg>...</svg>" alt="An example image" />

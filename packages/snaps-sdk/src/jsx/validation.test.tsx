@@ -34,6 +34,7 @@ import {
   Section,
   Avatar,
   Banner,
+  Skeleton,
 } from './components';
 import {
   AddressStruct,
@@ -72,6 +73,7 @@ import {
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -759,6 +761,12 @@ describe('ContainerStruct', () => {
     <Container>
       <Text>Hello world!</Text>
     </Container>,
+    <Container backgroundColor="default">
+      <Text>Hello world!</Text>
+    </Container>,
+    <Container backgroundColor="alternative">
+      <Text>Hello world!</Text>
+    </Container>,
     <Container>
       <Text>Hello world!</Text>
       <Footer>
@@ -1069,12 +1077,13 @@ describe('HeadingStruct', () => {
 });
 
 describe('ImageStruct', () => {
-  it.each([<Image src="<svg />" alt="alt" />, <Image src="<svg />" />])(
-    'validates an image element',
-    (value) => {
-      expect(is(value, ImageStruct)).toBe(true);
-    },
-  );
+  it.each([
+    <Image src="<svg />" alt="alt" />,
+    <Image src="<svg />" />,
+    <Image src="<svg />" alt="alt" borderRadius="medium" />,
+  ])('validates an image element', (value) => {
+    expect(is(value, ImageStruct)).toBe(true);
+  });
 
   it.each([
     'foo',
@@ -1087,6 +1096,8 @@ describe('ImageStruct', () => {
     <Image />,
     // @ts-expect-error - Invalid props.
     <Image src="<svg />" alt={42} />,
+    // @ts-expect-error - Invalid props.
+    <Image src="<svg />" borderRadius="52px" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
@@ -1607,5 +1618,36 @@ describe('BannerStruct', () => {
     </Banner>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, BannerStruct)).toBe(false);
+  });
+});
+
+describe('SkeletonStruct', () => {
+  it.each([
+    <Skeleton />,
+    <Skeleton width={320} height={32} />,
+    <Skeleton width="30%" height="30%" />,
+    <Skeleton width={32} height="30%" />,
+    <Skeleton width="30%" height={32} />,
+    <Skeleton width="30%" height={32} borderRadius="full" />,
+    <Skeleton width={32} height="30%" borderRadius="medium" />,
+  ])(`validates a Skeleton element`, (value) => {
+    expect(is(value, SkeletonStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <Skeleton foo="bar">foo</Skeleton>,
+    // @ts-expect-error - Invalid props.
+    <Skeleton title={<Copyable value="bar" />} severity="info">
+      <Text>foo</Text>
+    </Skeleton>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, SkeletonStruct)).toBe(false);
   });
 });

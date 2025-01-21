@@ -12,44 +12,14 @@
         "removeEventListener": true
       },
       "packages": {
-        "@metamask/post-message-stream>@metamask/utils": true,
+        "@metamask/utils": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/post-message-stream>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "eslint>debug": true
       }
     },
     "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/rpc-errors>@metamask/utils": true,
-        "@metamask/rpc-errors>fast-safe-stringify": true
-      }
-    },
-    "@metamask/rpc-errors>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "@metamask/utils>pony-cause": true,
-        "browserify>buffer": true,
-        "depcheck>semver": true,
-        "eslint>debug": true
+        "@metamask/rpc-errors>fast-safe-stringify": true,
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-sdk": {

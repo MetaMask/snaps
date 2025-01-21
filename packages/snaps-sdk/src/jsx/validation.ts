@@ -48,7 +48,7 @@ import type {
   SnapsChildren,
   StringElement,
 } from './component';
-import type { AvatarElement } from './components';
+import type { AvatarElement, SkeletonElement } from './components';
 import {
   type AddressElement,
   type BoldElement,
@@ -216,11 +216,21 @@ function elementWithSelectiveProps<
 }
 
 /**
+ * Shared struct used to validate border radius values used by various Snaps components.
+ */
+export const BorderRadiusStruct = nullUnion([
+  literal('none'),
+  literal('medium'),
+  literal('full'),
+]);
+
+/**
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
   src: svg(),
   alt: optional(string()),
+  borderRadius: optional(BorderRadiusStruct),
 });
 
 const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
@@ -690,6 +700,15 @@ export const LinkStruct: Describe<LinkElement> = element('Link', {
 });
 
 /**
+ * A struct for the {@link SkeletonElement} type.
+ */
+export const SkeletonStruct: Describe<SkeletonElement> = element('Skeleton', {
+  width: optional(union([number(), string()])),
+  height: optional(union([number(), string()])),
+  borderRadius: optional(BorderRadiusStruct),
+});
+
+/**
  * A struct for the {@link TextElement} type.
  */
 export const TextStruct: Describe<TextElement> = element('Text', {
@@ -698,7 +717,13 @@ export const TextStruct: Describe<TextElement> = element('Text', {
       if (typeof value === 'string') {
         return string();
       }
-      return typedUnion([BoldStruct, ItalicStruct, LinkStruct, IconStruct]);
+      return typedUnion([
+        BoldStruct,
+        ItalicStruct,
+        LinkStruct,
+        IconStruct,
+        SkeletonStruct,
+      ]);
     }),
   ]),
   alignment: optional(
@@ -794,6 +819,7 @@ export const BannerStruct: Describe<BannerElement> = element('Banner', {
     ButtonStruct,
     BoldStruct,
     ItalicStruct,
+    SkeletonStruct,
   ]),
   title: string(),
   severity: union([
@@ -815,6 +841,7 @@ export const RowStruct: Describe<RowElement> = element('Row', {
     TextStruct,
     ValueStruct,
     LinkStruct,
+    SkeletonStruct,
   ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),
@@ -860,6 +887,7 @@ export const BoxChildStruct = typedUnion([
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 ]);
 
 /**
@@ -877,6 +905,9 @@ export const ContainerStruct: Describe<ContainerElement> = element(
       [GenericSnapElement, FooterElement] | GenericSnapElement,
       null
     >,
+    backgroundColor: optional(
+      nullUnion([literal('default'), literal('alternative')]),
+    ),
   },
 );
 
@@ -926,6 +957,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SectionStruct,
   AvatarStruct,
   BannerStruct,
+  SkeletonStruct,
 ]);
 
 /**

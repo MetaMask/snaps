@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.12.0]
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#3007](https://github.com/MetaMask/snaps/pull/3007), [#3003](https://github.com/MetaMask/snaps/pull/3003), [#2989](https://github.com/MetaMask/snaps/pull/2989))
+- Unblock `eth_signTypedData` ([#2969](https://github.com/MetaMask/snaps/pull/2969))
+
+### Fixed
+
+- Skip unnecesary provider initialization ([#2967](https://github.com/MetaMask/snaps/pull/2967))
+
 ## [6.11.0]
 
 ### Added
@@ -404,7 +415,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.11.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.12.0...HEAD
+[6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.11.0...@metamask/snaps-execution-environments@6.12.0
 [6.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.10.0...@metamask/snaps-execution-environments@6.11.0
 [6.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.9.2...@metamask/snaps-execution-environments@6.10.0
 [6.9.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.9.1...@metamask/snaps-execution-environments@6.9.2

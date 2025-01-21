@@ -52,6 +52,7 @@ import {
   MOCK_SNAP_NAME,
   DEFAULT_SOURCE_PATH,
   DEFAULT_ICON_PATH,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
@@ -60,6 +61,7 @@ import {
   AssertionError,
   base64ToBytes,
   stringToBytes,
+  createDeferredPromise,
 } from '@metamask/utils';
 import { File } from 'buffer';
 import { webcrypto } from 'crypto';
@@ -78,6 +80,7 @@ import {
   getNodeEESMessenger,
   getPersistedSnapsState,
   getSnapController,
+  getSnapControllerEncryptor,
   getSnapControllerMessenger,
   getSnapControllerOptions,
   getSnapControllerWithEES,
@@ -97,6 +100,7 @@ import {
   MOCK_WALLET_SNAP_PERMISSION,
   MockSnapsRegistry,
   sleep,
+  waitForStateChange,
 } from '../test-utils';
 import { delay } from '../utils';
 import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
@@ -2115,6 +2119,59 @@ describe('SnapController', () => {
 
     snapController.destroy();
     await service.terminateAllSnaps();
+  });
+
+  it('clears encrypted state of Snaps when the client is locked', async () => {
+    const rootMessenger = getControllerMessenger();
+    const messenger = getSnapControllerMessenger(rootMessenger);
+
+    const state = { myVariable: 1 };
+
+    const mockEncryptedState = await encrypt(
+      ENCRYPTION_KEY,
+      state,
+      undefined,
+      undefined,
+      DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+    );
+
+    const getMnemonic = jest
+      .fn()
+      .mockReturnValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+    const snapController = getSnapController(
+      getSnapControllerOptions({
+        messenger,
+        state: {
+          snaps: {
+            [MOCK_SNAP_ID]: getPersistedSnapObject(),
+          },
+          snapStates: {
+            [MOCK_SNAP_ID]: mockEncryptedState,
+          },
+        },
+        getMnemonic,
+      }),
+    );
+
+    expect(
+      await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+    ).toStrictEqual(state);
+    expect(getMnemonic).toHaveBeenCalledTimes(1);
+
+    rootMessenger.publish('KeyringController:lock');
+
+    expect(
+      await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+    ).toStrictEqual(state);
+
+    // We assume `getMnemonic` is called again because the controller needs to
+    // decrypt the state again. This is not an ideal way to test this, but it
+    // is the easiest to test this without exposing the internal state of the
+    // `SnapController`.
+    expect(getMnemonic).toHaveBeenCalledTimes(2);
+
+    snapController.destroy();
   });
 
   describe('handleRequest', () => {
@@ -8801,6 +8858,7 @@ describe('SnapController', () => {
       );
 
       const newState = { myVariable: 2 };
+      const promise = waitForStateChange(messenger);
 
       await messenger.call(
         'SnapController:updateSnapState',
@@ -8817,6 +8875,8 @@ describe('SnapController', () => {
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
 
+      await promise;
+
       const result = await messenger.call(
         'SnapController:getSnapState',
         MOCK_SNAP_ID,
@@ -8831,7 +8891,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('different snaps use different encryption keys', async () => {
+    it('uses different encryption keys for different snaps', async () => {
       const messenger = getSnapControllerMessenger();
 
       const state = { foo: 'bar' };
@@ -8857,12 +8917,16 @@ describe('SnapController', () => {
         true,
       );
 
+      const promise = waitForStateChange(messenger);
+
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_LOCAL_SNAP_ID,
         state,
         true,
       );
+
+      await promise;
 
       const encryptedState1 = await encrypt(
         ENCRYPTION_KEY,
@@ -9073,12 +9137,16 @@ describe('SnapController', () => {
         undefined,
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
+
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         state,
         true,
       );
+
+      await promise;
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
       expect(snapController.state.snapStates[MOCK_SNAP_ID]).toStrictEqual(
@@ -9137,6 +9205,8 @@ describe('SnapController', () => {
       );
 
       const state = { foo: 'bar' };
+
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
@@ -9144,7 +9214,114 @@ describe('SnapController', () => {
         true,
       );
 
+      await promise;
+
       expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
+
+      snapController.destroy();
+    });
+
+    it('queues multiple state updates', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      jest.useFakeTimers();
+
+      const encryptor = getSnapControllerEncryptor();
+      const { promise, resolve } = createDeferredPromise();
+      const encryptWithKey = jest
+        .fn<
+          ReturnType<typeof encryptor.encryptWithKey>,
+          Parameters<typeof encryptor.encryptWithKey>
+        >()
+        .mockImplementation(async (...args) => {
+          resolve();
+          await sleep(1);
+          return await encryptor.encryptWithKey(...args);
+        });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            // @ts-expect-error - Missing required properties.
+            encryptWithKey,
+          },
+        }),
+      );
+
+      const firstStateChange = waitForStateChange(messenger);
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'bar' },
+        true,
+      );
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { bar: 'baz' },
+        true,
+      );
+
+      // We await this promise to ensure the timer is queued.
+      await promise;
+      jest.advanceTimersByTime(1);
+
+      // After this point the second update should be queued.
+      await firstStateChange;
+      const secondStateChange = waitForStateChange(messenger);
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(1);
+
+      // This is a bit hacky, but we can't simply advance the timer by 1ms
+      // because the second timer is not running yet.
+      jest.useRealTimers();
+      await secondStateChange;
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(2);
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual({ bar: 'baz' });
+
+      snapController.destroy();
+    });
+
+    it('logs an error message if the state fails to persist', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const errorValue = new Error('Failed to persist state.');
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          // @ts-expect-error - Missing required properties.
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            encryptWithKey: jest.fn().mockRejectedValue(errorValue),
+          },
+        }),
+      );
+
+      const { promise, resolve } = createDeferredPromise();
+      const error = jest.spyOn(console, 'error').mockImplementation(resolve);
+
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'bar' },
+        true,
+      );
+
+      await promise;
+      expect(error).toHaveBeenCalledWith(errorValue);
 
       snapController.destroy();
     });
@@ -9203,6 +9380,41 @@ describe('SnapController', () => {
         false,
       );
       expect(clearedState).toBeNull();
+
+      snapController.destroy();
+    });
+
+    it('logs an error message if the state fails to persist', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const errorValue = new Error('Failed to persist state.');
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          // @ts-expect-error - Missing required properties.
+          encryptor: {
+            ...getSnapControllerEncryptor(),
+            encryptWithKey: jest.fn().mockRejectedValue(errorValue),
+          },
+        }),
+      );
+
+      const { promise, resolve } = createDeferredPromise();
+      const error = jest.spyOn(console, 'error').mockImplementation(resolve);
+
+      // @ts-expect-error - Property `update` is protected.
+      // eslint-disable-next-line jest/prefer-spy-on
+      snapController.update = jest.fn().mockImplementation(() => {
+        throw errorValue;
+      });
+
+      await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
+
+      await promise;
+      expect(error).toHaveBeenCalledWith(errorValue);
 
       snapController.destroy();
     });

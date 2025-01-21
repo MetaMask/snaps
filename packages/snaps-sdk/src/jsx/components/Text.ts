@@ -3,12 +3,17 @@ import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
 import type { IconElement } from './Icon';
 import type { LinkElement } from './Link';
+import type { SkeletonElement } from './Skeleton';
 
 /**
  * The children of the {@link Text} component.
  */
 export type TextChildren = SnapsChildren<
-  string | StandardFormattingElement | LinkElement | IconElement
+  | string
+  | StandardFormattingElement
+  | LinkElement
+  | IconElement
+  | SkeletonElement
 >;
 
 /**

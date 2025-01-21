@@ -6,7 +6,7 @@ import { createAction, createSelector, createSlice } from '@reduxjs/toolkit';
 import type { ApplicationState } from './store';
 
 export type Interface = {
-  type: DialogApprovalTypes[DialogType | 'default'];
+  type: DialogApprovalTypes[DialogType | 'default'] | 'Notification';
   id: string;
 };
 

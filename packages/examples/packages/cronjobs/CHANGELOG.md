@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0]
+
+### Added
+
+- **BREAKING:** Add new method to cronjob example snap to test durations ([#3016](https://github.com/MetaMask/snaps/pull/3016))
+  - The `scheduleNotification` RPC method was renamed to `scheduleNotificationWithDate`.
+
+## [2.2.0]
+
+### Added
+
+- Add support for `snap_scheduleBackgroundEvent` ([#2941](https://github.com/MetaMask/snaps/pull/2941))
+
+### Changed
+
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps/pull/2946), [#2989](https://github.com/MetaMask/snaps/pull/2989))
+
 ## [2.1.4]
 
 ### Fixed
@@ -78,7 +95,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@3.0.0...HEAD
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.2.0...@metamask/cronjob-example-snap@3.0.0
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.4...@metamask/cronjob-example-snap@2.2.0
 [2.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.3...@metamask/cronjob-example-snap@2.1.4
 [2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.2...@metamask/cronjob-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/cronjob-example-snap@2.1.1...@metamask/cronjob-example-snap@2.1.2

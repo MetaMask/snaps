@@ -127,8 +127,6 @@ export class CronjobController extends BaseController<
   CronjobControllerState,
   CronjobControllerMessenger
 > {
-  #messenger: CronjobControllerMessenger;
-
   #dailyTimer!: Timer;
 
   #timers: Map<string, Timer>;
@@ -152,7 +150,6 @@ export class CronjobController extends BaseController<
     });
     this.#timers = new Map();
     this.#snapIds = new Map();
-    this.#messenger = messenger;
 
     this._handleSnapRegisterEvent = this._handleSnapRegisterEvent.bind(this);
     this._handleSnapUnregisterEvent =
@@ -305,7 +302,7 @@ export class CronjobController extends BaseController<
    * @returns Array of Cronjob specifications.
    */
   #getSnapJobs(snapId: SnapId): Cronjob[] | undefined {
-    const permissions = this.#messenger.call(
+    const permissions = this.messagingSystem.call(
       'PermissionController:getPermissions',
       snapId,
     );
