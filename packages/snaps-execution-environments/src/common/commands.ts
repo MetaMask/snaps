@@ -56,6 +56,16 @@ export function getHandlerArguments(
       const { signature, signatureOrigin } = request.params;
       return { signature, signatureOrigin };
     }
+    case HandlerType.OnAssetsLookup: {
+      // TODO: Assert once we have structs
+      const { assets } = request.params;
+      return { assets };
+    }
+    case HandlerType.OnAssetsConversion: {
+      // TODO: Assert once we have structs
+      const { conversions } = request.params;
+      return { conversions };
+    }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
 
