@@ -10,6 +10,8 @@ export enum HandlerType {
   OnHomePage = 'onHomePage',
   OnSettingsPage = 'onSettingsPage',
   OnUserInput = 'onUserInput',
+  OnAssetsLookup = 'onAssetsLookup',
+  OnAssetsConversion = 'onAssetsConversion',
 }
 
 export type SnapHandler = {
