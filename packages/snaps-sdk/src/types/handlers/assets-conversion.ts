@@ -1,4 +1,14 @@
+import type { Infer } from '@metamask/superstruct';
+import { number, object, string } from '@metamask/superstruct';
 import type { CaipAssetType } from '@metamask/utils';
+
+export const AssetConversionStruct = object({
+  rate: string(),
+  conversionTime: number(),
+  expirationTime: number(),
+});
+
+export type AssetConversion = Infer<typeof AssetConversionStruct>;
 
 export type OnAssetsConversionArguments = {
   conversions: { from: CaipAssetType; to: CaipAssetType }[];
@@ -20,5 +30,8 @@ export type OnAssetsConversionHandler = (
  * @property conversionRates - A nested object with two CAIP-19 keys that contains a conversion rate between the two keys.
  */
 export type OnAssetsConversionResponse = {
-  conversionRates: Record<CaipAssetType, Record<CaipAssetType, any>>;
+  conversionRates: Record<
+    CaipAssetType,
+    Record<CaipAssetType, AssetConversion>
+  >;
 };
