@@ -360,6 +360,7 @@ export class CronjobController extends BaseController<
       ms,
       job.snapId,
       () => {
+        // TODO: Decide how to handle errors.
         this.#executeCronjob(job).catch(logError);
         this.#schedule(job);
       },
@@ -367,7 +368,7 @@ export class CronjobController extends BaseController<
     );
 
     if (!this.state.jobs[job.id]?.lastRun) {
-      this.#updateJobLastRunState(job.id, 0);
+      this.#updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
     }
   }
 
