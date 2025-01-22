@@ -3618,14 +3618,16 @@ export class SnapController extends BaseController<
         return result;
       }
       case HandlerType.OnAssetsLookup: {
-        // We know the permissions are guaranteed to be set here.
         const permissions = this.messagingSystem.call(
           'PermissionController:getPermissions',
           snapId,
-        ) as SubjectPermissions<PermissionConstraint>;
+        );
+        // We know the permissions are guaranteed to be set here.
+        assert(permissions);
 
         const permission = permissions[SnapEndowments.Assets];
-        const scopes = getChainIdsCaveat(permission) as string[];
+        const scopes = getChainIdsCaveat(permission);
+        assert(scopes);
 
         // We can cast since the request and result have already been validated.
         const { params: requestedParams } = request as {
