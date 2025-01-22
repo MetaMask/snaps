@@ -41,6 +41,7 @@ import {
   getRpcCaveatOrigins,
   processSnapPermissions,
   getEncryptionEntropy,
+  getChainIdsCaveat,
 } from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
@@ -48,6 +49,11 @@ import type {
   SnapId,
   ComponentOrElement,
   ContentType,
+  OnAssetsLookupResponse,
+  FungibleAssetMetadata,
+  OnAssetsConversionResponse,
+  OnAssetsConversionArguments,
+  AssetConversion,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -97,7 +103,12 @@ import {
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
 } from '@metamask/snaps-utils';
-import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
+import type {
+  Json,
+  NonEmptyArray,
+  SemVerRange,
+  CaipAssetType,
+} from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
@@ -3513,6 +3524,7 @@ export class SnapController extends BaseController<
         const transformedResult = await this.#transformSnapRpcRequestResult(
           snapId,
           handlerType,
+          request,
           result,
         );
 
@@ -3574,12 +3586,14 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID of the snap that produced the result.
    * @param handlerType - The handler type that produced the result.
+   * @param request - The request that returned the result.
    * @param result - The result.
    * @returns The transformed result if applicable, otherwise the original result.
    */
   async #transformSnapRpcRequestResult(
     snapId: SnapId,
     handlerType: HandlerType,
+    request: Record<string, unknown>,
     result: unknown,
   ) {
     switch (handlerType) {
@@ -3601,6 +3615,55 @@ export class SnapController extends BaseController<
           return { ...rest, id };
         }
         return result;
+      }
+      case HandlerType.OnAssetsLookup: {
+        // We know the permissions are guaranteed to be set here.
+        const permissions = this.messagingSystem.call(
+          'PermissionController:getPermissions',
+          snapId,
+        ) as SubjectPermissions<PermissionConstraint>;
+
+        const permission = permissions[SnapEndowments.Assets];
+        const scopes = getChainIdsCaveat(permission) as string[];
+
+        // We can cast since the result has already been validated.
+        const { assets } = result as OnAssetsLookupResponse;
+        const filteredAssets = Object.keys(assets).reduce<
+          Record<CaipAssetType, FungibleAssetMetadata>
+        >((accumulator, assetType) => {
+          const castAssetType = assetType as CaipAssetType;
+          const isValid = scopes.some((scope) =>
+            castAssetType.startsWith(scope),
+          );
+          // Filter out assets for scopes the Snap hasn't registered for.
+          if (isValid) {
+            accumulator[castAssetType] = assets[castAssetType];
+          }
+          return accumulator;
+        }, {});
+        return { assets: filteredAssets };
+      }
+      case HandlerType.OnAssetsConversion: {
+        // We can cast since the request and result have already been validated.
+        const { params: requestedParams } = request as {
+          params: OnAssetsConversionArguments;
+        };
+        const { conversions: requestedConversions } = requestedParams;
+
+        const { conversionRates } = result as OnAssetsConversionResponse;
+
+        const filteredConversionRates = requestedConversions.reduce<
+          Record<CaipAssetType, Record<CaipAssetType, AssetConversion>>
+        >((accumulator, conversion) => {
+          const rate = conversionRates[conversion.from]?.[conversion.to];
+          // Only include rates that were actually requested.
+          if (rate) {
+            accumulator[conversion.from] ??= {};
+            accumulator[conversion.from][conversion.to] = rate;
+          }
+          return accumulator;
+        }, {});
+        return { conversionRates: filteredConversionRates };
       }
       default:
         return result;
