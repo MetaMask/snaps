@@ -1474,7 +1474,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onAssetsLookup export', async () => {
+  it('supports `onAssetsLookup` export', async () => {
     const CODE = `
       module.exports.onAssetsLookup = () => ({ assets: {} });
     `;
@@ -1513,7 +1513,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports onAssetsConversion export', async () => {
+  it('supports `onAssetsConversion` export', async () => {
     const CODE = `
       module.exports.onAssetsConversion = () => ({ conversionRates: {} });
     `;

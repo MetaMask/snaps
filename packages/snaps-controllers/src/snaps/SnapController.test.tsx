@@ -3898,7 +3898,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('throws if OnAssetsLookup handler returns an invalid response', async () => {
+  it('throws if `onAssetsLookup` handler returns an invalid response', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -3960,7 +3960,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('filters out assets that are out of scope for OnAssetsLookup', async () => {
+  it('filters out assets that are out of scope for `onAssetsLookup`', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -4036,7 +4036,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('returns the value when OnAssetsLookup returns a valid response', async () => {
+  it('returns the value when `onAssetsLookup` returns a valid response', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -4128,7 +4128,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('throws if OnAssetsConversion handler returns an invalid response', async () => {
+  it('throws if `onAssetsConversion` handler returns an invalid response', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -4190,7 +4190,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('filters out assets that are out of scope for OnAssetsConversion', async () => {
+  it('filters out assets that are out of scope for `onAssetsConversion`', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
@@ -4264,7 +4264,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
-  it('returns the value when OnAssetsConversion returns a valid response', async () => {
+  it('returns the value when `onAssetsConversion` returns a valid response', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
     const snapController = getSnapController(
