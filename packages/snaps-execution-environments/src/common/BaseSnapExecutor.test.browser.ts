@@ -1496,7 +1496,13 @@ describe('BaseSnapExecutor', () => {
         MOCK_SNAP_ID,
         HandlerType.OnAssetsLookup,
         MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: { assets: [] } },
+        {
+          jsonrpc: '2.0',
+          method: '',
+          params: {
+            assets: ['bip122:000000000019d6689c085ae165831e93/slip44:0'],
+          },
+        },
       ],
     });
 
@@ -1529,7 +1535,18 @@ describe('BaseSnapExecutor', () => {
         MOCK_SNAP_ID,
         HandlerType.OnAssetsConversion,
         MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: { conversions: [] } },
+        {
+          jsonrpc: '2.0',
+          method: '',
+          params: {
+            conversions: [
+              {
+                from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                to: 'eip155:1/slip44:60',
+              },
+            ],
+          },
+        },
       ],
     });
 

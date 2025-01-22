@@ -15,6 +15,8 @@ import {
   assertIsOnSignatureRequestArguments,
   assertIsOnNameLookupRequestArguments,
   assertIsOnUserInputRequestArguments,
+  assertIsOnAssetsLookupRequestArguments,
+  assertIsOnAssetsConversionRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -57,12 +59,12 @@ export function getHandlerArguments(
       return { signature, signatureOrigin };
     }
     case HandlerType.OnAssetsLookup: {
-      // TODO: Assert once we have structs
+      assertIsOnAssetsLookupRequestArguments(request.params);
       const { assets } = request.params;
       return { assets };
     }
     case HandlerType.OnAssetsConversion: {
-      // TODO: Assert once we have structs
+      assertIsOnAssetsConversionRequestArguments(request.params);
       const { conversions } = request.params;
       return { conversions };
     }
