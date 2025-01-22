@@ -1,7 +1,7 @@
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
-  boolean,
+  size,
   literal,
   number,
   object,
@@ -21,7 +21,11 @@ export type FungibleAssetUnit = Infer<typeof FungibleAssetUnitStruct>;
 export const AssetIconUrlStruct = refine(string(), 'Asset URL', (value) => {
   try {
     const url = new URL(value);
-    assert(url.protocol === 'https:');
+    // For now, we require asset URLs to either be base64 SVGs or remote HTTPS URLs
+    assert(
+      url.protocol === 'https:' ||
+        value.startsWith('data:image/svg+xml;base64,'),
+    );
     return true;
   } catch {
     return 'Invalid URL';
@@ -31,10 +35,9 @@ export const AssetIconUrlStruct = refine(string(), 'Asset URL', (value) => {
 export const FungibleAssetMetadataStruct = object({
   name: string(),
   symbol: string(),
-  native: boolean(),
   fungible: literal(true),
   iconUrl: AssetIconUrlStruct,
-  units: array(FungibleAssetUnitStruct),
+  units: size(array(FungibleAssetUnitStruct), 1, Infinity),
 });
 
 export type FungibleAssetMetadata = Infer<typeof FungibleAssetMetadataStruct>;
