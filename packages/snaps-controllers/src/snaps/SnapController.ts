@@ -3617,64 +3617,79 @@ export class SnapController extends BaseController<
         }
         return result;
       }
-      case HandlerType.OnAssetsLookup: {
-        const permissions = this.messagingSystem.call(
-          'PermissionController:getPermissions',
+      case HandlerType.OnAssetsLookup:
+        // We can cast since the request and result have already been validated.
+        return this.#transformOnAssetsLookupResult(
           snapId,
+          request as { params: OnAssetsLookupArguments },
+          result as OnAssetsLookupResponse,
         );
-        // We know the permissions are guaranteed to be set here.
-        assert(permissions);
 
-        const permission = permissions[SnapEndowments.Assets];
-        const scopes = getChainIdsCaveat(permission);
-        assert(scopes);
-
+      case HandlerType.OnAssetsConversion:
         // We can cast since the request and result have already been validated.
-        const { params: requestedParams } = request as {
-          params: OnAssetsLookupArguments;
-        };
-        const { assets: requestedAssets } = requestedParams;
-        const { assets } = result as OnAssetsLookupResponse;
-        const filteredAssets = Object.keys(assets).reduce<
-          Record<CaipAssetType, FungibleAssetMetadata>
-        >((accumulator, assetType) => {
-          const castAssetType = assetType as CaipAssetType;
-          const isValid =
-            scopes.some((scope) => castAssetType.startsWith(scope)) &&
-            requestedAssets.includes(castAssetType);
-          // Filter out unrequested assets and assets for scopes the Snap hasn't registered for.
-          if (isValid) {
-            accumulator[castAssetType] = assets[castAssetType];
-          }
-          return accumulator;
-        }, {});
-        return { assets: filteredAssets };
-      }
-      case HandlerType.OnAssetsConversion: {
-        // We can cast since the request and result have already been validated.
-        const { params: requestedParams } = request as {
-          params: OnAssetsConversionArguments;
-        };
-        const { conversions: requestedConversions } = requestedParams;
-
-        const { conversionRates } = result as OnAssetsConversionResponse;
-
-        const filteredConversionRates = requestedConversions.reduce<
-          Record<CaipAssetType, Record<CaipAssetType, AssetConversion>>
-        >((accumulator, conversion) => {
-          const rate = conversionRates[conversion.from]?.[conversion.to];
-          // Only include rates that were actually requested.
-          if (rate) {
-            accumulator[conversion.from] ??= {};
-            accumulator[conversion.from][conversion.to] = rate;
-          }
-          return accumulator;
-        }, {});
-        return { conversionRates: filteredConversionRates };
-      }
+        return this.#transformOnAssetsConversionResult(
+          request as {
+            params: OnAssetsConversionArguments;
+          },
+          result as OnAssetsConversionResponse,
+        );
       default:
         return result;
     }
+  }
+
+  #transformOnAssetsLookupResult(
+    snapId: SnapId,
+    { params: requestedParams }: { params: OnAssetsLookupArguments },
+    { assets }: OnAssetsLookupResponse,
+  ) {
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
+    // We know the permissions are guaranteed to be set here.
+    assert(permissions);
+
+    const permission = permissions[SnapEndowments.Assets];
+    const scopes = getChainIdsCaveat(permission);
+    assert(scopes);
+
+    const { assets: requestedAssets } = requestedParams;
+
+    const filteredAssets = Object.keys(assets).reduce<
+      Record<CaipAssetType, FungibleAssetMetadata>
+    >((accumulator, assetType) => {
+      const castAssetType = assetType as CaipAssetType;
+      const isValid =
+        scopes.some((scope) => castAssetType.startsWith(scope)) &&
+        requestedAssets.includes(castAssetType);
+      // Filter out unrequested assets and assets for scopes the Snap hasn't registered for.
+      if (isValid) {
+        accumulator[castAssetType] = assets[castAssetType];
+      }
+      return accumulator;
+    }, {});
+    return { assets: filteredAssets };
+  }
+
+  #transformOnAssetsConversionResult(
+    { params: requestedParams }: { params: OnAssetsConversionArguments },
+    { conversionRates }: OnAssetsConversionResponse,
+  ) {
+    const { conversions: requestedConversions } = requestedParams;
+
+    const filteredConversionRates = requestedConversions.reduce<
+      Record<CaipAssetType, Record<CaipAssetType, AssetConversion>>
+    >((accumulator, conversion) => {
+      const rate = conversionRates[conversion.from]?.[conversion.to];
+      // Only include rates that were actually requested.
+      if (rate) {
+        accumulator[conversion.from] ??= {};
+        accumulator[conversion.from][conversion.to] = rate;
+      }
+      return accumulator;
+    }, {});
+    return { conversionRates: filteredConversionRates };
   }
 
   /**
