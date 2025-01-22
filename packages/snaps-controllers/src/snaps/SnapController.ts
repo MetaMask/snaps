@@ -49,7 +49,12 @@ import type {
   ComponentOrElement,
   ContentType,
 } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
+import {
+  AuxiliaryFileEncoding,
+  getErrorMessage,
+  OnAssetsConversionResponseStruct,
+  OnAssetsLookupResponseStruct,
+} from '@metamask/snaps-sdk';
 import type {
   FetchedSnapFiles,
   InitialConnections,
@@ -3653,6 +3658,12 @@ export class SnapController extends BaseController<
       }
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
+        break;
+      case HandlerType.OnAssetsLookup:
+        assertStruct(result, OnAssetsLookupResponseStruct);
+        break;
+      case HandlerType.OnAssetsConversion:
+        assertStruct(result, OnAssetsConversionResponseStruct);
         break;
       default:
         break;

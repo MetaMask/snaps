@@ -1,11 +1,24 @@
 import type { Infer } from '@metamask/superstruct';
-import { number, object, string, optional } from '@metamask/superstruct';
-import type { CaipAssetType } from '@metamask/utils';
+import {
+  number,
+  object,
+  string,
+  optional,
+  record,
+} from '@metamask/superstruct';
+import { CaipAssetTypeStruct, type CaipAssetType } from '@metamask/utils';
 
 export const AssetConversionStruct = object({
   rate: string(),
   conversionTime: number(),
   expirationTime: optional(number()),
+});
+
+export const OnAssetsConversionResponseStruct = object({
+  assets: record(
+    CaipAssetTypeStruct,
+    record(CaipAssetTypeStruct, AssetConversionStruct),
+  ),
 });
 
 export type AssetConversion = Infer<typeof AssetConversionStruct>;

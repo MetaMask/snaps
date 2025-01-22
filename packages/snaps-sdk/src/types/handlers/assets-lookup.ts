@@ -7,8 +7,13 @@ import {
   object,
   refine,
   string,
+  record,
 } from '@metamask/superstruct';
-import { assert, type CaipAssetType } from '@metamask/utils';
+import {
+  assert,
+  CaipAssetTypeStruct,
+  type CaipAssetType,
+} from '@metamask/utils';
 
 export const FungibleAssetUnitStruct = object({
   name: string(),
@@ -38,6 +43,10 @@ export const FungibleAssetMetadataStruct = object({
   fungible: literal(true),
   iconUrl: AssetIconUrlStruct,
   units: size(array(FungibleAssetUnitStruct), 1, Infinity),
+});
+
+export const OnAssetsLookupResponseStruct = object({
+  assets: record(CaipAssetTypeStruct, FungibleAssetMetadataStruct),
 });
 
 export type FungibleAssetMetadata = Infer<typeof FungibleAssetMetadataStruct>;
