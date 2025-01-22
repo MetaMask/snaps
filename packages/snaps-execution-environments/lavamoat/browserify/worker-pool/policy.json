@@ -24,6 +24,7 @@
     },
     "@metamask/snaps-sdk": {
       "globals": {
+        "URL": true,
         "fetch": true
       },
       "packages": {

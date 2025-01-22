@@ -49,6 +49,18 @@ describe('getPermissionSpecifications', () => {
       }),
     ).toMatchInlineSnapshot(`
       {
+        "endowment:assets": {
+          "allowedCaveats": [
+            "chainIds",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:assets",
+          "validator": [Function],
+        },
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",

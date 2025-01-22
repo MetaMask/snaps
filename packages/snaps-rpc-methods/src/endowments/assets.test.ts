@@ -1,7 +1,7 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
-import { assetsEndowmentBuilder } from './assets';
+import { assetsEndowmentBuilder, getAssetsCaveatMapper } from './assets';
 import { SnapEndowments } from './enum';
 
 describe('endowment:assets', () => {
@@ -18,6 +18,23 @@ describe('endowment:assets', () => {
       });
 
       expect(specification.endowmentGetter()).toBeNull();
+    });
+  });
+
+  describe('getAssetsCaveatMapper', () => {
+    it('maps a value to a caveat', () => {
+      expect(
+        getAssetsCaveatMapper({
+          scopes: ['bip122:000000000019d6689c085ae165831e93'],
+        }),
+      ).toStrictEqual({
+        caveats: [
+          {
+            type: SnapCaveatType.ChainIds,
+            value: ['bip122:000000000019d6689c085ae165831e93'],
+          },
+        ],
+      });
     });
   });
 });

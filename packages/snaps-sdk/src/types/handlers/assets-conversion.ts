@@ -15,7 +15,7 @@ export const AssetConversionStruct = object({
 });
 
 export const OnAssetsConversionResponseStruct = object({
-  assets: record(
+  conversionRates: record(
     CaipAssetTypeStruct,
     record(CaipAssetTypeStruct, AssetConversionStruct),
   ),

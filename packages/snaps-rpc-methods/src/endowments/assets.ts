@@ -61,11 +61,7 @@ export const assetsEndowmentBuilder = Object.freeze({
 export function getAssetsCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
-  if (!value || !isObject(value) || Object.keys(value).length === 0) {
-    return { caveats: null };
-  }
-
-  assert(value.scopes);
+  assert(isObject(value) && value.scopes);
 
   return {
     caveats: [

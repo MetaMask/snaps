@@ -54,6 +54,7 @@ import type {
   OnAssetsConversionResponse,
   OnAssetsConversionArguments,
   AssetConversion,
+  OnAssetsLookupArguments,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -3626,16 +3627,20 @@ export class SnapController extends BaseController<
         const permission = permissions[SnapEndowments.Assets];
         const scopes = getChainIdsCaveat(permission) as string[];
 
-        // We can cast since the result has already been validated.
+        // We can cast since the request and result have already been validated.
+        const { params: requestedParams } = request as {
+          params: OnAssetsLookupArguments;
+        };
+        const { assets: requestedAssets } = requestedParams;
         const { assets } = result as OnAssetsLookupResponse;
         const filteredAssets = Object.keys(assets).reduce<
           Record<CaipAssetType, FungibleAssetMetadata>
         >((accumulator, assetType) => {
           const castAssetType = assetType as CaipAssetType;
-          const isValid = scopes.some((scope) =>
-            castAssetType.startsWith(scope),
-          );
-          // Filter out assets for scopes the Snap hasn't registered for.
+          const isValid =
+            scopes.some((scope) => castAssetType.startsWith(scope)) &&
+            requestedAssets.includes(castAssetType);
+          // Filter out unrequested assets and assets for scopes the Snap hasn't registered for.
           if (isValid) {
             accumulator[castAssetType] = assets[castAssetType];
           }
