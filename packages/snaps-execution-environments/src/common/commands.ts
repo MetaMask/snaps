@@ -15,6 +15,8 @@ import {
   assertIsOnSignatureRequestArguments,
   assertIsOnNameLookupRequestArguments,
   assertIsOnUserInputRequestArguments,
+  assertIsOnAssetsLookupRequestArguments,
+  assertIsOnAssetsConversionRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -55,6 +57,16 @@ export function getHandlerArguments(
 
       const { signature, signatureOrigin } = request.params;
       return { signature, signatureOrigin };
+    }
+    case HandlerType.OnAssetsLookup: {
+      assertIsOnAssetsLookupRequestArguments(request.params);
+      const { assets } = request.params;
+      return { assets };
+    }
+    case HandlerType.OnAssetsConversion: {
+      assertIsOnAssetsConversionRequestArguments(request.params);
+      const { conversions } = request.params;
+      return { conversions };
     }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);

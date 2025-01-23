@@ -3898,6 +3898,459 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  describe('onAssetsLookup', () => {
+    it('throws if `onAssetsLookup` handler returns an invalid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            assets: { foo: {} },
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsLookup,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        `Assertion failed: At path: assets.foo -- Expected a string matching`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('filters out assets that are out of scope for `onAssetsLookup`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            assets: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                name: 'Solana',
+                symbol: 'SOL',
+                fungible: true,
+                iconUrl: 'https://metamask.io/sol.svg',
+                units: [
+                  {
+                    name: 'Solana',
+                    symbol: 'SOL',
+                    decimals: 9,
+                  },
+                ],
+              },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsLookup,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              assets: ['bip122:000000000019d6689c085ae165831e93/slip44:0'],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({ assets: {} });
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetsLookup` returns a valid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            assets: {
+              'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                fungible: true,
+                iconUrl: 'https://metamask.io/btc.svg',
+                units: [
+                  {
+                    name: 'Bitcoin',
+                    symbol: 'BTC',
+                    decimals: 8,
+                  },
+                ],
+              },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsLookup,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              assets: ['bip122:000000000019d6689c085ae165831e93/slip44:0'],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        assets: {
+          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+            name: 'Bitcoin',
+            symbol: 'BTC',
+            fungible: true,
+            iconUrl: 'https://metamask.io/btc.svg',
+            units: [
+              {
+                name: 'Bitcoin',
+                symbol: 'BTC',
+                decimals: 8,
+              },
+            ],
+          },
+        },
+      });
+
+      snapController.destroy();
+    });
+  });
+
+  describe('onAssetsConversion', () => {
+    it('throws if `onAssetsConversion` handler returns an invalid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            conversionRates: { foo: {} },
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsConversion,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        `Assertion failed: At path: conversionRates.foo -- Expected a string matching`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('filters out assets that are out of scope for `onAssetsConversion`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            conversionRates: {
+              'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+                'eip155:1/slip44:60': {
+                  rate: '33',
+                  conversionTime: 1737548790,
+                },
+              },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsConversion,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              conversions: [
+                {
+                  from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                  to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                },
+              ],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({ conversionRates: {} });
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetsConversion` returns a valid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            conversionRates: {
+              'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                  rate: '400',
+                  conversionTime: 1737548790,
+                },
+              },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetsConversion,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              conversions: [
+                {
+                  from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                  to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                },
+              ],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        conversionRates: {
+          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              rate: '400',
+              conversionTime: 1737548790,
+            },
+          },
+        },
+      });
+
+      snapController.destroy();
+    });
+  });
+
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();
@@ -5655,7 +6108,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home, endowment:page-settings, endowment:signature-insight.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home, endowment:page-settings, endowment:signature-insight, endowment:assets.',
       );
 
       controller.destroy();

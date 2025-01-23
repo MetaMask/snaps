@@ -16,6 +16,7 @@ import {
   object,
   optional,
   record,
+  size,
   string,
   tuple,
   union,
@@ -23,6 +24,7 @@ import {
 import type { Json, JsonRpcSuccess } from '@metamask/utils';
 import {
   assertStruct,
+  CaipAssetTypeStruct,
   JsonRpcIdStruct,
   JsonRpcParamsStruct,
   JsonRpcSuccessStruct,
@@ -211,6 +213,69 @@ export function assertIsOnNameLookupRequestArguments(
   assertStruct(
     value,
     OnNameLookupRequestArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
+}
+
+export const OnAssetsLookupRequestArgumentsStruct = object({
+  assets: size(array(CaipAssetTypeStruct), 1, Infinity),
+});
+
+export type OnAssetsLookupRequestArguments = Infer<
+  typeof OnAssetsLookupRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnAssetsLookupRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnAssetsLookupRequestArguments}
+ * object.
+ */
+export function assertIsOnAssetsLookupRequestArguments(
+  value: unknown,
+): asserts value is OnAssetsLookupRequestArguments {
+  assertStruct(
+    value,
+    OnAssetsLookupRequestArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
+}
+
+export const OnAssetsConversionRequestArgumentsStruct = object({
+  conversions: size(
+    array(
+      object({
+        from: CaipAssetTypeStruct,
+        to: CaipAssetTypeStruct,
+      }),
+    ),
+    1,
+    Infinity,
+  ),
+});
+
+export type OnAssetsConversionRequestArguments = Infer<
+  typeof OnAssetsConversionRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnAssetsConversionRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnNameLookupRequestArguments}
+ * object.
+ */
+export function assertIsOnAssetsConversionRequestArguments(
+  value: unknown,
+): asserts value is OnAssetsConversionRequestArguments {
+  assertStruct(
+    value,
+    OnAssetsConversionRequestArgumentsStruct,
     'Invalid request params',
     rpcErrors.invalidParams,
   );
