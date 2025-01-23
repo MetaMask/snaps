@@ -356,6 +356,7 @@ describe('getEndowments', () => {
         "Uint16Array",
         "Int32Array",
         "isSecureContext",
+        "Intl",
         "Uint32Array",
         "Float32Array",
         "Float64Array",
