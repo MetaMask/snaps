@@ -581,22 +581,31 @@ export class CronjobController extends BaseController<
     super.destroy();
 
     /* eslint-disable @typescript-eslint/unbound-method */
-    const events = {
-      'SnapController:snapInstalled': this._handleSnapRegisterEvent,
-      'SnapController:snapUninstalled': this._handleSnapUnregisterEvent,
-      'SnapController:snapEnabled': this._handleSnapEnabledEvent,
-      'SnapController:snapDisabled': this._handleSnapDisabledEvent,
-      'SnapController:snapUpdated': this._handleEventSnapUpdated,
-    };
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapInstalled',
+      this._handleSnapRegisterEvent,
+    );
 
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapUninstalled',
+      this._handleSnapUnregisterEvent,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapEnabled',
+      this._handleSnapEnabledEvent,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapDisabled',
+      this._handleSnapDisabledEvent,
+    );
+
+    this.messagingSystem.unsubscribe(
+      'SnapController:snapUpdated',
+      this._handleEventSnapUpdated,
+    );
     /* eslint-enable @typescript-eslint/unbound-method */
-
-    Object.entries(events).forEach(([event, handler]) => {
-      this.messagingSystem.unsubscribe(
-        event as CronjobControllerEvents['type'],
-        handler,
-      );
-    });
 
     this.#snapIds.forEach((snapId) => this.unregister(snapId));
   }
