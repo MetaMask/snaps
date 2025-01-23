@@ -3638,6 +3638,19 @@ export class SnapController extends BaseController<
     }
   }
 
+  /**
+   * Transform an RPC response coming from the `onAssetsLookup` handler.
+   *
+   * This filters out responses that are out of scope for the Snap based on
+   * its permissions and the incoming request.
+   *
+   * @param snapId - The snap ID of the snap that produced the result.
+   * @param request - The request that returned the result.
+   * @param request.params - The parameters for the request.
+   * @param result - The result.
+   * @param result.assets - The assets returned by the Snap.
+   * @returns The transformed result.
+   */
   #transformOnAssetsLookupResult(
     snapId: SnapId,
     { params: requestedParams }: { params: OnAssetsLookupArguments },
@@ -3672,6 +3685,18 @@ export class SnapController extends BaseController<
     return { assets: filteredAssets };
   }
 
+  /**
+   * Transform an RPC response coming from the `onAssetsConversion` handler.
+   *
+   * This filters out responses that are out of scope for the Snap based on
+   * the incoming request.
+   *
+   * @param request - The request that returned the result.
+   * @param request.params - The parameters for the request.
+   * @param result - The result.
+   * @param result.conversionRates - The conversion rates returned by the Snap.
+   * @returns The transformed result.
+   */
   #transformOnAssetsConversionResult(
     { params: requestedParams }: { params: OnAssetsConversionArguments },
     { conversionRates }: OnAssetsConversionResponse,
