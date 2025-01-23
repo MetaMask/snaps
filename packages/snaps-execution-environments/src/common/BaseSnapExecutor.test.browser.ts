@@ -1474,6 +1474,89 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports `onAssetsLookup` export', async () => {
+    const CODE = `
+      module.exports.onAssetsLookup = () => ({ assets: {} });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnAssetsLookup,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: '',
+          params: {
+            assets: ['bip122:000000000019d6689c085ae165831e93/slip44:0'],
+          },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { assets: {} },
+    });
+  });
+
+  it('supports `onAssetsConversion` export', async () => {
+    const CODE = `
+      module.exports.onAssetsConversion = () => ({ conversionRates: {} });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnAssetsConversion,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: '',
+          params: {
+            conversions: [
+              {
+                from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                to: 'eip155:1/slip44:60',
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { conversionRates: {} },
+    });
+  });
+
   it('supports onSignature export', async () => {
     const CODE = `
       module.exports.onSignature = ({ signature, signatureOrigin }) =>
