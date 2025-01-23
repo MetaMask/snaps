@@ -78,11 +78,6 @@ export type CronjobControllerEvents =
   | SnapDisabled
   | CronjobControllerStateChangeEvent;
 
-type BackgroundEventActions =
-  | `${typeof controllerName}:scheduleBackgroundEvent`
-  | `${typeof controllerName}:cancelBackgroundEvent`
-  | `${typeof controllerName}:getBackgroundEvents`;
-
 export type CronjobControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   CronjobControllerActions,
@@ -176,45 +171,51 @@ export class CronjobController extends BaseController<
    */
   #initializeEventListeners() {
     /* eslint-disable @typescript-eslint/unbound-method */
-    const events = {
-      'SnapController:snapInstalled': this._handleSnapRegisterEvent,
-      'SnapController:snapUninstalled': this._handleSnapUnregisterEvent,
-      'SnapController:snapEnabled': this._handleSnapEnabledEvent,
-      'SnapController:snapDisabled': this._handleSnapDisabledEvent,
-      'SnapController:snapUpdated': this._handleEventSnapUpdated,
-    };
-    /* eslint-disable @typescript-eslint/unbound-method */
+    this.messagingSystem.subscribe(
+      'SnapController:snapInstalled',
+      this._handleSnapRegisterEvent,
+    );
 
-    Object.entries(events).forEach(([event, handler]) => {
-      this.messagingSystem.subscribe(
-        event as CronjobControllerEvents['type'],
-        handler,
-      );
-    });
+    this.messagingSystem.subscribe(
+      'SnapController:snapUninstalled',
+      this._handleSnapUnregisterEvent,
+    );
+
+    this.messagingSystem.subscribe(
+      'SnapController:snapEnabled',
+      this._handleSnapEnabledEvent,
+    );
+
+    this.messagingSystem.subscribe(
+      'SnapController:snapDisabled',
+      this._handleSnapDisabledEvent,
+    );
+
+    this.messagingSystem.subscribe(
+      'SnapController:snapUpdated',
+      this._handleEventSnapUpdated,
+    );
+    /* eslint-disable @typescript-eslint/unbound-method */
   }
 
   /**
    * Initialize action handlers.
    */
-  #initializeActionHandlers(): void {
-    const handlers: Record<BackgroundEventActions, (...args: any[]) => any> = {
-      [`${controllerName}:scheduleBackgroundEvent`]: (
-        event: Omit<BackgroundEvent, 'id' | 'scheduledAt'>,
-      ) => this.scheduleBackgroundEvent(event),
-      [`${controllerName}:cancelBackgroundEvent`]: (
-        origin: string,
-        id: string,
-      ) => this.cancelBackgroundEvent(origin, id),
-      [`${controllerName}:getBackgroundEvents`]: (snapId: SnapId) =>
-        this.getBackgroundEvents(snapId),
-    };
+  #initializeActionHandlers() {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:scheduleBackgroundEvent`,
+      (...args) => this.scheduleBackgroundEvent(...args),
+    );
 
-    Object.entries(handlers).forEach(([action, handler]) => {
-      this.messagingSystem.registerActionHandler(
-        action as BackgroundEventActions,
-        handler,
-      );
-    });
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:cancelBackgroundEvent`,
+      (...args) => this.cancelBackgroundEvent(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getBackgroundEvents`,
+      (...args) => this.getBackgroundEvents(...args),
+    );
   }
 
   /**
