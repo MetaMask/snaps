@@ -41,6 +41,7 @@ import {
   getRpcCaveatOrigins,
   processSnapPermissions,
   getEncryptionEntropy,
+  getChainIdsCaveat,
 } from '@metamask/snaps-rpc-methods';
 import type {
   RequestSnapsParams,
@@ -48,8 +49,19 @@ import type {
   SnapId,
   ComponentOrElement,
   ContentType,
+  OnAssetsLookupResponse,
+  FungibleAssetMetadata,
+  OnAssetsConversionResponse,
+  OnAssetsConversionArguments,
+  AssetConversion,
+  OnAssetsLookupArguments,
 } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, getErrorMessage } from '@metamask/snaps-sdk';
+import {
+  AuxiliaryFileEncoding,
+  getErrorMessage,
+  OnAssetsConversionResponseStruct,
+  OnAssetsLookupResponseStruct,
+} from '@metamask/snaps-sdk';
 import type {
   FetchedSnapFiles,
   InitialConnections,
@@ -92,7 +104,12 @@ import {
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
 } from '@metamask/snaps-utils';
-import type { Json, NonEmptyArray, SemVerRange } from '@metamask/utils';
+import type {
+  Json,
+  NonEmptyArray,
+  SemVerRange,
+  CaipAssetType,
+} from '@metamask/utils';
 import {
   assert,
   assertIsJsonRpcRequest,
@@ -3508,6 +3525,7 @@ export class SnapController extends BaseController<
         const transformedResult = await this.#transformSnapRpcRequestResult(
           snapId,
           handlerType,
+          request,
           result,
         );
 
@@ -3569,12 +3587,14 @@ export class SnapController extends BaseController<
    *
    * @param snapId - The snap ID of the snap that produced the result.
    * @param handlerType - The handler type that produced the result.
+   * @param request - The request that returned the result.
    * @param result - The result.
    * @returns The transformed result if applicable, otherwise the original result.
    */
   async #transformSnapRpcRequestResult(
     snapId: SnapId,
     handlerType: HandlerType,
+    request: Record<string, unknown>,
     result: unknown,
   ) {
     switch (handlerType) {
@@ -3597,9 +3617,104 @@ export class SnapController extends BaseController<
         }
         return result;
       }
+      case HandlerType.OnAssetsLookup:
+        // We can cast since the request and result have already been validated.
+        return this.#transformOnAssetsLookupResult(
+          snapId,
+          request as { params: OnAssetsLookupArguments },
+          result as OnAssetsLookupResponse,
+        );
+
+      case HandlerType.OnAssetsConversion:
+        // We can cast since the request and result have already been validated.
+        return this.#transformOnAssetsConversionResult(
+          request as {
+            params: OnAssetsConversionArguments;
+          },
+          result as OnAssetsConversionResponse,
+        );
       default:
         return result;
     }
+  }
+
+  /**
+   * Transform an RPC response coming from the `onAssetsLookup` handler.
+   *
+   * This filters out responses that are out of scope for the Snap based on
+   * its permissions and the incoming request.
+   *
+   * @param snapId - The snap ID of the snap that produced the result.
+   * @param request - The request that returned the result.
+   * @param request.params - The parameters for the request.
+   * @param result - The result.
+   * @param result.assets - The assets returned by the Snap.
+   * @returns The transformed result.
+   */
+  #transformOnAssetsLookupResult(
+    snapId: SnapId,
+    { params: requestedParams }: { params: OnAssetsLookupArguments },
+    { assets }: OnAssetsLookupResponse,
+  ) {
+    const permissions = this.messagingSystem.call(
+      'PermissionController:getPermissions',
+      snapId,
+    );
+    // We know the permissions are guaranteed to be set here.
+    assert(permissions);
+
+    const permission = permissions[SnapEndowments.Assets];
+    const scopes = getChainIdsCaveat(permission);
+    assert(scopes);
+
+    const { assets: requestedAssets } = requestedParams;
+
+    const filteredAssets = Object.keys(assets).reduce<
+      Record<CaipAssetType, FungibleAssetMetadata>
+    >((accumulator, assetType) => {
+      const castAssetType = assetType as CaipAssetType;
+      const isValid =
+        scopes.some((scope) => castAssetType.startsWith(scope)) &&
+        requestedAssets.includes(castAssetType);
+      // Filter out unrequested assets and assets for scopes the Snap hasn't registered for.
+      if (isValid) {
+        accumulator[castAssetType] = assets[castAssetType];
+      }
+      return accumulator;
+    }, {});
+    return { assets: filteredAssets };
+  }
+
+  /**
+   * Transform an RPC response coming from the `onAssetsConversion` handler.
+   *
+   * This filters out responses that are out of scope for the Snap based on
+   * the incoming request.
+   *
+   * @param request - The request that returned the result.
+   * @param request.params - The parameters for the request.
+   * @param result - The result.
+   * @param result.conversionRates - The conversion rates returned by the Snap.
+   * @returns The transformed result.
+   */
+  #transformOnAssetsConversionResult(
+    { params: requestedParams }: { params: OnAssetsConversionArguments },
+    { conversionRates }: OnAssetsConversionResponse,
+  ) {
+    const { conversions: requestedConversions } = requestedParams;
+
+    const filteredConversionRates = requestedConversions.reduce<
+      Record<CaipAssetType, Record<CaipAssetType, AssetConversion>>
+    >((accumulator, conversion) => {
+      const rate = conversionRates[conversion.from]?.[conversion.to];
+      // Only include rates that were actually requested.
+      if (rate) {
+        accumulator[conversion.from] ??= {};
+        accumulator[conversion.from][conversion.to] = rate;
+      }
+      return accumulator;
+    }, {});
+    return { conversionRates: filteredConversionRates };
   }
 
   /**
@@ -3653,6 +3768,12 @@ export class SnapController extends BaseController<
       }
       case HandlerType.OnNameLookup:
         assertStruct(result, OnNameLookupResponseStruct);
+        break;
+      case HandlerType.OnAssetsLookup:
+        assertStruct(result, OnAssetsLookupResponseStruct);
+        break;
+      case HandlerType.OnAssetsConversion:
+        assertStruct(result, OnAssetsConversionResponseStruct);
         break;
       default:
         break;

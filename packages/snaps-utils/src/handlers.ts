@@ -111,6 +111,20 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnAssetsLookup]: {
+    type: HandlerType.OnAssetsLookup,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnAssetsConversion]: {
+    type: HandlerType.OnAssetsConversion,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
 } as const;
 
 export const OnTransactionSeverityResponseStruct = object({

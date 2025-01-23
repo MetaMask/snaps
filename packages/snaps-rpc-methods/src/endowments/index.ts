@@ -2,6 +2,7 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
+import { assetsEndowmentBuilder, getAssetsCaveatMapper } from './assets';
 import {
   createMaxRequestTimeMapper,
   getMaxRequestTimeCaveatMapper,
@@ -60,6 +61,7 @@ export const endowmentPermissionBuilders = {
   [homePageEndowmentBuilder.targetName]: homePageEndowmentBuilder,
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
+  [assetsEndowmentBuilder.targetName]: assetsEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -96,6 +98,9 @@ export const endowmentCaveatMappers: Record<
   [lifecycleHooksEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
   [homePageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
   [settingsPageEndowmentBuilder.targetName]: getMaxRequestTimeCaveatMapper,
+  [assetsEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getAssetsCaveatMapper,
+  ),
 };
 
 // We allow null because a permitted handler does not have an endowment
@@ -111,6 +116,8 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnSettingsPage]: settingsPageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
+  [HandlerType.OnAssetsLookup]: assetsEndowmentBuilder.targetName,
+  [HandlerType.OnAssetsConversion]: assetsEndowmentBuilder.targetName,
 };
 
 export * from './enum';

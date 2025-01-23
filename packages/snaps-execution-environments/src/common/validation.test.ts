@@ -1,6 +1,8 @@
 import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import {
+  assertIsOnAssetsConversionRequestArguments,
+  assertIsOnAssetsLookupRequestArguments,
   assertIsOnNameLookupRequestArguments,
   assertIsOnSignatureRequestArguments,
   assertIsOnTransactionRequestArguments,
@@ -231,4 +233,82 @@ describe('assertIsOnUserInputRequestArguments', () => {
       'Invalid request params:',
     );
   });
+});
+
+describe('assertIsOnAssetsLookupRequestArguments', () => {
+  it.each([
+    { assets: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'] },
+    {
+      assets: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      ],
+    },
+  ])('does not throw for a valid assets lookup param object', (value) => {
+    expect(() => assertIsOnAssetsLookupRequestArguments(value)).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { assets: [] },
+    { assets: ['foo'] },
+  ])(
+    'throws if the value is not a valid assets lookup params object',
+    (value) => {
+      expect(() =>
+        assertIsOnAssetsLookupRequestArguments(value as any),
+      ).toThrow('Invalid request params:');
+    },
+  );
+});
+
+describe('assertIsOnAssetsConversionRequestArguments', () => {
+  it.each([
+    {
+      conversions: [
+        {
+          from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          to: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        },
+      ],
+    },
+  ])('does not throw for a valid assets conversion param object', (value) => {
+    expect(() =>
+      assertIsOnAssetsConversionRequestArguments(value),
+    ).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { conversions: [] },
+    { conversions: ['foo'] },
+    { conversions: [{}] },
+    { conversions: [{ from: 'foo' }] },
+    { conversions: [{ from: 'foo', to: 'foo' }] },
+  ])(
+    'throws if the value is not a valid assets conversion params object',
+    (value) => {
+      expect(() =>
+        assertIsOnAssetsConversionRequestArguments(value as any),
+      ).toThrow('Invalid request params:');
+    },
+  );
 });
