@@ -168,6 +168,10 @@ describe('endowments', () => {
         endowments: { crypto },
         factory: () => crypto,
       },
+      Intl: {
+        endowments: { Intl },
+        factory: () => Intl,
+      },
       mathAttenuated: {
         endowments: { mathAttenuated },
         factory: () => mathAttenuated,
@@ -351,6 +355,10 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['Float64Array'],
+        },
+        {
+          factory: expect.any(Function),
+          names: ['Intl'],
         },
         {
           factory: expect.any(Function),
