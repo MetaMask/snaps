@@ -191,7 +191,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:assets': optional(
     mergeStructs(
       HandlerCaveatsStruct,
-      object({ scopes: size(array(ChainIdsStruct), 1, Infinity) }),
+      object({ scopes: size(array(ChainIdStruct), 1, Infinity) }),
     ),
   ),
   'endowment:cronjob': optional(
