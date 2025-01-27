@@ -189,10 +189,7 @@ export const EmptyObjectStruct = object<EmptyObject>({}) as unknown as Struct<
 /* eslint-disable @typescript-eslint/naming-convention */
 export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:assets': optional(
-    mergeStructs(
-      HandlerCaveatsStruct,
-      object({ scopes: ChainIdsStruct }),
-    ),
+    mergeStructs(HandlerCaveatsStruct, object({ scopes: ChainIdsStruct })),
   ),
   'endowment:cronjob': optional(
     mergeStructs(
