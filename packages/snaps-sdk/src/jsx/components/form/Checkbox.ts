@@ -8,7 +8,7 @@ import { createSnapComponent } from '../../component';
  * @property checked - Whether the checkbox is checked or not.
  * @property label - An optional label for the checkbox.
  * @property variant - An optional variant for the checkbox.
- * @property disabled - Whether the Checkbox is disabled.
+ * @property disabled - Whether the checkbox is disabled.
  */
 export type CheckboxProps = {
   name: string;
@@ -29,7 +29,7 @@ const TYPE = 'Checkbox';
  * @param props.checked - Whether the checkbox is checked or not.
  * @param props.label - An optional label for the checkbox.
  * @param props.variant - An optional variant for the checkbox.
- * @param props.disabled - Whether the Checkbox is disabled.
+ * @param props.disabled - Whether the checkbox is disabled.
  * @returns A checkbox element.
  * @example
  * <Checkbox name="accept-terms" />

@@ -9,7 +9,7 @@ import type { OptionElement } from './Option';
  * state in the form data.
  * @property value - The selected value of the dropdown.
  * @property children - The children of the dropdown.
- * @property disabled - Whether the Dropdown is disabled.
+ * @property disabled - Whether the dropdown is disabled.
  */
 export type DropdownProps = {
   name: string;
@@ -28,7 +28,7 @@ const TYPE = 'Dropdown';
  * state in the form data.
  * @param props.value - The selected value of the dropdown.
  * @param props.children - The children of the dropdown.
- * @param props.disabled - Whether the Dropdown is disabled.
+ * @param props.disabled - Whether the dropdown is disabled.
  * @returns A dropdown element.
  * @example
  * <Dropdown name="dropdown">

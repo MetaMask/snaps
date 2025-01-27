@@ -6,7 +6,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The value of the radio option. This is used to populate the
  * state in the form data.
  * @property children - The text to display.
- * @property disabled - Whether the Radio is disabled.
+ * @property disabled - Whether the radio is disabled.
  */
 type RadioProps = {
   value: string;
@@ -24,7 +24,7 @@ const TYPE = 'Radio';
  * @param props.value - The value of the radio option. This is used to populate the
  * state in the form data.
  * @param props.children - The text to display.
- * @param props.disabled - Whether the Radio is disabled.
+ * @param props.disabled - Whether the radio is disabled.
  * @returns A radio element.
  * @example
  * <RadioGroup name="radio-group">
