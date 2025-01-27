@@ -15,8 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `Skeleton` component ([#3024](https://github.com/MetaMask/snaps/pull/3024))
 - Add border radius prop to `Image` ([#3023](https://github.com/MetaMask/snaps/pull/3023))
 
-- feat: Implement SIP-29 permission and handlers ([#3028](https://github.com/MetaMask/snaps/pull/3028))
-
 ## [6.15.0]
 
 ### Added
