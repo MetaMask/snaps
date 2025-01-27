@@ -907,6 +907,12 @@ describe('DropdownStruct', () => {
       <Option value="option1">Option 1</Option>
       <Option value="option2">Option 2</Option>
     </Dropdown>,
+    <Dropdown name="foo">
+      <Option value="option1">Option 1</Option>
+      <Option value="option2" disabled={true}>
+        Option 2
+      </Option>
+    </Dropdown>,
   ])('validates a dropdown element', (value) => {
     expect(is(value, DropdownStruct)).toBe(true);
   });

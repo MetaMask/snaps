@@ -8,10 +8,12 @@ import { Dropdown } from './Dropdown';
  * @property value - The value of the dropdown option. This is used to populate the
  * state in the form data.
  * @property children - The text to display.
+ * @property disabled - Whether the option is disabled.
  */
 type OptionProps = {
   value: string;
   children: string;
+  disabled?: boolean;
 };
 
 const TYPE = 'Option';
@@ -24,6 +26,7 @@ const TYPE = 'Option';
  * @param props.value - The value of the dropdown option. This is used to populate the
  * state in the form data.
  * @param props.children - The text to display.
+ * @param props.disabled - Whether the option is disabled.
  * @returns A dropdown option element.
  * @example
  * <Dropdown name="dropdown">

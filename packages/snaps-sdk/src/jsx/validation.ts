@@ -344,6 +344,7 @@ export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
 export const OptionStruct: Describe<OptionElement> = element('Option', {
   value: string(),
   children: string(),
+  disabled: optional(boolean()),
 });
 
 /**
