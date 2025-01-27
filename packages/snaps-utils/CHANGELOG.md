@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.9.0]
+
+### Added
+
+- Add support for `onAssetsLookup` and `onAssetsConversion` handlers ([#3028](https://github.com/MetaMask/snaps/pull/3028))
+- Add `Intl` as a default global ([#3035](https://github.com/MetaMask/snaps/pull/3035))
+
 ## [8.8.0]
 
 ### Added
@@ -515,7 +522,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.0...HEAD
+[8.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.8.0...@metamask/snaps-utils@8.9.0
 [8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...@metamask/snaps-utils@8.8.0
 [8.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.1...@metamask/snaps-utils@8.7.0
 [8.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.6.0...@metamask/snaps-utils@8.6.1
