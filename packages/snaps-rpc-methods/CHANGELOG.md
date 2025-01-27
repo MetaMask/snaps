@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.10.0]
+
 ### Uncategorized
 
 - feat: Implement SIP-29 permission and handlers ([#3028](https://github.com/MetaMask/snaps-skunkworks.git/pull/3028))
@@ -373,7 +375,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.9.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.10.0...HEAD
+[11.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.9.1...@metamask/snaps-rpc-methods@11.10.0
 [11.9.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.9.0...@metamask/snaps-rpc-methods@11.9.1
 [11.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0
 [11.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.7.0...@metamask/snaps-rpc-methods@11.8.0
