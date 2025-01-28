@@ -6,6 +6,7 @@ import { createSnapComponent } from '../component';
  * The props of the {@link Avatar} component.
  *
  * @property address - The address to display. This should be a valid CAIP-10 address.
+ * @property size - The size of the avatar. Can be `sm`, `md`, or `lg`. Defaults to `md`.
  */
 export type AvatarProps = {
   address: CaipAccountId;
@@ -21,6 +22,7 @@ const TYPE = 'Avatar';
  *
  * @param props - The props of the component.
  * @param props.address - The address to display. This should be a valid CAIP-10 address.
+ * @param props.size - The size of the avatar. Can be `sm`, `md`, or `lg`. Defaults to `md`.
  * @returns An avatar element.
  * @example
  * <Avatar address="eip155:1:0x1234567890123456789012345678901234567890" />
