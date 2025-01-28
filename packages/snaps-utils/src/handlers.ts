@@ -124,19 +124,21 @@ export const SNAP_EXPORTS = {
   [HandlerType.OnAssetsConversion]: {
     type: HandlerType.OnAssetsConversion,
     required: true,
-    validator: (snapExport: unknown): snapExport is OnAssetsConversionHandler => {
+    validator: (
+      snapExport: unknown,
+    ): snapExport is OnAssetsConversionHandler => {
       return typeof snapExport === 'function';
     },
   },
   [HandlerType.OnProtocolRequest]: {
     type: HandlerType.OnProtocolRequest,
-    required: false,
+    required: true,
     validator: (
       snapExport: unknown,
     ): snapExport is OnProtocolRequestHandler => {
       return typeof snapExport === 'function';
     },
-  }
+  },
 } as const;
 
 export const OnTransactionSeverityResponseStruct = object({
