@@ -52,12 +52,17 @@ type InternalAccount = {
 };
 
 type SnapKeyring = {
-  submitRequest: (request: Record<string, Json>) => Promise<Json>;
-  resolveAccountAddress: (options: {
-    snapId: SnapId;
+  submitRequest: (request: {
+    id: string;
+    method: string;
+    params?: Json[] | Record<string, Json>;
     scope: Caip2ChainId;
-    request: Json;
-  }) => Promise<{ address: CaipAccountId } | null>;
+  }) => Promise<Json>;
+  resolveAccountAddress: (
+    snapId: SnapId,
+    scope: Caip2ChainId,
+    request: Json,
+  ) => Promise<{ address: CaipAccountId } | null>;
 };
 
 // Expecting a bound function that calls KeyringController.withKeyring selecting the Snap keyring
@@ -140,13 +145,8 @@ export class MultichainRouter {
     request: JsonRpcRequest,
   ) {
     try {
-      // TODO: Decide if we should call this using another abstraction.
       const result = (await this.#withSnapKeyring(async (keyring) =>
-        keyring.resolveAccountAddress({
-          snapId,
-          request,
-          scope,
-        }),
+        keyring.resolveAccountAddress(snapId, scope, request),
       )) as { address: CaipAccountId } | null;
       const address = result?.address;
       return address ? parseCaipAccountId(address).address : null;
@@ -263,15 +263,12 @@ export class MultichainRouter {
       request,
     );
     if (accountSnap) {
-      // TODO: Decide on API for this.
       return this.#withSnapKeyring(async (keyring) =>
         keyring.submitRequest({
           id: accountSnap.accountId,
           scope,
-          request: {
-            method,
-            params: params as JsonRpcParams,
-          },
+          method,
+          params: params as JsonRpcParams,
         }),
       );
     }
