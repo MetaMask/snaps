@@ -39,6 +39,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: DataView, name: 'DataView' },
   { endowment: Float32Array, name: 'Float32Array' },
   { endowment: Float64Array, name: 'Float64Array' },
+  { endowment: Intl, name: 'Intl' },
   { endowment: Int8Array, name: 'Int8Array' },
   { endowment: Int16Array, name: 'Int16Array' },
   { endowment: Int32Array, name: 'Int32Array' },
@@ -48,6 +49,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: Uint16Array, name: 'Uint16Array' },
   { endowment: Uint32Array, name: 'Uint32Array' },
   { endowment: URL, name: 'URL' },
+  { endowment: URLSearchParams, name: 'URLSearchParams' },
   { endowment: WebAssembly, name: 'WebAssembly' },
 ];
 

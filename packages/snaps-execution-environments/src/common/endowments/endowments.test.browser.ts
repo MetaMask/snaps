@@ -92,6 +92,10 @@ describe('endowments', () => {
         endowments: { URL },
         factory: () => new URL('https://metamask.io/snaps/'),
       },
+      URLSearchParams: {
+        endowments: { URLSearchParams },
+        factory: () => new URLSearchParams('https://metamask.io/snaps?foo=bar'),
+      },
       Int8Array: {
         endowments: { Int8Array },
         factory: () => new Int8Array(),
@@ -167,6 +171,10 @@ describe('endowments', () => {
       crypto: {
         endowments: { crypto },
         factory: () => crypto,
+      },
+      Intl: {
+        endowments: { Intl },
+        factory: () => Intl,
       },
       mathAttenuated: {
         endowments: { mathAttenuated },
@@ -354,6 +362,10 @@ describe('endowments', () => {
         },
         {
           factory: expect.any(Function),
+          names: ['Intl'],
+        },
+        {
+          factory: expect.any(Function),
           names: ['Int8Array'],
         },
         {
@@ -376,6 +388,7 @@ describe('endowments', () => {
         { factory: expect.any(Function), names: ['Uint16Array'] },
         { factory: expect.any(Function), names: ['Uint32Array'] },
         { factory: expect.any(Function), names: ['URL'] },
+        { factory: expect.any(Function), names: ['URLSearchParams'] },
         { factory: expect.any(Function), names: ['WebAssembly'] },
       ]);
     });
