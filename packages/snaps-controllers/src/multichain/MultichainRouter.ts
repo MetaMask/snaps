@@ -216,6 +216,7 @@ export class MultichainRouter {
         'PermissionController:getPermissions',
         snap.id,
       );
+
       if (permissions && hasProperty(permissions, SnapEndowments.Protocol)) {
         const permission = permissions[SnapEndowments.Protocol];
         const scopes = getProtocolCaveatScopes(permission);
@@ -262,6 +263,7 @@ export class MultichainRouter {
       scope,
       request,
     );
+
     if (accountSnap) {
       return this.#withSnapKeyring(async (keyring) =>
         keyring.submitRequest({
@@ -279,6 +281,7 @@ export class MultichainRouter {
     const protocolSnap = protocolSnaps.find((snap) =>
       snap.methods.includes(method),
     );
+
     if (protocolSnap) {
       return this.#messenger.call('SnapController:handleRequest', {
         snapId: protocolSnap.snapId,
