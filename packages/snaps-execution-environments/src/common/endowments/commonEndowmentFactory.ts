@@ -49,6 +49,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: Uint16Array, name: 'Uint16Array' },
   { endowment: Uint32Array, name: 'Uint32Array' },
   { endowment: URL, name: 'URL' },
+  { endowment: URLSearchParams, name: 'URLSearchParams' },
   { endowment: WebAssembly, name: 'WebAssembly' },
 ];
 

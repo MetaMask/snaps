@@ -66,4 +66,41 @@ describe('Dropdown', () => {
       key: null,
     });
   });
+
+  it('renders disabled dropdown with options', () => {
+    const result = (
+      <Dropdown name="dropdown" value="foo" disabled={true}>
+        <Option value="foo">Foo</Option>
+        <Option value="bar">Bar</Option>
+      </Dropdown>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Dropdown',
+      props: {
+        name: 'dropdown',
+        value: 'foo',
+        disabled: true,
+        children: [
+          {
+            type: 'Option',
+            props: {
+              value: 'foo',
+              children: 'Foo',
+            },
+            key: null,
+          },
+          {
+            type: 'Option',
+            props: {
+              value: 'bar',
+              children: 'Bar',
+            },
+            key: null,
+          },
+        ],
+      },
+      key: null,
+    });
+  });
 });

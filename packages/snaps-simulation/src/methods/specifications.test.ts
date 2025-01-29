@@ -347,6 +347,7 @@ describe('getEndowments', () => {
         "TextDecoder",
         "TextEncoder",
         "URL",
+        "URLSearchParams",
         "setInterval",
         "clearInterval",
         "Int8Array",

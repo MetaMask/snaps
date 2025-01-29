@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.16.0]
+
+### Added
+
+- Add types for `onAssetsLookup` and `onAssetsConversion` handlers ([#3028](https://github.com/MetaMask/snaps/pull/3028))
+- Add `Skeleton` component ([#3024](https://github.com/MetaMask/snaps/pull/3024))
+- Add border radius prop to `Image` ([#3023](https://github.com/MetaMask/snaps/pull/3023))
+
 ## [6.15.0]
 
 ### Added
@@ -463,7 +471,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...HEAD
+[6.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
 [6.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
 [6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0
 [6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
