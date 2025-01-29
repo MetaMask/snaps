@@ -53,7 +53,7 @@ type InternalAccount = {
 
 type SnapKeyring = {
   submitRequest: (request: {
-    id: string;
+    account: string;
     method: string;
     params?: Json[] | Record<string, Json>;
     scope: Caip2ChainId;
@@ -305,7 +305,7 @@ export class MultichainRouter {
     if (accountId) {
       return this.#withSnapKeyring(async (keyring) =>
         keyring.submitRequest({
-          id: accountId,
+          account: accountId,
           scope,
           method,
           params: params as JsonRpcParams,
