@@ -139,6 +139,17 @@ export class MultichainRouter {
     );
   }
 
+  /**
+   * Attempts to resolve the account address to use for a given request by inspecting the request itself.
+   *
+   * The request is sent to to an account Snap via the SnapKeyring that will attempt this resolution.
+   *
+   * @param snapId - The ID of the Snap to send the request to.
+   * @param scope - The CAIP-2 scope for the request.
+   * @param request - The JSON-RPC request.
+   * @returns The resolved address if found, otherwise null.
+   * @throws If the invocation of the SnapKeyring fails.
+   */
   async #resolveRequestAddress(
     snapId: SnapId,
     scope: CaipChainId,
@@ -155,7 +166,21 @@ export class MultichainRouter {
     }
   }
 
-  async #getAccountSnap(
+  /**
+   * Get the account ID of the account that should service the RPC request via an account Snap.
+   *
+   * This function checks whether any accounts exist that can service a given request by
+   * using a combination of the resolveAccountAddress functionality and the connected accounts.
+   *
+   * If an account is expected to service this request but none is found, the function will throw.
+   *
+   * @param connectedAddresses - The CAIP-10 addresses connected to the requesting origin.
+   * @param scope - The CAIP-2 scope for the request.
+   * @param request - The JSON-RPC request.
+   * @returns An account ID if found, otherwise null.
+   * @throws If no account is found, but the accounts exist that could service the request.
+   */
+  async #getSnapAccountId(
     connectedAddresses: CaipAccountId[],
     scope: CaipChainId,
     request: JsonRpcRequest,
@@ -163,12 +188,14 @@ export class MultichainRouter {
     const accounts = this.#messenger
       .call('AccountsController:listMultichainAccounts', scope)
       .filter(
-        (account: InternalAccount) =>
-          account.metadata.snap?.enabled &&
+        (
+          account: InternalAccount,
+        ): account is InternalAccount & {
+          metadata: Required<InternalAccount['metadata']>;
+        } =>
+          Boolean(account.metadata.snap?.enabled) &&
           account.methods.includes(request.method),
-      ) as (InternalAccount & {
-      metadata: Required<InternalAccount['metadata']>;
-    })[];
+      );
 
     // If no accounts can service the request, return null.
     if (accounts.length === 0) {
@@ -201,12 +228,18 @@ export class MultichainRouter {
       throw rpcErrors.invalidParams();
     }
 
-    return {
-      accountId: selectedAccount.id,
-      snapId: selectedAccount.metadata.snap.id,
-    };
+    return selectedAccount.id;
   }
 
+  /**
+   * Get all protocol Snaps that can service a given CAIP-2 scope.
+   *
+   * Protocol Snaps are deemed fit to service a scope if they are runnable
+   * and have the proper permissions set for the scope.
+   *
+   * @param scope - A CAIP-2 scope.
+   * @returns A list of all the protocol Snaps available and their RPC methods.
+   */
   #getProtocolSnaps(scope: CaipChainId) {
     const allSnaps = this.#messenger.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(allSnaps);
@@ -258,16 +291,16 @@ export class MultichainRouter {
     const { method, params } = request;
 
     // If the RPC request can be serviced by an account Snap, route it there.
-    const accountSnap = await this.#getAccountSnap(
+    const accountId = await this.#getSnapAccountId(
       connectedAddresses,
       scope,
       request,
     );
 
-    if (accountSnap) {
+    if (accountId) {
       return this.#withSnapKeyring(async (keyring) =>
         keyring.submitRequest({
-          id: accountSnap.accountId,
+          id: accountId,
           scope,
           method,
           params: params as JsonRpcParams,
