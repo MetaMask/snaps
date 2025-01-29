@@ -266,7 +266,7 @@ describe('MultichainRouter', () => {
             },
           },
         }),
-      ).rejects.toThrow('Invalid method parameter(s)');
+      ).rejects.toThrow('No available account found for request.');
     });
   });
 

@@ -13,7 +13,7 @@ import type {
   CaipChainId,
   JsonRpcParams,
 } from '@metamask/utils';
-import { hasProperty, parseCaipAccountId } from '@metamask/utils';
+import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 
 import { getRunnableSnaps } from '../snaps';
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
@@ -225,7 +225,9 @@ export class MultichainRouter {
     );
 
     if (!selectedAccount) {
-      throw rpcErrors.invalidParams();
+      throw rpcErrors.invalidParams({
+        message: 'No available account found for request.',
+      });
     }
 
     return selectedAccount.id;
@@ -288,6 +290,9 @@ export class MultichainRouter {
     scope: CaipChainId;
     request: JsonRpcRequest;
   }): Promise<unknown> {
+    // Explicitly block EVM scopes, just in case.
+    assert(!scope.startsWith('eip155') && !scope.startsWith('wallet:eip155'));
+
     const { method, params } = request;
 
     // If the RPC request can be serviced by an account Snap, route it there.
