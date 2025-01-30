@@ -289,7 +289,7 @@ export class MultichainRouter {
     origin: string;
     scope: CaipChainId;
     request: JsonRpcRequest;
-  }): Promise<unknown> {
+  }): Promise<Json> {
     // Explicitly block EVM scopes, just in case.
     assert(!scope.startsWith('eip155') && !scope.startsWith('wallet:eip155'));
 
@@ -332,7 +332,7 @@ export class MultichainRouter {
           },
         },
         handler: HandlerType.OnProtocolRequest,
-      });
+      }) as Promise<Json>;
     }
 
     // If no compatible account or protocol Snaps were found, throw.
