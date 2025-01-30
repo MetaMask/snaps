@@ -10029,12 +10029,20 @@ describe('SnapController', () => {
         id: MOCK_SNAP_ID,
         origin: MOCK_ORIGIN,
       });
+      const mockSnap2 = getMockSnapData({
+        id: `${MOCK_SNAP_ID}2` as SnapId,
+        origin: MOCK_ORIGIN,
+        enabled: false,
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
           state: {
-            snaps: getPersistedSnapsState(mockSnap.stateObject),
+            snaps: getPersistedSnapsState(
+              mockSnap.stateObject,
+              mockSnap2.stateObject,
+            ),
           },
         }),
       );

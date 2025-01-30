@@ -131,7 +131,6 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 import semver from 'semver';
 
-import { getRunnableSnaps } from '..';
 import { forceStrict, validateMachine } from '../fsm';
 import type { CreateInterface, GetInterface } from '../interface';
 import { log } from '../logging';
@@ -172,6 +171,7 @@ import type {
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
+import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
