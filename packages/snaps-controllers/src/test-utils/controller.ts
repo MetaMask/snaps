@@ -499,6 +499,7 @@ export const getSnapControllerMessenger = (
       'SnapController:disable',
       'SnapController:remove',
       'SnapController:getAll',
+      'SnapController:getRunnableSnaps',
       'SnapController:getPermitted',
       'SnapController:install',
       'SnapController:incrementActiveReferences',

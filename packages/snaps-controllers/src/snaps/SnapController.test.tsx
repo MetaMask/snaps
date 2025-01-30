@@ -10022,6 +10022,38 @@ describe('SnapController', () => {
     });
   });
 
+  describe('SnapController:getRunnableSnaps', () => {
+    it('calls SnapController.getRunnableSnaps()', () => {
+      const messenger = getSnapControllerMessenger();
+      const mockSnap = getMockSnapData({
+        id: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+      });
+      const mockSnap2 = getMockSnapData({
+        id: `${MOCK_SNAP_ID}2` as SnapId,
+        origin: MOCK_ORIGIN,
+        enabled: false,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(
+              mockSnap.stateObject,
+              mockSnap2.stateObject,
+            ),
+          },
+        }),
+      );
+
+      const result = messenger.call('SnapController:getRunnableSnaps');
+      expect(result).toStrictEqual([getTruncatedSnap()]);
+
+      snapController.destroy();
+    });
+  });
+
   describe('SnapController:install', () => {
     it('calls SnapController.installSnaps()', async () => {
       const messenger = getSnapControllerMessenger();

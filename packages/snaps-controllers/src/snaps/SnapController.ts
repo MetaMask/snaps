@@ -171,6 +171,7 @@ import type {
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
+import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
 
 export const controllerName = 'SnapController';
@@ -406,6 +407,11 @@ export type GetAllSnaps = {
   handler: SnapController['getAllSnaps'];
 };
 
+export type GetRunnableSnaps = {
+  type: `${typeof controllerName}:getRunnableSnaps`;
+  handler: SnapController['getRunnableSnaps'];
+};
+
 export type StopAllSnaps = {
   type: `${typeof controllerName}:stopAllSnaps`;
   handler: SnapController['stopAllSnaps'];
@@ -465,6 +471,7 @@ export type SnapControllerActions =
   | GetPermittedSnaps
   | InstallSnaps
   | GetAllSnaps
+  | GetRunnableSnaps
   | IncrementActiveReferences
   | DecrementActiveReferences
   | GetRegistryMetadata
@@ -1148,6 +1155,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getAll`,
       (...args) => this.getAllSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getRunnableSnaps`,
+      (...args) => this.getRunnableSnaps(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2385,6 +2397,15 @@ export class SnapController extends BaseController<
    */
   getAllSnaps(): TruncatedSnap[] {
     return Object.values(this.state.snaps).map(truncateSnap);
+  }
+
+  /**
+   * Gets all runnable snaps.
+   *
+   * @returns All runnable snaps.
+   */
+  getRunnableSnaps(): TruncatedSnap[] {
+    return getRunnableSnaps(this.getAllSnaps());
   }
 
   /**
