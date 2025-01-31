@@ -25,7 +25,7 @@ export const MOCK_BTC_ACCOUNTS = [
         name: 'Bitcoin',
       },
     },
-    methods: ['btc_sendmany'],
+    methods: ['sendBitcoin'],
     options: { index: 0, scope: BTC_CAIP2 },
     type: 'bip122:p2wpkh',
   },

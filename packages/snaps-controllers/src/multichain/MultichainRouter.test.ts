@@ -51,7 +51,7 @@ describe('MultichainRouter', () => {
         connectedAddresses: BTC_CONNECTED_ACCOUNTS,
         scope: BTC_CAIP2,
         request: {
-          method: 'btc_sendmany',
+          method: 'sendBitcoin',
           params: {
             message: 'foo',
           },

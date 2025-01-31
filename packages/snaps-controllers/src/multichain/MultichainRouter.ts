@@ -6,14 +6,18 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
-import type { Caip2ChainId } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
   CaipAccountId,
   CaipChainId,
   JsonRpcParams,
 } from '@metamask/utils';
-import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
+import {
+  assert,
+  hasProperty,
+  KnownCaipNamespace,
+  parseCaipAccountId,
+} from '@metamask/utils';
 
 import { getRunnableSnaps } from '../snaps';
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
@@ -56,11 +60,11 @@ type SnapKeyring = {
     account: string;
     method: string;
     params?: Json[] | Record<string, Json>;
-    scope: Caip2ChainId;
+    scope: CaipChainId;
   }) => Promise<Json>;
   resolveAccountAddress: (
     snapId: SnapId,
-    scope: Caip2ChainId,
+    scope: CaipChainId,
     request: Json,
   ) => Promise<{ address: CaipAccountId } | null>;
 };
@@ -156,9 +160,9 @@ export class MultichainRouter {
     request: JsonRpcRequest,
   ) {
     try {
-      const result = (await this.#withSnapKeyring(async (keyring) =>
+      const result = await this.#withSnapKeyring(async (keyring) =>
         keyring.resolveAccountAddress(snapId, scope, request),
-      )) as { address: CaipAccountId } | null;
+      );
       const address = result?.address;
       return address ? parseCaipAccountId(address).address : null;
     } catch {
@@ -291,7 +295,10 @@ export class MultichainRouter {
     request: JsonRpcRequest;
   }): Promise<Json> {
     // Explicitly block EVM scopes, just in case.
-    assert(!scope.startsWith('eip155') && !scope.startsWith('wallet:eip155'));
+    assert(
+      !scope.startsWith(KnownCaipNamespace.Eip155) &&
+        !scope.startsWith('wallet:eip155'),
+    );
 
     const { method, params } = request;
 
@@ -340,6 +347,18 @@ export class MultichainRouter {
   }
 
   /**
+   * Get a list of metadata for supported accounts for a given scope from the client.
+   *
+   * @param scope - The CAIP-2 scope.
+   * @returns A list of metadata for the supported accounts.
+   */
+  #getSupportedAccountsMetadata(scope: CaipChainId): InternalAccount[] {
+    return this.#messenger
+      .call('AccountsController:listMultichainAccounts', scope)
+      .filter((account: InternalAccount) => account.metadata.snap?.enabled);
+  }
+
+  /**
    * Get a list of supported methods for a given scope.
    * This combines both protocol and account Snaps supported methods.
    *
@@ -347,10 +366,9 @@ export class MultichainRouter {
    * @returns A list of supported methods.
    */
   getSupportedMethods(scope: CaipChainId): string[] {
-    const accountMethods = this.#messenger
-      .call('AccountsController:listMultichainAccounts', scope)
-      .filter((account: InternalAccount) => account.metadata.snap?.enabled)
-      .flatMap((account) => account.methods);
+    const accountMethods = this.#getSupportedAccountsMetadata(scope).flatMap(
+      (account) => account.methods,
+    );
 
     const protocolMethods = this.#getProtocolSnaps(scope).flatMap(
       (snap) => snap.methods,
@@ -366,10 +384,9 @@ export class MultichainRouter {
    * @returns A list of CAIP-10 addresses.
    */
   getSupportedAccounts(scope: CaipChainId): string[] {
-    return this.#messenger
-      .call('AccountsController:listMultichainAccounts', scope)
-      .filter((account: InternalAccount) => account.metadata.snap?.enabled)
-      .map((account) => `${scope}:${account.address}`);
+    return this.#getSupportedAccountsMetadata(scope).map(
+      (account) => `${scope}:${account.address}`,
+    );
   }
 
   /**
