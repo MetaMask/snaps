@@ -825,7 +825,7 @@ const name = 'SnapController';
  */
 
 export class SnapController extends BaseController<
-  string,
+  typeof name,
   SnapControllerState,
   SnapControllerMessenger
 > {
