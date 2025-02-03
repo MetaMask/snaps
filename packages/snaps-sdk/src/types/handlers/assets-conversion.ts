@@ -5,6 +5,7 @@ import {
   string,
   optional,
   record,
+  nullable,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipAssetType } from '@metamask/utils';
 
@@ -17,7 +18,7 @@ export const AssetConversionStruct = object({
 export const OnAssetsConversionResponseStruct = object({
   conversionRates: record(
     CaipAssetTypeStruct,
-    record(CaipAssetTypeStruct, AssetConversionStruct),
+    record(CaipAssetTypeStruct, nullable(AssetConversionStruct)),
   ),
 });
 
