@@ -22,6 +22,7 @@ import type {
   SelectorOptionElement,
   AssetSelectorElement,
   AddressInputElement,
+  AccountSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
@@ -97,6 +98,8 @@ type GetAccountByAddress = (
   address: CaipAccountId,
 ) => InternalAccount | undefined;
 
+type GetSelectedAccount = () => InternalAccount | undefined;
+
 /**
  * Data getters for elements.
  * This is used to get data from elements that is not directly accessible from the element itself.
@@ -107,6 +110,7 @@ type GetAccountByAddress = (
 type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
+  getSelectedAccount: GetSelectedAccount;
 };
 
 /**
@@ -204,6 +208,23 @@ export function getDefaultAsset(
 }
 
 /**
+ * Create a list of CAIP account IDs from an address and a list of scopes.
+ *
+ * @param address - The address to create the account IDs from.
+ * @param scopes - The scopes to create the account IDs from.
+ * @returns The list of CAIP account IDs.
+ */
+export function createAddressList(
+  address: string,
+  scopes: CaipChainId[],
+): CaipAccountId[] {
+  return scopes.map((scope) => {
+    const { namespace, reference } = parseCaipChainId(scope);
+    return toCaipAccountId(namespace, reference, address);
+  });
+}
+
+/**
  * Construct default state for a component.
  *
  * This function is meant to be used inside constructInputState to account
@@ -222,7 +243,8 @@ function constructComponentSpecificDefaultState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -239,6 +261,20 @@ function constructComponentSpecificDefaultState(
     case 'Selector': {
       const children = getJsxChildren(element) as SelectorOptionElement[];
       return children[0]?.props.value;
+    }
+
+    case 'AccountSelector': {
+      const account = elementDataGetters.getSelectedAccount();
+
+      if (!account) {
+        return null;
+      }
+
+      const { id, address, scopes } = account;
+
+      const addresses = createAddressList(address, scopes);
+
+      return { accountId: id, addresses };
     }
 
     case 'Checkbox':
@@ -294,18 +330,21 @@ export function getAssetSelectorStateValue(
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
+ * @param elementDataGetters.getAccountByAddress - A function to get an account by its address.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
   element:
+    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
-  { getAssetsState }: ElementDataGetters,
+    | AddressInputElement
+    | AccountSelectorElement,
+  { getAssetsState, getAccountByAddress }: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
@@ -323,6 +362,24 @@ function getComponentStateValue(
       const { namespace, reference } = parseCaipChainId(element.props.chainId);
       return toCaipAccountId(namespace, reference, element.props.value);
     }
+    case 'AccountSelector': {
+      if (!element.props.selectedAddress) {
+        return undefined;
+      }
+
+      const account = getAccountByAddress(element.props.selectedAddress);
+
+      if (!account) {
+        return undefined;
+      }
+
+      const { id, address, scopes } = account;
+
+      const addresses = createAddressList(address, scopes);
+
+      return { accountId: id, addresses };
+    }
+
     default:
       return element.props.value;
   }
@@ -340,6 +397,7 @@ function getComponentStateValue(
 function constructInputState(
   oldState: InterfaceState,
   element:
+    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement
@@ -347,7 +405,8 @@ function constructInputState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
