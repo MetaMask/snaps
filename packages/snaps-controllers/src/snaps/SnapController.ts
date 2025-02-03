@@ -815,8 +815,6 @@ function truncateSnap(snap: Snap): TruncatedSnap {
   return truncatedSnap as TruncatedSnap;
 }
 
-const name = 'SnapController';
-
 /*
  * A snap is initialized in three phases:
  * - Add: Loads the snap from a remote source and parses it.
@@ -825,7 +823,7 @@ const name = 'SnapController';
  */
 
 export class SnapController extends BaseController<
-  typeof name,
+  typeof controllerName,
   SnapControllerState,
   SnapControllerMessenger
 > {
@@ -925,7 +923,7 @@ export class SnapController extends BaseController<
           anonymous: false,
         },
       },
-      name,
+      name: controllerName,
       state: {
         ...defaultState,
         ...state,
