@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.14.0]
 
-### Uncategorized
+### Added
 
 - Add `onProtocolRequest` handler ([#2875](https://github.com/MetaMask/snaps/pull/2875))
 - Add `URLSearchParams` as a default endowment ([#3047](https://github.com/MetaMask/snaps/pull/3047))
