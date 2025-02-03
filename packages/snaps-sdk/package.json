@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-sdk",
-  "version": "6.16.0",
+  "version": "6.17.0",
   "description": "A library containing the core functionality for building MetaMask Snaps",
   "keywords": [
     "MetaMask",

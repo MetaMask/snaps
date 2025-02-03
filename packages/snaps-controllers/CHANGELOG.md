@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.19.0]
+
+### Added
+
+- Add `MultichainRouter` for SIP-26 ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+- Add `onProtocolRequest` support for SIP-26 ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+- Add `getRunnableSnaps` action to `SnapController` ([#3049](https://github.com/MetaMask/snaps/pull/3049))
+
+### Fixed
+
+- Set name correctly for `SnapController` ([#3052](https://github.com/MetaMask/snaps/pull/3052), [#3054](https://github.com/MetaMask/snaps/pull/3054))
+
 ## [9.18.0]
 
 ### Added
@@ -611,7 +623,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...HEAD
+[9.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.18.0...@metamask/snaps-controllers@9.19.0
 [9.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.17.0...@metamask/snaps-controllers@9.18.0
 [9.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.16.0...@metamask/snaps-controllers@9.17.0
 [9.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.15.0...@metamask/snaps-controllers@9.16.0

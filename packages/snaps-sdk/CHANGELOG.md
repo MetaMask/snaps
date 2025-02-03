@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.17.0]
+
+### Added
+
+- Add types for `onProtocolRequest` handler ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+- Add disabled states to all input components ([#3030](https://github.com/MetaMask/snaps/pull/3030))
+
+### Fixed
+
+- Fix missing JSDocs for `Avatar` ([#3037](https://github.com/MetaMask/snaps/pull/3037))
+
 ## [6.16.0]
 
 ### Added
@@ -471,7 +482,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...HEAD
+[6.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...@metamask/snaps-sdk@6.17.0
 [6.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
 [6.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
 [6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0

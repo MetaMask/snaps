@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.10.0]
+
+### Added
+
+- Add support for `onProtocolRequest` handler ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+- Add `URLSearchParams` as a default global ([#3047](https://github.com/MetaMask/snaps/pull/3047))
+
 ## [8.9.1]
 
 ### Fixed
@@ -528,7 +535,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.10.0...HEAD
+[8.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.1...@metamask/snaps-utils@8.10.0
 [8.9.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.0...@metamask/snaps-utils@8.9.1
 [8.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.8.0...@metamask/snaps-utils@8.9.0
 [8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...@metamask/snaps-utils@8.8.0
