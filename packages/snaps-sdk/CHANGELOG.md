@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Implement `MultichainRouter` and `onProtocolRequest` (SIP-26) ([#2875](https://github.com/MetaMask/snaps-skunkworks.git/pull/2875))
+- Add prop for Avatar inside jsdoc ([#3037](https://github.com/MetaMask/snaps-skunkworks.git/pull/3037))
+- Add disabled states to all input components ([#3030](https://github.com/MetaMask/snaps-skunkworks.git/pull/3030))
+
 ## [6.16.0]
 
 ### Added
@@ -471,47 +477,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...HEAD
-[6.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
-[6.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
-[6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0
-[6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
-[6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0
-[6.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.10.0...@metamask/snaps-sdk@6.11.0
-[6.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.9.0...@metamask/snaps-sdk@6.10.0
-[6.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.8.0...@metamask/snaps-sdk@6.9.0
-[6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.7.0...@metamask/snaps-sdk@6.8.0
-[6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0
-[6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.1...@metamask/snaps-sdk@6.6.0
-[6.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.5.0...@metamask/snaps-sdk@6.5.1
-[6.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.4.0...@metamask/snaps-sdk@6.5.0
-[6.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.3.0...@metamask/snaps-sdk@6.4.0
-[6.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.1...@metamask/snaps-sdk@6.3.0
-[6.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1
-[6.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.1...@metamask/snaps-sdk@6.2.0
-[6.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.1.0...@metamask/snaps-sdk@6.1.1
-[6.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@6.1.0
-[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@5.0.0...@metamask/snaps-sdk@6.0.0
-[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
-[4.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
-[4.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1
-[4.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0
-[4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.2.0...@metamask/snaps-sdk@4.3.0
-[4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.1.0...@metamask/snaps-sdk@4.2.0
-[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.1...@metamask/snaps-sdk@4.1.0
-[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@4.0.0...@metamask/snaps-sdk@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0
-[3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.1.1...@metamask/snaps-sdk@3.2.0
-[3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.1.0...@metamask/snaps-sdk@3.1.1
-[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.1...@metamask/snaps-sdk@3.1.0
-[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@3.0.0...@metamask/snaps-sdk@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@2.1.0...@metamask/snaps-sdk@3.0.0
-[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@2.0.0...@metamask/snaps-sdk@2.1.0
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.4.0...@metamask/snaps-sdk@2.0.0
-[1.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.2...@metamask/snaps-sdk@1.4.0
-[1.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.1...@metamask/snaps-sdk@1.3.2
-[1.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.3.0...@metamask/snaps-sdk@1.3.1
-[1.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
-[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
-[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
-[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-sdk@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.16.0...HEAD
+[6.16.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
+[6.15.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
+[6.14.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.13.0...@metamask/snaps-sdk@6.14.0
+[6.13.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.12.0...@metamask/snaps-sdk@6.13.0
+[6.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.11.0...@metamask/snaps-sdk@6.12.0
+[6.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.10.0...@metamask/snaps-sdk@6.11.0
+[6.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.9.0...@metamask/snaps-sdk@6.10.0
+[6.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.8.0...@metamask/snaps-sdk@6.9.0
+[6.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.7.0...@metamask/snaps-sdk@6.8.0
+[6.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.6.0...@metamask/snaps-sdk@6.7.0
+[6.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.5.1...@metamask/snaps-sdk@6.6.0
+[6.5.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.5.0...@metamask/snaps-sdk@6.5.1
+[6.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.4.0...@metamask/snaps-sdk@6.5.0
+[6.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.3.0...@metamask/snaps-sdk@6.4.0
+[6.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.2.1...@metamask/snaps-sdk@6.3.0
+[6.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.2.0...@metamask/snaps-sdk@6.2.1
+[6.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.1.1...@metamask/snaps-sdk@6.2.0
+[6.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.1.0...@metamask/snaps-sdk@6.1.1
+[6.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.0.0...@metamask/snaps-sdk@6.1.0
+[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@5.0.0...@metamask/snaps-sdk@6.0.0
+[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.2...@metamask/snaps-sdk@5.0.0
+[4.4.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.1...@metamask/snaps-sdk@4.4.2
+[4.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.4.0...@metamask/snaps-sdk@4.4.1
+[4.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.3.0...@metamask/snaps-sdk@4.4.0
+[4.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.2.0...@metamask/snaps-sdk@4.3.0
+[4.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.1.0...@metamask/snaps-sdk@4.2.0
+[4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.0.1...@metamask/snaps-sdk@4.1.0
+[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@4.0.0...@metamask/snaps-sdk@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.2.0...@metamask/snaps-sdk@4.0.0
+[3.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.1...@metamask/snaps-sdk@3.2.0
+[3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.1.0...@metamask/snaps-sdk@3.1.1
+[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.0.1...@metamask/snaps-sdk@3.1.0
+[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@3.0.0...@metamask/snaps-sdk@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@2.1.0...@metamask/snaps-sdk@3.0.0
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@2.0.0...@metamask/snaps-sdk@2.1.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.4.0...@metamask/snaps-sdk@2.0.0
+[1.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.2...@metamask/snaps-sdk@1.4.0
+[1.3.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.1...@metamask/snaps-sdk@1.3.2
+[1.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.3.0...@metamask/snaps-sdk@1.3.1
+[1.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.2.0...@metamask/snaps-sdk@1.3.0
+[1.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.1.0...@metamask/snaps-sdk@1.2.0
+[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@1.0.0...@metamask/snaps-sdk@1.1.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-sdk@1.0.0

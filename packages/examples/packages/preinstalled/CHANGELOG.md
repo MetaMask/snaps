@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Release 85.0.0 ([#3038](https://github.com/MetaMask/snaps-skunkworks.git/pull/3038))
+- Release 82.0.0 ([#3012](https://github.com/MetaMask/snaps-skunkworks.git/pull/3012))
+- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
+- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps-skunkworks.git/pull/2989))
+
 ## [0.3.0]
 
 ### Added
@@ -25,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...HEAD
-[0.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
-[0.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
-[0.1.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/preinstalled-example-snap@0.1.0
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.3.0...HEAD
+[0.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
+[0.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
+[0.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/preinstalled-example-snap@0.1.0
