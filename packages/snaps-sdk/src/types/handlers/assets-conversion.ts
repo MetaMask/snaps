@@ -5,6 +5,7 @@ import {
   string,
   optional,
   record,
+  nullable,
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct, type CaipAssetType } from '@metamask/utils';
 
@@ -17,7 +18,7 @@ export const AssetConversionStruct = object({
 export const OnAssetsConversionResponseStruct = object({
   conversionRates: record(
     CaipAssetTypeStruct,
-    record(CaipAssetTypeStruct, AssetConversionStruct),
+    record(CaipAssetTypeStruct, nullable(AssetConversionStruct)),
   ),
 });
 
@@ -40,11 +41,11 @@ export type OnAssetsConversionHandler = (
 /**
  * The response from the conversion query, containing rates about each requested asset pair.
  *
- * @property conversionRates - A nested object with two CAIP-19 keys that contains a conversion rate between the two keys.
+ * @property conversionRates - A nested object with two CAIP-19 keys that contains a conversion rate or null between the two keys.
  */
 export type OnAssetsConversionResponse = {
   conversionRates: Record<
     CaipAssetType,
-    Record<CaipAssetType, AssetConversion>
+    Record<CaipAssetType, AssetConversion | null>
   >;
 };

@@ -3689,7 +3689,7 @@ export class SnapController extends BaseController<
     const { assets: requestedAssets } = requestedParams;
 
     const filteredAssets = Object.keys(assets).reduce<
-      Record<CaipAssetType, FungibleAssetMetadata>
+      Record<CaipAssetType, FungibleAssetMetadata | null>
     >((accumulator, assetType) => {
       const castAssetType = assetType as CaipAssetType;
       const isValid =
