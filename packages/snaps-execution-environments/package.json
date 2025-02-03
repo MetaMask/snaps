@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-execution-environments",
-  "version": "6.13.0",
+  "version": "6.14.0",
   "description": "Snap sandbox environments for executing SES javascript",
   "keywords": [
     "MetaMask",
