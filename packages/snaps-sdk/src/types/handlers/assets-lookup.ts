@@ -68,8 +68,8 @@ export type OnAssetsLookupHandler = (
 /**
  * The response from the query, containing metadata about each requested asset.
  *
- * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object.
+ * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object or null.
  */
 export type OnAssetsLookupResponse = {
-  assets: Record<CaipAssetType, FungibleAssetMetadata>;
+  assets: Record<CaipAssetType, FungibleAssetMetadata | null>;
 };
