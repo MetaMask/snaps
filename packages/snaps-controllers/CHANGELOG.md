@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `getRunnableSnaps` action to `SnapController` ([#3049](https://github.com/MetaMask/snaps/pull/3049))
 
 ### Fixed
+
 - Set name correctly for `SnapController` ([#3052](https://github.com/MetaMask/snaps/pull/3052), [#3054](https://github.com/MetaMask/snaps/pull/3054))
 
 ## [9.18.0]
