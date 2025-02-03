@@ -1,3 +1,4 @@
+import type { AccountSelectorElement } from './AccountSelector';
 import type { AddressInputElement } from './AddressInput';
 import type { AssetSelectorElement } from './AssetSelector';
 import type { ButtonElement } from './Button';
@@ -29,6 +30,7 @@ export * from './SelectorOption';
 export * from './AddressInput';
 
 export type StandardFormElement =
+  | AccountSelectorElement
   | AssetSelectorElement
   | AddressInputElement
   | ButtonElement
