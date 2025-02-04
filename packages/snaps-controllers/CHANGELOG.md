@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.19.1]
 
-### Uncategorized
+### Fixed
 
 - Add `name` and `state` to `ExecutionService` and `MultichainRouter` ([#3058](https://github.com/MetaMask/snaps/pull/3058))
-- fix: Allow `null` in the `endowment:assets` handlers return value ([#3056](https://github.com/MetaMask/snaps/pull/3056))
-- chore: Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps/pull/3053))
+- Allow `null` in the `endowment:assets` handlers return value ([#3056](https://github.com/MetaMask/snaps/pull/3056))
+- Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps/pull/3053))
 
 ## [9.19.0]
 
