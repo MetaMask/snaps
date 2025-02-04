@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- fix: Allow `null` in the `endowment:assets` handlers return value ([#3056](https://github.com/MetaMask/snaps/pull/3056))
-
 ## [6.17.0]
 
 ### Added

@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps/pull/3053))
-- feat: Implement `MultichainRouter` and `onProtocolRequest` (SIP-26) ([#2875](https://github.com/MetaMask/snaps/pull/2875))
-- feat: Add `URLSearchParams` as a default endowment ([#3047](https://github.com/MetaMask/snaps/pull/3047))
-- feat: Add `Intl` as a default endowment ([#3035](https://github.com/MetaMask/snaps/pull/3035))
-- feat: Implement SIP-29 permission and handlers ([#3028](https://github.com/MetaMask/snaps/pull/3028))
-
 ## [2.1.0]
 
 ### Added
