@@ -64,7 +64,7 @@ export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
-  name = 'ExecutionService' as const;
+  name: typeof controllerName = controllerName;
 
   state = null;
 
