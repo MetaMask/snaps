@@ -12,6 +12,11 @@ type HandleRpcRequest = (
 ) => Promise<unknown>;
 
 export interface ExecutionService {
+  // These fields are required for modular initialisation of the execution
+  // service in the MetaMask extension.
+  name: 'ExecutionService';
+  state: null;
+
   terminateSnap: TerminateSnap;
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;

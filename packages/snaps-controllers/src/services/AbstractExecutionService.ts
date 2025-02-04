@@ -64,6 +64,10 @@ export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
+  name = 'ExecutionService' as const;
+
+  state = null;
+
   #snapRpcHooks: Map<string, SnapRpcHook>;
 
   // Cannot be hash private yet because of tests.
