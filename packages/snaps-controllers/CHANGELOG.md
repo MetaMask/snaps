@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.19.1]
+
+### Fixed
+
+- Add `name` and `state` to `ExecutionService` and `MultichainRouter` ([#3058](https://github.com/MetaMask/snaps/pull/3058))
+- Allow `null` in the `endowment:assets` handlers return value ([#3056](https://github.com/MetaMask/snaps/pull/3056))
+- Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps/pull/3053))
+
 ## [9.19.0]
 
 ### Added
@@ -623,7 +631,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.1...HEAD
+[9.19.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...@metamask/snaps-controllers@9.19.1
 [9.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.18.0...@metamask/snaps-controllers@9.19.0
 [9.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.17.0...@metamask/snaps-controllers@9.18.0
 [9.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.16.0...@metamask/snaps-controllers@9.17.0

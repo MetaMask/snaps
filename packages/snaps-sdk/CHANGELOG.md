@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.17.1]
+
+### Fixed
+
+- Allow `null` in the `endowment:assets` handlers return value ([#3056](https://github.com/MetaMask/snaps/pull/3056))
+
 ## [6.17.0]
 
 ### Added
@@ -482,7 +488,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...HEAD
+[6.17.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...@metamask/snaps-sdk@6.17.1
 [6.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...@metamask/snaps-sdk@6.17.0
 [6.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
 [6.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.14.0...@metamask/snaps-sdk@6.15.0
