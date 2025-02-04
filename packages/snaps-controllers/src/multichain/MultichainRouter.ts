@@ -114,6 +114,10 @@ type ProtocolSnap = {
 const name = 'MultichainRouter';
 
 export class MultichainRouter {
+  name: typeof name = name;
+
+  state = null;
+
   #messenger: MultichainRouterMessenger;
 
   #withSnapKeyring: WithSnapKeyringFunction;
