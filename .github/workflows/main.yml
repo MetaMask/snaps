@@ -22,6 +22,7 @@ jobs:
 
   update-pull-request:
     name: Update pull request
+    needs: check-workflows
     if: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]' }}
     uses: ./.github/workflows/update-pull-request.yml
     with:
