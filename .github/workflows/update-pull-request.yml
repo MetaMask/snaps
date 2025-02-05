@@ -4,6 +4,15 @@ on:
   issue_comment:
     types:
       - created
+  workflow_call:
+    secrets:
+      PULL_REQUEST_UPDATE_TOKEN:
+        required: true
+    inputs:
+      dependabot:
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   is-fork-pull-request:
@@ -24,9 +33,10 @@ jobs:
   react-to-comment:
     name: React to the comment
     runs-on: ubuntu-latest
-    needs: is-fork-pull-request
+    needs:
+      - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -46,7 +56,8 @@ jobs:
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
-    needs: is-fork-pull-request
+    needs:
+      - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     outputs:
@@ -203,10 +214,13 @@ jobs:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
+      - name: Set commit prefix
+        if: ${{ inputs.dependabot == true }}
+        run: echo "COMMIT_PREFIX='[dependabot skip] '" >> "$GITHUB_ENV"
       - name: Commit yarn.lock
         run: |
           git add yarn.lock
-          git commit -m "Deduplicate yarn.lock" || true
+          git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
         uses: actions/cache/restore@v4
         with:
@@ -216,7 +230,7 @@ jobs:
       - name: Commit LavaMoat policies
         run: |
           git add packages/snaps-execution-environments/lavamoat
-          git commit -m "Update LavaMoat policies" || true
+          git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
       - name: Restore examples
         uses: actions/cache/restore@v4
         with:
@@ -226,6 +240,6 @@ jobs:
       - name: Commit examples
         run: |
           git add packages/examples/packages
-          git commit -m "Update example snaps" || true
+          git commit -m "${COMMIT_PREFIX}Update example snaps" || true
       - name: Push changes
         run: git push
