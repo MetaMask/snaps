@@ -34,7 +34,6 @@ import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
-import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { mergeStructs, type InferMatching } from '../structs';
 import { NameStruct, NpmSnapFileNames, uri } from '../types';
@@ -151,7 +150,7 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
-export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
+export const ChainIdsStruct = size(array(CaipChainIdStruct), 1, Infinity);
 
 export const LookupMatchersStruct = union([
   object({
