@@ -27,6 +27,7 @@ jobs:
     uses: ./.github/workflows/update-pull-request.yml
     with:
       dependabot: true
+      pull-request: ${{ github.event.pull_request.number }}
     secrets:
       PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
 
