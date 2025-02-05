@@ -10,10 +10,6 @@ on:
         type: boolean
         required: false
         default: false
-  pull_request:
-    types:
-      - opened
-      - synchronize
 
 jobs:
   is-fork-pull-request:
