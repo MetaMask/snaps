@@ -28,7 +28,6 @@ jobs:
     with:
       dependabot: true
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
 
   lint-build-test:
