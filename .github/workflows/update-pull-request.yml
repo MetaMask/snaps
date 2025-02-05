@@ -13,11 +13,15 @@ on:
         type: boolean
         required: false
         default: false
+      pull-request:
+        type: number
+        required: false
+        default: 0
 
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-pr') || inputs.dependabot == true }}
+    if: ${{ inputs.dependabot == true || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-pr')) }}
     runs-on: ubuntu-latest
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
@@ -28,7 +32,7 @@ jobs:
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
   react-to-comment:
     name: React to the comment
@@ -69,7 +73,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -92,7 +96,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -121,7 +125,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
         uses: actions/cache/restore@v4
         with:
@@ -156,7 +160,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
         uses: actions/cache/restore@v4
         with:
@@ -200,7 +204,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Configure Git
         run: |
           git config --global user.name 'MetaMask Bot'
