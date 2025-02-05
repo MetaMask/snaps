@@ -3955,7 +3955,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: assets.foo -- Expected a string matching`,
+        `Assertion failed: At path: assets.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();
@@ -4187,7 +4187,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: conversionRates.foo -- Expected a string matching`,
+        `Assertion failed: At path: conversionRates.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();

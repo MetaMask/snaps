@@ -146,7 +146,7 @@ describe('protocolCaveatSpecifications', () => {
           },
         }),
       ).toThrow(
-        'Invalid scopes specified: At path: foo -- Expected a string matching `/^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-_a-zA-Z0-9]{1,32})$/` but received "foo".',
+        'Invalid scopes specified: At path: foo -- Expected a value of type `CaipChainId`, but received: `"foo"`.',
       );
     });
   });
