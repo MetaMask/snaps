@@ -20,6 +20,13 @@ jobs:
         run: ${{ steps.download-actionlint.outputs.executable }} -color
         shell: bash
 
+  update-pull-request:
+    name: Update pull request
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]' }}
+    uses: ./.github/workflows/update-pull-request.yml
+    with:
+      dependabot: true
+
   lint-build-test:
     name: Build, lint, and test
     needs: check-workflows
