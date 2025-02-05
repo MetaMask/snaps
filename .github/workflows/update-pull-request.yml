@@ -6,8 +6,6 @@ on:
       - created
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
-        required: true
       PULL_REQUEST_UPDATE_TOKEN:
         required: true
     inputs:
