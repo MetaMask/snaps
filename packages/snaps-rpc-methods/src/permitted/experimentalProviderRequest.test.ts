@@ -272,7 +272,7 @@ describe('snap_experimentalProviderRequest', () => {
         ...rpcErrors
           .invalidParams({
             message:
-              'Invalid params: At path: chainId -- Expected a string matching `/^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-_a-zA-Z0-9]{1,32})$/` but received "abcdefg".',
+              'Invalid params: At path: chainId -- Expected a value of type `CaipChainId`, but received: `"abcdefg"`.',
           })
           .serialize(),
         stack: expect.any(String),
