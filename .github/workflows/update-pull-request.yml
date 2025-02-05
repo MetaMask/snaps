@@ -220,7 +220,7 @@ jobs:
           fail-on-cache-miss: true
       - name: Set commit prefix
         if: ${{ inputs.dependabot == true }}
-        run: echo "COMMIT_PREFIX='[dependabot skip] '" >> "$GITHUB_ENV"
+        run: echo "COMMIT_PREFIX=[dependabot skip] " >> "$GITHUB_ENV"
       - name: Commit yarn.lock
         run: |
           git add yarn.lock
