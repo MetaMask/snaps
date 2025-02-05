@@ -26,6 +26,9 @@ jobs:
     uses: ./.github/workflows/update-pull-request.yml
     with:
       dependabot: true
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
 
   lint-build-test:
     name: Build, lint, and test
