@@ -6,8 +6,12 @@ export enum TranspilationModes {
   None = 'none',
 }
 
-const builders: Record<string, Readonly<Options>> = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+const builders = {
+  analyze: {
+    describe: 'Analyze the Snap bundle',
+    type: 'boolean',
+  },
+
   config: {
     alias: 'c',
     describe: 'Path to config file',
@@ -146,6 +150,6 @@ const builders: Record<string, Readonly<Options>> = {
     type: 'boolean',
     deprecated: true,
   },
-};
+} as const satisfies Record<string, Readonly<Options>>;
 
 export default builders;

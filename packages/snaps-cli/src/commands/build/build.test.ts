@@ -27,6 +27,7 @@ describe('buildHandler', () => {
 
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
+      analyze: false,
       evaluate: false,
       spinner: expect.any(Object),
     });

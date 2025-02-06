@@ -3,8 +3,9 @@ import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import type { Ora } from 'ora';
 import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
-import type { Configuration } from 'webpack';
+import type { Configuration, WebpackPluginInstance } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import type { ProcessedWebpackConfig } from '../config';
 import { getFunctionLoader, wasm } from './loaders';
@@ -25,6 +26,11 @@ import {
 } from './utils';
 
 export type WebpackOptions = {
+  /**
+   * Whether to analyze the bundle.
+   */
+  analyze?: boolean;
+
   /**
    * Whether to watch for changes.
    */
@@ -282,6 +288,9 @@ export async function getDefaultConfiguration(
      * @see https://webpack.js.org/configuration/plugins/
      */
     plugins: [
+      options.analyze &&
+        (new BundleAnalyzerPlugin() as unknown as WebpackPluginInstance),
+
       /**
        * The `ForkTsCheckerWebpackPlugin` is a Webpack plugin that checks
        * Typescript type definitions, it does this in a separate process for speed.

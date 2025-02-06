@@ -112,6 +112,7 @@
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2",
     "webpack": "^5.88.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-merge": "^5.9.0",
     "yargs": "^17.7.1"
   },
@@ -128,6 +129,7 @@
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
     "@types/serve-handler": "^6.1.0",
+    "@types/webpack-bundle-analyzer": "^4.7.0",
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^6.21.0",

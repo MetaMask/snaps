@@ -200,6 +200,25 @@ describe('getDefaultConfiguration', () => {
     },
   );
 
+  it('returns the default Webpack configuration when `analyze` is `true`', async () => {
+    const config = getMockConfig('webpack', {
+      input: 'src/index.js',
+      output: {
+        path: 'dist',
+      },
+      manifest: {
+        path: 'snap.manifest.json',
+      },
+    });
+
+    jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
+
+    const output = await getDefaultConfiguration(config, { analyze: true });
+
+    // eslint-disable-next-line jest/no-restricted-matchers
+    expect(normalizeConfig(output)).toMatchSnapshot();
+  });
+
   it.each([
     getMockConfig('browserify', {
       cliOptions: {

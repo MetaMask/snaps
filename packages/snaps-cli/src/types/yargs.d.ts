@@ -20,6 +20,7 @@ type YargsArgs = {
     config: ProcessedConfig;
   };
 
+  analyze?: boolean;
   fix?: boolean;
   input?: string;
 

@@ -9,6 +9,7 @@ import { evaluate } from '../eval';
 import { build } from './implementation';
 
 type BuildContext = {
+  analyze: boolean;
   config: ProcessedWebpackConfig;
 };
 
@@ -27,10 +28,10 @@ const steps: Steps<BuildContext> = [
   },
   {
     name: 'Building the snap bundle.',
-    task: async ({ config, spinner }) => {
+    task: async ({ analyze, config, spinner }) => {
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
-      return await build(config, { evaluate: false, spinner });
+      return await build(config, { analyze, evaluate: false, spinner });
     },
   },
   {
@@ -57,10 +58,15 @@ const steps: Steps<BuildContext> = [
  * This creates the destination directory if it doesn't exist.
  *
  * @param config - The config object.
+ * @param analyze - Whether to analyze the bundle.
  * @returns Nothing.
  */
-export async function buildHandler(config: ProcessedConfig): Promise<void> {
+export async function buildHandler(
+  config: ProcessedConfig,
+  analyze = false,
+): Promise<void> {
   return await executeSteps(steps, {
     config,
+    analyze,
   });
 }
