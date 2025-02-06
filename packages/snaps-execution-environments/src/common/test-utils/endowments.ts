@@ -44,7 +44,6 @@ export function getMockedStreamProvider(): SnapsEthereumProvider {
   const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
   const provider = new StreamProvider(rpcStream, {
-    jsonRpcStreamName: 'metamask-provider',
     rpcMiddleware: [createIdRemapMiddleware()],
     logger: SILENT_LOGGER,
   });
