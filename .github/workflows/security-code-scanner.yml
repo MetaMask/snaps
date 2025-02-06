@@ -1,9 +1,12 @@
 name: 'MetaMask Security Code Scanner'
 
 on:
-  push:
-    branches: ['main']
-  pull_request:
+  workflow_call:
+    secrets:
+      SECURITY_SCAN_METRICS_TOKEN:
+        required: false
+      APPSEC_BOT_SLACK_WEBHOOK:
+        required: false
 
 jobs:
   run-security-scan:
@@ -13,7 +16,7 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - name: MetaMask Security Code Scanner
+      - name: Analyse code
         uses: MetaMask/Security-Code-Scanner@main
         with:
           repo: ${{ github.repository }}
@@ -31,5 +34,5 @@ jobs:
             '**/jest.environment.js'
             '**/jest.config.js'
             node_modules
-          project_metrics_token: ${{secrets.SECURITY_SCAN_METRICS_TOKEN}}
+          project_metrics_token: ${{ secrets.SECURITY_SCAN_METRICS_TOKEN }}
           slack_webhook: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}

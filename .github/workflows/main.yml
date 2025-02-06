@@ -20,6 +20,18 @@ jobs:
         run: ${{ steps.download-actionlint.outputs.executable }} -color
         shell: bash
 
+  analyse-code:
+    name: Code scanner
+    needs: check-workflows
+    uses: ./.github/workflows/security-code-scanner.yml
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    secrets:
+      SECURITY_SCAN_METRICS_TOKEN: ${{ secrets.SECURITY_SCAN_METRICS_TOKEN }}
+      APPSEC_BOT_SLACK_WEBHOOK: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}
+
   update-pull-request:
     name: Update pull request
     needs: check-workflows
