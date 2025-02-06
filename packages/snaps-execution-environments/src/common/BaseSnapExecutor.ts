@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference, spaced-comment
 /// <reference path="../../../../node_modules/ses/types.d.ts" />
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import type { RequestArguments, StreamProvider } from '@metamask/providers';
 import { errorCodes, rpcErrors, serializeError } from '@metamask/rpc-errors';
 import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
@@ -33,6 +34,7 @@ import {
   JsonRpcIdStruct,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
+import { pipeline } from 'readable-stream';
 
 import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';
@@ -369,10 +371,19 @@ export class BaseSnapExecutor {
       });
     };
 
-    const provider = new SnapProvider(this.rpcStream, {
-      jsonRpcStreamName: 'metamask-provider',
-      rpcMiddleware: [createIdRemapMiddleware()],
+    const multiplex = new ObjectMultiplex();
+    pipeline(this.rpcStream, multiplex, this.rpcStream, (error) => {
+      if (error) {
+        logError(`Provider stream failure.`, error);
+      }
     });
+
+    const provider = new SnapProvider(
+      multiplex.createStream('metamask-provider'),
+      {
+        rpcMiddleware: [createIdRemapMiddleware()],
+      },
+    );
 
     provider.initializeSync();
 
