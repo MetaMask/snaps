@@ -3542,33 +3542,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration when 
     "hints": false,
   },
   "plugins": [
-    BundleAnalyzerPlugin {
-      "logger": Logger {
-        "activeLevels": Set {
-          "info",
-          "warn",
-          "error",
-          "silent",
-        },
-      },
-      "opts": {
-        "analyzerHost": "127.0.0.1",
-        "analyzerMode": "server",
-        "analyzerPort": 8888,
-        "analyzerUrl": [Function],
-        "defaultSizes": "parsed",
-        "excludeAssets": null,
-        "generateStatsFile": false,
-        "logLevel": "info",
-        "openAnalyzer": true,
-        "reportFilename": null,
-        "reportTitle": [Function],
-        "startAnalyzer": true,
-        "statsFilename": "stats.json",
-        "statsOptions": null,
-      },
-      "server": null,
-    },
     SnapsWebpackPlugin {
       "options": {
         "eval": undefined,
@@ -3610,6 +3583,30 @@ exports[`getDefaultConfiguration returns the default Webpack configuration when 
         },
         "builtIns": true,
       },
+    },
+    BundleAnalyzerPlugin {
+      "logger": Logger {
+        "activeLevels": Set {
+          "silent",
+        },
+      },
+      "opts": {
+        "analyzerHost": "127.0.0.1",
+        "analyzerMode": "server",
+        "analyzerPort": 0,
+        "analyzerUrl": [Function],
+        "defaultSizes": "parsed",
+        "excludeAssets": null,
+        "generateStatsFile": false,
+        "logLevel": "silent",
+        "openAnalyzer": false,
+        "reportFilename": null,
+        "reportTitle": [Function],
+        "startAnalyzer": true,
+        "statsFilename": "stats.json",
+        "statsOptions": null,
+      },
+      "server": null,
     },
   ],
   "resolve": {

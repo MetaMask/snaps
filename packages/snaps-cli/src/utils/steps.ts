@@ -8,7 +8,7 @@ import { error } from './logging';
 export type Step<Context extends Record<string, unknown>> = {
   name: string;
   condition?: (context: Context) => boolean;
-  task: (context: Context & { spinner: Ora }) => Promise<void>;
+  task: (context: Context & { spinner: Ora }) => Promise<Context | void>;
 };
 
 export type Steps<Context extends Record<string, unknown>> = Readonly<
@@ -34,21 +34,27 @@ export async function executeSteps<Context extends Record<string, unknown>>(
   spinner.start();
 
   try {
-    for (const step of steps) {
+    await steps.reduce<Promise<Context>>(async (contextPromise, step) => {
+      const currentContext = await contextPromise;
+
       // If the step has a condition, and it returns false, we skip the step.
-      if (step.condition && !step.condition(context)) {
-        continue;
+      if (step.condition && !step.condition(currentContext)) {
+        return currentContext;
       }
 
       // Calling `start` here instead of setting `spinner.text` seems to work
       // better when the process doesn't have a TTY.
       spinner.start(dim(step.name));
 
-      await step.task({
-        ...context,
+      const newContext = await step.task({
+        ...currentContext,
         spinner,
       });
-    }
+
+      // If the task returns a new context, we use it. Otherwise, we keep the
+      // current context.
+      return newContext ?? currentContext;
+    }, Promise.resolve(context));
 
     // The spinner may have been stopped by a step, so we only succeed if it's
     // still spinning.
@@ -58,6 +64,8 @@ export async function executeSteps<Context extends Record<string, unknown>>(
   } catch (_error) {
     error(getErrorMessage(_error), spinner);
     spinner.stop();
+
+    // eslint-disable-next-line require-atomic-updates
     process.exitCode = 1;
   }
 }
