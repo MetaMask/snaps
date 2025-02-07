@@ -10,8 +10,8 @@ describe('build command', () => {
     const config = getMockConfig('webpack');
 
     // @ts-expect-error - Partial `YargsArgs` is fine for testing.
-    await command.handler({ context: { config } });
+    await command.handler({ analyze: false, context: { config } });
 
-    expect(buildHandler).toHaveBeenCalledWith(config);
+    expect(buildHandler).toHaveBeenCalledWith(config, false);
   });
 });
