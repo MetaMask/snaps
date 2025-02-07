@@ -2,7 +2,7 @@ import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
 import { logError } from '@metamask/snaps-utils';
-import { assert, bytesToBase64, stringToBytes } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
@@ -65,12 +65,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
       data,
     });
 
-    // To prevent XSS, we base64 encode the message before injecting it.
-    // This adds significant performance overhead.
-    // TODO: Should we use mobile native base64 here?
-    const bytes = stringToBytes(json);
-    const base64 = bytesToBase64(bytes);
-    this.#webView.injectJavaScript(`window.postMessage('${base64}')`);
+    this.#webView.injectJavaScript(`window.postMessage('${json}')`);
   }
 
   private _onMessage(event: PostMessageEvent): void {
