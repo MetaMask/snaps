@@ -8,7 +8,6 @@ import { SnapCaveatType } from './caveats';
 import {
   isSnapPermitted,
   HttpSnapIdStruct,
-  isCaipChainId,
   LocalSnapIdStruct,
   NpmSnapIdStruct,
   assertIsValidSnapId,
@@ -93,24 +92,6 @@ describe('assertIsValidSnapId', () => {
       );
     },
   );
-});
-
-describe('isCaipChainId', () => {
-  it.each([undefined, {}, null, true, 2])(
-    'returns false for non-strings (#%#)',
-    (value) => {
-      expect(isCaipChainId(value)).toBe(false);
-    },
-  );
-
-  it.each([
-    'eip155:1',
-    'cosmos:iov-mainnet',
-    'bip122:000000000019d6689c085ae165831e93',
-    'cosmos:cosmoshub-2',
-  ])('returns true for valid IDs (#%#)', (value) => {
-    expect(isCaipChainId(value)).toBe(true);
-  });
 });
 
 describe('LocalSnapIdStruct', () => {

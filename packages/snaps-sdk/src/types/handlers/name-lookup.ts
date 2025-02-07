@@ -1,9 +1,7 @@
-import type { NonEmptyArray } from '@metamask/utils';
-
-import type { ChainId } from '../caip';
+import type { CaipChainId, NonEmptyArray } from '@metamask/utils';
 
 type BaseOnNameLookupArgs = {
-  chainId: ChainId;
+  chainId: CaipChainId;
 };
 
 /**
@@ -76,7 +74,7 @@ export type AddressLookupResult = {
  * Note that using this handler requires the `endowment:name-lookup` permission.
  *
  * @param args - The request arguments.
- * @param args.chainId - The CAIP-2 {@link ChainId} of the network the
+ * @param args.chainId - The CAIP-2 {@link CaipChainId} of the network the
  * transaction is being submitted to.
  * @param args.domain - The human-readable address that is to be resolved. This
  * is mutually exclusive with `args.address`.

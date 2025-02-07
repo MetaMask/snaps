@@ -3,7 +3,7 @@ import {
   InterfaceContextStruct,
   UserInputEventStruct,
 } from '@metamask/snaps-sdk';
-import { ChainIdStruct, HandlerType } from '@metamask/snaps-utils';
+import { HandlerType } from '@metamask/snaps-utils';
 import type { Infer, Struct } from '@metamask/superstruct';
 import {
   any,
@@ -127,7 +127,7 @@ export type RequestArguments =
 export const OnTransactionRequestArgumentsStruct = object({
   // TODO: Improve `transaction` type.
   transaction: record(string(), JsonStruct),
-  chainId: ChainIdStruct,
+  chainId: CaipChainIdStruct,
   transactionOrigin: nullable(string()),
 });
 
@@ -182,7 +182,7 @@ export function assertIsOnSignatureRequestArguments(
   );
 }
 
-const baseNameLookupArgs = { chainId: ChainIdStruct };
+const baseNameLookupArgs = { chainId: CaipChainIdStruct };
 const domainRequestStruct = object({
   ...baseNameLookupArgs,
   address: string(),
