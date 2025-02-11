@@ -1,16 +1,16 @@
-import { base64ToBytes, bytesToString } from '@metamask/utils';
+import { bytesToString } from '@metamask/utils';
 
 import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
 
 /**
- * Parses the injected JS and returns the decoded base64 payload.
+ * Parses the injected JS and returns the JSON payload.
  *
  * @param js - The injected JS.
- * @returns The parsed base64 payload as a string.
+ * @returns The decoded JSON as a string.
  */
 export function parseInjectedJS(js: string) {
-  const base64 = js.slice(20, -2);
-  const bytes = base64ToBytes(base64);
+  const byteString = js.slice(19, -1);
+  const bytes = new Uint8Array(JSON.parse(byteString));
   return bytesToString(bytes);
 }
 
