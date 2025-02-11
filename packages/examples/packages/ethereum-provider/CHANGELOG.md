@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps/pull/3050))
-- Release 88.0.0 ([#3061](https://github.com/MetaMask/snaps/pull/3061))
-- Release 87.0.0 ([#3055](https://github.com/MetaMask/snaps/pull/3055))
-- Release 85.0.0 ([#3038](https://github.com/MetaMask/snaps/pull/3038))
-
 ## [2.2.1]
 
 ### Fixed

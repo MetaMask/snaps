@@ -7,17 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump ts-bridge ([#2917](https://github.com/MetaMask/snaps/pull/2917))
-- Bump `ts-bridge` to `0.6.0` ([#2882](https://github.com/MetaMask/snaps/pull/2882))
-- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps/pull/2740))
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps/pull/2748))
-- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps/pull/2744))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps/pull/2745))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps/pull/2741))
-
 ## [4.0.4]
 
 ### Fixed

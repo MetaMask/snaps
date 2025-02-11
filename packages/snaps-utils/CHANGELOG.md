@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- BREAKING: Remove duplicate CAIP types ([#3071](https://github.com/MetaMask/snaps/pull/3071))
-- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps/pull/3050))
-- chore: Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps/pull/3053))
-
 ## [8.10.0]
 
 ### Added
