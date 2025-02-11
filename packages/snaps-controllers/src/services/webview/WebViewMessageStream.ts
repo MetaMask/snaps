@@ -65,6 +65,8 @@ export class WebViewMessageStream extends BasePostMessageStream {
       data,
     });
 
+    // To prevent XSS, we encode the message before injecting it.
+    // This adds significant performance overhead for larger messages.
     const bytes = new Uint8Array(stringToBytes(json));
 
     this.#webView.injectJavaScript(`window.postMessage([${bytes.toString()}])`);
