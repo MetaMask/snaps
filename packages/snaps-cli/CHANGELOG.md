@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `--analyze` flag to enable bundle analyzer ([#3075](https://github.com/MetaMask/snaps/pull/3075))
+- Add `--analyze` flag to build command enable bundle analyzer ([#3075](https://github.com/MetaMask/snaps/pull/3075))
 
 ## [6.6.1]
 
