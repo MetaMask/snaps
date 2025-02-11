@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add `--analyze` flag to enable bundle analyzer to CLI ([#3075](https://github.com/MetaMask/snaps/pull/3075))
+- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps/pull/3050))
+
 ## [6.6.1]
 
 ### Changed
