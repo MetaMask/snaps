@@ -9,12 +9,6 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { CryptographicFunctions } from '@metamask/key-tree';
-import type { Caip25CaveatValue } from '@metamask/multichain';
-import {
-  addPermittedEthChainId,
-  Caip25EndowmentPermissionName,
-  createCaip25Caveat,
-} from '@metamask/multichain';
 import type {
   Caveat,
   GetEndowments,
@@ -121,6 +115,7 @@ import type {
   Hex,
 } from '@metamask/utils';
 import {
+  hexToNumber,
   assert,
   assertIsJsonRpcRequest,
   assertStruct,
@@ -4239,21 +4234,26 @@ export class SnapController extends BaseController<
         networkClientId,
       );
 
-      const caveatValue: Caip25CaveatValue = {
-        requiredScopes: {},
-        optionalScopes: {},
-        sessionProperties: {},
-        isMultichainOrigin: false,
-      };
+      const chainId = hexToNumber(configuration.chainId);
 
       // This needs to be assigned to have proper type inference.
       const modifiedPermissions: RequestedPermissions = {
         ...newPermissions,
-        [Caip25EndowmentPermissionName]: {
+        'endowment:caip25': {
           caveats: [
-            createCaip25Caveat(
-              addPermittedEthChainId(caveatValue, configuration.chainId),
-            ),
+            {
+              type: 'authorizedScopes',
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  [`eip155:${chainId}`]: {
+                    accounts: [],
+                  },
+                },
+                sessionProperties: {},
+                isMultichainOrigin: false,
+              },
+            },
           ],
         },
       };
