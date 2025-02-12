@@ -98,6 +98,8 @@ type GetAccountByAddress = (
   address: CaipAccountId,
 ) => InternalAccount | undefined;
 
+type SetSelectedAccount = (accountId: string) => void;
+
 type GetSelectedAccount = () => InternalAccount | undefined;
 
 /**
@@ -111,6 +113,7 @@ type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
   getSelectedAccount: GetSelectedAccount;
+  setSelectedAccount: SetSelectedAccount;
 };
 
 /**
@@ -331,6 +334,7 @@ export function getAssetSelectorStateValue(
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
  * @param elementDataGetters.getAccountByAddress - A function to get an account by its address.
+ * @param elementDataGetters.setSelectedAccount
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -344,7 +348,11 @@ function getComponentStateValue(
     | AssetSelectorElement
     | AddressInputElement
     | AccountSelectorElement,
-  { getAssetsState, getAccountByAddress }: ElementDataGetters,
+  {
+    getAssetsState,
+    getAccountByAddress,
+    setSelectedAccount,
+  }: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
@@ -371,6 +379,10 @@ function getComponentStateValue(
 
       if (!account) {
         return undefined;
+      }
+
+      if (element.props.switchSelectedAccount) {
+        setSelectedAccount(account.id);
       }
 
       const { id, address, scopes } = account;

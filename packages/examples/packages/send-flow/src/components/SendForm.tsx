@@ -8,25 +8,21 @@ import {
   Input,
   AddressInput,
   Text,
+  AccountSelector,
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
-import { AccountSelector } from './AccountSelector';
 import btcIcon from '../images/btc.svg';
-import type { Account, SendFormErrors } from '../types';
+import type { SendFormErrors } from '../types';
 
 /**
  * The props for the {@link SendForm} component.
  *
- * @property selectedAccount - The currently selected account.
- * @property accounts - The available accounts.
  * @property errors - The form errors.
  * @property selectedCurrency - The selected currency to display.
  * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFormProps = {
-  selectedAccount: string;
-  accounts: Account[];
   errors?: SendFormErrors;
   selectedCurrency: 'BTC' | '$';
   displayAvatar?: boolean | undefined;
@@ -36,22 +32,20 @@ export type SendFormProps = {
  * A component that shows the send form.
  *
  * @param props - The component props.
- * @param props.selectedAccount - The currently selected account.
- * @param props.accounts - The available accounts.
  * @param props.errors - The form errors.
  * @param props.selectedCurrency - The selected currency to display.
  * @param props.displayAvatar - Whether to display the avatar of the address.
  * @returns The SendForm component.
  */
 export const SendForm: SnapComponent<SendFormProps> = ({
-  selectedAccount,
-  accounts,
   errors,
   selectedCurrency,
   displayAvatar,
 }) => (
   <Form name="sendForm">
-    <AccountSelector selectedAccount={selectedAccount} accounts={accounts} />
+    <Field label="From account">
+      <AccountSelector name="accountSelector" switchSelectedAccount />
+    </Field>
     <Field label="Send amount" error={errors?.amount}>
       <Box>
         <Image src={btcIcon} />

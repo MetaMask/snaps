@@ -1,5 +1,4 @@
 import {
-  AccountSelector,
   Box,
   Button,
   Container,
@@ -23,7 +22,7 @@ export const CustomDialog: SnapComponent = () => (
         This is a custom dialog. It has a custom Footer and can be resolved to
         any value.
       </Text>
-      <AccountSelector name="account" switchSelectedAccount />
+      <Input name="custom-input" placeholder="Enter something..." />
     </Box>
     <Footer>
       <Button name="cancel">Cancel</Button>

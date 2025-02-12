@@ -7,7 +7,6 @@ import type {
 import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import { SendFlow } from './components';
-import { accountsArray, accounts } from './data';
 import type { SendFormState, SendFlowContext } from './types';
 import { formValidation, generateSendFlow, isCaipHexAddress } from './utils';
 
@@ -26,8 +25,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'display': {
       const interfaceId = await generateSendFlow({
-        accountsArray,
-        accounts,
         fees: { amount: 1.0001, fiat: 1.23 },
       });
 
@@ -56,8 +53,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
  */
 export const onHomePage: OnHomePageHandler = async () => {
   const interfaceId = await generateSendFlow({
-    accountsArray,
-    accounts,
     fees: { amount: 1.0001, fiat: 1.23 },
   });
 
@@ -88,7 +83,7 @@ export const onUserInput: OnUserInputHandler = async ({
 
   const sendForm = state.sendForm as SendFormState;
 
-  const formErrors = formValidation(sendForm, context as SendFlowContext);
+  const formErrors = formValidation(sendForm);
 
   const total = {
     amount: Number(sendForm.amount ?? 0) + fees.amount,
@@ -130,8 +125,6 @@ export const onUserInput: OnUserInputHandler = async ({
             id,
             ui: (
               <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
                 selectedCurrency={selectedCurrency}
                 total={total}
                 fees={fees}
@@ -144,7 +137,6 @@ export const onUserInput: OnUserInputHandler = async ({
 
         break;
       }
-
       default:
         break;
     }

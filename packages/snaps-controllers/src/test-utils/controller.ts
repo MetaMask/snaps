@@ -24,6 +24,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { text } from '@metamask/snaps-sdk';
+import type { InternalAccount } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -795,6 +796,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'MultichainAssetsController:getState',
       'AccountsController:getAccountByAddress',
       'SnapController:get',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:setSelectedAccount',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -832,6 +835,23 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
         id: 'foo',
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:getSelectedMultichainAccount',
+      () =>
+        ({
+          address: '0x1234567890123456789012345678901234567890',
+          id: 'foo',
+          scopes: ['eip155:0'],
+        }) as unknown as InternalAccount,
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:setSelectedAccount',
+      (_id: string) => {
+        // no-op
+      },
     );
 
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
