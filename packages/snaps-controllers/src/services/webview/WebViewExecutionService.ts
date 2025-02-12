@@ -1,32 +1,35 @@
-import type { ExecutionServiceArgs } from '../AbstractExecutionService';
-import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
+import type { TerminateJobArgs } from '../AbstractExecutionService';
+import {
+  AbstractExecutionService,
+  type ExecutionServiceArgs,
+} from '../AbstractExecutionService';
 import type { WebViewInterface } from './WebViewMessageStream';
 import { WebViewMessageStream } from './WebViewMessageStream';
 
 export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
-  getWebView: () => Promise<WebViewInterface>;
+  createWebView: (jobId: string) => Promise<WebViewInterface>;
+  removeWebView: (jobId: string) => void;
 };
 
-export class WebViewExecutionService extends ProxyExecutionService {
-  #getWebView;
+export class WebViewExecutionService extends AbstractExecutionService<string> {
+  #createWebView;
+
+  #removeWebView;
 
   constructor({
     messenger,
     setupSnapProvider,
-    getWebView,
+    createWebView,
+    removeWebView,
     ...args
   }: WebViewExecutionServiceArgs) {
     super({
       ...args,
       messenger,
       setupSnapProvider,
-      stream: new WebViewMessageStream({
-        name: 'parent',
-        target: 'child',
-        getWebView,
-      }),
     });
-    this.#getWebView = getWebView;
+    this.#createWebView = createWebView;
+    this.#removeWebView = removeWebView;
   }
 
   /**
@@ -37,16 +40,18 @@ export class WebViewExecutionService extends ProxyExecutionService {
    * @returns An object with the worker ID and stream.
    */
   protected async initEnvStream(jobId: string) {
-    // Ensure that the WebView has been loaded before we proceed.
-    await this.#ensureWebViewLoaded();
+    const webView = await this.#createWebView(jobId);
 
-    return super.initEnvStream(jobId);
+    const stream = new WebViewMessageStream({
+      name: 'parent',
+      target: 'child',
+      getWebView: async () => webView,
+    });
+
+    return { worker: jobId, stream };
   }
 
-  /**
-   * Ensure that the WebView has been loaded by awaiting the getWebView promise.
-   */
-  async #ensureWebViewLoaded() {
-    await this.#getWebView();
+  protected terminateJob(jobWrapper: TerminateJobArgs<string>): void {
+    this.#removeWebView(jobWrapper.id);
   }
 }
