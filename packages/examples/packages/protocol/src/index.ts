@@ -44,7 +44,9 @@ export const onProtocolRequest: OnProtocolRequestHandler = async ({
   scope,
   request,
 }) => {
+  // This Snap strictly supports the Solana devnet for now.
   assert(scope === 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1');
+
   switch (request.method) {
     case 'getBlockHeight': {
       return rpcRequest('getBlockHeight');

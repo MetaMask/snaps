@@ -1,7 +1,7 @@
 {
   "name": "@metamask/protocol-example-snap",
   "version": "0.0.0",
-  "description": "MetaMask example snap demonstrating the use of `endowment:protocol`",
+  "description": "MetaMask example Snap demonstrating the use of `endowment:protocol`",
   "keywords": [
     "MetaMask",
     "Snaps",
