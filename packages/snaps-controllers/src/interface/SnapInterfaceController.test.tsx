@@ -10,6 +10,7 @@ import {
 } from '@metamask/snaps-sdk';
 import {
   AssetSelector,
+  AccountSelector,
   Box,
   Field,
   FileInput,
@@ -220,6 +221,16 @@ describe('SnapInterfaceController', () => {
             <Field label="Bar">
               <Input name="bar" type="text" />
             </Field>
+            <Field label="baz">
+              <AccountSelector
+                name="baz"
+                switchSelectedAccount
+                selectedAddress="eip155:0:0x1234567890123456789012345678901234567890"
+              />
+            </Field>
+            <Field label="foobar">
+              <AccountSelector name="foobar" />
+            </Field>
           </Form>
         </Box>
       );
@@ -242,8 +253,37 @@ describe('SnapInterfaceController', () => {
         'https://foo.bar/',
       );
 
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'AccountsController:getAccountByAddress',
+        '0x1234567890123456789012345678901234567890',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'AccountsController:setSelectedAccount',
+        'foo',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        6,
+        'AccountsController:getSelectedMultichainAccount',
+      );
+
       expect(content).toStrictEqual(element);
-      expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          bar: null,
+          baz: {
+            accountId: 'foo',
+            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+          },
+          foobar: {
+            accountId: 'foo',
+            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+          },
+        },
+      });
     });
 
     it('supports providing interface context', async () => {
@@ -1321,7 +1361,7 @@ describe('SnapInterfaceController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
       rootMessenger.call(
         'SnapInterfaceController:resolveInterface',
         MOCK_SNAP_ID,
