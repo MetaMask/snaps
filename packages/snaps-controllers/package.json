@@ -85,7 +85,7 @@
     "@metamask/json-rpc-middleware-stream": "^8.0.6",
     "@metamask/key-tree": "^10.0.2",
     "@metamask/object-multiplex": "^2.1.0",
-    "@metamask/permission-controller": "^11.0.5",
+    "@metamask/permission-controller": "^11.0.6",
     "@metamask/phishing-controller": "^12.3.1",
     "@metamask/post-message-stream": "^9.0.0",
     "@metamask/rpc-errors": "^7.0.2",
