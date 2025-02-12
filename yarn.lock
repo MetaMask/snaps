@@ -3748,48 +3748,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-schema-spec/json-pointer@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@json-schema-spec/json-pointer@npm:0.1.2"
-  checksum: 10/2a691ffc11f1a266ca4d0c9e2c99791679d580f343ef69746fad623d1abcf4953adde987890e41f906767d7729604c0182341e9012388b73a44d5b21fb296453
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/dereferencer@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "@json-schema-tools/dereferencer@npm:1.6.3"
-  dependencies:
-    "@json-schema-tools/reference-resolver": "npm:^1.2.6"
-    "@json-schema-tools/traverse": "npm:^1.10.4"
-    fast-safe-stringify: "npm:^2.1.1"
-  checksum: 10/da6ef5b82a8a9c3a7e62ffcab5c04c581f1e0f8165c0debdb272bb1e08ccd726107ee194487b8fa736cac00fb390b8df74bc1ad1b200eddbe25c98ee0d3d000b
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/meta-schema@npm:^1.7.5":
-  version: 1.7.5
-  resolution: "@json-schema-tools/meta-schema@npm:1.7.5"
-  checksum: 10/707dc3a285c26c37d00f418e9d0ef8a2ad1c23d4936ad5aab0ce94c9ae36a7a6125c4ca5048513af64b7e6e527b5472a1701d1f709c379acdd7ad12f6409d2cd
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/reference-resolver@npm:^1.2.6":
-  version: 1.2.6
-  resolution: "@json-schema-tools/reference-resolver@npm:1.2.6"
-  dependencies:
-    "@json-schema-spec/json-pointer": "npm:^0.1.2"
-    isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/91d6b4b2ac43f8163fd27bde6d826f29f339e9c7ce3b7e2b73b85e891fa78e3702fd487deda143a0701879cbc2fe28c53a4efce4cd2d2dd2fe6e82b64bbd9c9c
-  languageName: node
-  linkType: hard
-
-"@json-schema-tools/traverse@npm:^1.10.4":
-  version: 1.10.4
-  resolution: "@json-schema-tools/traverse@npm:1.10.4"
-  checksum: 10/0027bc90df01c5eeee0833e722b7320b53be8b5ce3f4e0e4a6e45713a38e6f88f21aba31e3dd973093ef75cd21a40c07fe8f112da8f49a7919b1c0e44c904d20
-  languageName: node
-  linkType: hard
-
 "@jspm/core@npm:^2.0.1":
   version: 2.0.1
   resolution: "@jspm/core@npm:2.0.1"
@@ -3903,13 +3861,6 @@ __metadata:
     glob: "npm:^7.1.7"
     semver: "npm:^7.3.5"
   checksum: 10/de6ac6a3f92f58fd343c5e59f85ab32b26c60e4cd5ec781b541c0e2432b1dc70f442095442bcc1a03b1164ac61708d5855293992f3e0e8265abc93c4024bdbb4
-  languageName: node
-  linkType: hard
-
-"@metamask/api-specs@npm:^0.10.12":
-  version: 0.10.15
-  resolution: "@metamask/api-specs@npm:0.10.15"
-  checksum: 10/1d68914e43dd14a8bafa77d93965e08cb3ee4b036dc161501dd1d565a21c703d03abefd9e91f23019065c316f74719103b44c871409219f6d4d2cd5503224ac2
   languageName: node
   linkType: hard
 
@@ -4537,19 +4488,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-filters@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/eth-json-rpc-filters@npm:9.0.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    async-mutex: "npm:^0.5.0"
-    pify: "npm:^5.0.0"
-  checksum: 10/12095db69902e267d568d67b4241677502558159691d47216f82701f8e2875a051636b8ff483351d17e01d090b7a1eb8d5dec4cc17a9e47c99aa6d2ec0a073b4
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-middleware@npm:^15.1.2":
   version: 15.1.2
   resolution: "@metamask/eth-json-rpc-middleware@npm:15.1.2"
@@ -5021,7 +4959,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3":
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3":
   version: 10.0.3
   resolution: "@metamask/json-rpc-engine@npm:10.0.3"
   dependencies:
@@ -5244,26 +5182,6 @@ __metadata:
     typescript: "npm:~5.3.3"
   languageName: unknown
   linkType: soft
-
-"@metamask/multichain@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@metamask/multichain@npm:2.1.1"
-  dependencies:
-    "@metamask/api-specs": "npm:^0.10.12"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@open-rpc/schema-utils-js": "npm:^2.0.5"
-    jsonschema: "npm:^1.4.1"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/network-controller": ^22.0.0
-    "@metamask/permission-controller": ^11.0.0
-  checksum: 10/0a9e7a8c491f663af2f4f7fba2a15a93c081c2ae2b3f6188f7b89ec922dea24fd050c0bacbd84775032a039d0e7c1a5a16479e5e4cb39d15c3055d50094452a6
-  languageName: node
-  linkType: hard
 
 "@metamask/name-lookup-example-snap@workspace:^, @metamask/name-lookup-example-snap@workspace:packages/examples/packages/name-lookup":
   version: 0.0.0-use.local
@@ -5815,7 +5733,6 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/multichain": "npm:^2.1.1"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/phishing-controller": "npm:^12.3.2"
@@ -6945,39 +6862,6 @@ __metadata:
     node-gyp: "npm:^10.0.0"
     which: "npm:^4.0.0"
   checksum: 10/f09268051f74af7d7be46e9911a23126d531160c338d3c05d53e6cd7994b88271fb4ec524139fe7f2d826525f15a281eafef3be02831adc1f68556a8a668621a
-  languageName: node
-  linkType: hard
-
-"@open-rpc/meta-schema@npm:^1.14.9":
-  version: 1.14.9
-  resolution: "@open-rpc/meta-schema@npm:1.14.9"
-  checksum: 10/51505dcf7aa1a2285c78953c9b33711cede5f2765aa37dcb9ee7756d689e2ff2a89cfc6039504f0569c52a805fb9aa18f30a7c02ad7a06e793c801e43b419104
-  languageName: node
-  linkType: hard
-
-"@open-rpc/schema-utils-js@npm:^2.0.5":
-  version: 2.1.0
-  resolution: "@open-rpc/schema-utils-js@npm:2.1.0"
-  dependencies:
-    "@json-schema-tools/dereferencer": "npm:^1.6.3"
-    "@json-schema-tools/meta-schema": "npm:^1.7.5"
-    "@json-schema-tools/reference-resolver": "npm:^1.2.6"
-    "@open-rpc/meta-schema": "npm:^1.14.9"
-    "@open-rpc/specification-extension-spec": "npm:^1.0.2"
-    ajv: "npm:^6.10.0"
-    detect-node: "npm:^2.0.4"
-    fast-safe-stringify: "npm:^2.0.7"
-    fs-extra: "npm:^10.1.0"
-    is-url: "npm:^1.2.4"
-    isomorphic-fetch: "npm:^3.0.0"
-  checksum: 10/3f49998a65eb2291c36e0e08302a7a7c52031a0f31b9dd9bcf966f336dfe235a110f4d72039cfd425fbd0ced725f39a4a765751dc209d3b5d6465c7e90fdb5c0
-  languageName: node
-  linkType: hard
-
-"@open-rpc/specification-extension-spec@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@open-rpc/specification-extension-spec@npm:1.0.2"
-  checksum: 10/04111d8ce84deb45358c504b425f8d3e5c0b8991c739708b6b2662de665002da541fc7b39065d2394a9509866f580c3a5aaedc56b42c0d679fe6054eda034b9b
   languageName: node
   linkType: hard
 
@@ -14203,7 +14087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^10.0.0, fs-extra@npm:^10.1.0":
+"fs-extra@npm:^10.0.0":
   version: 10.1.0
   resolution: "fs-extra@npm:10.1.0"
   dependencies:
@@ -15912,16 +15796,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isomorphic-fetch@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "isomorphic-fetch@npm:3.0.0"
-  dependencies:
-    node-fetch: "npm:^2.6.1"
-    whatwg-fetch: "npm:^3.4.1"
-  checksum: 10/568fe0307528c63405c44dd3873b7b6c96c0d19ff795cb15846e728b6823bdbc68cc8c97ac23324509661316f12f551e43dac2929bc7030b8bc4d6aa1158b857
-  languageName: node
-  linkType: hard
-
 "istanbul-lib-coverage@npm:^3.0.0, istanbul-lib-coverage@npm:^3.2.0":
   version: 3.2.0
   resolution: "istanbul-lib-coverage@npm:3.2.0"
@@ -16830,13 +16704,6 @@ __metadata:
   version: 1.3.1
   resolution: "jsonparse@npm:1.3.1"
   checksum: 10/24531e956f0f19d79e22c157cebd81b37af3486ae22f9bc1028f8c2a4d1b70df48b168ff86f8568d9c2248182de9b6da9f50f685d5e4b9d1d2d339d2a29d15bc
-  languageName: node
-  linkType: hard
-
-"jsonschema@npm:^1.4.1":
-  version: 1.5.0
-  resolution: "jsonschema@npm:1.5.0"
-  checksum: 10/46bf49b388ba922073bcb3c8d5e90af9d29fc8303dc866fd440182c88d6b4fd2807679fd39cdefb4113156d104ea47da9c0ff4bbcb0032c9fa29461cb1a92182
   languageName: node
   linkType: hard
 
@@ -18260,7 +18127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.11, node-fetch@npm:^2.6.12":
+"node-fetch@npm:^2.6.11, node-fetch@npm:^2.6.12":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -23417,13 +23284,6 @@ __metadata:
   dependencies:
     iconv-lite: "npm:0.6.3"
   checksum: 10/162d712d88fd134a4fe587e53302da812eb4215a1baa4c394dfd86eff31d0a079ff932c05233857997de07481093358d6e7587997358f49b8a580a777be22089
-  languageName: node
-  linkType: hard
-
-"whatwg-fetch@npm:^3.4.1":
-  version: 3.6.20
-  resolution: "whatwg-fetch@npm:3.6.20"
-  checksum: 10/2b4ed92acd6a7ad4f626a6cb18b14ec982bbcaf1093e6fe903b131a9c6decd14d7f9c9ca3532663c2759d1bdf01d004c77a0adfb2716a5105465c20755a8c57c
   languageName: node
   linkType: hard
 
