@@ -3906,13 +3906,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.0.3, @metamask/base-controller@npm:^7.1.1":
+"@metamask/base-controller@npm:^7.0.2, @metamask/base-controller@npm:^7.1.1":
   version: 7.1.1
   resolution: "@metamask/base-controller@npm:7.1.1"
   dependencies:
     "@metamask/utils": "npm:^11.0.1"
     immer: "npm:^9.0.6"
   checksum: 10/d45abc9e0f3f42a0ea7f0a52734f3749fafc5fefc73608230ab0815578e83a9fc28fe57dc7000f6f8df2cdcee5b53f68bb971091075bec9de6b7f747de627c60
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/base-controller@npm:8.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.1.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/10d55f4af8962581d11a45d0fa3241c47c6dcede307ea0c119844b5e8bf417be4ec7a805d0a18a36ab125b201ec1478ea387f0e72928268a84b6a2aad39e07ef
   languageName: node
   linkType: hard
 
@@ -5714,7 +5724,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/approval-controller": "npm:^7.1.2"
     "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/base-controller": "npm:^7.0.3"
+    "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
@@ -6082,7 +6092,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/base-controller": "npm:^7.0.3"
+    "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
@@ -6143,7 +6153,7 @@ __metadata:
     "@emotion/styled": "npm:^11.10.8"
     "@ethersproject/units": "npm:^5.7.0"
     "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/base-controller": "npm:^7.0.3"
+    "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-browser": "npm:^11.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
@@ -6253,7 +6263,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^3.4.4"
-    "@metamask/base-controller": "npm:^7.0.3"
+    "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/eslint-config": "npm:^12.1.0"
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
