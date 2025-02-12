@@ -15,7 +15,6 @@ import {
   Caip25EndowmentPermissionName,
   createCaip25Caveat,
 } from '@metamask/multichain';
-import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import type {
   Caveat,
   GetEndowments,
@@ -38,7 +37,6 @@ import type {
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
 import {
   WALLET_SNAP_PERMISSION_KEY,
@@ -120,6 +118,7 @@ import type {
   SemVerRange,
   CaipAssetType,
   JsonRpcRequest,
+  Hex,
 } from '@metamask/utils';
 import {
   assert,
@@ -627,6 +626,20 @@ export type SnapControllerEvents =
   | SnapDisabled
   | SnapControllerStateChangeEvent;
 
+type NetworkControllerGetNetworkClientById = {
+  type: `NetworkController:getNetworkClientById`;
+  handler: (customNetworkClientId: string) => {
+    configuration: {
+      chainId: Hex;
+    };
+  };
+};
+
+type SelectedNetworkControllerGetNetworkClientIdForDomain = {
+  type: `SelectedNetworkController:getNetworkClientIdForDomain`;
+  handler: (domain: string) => string;
+};
+
 export type AllowedActions =
   | GetEndowments
   | GetPermissions
@@ -652,8 +665,8 @@ export type AllowedActions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
-  | NetworkControllerGetNetworkClientByIdAction
-  | SelectedNetworkControllerGetNetworkClientIdForDomainAction;
+  | NetworkControllerGetNetworkClientById
+  | SelectedNetworkControllerGetNetworkClientIdForDomain;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
