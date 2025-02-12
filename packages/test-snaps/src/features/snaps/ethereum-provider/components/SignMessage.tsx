@@ -1,4 +1,5 @@
 import { logError } from '@metamask/snaps-utils';
+import { numberToHex } from '@metamask/utils';
 import type { ChangeEvent, FormEvent, FunctionComponent } from 'react';
 import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
@@ -11,7 +12,13 @@ import {
   ETHEREUM_PROVIDER_SNAP_PORT,
 } from '../constants';
 
-export const SignMessage: FunctionComponent = () => {
+export type SignMessageProps = {
+  chainId: number;
+};
+
+export const SignMessage: FunctionComponent<SignMessageProps> = ({
+  chainId,
+}) => {
   const [message, setMessage] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
@@ -27,6 +34,7 @@ export const SignMessage: FunctionComponent = () => {
       method: 'personalSign',
       params: {
         message,
+        chainId: numberToHex(chainId),
       },
     }).catch(logError);
   };
