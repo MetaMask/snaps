@@ -25,7 +25,6 @@ export async function getSwitchEthereumChainHandler(
   response: PendingJsonRpcResponse<Json>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  // hooks: GetAccountsHandlerHooks,
 ) {
   response.result = null;
   return end();
