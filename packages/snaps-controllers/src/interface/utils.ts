@@ -27,6 +27,7 @@ import type {
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import {
+  createAddressList,
   getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,

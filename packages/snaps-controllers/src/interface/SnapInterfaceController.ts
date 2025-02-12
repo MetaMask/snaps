@@ -456,14 +456,24 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
+  /**
+   * Get the selected account in the client.
+   *
+   * @returns The selected account.
+   */
   #getSelectedAccount() {
     return this.messagingSystem.call(
       'AccountsController:getSelectedMultichainAccount',
     );
   }
 
+  /**
+   * Set the selected account in the client.
+   *
+   * @param accountId - The account id.
+   */
   #setSelectedAccount(accountId: string) {
-    return this.messagingSystem.call(
+    this.messagingSystem.call(
       'AccountsController:setSelectedAccount',
       accountId,
     );
