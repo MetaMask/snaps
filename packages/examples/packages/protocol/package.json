@@ -37,7 +37,7 @@
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../../../scripts/since-latest-release.sh",
     "start": "mm-snap watch",
-    "test": "jest --reporters=jest-silent-reporter",
+    "test": "jest --reporters=jest-silent-reporter --passWithNoTests",
     "test:clean": "jest --clearCache",
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
@@ -47,7 +47,6 @@
     "@metamask/utils": "^11.1.0"
   },
   "devDependencies": {
-    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^3.0.4",
     "@metamask/auto-changelog": "^3.4.4",
     "@metamask/eslint-config": "^12.1.0",

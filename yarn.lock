@@ -5405,7 +5405,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/protocol-example-snap@workspace:packages/examples/packages/protocol"
   dependencies:
-    "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^3.4.4"
     "@metamask/eslint-config": "npm:^12.1.0"
