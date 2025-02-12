@@ -49,7 +49,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/eth-json-rpc-middleware": "^15.1.2",
     "@metamask/json-rpc-engine": "^10.0.2",
-    "@metamask/json-rpc-middleware-stream": "^8.0.6",
+    "@metamask/json-rpc-middleware-stream": "^8.0.7",
     "@metamask/key-tree": "^10.0.2",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/snaps-controllers": "workspace:^",
