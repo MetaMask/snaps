@@ -18,6 +18,7 @@ import {
   KnownCaipNamespace,
   parseCaipAccountId,
 } from '@metamask/utils';
+import { nanoid } from 'nanoid';
 
 import { getRunnableSnaps } from '../snaps';
 import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
@@ -291,7 +292,7 @@ export class MultichainRouter {
     connectedAddresses,
     origin,
     scope,
-    request,
+    request: rawRequest,
   }: {
     connectedAddresses: CaipAccountId[];
     origin: string;
@@ -303,6 +304,14 @@ export class MultichainRouter {
       !scope.startsWith(KnownCaipNamespace.Eip155) &&
         !scope.startsWith('wallet:eip155'),
     );
+
+    // Re-create the request to simplify and remove additional properties that may be present in MM middleware.
+    const request = {
+      jsonrpc: '2.0' as const,
+      id: rawRequest.id ?? nanoid(),
+      method: rawRequest.method,
+      params: rawRequest.params,
+    };
 
     const { method, params } = request;
 
