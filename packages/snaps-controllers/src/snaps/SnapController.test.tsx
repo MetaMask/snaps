@@ -5350,7 +5350,6 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         () => ({
-          // @ts-expect-error - Partial network client.
           configuration: {
             chainId: '0x1',
           },
@@ -5430,7 +5429,6 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'NetworkController:getNetworkClientById',
         () => ({
-          // @ts-expect-error - Partial network client.
           configuration: {
             chainId: '0x1',
           },
@@ -5442,6 +5440,7 @@ describe('SnapController', () => {
           initialPermissions: {
             'endowment:page-home': {},
             'endowment:ethereum-provider': {},
+            // @ts-expect-error: Not allowed in `SnapManifest` type.
             'endowment:caip25': {
               caveats: [
                 {

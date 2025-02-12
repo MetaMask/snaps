@@ -7,7 +7,7 @@
 =======
   "branches": 93.32,
   "functions": 97.05,
-  "lines": 98.26,
+  "lines": 98.25,
   "statements": 97.99
 >>>>>>> 14ac80bc3 (Add `wallet_switchEthereumChain` support to `snaps-jest`)
 }
