@@ -79,6 +79,11 @@ type AccountsControllerGetSelectedMultichainAccountAction = {
   handler: () => InternalAccount;
 };
 
+export type AccountsControllerSetSelectedAccountAction = {
+  type: `AccountsController:setSelectedAccount`;
+  handler: (accountId: string) => void;
+};
+
 export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapInterfaceControllerState
@@ -102,7 +107,8 @@ export type SnapInterfaceControllerAllowedActions =
   | GetSnap
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerSetSelectedAccountAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -278,6 +284,7 @@ export class SnapInterfaceController extends BaseController<
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
+      setSelectedAccount: this.#setSelectedAccount.bind(this),
     });
 
     this.update((draftState) => {
@@ -332,6 +339,7 @@ export class SnapInterfaceController extends BaseController<
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
+      setSelectedAccount: this.#setSelectedAccount.bind(this),
     });
 
     this.update((draftState) => {
@@ -462,6 +470,13 @@ export class SnapInterfaceController extends BaseController<
   #getSelectedAccount() {
     return this.messagingSystem.call(
       'AccountsController:getSelectedMultichainAccount',
+    );
+  }
+
+  #setSelectedAccount(accountId: string) {
+    return this.messagingSystem.call(
+      'AccountsController:setSelectedAccount',
+      accountId,
     );
   }
 
