@@ -5401,7 +5401,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/protocol-example-snap@workspace:packages/examples/packages/protocol":
+"@metamask/protocol-example-snap@workspace:^, @metamask/protocol-example-snap@workspace:packages/examples/packages/protocol":
   version: 0.0.0-use.local
   resolution: "@metamask/protocol-example-snap@workspace:packages/examples/packages/protocol"
   dependencies:
@@ -6465,6 +6465,7 @@ __metadata:
     "@metamask/network-example-snap": "workspace:^"
     "@metamask/notification-example-snap": "workspace:^"
     "@metamask/preinstalled-example-snap": "workspace:^"
+    "@metamask/protocol-example-snap": "workspace:^"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/send-flow-example-snap": "workspace:^"
     "@metamask/signature-insights-example-snap": "workspace:^"
