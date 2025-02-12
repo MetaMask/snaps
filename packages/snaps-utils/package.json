@@ -81,7 +81,7 @@
     "@babel/types": "^7.23.0",
     "@metamask/base-controller": "^7.0.3",
     "@metamask/key-tree": "^10.0.2",
-    "@metamask/permission-controller": "^11.0.5",
+    "@metamask/permission-controller": "^11.0.6",
     "@metamask/rpc-errors": "^7.0.2",
     "@metamask/slip44": "^4.1.0",
     "@metamask/snaps-registry": "^3.2.3",

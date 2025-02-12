@@ -3916,6 +3916,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/base-controller@npm:8.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.1.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/10d55f4af8962581d11a45d0fa3241c47c6dcede307ea0c119844b5e8bf417be4ec7a805d0a18a36ab125b201ec1478ea387f0e72928268a84b6a2aad39e07ef
+  languageName: node
+  linkType: hard
+
 "@metamask/bip32-example-snap@workspace:^, @metamask/bip32-example-snap@workspace:packages/examples/packages/bip32":
   version: 0.0.0-use.local
   resolution: "@metamask/bip32-example-snap@workspace:packages/examples/packages/bip32"
@@ -4162,7 +4172,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.4.5":
+"@metamask/controller-utils@npm:^11.4.4, @metamask/controller-utils@npm:^11.5.0":
   version: 11.5.0
   resolution: "@metamask/controller-utils@npm:11.5.0"
   dependencies:
@@ -5306,22 +5316,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^11.0.5":
-  version: 11.0.5
-  resolution: "@metamask/permission-controller@npm:11.0.5"
+"@metamask/permission-controller@npm:^11.0.6":
+  version: 11.0.6
+  resolution: "@metamask/permission-controller@npm:11.0.6"
   dependencies:
-    "@metamask/base-controller": "npm:^7.1.1"
-    "@metamask/controller-utils": "npm:^11.4.5"
-    "@metamask/json-rpc-engine": "npm:^10.0.2"
+    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/controller-utils": "npm:^11.5.0"
+    "@metamask/json-rpc-engine": "npm:^10.0.3"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/utils": "npm:^11.1.0"
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     immer: "npm:^9.0.6"
     nanoid: "npm:^3.3.8"
   peerDependencies:
     "@metamask/approval-controller": ^7.0.0
-  checksum: 10/e592f5da0a2efdf17f7d7a15e0acea5000f7c40ca6b97ab295d15e59c3d7950a0ec388f927ded8ec15f04d75393ba28f8b4858ed2c1da963a92dc360451d5d9a
+  checksum: 10/d1497033738a2c4d84cf5d884e4eea65593d08539cc0592429db101852d11c46fd9a0a7ae1649daee2f01148a15bcdfda77ce4e300a3a9e2c7955dcca6142f9f
   languageName: node
   linkType: hard
 
@@ -5724,7 +5734,7 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
-    "@metamask/permission-controller": "npm:^11.0.5"
+    "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/phishing-controller": "npm:^12.3.1"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
@@ -6001,7 +6011,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/permission-controller": "npm:^11.0.5"
+    "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -6091,7 +6101,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/permission-controller": "npm:^11.0.5"
+    "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/phishing-controller": "npm:^12.3.1"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -6153,7 +6163,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/permission-controller": "npm:^11.0.5"
+    "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
@@ -6259,7 +6269,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
     "@metamask/key-tree": "npm:^10.0.2"
-    "@metamask/permission-controller": "npm:^11.0.5"
+    "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/post-message-stream": "npm:^9.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/slip44": "npm:^4.1.0"
