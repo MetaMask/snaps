@@ -49,6 +49,7 @@ export const onProtocolRequest: OnProtocolRequestHandler = async ({
     case 'getBlockHeight': {
       return rpcRequest('getBlockHeight');
     }
+
     case 'getGenesisHash': {
       return rpcRequest('getGenesisHash');
     }

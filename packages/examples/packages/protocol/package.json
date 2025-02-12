@@ -7,7 +7,7 @@
     "Snaps",
     "Ethereum"
   ],
-  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/client-status#readme",
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/protocol#readme",
   "bugs": {
     "url": "https://github.com/MetaMask/snaps/issues"
   },
@@ -25,8 +25,8 @@
   "scripts": {
     "build": "mm-snap build",
     "build:clean": "yarn clean && yarn build",
-    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/client-status-example-snap",
-    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/client-status-example-snap",
+    "changelog:update": "../../../../scripts/update-changelog.sh @metamask/protocol-example-snap",
+    "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/protocol-example-snap",
     "clean": "rimraf \"dist\"",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
