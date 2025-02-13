@@ -23,16 +23,31 @@ const SimulationOptionsStruct = object({
     null,
   ),
   hideBalances: defaulted(optional(boolean()), false),
+  useSecurityAlerts: defaulted(optional(boolean()), true),
+  useSimulations: defaulted(optional(boolean()), true),
+  useTokenDetection: defaulted(optional(boolean()), true),
+  batchCheckBalances: defaulted(optional(boolean()), true),
+  displayNftMedia: defaulted(optional(boolean()), true),
+  useNftDetection: defaulted(optional(boolean()), true),
+  usePriceCheck: defaulted(optional(boolean()), true),
 });
 
 /**
  * Options for the simulation.
  *
+ * @property currency - The currency to use. Defaults to `usd`.
  * @property secretRecoveryPhrase - The secret recovery phrase to use. This is
  * used to derive addresses and private keys. Defaults to a test recovery
  * phrase.
  * @property locale - The locale to use. Defaults to `en`.
  * @property state - The initial state of the Snap, if any. Defaults to `null`.
+ * @property useSecurityAlerts - Whether to run transactions and signatures through security providers.
+ * @property useSimulations - Whether to simulate transactions and signatures.
+ * @property useTokenDetection - Whether to auto-detect tokens.
+ * @property batchCheckBalances - Whether to fetch balances in an aggregated manner.
+ * @property displayNftMedia - Whether to display NFT media.
+ * @property useNftDetection - Whether to auto-detect NFTs.
+ * @property usePriceCheck - Whether to get token price data from an external source.
  */
 export type SimulationUserOptions = Infer<typeof SimulationOptionsStruct>;
 

@@ -13,6 +13,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'en',
       hideBalances: false,
+      useSecurityAlerts: true,
+      useSimulations: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      usePriceCheck: true,
     });
   });
 
@@ -27,6 +34,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'nl',
       hideBalances: false,
+      useSecurityAlerts: true,
+      useSimulations: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      usePriceCheck: true,
     });
   });
 
@@ -41,6 +55,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'dkk',
       locale: 'en',
       hideBalances: false,
+      useSecurityAlerts: true,
+      useSimulations: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      usePriceCheck: true,
     });
   });
 
@@ -55,6 +76,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'en',
       hideBalances: true,
+      useSecurityAlerts: true,
+      useSimulations: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      usePriceCheck: true,
     });
   });
 });
