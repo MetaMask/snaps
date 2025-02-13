@@ -13,7 +13,7 @@ export type GetPreferencesParams = never;
  * @property locale - The user's selected locale.
  * @property currency - The user's selected currency.
  * @property hideBalances - Whether the user has chosen to hide balances.
- * @property useSecurityAlerts - Whether to run transactions and signatures through blockaid.
+ * @property useSecurityAlerts - Whether to run transactions and signatures through security providers.
  * @property useSimulations - Whether to simulate transactions and signatures.
  * @property useTokenDetection - Whether to auto-detect tokens.
  * @property batchCheckBalances - Whether to fetch balances in an aggregated manner.
