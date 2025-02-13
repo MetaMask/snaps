@@ -19,9 +19,6 @@
   "license": "(MIT-0 OR Apache-2.0)",
   "sideEffects": false,
   "files": [],
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
     "build": "yarn workspaces foreach --worktree --parallel --verbose run build",
     "build:clean": "yarn clean && yarn build",
