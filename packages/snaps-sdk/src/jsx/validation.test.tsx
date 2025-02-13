@@ -646,17 +646,17 @@ describe('AccountSelectorStruct', () => {
       chainIds={['bip122:000000000019d6689c085ae165831e93']}
     />,
     <AccountSelector name="account" hideExternalAccounts />,
-    <AccountSelector name="account" switchSelectedAccount />,
+    <AccountSelector name="account" switchGlobalAccount />,
     <AccountSelector
       name="account"
-      selectedAddress="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
     />,
     <AccountSelector
       name="account"
       chainIds={['foo:bar']}
       hideExternalAccounts
-      switchSelectedAccount
-      selectedAddress="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+      switchGlobalAccount
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
     />,
   ])('validates an account picker element', (value) => {
     expect(is(value, AccountSelectorStruct)).toBe(true);
@@ -676,15 +676,15 @@ describe('AccountSelectorStruct', () => {
       <Text>foo</Text>
     </AccountSelector>,
     // @ts-expect-error - Invalid props.
-    <AccountSelector switchSelectedAccount="foo" />,
+    <AccountSelector switchGlobalAccount="foo" />,
     // @ts-expect-error - Invalid props.
     <AccountSelector chainIds={['bip122:000000000019d6689c085ae165831e93']} />,
     // @ts-expect-error - Invalid props.
-    <AccountSelector selectedAddress={42} />,
+    <AccountSelector value={42} />,
     <AccountSelector
       name="account"
       chainIds={['foo:bar']}
-      selectedAddress="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
       // @ts-expect-error - Invalid props.
       hideExternalAccounts={42}
     />,
