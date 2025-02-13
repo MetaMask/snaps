@@ -17,6 +17,10 @@ on:
         type: number
         required: false
         default: 0
+      pull-request-title:
+        type: string
+        required: false
+        default: ''
 
 jobs:
   is-fork-pull-request:
@@ -185,6 +189,35 @@ jobs:
           path: packages/examples/packages
           key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
 
+  update-chrome:
+    name: Update Chrome
+    runs-on: ubuntu-latest
+    if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+    needs:
+      - prepare
+      - dedupe-yarn-lock
+    steps:
+      - name: Restore yarn.lock
+        uses: actions/cache/restore@v4
+        with:
+          path: yarn.lock
+          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable
+      - name: Update Chrome
+        run: yarn update-chrome
+      - name: Cache install script
+        uses: actions/cache/save@v4
+        with:
+          path: scripts/install-chrome.sh
+          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
+
   commit-result:
     name: Commit result
     runs-on: ubuntu-latest
@@ -193,6 +226,7 @@ jobs:
       - dedupe-yarn-lock
       - regenerate-lavamoat-policies
       - update-examples
+      - update-chrome
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -245,5 +279,17 @@ jobs:
         run: |
           git add packages/examples/packages
           git commit -m "${COMMIT_PREFIX}Update example snaps" || true
+      - name: Restore install script
+        if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+        uses: actions/cache/restore@v4
+        with:
+          path: scripts/install-chrome.sh
+          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Commit install script
+        if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+        run: |
+          git add scripts/install-chrome.sh
+          git commit -m "${COMMIT_PREFIX}Update install Chrome script" || true
       - name: Push changes
         run: git push
