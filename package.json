@@ -8,7 +8,9 @@
   },
   "files": [],
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "packages/examples/packages/*",
+    "packages/examples/packages/invoke-snap/packages/*"
   ],
   "scripts": {
     "build": "ts-bridge --project tsconfig.build.json --verbose",
