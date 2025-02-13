@@ -1,8 +1,8 @@
-import { createAddressList } from './address';
+import { createAccountList } from './account';
 
-describe('createAddressList', () => {
-  it('creates an address list from an account', () => {
-    const result = createAddressList(
+describe('createAccountList', () => {
+  it('creates an account list from an address and a list of chain IDs', () => {
+    const result = createAccountList(
       '0x1234567890123456789012345678901234567890',
       ['eip155:1', 'eip155:2'],
     );
