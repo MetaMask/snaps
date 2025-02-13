@@ -30,6 +30,13 @@ describe('snap_getPreferences', () => {
           locale: 'en',
           currency: 'usd',
           hideBalances: false,
+          useSecurityAlerts: true,
+          useSimulations: true,
+          useTokenDetection: true,
+          batchCheckBalances: true,
+          displayNftMedia: false,
+          useNftDetection: false,
+          usePriceCheck: true,
         }),
       };
 
@@ -42,7 +49,18 @@ describe('snap_getPreferences', () => {
           },
           method: 'snap_getPreferences',
         }),
-      ).toStrictEqual({ locale: 'en', currency: 'usd', hideBalances: false });
+      ).toStrictEqual({
+        locale: 'en',
+        currency: 'usd',
+        hideBalances: false,
+        useSecurityAlerts: true,
+        useSimulations: true,
+        useTokenDetection: true,
+        batchCheckBalances: true,
+        displayNftMedia: false,
+        useNftDetection: false,
+        usePriceCheck: true,
+      });
     });
   });
 });
