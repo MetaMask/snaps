@@ -4478,22 +4478,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^15.1.2":
-  version: 15.1.2
-  resolution: "@metamask/eth-json-rpc-middleware@npm:15.1.2"
+"@metamask/eth-json-rpc-middleware@npm:^15.2.0":
+  version: 15.2.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:15.2.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^11.0.4"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
     "@metamask/eth-sig-util": "npm:^8.1.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.0.1"
+    "@metamask/utils": "npm:^11.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bn.js: "npm:^5.2.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/71e7d61cc58df250bfef73438a9e30cc2f78e0e979feb8a9c0be72bbad470a2fe068fa790194cb88ef56865e36156e525272bc3e1a2a7135d07f7bd81a752239
+  checksum: 10/52dcb5927fe5e2db318965e3c5179704a1fa56ebccabeda93b8f9a6c28cb8958d5fefd7bddf5673c6532eab5d46ced8c7001394ce5cc634d8acd491755bcdd4c
   languageName: node
   linkType: hard
 
@@ -6125,7 +6125,7 @@ __metadata:
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
+    "@metamask/eth-json-rpc-middleware": "npm:^15.2.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/key-tree": "npm:^10.0.2"
@@ -6187,7 +6187,7 @@ __metadata:
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^15.1.2"
+    "@metamask/eth-json-rpc-middleware": "npm:^15.2.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/key-tree": "npm:^10.0.2"
