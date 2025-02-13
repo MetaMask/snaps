@@ -27,7 +27,7 @@ import type {
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import {
-  createAddressList,
+  createAccountList,
   getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,
@@ -101,9 +101,15 @@ type GetAccountByAddress = (
 
 type SetSelectedAccount = (accountId: string) => void;
 
+/**
+ * A function to get the selected account in the client.
+ *
+ * @returns The selected account.
+ */
 type GetSelectedAccount = () => InternalAccount | undefined;
 
 /**
+<<<<<<< HEAD
  * Data getters for elements.
  * This is used to get data from elements that is not directly accessible from the element itself.
  *
@@ -116,6 +122,23 @@ type ElementDataGetters = {
   getSelectedAccount: GetSelectedAccount;
   setSelectedAccount: SetSelectedAccount;
 };
+=======
+ * A function to get an account by address.
+ *
+ * @param address - The address of the account.
+ * @returns The account with the given address or undefined if none.
+ */
+type GetAccountByAddress = (
+  address: CaipAccountAddress,
+) => InternalAccount | undefined;
+
+/**
+ * A function to set the selected account in the client.
+ *
+ * @param accountId - The ID of the account to set as selected.
+ */
+type SetSelectedAccount = (accountId: string) => void;
+>>>>>>> 82969fe5 (address requested changes)
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -276,7 +299,7 @@ function constructComponentSpecificDefaultState(
 
       const { id, address, scopes } = account;
 
-      const addresses = createAddressList(address, scopes);
+      const addresses = createAccountList(address, scopes);
 
       return { accountId: id, addresses };
     }
@@ -297,6 +320,7 @@ function constructComponentSpecificDefaultState(
 }
 
 /**
+<<<<<<< HEAD
  * Get the state value for an asset selector.
  *
  * @param value - The asset selector value.
@@ -323,6 +347,41 @@ export function getAssetSelectorStateValue(
     name: asset.name ?? asset.symbol ?? 'Unknown',
     symbol: asset.symbol ?? 'Unknown',
   };
+=======
+ * Get the state value for an account selector.
+ *
+ * @param element - The account selector element.
+ * @param getAccountByAddress - A function to get an account by address.
+ * @param setSelectedAccount - A function to set the selected account in the client.
+ * @returns The state value for the account selector.
+ */
+function getAccountSelectorStateValue(
+  element: AccountSelectorElement,
+  getAccountByAddress: GetAccountByAddress,
+  setSelectedAccount: SetSelectedAccount,
+) {
+  if (!element.props.value) {
+    return undefined;
+  }
+
+  const { address: parsedAddress } = parseCaipAccountId(element.props.value);
+
+  const account = getAccountByAddress(parsedAddress);
+
+  if (!account) {
+    return undefined;
+  }
+
+  if (element.props.switchGlobalAccount) {
+    setSelectedAccount(account.id);
+  }
+
+  const { id, address, scopes } = account;
+
+  const addresses = createAccountList(address, scopes);
+
+  return { accountId: id, addresses };
+>>>>>>> 82969fe5 (address requested changes)
 }
 
 /**
@@ -359,6 +418,7 @@ function getComponentStateValue(
     case 'Checkbox':
       return element.props.checked;
 
+<<<<<<< HEAD
     case 'AssetSelector':
       return getAssetSelectorStateValue(element.props.value, getAssetsState);
 
@@ -392,6 +452,14 @@ function getComponentStateValue(
 
       return { accountId: id, addresses };
     }
+=======
+    case 'AccountSelector':
+      return getAccountSelectorStateValue(
+        element,
+        getAccountByAddress,
+        setSelectedAccount,
+      );
+>>>>>>> 82969fe5 (address requested changes)
 
     default:
       return element.props.value;

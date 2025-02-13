@@ -48,24 +48,24 @@ describe('AccountSelector', () => {
 
   it('returns an account selector element with the switchGlobalAccount filter prop', () => {
     const result = (
-      <AccountSelector name="account" switchSelectedAccount={true} />
+      <AccountSelector name="account" switchGlobalAccount={true} />
     );
 
     expect(result).toStrictEqual({
       type: 'AccountSelector',
       props: {
         name: 'account',
-        switchSelectedAccount: true,
+        switchGlobalAccount: true,
       },
       key: null,
     });
   });
 
-  it('returns an account selector element with a selectedAccount prop', () => {
+  it('returns an account selector element with a value prop', () => {
     const result = (
       <AccountSelector
         name="account"
-        selectedAddress="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+        value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
       />
     );
 
@@ -73,7 +73,7 @@ describe('AccountSelector', () => {
       type: 'AccountSelector',
       props: {
         name: 'account',
-        selectedAddress: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678',
+        value: 'eip155:1:0x1234567890abcdef1234567890abcdef12345678',
       },
       key: null,
     });
@@ -85,8 +85,8 @@ describe('AccountSelector', () => {
         name="account"
         chainIds={['bip122:000000000019d6689c085ae165831e93']}
         hideExternalAccounts={true}
-        switchSelectedAccount={true}
-        selectedAddress="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+        switchGlobalAccount={true}
+        value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
       />
     );
 
@@ -96,8 +96,8 @@ describe('AccountSelector', () => {
         name: 'account',
         chainIds: ['bip122:000000000019d6689c085ae165831e93'],
         hideExternalAccounts: true,
-        switchSelectedAccount: true,
-        selectedAddress:
+        switchGlobalAccount: true,
+        value:
           'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
       },
       key: null,

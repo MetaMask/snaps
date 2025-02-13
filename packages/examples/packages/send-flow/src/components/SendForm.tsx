@@ -44,7 +44,7 @@ export const SendForm: SnapComponent<SendFormProps> = ({
 }) => (
   <Form name="sendForm">
     <Field label="From account">
-      <AccountSelector name="accountSelector" switchSelectedAccount />
+      <AccountSelector name="accountSelector" switchGlobalAccount />
     </Field>
     <Field label="Send amount" error={errors?.amount}>
       <Box>

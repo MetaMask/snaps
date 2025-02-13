@@ -407,8 +407,8 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
       Infer<typeof CaipChainIdStruct>[] | undefined,
       null
     >,
-    switchSelectedAccount: optional(boolean()),
-    selectedAddress: optional(CaipAccountIdStruct),
+    switchGlobalAccount: optional(boolean()),
+    value: optional(CaipAccountIdStruct),
   },
 );
 

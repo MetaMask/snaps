@@ -224,8 +224,8 @@ describe('SnapInterfaceController', () => {
             <Field label="baz">
               <AccountSelector
                 name="baz"
-                switchSelectedAccount
-                selectedAddress="eip155:0:0x1234567890123456789012345678901234567890"
+                switchGlobalAccount
+                value="eip155:0:0x1234567890123456789012345678901234567890"
               />
             </Field>
             <Field label="foobar">

@@ -646,9 +646,13 @@ describe('constructState', () => {
       <Box>
         <AssetSelector
           name="foo"
+<<<<<<< HEAD
           addresses={[
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
+=======
+          value="eip155:0:0x1234567890123456789012345678901234567890"
+>>>>>>> 82969fe5 (address requested changes)
         />
       </Box>
     );
@@ -727,9 +731,13 @@ describe('constructState', () => {
           <Field label="foo">
             <AssetSelector
               name="foo"
+<<<<<<< HEAD
               addresses={[
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
               ]}
+=======
+              value="eip155:0:0x1234567890123456789012345678901234567890"
+>>>>>>> 82969fe5 (address requested changes)
             />
           </Field>
         </Form>
@@ -766,6 +774,7 @@ describe('constructState', () => {
 
     const element = (
       <Box>
+<<<<<<< HEAD
         <Form name="form">
           <Field label="foo">
             <AssetSelector
@@ -777,6 +786,12 @@ describe('constructState', () => {
             />
           </Field>
         </Form>
+=======
+        <AccountSelector
+          name="foo"
+          value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+        />
+>>>>>>> 82969fe5 (address requested changes)
       </Box>
     );
 
@@ -829,6 +844,7 @@ describe('constructState', () => {
     });
   });
 
+<<<<<<< HEAD
   it('sets the value to null if the account has no assets', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
       assetsMetadata: {
@@ -845,14 +861,27 @@ describe('constructState', () => {
     elementDataGetters.getAccountByAddress.mockReturnValue({
       id: MOCK_ACCOUNT_ID,
     });
+=======
+  it('switches the selected account if `switchGlobalAccount` is set', () => {
+    getAccountByAddress.mockImplementation((address: string) => ({
+      id: 'foo',
+      address,
+      scopes: ['eip155:0'],
+    }));
+>>>>>>> 82969fe5 (address requested changes)
 
     const element = (
       <Box>
         <AssetSelector
           name="foo"
+<<<<<<< HEAD
           addresses={[
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
+=======
+          value="eip155:0:0x1234567890123456789012345678901234567890"
+          switchGlobalAccount
+>>>>>>> 82969fe5 (address requested changes)
         />
       </Box>
     );

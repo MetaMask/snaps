@@ -833,18 +833,31 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       (address: string) => ({
         address,
         id: 'foo',
+<<<<<<< HEAD
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+=======
+        scopes: ['eip155:0'],
+>>>>>>> 82969fe5 (address requested changes)
       }),
     );
 
     messenger.registerActionHandler(
       'AccountsController:getSelectedMultichainAccount',
+<<<<<<< HEAD
       () =>
         ({
           address: '0x1234567890123456789012345678901234567890',
           id: 'foo',
           scopes: ['eip155:0'],
         }) as unknown as InternalAccount,
+=======
+      // @ts-expect-error partial mock
+      () => ({
+        address: '0x1234567890123456789012345678901234567890',
+        id: 'foo',
+        scopes: ['eip155:0'],
+      }),
+>>>>>>> 82969fe5 (address requested changes)
     );
 
     messenger.registerActionHandler(
