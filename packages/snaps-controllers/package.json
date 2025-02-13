@@ -79,7 +79,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^7.1.2",
+    "@metamask/approval-controller": "^7.1.3",
     "@metamask/base-controller": "^8.0.0",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
