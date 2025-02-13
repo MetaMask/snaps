@@ -173,7 +173,7 @@ module.exports = defineConfig({
               'scripts.test',
               'jest --reporters=jest-silent-reporter && yarn test:browser',
             );
-          } else {
+          } else if (workspace.cwd !== 'packages/examples/packages/protocol') {
             expectWorkspaceField(
               workspace,
               'scripts.test',
