@@ -10678,9 +10678,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^133.0.0":
-  version: 133.0.0
-  resolution: "chromedriver@npm:133.0.0"
+"chromedriver@npm:^133.0.1":
+  version: 133.0.1
+  resolution: "chromedriver@npm:133.0.1"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -10691,7 +10691,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10/de9ef64febbb30f0c7be3b5f1a3d510ff92a4568e945c07f0751205c448eec2392f2ef8ccd6860c5822d669a0f33109e9b7a17071dcfc027eec68580e7e246df
+  checksum: 10/b68b8c83934475ab6ebfdd2790a9fbf6ef70497b954df5a4e08f07bae6e3414e71d9e1a21280ddc755664cb375f38258081f482dc0f8c3e0a512c4dc18de3455
   languageName: node
   linkType: hard
 
@@ -20582,7 +20582,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^5.42.1"
     "@typescript-eslint/parser": "npm:^6.21.0"
     "@yarnpkg/types": "npm:^4.0.0"
-    chromedriver: "npm:^133.0.0"
+    chromedriver: "npm:^133.0.1"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^8.27.0"
     eslint-config-prettier: "npm:^8.5.0"
