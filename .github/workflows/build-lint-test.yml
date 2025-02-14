@@ -168,10 +168,6 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     needs: prepare
-    strategy:
-      fail-fast: false
-      matrix:
-        package-name: ${{ fromJson(needs.prepare.outputs.all-workspace-package-names) }}
     steps:
       - uses: actions/checkout@v4
       - name: Setup Node
@@ -180,7 +176,16 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - run: yarn workspace ${{ matrix.package-name }} run lint:ci
+      - name: ESLint
+        run: yarn lint:eslint
+      - name: Prettier
+        run: yarn lint:misc --check
+      - name: TSConfig
+        run: yarn lint:tsconfig
+      - name: Yarn constraints
+        run: yarn constraints
+      - name: Dependencies
+        run: yarn lint:dependencies
       - name: Require clean working directory
         shell: bash
         run: |
