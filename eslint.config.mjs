@@ -91,12 +91,14 @@ const config = createConfig([
     files: ['**/*.test.ts', '**/*.test.js'],
     extends: [jest, nodejs],
 
-    'jest/expect-expect': [
-      'error',
-      {
-        assertFunctionNames: ['expect', 'expectTypeOf'],
-      },
-    ],
+    rules: {
+      'jest/expect-expect': [
+        'error',
+        {
+          assertFunctionNames: ['expect', 'expectTypeOf'],
+        },
+      ],
+    },
   },
 
   // Packages that are Node.js-only
