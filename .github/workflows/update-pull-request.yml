@@ -197,6 +197,8 @@ jobs:
       - prepare
       - dedupe-yarn-lock
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Restore yarn.lock
         uses: actions/cache/restore@v4
         with:
