@@ -176,16 +176,8 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn --immutable --immutable-cache
-      - name: ESLint
-        run: yarn lint:eslint
-      - name: Prettier
-        run: yarn lint:misc --check
-      - name: TSConfig
-        run: yarn lint:tsconfig
-      - name: Yarn constraints
-        run: yarn constraints
-      - name: Dependencies
-        run: yarn lint:dependencies
+      - name: Lint
+        run: yarn lint
       - name: Require clean working directory
         shell: bash
         run: |
