@@ -35,8 +35,8 @@
         "@babel/preset-typescript": true,
         "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true,
-        "depcheck>json5": true,
-        "eslint>debug": true
+        "depcheck>debug": true,
+        "depcheck>json5": true
       }
     },
     "@babel/core>@ampproject/remapping": {
@@ -1062,8 +1062,13 @@
     },
     "@lavamoat/lavapack>espree": {
       "packages": {
+        "@lavamoat/lavapack>espree>acorn-jsx": true,
         "@lavamoat/lavapack>espree>eslint-visitor-keys": true,
-        "eslint>espree>acorn-jsx": true,
+        "terser>acorn": true
+      }
+    },
+    "@lavamoat/lavapack>espree>acorn-jsx": {
+      "packages": {
         "terser>acorn": true
       }
     },
@@ -1088,8 +1093,8 @@
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
-        "depcheck>semver": true,
-        "eslint>debug": true
+        "depcheck>debug": true,
+        "depcheck>semver": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -1102,6 +1107,13 @@
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
+      }
+    },
+    "@wdio/mocha-framework>mocha>find-up>path-exists": {
+      "builtin": {
+        "fs.access": true,
+        "fs.accessSync": true,
+        "util.promisify": true
       }
     },
     "@wdio/mocha-framework>mocha>supports-color": {
@@ -1159,8 +1171,8 @@
         "process.cwd": true
       },
       "packages": {
-        "depcheck>json5": true,
-        "eslint>find-up>path-exists": true
+        "@wdio/mocha-framework>mocha>find-up>path-exists": true,
+        "depcheck>json5": true
       }
     },
     "babel-plugin-tsconfig-paths-module-resolver>babel-plugin-module-resolver>pkg-up": {
@@ -1487,8 +1499,8 @@
     },
     "browserify>glob>minimatch>brace-expansion": {
       "packages": {
-        "eslint>minimatch>brace-expansion>balanced-match": true,
-        "eslint>minimatch>brace-expansion>concat-map": true
+        "depcheck>minimatch>brace-expansion>balanced-match": true,
+        "serve-handler>minimatch>brace-expansion>concat-map": true
       }
     },
     "browserify>glob>path-is-absolute": {
@@ -1907,9 +1919,16 @@
         "browserify>through2>readable-stream>safe-buffer": true
       }
     },
-    "browserify>util>is-typed-array>gopd": {
+    "browserify>util>is-generator-function>get-proto": {
       "packages": {
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true
+        "browserify>util>is-generator-function>get-proto>dunder-proto": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true
+      }
+    },
+    "browserify>util>is-generator-function>get-proto>dunder-proto": {
+      "packages": {
+        "browserify>util>which-typed-array>gopd": true,
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -1926,7 +1945,7 @@
         "depcheck>@babel/traverse>@babel/helper-hoist-variables": true,
         "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
         "depcheck>@babel/traverse>globals": true,
-        "eslint>debug": true
+        "depcheck>debug": true
       }
     },
     "depcheck>@babel/traverse>@babel/helper-function-name": {
@@ -1943,6 +1962,25 @@
     "depcheck>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
         "@babel/core>@babel/types": true
+      }
+    },
+    "depcheck>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.formatWithOptions": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "@wdio/mocha-framework>mocha>supports-color": true,
+        "depcheck>debug>ms": true
       }
     },
     "depcheck>is-core-module": {
@@ -2008,50 +2046,19 @@
         "process": true
       }
     },
-    "eslint>chalk>ansi-styles": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "eslint>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "eslint>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.formatWithOptions": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
-        "eslint>debug>ms": true
-      }
-    },
-    "eslint>espree>acorn-jsx": {
-      "packages": {
-        "terser>acorn": true
-      }
-    },
-    "eslint>find-up>path-exists": {
-      "builtin": {
-        "fs.access": true,
-        "fs.accessSync": true,
-        "util.promisify": true
-      }
-    },
     "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
+      }
+    },
+    "jest-silent-reporter>chalk>ansi-styles": {
+      "packages": {
+        "jest-silent-reporter>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "jest-silent-reporter>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest-silent-reporter>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "jest>@jest/core>strip-ansi": {
@@ -2182,16 +2189,16 @@
     },
     "lavamoat>json-stable-stringify>call-bind": {
       "packages": {
-        "browserify>has>function-bind": true,
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
         "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length": true
       }
     },
-    "lavamoat>json-stable-stringify>call-bind>es-define-property": {
+    "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true
+        "browserify>has>function-bind": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>get-intrinsic": {
@@ -2202,26 +2209,31 @@
       },
       "packages": {
         "browserify>has>function-bind": true,
+        "browserify>util>is-generator-function>get-proto": true,
+        "browserify>util>which-typed-array>gopd": true,
         "depcheck>is-core-module>hasown": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-proto": true,
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-symbols": true
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
+        "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-symbols": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>math-intrinsics": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length": {
       "packages": {
-        "browserify>util>is-typed-array>gopd": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
+        "browserify>util>which-typed-array>gopd": true,
         "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length>define-data-property": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length>define-data-property": {
       "packages": {
-        "browserify>util>is-typed-array>gopd": true,
+        "browserify>util>which-typed-array>gopd": true,
         "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": {
@@ -2466,7 +2478,7 @@
     },
     "yargs>cliui>wrap-ansi": {
       "packages": {
-        "eslint>chalk>ansi-styles": true,
+        "jest-silent-reporter>chalk>ansi-styles": true,
         "jest>@jest/core>strip-ansi": true,
         "yargs>string-width": true
       }

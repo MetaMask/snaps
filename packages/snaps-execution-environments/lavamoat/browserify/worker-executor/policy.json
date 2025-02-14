@@ -45,9 +45,9 @@
         "@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
         "@metamask/rpc-errors": true,
-        "eslint>fast-deep-equal": true,
         "readable-stream": true
       }
     },
@@ -114,8 +114,8 @@
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
-        "depcheck>semver": true,
-        "eslint>debug": true
+        "depcheck>debug": true,
+        "depcheck>semver": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -160,15 +160,7 @@
         "browserify>browser-pack>safe-buffer": true
       }
     },
-    "depcheck>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "eslint>debug": {
+    "depcheck>debug": {
       "globals": {
         "console": true,
         "document": true,
@@ -178,7 +170,15 @@
       },
       "packages": {
         "browserify>process": true,
-        "eslint>debug>ms": true
+        "depcheck>debug>ms": true
+      }
+    },
+    "depcheck>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "browserify>process": true
       }
     },
     "readable-stream": {
