@@ -121,6 +121,10 @@ module.exports = {
   // A preset that is used as a base for Jest's configuration
   // preset: '',
 
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
+
   // Run tests from one or more projects
   // projects: undefined,
 
