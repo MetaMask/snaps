@@ -112,6 +112,7 @@
     "lodash": "^4.17.21",
     "minimatch": "^7.4.1",
     "prettier": "^3.3.3",
+    "prettier-2": "npm:prettier@^2.8.8",
     "prettier-plugin-packagejson": "^2.5.8",
     "rimraf": "^4.1.2",
     "semver": "^7.5.4",

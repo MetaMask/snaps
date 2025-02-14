@@ -5,7 +5,6 @@ import type { Ora } from 'ora';
 import type {
   Compiler,
   ProvidePlugin,
-  ResolvePluginInstance,
   Resolver,
   StatsError,
   WebpackPluginInstance,
@@ -242,12 +241,22 @@ export type SnapsBuiltInResolverOptions = {
 };
 
 /**
+ * A Webpack resolve plugin.
+ *
+ * Copied from Webpack's own types, because the `ResolvePluginInstance` type is
+ * a union, and can't be used as a type for a class.
+ */
+type ResolvePlugin = {
+  apply: (resolver: Resolver) => void;
+}
+
+/**
  * A plugin that logs a message when a built-in module is not resolved. The
  * MetaMask Snaps CLI does not support built-in modules by default, and this
  * plugin is used to warn the user when they try to import a built-in module,
  * when no fallback is configured.
  */
-export class SnapsBuiltInResolver implements ResolvePluginInstance {
+export class SnapsBuiltInResolver implements ResolvePlugin {
   /**
    * The built-in modules that have been imported, but not resolved.
    */

@@ -4,6 +4,7 @@ import type { Watching } from 'webpack';
 import type { ProcessedWebpackConfig } from '../../config';
 import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
+import { assert } from '@metamask/utils';
 
 /**
  * Build the snap bundle and watch for changes. This uses Webpack to build the
@@ -39,6 +40,7 @@ export async function watch(
           return;
         }
 
+        assert(compiler.watching, 'Expected `compiler.watching` to be set.');
         resolve(compiler.watching);
       },
     );
