@@ -24,7 +24,10 @@ jest.mock('../../webpack', () => ({
       .requireActual<typeof webpack>('../../webpack')
       .getCompiler(...args);
 
+    // @ts-expect-error: Type mismatch.
     compiler.inputFileSystem = normalFs;
+
+    // @ts-expect-error: Type mismatch.
     compiler.outputFileSystem = normalFs;
 
     return compiler;
@@ -57,6 +60,7 @@ describe('watch', () => {
     // @ts-expect-error - Partial mock.
     mock.mockImplementationOnce(() => ({
       watch: watchMock,
+      watching: {},
     }));
 
     await watch(
@@ -78,6 +82,7 @@ describe('watch', () => {
     // @ts-expect-error - Partial mock.
     mock.mockImplementationOnce(() => ({
       watch: watchMock,
+      watching: {},
     }));
 
     await expect(

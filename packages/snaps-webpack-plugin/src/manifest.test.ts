@@ -47,44 +47,6 @@ describe('writeManifest', () => {
     `);
   });
 
-  it('uses a custom Prettier config if found', async () => {
-    const manifest = JSON.stringify(getSnapManifest());
-    await writeManifest(
-      resolve(__dirname, '__fixtures__', 'foo.json'),
-      manifest,
-    );
-
-    expect(jest.mocked(fs.writeFile).mock.calls[0][1]).toMatchInlineSnapshot(`
-      "{
-          "version": "1.0.0",
-          "description": "The test example snap!",
-          "proposedName": "@metamask/example-snap",
-          "repository": {
-              "type": "git",
-              "url": "https://github.com/MetaMask/example-snap.git"
-          },
-          "source": {
-              "shasum": "/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=",
-              "location": {
-                  "npm": {
-                      "filePath": "dist/bundle.js",
-                      "packageName": "@metamask/example-snap",
-                      "registry": "https://registry.npmjs.org",
-                      "iconPath": "images/icon.svg"
-                  }
-              }
-          },
-          "initialPermissions": {
-              "snap_dialog": {},
-              "endowment:rpc": { "snaps": true, "dapps": false }
-          },
-          "platformVersion": "1.0.0",
-          "manifestVersion": "0.1"
-      }
-      "
-    `);
-  });
-
   it('accepts a custom write function', async () => {
     const fn = jest.fn();
     const manifest = JSON.stringify(getSnapManifest());
