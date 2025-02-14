@@ -141,9 +141,7 @@ export type SnapHelpers = {
    * @param keyringRequest - Keyring request.
    * @returns The response.
    */
-  onKeyringRequest(
-    keyringRequest: KeyringOptions,
-  ): Promise<SnapResponseWithoutInterface>;
+  onKeyringRequest(keyringRequest: KeyringOptions): SnapRequest;
 
   /**
    * Get the response from the Snap's `onInstall` handler.
@@ -270,12 +268,10 @@ export function getHelpers({
     });
   };
 
-  const onKeyringRequest = async (
-    request: KeyringOptions,
-  ): Promise<SnapResponseWithoutInterface> => {
+  const onKeyringRequest = (request: KeyringOptions) => {
     log('Sending keyring request %o.', request);
 
-    const response = await handleRequest({
+    return handleRequest({
       snapId,
       store,
       executionService,
@@ -284,8 +280,6 @@ export function getHelpers({
       handler: HandlerType.OnKeyringRequest,
       request,
     });
-
-    return response;
   };
 
   return {
