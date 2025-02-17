@@ -60,6 +60,8 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^11.2.0",
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {

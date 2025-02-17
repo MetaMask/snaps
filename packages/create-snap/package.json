@@ -61,6 +61,8 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3",
     "semver": "^7.5.4",
     "yargs": "^17.7.1"
   },

@@ -40,6 +40,10 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
+  "dependencies": {
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3"
+  },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
     "@metamask/auto-changelog": "^4.1.0",

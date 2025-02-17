@@ -59,6 +59,8 @@
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
     "convert-source-map": "^1.8.0",
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3",
     "readable-stream": "^3.6.2"
   },
   "devDependencies": {

@@ -47,7 +47,9 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^11.2.0",
     "@noble/ed25519": "^1.6.0",
-    "@noble/secp256k1": "^1.7.1"
+    "@noble/secp256k1": "^1.7.1",
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

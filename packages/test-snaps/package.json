@@ -74,6 +74,7 @@
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",
     "bootstrap": "^5.2.2",
+    "eslint": "^9.11.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
