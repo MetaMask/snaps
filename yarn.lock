@@ -3986,10 +3986,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4003,21 +3999,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4028,10 +4014,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4044,22 +4026,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4079,10 +4051,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4092,22 +4060,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4119,10 +4077,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-browserify-plugin": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4134,21 +4088,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4159,10 +4103,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4172,22 +4112,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4198,10 +4128,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4214,21 +4140,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4260,10 +4176,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4278,21 +4190,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4324,10 +4226,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-utils": "workspace:^"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
@@ -4338,25 +4236,15 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     memfs: "npm:^3.4.13"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     semver: "npm:^7.5.4"
     ts-node: "npm:^10.9.1"
     tsc-watch: "npm:^4.5.0"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     yargs: "npm:^17.7.1"
   bin:
     create-snap: ./dist/main.cjs
@@ -4370,10 +4258,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4383,22 +4267,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4409,10 +4283,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4422,21 +4292,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4447,10 +4307,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4460,21 +4316,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4631,10 +4477,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4645,21 +4487,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4670,10 +4502,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4683,22 +4511,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     ethers: "npm:^6.3.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     webpack: "npm:^5.97.1"
   languageName: unknown
   linkType: soft
@@ -4721,27 +4539,13 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@types/node": "npm:18.14.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4752,10 +4556,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4766,22 +4566,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4792,10 +4582,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4807,21 +4593,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4832,10 +4608,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4845,21 +4617,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4870,10 +4632,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4883,21 +4641,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4908,10 +4656,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4921,21 +4665,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     uqr: "npm:^0.1.2"
   languageName: unknown
   linkType: soft
@@ -4947,10 +4681,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4961,21 +4691,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -4986,10 +4706,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5000,22 +4716,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5025,27 +4731,13 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@types/node": "npm:18.14.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5067,10 +4759,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5080,21 +4768,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5117,10 +4795,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -5132,21 +4806,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5170,10 +4834,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5183,21 +4843,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5208,10 +4858,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5221,21 +4867,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5246,10 +4882,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5260,21 +4892,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5285,10 +4907,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5298,21 +4916,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5323,10 +4931,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -5338,21 +4942,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5363,10 +4957,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5376,21 +4966,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5465,10 +5045,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -5480,22 +5056,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.19.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     yocto-spinner: "npm:^0.1.0"
   languageName: unknown
   linkType: soft
@@ -5506,10 +5072,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5520,22 +5082,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rimraf: "npm:^4.1.2"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5570,10 +5122,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-rollup-plugin": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5587,22 +5135,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rollup: "npm:^2.73.0"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5640,10 +5178,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -5654,21 +5188,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5679,10 +5203,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -5692,21 +5212,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5723,10 +5233,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-utils": "workspace:^"
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
@@ -5740,23 +5246,13 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     memfs: "npm:^3.4.13"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     readable-stream: "npm:^3.6.2"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -5774,10 +5270,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
@@ -5805,14 +5297,6 @@ __metadata:
     depcheck: "npm:^1.4.7"
     domain-browser: "npm:^4.22.0"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     events: "npm:^3.3.0"
     execa: "npm:^5.1.1"
     fork-ts-checker-webpack-plugin: "npm:^9.0.2"
@@ -5825,7 +5309,6 @@ __metadata:
     os-browserify: "npm:^0.3.0"
     path-browserify: "npm:^1.0.1"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     process: "npm:^0.11.10"
     punycode: "npm:^2.3.0"
     querystring-es3: "npm:^0.2.1"
@@ -5843,7 +5326,6 @@ __metadata:
     tsc-watch: "npm:^4.5.0"
     tty-browserify: "npm:^0.0.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     url: "npm:^0.11.1"
     util: "npm:^0.12.5"
     vm-browserify: "npm:^1.1.2"
@@ -5867,10 +5349,6 @@ __metadata:
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/key-tree": "npm:^10.0.2"
@@ -5912,14 +5390,6 @@ __metadata:
     depcheck: "npm:^1.4.7"
     esbuild: "npm:^0.18.10"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     expect-webdriverio: "npm:^4.4.1"
     fast-deep-equal: "npm:^3.1.3"
     get-npm-tarball-url: "npm:^2.0.3"
@@ -5934,7 +5404,6 @@ __metadata:
     mkdirp: "npm:^1.0.4"
     nanoid: "npm:^3.1.31"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     readable-stream: "npm:^3.6.2"
     readable-web-to-node-stream: "npm:^3.0.2"
     rimraf: "npm:^4.1.2"
@@ -5942,7 +5411,6 @@ __metadata:
     tar-stream: "npm:^3.1.7"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
@@ -5969,10 +5437,6 @@ __metadata:
     "@lavamoat/lavapack": "npm:^6.1.1"
     "@lavamoat/lavatube": "npm:^1.0.0"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
@@ -6001,14 +5465,6 @@ __metadata:
     depcheck: "npm:^1.4.7"
     esbuild: "npm:^0.18.10"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     expect-webdriverio: "npm:^4.4.1"
     istanbul-lib-coverage: "npm:^3.2.0"
     istanbul-lib-report: "npm:^3.0.0"
@@ -6021,7 +5477,6 @@ __metadata:
     lavamoat-browserify: "npm:^17.0.5"
     nanoid: "npm:^3.1.31"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
     serve-handler: "npm:^6.1.5"
@@ -6029,7 +5484,6 @@ __metadata:
     terser: "npm:^5.17.7"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
@@ -6049,10 +5503,6 @@ __metadata:
     "@jest/types": "npm:^29.6.3"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-simulation": "workspace:^"
@@ -6067,14 +5517,6 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     express: "npm:^4.18.2"
     jest: "npm:^29.0.2"
     jest-environment-node: "npm:^29.5.0"
@@ -6082,10 +5524,8 @@ __metadata:
     jest-matcher-utils: "npm:^29.5.0"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     redux: "npm:^4.2.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6107,10 +5547,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-utils": "workspace:^"
     "@rollup/plugin-virtual": "npm:^2.1.0"
     "@swc/core": "npm:1.3.78"
@@ -6120,23 +5556,13 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     memfs: "npm:^3.4.13"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rollup: "npm:^2.73.0"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6146,10 +5572,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/permission-controller": "npm:^11.0.6"
@@ -6167,22 +5589,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     luxon: "npm:^3.5.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6192,10 +5604,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
@@ -6206,24 +5614,14 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     expect-type: "npm:^0.17.3"
     jest: "npm:^29.0.2"
     jest-fetch-mock: "npm:^3.0.3"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6234,10 +5632,6 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.2.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
@@ -6260,14 +5654,6 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     express: "npm:^4.18.2"
     fast-deep-equal: "npm:^3.1.3"
     jest: "npm:^29.0.2"
@@ -6275,12 +5661,10 @@ __metadata:
     jest-silent-reporter: "npm:^0.6.0"
     mime: "npm:^3.0.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     readable-stream: "npm:^3.6.2"
     redux-saga: "npm:^1.2.3"
     ts-jest: "npm:^29.1.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6295,11 +5679,6 @@ __metadata:
     "@ethersproject/units": "npm:^5.7.0"
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-browser": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^15.2.0"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
@@ -6337,16 +5716,6 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
-    eslint-plugin-react: "npm:^7.32.2"
-    eslint-plugin-react-hooks: "npm:^4.6.0"
     express: "npm:^4.18.2"
     fast-deep-equal: "npm:^3.1.3"
     favicons: "npm:^7.1.2"
@@ -6365,7 +5734,6 @@ __metadata:
     monaco-editor: "npm:^0.38.0"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     process: "npm:^0.11.10"
     react: "npm:^18.2.0"
     react-dnd: "npm:^16.0.1"
@@ -6386,7 +5754,6 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -6405,10 +5772,6 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/key-tree": "npm:^10.0.2"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/post-message-stream": "npm:^9.0.0"
@@ -6441,14 +5804,6 @@ __metadata:
     depcheck: "npm:^1.4.7"
     esbuild: "npm:^0.18.10"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     expect-webdriverio: "npm:^4.4.1"
     fast-deep-equal: "npm:^3.1.3"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -6461,14 +5816,12 @@ __metadata:
     marked: "npm:^12.0.1"
     memfs: "npm:^3.4.13"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     rfdc: "npm:^1.3.0"
     rimraf: "npm:^4.1.2"
     semver: "npm:^7.5.4"
     ses: "npm:^1.1.0"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     validate-npm-package-name: "npm:^5.0.0"
     vite: "npm:^4.3.9"
     vite-tsconfig-paths: "npm:^4.0.5"
@@ -6484,10 +5837,6 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": "npm:^11.2.0"
@@ -6499,22 +5848,12 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     memfs: "npm:^3.4.13"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     webpack: "npm:^5.97.1"
     webpack-sources: "npm:^3.2.3"
   languageName: unknown
@@ -6545,10 +5884,6 @@ __metadata:
     "@metamask/cronjob-example-snap": "workspace:^"
     "@metamask/dialog-example-snap": "workspace:^"
     "@metamask/error-example-snap": "workspace:^"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/ethereum-provider-example-snap": "workspace:^"
     "@metamask/ethers-js-example-snap": "workspace:^"
     "@metamask/file-upload-example-snap": "workspace:^"
@@ -6589,14 +5924,6 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     favicons: "npm:^7.1.2"
     favicons-webpack-plugin: "npm:^6.0.0"
     html-webpack-plugin: "npm:^5.5.0"
@@ -6614,7 +5941,6 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -6662,10 +5988,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -6676,21 +5998,11 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
   languageName: unknown
   linkType: soft
 
@@ -6701,10 +6013,6 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
-    "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-jest": "npm:^14.0.0"
-    "@metamask/eslint-config-nodejs": "npm:^14.0.0"
-    "@metamask/eslint-config-typescript": "npm:^14.0.0"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
@@ -6715,23 +6023,13 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    eslint-config-prettier: "npm:^9.1.0"
-    eslint-import-resolver-typescript: "npm:^3.6.3"
-    eslint-plugin-import-x: "npm:^4.3.0"
-    eslint-plugin-jest: "npm:^28.8.3"
-    eslint-plugin-jsdoc: "npm:^50.2.4"
-    eslint-plugin-n: "npm:^17.10.3"
-    eslint-plugin-prettier: "npm:^5.2.1"
-    eslint-plugin-promise: "npm:^7.1.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
-    prettier-plugin-packagejson: "npm:^2.5.8"
     swc-loader: "npm:^0.2.3"
     terser-webpack-plugin: "npm:^5.3.9"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    typescript-eslint: "npm:^8.6.0"
     webpack: "npm:^5.97.1"
     webpack-cli: "npm:^5.1.4"
   languageName: unknown
@@ -9594,48 +8892,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-includes@npm:^3.1.5, array-includes@npm:^3.1.6":
-  version: 3.1.6
-  resolution: "array-includes@npm:3.1.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-    get-intrinsic: "npm:^1.1.3"
-    is-string: "npm:^1.0.7"
-  checksum: 10/a7168bd16821ec76b95a8f50f73076577a7cbd6c762452043d2b978c8a5fa4afe4f98a025d6f1d5c971b8d0b440b4ee73f6a57fc45382c858b8e17c275015428
-  languageName: node
-  linkType: hard
-
 "array-union@npm:^2.1.0":
   version: 2.1.0
   resolution: "array-union@npm:2.1.0"
   checksum: 10/5bee12395cba82da674931df6d0fea23c4aa4660cb3b338ced9f828782a65caa232573e6bf3968f23e0c5eb301764a382cef2f128b170a9dc59de0e36c39f98d
-  languageName: node
-  linkType: hard
-
-"array.prototype.flatmap@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "array.prototype.flatmap@npm:1.3.1"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-    es-shim-unscopables: "npm:^1.0.0"
-  checksum: 10/f1f3d8e0610afce06a8622295b4843507dfc2fbbd2c2b2a8d541d9f42871747393c3099d630a3f8266ca086b97b089687db64cd86b6eb7e270ebc8f767eec9fc
-  languageName: node
-  linkType: hard
-
-"array.prototype.tosorted@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "array.prototype.tosorted@npm:1.1.1"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-    es-shim-unscopables: "npm:^1.0.0"
-    get-intrinsic: "npm:^1.1.3"
-  checksum: 10/23e86074d0dda9260aaa137ec45ae5a8196916ee3f256e41665381f120fdb5921bd84ad93eeba8d0234e5cd355093049585167ba2307fde340e5cee15b12415d
   languageName: node
   linkType: hard
 
@@ -9764,10 +9024,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"available-typed-arrays@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "available-typed-arrays@npm:1.0.5"
-  checksum: 10/4d4d5e86ea0425696f40717882f66a570647b94ac8d273ddc7549a9b61e5da099e149bf431530ccbd776bd74e02039eb8b5edf426e3e2211ee61af16698a9064
+"available-typed-arrays@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "available-typed-arrays@npm:1.0.7"
+  dependencies:
+    possible-typed-array-names: "npm:^1.0.0"
+  checksum: 10/6c9da3a66caddd83c875010a1ca8ef11eac02ba15fb592dc9418b2b5e7b77b645fa7729380a92d9835c2f05f2ca1b6251f39b993e0feb3f1517c74fa1af02cab
   languageName: node
   linkType: hard
 
@@ -10552,16 +9814,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"call-bind@npm:^1.0.0, call-bind@npm:^1.0.2, call-bind@npm:^1.0.5, call-bind@npm:^1.0.7":
-  version: 1.0.7
-  resolution: "call-bind@npm:1.0.7"
+"call-bind-apply-helpers@npm:^1.0.0, call-bind-apply-helpers@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "call-bind-apply-helpers@npm:1.0.2"
   dependencies:
-    es-define-property: "npm:^1.0.0"
     es-errors: "npm:^1.3.0"
     function-bind: "npm:^1.1.2"
+  checksum: 10/00482c1f6aa7cfb30fb1dbeb13873edf81cfac7c29ed67a5957d60635a56b2a4a480f1016ddbdb3395cc37900d46037fb965043a51c5c789ffeab4fc535d18b5
+  languageName: node
+  linkType: hard
+
+"call-bind@npm:^1.0.0, call-bind@npm:^1.0.2, call-bind@npm:^1.0.5, call-bind@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "call-bind@npm:1.0.8"
+  dependencies:
+    call-bind-apply-helpers: "npm:^1.0.0"
+    es-define-property: "npm:^1.0.0"
     get-intrinsic: "npm:^1.2.4"
-    set-function-length: "npm:^1.2.1"
-  checksum: 10/cd6fe658e007af80985da5185bff7b55e12ef4c2b6f41829a26ed1eef254b1f1c12e3dfd5b2b068c6ba8b86aba62390842d81752e67dcbaec4f6f76e7113b6b7
+    set-function-length: "npm:^1.2.2"
+  checksum: 10/659b03c79bbfccf0cde3a79e7d52570724d7290209823e1ca5088f94b52192dc1836b82a324d0144612f816abb2f1734447438e38d9dafe0b3f82c2a1b9e3bce
+  languageName: node
+  linkType: hard
+
+"call-bound@npm:^1.0.2, call-bound@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "call-bound@npm:1.0.3"
+  dependencies:
+    call-bind-apply-helpers: "npm:^1.0.1"
+    get-intrinsic: "npm:^1.2.6"
+  checksum: 10/c39a8245f68cdb7c1f5eea7b3b1e3a7a90084ea6efebb78ebc454d698ade2c2bb42ec033abc35f1e596d62496b6100e9f4cdfad1956476c510130e2cda03266d
   languageName: node
   linkType: hard
 
@@ -11807,7 +11088,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"define-data-property@npm:^1.1.4":
+"define-data-property@npm:^1.0.1, define-data-property@npm:^1.1.4":
   version: 1.1.4
   resolution: "define-data-property@npm:1.1.4"
   dependencies:
@@ -11825,13 +11106,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"define-properties@npm:^1.1.3, define-properties@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "define-properties@npm:1.1.4"
+"define-properties@npm:^1.1.3, define-properties@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "define-properties@npm:1.2.1"
   dependencies:
+    define-data-property: "npm:^1.0.1"
     has-property-descriptors: "npm:^1.0.0"
     object-keys: "npm:^1.1.1"
-  checksum: 10/ce0aef3f9eb193562b5cfb79b2d2c86b6a109dfc9fdcb5f45d680631a1a908c06824ddcdb72b7573b54e26ace07f0a23420aaba0d5c627b34d2c1de8ef527e2b
+  checksum: 10/b4ccd00597dd46cb2d4a379398f5b19fca84a16f3374e2249201992f36b30f6835949a9429669ee6b41b6e837205a163eadd745e472069e70dfc10f03e5fcc12
   languageName: node
   linkType: hard
 
@@ -12124,15 +11406,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"doctrine@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "doctrine@npm:2.1.0"
-  dependencies:
-    esutils: "npm:^2.0.2"
-  checksum: 10/555684f77e791b17173ea86e2eea45ef26c22219cb64670669c4f4bebd26dbc95cd90ec1f4159e9349a6bb9eb892ce4dde8cd0139e77bedd8bf4518238618474
-  languageName: node
-  linkType: hard
-
 "doctrine@npm:^3.0.0":
   version: 3.0.0
   resolution: "doctrine@npm:3.0.0"
@@ -12243,6 +11516,17 @@ __metadata:
   version: 16.3.1
   resolution: "dotenv@npm:16.3.1"
   checksum: 10/dbb778237ef8750e9e3cd1473d3c8eaa9cc3600e33a75c0e36415d0fa0848197f56c3800f77924c70e7828f0b03896818cd52f785b07b9ad4d88dba73fbba83f
+  languageName: node
+  linkType: hard
+
+"dunder-proto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "dunder-proto@npm:1.0.1"
+  dependencies:
+    call-bind-apply-helpers: "npm:^1.0.1"
+    es-errors: "npm:^1.3.0"
+    gopd: "npm:^1.2.0"
+  checksum: 10/5add88a3d68d42d6e6130a0cac450b7c2edbe73364bbd2fc334564418569bea97c6943a8fcd70e27130bf32afc236f30982fc4905039b703f23e9e0433c29934
   languageName: node
   linkType: hard
 
@@ -12485,44 +11769,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-abstract@npm:^1.19.0, es-abstract@npm:^1.20.4":
-  version: 1.20.4
-  resolution: "es-abstract@npm:1.20.4"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    es-to-primitive: "npm:^1.2.1"
-    function-bind: "npm:^1.1.1"
-    function.prototype.name: "npm:^1.1.5"
-    get-intrinsic: "npm:^1.1.3"
-    get-symbol-description: "npm:^1.0.0"
-    has: "npm:^1.0.3"
-    has-property-descriptors: "npm:^1.0.0"
-    has-symbols: "npm:^1.0.3"
-    internal-slot: "npm:^1.0.3"
-    is-callable: "npm:^1.2.7"
-    is-negative-zero: "npm:^2.0.2"
-    is-regex: "npm:^1.1.4"
-    is-shared-array-buffer: "npm:^1.0.2"
-    is-string: "npm:^1.0.7"
-    is-weakref: "npm:^1.0.2"
-    object-inspect: "npm:^1.12.2"
-    object-keys: "npm:^1.1.1"
-    object.assign: "npm:^4.1.4"
-    regexp.prototype.flags: "npm:^1.4.3"
-    safe-regex-test: "npm:^1.0.0"
-    string.prototype.trimend: "npm:^1.0.5"
-    string.prototype.trimstart: "npm:^1.0.5"
-    unbox-primitive: "npm:^1.0.2"
-  checksum: 10/04fc6bd5e0389d157f119b59eb98dbdd3d2c5873470b375f01d6eff6ecb3ca67f91a5d7ee93c5bf0c2c475c5de2b813229f5269e087634ad84fb7827c8a66959
-  languageName: node
-  linkType: hard
-
-"es-define-property@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "es-define-property@npm:1.0.0"
-  dependencies:
-    get-intrinsic: "npm:^1.2.4"
-  checksum: 10/f66ece0a887b6dca71848fa71f70461357c0e4e7249696f81bad0a1f347eed7b31262af4a29f5d726dc026426f085483b6b90301855e647aa8e21936f07293c6
+"es-define-property@npm:^1.0.0, es-define-property@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "es-define-property@npm:1.0.1"
+  checksum: 10/f8dc9e660d90919f11084db0a893128f3592b781ce967e4fccfb8f3106cb83e400a4032c559184ec52ee1dbd4b01e7776c7cd0b3327b1961b1a4a7008920fe78
   languageName: node
   linkType: hard
 
@@ -12557,23 +11807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-shim-unscopables@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "es-shim-unscopables@npm:1.0.0"
+"es-object-atoms@npm:^1.0.0":
+  version: 1.1.1
+  resolution: "es-object-atoms@npm:1.1.1"
   dependencies:
-    has: "npm:^1.0.3"
-  checksum: 10/ac2db2c70d253cf83bebcdc974d185239e205ca18af743efd3b656bac00cabfee2358a050b18b63b46972dab5cfa10ef3f2597eb3a8d4d6d9417689793665da6
-  languageName: node
-  linkType: hard
-
-"es-to-primitive@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "es-to-primitive@npm:1.2.1"
-  dependencies:
-    is-callable: "npm:^1.1.4"
-    is-date-object: "npm:^1.0.1"
-    is-symbol: "npm:^1.0.2"
-  checksum: 10/74aeeefe2714cf99bb40cab7ce3012d74e1e2c1bd60d0a913b467b269edde6e176ca644b5ba03a5b865fb044a29bca05671cd445c85ca2cdc2de155d7fc8fe9b
+    es-errors: "npm:^1.3.0"
+  checksum: 10/54fe77de288451dae51c37bfbfe3ec86732dc3778f98f3eb3bdb4bf48063b2c0b8f9c93542656986149d08aa5be3204286e2276053d19582b76753f1a2728867
   languageName: node
   linkType: hard
 
@@ -13200,40 +12439,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^4.6.0":
-  version: 4.6.0
-  resolution: "eslint-plugin-react-hooks@npm:4.6.0"
-  peerDependencies:
-    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
-  checksum: 10/3c63134e056a6d98d66e2c475c81f904169db817e89316d14e36269919e31f4876a2588aa0e466ec8ef160465169c627fe823bfdaae7e213946584e4a165a3ac
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-react@npm:^7.32.2":
-  version: 7.32.2
-  resolution: "eslint-plugin-react@npm:7.32.2"
-  dependencies:
-    array-includes: "npm:^3.1.6"
-    array.prototype.flatmap: "npm:^1.3.1"
-    array.prototype.tosorted: "npm:^1.1.1"
-    doctrine: "npm:^2.1.0"
-    estraverse: "npm:^5.3.0"
-    jsx-ast-utils: "npm:^2.4.1 || ^3.0.0"
-    minimatch: "npm:^3.1.2"
-    object.entries: "npm:^1.1.6"
-    object.fromentries: "npm:^2.0.6"
-    object.hasown: "npm:^1.1.2"
-    object.values: "npm:^1.1.6"
-    prop-types: "npm:^15.8.1"
-    resolve: "npm:^2.0.0-next.4"
-    semver: "npm:^6.3.0"
-    string.prototype.matchall: "npm:^4.0.8"
-  peerDependencies:
-    eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 10/5ca7959c85fa557bcd25c4b9b3f81fbfae974e8fb16172e31a275712cc71da8ecbb9436da2d3130a8b24dd7a4bbe69d37d4392944aecc4821618717ba156caf4
-  languageName: node
-  linkType: hard
-
 "eslint-scope@npm:5.1.1":
   version: 5.1.1
   resolution: "eslint-scope@npm:5.1.1"
@@ -13374,7 +12579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"estraverse@npm:^5.1.0, estraverse@npm:^5.2.0, estraverse@npm:^5.3.0":
+"estraverse@npm:^5.1.0, estraverse@npm:^5.2.0":
   version: 5.3.0
   resolution: "estraverse@npm:5.3.0"
   checksum: 10/37cbe6e9a68014d34dbdc039f90d0baf72436809d02edffcc06ba3c2a12eb298048f877511353b130153e532aac8d68ba78430c0dd2f44806ebc7c014b01585e
@@ -14312,19 +13517,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"function.prototype.name@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "function.prototype.name@npm:1.1.5"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.3"
-    es-abstract: "npm:^1.19.0"
-    functions-have-names: "npm:^1.2.2"
-  checksum: 10/5d426e5a38ac41747bcfce6191e0ec818ed18678c16cfc36b5d1ca87f56ff98c4ce958ee2c1ea2a18dc3da989844a37b1065311e2d2ae4cf12da8f82418b686b
-  languageName: node
-  linkType: hard
-
-"functions-have-names@npm:^1.2.2":
+"functions-have-names@npm:^1.2.3":
   version: 1.2.3
   resolution: "functions-have-names@npm:1.2.3"
   checksum: 10/0ddfd3ed1066a55984aaecebf5419fbd9344a5c38dd120ffb0739fac4496758dcf371297440528b115e4367fc46e3abc86a2cc0ff44612181b175ae967a11a05
@@ -14395,16 +13588,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"get-intrinsic@npm:^1.1.1, get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.0, get-intrinsic@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "get-intrinsic@npm:1.2.4"
+"get-intrinsic@npm:^1.1.3, get-intrinsic@npm:^1.2.4, get-intrinsic@npm:^1.2.5, get-intrinsic@npm:^1.2.6":
+  version: 1.2.7
+  resolution: "get-intrinsic@npm:1.2.7"
   dependencies:
+    call-bind-apply-helpers: "npm:^1.0.1"
+    es-define-property: "npm:^1.0.1"
     es-errors: "npm:^1.3.0"
+    es-object-atoms: "npm:^1.0.0"
     function-bind: "npm:^1.1.2"
-    has-proto: "npm:^1.0.1"
-    has-symbols: "npm:^1.0.3"
-    hasown: "npm:^2.0.0"
-  checksum: 10/85bbf4b234c3940edf8a41f4ecbd4e25ce78e5e6ad4e24ca2f77037d983b9ef943fd72f00f3ee97a49ec622a506b67db49c36246150377efcda1c9eb03e5f06d
+    get-proto: "npm:^1.0.0"
+    gopd: "npm:^1.2.0"
+    has-symbols: "npm:^1.1.0"
+    hasown: "npm:^2.0.2"
+    math-intrinsics: "npm:^1.1.0"
+  checksum: 10/4f7149c9a826723f94c6d49f70bcb3df1d3f9213994fab3668f12f09fa72074681460fb29ebb6f135556ec6372992d63802386098791a8f09cfa6f27090fa67b
   languageName: node
   linkType: hard
 
@@ -14436,6 +13634,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-proto@npm:^1.0.0, get-proto@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "get-proto@npm:1.0.1"
+  dependencies:
+    dunder-proto: "npm:^1.0.1"
+    es-object-atoms: "npm:^1.0.0"
+  checksum: 10/4fc96afdb58ced9a67558698b91433e6b037aaa6f1493af77498d7c85b141382cf223c0e5946f334fb328ee85dfe6edd06d218eaf09556f4bc4ec6005d7f5f7b
+  languageName: node
+  linkType: hard
+
 "get-stdin@npm:^9.0.0":
   version: 9.0.0
   resolution: "get-stdin@npm:9.0.0"
@@ -14463,16 +13671,6 @@ __metadata:
   version: 8.0.1
   resolution: "get-stream@npm:8.0.1"
   checksum: 10/dde5511e2e65a48e9af80fea64aff11b4921b14b6e874c6f8294c50975095af08f41bfb0b680c887f28b566dd6ec2cb2f960f9d36a323359be324ce98b766e9e
-  languageName: node
-  linkType: hard
-
-"get-symbol-description@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "get-symbol-description@npm:1.0.0"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    get-intrinsic: "npm:^1.1.1"
-  checksum: 10/7e5f298afe0f0872747dce4a949ce490ebc5d6dd6aefbbe5044543711c9b19a4dfaebdbc627aee99e1299d58a435b2fbfa083458c1d58be6dc03a3bada24d359
   languageName: node
   linkType: hard
 
@@ -14682,12 +13880,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gopd@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "gopd@npm:1.0.1"
-  dependencies:
-    get-intrinsic: "npm:^1.1.3"
-  checksum: 10/5fbc7ad57b368ae4cd2f41214bd947b045c1a4be2f194a7be1778d71f8af9dbf4004221f3b6f23e30820eb0d052b4f819fe6ebe8221e2a3c6f0ee4ef173421ca
+"gopd@npm:^1.0.1, gopd@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "gopd@npm:1.2.0"
+  checksum: 10/94e296d69f92dc1c0768fcfeecfb3855582ab59a7c75e969d5f96ce50c3d201fd86d5a2857c22565764d5bb8a816c7b1e58f133ec318cd56274da36c5e3fb1a1
   languageName: node
   linkType: hard
 
@@ -14786,26 +13982,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"has-proto@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "has-proto@npm:1.0.1"
-  checksum: 10/eab2ab0ed1eae6d058b9bbc4c1d99d2751b29717be80d02fd03ead8b62675488de0c7359bc1fdd4b87ef6fd11e796a9631ad4d7452d9324fdada70158c2e5be7
+"has-symbols@npm:^1.0.3, has-symbols@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "has-symbols@npm:1.1.0"
+  checksum: 10/959385c98696ebbca51e7534e0dc723ada325efa3475350951363cce216d27373e0259b63edb599f72eb94d6cde8577b4b2375f080b303947e560f85692834fa
   languageName: node
   linkType: hard
 
-"has-symbols@npm:^1.0.2, has-symbols@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "has-symbols@npm:1.0.3"
-  checksum: 10/464f97a8202a7690dadd026e6d73b1ceeddd60fe6acfd06151106f050303eaa75855aaa94969df8015c11ff7c505f196114d22f7386b4a471038da5874cf5e9b
-  languageName: node
-  linkType: hard
-
-"has-tostringtag@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "has-tostringtag@npm:1.0.0"
+"has-tostringtag@npm:^1.0.0, has-tostringtag@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "has-tostringtag@npm:1.0.2"
   dependencies:
-    has-symbols: "npm:^1.0.2"
-  checksum: 10/95546e7132efc895a9ae64a8a7cf52588601fc3d52e0304ed228f336992cdf0baaba6f3519d2655e560467db35a1ed79f6420c286cc91a13aa0647a31ed92570
+    has-symbols: "npm:^1.0.3"
+  checksum: 10/c74c5f5ceee3c8a5b8bc37719840dc3749f5b0306d818974141dda2471a1a2ca6c8e46b9d6ac222c5345df7a901c9b6f350b1e6d62763fec877e26609a401bfe
   languageName: node
   linkType: hard
 
@@ -14816,7 +14005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"has@npm:^1.0.0, has@npm:^1.0.3":
+"has@npm:^1.0.0":
   version: 1.0.3
   resolution: "has@npm:1.0.3"
   dependencies:
@@ -14846,7 +14035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hasown@npm:^2.0.0, hasown@npm:^2.0.2":
+"hasown@npm:^2.0.2":
   version: 2.0.2
   resolution: "hasown@npm:2.0.2"
   dependencies:
@@ -15371,14 +14560,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"internal-slot@npm:^1.0.3, internal-slot@npm:^1.0.4":
-  version: 1.0.5
-  resolution: "internal-slot@npm:1.0.5"
+"internal-slot@npm:^1.0.4":
+  version: 1.1.0
+  resolution: "internal-slot@npm:1.1.0"
   dependencies:
-    get-intrinsic: "npm:^1.2.0"
-    has: "npm:^1.0.3"
-    side-channel: "npm:^1.0.4"
-  checksum: 10/e2eb5b348e427957dd4092cb57b9374a2cbcabbf61e5e5b4d99cb68eeaae29394e8efd79f23dc2b1831253346f3c16b82010737b84841225e934d80d04d68643
+    es-errors: "npm:^1.3.0"
+    hasown: "npm:^2.0.2"
+    side-channel: "npm:^1.1.0"
+  checksum: 10/1d5219273a3dab61b165eddf358815eefc463207db33c20fcfca54717da02e3f492003757721f972fd0bf21e4b426cab389c5427b99ceea4b8b670dc88ee6d4a
   languageName: node
   linkType: hard
 
@@ -15440,13 +14629,13 @@ __metadata:
   linkType: hard
 
 "is-array-buffer@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "is-array-buffer@npm:3.0.1"
+  version: 3.0.5
+  resolution: "is-array-buffer@npm:3.0.5"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    get-intrinsic: "npm:^1.1.3"
-    is-typed-array: "npm:^1.1.10"
-  checksum: 10/f26ab87448e698285daf707e52a533920449f7abf63714140ffab9d5571aa5a71ac2fa2677e8b793ad0d5d3e40078d4d2c8a0ab39c957e3cfc6513bb6c9dfdc9
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.3"
+    get-intrinsic: "npm:^1.2.6"
+  checksum: 10/ef1095c55b963cd0dcf6f88a113e44a0aeca91e30d767c475e7d746d28d1195b10c5076b94491a7a0cd85020ca6a4923070021d74651d093dc909e9932cf689b
   languageName: node
   linkType: hard
 
@@ -15464,10 +14653,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-bigint@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "is-bigint@npm:1.0.2"
-  checksum: 10/7e01ddae281d628731ac45953def65032a2e9d7e1b9d68741078cf134088f08be28821848e410391e47f765b0428f4154b10f3bdbb35f18a5919c4d18dd3f1d4
+"is-bigint@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "is-bigint@npm:1.1.0"
+  dependencies:
+    has-bigints: "npm:^1.0.2"
+  checksum: 10/10cf327310d712fe227cfaa32d8b11814c214392b6ac18c827f157e1e85363cf9c8e2a22df526689bd5d25e53b58cc110894787afb54e138e7c504174dba15fd
   languageName: node
   linkType: hard
 
@@ -15480,12 +14671,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-boolean-object@npm:^1.1.0":
-  version: 1.1.1
-  resolution: "is-boolean-object@npm:1.1.1"
+"is-boolean-object@npm:^1.2.1":
+  version: 1.2.2
+  resolution: "is-boolean-object@npm:1.2.2"
   dependencies:
-    call-bind: "npm:^1.0.2"
-  checksum: 10/63fbf0841b7b101dc8c8fd17a93c9437304128433135525695e944d2efa9f74412e694b9f87fe659052caec91a5d22b02f3b6c23c070f41c27e26ee9fc46e302
+    call-bound: "npm:^1.0.3"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/051fa95fdb99d7fbf653165a7e6b2cba5d2eb62f7ffa81e793a790f3fb5366c91c1b7b6af6820aa2937dd86c73aa3ca9d9ca98f500988457b1c59692c52ba911
   languageName: node
   linkType: hard
 
@@ -15514,7 +14706,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-callable@npm:^1.1.3, is-callable@npm:^1.1.4, is-callable@npm:^1.2.7":
+"is-callable@npm:^1.1.3":
   version: 1.2.7
   resolution: "is-callable@npm:1.2.7"
   checksum: 10/48a9297fb92c99e9df48706241a189da362bff3003354aea4048bd5f7b2eb0d823cd16d0a383cece3d76166ba16d85d9659165ac6fcce1ac12e6c649d66dbdb9
@@ -15532,7 +14724,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-core-module@npm:^2.12.0, is-core-module@npm:^2.13.0, is-core-module@npm:^2.16.0, is-core-module@npm:^2.8.1, is-core-module@npm:^2.9.0":
+"is-core-module@npm:^2.12.0, is-core-module@npm:^2.13.0, is-core-module@npm:^2.16.0, is-core-module@npm:^2.8.1":
   version: 2.16.1
   resolution: "is-core-module@npm:2.16.1"
   dependencies:
@@ -15541,12 +14733,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-date-object@npm:^1.0.1, is-date-object@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "is-date-object@npm:1.0.5"
+"is-date-object@npm:^1.0.5":
+  version: 1.1.0
+  resolution: "is-date-object@npm:1.1.0"
   dependencies:
-    has-tostringtag: "npm:^1.0.0"
-  checksum: 10/cc80b3a4b42238fa0d358b9a6230dae40548b349e64a477cb7c5eff9b176ba194c11f8321daaf6dd157e44073e9b7fd01f87db1f14952a88d5657acdcd3a56e2
+    call-bound: "npm:^1.0.2"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/3a811b2c3176fb31abee1d23d3dc78b6c65fd9c07d591fcb67553cab9e7f272728c3dd077d2d738b53f9a2103255b0a6e8dfc9568a7805c56a78b2563e8d1dec
   languageName: node
   linkType: hard
 
@@ -15595,11 +14788,14 @@ __metadata:
   linkType: hard
 
 "is-generator-function@npm:^1.0.7":
-  version: 1.0.10
-  resolution: "is-generator-function@npm:1.0.10"
+  version: 1.1.0
+  resolution: "is-generator-function@npm:1.1.0"
   dependencies:
-    has-tostringtag: "npm:^1.0.0"
-  checksum: 10/499a3ce6361064c3bd27fbff5c8000212d48506ebe1977842bbd7b3e708832d0deb1f4cc69186ece3640770e8c4f1287b24d99588a0b8058b2dbdd344bc1f47f
+    call-bound: "npm:^1.0.3"
+    get-proto: "npm:^1.0.0"
+    has-tostringtag: "npm:^1.0.2"
+    safe-regex-test: "npm:^1.1.0"
+  checksum: 10/5906ff51a856a5fbc6b90a90fce32040b0a6870da905f98818f1350f9acadfc9884f7c3dec833fce04b83dd883937b86a190b6593ede82e8b1af8b6c4ecf7cbd
   languageName: node
   linkType: hard
 
@@ -15633,10 +14829,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-map@npm:^2.0.1, is-map@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "is-map@npm:2.0.2"
-  checksum: 10/60ba910f835f2eacb1fdf5b5a6c60fe1c702d012a7673e6546992bcc0c873f62ada6e13d327f9e48f1720d49c152d6cdecae1fa47a261ef3d247c3ce6f0e1d39
+"is-map@npm:^2.0.2, is-map@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "is-map@npm:2.0.3"
+  checksum: 10/8de7b41715b08bcb0e5edb0fb9384b80d2d5bcd10e142188f33247d19ff078abaf8e9b6f858e2302d8d05376a26a55cd23a3c9f8ab93292b02fcd2cc9e4e92bb
   languageName: node
   linkType: hard
 
@@ -15657,17 +14853,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-negative-zero@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "is-negative-zero@npm:2.0.2"
-  checksum: 10/edbec1a9e6454d68bf595a114c3a72343d2d0be7761d8173dae46c0b73d05bb8fe9398c85d121e7794a66467d2f40b4a610b0be84cd804262d234fc634c86131
-  languageName: node
-  linkType: hard
-
-"is-number-object@npm:^1.0.4":
-  version: 1.0.5
-  resolution: "is-number-object@npm:1.0.5"
-  checksum: 10/360b0c6cc9d80eed44167bf8e648937d87a07a7383f20c8469166366eef8520987ff302246d971ea2feefec9e81dd6993196fa22678ad53ccc4b52f2e303a04e
+"is-number-object@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "is-number-object@npm:1.1.1"
+  dependencies:
+    call-bound: "npm:^1.0.3"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/a5922fb8779ab1ea3b8a9c144522b3d0bea5d9f8f23f7a72470e61e1e4df47714e28e0154ac011998b709cce260c3c9447ad3cd24a96c2f2a0abfdb2cbdc76c8
   languageName: node
   linkType: hard
 
@@ -15724,29 +14916,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-regex@npm:^1.1.4":
-  version: 1.1.4
-  resolution: "is-regex@npm:1.1.4"
+"is-regex@npm:^1.1.4, is-regex@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "is-regex@npm:1.2.1"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    has-tostringtag: "npm:^1.0.0"
-  checksum: 10/36d9174d16d520b489a5e9001d7d8d8624103b387be300c50f860d9414556d0485d74a612fdafc6ebbd5c89213d947dcc6b6bff6b2312093f71ea03cbb19e564
+    call-bound: "npm:^1.0.2"
+    gopd: "npm:^1.2.0"
+    has-tostringtag: "npm:^1.0.2"
+    hasown: "npm:^2.0.2"
+  checksum: 10/c42b7efc5868a5c9a4d8e6d3e9816e8815c611b09535c00fead18a1138455c5cb5e1887f0023a467ad3f9c419d62ba4dc3d9ba8bafe55053914d6d6454a945d2
   languageName: node
   linkType: hard
 
-"is-set@npm:^2.0.1, is-set@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "is-set@npm:2.0.2"
-  checksum: 10/d89e82acdc7760993474f529e043f9c4a1d63ed4774d21cc2e331d0e401e5c91c27743cd7c889137028f6a742234759a4bd602368fbdbf0b0321994aefd5603f
+"is-set@npm:^2.0.2, is-set@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "is-set@npm:2.0.3"
+  checksum: 10/5685df33f0a4a6098a98c72d94d67cad81b2bc72f1fb2091f3d9283c4a1c582123cd709145b02a9745f0ce6b41e3e43f1c944496d1d74d4ea43358be61308669
   languageName: node
   linkType: hard
 
 "is-shared-array-buffer@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "is-shared-array-buffer@npm:1.0.2"
+  version: 1.0.4
+  resolution: "is-shared-array-buffer@npm:1.0.4"
   dependencies:
-    call-bind: "npm:^1.0.2"
-  checksum: 10/23d82259d6cd6dbb7c4ff3e4efeff0c30dbc6b7f88698498c17f9821cb3278d17d2b6303a5341cbd638ab925a28f3f086a6c79b3df70ac986cc526c725d43b4f
+    call-bound: "npm:^1.0.3"
+  checksum: 10/0380d7c60cc692856871526ffcd38a8133818a2ee42d47bb8008248a0cd2121d8c8b5f66b6da3cac24bc5784553cacb6faaf678f66bc88c6615b42af2825230e
   languageName: node
   linkType: hard
 
@@ -15764,34 +14958,33 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-string@npm:^1.0.5, is-string@npm:^1.0.7":
-  version: 1.0.7
-  resolution: "is-string@npm:1.0.7"
+"is-string@npm:^1.0.7, is-string@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "is-string@npm:1.1.1"
   dependencies:
-    has-tostringtag: "npm:^1.0.0"
-  checksum: 10/2bc292fe927493fb6dfc3338c099c3efdc41f635727c6ebccf704aeb2a27bca7acb9ce6fd34d103db78692b10b22111a8891de26e12bfa1c5e11e263c99d1fef
+    call-bound: "npm:^1.0.3"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/5277cb9e225a7cc8a368a72623b44a99f2cfa139659c6b203553540681ad4276bfc078420767aad0e73eef5f0bd07d4abf39a35d37ec216917879d11cebc1f8b
   languageName: node
   linkType: hard
 
-"is-symbol@npm:^1.0.2, is-symbol@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "is-symbol@npm:1.0.4"
+"is-symbol@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "is-symbol@npm:1.1.1"
   dependencies:
-    has-symbols: "npm:^1.0.2"
-  checksum: 10/a47dd899a84322528b71318a89db25c7ecdec73197182dad291df15ffea501e17e3c92c8de0bfb50e63402747399981a687b31c519971b1fa1a27413612be929
+    call-bound: "npm:^1.0.2"
+    has-symbols: "npm:^1.1.0"
+    safe-regex-test: "npm:^1.1.0"
+  checksum: 10/db495c0d8cd0a7a66b4f4ef7fccee3ab5bd954cb63396e8ac4d32efe0e9b12fdfceb851d6c501216a71f4f21e5ff20fc2ee845a3d52d455e021c466ac5eb2db2
   languageName: node
   linkType: hard
 
-"is-typed-array@npm:^1.1.10, is-typed-array@npm:^1.1.3":
-  version: 1.1.10
-  resolution: "is-typed-array@npm:1.1.10"
+"is-typed-array@npm:^1.1.3":
+  version: 1.1.15
+  resolution: "is-typed-array@npm:1.1.15"
   dependencies:
-    available-typed-arrays: "npm:^1.0.5"
-    call-bind: "npm:^1.0.2"
-    for-each: "npm:^0.3.3"
-    gopd: "npm:^1.0.1"
-    has-tostringtag: "npm:^1.0.0"
-  checksum: 10/2392b2473bbc994f5c30d6848e32bab3cab6c80b795aaec3020baf5419ff7df38fc11b3a043eb56d50f842394c578dbb204a7a29398099f895cf111c5b27f327
+    which-typed-array: "npm:^1.1.16"
+  checksum: 10/e8cf60b9ea85667097a6ad68c209c9722cfe8c8edf04d6218366469e51944c5cc25bae45ffb845c23f811d262e4314d3b0168748eb16711aa34d12724cdf0735
   languageName: node
   linkType: hard
 
@@ -15823,29 +15016,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-weakmap@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "is-weakmap@npm:2.0.1"
-  checksum: 10/289fa4e8ba1bdda40ca78481266f6925b7c46a85599e6a41a77010bf91e5a24dfb660db96863bbf655ecdbda0ab517204d6a4e0c151dbec9d022c556321f3776
-  languageName: node
-  linkType: hard
-
-"is-weakref@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "is-weakref@npm:1.0.2"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-  checksum: 10/0023fd0e4bdf9c338438ffbe1eed7ebbbff7e7e18fb7cdc227caaf9d4bd024a2dcdf6a8c9f40c92192022eac8391243bb9e66cccebecbf6fe1d8a366108f8513
-  languageName: node
-  linkType: hard
-
-"is-weakset@npm:^2.0.1":
+"is-weakmap@npm:^2.0.2":
   version: 2.0.2
-  resolution: "is-weakset@npm:2.0.2"
+  resolution: "is-weakmap@npm:2.0.2"
+  checksum: 10/a7b7e23206c542dcf2fa0abc483142731788771527e90e7e24f658c0833a0d91948a4f7b30d78f7a65255a48512e41a0288b778ba7fc396137515c12e201fd11
+  languageName: node
+  linkType: hard
+
+"is-weakset@npm:^2.0.3":
+  version: 2.0.4
+  resolution: "is-weakset@npm:2.0.4"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    get-intrinsic: "npm:^1.1.1"
-  checksum: 10/8f2ddb9639716fd7936784e175ea1183c5c4c05274c34f34f6a53175313cb1c9c35a8b795623306995e2f7cc8f25aa46302f15a2113e51c5052d447be427195c
+    call-bound: "npm:^1.0.3"
+    get-intrinsic: "npm:^1.2.6"
+  checksum: 10/1d5e1d0179beeed3661125a6faa2e59bfb48afda06fc70db807f178aa0ebebc3758fb6358d76b3d528090d5ef85148c345dcfbf90839592fe293e3e5e82f2134
   languageName: node
   linkType: hard
 
@@ -16815,16 +15999,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsx-ast-utils@npm:^2.4.1 || ^3.0.0":
-  version: 3.3.3
-  resolution: "jsx-ast-utils@npm:3.3.3"
-  dependencies:
-    array-includes: "npm:^3.1.5"
-    object.assign: "npm:^4.1.3"
-  checksum: 10/c85f6f239593e09d8445a7e43412234304addf4bfb5d2114dc19f5ce27dfe3a8f8b12a50ff74e94606d0ad48cf1d5aff2381c939446b3fe48a5d433bb52ccb29
-  languageName: node
-  linkType: hard
-
 "keyv@npm:^4.5.3, keyv@npm:^4.5.4":
   version: 4.5.4
   resolution: "keyv@npm:4.5.4"
@@ -17535,6 +16709,13 @@ __metadata:
   bin:
     marked: bin/marked.js
   checksum: 10/34fd0044ebeda28b3f3f94f340e2388666408315557f125d561b59b49baec4c6e6777f54b6fb12aa5c2bf3b75a4aa9f1809679bfb6502da73053d0461c1a232d
+  languageName: node
+  linkType: hard
+
+"math-intrinsics@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "math-intrinsics@npm:1.1.0"
+  checksum: 10/11df2eda46d092a6035479632e1ec865b8134bdfc4bd9e571a656f4191525404f13a283a515938c3a8de934dbfd9c09674d9da9fa831e6eb7e22b50b197d2edd
   languageName: node
   linkType: hard
 
@@ -18478,10 +17659,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-inspect@npm:^1.12.0, object-inspect@npm:^1.12.2, object-inspect@npm:^1.13.1":
-  version: 1.13.2
-  resolution: "object-inspect@npm:1.13.2"
-  checksum: 10/7ef65583b6397570a17c56f0c1841e0920e83900f2c94638927abb7b81ac08a19c7aae135bd9dcca96208cac0c7332b4650fb927f027b0cf92d71df2990d0561
+"object-inspect@npm:^1.12.0, object-inspect@npm:^1.13.3":
+  version: 1.13.4
+  resolution: "object-inspect@npm:1.13.4"
+  checksum: 10/aa13b1190ad3e366f6c83ad8a16ed37a19ed57d267385aa4bfdccda833d7b90465c057ff6c55d035a6b2e52c1a2295582b294217a0a3a1ae7abdd6877ef781fb
   languageName: node
   linkType: hard
 
@@ -18502,58 +17683,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object.assign@npm:^4.1.3, object.assign@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "object.assign@npm:4.1.4"
+"object.assign@npm:^4.1.4":
+  version: 4.1.7
+  resolution: "object.assign@npm:4.1.7"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    has-symbols: "npm:^1.0.3"
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.3"
+    define-properties: "npm:^1.2.1"
+    es-object-atoms: "npm:^1.0.0"
+    has-symbols: "npm:^1.1.0"
     object-keys: "npm:^1.1.1"
-  checksum: 10/fd82d45289df0a952d772817622ecbaeb4ec933d3abb53267aede083ee38f6a395af8fadfbc569ee575115b0b7c9b286e7cfb2b7a2557b1055f7acbce513bc29
-  languageName: node
-  linkType: hard
-
-"object.entries@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "object.entries@npm:1.1.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/08a09ff839fd541e8af90a47c67a3dd71721683cdc28e55470e191a8afd8b61188fb9a429fd1d1805808097d8d5950b47c0c2862157dad891226112d8321401b
-  languageName: node
-  linkType: hard
-
-"object.fromentries@npm:^2.0.6":
-  version: 2.0.6
-  resolution: "object.fromentries@npm:2.0.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/e8b813647cbc6505750cdff8b3978bb341492707a5f1df4129e2d8a904b31692e225eff92481ae5916be3bde3c2eff1d0e8a6730921ca7f4eed60bc15a70cb35
-  languageName: node
-  linkType: hard
-
-"object.hasown@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "object.hasown@npm:1.1.2"
-  dependencies:
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/94031022a2ba6006c15c6f1e0c4f51a7fa5b36aee64800192335b979fcc8bd823b18c35cb1a728af68fdfdbbe6d765f77a3c5437306c031f63654b8a34b9e639
-  languageName: node
-  linkType: hard
-
-"object.values@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "object.values@npm:1.1.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/adea807c90951df34eb2f5c6a90ab5624e15c71f0b3a3e422db16933c9f4e19551d10649fffcb4adcac01d86d7c14a64bfb500d8f058db5a52976150a917f6eb
+  checksum: 10/3fe28cdd779f2a728a9a66bd688679ba231a2b16646cd1e46b528fe7c947494387dda4bc189eff3417f3717ef4f0a8f2439347cf9a9aa3cef722fbfd9f615587
   languageName: node
   linkType: hard
 
@@ -19225,6 +18365,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"possible-typed-array-names@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "possible-typed-array-names@npm:1.1.0"
+  checksum: 10/2f44137b8d3dd35f4a7ba7469eec1cd9cfbb46ec164b93a5bc1f4c3d68599c9910ee3b91da1d28b4560e9cc8414c3cd56fedc07259c67e52cc774476270d3302
+  languageName: node
+  linkType: hard
+
 "postcss-modules-extract-imports@npm:^3.0.0":
   version: 3.0.0
   resolution: "postcss-modules-extract-imports@npm:3.0.0"
@@ -19360,11 +18507,11 @@ __metadata:
   linkType: hard
 
 "prettier@npm:^3.3.3":
-  version: 3.5.0
-  resolution: "prettier@npm:3.5.0"
+  version: 3.5.1
+  resolution: "prettier@npm:3.5.1"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/fc26c74bd317282f2a49ffe3ac0ffa79adbe6b2d7a1cdcadd96acf7fec77d3fa45b15f3728c1a2f281f4beccb35d97207187452a581d4919d18b460d0c37e480
+  checksum: 10/09ab168e651e50c2c79804d65f17a68129ce1c573830b2fb08c988b585add8076b8d995789034d66a14338d6b8835e8c591e0fc1bc90f4344af9645738636d01
   languageName: node
   linkType: hard
 
@@ -20296,13 +19443,16 @@ __metadata:
   linkType: hard
 
 "regexp.prototype.flags@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "regexp.prototype.flags@npm:1.4.3"
+  version: 1.5.4
+  resolution: "regexp.prototype.flags@npm:1.5.4"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.3"
-    functions-have-names: "npm:^1.2.2"
-  checksum: 10/3cde7cd22f0cf9d04db0b77c825b14824c6e7d2ec77e17e8dba707ad1b3c70bb3f2ac5b4cad3c0932045ba61cb2fd1b8ef84a49140e952018bdae065cc001670
+    call-bind: "npm:^1.0.8"
+    define-properties: "npm:^1.2.1"
+    es-errors: "npm:^1.3.0"
+    get-proto: "npm:^1.0.1"
+    gopd: "npm:^1.2.0"
+    set-function-name: "npm:^2.0.2"
+  checksum: 10/8ab897ca445968e0b96f6237641510f3243e59c180ee2ee8d83889c52ff735dd1bf3657fcd36db053e35e1d823dd53f2565d0b8021ea282c9fe62401c6c3bd6d
   languageName: node
   linkType: hard
 
@@ -20466,19 +19616,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^2.0.0-next.4":
-  version: 2.0.0-next.4
-  resolution: "resolve@npm:2.0.0-next.4"
-  dependencies:
-    is-core-module: "npm:^2.9.0"
-    path-parse: "npm:^1.0.7"
-    supports-preserve-symlinks-flag: "npm:^1.0.0"
-  bin:
-    resolve: bin/resolve
-  checksum: 10/20d5293f5015aa0b65c488ee365f9dfc30b954b04f9074425a6fb738d78fa63825a82ba8574b7ee200af7ebd5e98c41786831d1d4c1612da3cd063980dfa06a3
-  languageName: node
-  linkType: hard
-
 "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>":
   version: 1.22.8
   resolution: "resolve@patch:resolve@npm%3A1.22.8#optional!builtin<compat/resolve>::version=1.22.8&hash=c3c19d"
@@ -20502,19 +19639,6 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: 10/d4d878bfe3702d215ea23e75e0e9caf99468e3db76f5ca100d27ebdc527366fee3877e54bce7d47cc72ca8952fc2782a070d238bfa79a550eeb0082384c3b81a
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@npm%3A^2.0.0-next.4#optional!builtin<compat/resolve>":
-  version: 2.0.0-next.4
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#optional!builtin<compat/resolve>::version=2.0.0-next.4&hash=c3c19d"
-  dependencies:
-    is-core-module: "npm:^2.9.0"
-    path-parse: "npm:^1.0.7"
-    supports-preserve-symlinks-flag: "npm:^1.0.0"
-  bin:
-    resolve: bin/resolve
-  checksum: 10/27bff19d8219385bb1e271066317e553cff18daa2a19db9598d94ae444417ef3f5aec19e86927872d6cb241d02649cfb35a4c0d9d10ef2afa6325bce8bc8d903
   languageName: node
   linkType: hard
 
@@ -20687,6 +19811,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/create-release-branch": "npm:^4.0.0"
     "@metamask/eslint-config": "npm:^14.0.0"
+    "@metamask/eslint-config-browser": "npm:^14.0.0"
     "@metamask/eslint-config-jest": "npm:^14.0.0"
     "@metamask/eslint-config-nodejs": "npm:^14.0.0"
     "@metamask/eslint-config-typescript": "npm:^14.0.0"
@@ -20781,14 +19906,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-regex-test@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "safe-regex-test@npm:1.0.0"
+"safe-regex-test@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "safe-regex-test@npm:1.1.0"
   dependencies:
-    call-bind: "npm:^1.0.2"
-    get-intrinsic: "npm:^1.1.3"
-    is-regex: "npm:^1.1.4"
-  checksum: 10/c7248dfa07891aa634c8b9c55da696e246f8589ca50e7fd14b22b154a106e83209ddf061baf2fa45ebfbd485b094dc7297325acfc50724de6afe7138451b42a9
+    call-bound: "npm:^1.0.2"
+    es-errors: "npm:^1.3.0"
+    is-regex: "npm:^1.2.1"
+  checksum: 10/ebdb61f305bf4756a5b023ad86067df5a11b26898573afe9e52a548a63c3bd594825d9b0e2dde2eb3c94e57e0e04ac9929d4107c394f7b8e56a4613bed46c69a
   languageName: node
   linkType: hard
 
@@ -21010,7 +20135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"set-function-length@npm:^1.2.1":
+"set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
   dependencies:
@@ -21021,6 +20146,18 @@ __metadata:
     gopd: "npm:^1.0.1"
     has-property-descriptors: "npm:^1.0.2"
   checksum: 10/505d62b8e088468917ca4e3f8f39d0e29f9a563b97dbebf92f4bd2c3172ccfb3c5b8e4566d5fcd00784a00433900e7cb8fbc404e2dbd8c3818ba05bb9d4a8a6d
+  languageName: node
+  linkType: hard
+
+"set-function-name@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "set-function-name@npm:2.0.2"
+  dependencies:
+    define-data-property: "npm:^1.1.4"
+    es-errors: "npm:^1.3.0"
+    functions-have-names: "npm:^1.2.3"
+    has-property-descriptors: "npm:^1.0.2"
+  checksum: 10/c7614154a53ebf8c0428a6c40a3b0b47dac30587c1a19703d1b75f003803f73cdfa6a93474a9ba678fa565ef5fbddc2fae79bca03b7d22ab5fd5163dbe571a74
   languageName: node
   linkType: hard
 
@@ -21127,15 +20264,51 @@ __metadata:
   languageName: node
   linkType: hard
 
-"side-channel@npm:^1.0.4, side-channel@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "side-channel@npm:1.0.6"
+"side-channel-list@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "side-channel-list@npm:1.0.0"
   dependencies:
-    call-bind: "npm:^1.0.7"
     es-errors: "npm:^1.3.0"
-    get-intrinsic: "npm:^1.2.4"
-    object-inspect: "npm:^1.13.1"
-  checksum: 10/eb10944f38cebad8ad643dd02657592fa41273ce15b8bfa928d3291aff2d30c20ff777cfe908f76ccc4551ace2d1245822fdc576657cce40e9066c638ca8fa4d
+    object-inspect: "npm:^1.13.3"
+  checksum: 10/603b928997abd21c5a5f02ae6b9cc36b72e3176ad6827fab0417ead74580cc4fb4d5c7d0a8a2ff4ead34d0f9e35701ed7a41853dac8a6d1a664fcce1a044f86f
+  languageName: node
+  linkType: hard
+
+"side-channel-map@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "side-channel-map@npm:1.0.1"
+  dependencies:
+    call-bound: "npm:^1.0.2"
+    es-errors: "npm:^1.3.0"
+    get-intrinsic: "npm:^1.2.5"
+    object-inspect: "npm:^1.13.3"
+  checksum: 10/5771861f77feefe44f6195ed077a9e4f389acc188f895f570d56445e251b861754b547ea9ef73ecee4e01fdada6568bfe9020d2ec2dfc5571e9fa1bbc4a10615
+  languageName: node
+  linkType: hard
+
+"side-channel-weakmap@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "side-channel-weakmap@npm:1.0.2"
+  dependencies:
+    call-bound: "npm:^1.0.2"
+    es-errors: "npm:^1.3.0"
+    get-intrinsic: "npm:^1.2.5"
+    object-inspect: "npm:^1.13.3"
+    side-channel-map: "npm:^1.0.1"
+  checksum: 10/a815c89bc78c5723c714ea1a77c938377ea710af20d4fb886d362b0d1f8ac73a17816a5f6640f354017d7e292a43da9c5e876c22145bac00b76cfb3468001736
+  languageName: node
+  linkType: hard
+
+"side-channel@npm:^1.0.4, side-channel@npm:^1.0.6, side-channel@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "side-channel@npm:1.1.0"
+  dependencies:
+    es-errors: "npm:^1.3.0"
+    object-inspect: "npm:^1.13.3"
+    side-channel-list: "npm:^1.0.0"
+    side-channel-map: "npm:^1.0.1"
+    side-channel-weakmap: "npm:^1.0.2"
+  checksum: 10/7d53b9db292c6262f326b6ff3bc1611db84ece36c2c7dc0e937954c13c73185b0406c56589e2bb8d071d6fee468e14c39fb5d203ee39be66b7b8174f179afaba
   languageName: node
   linkType: hard
 
@@ -21680,44 +20853,6 @@ __metadata:
     emoji-regex: "npm:^9.2.2"
     strip-ansi: "npm:^7.0.1"
   checksum: 10/7369deaa29f21dda9a438686154b62c2c5f661f8dda60449088f9f980196f7908fc39fdd1803e3e01541970287cf5deae336798337e9319a7055af89dafa7193
-  languageName: node
-  linkType: hard
-
-"string.prototype.matchall@npm:^4.0.8":
-  version: 4.0.8
-  resolution: "string.prototype.matchall@npm:4.0.8"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-    get-intrinsic: "npm:^1.1.3"
-    has-symbols: "npm:^1.0.3"
-    internal-slot: "npm:^1.0.3"
-    regexp.prototype.flags: "npm:^1.4.3"
-    side-channel: "npm:^1.0.4"
-  checksum: 10/9de2e9e33344002e08c03c13533d88d0c557d5a3d9214a4f2cc8d63349f7c35af895804dec08e43224cc4c0345651c678e14260c5933967fd97aad4640a7e485
-  languageName: node
-  linkType: hard
-
-"string.prototype.trimend@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "string.prototype.trimend@npm:1.0.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/3893db9267e0b8a16658c3947738536e90c400a9b7282de96925d4e210174cfe66c59d6b7eb5b4a9aaa78ef7f5e46afb117e842d93112fbd105c8d19206d8092
-  languageName: node
-  linkType: hard
-
-"string.prototype.trimstart@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "string.prototype.trimstart@npm:1.0.6"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    define-properties: "npm:^1.1.4"
-    es-abstract: "npm:^1.20.4"
-  checksum: 10/05e2cd06fa5311b17f5b2c7af0a60239fa210f4bb07bbcfce4995215dce330e2b1dd2d8030d371f46252ab637522e14b6e9a78384e8515945b72654c14261d54
   languageName: node
   linkType: hard
 
@@ -22600,18 +21735,6 @@ __metadata:
   bin:
     umd: ./bin/cli.js
   checksum: 10/264302acabbc71ef279cfb832d6bb53096a12618e9ef8465b274c5a3fffa5f4da6cf7b8d024fec53a7114742c132bba9f6a6d4d4b5eca2bb55d556d0c57a9f15
-  languageName: node
-  linkType: hard
-
-"unbox-primitive@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "unbox-primitive@npm:1.0.2"
-  dependencies:
-    call-bind: "npm:^1.0.2"
-    has-bigints: "npm:^1.0.2"
-    has-symbols: "npm:^1.0.3"
-    which-boxed-primitive: "npm:^1.0.2"
-  checksum: 10/06e1ee41c1095e37281cb71a975cb3350f7cb470a0665d2576f02cc9564f623bd90cfc0183693b8a7fdf2d242963dcc3010b509fa3ac683f540c765c0f3e7e43
   languageName: node
   linkType: hard
 
@@ -23531,41 +22654,41 @@ __metadata:
   linkType: hard
 
 "which-boxed-primitive@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "which-boxed-primitive@npm:1.0.2"
+  version: 1.1.1
+  resolution: "which-boxed-primitive@npm:1.1.1"
   dependencies:
-    is-bigint: "npm:^1.0.1"
-    is-boolean-object: "npm:^1.1.0"
-    is-number-object: "npm:^1.0.4"
-    is-string: "npm:^1.0.5"
-    is-symbol: "npm:^1.0.3"
-  checksum: 10/9c7ca7855255f25ac47f4ce8b59c4cc33629e713fd7a165c9d77a2bb47bf3d9655a5664660c70337a3221cf96742f3589fae15a3a33639908d33e29aa2941efb
+    is-bigint: "npm:^1.1.0"
+    is-boolean-object: "npm:^1.2.1"
+    is-number-object: "npm:^1.1.1"
+    is-string: "npm:^1.1.1"
+    is-symbol: "npm:^1.1.1"
+  checksum: 10/a877c0667bc089518c83ad4d845cf8296b03efe3565c1de1940c646e00a2a1ae9ed8a185bcfa27cbf352de7906f0616d83b9d2f19ca500ee02a551fb5cf40740
   languageName: node
   linkType: hard
 
 "which-collection@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "which-collection@npm:1.0.1"
+  version: 1.0.2
+  resolution: "which-collection@npm:1.0.2"
   dependencies:
-    is-map: "npm:^2.0.1"
-    is-set: "npm:^2.0.1"
-    is-weakmap: "npm:^2.0.1"
-    is-weakset: "npm:^2.0.1"
-  checksum: 10/85c95fcf92df7972ce66bed879e53d9dc752a30ef08e1ca4696df56bcf1c302e3b9965a39b04a20fa280a997fad6c170eb0b4d62435569b7f6c0bc7be910572b
+    is-map: "npm:^2.0.3"
+    is-set: "npm:^2.0.3"
+    is-weakmap: "npm:^2.0.2"
+    is-weakset: "npm:^2.0.3"
+  checksum: 10/674bf659b9bcfe4055f08634b48a8588e879161b9fefed57e9ec4ff5601e4d50a05ccd76cf10f698ef5873784e5df3223336d56c7ce88e13bcf52ebe582fc8d7
   languageName: node
   linkType: hard
 
-"which-typed-array@npm:^1.1.2, which-typed-array@npm:^1.1.9":
-  version: 1.1.9
-  resolution: "which-typed-array@npm:1.1.9"
+"which-typed-array@npm:^1.1.16, which-typed-array@npm:^1.1.2, which-typed-array@npm:^1.1.9":
+  version: 1.1.18
+  resolution: "which-typed-array@npm:1.1.18"
   dependencies:
-    available-typed-arrays: "npm:^1.0.5"
-    call-bind: "npm:^1.0.2"
+    available-typed-arrays: "npm:^1.0.7"
+    call-bind: "npm:^1.0.8"
+    call-bound: "npm:^1.0.3"
     for-each: "npm:^0.3.3"
-    gopd: "npm:^1.0.1"
-    has-tostringtag: "npm:^1.0.0"
-    is-typed-array: "npm:^1.1.10"
-  checksum: 10/90ef760a09dcffc479138a6bc77fd2933a81a41d531f4886ae212f6edb54a0645a43a6c24de2c096aea910430035ac56b3d22a06f3d64e5163fa178d0f24e08e
+    gopd: "npm:^1.2.0"
+    has-tostringtag: "npm:^1.0.2"
+  checksum: 10/11eed801b2bd08cdbaecb17aff381e0fb03526532f61acc06e6c7b9370e08062c33763a51f27825f13fdf34aabd0df6104007f4e8f96e6eaef7db0ce17a26d6e
   languageName: node
   linkType: hard
 

@@ -18,7 +18,8 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "module": "Node16",
-    "moduleResolution": "Node16"
+    "moduleResolution": "Node16",
+    "strict": true
   },
   "files": [],
   "include": ["scripts"]

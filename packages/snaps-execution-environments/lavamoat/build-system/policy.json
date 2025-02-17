@@ -1907,9 +1907,16 @@
         "browserify>through2>readable-stream>safe-buffer": true
       }
     },
-    "browserify>util>is-typed-array>gopd": {
+    "browserify>util>is-generator-function>get-proto": {
       "packages": {
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true
+        "browserify>util>is-generator-function>get-proto>dunder-proto": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true
+      }
+    },
+    "browserify>util>is-generator-function>get-proto>dunder-proto": {
+      "packages": {
+        "browserify>util>which-typed-array>gopd": true,
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -2182,16 +2189,16 @@
     },
     "lavamoat>json-stable-stringify>call-bind": {
       "packages": {
-        "browserify>has>function-bind": true,
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
         "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length": true
       }
     },
-    "lavamoat>json-stable-stringify>call-bind>es-define-property": {
+    "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true
+        "browserify>has>function-bind": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>get-intrinsic": {
@@ -2202,26 +2209,31 @@
       },
       "packages": {
         "browserify>has>function-bind": true,
+        "browserify>util>is-generator-function>get-proto": true,
+        "browserify>util>which-typed-array>gopd": true,
         "depcheck>is-core-module>hasown": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-proto": true,
-        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-symbols": true
+        "lavamoat>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
+        "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>has-symbols": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>math-intrinsics": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length": {
       "packages": {
-        "browserify>util>is-typed-array>gopd": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true,
+        "browserify>util>which-typed-array>gopd": true,
         "lavamoat>json-stable-stringify>call-bind>get-intrinsic": true,
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length>define-data-property": true,
         "lavamoat>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length>define-data-property": {
       "packages": {
-        "browserify>util>is-typed-array>gopd": true,
+        "browserify>util>which-typed-array>gopd": true,
         "lavamoat>json-stable-stringify>call-bind>es-define-property": true,
-        "lavamoat>json-stable-stringify>call-bind>es-errors": true
+        "lavamoat>json-stable-stringify>call-bind>get-intrinsic>es-errors": true
       }
     },
     "lavamoat>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": {
