@@ -6,12 +6,19 @@ describe('getOptions', () => {
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "batchCheckBalances": true,
         "currency": "usd",
+        "displayNftMedia": true,
         "hideBalances": false,
         "locale": "en",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
+        "simulateOnChainActions": true,
         "state": null,
         "unencryptedState": null,
+        "useExternalPricingData": true,
+        "useNftDetection": true,
+        "useSecurityAlerts": true,
+        "useTokenDetection": true,
       }
     `);
   });
@@ -24,12 +31,19 @@ describe('getOptions', () => {
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "batchCheckBalances": true,
         "currency": "eur",
+        "displayNftMedia": true,
         "hideBalances": false,
         "locale": "nl",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
+        "simulateOnChainActions": true,
         "state": null,
         "unencryptedState": null,
+        "useExternalPricingData": true,
+        "useNftDetection": true,
+        "useSecurityAlerts": true,
+        "useTokenDetection": true,
       }
     `);
   });

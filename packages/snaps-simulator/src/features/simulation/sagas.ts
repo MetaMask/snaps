@@ -131,6 +131,13 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         locale: 'en',
         currency: 'usd',
         hideBalances: false,
+        useSecurityAlerts: true,
+        simulateOnChainActions: true,
+        useTokenDetection: true,
+        batchCheckBalances: true,
+        displayNftMedia: true,
+        useNftDetection: true,
+        useExternalPricingData: true,
       }),
       getUnlockPromise: async () => Promise.resolve(true),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
