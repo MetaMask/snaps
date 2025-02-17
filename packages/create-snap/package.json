@@ -61,8 +61,6 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
-    "eslint": "^9.11.0",
-    "prettier": "^3.3.3",
     "semver": "^7.5.4",
     "yargs": "^17.7.1"
   },
@@ -77,10 +75,12 @@
     "@types/yargs": "^17.0.24",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
+    "eslint": "^9.11.0",
     "jest": "^29.0.2",
     "jest-it-up": "^2.0.0",
     "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
     "typescript": "~5.3.3"

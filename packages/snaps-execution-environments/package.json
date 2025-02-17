@@ -73,9 +73,7 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.1.0",
     "@metamask/utils": "^11.2.0",
-    "eslint": "^9.11.0",
     "nanoid": "^3.1.31",
-    "prettier": "^3.3.3",
     "readable-stream": "^3.6.2"
   },
   "devDependencies": {
@@ -106,6 +104,7 @@
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "esbuild": "^0.18.10",
+    "eslint": "^9.11.0",
     "expect-webdriverio": "^4.4.1",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
@@ -116,6 +115,7 @@
     "jest-silent-reporter": "^0.6.0",
     "lavamoat": "^8.0.4",
     "lavamoat-browserify": "^17.0.5",
+    "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
     "ses": "^1.1.0",

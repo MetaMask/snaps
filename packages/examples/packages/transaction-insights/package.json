@@ -44,9 +44,7 @@
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^11.2.0",
-    "eslint": "^9.11.0",
-    "prettier": "^3.3.3"
+    "@metamask/utils": "^11.2.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -59,8 +57,10 @@
     "@types/node": "18.14.2",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
+    "eslint": "^9.11.0",
     "jest": "^29.0.2",
     "jest-silent-reporter": "^0.6.0",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
     "typescript": "~5.3.3"
   },

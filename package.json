@@ -137,7 +137,7 @@
       "geckodriver": true,
       "ts-node>@swc/core": true,
       "@swc/core": true,
-      "favicons>sharp": false,
+      "favicons>sharp": true,
       "vite>esbuild": true,
       "tsx>esbuild": true
     }
