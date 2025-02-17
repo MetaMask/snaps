@@ -14,28 +14,19 @@ import type { WebViewInterface } from './WebViewMessageStream';
  * Create a response message for the given request. This function assumes that
  * the response is for the parent, and uses the command stream.
  *
- * @param message - The request message.
  * @param request - The request to respond to.
  * @param response - The response to send.
  * @returns The response message.
  */
-function getResponse(
-  message: Record<string, unknown>,
-  request: JsonRpcRequest,
-  response: Json,
-) {
+function getResponse(request: JsonRpcRequest, response: Json) {
   return {
     target: 'parent',
     data: {
-      jobId: message.jobId,
-      frameUrl: message.frameUrl,
+      name: 'command',
       data: {
-        name: 'command',
-        data: {
-          jsonrpc: '2.0',
-          id: request.id,
-          result: response,
-        },
+        jsonrpc: '2.0',
+        id: request.id,
+        result: response,
       },
     },
   };
@@ -50,8 +41,11 @@ describe('WebViewExecutionService', () => {
     };
 
     const { service } = createService(WebViewExecutionService, {
-      getWebView: async () =>
-        Promise.resolve(mockedWebView as unknown as WebViewInterface),
+      createWebView: async (_id: string) =>
+        mockedWebView as unknown as WebViewInterface,
+      removeWebView: () => {
+        // no-op
+      },
     });
 
     expect(service).toBeDefined();
@@ -89,11 +83,10 @@ describe('WebViewExecutionService', () => {
       // Handle incoming requests.
       if (
         isPlainObject(data) &&
-        isPlainObject(data.data) &&
-        data.data.name === 'command' &&
-        isJsonRpcRequest(data.data.data)
+        data.name === 'command' &&
+        isJsonRpcRequest(data.data)
       ) {
-        const request = data.data.data;
+        const request = data.data;
 
         // Respond "OK" to the `ping`, `executeSnap`, and `terminate` request.
         if (
@@ -101,18 +94,20 @@ describe('WebViewExecutionService', () => {
           request.method === 'executeSnap' ||
           request.method === 'terminate'
         ) {
-          sendMessage(getResponse(data, request, 'OK'));
+          sendMessage(getResponse(request, 'OK'));
         }
       }
     });
 
     const { service } = createService(WebViewExecutionService, {
-      getWebView: async () =>
-        Promise.resolve({
-          registerMessageListener,
-          unregisterMessageListener: jest.fn(),
-          injectJavaScript,
-        }),
+      createWebView: async (_id: string) => ({
+        registerMessageListener,
+        unregisterMessageListener: jest.fn(),
+        injectJavaScript,
+      }),
+      removeWebView: () => {
+        // no-op
+      },
     });
 
     expect(
