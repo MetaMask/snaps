@@ -109,8 +109,10 @@ import type {
   NonEmptyArray,
   SemVerRange,
   CaipAssetType,
+  Hex,
 } from '@metamask/utils';
 import {
+  hexToNumber,
   assert,
   assertIsJsonRpcRequest,
   assertStruct,
@@ -612,6 +614,20 @@ export type SnapControllerEvents =
   | SnapDisabled
   | SnapControllerStateChangeEvent;
 
+type NetworkControllerGetNetworkClientById = {
+  type: `NetworkController:getNetworkClientById`;
+  handler: (customNetworkClientId: string) => {
+    configuration: {
+      chainId: Hex;
+    };
+  };
+};
+
+type SelectedNetworkControllerGetNetworkClientIdForDomain = {
+  type: `SelectedNetworkController:getNetworkClientIdForDomain`;
+  handler: (domain: string) => string;
+};
+
 export type AllowedActions =
   | GetEndowments
   | GetPermissions
@@ -636,7 +652,9 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | CreateInterface
-  | GetInterface;
+  | GetInterface
+  | NetworkControllerGetNetworkClientById
+  | SelectedNetworkControllerGetNetworkClientIdForDomain;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -657,6 +675,7 @@ type FeatureFlags = {
   allowLocalSnaps?: boolean;
   disableSnapInstallation?: boolean;
   rejectInvalidPlatformVersion?: boolean;
+  useCaip25Permission?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -4060,7 +4079,62 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Updates the permissions for a snap following an install, update or rollback.
+   * Get the permissions to grant to a Snap following an install, update or
+   * rollback.
+   *
+   * @param snapId - The snap ID.
+   * @param newPermissions - The new permissions to be granted.
+   * @returns The permissions to grant to the Snap.
+   */
+  #getPermissionsToGrant(snapId: SnapId, newPermissions: RequestedPermissions) {
+    if (
+      this.#featureFlags.useCaip25Permission &&
+      Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)
+    ) {
+      // This will return the globally selected network if the Snap doesn't have
+      // one set.
+      const networkClientId = this.messagingSystem.call(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        snapId,
+      );
+
+      const { configuration } = this.messagingSystem.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
+
+      const chainId = hexToNumber(configuration.chainId);
+
+      // This needs to be assigned to have proper type inference.
+      const modifiedPermissions: RequestedPermissions = {
+        ...newPermissions,
+        'endowment:caip25': {
+          caveats: [
+            {
+              type: 'authorizedScopes',
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  [`eip155:${chainId}`]: {
+                    accounts: [],
+                  },
+                },
+                sessionProperties: {},
+                isMultichainOrigin: false,
+              },
+            },
+          ],
+        },
+      };
+
+      return modifiedPermissions;
+    }
+
+    return newPermissions;
+  }
+
+  /**
+   * Update the permissions for a snap following an install, update or rollback.
    *
    * Grants newly requested permissions and revokes unused/revoked permissions.
    *
@@ -4093,8 +4167,13 @@ export class SnapController extends BaseController<
     }
 
     if (isNonEmptyArray(Object.keys(newPermissions))) {
+      const approvedPermissions = this.#getPermissionsToGrant(
+        snapId,
+        newPermissions,
+      );
+
       this.messagingSystem.call('PermissionController:grantPermissions', {
-        approvedPermissions: newPermissions,
+        approvedPermissions,
         subject: { origin: snapId },
         requestData,
       });
