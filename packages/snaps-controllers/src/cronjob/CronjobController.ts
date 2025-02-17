@@ -213,7 +213,6 @@ export class CronjobController extends BaseController<
     const filteredSnaps = getRunnableSnaps(snaps);
 
     const jobs = filteredSnaps.map((snap) => this.#getSnapJobs(snap.id));
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return jobs.flat().filter((job) => job !== undefined) as Cronjob[];
   }
 

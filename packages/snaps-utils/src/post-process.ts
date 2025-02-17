@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
 import type { Node, Visitor, PluginObj } from '@babel/core';
 import { transformSync, template } from '@babel/core';
 import type { Expression, Identifier, TemplateElement } from '@babel/types';

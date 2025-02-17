@@ -4,8 +4,6 @@
 // manifests of each package in the monorepo to ensure they follow a standard
 // format, but also check the presence of certain files as well.
 
-/* eslint-disable jsdoc/valid-types */
-
 const { defineConfig } = require('@yarnpkg/types');
 const { readFile } = require('fs/promises');
 const { get } = require('lodash');

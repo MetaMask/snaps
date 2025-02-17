@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore - TypeScript complains about this being ESM in a CJS file, but
 // `ses/lockdown` has a CommonJS entry point.
-// eslint-disable-next-line import/no-unassigned-import
+// eslint-disable-next-line import-x/no-unassigned-import
 import 'ses/lockdown';
 
 import { readFileSync } from 'fs';

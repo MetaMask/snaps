@@ -557,7 +557,6 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   children: children([
     string(),
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     lazy(() => BoldStruct) as unknown as Struct<
       SnapElement<JsonObject, 'Bold'>
     >,

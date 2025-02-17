@@ -10,11 +10,9 @@ jest.mock('fs');
 describe('toVirtualFile', () => {
   beforeEach(() => {
     vol.reset();
-    /* eslint-disable @typescript-eslint/naming-convention */
     vol.fromJSON({
       '/foo/utf-8.txt': CONTENTS_UTF8,
     });
-    /* eslint-enable @typescript-eslint/naming-convention */
   });
 
   describe('readVirtualFile', () => {
@@ -41,7 +39,6 @@ describe('toVirtualFile', () => {
       );
 
       expect(vol.toJSON(PATH)).toStrictEqual(
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { [PATH]: CONTENTS_UTF8 },
       );
     });

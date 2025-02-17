@@ -1,6 +1,5 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import packageJson from '@metamask/snaps-execution-environments/package.json';
 import { createWindow, logError } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';

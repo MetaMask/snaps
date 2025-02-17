@@ -36,7 +36,6 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
         name: 'Mock Snap',
       },
       versions: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ['1.0.0' as SemVerVersion]: {
           checksum: DEFAULT_SNAP_SHASUM,
         },
@@ -200,7 +199,6 @@ describe('JsonSnapsRegistry', () => {
 
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         version: '0.1.10' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -208,7 +206,6 @@ describe('JsonSnapsRegistry', () => {
     });
 
     expect(result).toStrictEqual({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         status: SnapsRegistryStatus.Blocked,
         reason: { explanation: 'vuln' },
@@ -446,7 +443,6 @@ describe('JsonSnapsRegistry', () => {
                   name: 'Mock Snap',
                 },
                 versions: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   ['0.0.1' as SemVerVersion]: {
                     checksum: DEFAULT_SNAP_SHASUM,
                   },

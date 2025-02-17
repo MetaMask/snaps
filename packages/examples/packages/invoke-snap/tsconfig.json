@@ -2,6 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "composite": false
+    "composite": false,
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "paths": {
+      "@metamask/snaps-sdk/jsx-dev-runtime": ["../../../../../snaps-sdk/src/jsx/jsx-dev-runtime.ts", "../../../snaps-sdk/src/jsx/jsx-dev-runtime.ts", "../snaps-sdk/src/jsx/jsx-dev-runtime.ts"],
+      "@metamask/snaps-sdk/jsx": ["../../../../../snaps-sdk/src/jsx", "../../../snaps-sdk/src/jsx", "../snaps-sdk/src/jsx"],
+      "@metamask/snaps-sdk": ["../../../../../snaps-sdk/src", "../../../snaps-sdk/src", "../snaps-sdk/src"]
+    }
   }
 }

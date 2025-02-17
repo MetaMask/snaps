@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import packageJson from '@metamask/snaps-cli/package.json';
 import type { SemVer } from 'semver';
 import semver from 'semver';

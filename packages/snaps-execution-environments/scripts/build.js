@@ -1,4 +1,4 @@
-/* eslint-disable no-console, n/global-require */
+/* eslint-disable n/global-require */
 const { stringToBytes } = require('@metamask/utils');
 const {
   createResolvePath,

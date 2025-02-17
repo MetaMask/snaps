@@ -6,8 +6,6 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import createSpinner from 'yocto-spinner';
 
-// ESLint doesn't understand the JSON import type.
-// eslint-disable-next-line
 import packageFile from '../package.json' with { type: 'json' };
 
 const CURRENT_PATH = dirname(fileURLToPath(import.meta.url));

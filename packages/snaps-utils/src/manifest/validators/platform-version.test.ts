@@ -8,7 +8,7 @@ import { platformVersion } from './platform-version';
 describe('platformVersion', () => {
   const require = createRequire(__filename);
   const packageJson = require.resolve('@metamask/snaps-sdk/package.json');
-  // eslint-disable-next-line import/no-dynamic-require
+  // eslint-disable-next-line import-x/no-dynamic-require
   const sdkVersion = require(packageJson).version;
 
   it('does nothing if the version matches', async () => {

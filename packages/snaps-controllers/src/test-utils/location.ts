@@ -124,7 +124,6 @@ export class LoopbackLocation implements SnapLocation {
     this.#files = files;
   }
 
-  /* eslint-disable @typescript-eslint/require-await */
   manifest = jest.fn(async () => this.#manifest);
 
   fetch = jest.fn(async (path: string) => {
@@ -146,7 +145,6 @@ export class LoopbackLocation implements SnapLocation {
     );
     return file;
   });
-  /* eslint-enable @typescript-eslint/require-await */
 
   get shouldAlwaysReload() {
     return this._shouldAlwaysReload();

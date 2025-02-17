@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import cliPackageJson from '@metamask/create-snap/package.json';
 import type { NpmSnapPackageJson } from '@metamask/snaps-utils';
 import {
