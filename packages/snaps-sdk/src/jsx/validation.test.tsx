@@ -589,7 +589,7 @@ describe('BoxStruct', () => {
         <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
-    <Box direction="horizontal" alignment="space-between">
+    <Box direction="horizontal" alignment="space-between" crossAlignment="end">
       <Text>foo</Text>
       <Row label="label">
         <Image src="<svg />" alt="alt" />
@@ -635,6 +635,10 @@ describe('BoxStruct', () => {
       <Row label="label">
         <Image src="<svg />" alt="alt" />
       </Row>
+    </Box>,
+    // @ts-expect-error - Invalid props.
+    <Box crossAlignment="bar">
+      <Text>foo</Text>
     </Box>,
     <Box>
       <Value extra="foo" value="bar" />
