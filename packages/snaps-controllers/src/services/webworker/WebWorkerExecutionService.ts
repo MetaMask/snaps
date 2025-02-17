@@ -37,8 +37,10 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     documentUrl,
     messenger,
     setupSnapProvider,
+    ...args
   }: WebWorkerExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
     });

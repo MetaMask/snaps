@@ -8,8 +8,9 @@ import type { ExecutionServiceArgs } from './AbstractExecutionService';
 import { NodeThreadExecutionService } from './node';
 
 class MockExecutionService extends NodeThreadExecutionService {
-  constructor({ messenger, setupSnapProvider }: ExecutionServiceArgs) {
+  constructor({ messenger, setupSnapProvider, ...args }: ExecutionServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
       initTimeout: inMilliseconds(5, Duration.Second),

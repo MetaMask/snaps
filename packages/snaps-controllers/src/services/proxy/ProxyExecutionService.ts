@@ -30,8 +30,10 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
     stream,
     messenger,
     setupSnapProvider,
+    ...args
   }: ProxyExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
       usePing: false,

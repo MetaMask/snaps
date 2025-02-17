@@ -14,8 +14,10 @@ export class WebViewExecutionService extends ProxyExecutionService {
     messenger,
     setupSnapProvider,
     getWebView,
+    ...args
   }: WebViewExecutionServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
       stream: new WebViewMessageStream({
