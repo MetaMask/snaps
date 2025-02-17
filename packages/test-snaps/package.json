@@ -28,7 +28,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
-    "lint:eslint": "eslint . --cache --ext js,ts,jsx,tsx",
+    "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "since-latest-release": "../../scripts/since-latest-release.sh",
