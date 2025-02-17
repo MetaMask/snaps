@@ -811,7 +811,6 @@ function truncateSnap(snap: Snap): TruncatedSnap {
     {},
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   return truncatedSnap as TruncatedSnap;
 }
 
@@ -3067,8 +3066,6 @@ export class SnapController extends BaseController<
 
     if (
       dedupedEndowments.length <
-      // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       DEFAULT_ENDOWMENTS.length + allEndowments.length
     ) {
       logError(

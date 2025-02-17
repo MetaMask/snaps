@@ -19,11 +19,9 @@ import { rootLogger, startServer } from './internals';
 import type { SnapsEnvironmentOptions } from './options';
 import { getOptions } from './options';
 
-/* eslint-disable */
 declare global {
   const snapsEnvironment: SnapsEnvironment;
 }
-/* eslint-enable */
 
 const log = createModuleLogger(rootLogger, 'environment');
 

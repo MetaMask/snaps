@@ -12,7 +12,6 @@ import { browserify, getFunctionLoader } from './loaders';
 
 export const BROWSERSLIST_FILE = resolve(
   dirname(
-    // eslint-disable-next-line n/no-extraneous-require
     require.resolve('@metamask/snaps-cli/package.json'),
   ),
   '.browserslistrc',

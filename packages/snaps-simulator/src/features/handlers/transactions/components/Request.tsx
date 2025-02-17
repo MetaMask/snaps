@@ -1,4 +1,3 @@
-/* eslint-disable react/no-children-prop */
 import {
   Flex,
   FormControl,

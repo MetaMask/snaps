@@ -584,7 +584,6 @@ describe('getPermittedHooks', () => {
   });
 
   it('returns the `resolveInterface` hook', async () => {
-    // eslint-disable-next-line no-new
     const snapInterfaceController = new SnapInterfaceController({
       messenger:
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),

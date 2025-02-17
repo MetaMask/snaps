@@ -181,7 +181,6 @@ export function getTextChildren(
     }
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   return children.filter((child) => child !== null) as (
     | string
     | StandardFormattingElement
@@ -435,8 +434,6 @@ export function getTotalTextLength(component: Component): number {
   switch (type) {
     case NodeType.Panel:
       return component.children.reduce<number>(
-        // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         (sum, node) => sum + getTotalTextLength(node),
         0,
       );

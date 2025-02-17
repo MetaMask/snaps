@@ -447,8 +447,6 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    // eslint is blocking `await` usage even though `handle` overload returns a promise.
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     const response = await job.rpcEngine.handle(message);
 
     if (isJsonRpcFailure(response)) {

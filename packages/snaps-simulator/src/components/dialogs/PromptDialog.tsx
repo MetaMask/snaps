@@ -65,7 +65,6 @@ export const PromptDialog: FunctionComponent<PromptDialogProps> = ({
             <FormControl
               marginTop="3"
               isInvalid={Boolean(errors.value)}
-              /* eslint-disable-next-line @typescript-eslint/naming-convention */
               sx={{ '& input': { marginBottom: '0' } }}
             >
               <Input placeholder={placeholder} {...register('value')} />

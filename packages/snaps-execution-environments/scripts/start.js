@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const http = require('http');
 const path = require('path');
 const serveHandler = require('serve-handler');

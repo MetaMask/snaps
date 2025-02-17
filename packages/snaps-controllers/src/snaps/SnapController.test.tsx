@@ -142,7 +142,6 @@ const OTHER_ENCRYPTION_KEY =
 
 describe('SnapController', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/require-await
     fetchMock.mockImplementation(async () => {
       throw new AssertionError({ message: 'Unmocked access to internet.' });
     });
@@ -2111,7 +2110,6 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
       getTruncatedSnap(),
@@ -6050,7 +6048,6 @@ describe('SnapController', () => {
           snaps: false,
           dapps: true,
         },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'endowment:webassembly': {},
       };
 
@@ -6067,7 +6064,6 @@ describe('SnapController', () => {
           detectSnapLocation: loopbackDetect({
             manifest: manifest.result,
           }),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           excludedPermissions: { 'endowment:webassembly': 'foobar' },
         }),
       );
@@ -6218,7 +6214,6 @@ describe('SnapController', () => {
 
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'endowment:rpc': { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
@@ -6976,13 +6971,11 @@ describe('SnapController', () => {
       expect(controller.get(snapId1)?.status).toBe('stopped');
       expect(controller.get(snapId2)?.status).toBe('stopped');
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapInstalled',
         expect.anything(),
       );
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapUpdated',
         expect.anything(),
@@ -8302,7 +8295,6 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'ApprovalController:addRequest',
         async (request) => {
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(request.id).toBe(
             (request.requestData?.metadata as { id: string })?.id,
           );

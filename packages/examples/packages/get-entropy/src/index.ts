@@ -48,7 +48,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        // eslint-disable-next-line @typescript-eslint/no-throw-literal
         throw new UserRejectedRequestError();
       }
 
@@ -58,7 +57,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw new MethodNotFoundError({ method: request.method });
   }
 };

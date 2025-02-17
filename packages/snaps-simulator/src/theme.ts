@@ -367,7 +367,6 @@ export const theme = extendTheme({
 
   styles: {
     global: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       '#root': {
         display: 'flex',
         flexDirection: 'column',

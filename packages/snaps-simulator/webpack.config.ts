@@ -1,5 +1,4 @@
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-// eslint-disable-next-line import/default
 import CopyPlugin from 'copy-webpack-plugin';
 import express from 'express';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';

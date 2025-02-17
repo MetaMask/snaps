@@ -17,10 +17,8 @@ import { LiteralStruct, NodeType } from '../nodes';
  * https://github.com/MetaMask/metamask-extension/main/ui/components/component-library/input/input.constants.js
  */
 export enum InputType {
-  /* eslint-disable @typescript-eslint/no-shadow */
   Text = 'text',
   Number = 'number',
-  /* eslint-enable @typescript-eslint/no-shadow */
   Password = 'password',
 }
 
