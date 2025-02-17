@@ -12,12 +12,12 @@ describe('getOptions', () => {
         "hideBalances": false,
         "locale": "en",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
+        "simulateOnChainActions": true,
         "state": null,
         "unencryptedState": null,
-        "useNftDetection": true,
         "useExternalPricingData": true,
+        "useNftDetection": true,
         "useSecurityAlerts": true,
-        "simulateOnChainActions": true,
         "useTokenDetection": true,
       }
     `);
@@ -37,12 +37,12 @@ describe('getOptions', () => {
         "hideBalances": false,
         "locale": "nl",
         "secretRecoveryPhrase": "test test test test test test test test test test test ball",
+        "simulateOnChainActions": true,
         "state": null,
         "unencryptedState": null,
-        "useNftDetection": true,
         "useExternalPricingData": true,
+        "useNftDetection": true,
         "useSecurityAlerts": true,
-        "simulateOnChainActions": true,
         "useTokenDetection": true,
       }
     `);
