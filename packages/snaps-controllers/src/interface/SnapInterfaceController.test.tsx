@@ -9,6 +9,7 @@ import {
   ContentType,
 } from '@metamask/snaps-sdk';
 import {
+  AccountSelector,
   Box,
   Field,
   FileInput,
@@ -178,6 +179,16 @@ describe('SnapInterfaceController', () => {
             <Field label="Bar">
               <Input name="bar" type="text" />
             </Field>
+            <Field label="baz">
+              <AccountSelector
+                name="baz"
+                switchGlobalAccount
+                value="eip155:0:0x1234567890123456789012345678901234567890"
+              />
+            </Field>
+            <Field label="foobar">
+              <AccountSelector name="foobar" />
+            </Field>
           </Form>
         </Box>
       );
@@ -205,8 +216,37 @@ describe('SnapInterfaceController', () => {
         'https://foo.bar/',
       );
 
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'AccountsController:getAccountByAddress',
+        '0x1234567890123456789012345678901234567890',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'AccountsController:setSelectedAccount',
+        'foo',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        6,
+        'AccountsController:getSelectedMultichainAccount',
+      );
+
       expect(content).toStrictEqual(element);
-      expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(state).toStrictEqual({
+        foo: {
+          bar: null,
+          baz: {
+            accountId: 'foo',
+            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+          },
+          foobar: {
+            accountId: 'foo',
+            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+          },
+        },
+      });
     });
 
     it('supports providing interface context', async () => {

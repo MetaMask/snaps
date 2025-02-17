@@ -35,6 +35,7 @@ import {
   Avatar,
   Banner,
   Skeleton,
+  AccountSelector,
 } from './components';
 import {
   AddressStruct,
@@ -74,6 +75,7 @@ import {
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  AccountSelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -311,6 +313,9 @@ describe('FieldStruct', () => {
           <Card title="bar" value="$1" />
         </SelectorOption>
       </Selector>
+    </Field>,
+    <Field label="foo">
+      <AccountSelector name="foo" />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -564,6 +569,68 @@ describe('AddressStruct', () => {
       // @ts-expect-error - Invalid props.
       avatar="wrong-prop"
     />,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, AddressStruct)).toBe(false);
+  });
+});
+
+describe('AccountSelectorStruct', () => {
+  it.each([
+    <AccountSelector name="account" />,
+    <AccountSelector
+      name="account"
+      chainIds={['bip122:000000000019d6689c085ae165831e93']}
+    />,
+    <AccountSelector name="account" hideExternalAccounts />,
+    <AccountSelector name="account" switchGlobalAccount />,
+    <AccountSelector
+      name="account"
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+    />,
+    <AccountSelector
+      name="account"
+      chainIds={['foo:bar']}
+      hideExternalAccounts
+      switchGlobalAccount
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+    />,
+  ])('validates an account picker element', (value) => {
+    expect(is(value, AccountSelectorStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AccountSelector />,
+    // @ts-expect-error - Invalid props.
+    <AccountSelector>
+      <Text>foo</Text>
+    </AccountSelector>,
+    // @ts-expect-error - Invalid props.
+    <AccountSelector switchGlobalAccount="foo" />,
+    // @ts-expect-error - Invalid props.
+    <AccountSelector chainIds={['bip122:000000000019d6689c085ae165831e93']} />,
+    // @ts-expect-error - Invalid props.
+    <AccountSelector value={42} />,
+    <AccountSelector
+      name="account"
+      chainIds={['foo:bar']}
+      value="eip155:1:0x1234567890abcdef1234567890abcdef12345678"
+      // @ts-expect-error - Invalid props.
+      hideExternalAccounts={42}
+    />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="<svg />" alt="alt" />
+    </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, AddressStruct)).toBe(false);
   });

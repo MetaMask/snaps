@@ -779,6 +779,9 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:setSelectedAccount',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -796,6 +799,33 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       result: false,
       type: 'all',
     }));
+
+    messenger.registerActionHandler(
+      'AccountsController:getAccountByAddress',
+      // @ts-expect-error partial mock
+      (address: string) => ({
+        address,
+        id: 'foo',
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:getSelectedMultichainAccount',
+      // @ts-expect-error partial mock
+      () => ({
+        address: '0x1234567890123456789012345678901234567890',
+        id: 'foo',
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:setSelectedAccount',
+      (_id: string) => {
+        // no-op
+      },
+    );
   }
 
   return snapInterfaceControllerMessenger;

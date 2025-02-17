@@ -13,7 +13,7 @@ import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
-import { FileStruct } from './handlers';
+import { AccountSelectorValueStruct, FileStruct } from './handlers';
 
 /**
  * To avoid typing problems with the interface state when manipulating it we
@@ -22,7 +22,12 @@ import { FileStruct } from './handlers';
  * either the value of an input or a sub-state of a form.
  */
 
-export const StateStruct = union([FileStruct, string(), boolean()]);
+export const StateStruct = union([
+  FileStruct,
+  AccountSelectorValueStruct,
+  string(),
+  boolean(),
+]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));
 
