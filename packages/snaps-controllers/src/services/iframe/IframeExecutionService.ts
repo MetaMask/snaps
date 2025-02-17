@@ -19,8 +19,10 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     iframeUrl,
     messenger,
     setupSnapProvider,
+    ...args
   }: IframeExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
     });
