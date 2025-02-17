@@ -14,7 +14,7 @@ export type GetPreferencesParams = never;
  * @property currency - The user's selected currency.
  * @property hideBalances - Whether the user has chosen to hide balances.
  * @property useSecurityAlerts - Whether to run transactions and signatures through security providers.
- * @property useSimulations - Whether to simulate transactions and signatures.
+ * @property simulateOnChainActions - Whether to simulate transactions and signatures.
  * @property useTokenDetection - Whether to auto-detect tokens.
  * @property batchCheckBalances - Whether to fetch balances in an aggregated manner.
  * @property displayNftMedia - Whether to display NFT media.
@@ -26,7 +26,7 @@ export type GetPreferencesResult = {
   currency: string;
   hideBalances: boolean;
   useSecurityAlerts: boolean;
-  useSimulations: boolean;
+  simulateOnChainActions: boolean;
   useTokenDetection: boolean;
   batchCheckBalances: boolean;
   displayNftMedia: boolean;

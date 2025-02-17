@@ -132,7 +132,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         currency: 'usd',
         hideBalances: false,
         useSecurityAlerts: true,
-        useSimulations: true,
+        simulateOnChainActions: true,
         useTokenDetection: true,
         batchCheckBalances: true,
         displayNftMedia: true,

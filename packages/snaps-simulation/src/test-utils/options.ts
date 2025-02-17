@@ -12,7 +12,7 @@ import type { SimulationOptions } from '../options';
  * @param options.unencryptedState - The unencrypted state to use.
  * @param options.hideBalances - Whether to hide balances.
  * @param options.useSecurityAlerts - Whether to run transactions and signatures through security providers.
- * @param options.useSimulations - Whether to simulate transactions and signatures.
+ * @param options.simulateOnChainActions - Whether to simulate transactions and signatures.
  * @param options.useTokenDetection - Whether to auto-detect tokens.
  * @param options.batchCheckBalances - Whether to fetch balances in an aggregated manner.
  * @param options.displayNftMedia - Whether to display NFT media.
@@ -28,7 +28,7 @@ export function getMockOptions({
   state = null,
   unencryptedState = null,
   useSecurityAlerts = true,
-  useSimulations = true,
+  simulateOnChainActions = true,
   useTokenDetection = true,
   batchCheckBalances = true,
   displayNftMedia = true,
@@ -43,7 +43,7 @@ export function getMockOptions({
     unencryptedState,
     hideBalances,
     useSecurityAlerts,
-    useSimulations,
+    simulateOnChainActions,
     useTokenDetection,
     batchCheckBalances,
     displayNftMedia,

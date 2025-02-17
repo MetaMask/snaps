@@ -8,7 +8,7 @@ import type { SimulationOptions } from '../../options';
  * @param options.locale - The locale to use.
  * @param options.hideBalances - Whether to hide balances.
  * @param options.useSecurityAlerts - Whether to run transactions and signatures through security providers.
- * @param options.useSimulations - Whether to simulate transactions and signatures.
+ * @param options.simulateOnChainActions - Whether to simulate transactions and signatures.
  * @param options.useTokenDetection - Whether to auto-detect tokens.
  * @param options.batchCheckBalances - Whether to fetch balances in an aggregated manner.
  * @param options.displayNftMedia - Whether to display NFT media.
@@ -21,7 +21,7 @@ export function getGetPreferencesMethodImplementation({
   locale,
   hideBalances,
   useSecurityAlerts,
-  useSimulations,
+  simulateOnChainActions,
   useTokenDetection,
   batchCheckBalances,
   displayNftMedia,
@@ -34,7 +34,7 @@ export function getGetPreferencesMethodImplementation({
       locale,
       hideBalances,
       useSecurityAlerts,
-      useSimulations,
+      simulateOnChainActions,
       useTokenDetection,
       batchCheckBalances,
       displayNftMedia,

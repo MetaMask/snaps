@@ -17,7 +17,7 @@ describe('getOptions', () => {
         "useNftDetection": true,
         "useExternalPricingData": true,
         "useSecurityAlerts": true,
-        "useSimulations": true,
+        "simulateOnChainActions": true,
         "useTokenDetection": true,
       }
     `);
@@ -42,7 +42,7 @@ describe('getOptions', () => {
         "useNftDetection": true,
         "useExternalPricingData": true,
         "useSecurityAlerts": true,
-        "useSimulations": true,
+        "simulateOnChainActions": true,
         "useTokenDetection": true,
       }
     `);
