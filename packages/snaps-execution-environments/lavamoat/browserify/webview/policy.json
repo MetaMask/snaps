@@ -60,8 +60,8 @@
         "@metamask/utils>@scure/base": true,
         "@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
-        "depcheck>debug": true,
-        "depcheck>semver": true
+        "depcheck>semver": true,
+        "eslint>debug": true
       }
     },
     "@metamask/utils>@noble/hashes": {
@@ -106,7 +106,15 @@
         "browserify>browser-pack>safe-buffer": true
       }
     },
-    "depcheck>debug": {
+    "depcheck>semver": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "eslint>debug": {
       "globals": {
         "console": true,
         "document": true,
@@ -116,15 +124,7 @@
       },
       "packages": {
         "browserify>process": true,
-        "depcheck>debug>ms": true
-      }
-    },
-    "depcheck>semver": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "browserify>process": true
+        "eslint>debug>ms": true
       }
     },
     "readable-stream": {
