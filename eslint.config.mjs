@@ -37,6 +37,17 @@ const config = createConfig([
       // `@metamask/snaps-utils`.
       'no-console': 'error',
 
+      // This allows `@property` despite being "redundant" in a type system.
+      // We use it to document the properties of an object that are not declared
+      // directly in the type.
+      // TODO: Upstream this change to `@metamask/eslint-config`.
+      'jsdoc/check-tag-names': [
+        'error',
+        {
+          definedTags: ['property'],
+        },
+      ],
+
       // This is too strict for some cases, like when a Promise is used to
       // perform a side effect.
       // TODO: Upstream this change to `@metamask/eslint-config`.
@@ -197,7 +208,12 @@ const config = createConfig([
 
   // Test files
   {
-    files: ['**/*.test.ts', '**/*.test.js'],
+    files: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/*.test.browser.ts',
+      '**/*.test.js',
+    ],
     extends: [jest, nodejs],
 
     rules: {
@@ -215,6 +231,9 @@ const config = createConfig([
       // This rule is too strict for test files.
       // TODO: Upstream this change to `@metamask/eslint-config-jest`.
       'jest/no-conditional-in-test': 'off',
+
+      // This rule is too strict for test files.
+      'n/no-unsupported-features/node-builtins': 'off',
 
       // This rule is too strict for test files.
       'no-console': 'off',
