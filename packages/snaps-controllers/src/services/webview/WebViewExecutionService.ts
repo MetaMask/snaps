@@ -45,7 +45,7 @@ export class WebViewExecutionService extends AbstractExecutionService<string> {
     const stream = new WebViewMessageStream({
       name: 'parent',
       target: 'child',
-      getWebView: async () => webView,
+      webView,
     });
 
     return { worker: jobId, stream };
