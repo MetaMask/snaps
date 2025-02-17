@@ -20,7 +20,7 @@
   "sideEffects": false,
   "files": [],
   "scripts": {
-    "build": "yarn workspaces foreach --worktree --parallel --verbose --no-private run build",
+    "build": "yarn workspaces filter --include 'packages/examples/packages/**' --parallel --no-private run build",
     "build:clean": "yarn clean && yarn build",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/example-snaps",
     "changelog:validates": "yarn workspaces foreach --worktree --parallel --verbose run changelog:validate",
