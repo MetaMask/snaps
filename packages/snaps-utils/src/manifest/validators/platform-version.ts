@@ -16,7 +16,7 @@ export const platformVersion: ValidatorMeta = {
     const require = createRequire(files.manifest.path);
 
     const packageJson = require.resolve('@metamask/snaps-sdk/package.json');
-    // eslint-disable-next-line import/no-dynamic-require
+    // eslint-disable-next-line import-x/no-dynamic-require
     const actualVersion = require(packageJson).version;
 
     if (!manifestPlatformVersion) {

@@ -57,7 +57,7 @@ export const onProtocolRequest: OnProtocolRequestHandler = async ({
     }
 
     default:
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw new MethodNotFoundError({ method: request.method });
   }
 };

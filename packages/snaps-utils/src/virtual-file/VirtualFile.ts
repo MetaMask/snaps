@@ -24,7 +24,7 @@ import { deepClone } from '../deep-clone';
  *   }
  * }
  */
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/no-empty-object-type
 export interface DataMap {}
 
 export type Value = string | Uint8Array;

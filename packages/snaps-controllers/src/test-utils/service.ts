@@ -12,7 +12,6 @@ import { MOCK_BLOCK_NUMBER } from './execution-environment';
 export const createService = <
   Service extends new (...args: any[]) => InstanceType<Service>,
 >(
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   ServiceClass: Service,
   options?: Omit<
     ConstructorParameters<Service>[0],

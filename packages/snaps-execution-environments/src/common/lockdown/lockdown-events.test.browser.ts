@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/unambiguous
 import { expect } from '@wdio/globals';
 
 import { executeLockdownEvents } from './lockdown-events';
@@ -11,7 +10,6 @@ describe('lockdown events security', () => {
 
     const promise = new Promise((resolve) => {
       eventTarget.addEventListener('just-test-event', (eventObject) => {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
         resolve(eventObject.composedPath);
       });
     });

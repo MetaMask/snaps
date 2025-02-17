@@ -232,7 +232,6 @@ async function getNewState(
  * @returns The new object with the key set to the value.
  */
 export function set(
-  // eslint-disable-next-line @typescript-eslint/default-param-last
   object: Record<string, Json> | null,
   key: string,
   value: Json,

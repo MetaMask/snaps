@@ -86,7 +86,6 @@ describe('Network endowments', () => {
         .fn()
         .mockImplementation((reason) => Error(reason));
 
-      // eslint-disable-next-line jest/valid-expect-in-promise
       fetch('foo.com')
         .then(() => {
           throw new ErrorProxy('SHOULD_NOT_BE_REACHED');
@@ -109,7 +108,6 @@ describe('Network endowments', () => {
 
       const { fetch, teardownFunction } = network.factory(factoryOptions);
 
-      // eslint-disable-next-line jest/valid-expect-in-promise
       fetch('foo.com').catch(() => {
         console.log('Jailbreak');
       });

@@ -939,7 +939,6 @@ describe('installSnap', () => {
         `,
         manifest: getSnapManifest({
           initialPermissions: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             'endowment:ethereum-provider': {},
           },
         }),

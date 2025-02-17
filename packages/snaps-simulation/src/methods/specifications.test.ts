@@ -334,7 +334,6 @@ describe('getEndowments', () => {
       MOCK_SNAP_ID,
       getSnapManifest({
         initialPermissions: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           'endowment:network-access': {},
         },
       }),

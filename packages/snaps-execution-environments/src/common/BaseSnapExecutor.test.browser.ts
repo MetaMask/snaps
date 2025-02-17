@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-shadow, import/no-unassigned-import */
+/* eslint-disable @typescript-eslint/restrict-template-expressions, import-x/no-unassigned-import */
 
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -458,7 +458,6 @@ describe('BaseSnapExecutor', () => {
 
     const mockSnapsResult = {
       snaps: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'npm:@metamask/example-snap': {
           version: '1.0.0',
         },
@@ -1729,7 +1728,6 @@ describe('BaseSnapExecutor', () => {
     const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
 
     for (const handler of LIFECYCLE_HOOKS) {
-      // eslint-disable-next-line no-loop-func
       it(`supports \`${handler}\` export`, async () => {
         const CODE = `
           module.exports.${handler} = ({ origin }) => origin;
@@ -1763,7 +1761,6 @@ describe('BaseSnapExecutor', () => {
         });
       });
 
-      // eslint-disable-next-line no-loop-func
       it(`does not throw if \`${handler}\` is called, but the snap does not export it`, async () => {
         const CODE = `
           module.exports.onRpcRequest = () => 'foo';
