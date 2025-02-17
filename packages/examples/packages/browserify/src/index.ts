@@ -25,7 +25,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return 'Hello from the MetaMask Snaps CLI using Browserify!';
 
     default: {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw new MethodNotFoundError({ method: request.method });
     }
   }

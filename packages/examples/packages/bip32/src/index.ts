@@ -46,7 +46,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const { message, curve, ...params } = request.params as SignMessageParams;
 
       if (!message || typeof message !== 'string') {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw new InvalidParamsError(`Invalid signature data: "${message}".`);
       }
 
@@ -74,7 +73,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
 
       if (!approved) {
-        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw new UserRejectedRequestError();
       }
 
@@ -100,7 +98,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     default:
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw new MethodNotFoundError({ method: request.method });
   }
 };
