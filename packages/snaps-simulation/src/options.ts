@@ -29,7 +29,7 @@ const SimulationOptionsStruct = object({
   batchCheckBalances: defaulted(optional(boolean()), true),
   displayNftMedia: defaulted(optional(boolean()), true),
   useNftDetection: defaulted(optional(boolean()), true),
-  usePriceCheck: defaulted(optional(boolean()), true),
+  useExternalPricingData: defaulted(optional(boolean()), true),
 });
 
 /**
@@ -47,7 +47,7 @@ const SimulationOptionsStruct = object({
  * @property batchCheckBalances - Whether to fetch balances in an aggregated manner.
  * @property displayNftMedia - Whether to display NFT media.
  * @property useNftDetection - Whether to auto-detect NFTs.
- * @property usePriceCheck - Whether to get token price data from an external source.
+ * @property useExternalPricingData - Whether to get token price data from an external source.
  */
 export type SimulationUserOptions = Infer<typeof SimulationOptionsStruct>;
 

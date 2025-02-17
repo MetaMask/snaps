@@ -36,7 +36,7 @@ describe('snap_getPreferences', () => {
           batchCheckBalances: true,
           displayNftMedia: false,
           useNftDetection: false,
-          usePriceCheck: true,
+          useExternalPricingData: true,
         }),
       };
 
@@ -59,7 +59,7 @@ describe('snap_getPreferences', () => {
         batchCheckBalances: true,
         displayNftMedia: false,
         useNftDetection: false,
-        usePriceCheck: true,
+        useExternalPricingData: true,
       });
     });
   });

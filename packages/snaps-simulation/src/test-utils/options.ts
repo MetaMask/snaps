@@ -17,7 +17,7 @@ import type { SimulationOptions } from '../options';
  * @param options.batchCheckBalances - Whether to fetch balances in an aggregated manner.
  * @param options.displayNftMedia - Whether to display NFT media.
  * @param options.useNftDetection - Whether to auto-detect NFTs.
- * @param options.usePriceCheck - Whether to get token price data from an external source.
+ * @param options.useExternalPricingData - Whether to get token price data from an external source.
  * @returns The options for the simulation.
  */
 export function getMockOptions({
@@ -33,7 +33,7 @@ export function getMockOptions({
   batchCheckBalances = true,
   displayNftMedia = true,
   useNftDetection = true,
-  usePriceCheck = true,
+  useExternalPricingData = true,
 }: Partial<SimulationOptions> = {}): SimulationOptions {
   return {
     currency,
@@ -48,6 +48,6 @@ export function getMockOptions({
     batchCheckBalances,
     displayNftMedia,
     useNftDetection,
-    usePriceCheck,
+    useExternalPricingData,
   };
 }

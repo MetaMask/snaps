@@ -19,7 +19,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       batchCheckBalances: true,
       displayNftMedia: true,
       useNftDetection: true,
-      usePriceCheck: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -40,7 +40,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       batchCheckBalances: true,
       displayNftMedia: true,
       useNftDetection: true,
-      usePriceCheck: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -61,7 +61,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       batchCheckBalances: true,
       displayNftMedia: true,
       useNftDetection: true,
-      usePriceCheck: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -82,7 +82,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       batchCheckBalances: true,
       displayNftMedia: true,
       useNftDetection: true,
-      usePriceCheck: true,
+      useExternalPricingData: true,
     });
   });
 });
