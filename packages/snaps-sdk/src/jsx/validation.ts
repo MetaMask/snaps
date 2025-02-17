@@ -596,6 +596,9 @@ export const BoxStruct: Describe<BoxElement> = element('Box', {
       literal('space-around'),
     ]),
   ),
+  crossAlignment: optional(
+    nullUnion([literal('start'), literal('center'), literal('end')]),
+  ),
   center: optional(boolean()),
 });
 

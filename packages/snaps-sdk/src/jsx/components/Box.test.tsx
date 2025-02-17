@@ -58,7 +58,11 @@ describe('Box', () => {
 
   it('renders a box with props', () => {
     const result = (
-      <Box direction="horizontal" alignment="space-between">
+      <Box
+        direction="horizontal"
+        alignment="space-between"
+        crossAlignment="center"
+      >
         <Text>Hello</Text>
         <Text>World</Text>
       </Box>
@@ -70,6 +74,7 @@ describe('Box', () => {
       props: {
         direction: 'horizontal',
         alignment: 'space-between',
+        crossAlignment: 'center',
         children: [
           {
             type: 'Text',
