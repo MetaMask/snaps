@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.18.0]
+
+### Added
+
+- Add additional properties to `snap_getPreferences` ([#3093](https://github.com/MetaMask/snaps/pull/3093))
+- Add `crossAlignment` to `Box` ([#3115](https://github.com/MetaMask/snaps/pull/3115))
+
+### Changed
+
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3057](https://github.com/MetaMask/snaps/pull/3057), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
 ## [6.17.1]
 
 ### Fixed
@@ -488,7 +499,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...HEAD
+[6.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...@metamask/snaps-sdk@6.18.0
 [6.17.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...@metamask/snaps-sdk@6.17.1
 [6.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...@metamask/snaps-sdk@6.17.0
 [6.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.15.0...@metamask/snaps-sdk@6.16.0
