@@ -11,10 +11,10 @@ export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
   removeWebView: (jobId: string) => void;
 };
 
-export class WebViewExecutionService extends AbstractExecutionService<string> {
-  #createWebView;
+export class WebViewExecutionService extends AbstractExecutionService<WebViewInterface> {
+  readonly #createWebView;
 
-  #removeWebView;
+  readonly #removeWebView;
 
   constructor({
     messenger,
@@ -48,10 +48,10 @@ export class WebViewExecutionService extends AbstractExecutionService<string> {
       webView,
     });
 
-    return { worker: jobId, stream };
+    return { worker: webView, stream };
   }
 
-  protected terminateJob(jobWrapper: TerminateJobArgs<string>): void {
+  protected terminateJob(jobWrapper: TerminateJobArgs<WebViewInterface>): void {
     this.#removeWebView(jobWrapper.id);
   }
 }

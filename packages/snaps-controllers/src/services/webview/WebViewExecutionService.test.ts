@@ -43,9 +43,7 @@ describe('WebViewExecutionService', () => {
     const { service } = createService(WebViewExecutionService, {
       createWebView: async (_id: string) =>
         mockedWebView as unknown as WebViewInterface,
-      removeWebView: () => {
-        // no-op
-      },
+      removeWebView: jest.fn(),
     });
 
     expect(service).toBeDefined();
@@ -106,9 +104,7 @@ describe('WebViewExecutionService', () => {
         unregisterMessageListener: jest.fn(),
         injectJavaScript,
       }),
-      removeWebView: () => {
-        // no-op
-      },
+      removeWebView: jest.fn(),
     });
 
     expect(
