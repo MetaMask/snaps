@@ -70,7 +70,7 @@ export async function initHandler(argv: YargsArgs) {
       force: true,
       recursive: true,
     });
-  } catch (error) {
+  } catch {
     throw new Error('Init Error: Failed to create template.');
   }
 
@@ -105,7 +105,7 @@ export async function initHandler(argv: YargsArgs) {
     ...argv,
     dist: distPath[0],
     outfileName: distPath[1],
-    src: packageJson.main || 'src/index.js',
+    src: packageJson.main ?? 'src/index.js',
     snapLocation,
   };
 }

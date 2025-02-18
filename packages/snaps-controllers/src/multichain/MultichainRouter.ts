@@ -119,9 +119,9 @@ export class MultichainRouter {
 
   state = null;
 
-  #messenger: MultichainRouterMessenger;
+  readonly #messenger: MultichainRouterMessenger;
 
-  #withSnapKeyring: WithSnapKeyringFunction;
+  readonly #withSnapKeyring: WithSnapKeyringFunction;
 
   constructor({ messenger, withSnapKeyring }: MultichainRouterArgs) {
     this.#messenger = messenger;

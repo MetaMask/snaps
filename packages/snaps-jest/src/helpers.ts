@@ -170,6 +170,10 @@ export async function installSnap<
   options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
   const resolvedOptions = getOptions(snapId, options);
+
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  /* eslint-disable @typescript-eslint/unbound-method */
   const {
     request,
     onTransaction,
@@ -187,6 +191,7 @@ export async function installSnap<
     mockJsonRpc,
     close,
   } = await getEnvironment().installSnap(...resolvedOptions);
+  /* eslint-enable @typescript-eslint/unbound-method */
 
   return {
     request,

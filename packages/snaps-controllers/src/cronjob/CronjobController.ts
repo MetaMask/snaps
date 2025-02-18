@@ -124,10 +124,10 @@ export class CronjobController extends BaseController<
 > {
   #dailyTimer!: Timer;
 
-  #timers: Map<string, Timer>;
+  readonly #timers: Map<string, Timer>;
 
   // Mapping from jobId to snapId
-  #snapIds: Map<string, SnapId>;
+  readonly #snapIds: Map<string, SnapId>;
 
   constructor({ messenger, state }: CronjobControllerArgs) {
     super({

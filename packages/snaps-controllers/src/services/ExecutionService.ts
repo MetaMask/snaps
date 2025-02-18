@@ -11,7 +11,7 @@ type HandleRpcRequest = (
   options: SnapRpcHookArgs,
 ) => Promise<unknown>;
 
-export interface ExecutionService {
+export type ExecutionService = {
   // These fields are required for modular initialisation of the execution
   // service in the MetaMask extension.
   name: 'ExecutionService';
@@ -21,7 +21,7 @@ export interface ExecutionService {
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;
   handleRpcRequest: HandleRpcRequest;
-}
+};
 
 export type SnapExecutionData = {
   snapId: string;
@@ -35,7 +35,7 @@ export type SnapErrorJson = {
   data?: Json;
 };
 
-const controllerName = 'ExecutionService';
+type ControllerName = 'ExecutionService';
 
 export type ErrorMessageEvent = {
   type: 'ExecutionService:unhandledError';
@@ -61,7 +61,7 @@ export type ExecutionServiceEvents =
  * Handles RPC request.
  */
 export type HandleRpcRequestAction = {
-  type: `${typeof controllerName}:handleRpcRequest`;
+  type: `${ControllerName}:handleRpcRequest`;
   handler: ExecutionService['handleRpcRequest'];
 };
 
@@ -69,7 +69,7 @@ export type HandleRpcRequestAction = {
  * Executes a given snap.
  */
 export type ExecuteSnapAction = {
-  type: `${typeof controllerName}:executeSnap`;
+  type: `${ControllerName}:executeSnap`;
   handler: ExecutionService['executeSnap'];
 };
 
@@ -77,7 +77,7 @@ export type ExecuteSnapAction = {
  * Terminates a given snap.
  */
 export type TerminateSnapAction = {
-  type: `${typeof controllerName}:terminateSnap`;
+  type: `${ControllerName}:terminateSnap`;
   handler: ExecutionService['terminateSnap'];
 };
 
@@ -85,7 +85,7 @@ export type TerminateSnapAction = {
  * Terminates all snaps.
  */
 export type TerminateAllSnapsAction = {
-  type: `${typeof controllerName}:terminateAllSnaps`;
+  type: `${ControllerName}:terminateAllSnaps`;
   handler: ExecutionService['terminateAllSnaps'];
 };
 

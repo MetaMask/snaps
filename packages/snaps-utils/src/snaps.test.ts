@@ -49,7 +49,9 @@ describe('assertIsValidSnapId', () => {
     'throws for non-strings (#%#)',
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        // TODO: Either fix this lint violation or explain why it's necessary to
+        //  ignore.
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
         `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: ${value}.`,
       );
     },

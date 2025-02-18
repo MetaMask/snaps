@@ -29,15 +29,16 @@ import type { DetectSnapLocationOptions, SnapLocation } from './location';
 
 export const DEFAULT_NPM_REGISTRY = new URL('https://registry.npmjs.org');
 
-interface NpmMeta {
+type NpmMeta = {
   registry: URL;
   packageName: string;
   requestedRange: SemVerRange;
   version?: string;
   fetch: typeof fetch;
   resolveVersion: (range: SemVerRange) => Promise<SemVerRange>;
-}
-export interface NpmOptions {
+};
+
+export type NpmOptions = {
   /**
    * @default DEFAULT_REQUESTED_SNAP_VERSION
    */
@@ -48,7 +49,7 @@ export interface NpmOptions {
    * @default false
    */
   allowCustomRegistries?: boolean;
-}
+};
 
 // Base class for NPM implementation, useful for extending with custom NPM fetching logic
 export abstract class BaseNpmLocation implements SnapLocation {
@@ -217,9 +218,7 @@ export class NpmLocation extends BaseNpmLocation {
    * @returns A the files for the package tarball.
    * @throws If fetching the tarball fails.
    */
-  async fetchNpmTarball(
-    tarballUrl: URL,
-  ): Promise<Map<string, VirtualFile<unknown>>> {
+  async fetchNpmTarball(tarballUrl: URL): Promise<Map<string, VirtualFile>> {
     // Perform a raw fetch because we want the Response object itself.
     const tarballResponse = await this.meta.fetch(tarballUrl.toString());
     if (!tarballResponse.ok || !tarballResponse.body) {

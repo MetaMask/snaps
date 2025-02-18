@@ -97,7 +97,7 @@ export class ExecutionEnvironmentStub implements ExecutionService {
   getRpcRequestHandler(_snapId: string) {
     return async ({ request }: SnapRpcHookArgs) => {
       return new Promise((resolve) => {
-        const results = `${request.method}${request.id}`;
+        const results = `${String(request.method)}${String(request.id)}`;
         resolve(results);
       });
     };

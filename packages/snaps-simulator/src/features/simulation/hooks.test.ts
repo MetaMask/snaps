@@ -68,6 +68,9 @@ describe('showDialog', () => {
       Box({ children: null }),
     );
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const snapInterface = await snapInterfaceController.getInterface(
       snapId as SnapId,
       interfaceId,
@@ -351,6 +354,9 @@ describe('getInterfaceState', () => {
       Box({ children: Input({ name: 'foo', value: 'bar' }) }),
     );
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const snapInterface = await snapInterfaceController.getInterface(
       snapId as SnapId,
       interfaceId,
