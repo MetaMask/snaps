@@ -1,6 +1,6 @@
 import type { Configuration } from 'webpack';
 import { Compiler } from 'webpack';
-import merge from 'webpack-merge';
+import { merge } from 'webpack-merge';
 
 import { getCompiler } from './compiler';
 import { getMockConfig } from '../test-utils';

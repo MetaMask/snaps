@@ -6,7 +6,14 @@ import typescript from '@metamask/eslint-config-typescript';
 
 const config = createConfig([
   {
-    ignores: ['**/coverage', '**/dist', '**/docs', '**/public', '.yarn'],
+    ignores: [
+      '**/assembly',
+      '**/coverage',
+      '**/dist',
+      '**/docs',
+      '**/public',
+      '.yarn',
+    ],
   },
 
   // Base configuration
@@ -23,6 +30,30 @@ const config = createConfig([
 
     settings: {
       'import-x/extensions': ['.js', '.mjs'],
+    },
+
+    rules: {
+      // This allows `Promise.catch().finally()` to be used without a return
+      // statement.
+      // TODO: Upstream this change to `@metamask/eslint-config`.
+      'promise/catch-or-return': [
+        'error',
+        {
+          allowFinally: true,
+        },
+      ],
+
+      // By default the `resolve` and `reject` parameters of a Promise are
+      // expected to be named `resolve` and `reject`. This rule allows the
+      // parameters to be named `resolveSomething` and `rejectSomething`.
+      // TODO: Upstream this change to `@metamask/eslint-config`.
+      'promise/param-names': [
+        'error',
+        {
+          resolvePattern: '^_?resolve',
+          rejectPattern: '^_?reject',
+        },
+      ],
     },
   },
 

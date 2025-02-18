@@ -272,19 +272,12 @@ export class SnapsBuiltInResolver implements ResolvePlugin {
    */
   readonly options: SnapsBuiltInResolverOptions;
 
-  /**
-   * The spinner to use for logging.
-   */
-  readonly #spinner?: Ora;
-
   constructor(
     options: SnapsBuiltInResolverOptions = {
       ignore: [],
     },
-    spinner?: Ora,
   ) {
     this.options = options;
-    this.#spinner = spinner;
   }
 
   /**

@@ -147,7 +147,8 @@ export class SnapsBrowserifyTransform extends Transform {
 
     postBundle(this.#options, result.code)
       .catch((error) => {
-        callback(error);
+        // Wrapped in `setTimeout` to avoid calling `callback` twice.
+        setTimeout(() => callback(error), 0);
       })
       .finally(() => {
         this.push(result.code);

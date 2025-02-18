@@ -4482,8 +4482,8 @@ describe('SnapController', () => {
       );
 
       let resolveExecutePromise: any;
-      const deferredExecutePromise = new Promise((res) => {
-        resolveExecutePromise = res;
+      const deferredExecutePromise = new Promise((resolve) => {
+        resolveExecutePromise = resolve;
       });
 
       rootMessenger.registerActionHandler(
