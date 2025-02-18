@@ -658,6 +658,7 @@ describe('FooterStruct', () => {
       <Button name="confirm">Confirm</Button>
     </Footer>,
     <Footer>
+      {/* eslint-disable-next-line no-constant-binary-expression */}
       <Button name="cancel">Cancel {true && 'foo'}</Button>
     </Footer>,
   ])('validates a footer element', (value) => {

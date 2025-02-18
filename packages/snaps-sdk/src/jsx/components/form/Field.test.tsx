@@ -327,6 +327,7 @@ describe('Field', () => {
     const result = (
       <Field>
         <Input name="foo" />
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && <Button type="submit">Submit</Button>}
       </Field>
     );
