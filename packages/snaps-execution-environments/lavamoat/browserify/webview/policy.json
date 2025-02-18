@@ -1,5 +1,26 @@
 {
   "resources": {
+    "@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/object-multiplex>once": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -14,6 +35,39 @@
       "packages": {
         "@metamask/utils": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/providers": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/providers>is-stream": true,
+        "@metamask/rpc-errors": true,
+        "eslint>fast-deep-equal": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
       }
     },
     "@metamask/rpc-errors": {

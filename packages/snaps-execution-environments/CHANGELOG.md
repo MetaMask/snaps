@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0]
+
+### Changed
+
+- **BREAKING:** Use a WebView per Snap on mobile ([#3085](https://github.com/MetaMask/snaps/pull/3085))
+  - The WebView bundle no longer supports proxy executor calls and functions as a single executor.
+- **BREAKING:** Encode messages in `WebViewMessageStream` as byte arrays ([#3077](https://github.com/MetaMask/snaps/pull/3077))
+  - A version of `snaps-controllers` that supports this encoding is required.
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3057](https://github.com/MetaMask/snaps/pull/3057), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
 ## [6.14.0]
 
 ### Added
@@ -429,7 +439,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.0.0...HEAD
+[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.14.0...@metamask/snaps-execution-environments@7.0.0
 [6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.13.0...@metamask/snaps-execution-environments@6.14.0
 [6.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.12.0...@metamask/snaps-execution-environments@6.13.0
 [6.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.11.0...@metamask/snaps-execution-environments@6.12.0

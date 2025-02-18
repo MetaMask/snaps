@@ -1,7 +1,6 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
-import { logError } from '@metamask/snaps-utils';
 import { assert, stringToBytes } from '@metamask/utils';
 
 export type WebViewInterface = {
@@ -13,7 +12,7 @@ export type WebViewInterface = {
 export type WebViewStreamArgs = {
   name: string;
   target: string;
-  getWebView: () => Promise<WebViewInterface>;
+  webView: WebViewInterface;
 };
 
 /**
@@ -33,9 +32,9 @@ export class WebViewMessageStream extends BasePostMessageStream {
    * @param args.name - The name of the stream. Used to differentiate between
    * multiple streams sharing the same window object.
    * @param args.target - The name of the stream to exchange messages with.
-   * @param args.getWebView - A asynchronous getter for the webview.
+   * @param args.webView - A reference to the WebView.
    */
-  constructor({ name, target, getWebView }: WebViewStreamArgs) {
+  constructor({ name, target, webView }: WebViewStreamArgs) {
     super();
 
     this.#name = name;
@@ -43,19 +42,11 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
     this._onMessage = this._onMessage.bind(this);
 
-    // This is a bit atypical from other post-message streams.
-    // We have to wait for the WebView to fully load before we can continue using the stream.
-    getWebView()
-      .then((webView) => {
-        this.#webView = webView;
-        // This method is already bound.
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        webView.registerMessageListener(this._onMessage);
-        this._handshake();
-      })
-      .catch((error) => {
-        logError(error);
-      });
+    this.#webView = webView;
+    // This method is already bound.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.#webView.registerMessageListener(this._onMessage);
+    this._handshake();
   }
 
   protected _postMessage(data: unknown): void {

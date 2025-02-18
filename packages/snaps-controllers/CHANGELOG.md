@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+
+### Changed
+
+- **BREAKING:** Use a WebView per Snap on mobile ([#3085](https://github.com/MetaMask/snaps/pull/3085))
+  - `WebViewExecutionService` now requires `createWebView` and `removeWebView` constructor arguments, `getWebView` is no longer supported.
+- **BREAKING:** Encode messages in `WebViewMessageStream` as byte arrays ([#3077](https://github.com/MetaMask/snaps/pull/3077))
+  - A version of the Snaps execution environment that supports this encoding is required.
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3092](https://github.com/MetaMask/snaps/pull/3092), [#3084](https://github.com/MetaMask/snaps/pull/3084), [#3083](https://github.com/MetaMask/snaps/pull/3083), [#3082](https://github.com/MetaMask/snaps/pull/3082), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
+### Fixed
+
+- Recreate JSON-RPC request in `MultichainRouter` ([#3086](https://github.com/MetaMask/snaps/pull/3086))
+- Properly pass down execution service constructor args ([#3110](https://github.com/MetaMask/snaps/pull/3110))
+
 ## [9.19.1]
 
 ### Fixed
@@ -631,7 +646,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.1...@metamask/snaps-controllers@10.0.0
 [9.19.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...@metamask/snaps-controllers@9.19.1
 [9.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.18.0...@metamask/snaps-controllers@9.19.0
 [9.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.17.0...@metamask/snaps-controllers@9.18.0
