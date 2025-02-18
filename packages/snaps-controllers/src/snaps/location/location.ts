@@ -8,7 +8,9 @@ import type { NpmOptions } from './npm';
 import { NpmLocation } from './npm';
 
 declare module '@metamask/snaps-utils' {
-  type DataMap = {
+  // This needs to be an interface in order to allow for declaration merging.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface DataMap {
     /**
      * Fully qualified, canonical path for the file in {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8 } URI format.
      */
@@ -24,7 +26,7 @@ export type SnapLocation = {
   fetch(path: string): Promise<VirtualFile>;
 
   readonly shouldAlwaysReload?: boolean;
-}
+};
 
 export type DetectSnapLocationOptions = NpmOptions & {
   /**
