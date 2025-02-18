@@ -6,9 +6,8 @@ import { createCoverageMap } from 'istanbul-lib-coverage';
 import type { ReportBase } from 'istanbul-lib-report';
 import { createContext } from 'istanbul-lib-report';
 import type { ReportOptions, ReportType } from 'istanbul-reports';
-import reports from 'istanbul-reports';
+import { create } from 'istanbul-reports';
 import { resolve } from 'path';
-import * as process from 'process';
 
 const COVERAGE_JSON = resolve(__dirname, '..', 'coverage.json');
 const COVERAGE_PATH = resolve(__dirname, '..', 'coverage');
@@ -49,9 +48,9 @@ function generateSummaryReport<Report extends ReportType>(
     coverageMap,
   });
 
-  return (
-    reports.create(reportType, reportOptions) as unknown as ReportBase
-  ).execute(context);
+  return (create(reportType, reportOptions) as unknown as ReportBase).execute(
+    context,
+  );
 }
 
 /**

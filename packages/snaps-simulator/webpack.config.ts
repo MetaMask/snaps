@@ -1,6 +1,6 @@
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import express from 'express';
+import { static as expressStatic } from 'express';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MonacoEditorWebpackPlugin from 'monaco-editor-webpack-plugin';
@@ -186,7 +186,7 @@ const baseAppConfig = merge<Configuration & DevServerConfiguration>(
       port: 8000,
       historyApiFallback: true,
       setupMiddlewares: (middlewares, { app }) => {
-        app?.use('/vendor', express.static(VENDOR_PATH));
+        app?.use('/vendor', expressStatic(VENDOR_PATH));
 
         return middlewares;
       },

@@ -1,15 +1,15 @@
-import React from 'react';
+import { Component, ReactNode } from 'react';
 
 type ErrorBoundaryProps = {
-  fallback: React.ReactNode;
-  children: React.ReactNode;
+  fallback: ReactNode;
+  children: ReactNode;
 };
 
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
-export class ErrorBoundary extends React.Component<
+export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
 > {

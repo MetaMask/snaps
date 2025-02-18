@@ -8,8 +8,12 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
-import { hasProperty, type Json } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  Json,
+  JsonRpcRequest,
+} from '@metamask/utils';
+import { hasProperty } from '@metamask/utils';
 
 import { getValidatedParams } from './invokeSnapSugar';
 import type { MethodHooksObject } from '../utils';

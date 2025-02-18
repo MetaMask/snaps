@@ -11,14 +11,17 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  Json,
+  JsonRpcRequest,
+} from '@metamask/utils';
 import {
   getJsonSize,
   hasProperty,
   isObject,
   assert,
   JsonStruct,
-  type Json,
 } from '@metamask/utils';
 
 import {

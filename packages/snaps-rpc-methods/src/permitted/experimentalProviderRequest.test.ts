@@ -1,7 +1,9 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type { ProviderRequestParams } from '@metamask/snaps-sdk';
-import { type ProviderRequestResult } from '@metamask/snaps-sdk';
+import type {
+  ProviderRequestParams,
+  ProviderRequestResult,
+} from '@metamask/snaps-sdk';
 import type {
   JsonRpcFailure,
   JsonRpcRequest,

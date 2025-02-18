@@ -1,6 +1,8 @@
 import type { WriteFileFunction } from '@metamask/snaps-utils/node';
 import { promises as fs } from 'fs';
 import * as babel from 'prettier/plugins/babel';
+// TODO: Either fix this lint violation or explain why it's necessary to ignore.
+// eslint-disable-next-line import-x/namespace
 import * as estree from 'prettier/plugins/estree';
 import { format } from 'prettier/standalone';
 

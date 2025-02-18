@@ -1,11 +1,14 @@
-import type { FieldElement, FormElement } from '@metamask/snaps-sdk/jsx';
+import type {
+  BoxElement,
+  FieldElement,
+  FormElement,
+  JSXElement,
+} from '@metamask/snaps-sdk/jsx';
 import {
   BoxChildStruct,
   FieldChildUnionStruct,
   FormChildStruct,
   Input,
-  type BoxElement,
-  type JSXElement,
 } from '@metamask/snaps-sdk/jsx';
 import {
   deepClone,
@@ -17,7 +20,7 @@ import { is } from '@metamask/superstruct';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
 import typescript from 'prettier/parser-typescript';
-import prettier from 'prettier/standalone';
+import { format } from 'prettier/standalone';
 
 /**
  * Get the text of a node model.
@@ -187,7 +190,7 @@ function getComponentTypes(component: JSXElement): string[] {
 export function boxToCode(component: BoxElement): string {
   const types = getComponentTypes(component).join(', ');
 
-  return prettier.format(
+  return format(
     `
       import { ${types} } from '@metamask/snaps-sdk/jsx';
 
