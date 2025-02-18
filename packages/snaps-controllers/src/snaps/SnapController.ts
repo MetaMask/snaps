@@ -843,6 +843,7 @@ export class SnapController extends BaseController<
   readonly #maxIdleTime: number;
 
   // This property cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly maxRequestTime: number;
 
   readonly #encryptor: ExportableKeyEncryptor;
@@ -2556,6 +2557,9 @@ export class SnapController extends BaseController<
    * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async processRequestedSnap(
     origin: string,
     snapId: SnapId,
@@ -3278,6 +3282,7 @@ export class SnapController extends BaseController<
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
+  // eslint-disable-next-line no-restricted-syntax
   private async authorize(
     snapId: SnapId,
     pendingApproval: PendingApproval,

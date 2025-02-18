@@ -74,6 +74,7 @@ export abstract class AbstractExecutionService<WorkerType>
   protected jobs: Map<string, Job<WorkerType>>;
 
   // Cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly setupSnapProvider: SetupSnapProvider;
 
   readonly #snapToJobMap: Map<string, string>;
@@ -116,6 +117,9 @@ export abstract class AbstractExecutionService<WorkerType>
    * Constructor helper for registering the controller's messaging system
    * actions.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private registerMessageHandlers(): void {
     this.#messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
@@ -360,6 +364,9 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC request handler for the snap.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private getRpcRequestHandler(snapId: string) {
     return this.#snapRpcHooks.get(snapId);
   }
@@ -437,6 +444,7 @@ export abstract class AbstractExecutionService<WorkerType>
   }
 
   // Cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private async command(
     jobId: string,
     message: JsonRpcRequest,

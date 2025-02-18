@@ -95,6 +95,9 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    *
    * If the document already exists, this does nothing.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async createDocument() {
     // We only want to create a single pool.
     if (document.getElementById(WORKER_POOL_ID)) {
