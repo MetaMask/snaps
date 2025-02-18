@@ -11,19 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
-- Update `snap_getPreferences` ([#3093](https://github.com/MetaMask/snaps-skunkworks.git/pull/3093))
-- fix(simulation): Unintentionally narrow type for `onKeyringRequest` helper ([#3109](https://github.com/MetaMask/snaps-skunkworks.git/pull/3109))
-- chore(deps): bump @metamask/utils from 11.1.0 to 11.2.0 ([#3091](https://github.com/MetaMask/snaps-skunkworks.git/pull/3091))
-- chore(deps): bump @metamask/eth-json-rpc-middleware from 15.1.2 to 15.2.0 ([#3090](https://github.com/MetaMask/snaps-skunkworks.git/pull/3090))
-- chore(deps): bump @metamask/phishing-controller from 12.3.1 to 12.3.2 ([#3084](https://github.com/MetaMask/snaps-skunkworks.git/pull/3084))
-- chore(deps): bump @metamask/json-rpc-middleware-stream from 8.0.6 to 8.0.7 ([#3083](https://github.com/MetaMask/snaps-skunkworks.git/pull/3083))
-- chore(deps): bump @metamask/base-controller from 7.1.1 to 8.0.0 ([#3082](https://github.com/MetaMask/snaps-skunkworks.git/pull/3082))
-- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps-skunkworks.git/pull/3050))
-- chore: Rename `ControllerMessenger` to `Messenger` ([#3053](https://github.com/MetaMask/snaps-skunkworks.git/pull/3053))
-- feat: Implement `MultichainRouter` and `onProtocolRequest` (SIP-26) ([#2875](https://github.com/MetaMask/snaps-skunkworks.git/pull/2875))
-- feat: Add `URLSearchParams` as a default endowment ([#3047](https://github.com/MetaMask/snaps-skunkworks.git/pull/3047))
-- feat: Add `Intl` as a default endowment ([#3035](https://github.com/MetaMask/snaps-skunkworks.git/pull/3035))
-- feat: Implement SIP-29 permission and handlers ([#3028](https://github.com/MetaMask/snaps-skunkworks.git/pull/3028))
+- Add additional properties to `snap_getPreferences` ([#3093](https://github.com/MetaMask/snaps/pull/3093))
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3092](https://github.com/MetaMask/snaps/pull/3092), [#3084](https://github.com/MetaMask/snaps/pull/3084), [#3083](https://github.com/MetaMask/snaps/pull/3083), [#3082](https://github.com/MetaMask/snaps/pull/3082), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
+### Fixed
+
+- Improve unintentionally narrow type for `onKeyringRequest` helper ([#3109](https://github.com/MetaMask/snaps/pull/3109))
 
 ## [2.1.0]
 
@@ -119,17 +112,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.2.0...HEAD
-[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.1.0...@metamask/snaps-simulation@2.2.0
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
-[1.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.4.1...@metamask/snaps-simulation@1.5.0
-[1.4.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.4.0...@metamask/snaps-simulation@1.4.1
-[1.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.3.1...@metamask/snaps-simulation@1.4.0
-[1.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.3.0...@metamask/snaps-simulation@1.3.1
-[1.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.2.0...@metamask/snaps-simulation@1.3.0
-[1.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.1.1...@metamask/snaps-simulation@1.2.0
-[1.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.1.0...@metamask/snaps-simulation@1.1.1
-[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.0.1...@metamask/snaps-simulation@1.1.0
-[1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@1.0.0...@metamask/snaps-simulation@1.0.1
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-simulation@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.2.0...HEAD
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.1.0...@metamask/snaps-simulation@2.2.0
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
+[1.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.1...@metamask/snaps-simulation@1.5.0
+[1.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.4.0...@metamask/snaps-simulation@1.4.1
+[1.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.3.1...@metamask/snaps-simulation@1.4.0
+[1.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.3.0...@metamask/snaps-simulation@1.3.1
+[1.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.2.0...@metamask/snaps-simulation@1.3.0
+[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.1.1...@metamask/snaps-simulation@1.2.0
+[1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.1.0...@metamask/snaps-simulation@1.1.1
+[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.0.1...@metamask/snaps-simulation@1.1.0
+[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.0.0...@metamask/snaps-simulation@1.0.1
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-simulation@1.0.0
