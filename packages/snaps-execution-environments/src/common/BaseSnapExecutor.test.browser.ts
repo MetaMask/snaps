@@ -2261,7 +2261,7 @@ describe('BaseSnapExecutor', () => {
       params: [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, {}],
     });
 
-    expect(consoleSpy.calls[0]?.args[0]).toStrictEqual(
+    expect(consoleSpy.calls[0]?.args[0]).toBe(
       'Command stream received a non-JSON-RPC request, and was unable to respond.',
     );
   });
