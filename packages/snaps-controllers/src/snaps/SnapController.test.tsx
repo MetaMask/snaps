@@ -1841,6 +1841,7 @@ describe('SnapController', () => {
   });
 
   // This isn't stable in CI unfortunately
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('throws if the Snap is terminated while executing', async () => {
     const { manifest, sourceCode, svgIcon } =
       await getMockSnapFilesWithUpdatedChecksum({

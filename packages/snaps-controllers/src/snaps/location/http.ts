@@ -17,7 +17,7 @@ export type HttpOptions = {
    */
   fetch?: typeof fetch;
   fetchOptions?: RequestInit;
-}
+};
 
 export class HttpLocation implements SnapLocation {
   private readonly cache = new Map<string, VirtualFile>();
