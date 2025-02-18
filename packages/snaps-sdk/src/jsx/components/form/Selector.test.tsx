@@ -64,6 +64,7 @@ describe('Selector', () => {
         <SelectorOption value="foo">
           <Card title="Foo" value="$1" />
         </SelectorOption>
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && (
           <SelectorOption value="bar">
             <Card title="Bar" value="$1" />
