@@ -11,9 +11,7 @@ import { browserify, getFunctionLoader } from './loaders';
 import type { ProcessedWebpackConfig } from '../config';
 
 export const BROWSERSLIST_FILE = resolve(
-  dirname(
-    require.resolve('@metamask/snaps-cli/package.json'),
-  ),
+  dirname(require.resolve('@metamask/snaps-cli/package.json')),
   '.browserslistrc',
 );
 
