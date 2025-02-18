@@ -49,6 +49,7 @@ describe('WebViewExecutionService', () => {
     });
 
     expect(service).toBeDefined();
+    await service.terminateAllSnaps();
   });
 
   it('can execute snaps', async () => {
@@ -117,5 +118,7 @@ describe('WebViewExecutionService', () => {
         endowments: [],
       }),
     ).toBe('OK');
+
+    await service.terminateAllSnaps();
   });
 });
