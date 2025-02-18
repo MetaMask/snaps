@@ -4932,7 +4932,6 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^4.1.0"
     "@metamask/snaps-cli": "workspace:^"
-    "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/utils": "npm:^11.2.0"
