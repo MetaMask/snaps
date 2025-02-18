@@ -63,6 +63,9 @@ export class WebViewMessageStream extends BasePostMessageStream {
     this.#webView.injectJavaScript(`window.postMessage([${bytes.toString()}])`);
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _onMessage(event: PostMessageEvent): void {
     if (typeof event.data !== 'string') {
       return;
