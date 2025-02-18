@@ -248,7 +248,7 @@ export type SnapsBuiltInResolverOptions = {
  */
 type ResolvePlugin = {
   apply: (resolver: Resolver) => void;
-}
+};
 
 /**
  * A plugin that logs a message when a built-in module is not resolved. The

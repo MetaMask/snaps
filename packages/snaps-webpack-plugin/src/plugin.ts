@@ -128,7 +128,10 @@ export default class SnapsWebpackPlugin {
 
       const filePath = pathUtils.join(outputPath, file.name);
 
-      assert(compiler.outputFileSystem, 'Expected compiler to have an output file system.');
+      assert(
+        compiler.outputFileSystem,
+        'Expected compiler to have an output file system.',
+      );
       const bundleFile = await promisify(
         compiler.outputFileSystem.readFile.bind(compiler.outputFileSystem),
       )(filePath);
@@ -149,7 +152,10 @@ export default class SnapsWebpackPlugin {
             updateAndWriteManifest: this.options.writeManifest,
             sourceCode: bundleContent,
             writeFileFn: async (path, data) => {
-              assert(compiler.outputFileSystem, 'Expected compiler to have an output file system.');
+              assert(
+                compiler.outputFileSystem,
+                'Expected compiler to have an output file system.',
+              );
               return writeManifest(
                 path,
                 data,

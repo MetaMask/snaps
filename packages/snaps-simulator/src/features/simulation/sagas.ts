@@ -281,9 +281,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
  */
 export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
   const snapId: string = yield select(getSnapId);
-  const executionService: IframeExecutionService = yield select(
-    getExecutionService,
-  );
+  const executionService: IframeExecutionService =
+    yield select(getExecutionService);
   const permissionController: GenericPermissionController = yield select(
     getPermissionController,
   );
@@ -321,9 +320,8 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   yield put({ type: `${payload.handler}/setRequest`, payload });
 
   const snapId: string = yield select(getSnapId);
-  const executionService: IframeExecutionService = yield select(
-    getExecutionService,
-  );
+  const executionService: IframeExecutionService =
+    yield select(getExecutionService);
 
   try {
     const result: unknown = yield call(
