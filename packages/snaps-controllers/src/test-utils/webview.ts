@@ -17,7 +17,7 @@ export function parseInjectedJS(js: string) {
 /**
  * Takes no param and return mocks necessary for testing WebViewMessageStream.
  *
- * @returns The mockWebView, mockGetWebView, and mockStream.
+ * @returns The mockWebView, and mockStream.
  */
 export function createWebViewObjects() {
   const registerMessageListenerA = jest.fn();
@@ -45,26 +45,21 @@ export function createWebViewObjects() {
     }),
   };
 
-  const mockGetWebViewA = jest.fn().mockResolvedValue(mockWebViewA);
-  const mockGetWebViewB = jest.fn().mockResolvedValue(mockWebViewB);
-
   const streamA = new WebViewMessageStream({
     name: 'a',
     target: 'b',
-    getWebView: mockGetWebViewA,
+    webView: mockWebViewA,
   });
 
   const streamB = new WebViewMessageStream({
     name: 'b',
     target: 'a',
-    getWebView: mockGetWebViewB,
+    webView: mockWebViewB,
   });
 
   return {
     mockWebViewA,
     mockWebViewB,
-    mockGetWebViewA,
-    mockGetWebViewB,
     streamA,
     streamB,
   };

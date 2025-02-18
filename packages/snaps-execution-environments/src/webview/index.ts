@@ -1,6 +1,6 @@
 import { executeLockdownEvents } from '../common/lockdown/lockdown-events';
 import { executeLockdownMore } from '../common/lockdown/lockdown-more';
-import { ProxySnapExecutor } from '../proxy/ProxySnapExecutor';
+import { IFrameSnapExecutor } from '../iframe/IFrameSnapExecutor';
 import { WebViewExecutorStream } from './WebViewExecutorStream';
 
 // Lockdown is already applied in LavaMoat
@@ -13,4 +13,4 @@ const parentStream = new WebViewExecutorStream({
   targetWindow: window.ReactNativeWebView,
 });
 
-ProxySnapExecutor.initialize(parentStream);
+IFrameSnapExecutor.initialize(parentStream);
