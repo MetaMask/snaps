@@ -34,7 +34,6 @@ export type SnapsRegistry = {
    *
    * @param snapId - The ID of the snap we are trying to resolve a version for.
    * @param versionRange - The version range.
-   * @param refetch - An optional flag used to determine if we are refetching the registry.
    * @returns An allowlisted version within the specified version range.
    * @throws If an allowlisted version does not exist within the version range.
    */
