@@ -30,7 +30,7 @@
     "lint:dependencies": "depcheck",
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --parallel --verbose --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",

@@ -74,8 +74,7 @@ export async function getDefaultConfiguration(
 ): Promise<Configuration> {
   const spinnerText = options.spinner?.text;
   const builtInResolver =
-    config.stats.builtIns &&
-    new SnapsBuiltInResolver(config.stats.builtIns, options.spinner);
+    config.stats.builtIns && new SnapsBuiltInResolver(config.stats.builtIns);
 
   return {
     /**

@@ -5,7 +5,7 @@ import {
   isFile,
 } from '@metamask/snaps-utils/node';
 import { createModuleLogger } from '@metamask/utils';
-import express from 'express';
+import express, { static as expressStatic } from 'express';
 import { promises as fs } from 'fs';
 import type { Server } from 'http';
 import { createServer } from 'http';
@@ -77,7 +77,7 @@ export async function startServer(options: ServerOptions) {
     next();
   });
 
-  app.use(express.static(pathResolve(process.cwd(), options.root)));
+  app.use(expressStatic(pathResolve(process.cwd(), options.root)));
 
   const server = createServer(app);
   return await new Promise<Server>((resolve, reject) => {

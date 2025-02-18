@@ -5,7 +5,7 @@ import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import { promisify } from 'util';
 import type { Configuration, StatsCompilation } from 'webpack';
-import webpack from 'webpack';
+import { webpack } from 'webpack';
 
 export type CompileOptions = {
   code?: string;

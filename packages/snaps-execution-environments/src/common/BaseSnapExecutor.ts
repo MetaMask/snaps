@@ -222,6 +222,9 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line promise/no-promise-in-callback
     this.#notify({
       method: 'UnhandledError',
       params: {
@@ -631,7 +634,7 @@ export class BaseSnapExecutor {
 
     let stop: () => void;
     const stopPromise = new Promise<never>(
-      (_, reject) =>
+      (_resolve, reject) =>
         (stop = () =>
           reject(
             // TODO(rekmarks): Specify / standardize error code for this case.

@@ -29,7 +29,7 @@
     "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe",
-    "lint:misc": "prettier --no-error-on-unmatched-pattern --loglevel warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "prepare-preview-builds": "./scripts/prepare-preview-builds.sh",
     "publish-previews": "yarn workspaces foreach --all --parallel --verbose run publish:preview",

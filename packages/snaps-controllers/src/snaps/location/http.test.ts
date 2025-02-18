@@ -151,6 +151,7 @@ describe('HttpLocation', () => {
 
     expect(
       // @ts-expect-error Accessing via prototype
+      // eslint-disable-next-line no-proto
       manifestFile.result.initialPermissions.__proto__.foo,
     ).toBeUndefined();
   });
