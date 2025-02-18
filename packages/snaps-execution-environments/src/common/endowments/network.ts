@@ -1,7 +1,7 @@
 import { assert } from '@metamask/utils';
 
-import { withTeardown } from '../utils';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
+import { withTeardown } from '../utils';
 
 /**
  * This class wraps a Response object.

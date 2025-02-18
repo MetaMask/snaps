@@ -36,7 +36,6 @@ import {
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
-import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';
 import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
@@ -56,6 +55,7 @@ import {
   SnapRpcRequestArgumentsStruct,
   TerminateRequestArgumentsStruct,
 } from './validation';
+import { log } from '../logging';
 
 type EvaluationData = {
   stop: () => void;

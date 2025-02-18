@@ -1,12 +1,12 @@
 import { assert } from '@metamask/superstruct';
 
-import { Text } from '../jsx';
-import { text } from '../ui';
 import {
   ComponentOrElementStruct,
   FormStateStruct,
   InterfaceStateStruct,
 } from './interface';
+import { Text } from '../jsx';
+import { text } from '../ui';
 
 describe('FormStateStruct', () => {
   it('passes for a valid form state', () => {

@@ -1,6 +1,5 @@
 import type { FunctionComponent } from 'react';
 
-import { Snap } from '../../../components';
 import {
   CancelBackgroundEvent,
   ScheduleBackgroundEvent,
@@ -11,6 +10,7 @@ import {
   CRONJOBS_SNAP_PORT,
   CRONJOBS_VERSION,
 } from './constants';
+import { Snap } from '../../../components';
 
 export const Cronjobs: FunctionComponent = () => {
   return (

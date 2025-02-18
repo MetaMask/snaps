@@ -1,6 +1,6 @@
+import { TransactionPrefill } from './TransactionPrefill';
 import { render } from '../../../../utils';
 import { TRANSACTION_PRESETS } from '../presets';
-import { TransactionPrefill } from './TransactionPrefill';
 
 describe('TransactionPrefill', () => {
   it('renders', () => {

@@ -1,6 +1,7 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { getTruncatedSnap } from '@metamask/snaps-utils/test-utils';
 
+import { MultichainRouter } from './MultichainRouter';
 import {
   getRootMultichainRouterMessenger,
   getRestrictedMultichainRouterMessenger,
@@ -13,7 +14,6 @@ import {
   MOCK_BTC_ACCOUNTS,
   getMockWithSnapKeyring,
 } from '../test-utils';
-import { MultichainRouter } from './MultichainRouter';
 
 describe('MultichainRouter', () => {
   describe('handleRequest', () => {

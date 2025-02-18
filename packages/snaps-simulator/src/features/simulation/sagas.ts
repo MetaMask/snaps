@@ -45,10 +45,6 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 
-import { runSaga } from '../../store/middleware';
-import { getSnapId, getSrp, setSnapId } from '../configuration';
-import { addError } from '../console';
-import { ManifestStatus, setValid } from '../manifest';
 import { JSON_RPC_ENDPOINT } from './constants';
 import {
   createInterface,
@@ -83,6 +79,10 @@ import {
   getEndowments,
   unrestrictedMethods,
 } from './snap-permissions';
+import { runSaga } from '../../store/middleware';
+import { getSnapId, getSrp, setSnapId } from '../configuration';
+import { addError } from '../console';
+import { ManifestStatus, setValid } from '../manifest';
 
 const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/iframe/${packageJson.version}/index.html`;
 

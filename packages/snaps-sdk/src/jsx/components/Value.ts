@@ -1,5 +1,5 @@
-import { createSnapComponent } from '../component';
 import type { TextElement } from './Text';
+import { createSnapComponent } from '../component';
 
 /**
  * The props of the {@link Value} component.

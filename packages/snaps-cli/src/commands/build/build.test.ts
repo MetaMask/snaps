@@ -3,10 +3,10 @@ import fs from 'fs';
 import type { Compiler } from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
-import { getMockConfig } from '../../test-utils';
-import { evaluate } from '../eval';
 import { buildHandler } from './build';
 import { build } from './implementation';
+import { getMockConfig } from '../../test-utils';
+import { evaluate } from '../eval';
 
 jest.mock('fs');
 jest.mock('../eval');
