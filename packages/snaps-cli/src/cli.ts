@@ -1,5 +1,5 @@
 import type { SemVer } from 'semver';
-import semver from 'semver';
+import { minVersion, satisfies } from 'semver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
@@ -18,9 +18,9 @@ export function checkNodeVersion(
   nodeVersion: string = process.version.slice(1),
 ) {
   const versionRange = packageJson.engines.node;
-  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
+  const minimumVersion = (minVersion(versionRange) as SemVer).format();
 
-  if (!semver.satisfies(nodeVersion, versionRange)) {
+  if (!satisfies(nodeVersion, versionRange)) {
     error(
       `Node version ${nodeVersion} is not supported. Please use Node ${minimumVersion} or later.`,
     );

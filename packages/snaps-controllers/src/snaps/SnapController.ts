@@ -129,7 +129,7 @@ import { createMachine, interpret } from '@xstate/fsm';
 import { Mutex } from 'async-mutex';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import semver from 'semver';
+import { gt } from 'semver';
 
 import {
   ALLOWED_PERMISSIONS,
@@ -161,11 +161,11 @@ import type {
   TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
-import {
-  type ExportableKeyEncryptor,
-  type KeyDerivationOptions,
+import type {
+  EncryptionResult,
+  ExportableKeyEncryptor,
+  KeyDerivationOptions,
 } from '../types';
-import type { EncryptionResult } from '../types';
 import {
   fetchSnap,
   hasTimedOut,
@@ -3257,7 +3257,7 @@ export class SnapController extends BaseController<
       return;
     }
 
-    if (semver.gt(platformVersion, getPlatformVersion())) {
+    if (gt(platformVersion, getPlatformVersion())) {
       const message = `The Snap "${snapId}" requires platform version "${platformVersion}" which is greater than the current platform version "${getPlatformVersion()}".`;
 
       if (this.#featureFlags.rejectInvalidPlatformVersion) {
