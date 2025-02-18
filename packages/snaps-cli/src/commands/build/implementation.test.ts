@@ -6,7 +6,7 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import { SemVerVersion } from '@metamask/utils';
+import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
 import { dirname, resolve } from 'path';
 import type { Configuration } from 'webpack';

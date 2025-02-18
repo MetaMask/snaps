@@ -21,7 +21,7 @@ export async function prepareWorkingDirectory(
     if (!isCurrentDirectory) {
       try {
         await fs.mkdir(directory, { recursive: true });
-      } catch (error) {
+      } catch {
         throw new Error('Init Error: Failed to create new directory.');
       }
     }

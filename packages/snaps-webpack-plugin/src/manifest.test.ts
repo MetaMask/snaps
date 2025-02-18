@@ -1,6 +1,5 @@
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
-import { resolve } from 'path';
 
 import { writeManifest } from './manifest';
 

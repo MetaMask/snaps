@@ -68,7 +68,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
   state = null;
 
-  #snapRpcHooks: Map<string, SnapRpcHook>;
+  readonly #snapRpcHooks: Map<string, SnapRpcHook>;
 
   // Cannot be hash private yet because of tests.
   protected jobs: Map<string, Job<WorkerType>>;
@@ -76,19 +76,19 @@ export abstract class AbstractExecutionService<WorkerType>
   // Cannot be hash private yet because of tests.
   private readonly setupSnapProvider: SetupSnapProvider;
 
-  #snapToJobMap: Map<string, string>;
+  readonly #snapToJobMap: Map<string, string>;
 
-  #jobToSnapMap: Map<string, string>;
+  readonly #jobToSnapMap: Map<string, string>;
 
-  #messenger: ExecutionServiceMessenger;
+  readonly #messenger: ExecutionServiceMessenger;
 
-  #initTimeout: number;
+  readonly #initTimeout: number;
 
-  #pingTimeout: number;
+  readonly #pingTimeout: number;
 
-  #terminationTimeout: number;
+  readonly #terminationTimeout: number;
 
-  #usePing: boolean;
+  readonly #usePing: boolean;
 
   constructor({
     setupSnapProvider,

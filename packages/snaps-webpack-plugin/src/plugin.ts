@@ -140,7 +140,7 @@ export default class SnapsWebpackPlugin {
       const bundleContent = bundleFile.toString();
 
       if (this.options.eval) {
-        await useTemporaryFile('snaps-bundle.js', bundleContent, (path) =>
+        await useTemporaryFile('snaps-bundle.js', bundleContent, async (path) =>
           evalBundle(path),
         );
       }

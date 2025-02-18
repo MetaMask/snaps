@@ -1,2 +1,2 @@
-export * from './controllers';
-export * from './encryptor';
+export type * from './controllers';
+export type * from './encryptor';

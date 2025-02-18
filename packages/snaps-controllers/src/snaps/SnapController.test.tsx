@@ -4569,7 +4569,7 @@ describe('SnapController', () => {
       // we need an rpc message handler function to be returned
       jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method, ..._args: unknown[]) => {
+        .mockImplementation(async (method, ..._args: unknown[]) => {
           if (method === 'ExecutionService:executeSnap') {
             return deferredExecutePromise;
           } else if (method === 'ExecutionService:handleRpcRequest') {
@@ -9850,6 +9850,9 @@ describe('SnapController', () => {
         throw errorValue;
       });
 
+      // TODO: Either fix this lint violation or explain why it's necessary to
+      //  ignore.
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
       await promise;
@@ -9972,6 +9975,9 @@ describe('SnapController', () => {
         }),
       );
 
+      // TODO: Either fix this lint violation or explain why it's necessary to
+      //  ignore.
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = await messenger.call(
         'SnapController:getPermitted',
         mockSnap.origin,

@@ -152,6 +152,20 @@ const config = createConfig([
           modifiers: ['requiresQuotes'],
         },
       ],
+
+      // Allow `Promise.reject` to be called with any value.
+      // TODO: Upstream this change to `@metamask/eslint-config-typescript`.
+      '@typescript-eslint/prefer-promise-reject-errors': 'off',
+
+      // Copied from `@metamask/eslint-config-typescript`, but modified to
+      // consider `default` as exhaustive in switch statements.
+      // TODO: Upstream this change to `@metamask/eslint-config-typescript`.
+      '@typescript-eslint/switch-exhaustiveness-check': [
+        'error',
+        {
+          considerDefaultExhaustiveForUnions: true,
+        },
+      ],
     },
   },
 

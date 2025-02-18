@@ -13,6 +13,9 @@ import type { IPromisesAPI } from 'memfs/lib/promises';
 import * as os from 'os';
 import * as pathUtils from 'path';
 import type { Stats, Configuration } from 'webpack';
+// TODO: Either fix this lint violation or explain why it's necessary to
+//  ignore.
+// eslint-disable-next-line import-x/no-named-as-default
 import webpack from 'webpack';
 
 import { writeManifest } from './manifest';

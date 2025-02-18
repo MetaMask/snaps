@@ -883,8 +883,7 @@ export const getRestrictedMultichainRouterMessenger = (
 ) => {
   const controllerMessenger = messenger.getRestricted<
     'MultichainRouter',
-    MultichainRouterAllowedActions['type'],
-    never
+    MultichainRouterAllowedActions['type']
   >({
     name: 'MultichainRouter',
     allowedEvents: [],

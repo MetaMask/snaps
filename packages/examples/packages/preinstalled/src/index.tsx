@@ -108,6 +108,9 @@ export const onUserInput: OnUserInputHandler = async ({
         method: 'snap_resolveInterface',
         params: {
           id,
+          // TODO: Either fix this lint violation or explain why it's necessary
+          //  to ignore.
+          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           value: String(context?.value),
         },
       });
@@ -116,6 +119,9 @@ export const onUserInput: OnUserInputHandler = async ({
 
   if (event.type === UserInputEventType.FormSubmitEvent) {
     if (event.name === 'form') {
+      // TODO: Either fix this lint violation or explain why it's necessary
+      //  to ignore.
+      // eslint-disable-next-line @typescript-eslint/no-base-to-string
       const value = String(event.value['custom-input']);
       await snap.request({
         method: 'snap_updateInterface',

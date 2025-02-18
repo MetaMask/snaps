@@ -122,7 +122,7 @@ export function createEndowments({
 
   const teardown = async () => {
     await Promise.all(
-      result.teardowns.map((teardownFunction) => teardownFunction()),
+      result.teardowns.map(async (teardownFunction) => teardownFunction()),
     );
   };
   return { endowments: result.allEndowments, teardown };
