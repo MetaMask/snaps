@@ -1,5 +1,6 @@
 import { Box } from '../Box';
 import { Text } from '../Text';
+import { AddressInput } from './AddressInput';
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
 import { Field } from './Field';
@@ -317,6 +318,30 @@ describe('Field', () => {
                 },
               },
             ],
+          },
+        },
+      },
+    });
+  });
+
+  it('renders a field element with an address input', () => {
+    const result = (
+      <Field label="Label">
+        <AddressInput name="address" chainId="eip155:1" />
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Label',
+        children: {
+          type: 'AddressInput',
+          key: null,
+          props: {
+            name: 'address',
+            chainId: 'eip155:1',
           },
         },
       },

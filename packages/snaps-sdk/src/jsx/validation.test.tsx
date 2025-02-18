@@ -35,6 +35,7 @@ import {
   Avatar,
   Banner,
   Skeleton,
+  AddressInput,
 } from './components';
 import {
   AddressStruct,
@@ -74,6 +75,7 @@ import {
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  AddressInputStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -207,6 +209,36 @@ describe('ButtonStruct', () => {
   });
 });
 
+describe('AddressInputStruct', () => {
+  it.each([
+    <AddressInput name="address" chainId="eip155:1" />,
+    <AddressInput
+      name="address"
+      chainId="eip155:1"
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
+  ])('validates an address input element', (value) => {
+    expect(is(value, AddressInputStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AddressInput />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput name="foo" chainId="foo" />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput chainId="eip155:1" />,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, AddressInputStruct)).toBe(false);
+  });
+});
+
 describe('InputStruct', () => {
   it.each([
     <Input name="foo" type="text" />,
@@ -311,6 +343,9 @@ describe('FieldStruct', () => {
           <Card title="bar" value="$1" />
         </SelectorOption>
       </Selector>
+    </Field>,
+    <Field label="foo">
+      <AddressInput name="address" chainId="eip155:1" />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
