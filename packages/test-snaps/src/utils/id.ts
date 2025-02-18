@@ -25,6 +25,7 @@ export function getSnapId(
     return localId;
   }
 
+  // eslint-disable-next-line no-restricted-globals
   const isProduction = process.env.NODE_ENV === 'production';
   return isProduction ? snapId : localId;
 }

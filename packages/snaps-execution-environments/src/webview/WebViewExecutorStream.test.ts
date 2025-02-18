@@ -18,6 +18,7 @@ describe('WebViewExecutorStream', () => {
       removeEventListener: jest.fn(),
     };
 
+    // eslint-disable-next-line no-restricted-globals
     global.window = mockWindow as any;
   });
 
