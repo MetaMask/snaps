@@ -22,6 +22,7 @@ describe('onRpcRequest', () => {
 
   describe('fetch', () => {
     // This test is disabled as it is flaky.
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('fetches a URL and returns the JSON response', async () => {
       const { request } = await installSnap();
 

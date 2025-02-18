@@ -128,6 +128,7 @@ describe('WebWorkerSnapExecutor', () => {
   });
 
   // TODO: Re-enable this test after investigating error handling further.
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('handles closing the stream', async () => {
     const mockStream = new MockWindowPostMessageStream();
 
@@ -141,12 +142,13 @@ describe('WebWorkerSnapExecutor', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 1));
 
-    expect(closeSpy.calls.length).toBe(1);
+    expect(closeSpy.calls).toHaveLength(1);
 
     closeSpy.reset();
   });
 
   // TODO: Re-enable this test after investigating error handling further.
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('handles stream errors', async () => {
     const mockStream = new MockWindowPostMessageStream();
 
@@ -158,8 +160,8 @@ describe('WebWorkerSnapExecutor', () => {
     WebWorkerSnapExecutor.initialize(mockStream);
     mockStream.emit('error', new Error('test error'));
 
-    expect(closeSpy.calls.length).toBe(1);
-    expect(consoleSpy.calls.length).toBe(3);
+    expect(closeSpy.calls).toHaveLength(1);
+    expect(consoleSpy.calls).toHaveLength(3);
     expect(consoleSpy.calls[0].args[0]).toBe(
       'Parent stream failure, closing worker.',
     );
