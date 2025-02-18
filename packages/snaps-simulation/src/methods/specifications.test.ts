@@ -4,15 +4,15 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
-import { getControllers, registerSnap } from '../controllers';
-import type { RestrictedMiddlewareHooks } from '../simulation';
-import { getMockOptions } from '../test-utils/options';
 import {
   asyncResolve,
   getEndowments,
   getPermissionSpecifications,
   resolve,
 } from './specifications';
+import { getControllers, registerSnap } from '../controllers';
+import type { RestrictedMiddlewareHooks } from '../simulation';
+import { getMockOptions } from '../test-utils/options';
 
 const MOCK_HOOKS: RestrictedMiddlewareHooks = {
   getMnemonic: jest.fn(),

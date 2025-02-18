@@ -3,10 +3,10 @@ import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
-import type { NotifyFunction } from '../BaseSnapExecutor';
-import { rootRealmGlobal } from '../globalObject';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import buildCommonEndowments from './commonEndowmentFactory';
+import type { NotifyFunction } from '../BaseSnapExecutor';
+import { rootRealmGlobal } from '../globalObject';
 
 type EndowmentFactoryResult = {
   /**

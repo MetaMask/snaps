@@ -1,8 +1,8 @@
 import type { WriteFileFunction } from '@metamask/snaps-utils/node';
 import { promises as fs } from 'fs';
-import { format } from 'prettier/standalone';
 import * as babel from 'prettier/plugins/babel';
 import * as estree from 'prettier/plugins/estree';
+import { format } from 'prettier/standalone';
 
 /**
  * Format the manifest data with Prettier and write it to disk.

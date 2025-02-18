@@ -8,12 +8,12 @@ import {
 } from '@metamask/superstruct';
 import { JsonStruct, hasProperty, isObject } from '@metamask/utils';
 
+import { FileStruct } from './handlers';
 import { selectiveUnion } from '../internals';
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
 import type { Component } from '../ui';
 import { ComponentStruct } from '../ui';
-import { FileStruct } from './handlers';
 
 /**
  * To avoid typing problems with the interface state when manipulating it we

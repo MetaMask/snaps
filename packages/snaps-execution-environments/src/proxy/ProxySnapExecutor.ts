@@ -1,9 +1,10 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import packageJson from '@metamask/snaps-execution-environments/package.json';
 import { createWindow, logError } from '@metamask/snaps-utils';
 import type { JsonRpcRequest } from '@metamask/utils';
 import { assert } from '@metamask/utils';
+
+import packageJson from '@metamask/snaps-execution-environments/package.json';
 
 type ExecutorJob = {
   id: string;

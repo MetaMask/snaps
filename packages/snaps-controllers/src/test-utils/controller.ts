@@ -35,6 +35,9 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
+import { MOCK_CRONJOB_PERMISSION } from './cronjob';
+import { getNodeEES, getNodeEESMessenger } from './execution-environment';
+import { MockSnapsRegistry } from './registry';
 import type {
   CronjobControllerActions,
   CronjobControllerEvents,
@@ -66,9 +69,6 @@ import type {
   SnapsRegistryEvents,
 } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
-import { MOCK_CRONJOB_PERMISSION } from './cronjob';
-import { getNodeEES, getNodeEESMessenger } from './execution-environment';
-import { MockSnapsRegistry } from './registry';
 
 const asyncNoOp = async () => Promise.resolve();
 

@@ -1,5 +1,3 @@
-import { Box } from '../Box';
-import { Text } from '../Text';
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
 import { Field } from './Field';
@@ -7,6 +5,8 @@ import { Input } from './Input';
 import { Option } from './Option';
 import { Radio } from './Radio';
 import { RadioGroup } from './RadioGroup';
+import { Box } from '../Box';
+import { Text } from '../Text';
 
 describe('Field', () => {
   it('renders a field element', () => {

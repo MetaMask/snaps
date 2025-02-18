@@ -22,15 +22,15 @@ import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
-import { log } from '../logging';
-import { Timer } from '../snaps/Timer';
-import { hasTimedOut, withTimeout } from '../utils';
 import type {
   ExecutionService,
   ExecutionServiceMessenger,
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';
+import { log } from '../logging';
+import { Timer } from '../snaps/Timer';
+import { hasTimedOut, withTimeout } from '../utils';
 
 const controllerName = 'ExecutionService';
 

@@ -1,9 +1,9 @@
-import type { SnapsChildren } from '../component';
-import { createSnapComponent } from '../component';
 import type { StandardFormattingElement } from './formatting';
 import type { IconElement } from './Icon';
 import type { LinkElement } from './Link';
 import type { SkeletonElement } from './Skeleton';
+import { createSnapComponent } from '../component';
+import type { SnapsChildren } from '../component';
 
 /**
  * The children of the {@link Text} component.

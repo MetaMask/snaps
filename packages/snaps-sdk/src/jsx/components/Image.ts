@@ -1,5 +1,5 @@
-import { createSnapComponent } from '../component';
 import type { BorderRadius } from './utils';
+import { createSnapComponent } from '../component';
 
 /**
  * The props of the {@link Image} component.

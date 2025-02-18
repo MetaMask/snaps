@@ -131,29 +131,6 @@ import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
 import semver from 'semver';
 
-import { forceStrict, validateMachine } from '../fsm';
-import type { CreateInterface, GetInterface } from '../interface';
-import { log } from '../logging';
-import type {
-  ExecuteSnapAction,
-  ExecutionServiceEvents,
-  HandleRpcRequestAction,
-  SnapErrorJson,
-  TerminateAllSnapsAction,
-  TerminateSnapAction,
-} from '../services';
-import type { EncryptionResult } from '../types';
-import {
-  type ExportableKeyEncryptor,
-  type KeyDerivationOptions,
-} from '../types';
-import {
-  fetchSnap,
-  hasTimedOut,
-  permissionsDiff,
-  setDiff,
-  withTimeout,
-} from '../utils';
 import {
   ALLOWED_PERMISSIONS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
@@ -173,6 +150,29 @@ import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
+import { forceStrict, validateMachine } from '../fsm';
+import type { CreateInterface, GetInterface } from '../interface';
+import { log } from '../logging';
+import type {
+  ExecuteSnapAction,
+  ExecutionServiceEvents,
+  HandleRpcRequestAction,
+  SnapErrorJson,
+  TerminateAllSnapsAction,
+  TerminateSnapAction,
+} from '../services';
+import {
+  type ExportableKeyEncryptor,
+  type KeyDerivationOptions,
+} from '../types';
+import type { EncryptionResult } from '../types';
+import {
+  fetchSnap,
+  hasTimedOut,
+  permissionsDiff,
+  setDiff,
+  withTimeout,
+} from '../utils';
 
 export const controllerName = 'SnapController';
 

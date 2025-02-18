@@ -1,6 +1,5 @@
 import { assert } from '@metamask/utils';
 
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 import type {
   ValidatorContext,
   ValidatorFix,
@@ -9,6 +8,7 @@ import type {
   ValidatorSeverity,
 } from './validator-types';
 import * as defaultValidators from './validators';
+import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 
 export type ValidatorResults = {
   files?: SnapFiles;

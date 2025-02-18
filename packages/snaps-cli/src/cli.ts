@@ -1,4 +1,3 @@
-import packageJson from '@metamask/snaps-cli/package.json';
 import type { SemVer } from 'semver';
 import semver from 'semver';
 import yargs from 'yargs';
@@ -7,6 +6,7 @@ import { hideBin } from 'yargs/helpers';
 import builders from './builders';
 import { getConfigByArgv } from './config';
 import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
+import packageJson from '@metamask/snaps-cli/package.json';
 
 /**
  * Check the Node version. If the Node version is less than the minimum required

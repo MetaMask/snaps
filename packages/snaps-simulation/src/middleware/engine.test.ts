@@ -1,6 +1,6 @@
+import { createJsonRpcEngine } from './engine';
 import { createStore } from '../store';
 import { getMockOptions } from '../test-utils';
-import { createJsonRpcEngine } from './engine';
 
 describe('createJsonRpcEngine', () => {
   it('creates a JSON-RPC engine', async () => {
