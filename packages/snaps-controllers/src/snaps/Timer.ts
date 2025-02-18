@@ -3,6 +3,9 @@ import { assert } from '@metamask/utils';
 export type TimerStatus = 'stopped' | 'paused' | 'running' | 'finished';
 
 export class Timer {
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private state:
     | { value: 'stopped'; remaining: number }
     | {
@@ -129,6 +132,9 @@ export class Timer {
     this.state = { value: 'running', callback, remaining, start, timeout };
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private onFinish(shouldCall: boolean) {
     assert(this.state.value === 'running' || this.state.value === 'paused');
 
