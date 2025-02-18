@@ -1,3 +1,4 @@
+import type { AddressInputElement } from './AddressInput';
 import type { AssetSelectorElement } from './AssetSelector';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
@@ -28,7 +29,8 @@ export type FieldProps = {
     | InputElement
     | CheckboxElement
     | SelectorElement
-    | AssetSelectorElement;
+    | AssetSelectorElement
+    | AddressInputElement;
 };
 
 const TYPE = 'Field';

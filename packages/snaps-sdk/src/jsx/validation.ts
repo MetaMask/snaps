@@ -21,8 +21,10 @@ import {
   assign,
   union,
 } from '@metamask/superstruct';
+import type { CaipChainId } from '@metamask/utils';
 import {
   CaipAccountIdStruct,
+  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -40,6 +42,7 @@ import type {
   StringElement,
 } from './component';
 import type {
+  AddressInputElement,
   AssetSelectorElement,
   AvatarElement,
   SkeletonElement,
@@ -345,6 +348,15 @@ export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
   },
 );
 
+export const AddressInputStruct: Describe<AddressInputElement> = element(
+  'AddressInput',
+  {
+    name: string(),
+    chainId: CaipChainIdStruct as unknown as Struct<CaipChainId, CaipChainId>,
+    value: optional(string()),
+  },
+);
+
 /**
  * A struct for the {@link OptionElement} type.
  */
@@ -499,6 +511,7 @@ const BOX_INPUT_BOTH = [
  */
 const FIELD_CHILDREN_ARRAY = [
   AssetSelectorStruct,
+  AddressInputStruct,
   InputStruct,
   DropdownStruct,
   RadioGroupStruct,
@@ -507,6 +520,7 @@ const FIELD_CHILDREN_ARRAY = [
   SelectorStruct,
 ] as [
   typeof AssetSelectorStruct,
+  typeof AddressInputStruct,
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
@@ -552,7 +566,8 @@ const FieldChildStruct = selectiveUnion((value) => {
   | InputElement
   | CheckboxElement
   | SelectorElement
-  | AssetSelectorElement,
+  | AssetSelectorElement
+  | AddressInputElement,
   null
 >;
 
@@ -900,6 +915,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
 export const BoxChildStruct = typedUnion([
   AddressStruct,
   AssetSelectorStruct,
+  AddressInputStruct,
   BoldStruct,
   BoxStruct,
   ButtonStruct,
@@ -964,6 +980,7 @@ export const RootJSXElementStruct = typedUnion([
  */
 export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   AssetSelectorStruct,
+  AddressInputStruct,
   ButtonStruct,
   InputStruct,
   FileInputStruct,
