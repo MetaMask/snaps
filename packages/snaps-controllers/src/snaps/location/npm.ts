@@ -422,6 +422,7 @@ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
  * @param stream - The stream to convert.
  * @returns The given stream as a Node.js Readable stream.
  */
+// eslint-disable-next-line no-restricted-globals
 function getNodeStream(stream: ReadableStream): Readable {
   if (typeof stream.getReader !== 'function') {
     return stream as unknown as Readable;

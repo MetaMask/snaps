@@ -37,6 +37,7 @@ export async function getEntropy(): Promise<SLIP10Node> {
     }
 
     // Otherwise, generate some entropy and store it in state.
+    // eslint-disable-next-line no-restricted-globals
     const entropy = crypto.getRandomValues(new Uint8Array(32));
     await snap.request({
       method: 'snap_manageState',

@@ -24,7 +24,6 @@ export function checkNodeVersion(
     error(
       `Node version ${nodeVersion} is not supported. Please use Node ${minimumVersion} or later.`,
     );
-    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }
@@ -76,7 +75,6 @@ export async function cli(argv: string[], commands: any) {
 
     .fail((message, failure) => {
       error(getYargsErrorMessage(message, failure));
-      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     })
 

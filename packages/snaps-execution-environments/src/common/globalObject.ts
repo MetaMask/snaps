@@ -23,7 +23,9 @@ if (typeof globalThis !== 'undefined') {
 } else if (typeof window !== 'undefined') {
   _rootRealmGlobal = window;
   _rootRealmGlobalName = GlobalObjectNames.window;
+  // eslint-disable-next-line no-restricted-globals
 } else if (typeof global !== 'undefined') {
+  // eslint-disable-next-line no-restricted-globals
   _rootRealmGlobal = global;
   _rootRealmGlobalName = GlobalObjectNames.global;
 } else {

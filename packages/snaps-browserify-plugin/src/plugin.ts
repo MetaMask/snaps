@@ -29,7 +29,9 @@ export type Options = PluginOptions &
  */
 async function postBundle(options: Partial<Options>, code: string) {
   if (options.eval) {
-    await useTemporaryFile('snaps-bundle.js', code, async (path) => evalBundle(path));
+    await useTemporaryFile('snaps-bundle.js', code, async (path) =>
+      evalBundle(path),
+    );
   }
 
   if (options.manifestPath) {
