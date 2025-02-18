@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Improve unintentionally narrow type for `onKeyringRequest` helper ([#3109](https://github.com/MetaMask/snaps/pull/3109))
+- Fix unintentionally narrow type for `onKeyringRequest` helper ([#3109](https://github.com/MetaMask/snaps/pull/3109))
 
 ## [8.11.0]
 

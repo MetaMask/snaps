@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING:** Use a WebView per Snap on mobile ([#3085](https://github.com/MetaMask/snaps/pull/3085))
   - The WebView bundle no longer supports proxy executor calls and functions as a single executor.
-- **BREAKING:** Encode messages in mobile as byte arrays ([#3077](https://github.com/MetaMask/snaps/pull/3077))
+- **BREAKING:** Encode messages in `WebViewMessageStream` as byte arrays ([#3077](https://github.com/MetaMask/snaps/pull/3077))
   - A version of `snaps-controllers` that supports this encoding is required.
 - Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3057](https://github.com/MetaMask/snaps/pull/3057), [#3050](https://github.com/MetaMask/snaps/pull/3050))
 
