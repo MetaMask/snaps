@@ -1,6 +1,5 @@
 import type { FunctionComponent } from 'react';
 
-import { Result, Snap } from '../../../components';
 import { ClearState, GetState, SetState } from './components';
 import {
   MANAGE_STATE_SNAP_ID,
@@ -8,6 +7,7 @@ import {
   MANAGE_STATE_VERSION,
 } from './constants';
 import { useSnapState } from './hooks';
+import { Result, Snap } from '../../../components';
 
 export const State: FunctionComponent = () => {
   const encryptedState = useSnapState('getState', true);

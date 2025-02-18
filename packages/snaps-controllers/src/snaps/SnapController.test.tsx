@@ -70,6 +70,14 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 import semver from 'semver';
 
+import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
+import { SnapsRegistryStatus } from './registry';
+import type { SnapControllerState } from './SnapController';
+import {
+  SNAP_APPROVAL_INSTALL,
+  SNAP_APPROVAL_RESULT,
+  SNAP_APPROVAL_UPDATE,
+} from './SnapController';
 import { setupMultiplex } from '../services';
 import type { NodeThreadExecutionService } from '../services/node';
 import {
@@ -103,14 +111,6 @@ import {
   waitForStateChange,
 } from '../test-utils';
 import { delay } from '../utils';
-import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
-import { SnapsRegistryStatus } from './registry';
-import type { SnapControllerState } from './SnapController';
-import {
-  SNAP_APPROVAL_INSTALL,
-  SNAP_APPROVAL_RESULT,
-  SNAP_APPROVAL_UPDATE,
-} from './SnapController';
 
 if (!('CryptoKey' in globalThis)) {
   // We can remove this once we drop Node 18

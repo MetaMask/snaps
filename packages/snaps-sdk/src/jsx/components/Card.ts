@@ -1,5 +1,5 @@
-import { createSnapComponent } from '../component';
 import type { AddressElement } from './Address';
+import { createSnapComponent } from '../component';
 
 /**
  * The props of the {@link Card} component.

@@ -2,8 +2,8 @@ import type { SemVerVersion } from '@metamask/utils';
 import assert from 'assert';
 import { createRequire } from 'module';
 
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
 import { platformVersion } from './platform-version';
+import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('platformVersion', () => {
   const require = createRequire(__filename);

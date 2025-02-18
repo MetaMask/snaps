@@ -11,8 +11,8 @@ import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { hasProperty, type Json } from '@metamask/utils';
 
-import type { MethodHooksObject } from '../utils';
 import { getValidatedParams } from './invokeSnapSugar';
+import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
   hasPermission: true,

@@ -1,4 +1,3 @@
-import cliPackageJson from '@metamask/create-snap/package.json';
 import type { NpmSnapPackageJson } from '@metamask/snaps-utils';
 import {
   NpmSnapFileNames,
@@ -11,7 +10,6 @@ import pathUtils from 'path';
 import type { SemVer } from 'semver';
 import semver from 'semver';
 
-import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
   cloneTemplate,
@@ -22,6 +20,8 @@ import {
   SNAP_LOCATION,
   yarnInstall,
 } from './initUtils';
+import type { YargsArgs } from '../../types/yargs';
+import cliPackageJson from '@metamask/create-snap/package.json';
 
 /**
  * Creates a new snap package, based on one of the provided templates. This

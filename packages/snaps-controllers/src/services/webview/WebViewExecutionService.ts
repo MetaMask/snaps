@@ -1,7 +1,7 @@
-import type { ExecutionServiceArgs } from '../AbstractExecutionService';
-import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 import type { WebViewInterface } from './WebViewMessageStream';
 import { WebViewMessageStream } from './WebViewMessageStream';
+import type { ExecutionServiceArgs } from '../AbstractExecutionService';
+import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 
 export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
   getWebView: () => Promise<WebViewInterface>;

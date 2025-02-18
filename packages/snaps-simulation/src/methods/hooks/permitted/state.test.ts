@@ -1,10 +1,10 @@
-import { createStore, getState, setState } from '../../../store';
-import { getMockOptions } from '../../../test-utils';
 import {
   getPermittedClearSnapStateMethodImplementation,
   getPermittedGetSnapStateMethodImplementation,
   getPermittedUpdateSnapStateMethodImplementation,
 } from './state';
+import { createStore, getState, setState } from '../../../store';
+import { getMockOptions } from '../../../test-utils';
 
 describe('getPermittedGetSnapStateMethodImplementation', () => {
   it('returns the implementation of the `getSnapState` hook', async () => {

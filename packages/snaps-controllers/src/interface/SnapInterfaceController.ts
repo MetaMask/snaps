@@ -26,12 +26,12 @@ import { assert, hasProperty } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
-import type { GetSnap } from '../snaps';
 import {
   constructState,
   getJsxInterface,
   validateInterfaceContext,
 } from './utils';
+import type { GetSnap } from '../snaps';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 

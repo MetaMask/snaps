@@ -1,11 +1,11 @@
 import type { FunctionComponent } from 'react';
 
-import { Snap } from '../../../components';
 import {
   PROTOCOL_SNAP_ID,
   PROTOCOL_SNAP_PORT,
   PROTOCOL_VERSION,
 } from './constants';
+import { Snap } from '../../../components';
 
 export const Protocol: FunctionComponent = () => {
   return (
