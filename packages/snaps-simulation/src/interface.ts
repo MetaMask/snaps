@@ -10,8 +10,11 @@ import type {
   File,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
-import type { FooterElement } from '@metamask/snaps-sdk/jsx';
-import { type FormElement, type JSXElement } from '@metamask/snaps-sdk/jsx';
+import type {
+  FooterElement,
+  FormElement,
+  JSXElement,
+} from '@metamask/snaps-sdk/jsx';
 import {
   HandlerType,
   getJsxChildren,

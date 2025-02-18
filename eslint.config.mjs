@@ -246,6 +246,8 @@ const config = createConfig([
       'packages/create-snap/src/**/*',
       'packages/snaps-browserify-plugin/src/**/*',
       'packages/snaps-cli/src/**/*',
+      'packages/snaps-controllers/src/services/node-js/**/*',
+      'packages/snaps-jest/src/**/*',
       'packages/snaps-rollup-plugin/src/**/*',
       'packages/snaps-simulation/src/**/*',
       'packages/snaps-utils/src/**/*',
@@ -272,6 +274,25 @@ const config = createConfig([
       '**/*.test.browser.ts',
     ],
     extends: [browser],
+  },
+
+  // Entrypoint files for legacy build tools
+  {
+    files: [
+      'packages/snaps-controllers/react-native.d.ts',
+      'packages/snaps-controllers/react-native.js',
+      'packages/snaps-sdk/jsx-dev-runtime.d.ts',
+      'packages/snaps-sdk/jsx-dev-runtime.js',
+      'packages/snaps-sdk/jsx-runtime.d.ts',
+      'packages/snaps-sdk/jsx-runtime.js',
+      'packages/snaps-sdk/jsx.d.ts',
+      'packages/snaps-sdk/jsx.js',
+    ],
+
+    rules: {
+      'import-x/extensions': 'off',
+      'import-x/no-unresolved': 'off',
+    },
   },
 ]);
 

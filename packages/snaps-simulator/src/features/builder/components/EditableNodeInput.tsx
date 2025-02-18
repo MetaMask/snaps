@@ -1,6 +1,6 @@
 import { Input as ChakraInput } from '@chakra-ui/react';
-import type { ChangeEvent } from 'react';
-import { useState, type FunctionComponent } from 'react';
+import type { ChangeEvent, FunctionComponent } from 'react';
+import { useState } from 'react';
 
 type EditableNodeInputProps = {
   placeholder: string;

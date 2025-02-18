@@ -10,8 +10,12 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
-import { hasProperty, isObject, type Json } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  Json,
+  JsonRpcRequest,
+} from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';

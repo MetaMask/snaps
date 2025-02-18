@@ -5,13 +5,13 @@ import {
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import type { PermissionConstraint } from '@metamask/permission-controller';
-import {
-  SubjectType,
-  type Caveat,
-  type SubjectPermissions,
-  type ValidPermission,
+import type {
+  PermissionConstraint,
+  Caveat,
+  SubjectPermissions,
+  ValidPermission,
 } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   WALLET_SNAP_PERMISSION_KEY,
@@ -68,7 +68,7 @@ import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
-import semver from 'semver';
+import { inc } from 'semver';
 
 import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
 import { SnapsRegistryStatus } from './registry';
@@ -6139,10 +6139,7 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the specified platform version is newer than the supported platform version', async () => {
-      const newerVersion = semver.inc(
-        getPlatformVersion(),
-        'minor',
-      ) as SemVerVersion;
+      const newerVersion = inc(getPlatformVersion(), 'minor') as SemVerVersion;
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -6174,10 +6171,7 @@ describe('SnapController', () => {
     it('logs a warning if the specified platform version is newer than the supported platform version and `rejectInvalidPlatformVersion` is disabled', async () => {
       const log = jest.spyOn(console, 'warn').mockImplementation();
 
-      const newerVersion = semver.inc(
-        getPlatformVersion(),
-        'minor',
-      ) as SemVerVersion;
+      const newerVersion = inc(getPlatformVersion(), 'minor') as SemVerVersion;
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({

@@ -8,7 +8,7 @@ import {
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import type { SemVer } from 'semver';
-import semver from 'semver';
+import { minVersion, satisfies } from 'semver';
 
 import {
   buildSnap,
@@ -37,9 +37,9 @@ export async function initHandler(argv: YargsArgs) {
   const { directory } = argv;
 
   const versionRange = cliPackageJson.engines.node;
-  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
+  const minimumVersion = (minVersion(versionRange) as SemVer).format();
 
-  const isVersionSupported = semver.satisfies(process.version, versionRange);
+  const isVersionSupported = satisfies(process.version, versionRange);
 
   if (!isVersionSupported) {
     throw new Error(

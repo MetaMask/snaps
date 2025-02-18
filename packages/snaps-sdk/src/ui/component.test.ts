@@ -1,17 +1,16 @@
 import { assertIsComponent, isComponent } from './component';
-import type { Input, Form } from './components';
-import {
-  ButtonVariant,
-  type Button,
-  type Divider,
-  type Heading,
-  type Image,
-  type Panel,
-  type Spinner,
-  type Text,
-  ButtonType,
-  InputType,
+import type {
+  Input,
+  Form,
+  Button,
+  Divider,
+  Heading,
+  Image,
+  Panel,
+  Spinner,
+  Text,
 } from './components';
+import { ButtonVariant, ButtonType, InputType } from './components';
 import { NodeType } from './nodes';
 
 describe('isComponent', () => {

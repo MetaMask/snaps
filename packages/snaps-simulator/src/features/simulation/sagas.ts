@@ -24,8 +24,11 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
-import { type Component, type ComponentOrElement } from '@metamask/snaps-sdk';
+import type {
+  Component,
+  ComponentOrElement,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
