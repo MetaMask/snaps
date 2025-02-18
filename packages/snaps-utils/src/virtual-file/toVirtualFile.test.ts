@@ -38,9 +38,7 @@ describe('toVirtualFile', () => {
         new VirtualFile({ value: CONTENTS_UTF8, path: PATH }),
       );
 
-      expect(vol.toJSON(PATH)).toStrictEqual(
-        { [PATH]: CONTENTS_UTF8 },
-      );
+      expect(vol.toJSON(PATH)).toStrictEqual({ [PATH]: CONTENTS_UTF8 });
     });
   });
 });
