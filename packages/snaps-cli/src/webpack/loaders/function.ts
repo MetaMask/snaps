@@ -18,7 +18,9 @@ export type FunctionLoaderOptions = {
  * @param content - The input file contents as a `Uint8Array`.
  * @returns The output of the function.
  */
-const loader: LoaderDefinitionFunction<FunctionLoaderOptions> = async function (
+// TODO: Either fix this lint violation or explain why it's necessary to ignore.
+// eslint-disable-next-line @typescript-eslint/promise-function-async
+const loader: LoaderDefinitionFunction<FunctionLoaderOptions> = function (
   content,
 ) {
   const { fn } = this.getOptions();
