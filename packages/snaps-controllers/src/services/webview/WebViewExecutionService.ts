@@ -8,7 +8,7 @@ export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
 };
 
 export class WebViewExecutionService extends ProxyExecutionService {
-  #getWebView;
+  readonly #getWebView;
 
   constructor({
     messenger,

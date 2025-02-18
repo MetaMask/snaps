@@ -8,7 +8,7 @@ import type { NpmOptions } from './npm';
 import { NpmLocation } from './npm';
 
 declare module '@metamask/snaps-utils' {
-  interface DataMap {
+  type DataMap = {
     /**
      * Fully qualified, canonical path for the file in {@link https://github.com/MetaMask/SIPs/blob/main/SIPS/sip-8.md SIP-8 } URI format.
      */
@@ -16,7 +16,7 @@ declare module '@metamask/snaps-utils' {
   }
 }
 
-export interface SnapLocation {
+export type SnapLocation = {
   /**
    * All files are relative to the manifest, except the manifest itself.
    */

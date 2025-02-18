@@ -20,9 +20,9 @@ export type WebViewStreamArgs = {
  * A special postMessage stream used to interface with a WebView.
  */
 export class WebViewMessageStream extends BasePostMessageStream {
-  #name;
+  readonly #name;
 
-  #target;
+  readonly #target;
 
   #webView: WebViewInterface | undefined;
 

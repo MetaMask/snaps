@@ -1,14 +1,7 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
-import type {
-  ProviderRequestParams,
-  ProviderRequestResult,
-} from '@metamask/snaps-sdk';
-import type {
-  JsonRpcFailure,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { ProviderRequestParams } from '@metamask/snaps-sdk';
+import type { JsonRpcFailure, JsonRpcRequest } from '@metamask/utils';
 
 import { providerRequestHandler } from './experimentalProviderRequest';
 
@@ -50,7 +43,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -85,7 +78,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -122,7 +115,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -165,7 +158,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -210,7 +203,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -249,7 +242,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,
@@ -291,7 +284,7 @@ describe('snap_experimentalProviderRequest', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<ProviderRequestParams>,
-          response as PendingJsonRpcResponse<ProviderRequestResult>,
+          response,
           next,
           end,
           hooks,

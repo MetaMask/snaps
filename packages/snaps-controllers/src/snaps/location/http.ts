@@ -11,7 +11,7 @@ import { assert, assertStruct } from '@metamask/utils';
 
 import type { SnapLocation } from './location';
 
-export interface HttpOptions {
+export type HttpOptions = {
   /**
    * @default fetch
    */

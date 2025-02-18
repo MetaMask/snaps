@@ -163,7 +163,7 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        let result = await this.executeInSnapContext(target, () =>
+        let result = await this.executeInSnapContext(target, async () =>
           // TODO: fix handler args type cast
           handler(args as any),
         );

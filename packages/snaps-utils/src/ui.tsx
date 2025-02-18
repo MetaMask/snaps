@@ -162,6 +162,9 @@ export function getTextChildren(
   const children: (string | StandardFormattingElement | LinkElement | null)[] =
     [];
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   walkTokens(rootTokens, (token) => {
     if (token.type === 'paragraph') {
       if (children.length > 0) {
@@ -317,6 +320,9 @@ function getMarkdownLinks(text: string) {
   const links: Tokens.Link[] = [];
 
   // Walk the lexed tokens and collect all link tokens
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   walkTokens(tokens, (token) => {
     if (token.type === 'link') {
       links.push(token as Tokens.Link);
@@ -513,7 +519,7 @@ export function walkJsx<Value>(
 ): Value | undefined {
   if (Array.isArray(node)) {
     for (const child of node) {
-      const childResult = walkJsx(child as JSXElement, callback, depth);
+      const childResult = walkJsx(child, callback, depth);
       if (childResult !== undefined) {
         return childResult;
       }

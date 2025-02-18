@@ -256,7 +256,7 @@ export function getHelpers({
     return response;
   };
 
-  const onCronjob = (request: CronjobOptions) => {
+  const onCronjob = async (request: CronjobOptions) => {
     log('Running cronjob %o.', options);
 
     return handleRequest({
@@ -289,7 +289,7 @@ export function getHelpers({
   };
 
   return {
-    request: (request) => {
+    request: async (request) => {
       log('Sending request %o.', request);
 
       return handleRequest({
@@ -308,7 +308,7 @@ export function getHelpers({
 
     onKeyringRequest,
 
-    onInstall: (request?: Pick<RequestOptions, 'origin'>) => {
+    onInstall: async (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onInstall handler.');
 
       return handleRequest({
@@ -325,7 +325,7 @@ export function getHelpers({
       });
     },
 
-    onUpdate: (request?: Pick<RequestOptions, 'origin'>) => {
+    onUpdate: async (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onUpdate handler.');
 
       return handleRequest({

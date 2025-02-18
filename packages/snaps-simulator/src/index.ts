@@ -1,2 +1,2 @@
 export * from './features/index.library';
-export * from './store/index.library';
+export type * from './store/index.library';

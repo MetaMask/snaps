@@ -199,7 +199,7 @@ export function getDevTool(
     return 'inline-source-map';
   }
 
-  if (sourceMap === true) {
+  if (sourceMap) {
     return 'source-map';
   }
 

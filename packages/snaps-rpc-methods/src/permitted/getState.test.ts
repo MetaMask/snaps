@@ -1,7 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
-import type { GetStateResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { GetStateParameters } from './getState';
 import { get, getStateHandler } from './getState';
@@ -42,7 +41,7 @@ describe('snap_getState', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetStateParameters>,
-          response as PendingJsonRpcResponse<GetStateResult>,
+          response,
           next,
           end,
           hooks,
@@ -89,7 +88,7 @@ describe('snap_getState', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetStateParameters>,
-          response as PendingJsonRpcResponse<GetStateResult>,
+          response,
           next,
           end,
           hooks,
@@ -136,7 +135,7 @@ describe('snap_getState', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetStateParameters>,
-          response as PendingJsonRpcResponse<GetStateResult>,
+          response,
           next,
           end,
           hooks,
@@ -184,7 +183,7 @@ describe('snap_getState', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetStateParameters>,
-          response as PendingJsonRpcResponse<GetStateResult>,
+          response,
           next,
           end,
           hooks,
@@ -234,7 +233,7 @@ describe('snap_getState', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequest<GetStateParameters>,
-          response as PendingJsonRpcResponse<GetStateResult>,
+          response,
           next,
           end,
           hooks,

@@ -10,11 +10,11 @@ import { withTeardown } from '../utils';
 export class ResponseWrapper implements Response {
   readonly #teardownRef: { lastTeardown: number };
 
-  #ogResponse: Response;
+  readonly #ogResponse: Response;
 
-  #onStart: () => Promise<void>;
+  readonly #onStart: () => Promise<void>;
 
-  #onFinish: () => Promise<void>;
+  readonly #onFinish: () => Promise<void>;
 
   constructor(
     ogResponse: Response,

@@ -343,6 +343,8 @@ export function assertIsOnProtocolRequestArguments(
   );
 }
 
+// TODO: Either fix this lint violation or explain why it's necessary to ignore.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OkResponseStruct = object({
   id: JsonRpcIdStruct,
   jsonrpc: JsonRpcVersionStruct,
