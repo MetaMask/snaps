@@ -3,7 +3,6 @@
  * forever if the iframe never loads, but the promise should be wrapped in
  * an initialization timeout in the SnapController.
  *
- *
  * @param options - The options for createWindow.
  * @param options.uri - The iframe URI.
  * @param options.id - The ID to assign to the iframe.

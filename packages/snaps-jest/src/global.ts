@@ -47,6 +47,8 @@ interface SnapsMatchers {
    * @param title - The title of an expanded notification.
    * @param content - The content of an expanded notification.
    * @param footerLink - The footer link of an expanded notification (if it exists).
+   * @param footerLink.text - The text of the footer link.
+   * @param footerLink.href - The href of the footer link.
    * @throws If the snap did not send a notification with the expected message.
    * @example
    * const response = await request({ method: 'foo' });
