@@ -49,8 +49,6 @@ describe('NpmLocation', () => {
         }),
       } as any)
       .mockResolvedValue({
-        ok: true,
-        headers: new Headers({ 'content-length': '5477' }),
         body: Readable.toWeb(
           createReadStream(
             path.resolve(
@@ -59,6 +57,9 @@ describe('NpmLocation', () => {
             ),
           ),
         ),
+        // eslint-disable-next-line no-restricted-globals
+        headers: new Headers({ 'content-length': '5477' }),
+        ok: true,
       } as any);
 
     const location = new NpmLocation(
@@ -131,6 +132,7 @@ describe('NpmLocation', () => {
 
     customFetchMock.mockResolvedValue({
       ok: true,
+      // eslint-disable-next-line no-restricted-globals
       headers: new Headers({ 'content-length': '5477' }),
       body: Readable.toWeb(
         createReadStream(
@@ -200,6 +202,7 @@ describe('NpmLocation', () => {
 
     customFetchMock.mockResolvedValue({
       ok: true,
+      // eslint-disable-next-line no-restricted-globals
       headers: new Headers({ 'content-length': '5477' }),
       body: Readable.toWeb(
         createReadStream(

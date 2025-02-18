@@ -11,7 +11,8 @@ export type Step<Context extends Record<string, unknown>> = {
   task: (context: Context & { spinner: Ora }) => Promise<Context | void>;
 };
 
-export type Steps<Context extends Record<string, unknown>> = readonly Step<Context>[];
+export type Steps<Context extends Record<string, unknown>> =
+  readonly Step<Context>[];
 
 /**
  * Execute a list of steps in series. Each step receives the context object and

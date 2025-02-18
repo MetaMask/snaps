@@ -6,7 +6,7 @@ import typescript from '@metamask/eslint-config-typescript';
 
 const config = createConfig([
   {
-    ignores: ['**/coverage', '**/dist/', '**/docs/', '**/public/', '.yarn/'],
+    ignores: ['**/coverage', '**/dist', '**/docs', '**/public', '.yarn'],
   },
 
   // Base configuration
@@ -267,6 +267,7 @@ const config = createConfig([
       'packages/snaps-utils/src/**/*',
       'packages/snaps-webpack-plugin/src/**/*',
       'packages/test-snaps/src/**/*',
+      '**/scripts/**/*.ts',
       '**/test-utils/**/*.ts',
       '**/webpack.config.ts',
       '**/snap.config.ts',
@@ -274,7 +275,14 @@ const config = createConfig([
     extends: nodejs,
 
     rules: {
+      // These rules are too strict for some cases.
+      // TODO: Re-investigate these rules.
+      'n/callback-return': 'off',
       'n/hashbang': 'off',
+      'n/no-unsupported-features/node-builtins': 'off',
+      'n/no-process-env': 'off',
+      'n/no-process-exit': 'off',
+      'n/no-sync': 'off',
       'no-restricted-globals': 'off',
     },
   },
@@ -282,8 +290,11 @@ const config = createConfig([
   // Files that contain browser functionality
   {
     files: [
+      'packages/snaps-controllers/src/services/iframe/**/*',
+      'packages/snaps-controllers/src/services/webworker/**/*',
       'packages/snaps-execution-environments/src/**/*',
       'packages/snaps-simulator/src/**/*',
+      'packages/snaps-simulator/jest.setup.js',
       'packages/test-snaps/src/**/*',
       '**/*.test.browser.ts',
     ],

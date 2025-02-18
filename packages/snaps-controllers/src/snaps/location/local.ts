@@ -48,10 +48,6 @@ function convertCanonical<Result>(
   vfile: VirtualFile<Result>,
 ): VirtualFile<Result> {
   assert(vfile.data.canonicalPath !== undefined);
-
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
   vfile.data.canonicalPath = `local:${vfile.data.canonicalPath}`;
   return vfile;
 }

@@ -55,7 +55,6 @@ export function getFunctionLoader<Options>(
 // When running as CJS, we need to export the loader as a default export, since
 // `tsup` exports it as `loader_default`.
 // istanbul ignore next 3
-// eslint-disable-next-line n/no-process-env
 if (typeof module !== 'undefined' && process?.env?.NODE_ENV !== 'test') {
   module.exports = loader;
   module.exports.getFunctionLoader = getFunctionLoader;
