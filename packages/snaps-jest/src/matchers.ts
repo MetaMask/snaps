@@ -1,5 +1,3 @@
-/* eslint-disable no-invalid-this */
-
 // Note: Because this file imports from `@jest/globals`, it can only be used in
 // a Jest environment. This is why it's not exported from the index file.
 

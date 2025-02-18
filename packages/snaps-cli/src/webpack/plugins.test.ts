@@ -170,7 +170,6 @@ describe('SnapsStatsPlugin', () => {
     expect(tap).toHaveBeenCalled();
     const callback = tap.mock.calls[0][1];
 
-    // eslint-disable-next-line n/callback-return
     await callback();
     expect(log).not.toHaveBeenCalled();
   });

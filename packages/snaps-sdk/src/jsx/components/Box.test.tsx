@@ -93,6 +93,7 @@ describe('Box', () => {
   it('renders a box with a conditional', () => {
     const result = (
       <Box direction="horizontal" alignment="space-between" center={true}>
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && <Text>Hello</Text>}
       </Box>
     );
