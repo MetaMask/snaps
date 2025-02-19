@@ -23,7 +23,7 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
   readonly #target;
 
-  #webView: WebViewInterface | undefined;
+  readonly #webView: WebViewInterface | undefined;
 
   /**
    * Creates a stream for communicating with other streams inside a WebView.

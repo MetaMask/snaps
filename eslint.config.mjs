@@ -8,6 +8,7 @@ const config = createConfig([
   {
     ignores: [
       '**/assembly',
+      '**/build',
       '**/coverage',
       '**/dist',
       '**/docs',
@@ -29,7 +30,7 @@ const config = createConfig([
     },
 
     settings: {
-      'import-x/extensions': ['.js', '.mjs'],
+      'import-x/extensions': ['.js', '.mjs', '.wasm'],
     },
 
     rules: {
@@ -348,6 +349,16 @@ const config = createConfig([
     rules: {
       'import-x/extensions': 'off',
       'import-x/no-unresolved': 'off',
+    },
+  },
+
+  // Wasm example
+  {
+    files: ['packages/examples/packages/wasm/src/index.ts'],
+
+    rules: {
+      // This rule changes depending on whether the build files exist or not.
+      'import-x/extensions': 'off',
     },
   },
 ]);
