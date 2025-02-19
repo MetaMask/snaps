@@ -8,6 +8,7 @@ const config = createConfig([
   {
     ignores: [
       '**/assembly',
+      '**/build',
       '**/coverage',
       '**/dist',
       '**/docs',
@@ -29,7 +30,7 @@ const config = createConfig([
     },
 
     settings: {
-      'import-x/extensions': ['.js', '.mjs'],
+      'import-x/extensions': ['.js', '.mjs', '.wasm'],
     },
 
     rules: {

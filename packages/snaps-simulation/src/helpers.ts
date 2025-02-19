@@ -270,6 +270,8 @@ export function getHelpers({
     });
   };
 
+  // This can't be async because it returns a `SnapRequest`.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   const onKeyringRequest = (request: KeyringOptions) => {
     log('Sending keyring request %o.', request);
 
