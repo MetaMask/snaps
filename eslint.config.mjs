@@ -351,6 +351,16 @@ const config = createConfig([
       'import-x/no-unresolved': 'off',
     },
   },
+
+  // Wasm example
+  {
+    files: ['packages/examples/packages/wasm/src/index.ts'],
+
+    rules: {
+      // This rule changes depending on whether the build files exist or not.
+      'import-x/extensions': 'off',
+    },
+  },
 ]);
 
 export default config;
