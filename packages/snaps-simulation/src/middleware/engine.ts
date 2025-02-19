@@ -5,14 +5,14 @@ import type { RestrictedMethodParameters } from '@metamask/permission-controller
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import type { Json } from '@metamask/utils';
 
+import { createInternalMethodsMiddleware } from './internal-methods';
+import { createMockMiddleware } from './mock';
 import { DEFAULT_JSON_RPC_ENDPOINT } from '../constants';
 import type {
   PermittedMiddlewareHooks,
   RestrictedMiddlewareHooks,
 } from '../simulation';
 import type { Store } from '../store';
-import { createInternalMethodsMiddleware } from './internal-methods';
-import { createMockMiddleware } from './mock';
 
 export type CreateJsonRpcEngineOptions = {
   store: Store;

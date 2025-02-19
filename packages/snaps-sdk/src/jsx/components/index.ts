@@ -43,7 +43,7 @@ export * from './Container';
 export * from './Section';
 export * from './Banner';
 export * from './Skeleton';
-export * from './utils';
+export type * from './utils';
 
 /**
  * A built-in JSX element, which can be used in a Snap user interface.

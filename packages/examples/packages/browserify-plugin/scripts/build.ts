@@ -31,7 +31,7 @@ async function main() {
 
   // For this example we use Babel to transpile the TypeScript code to
   // JavaScript.
-  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
   bundler.transform(require('babelify'), {
     ...babelConfig,
     extensions: ['.js', '.ts'],

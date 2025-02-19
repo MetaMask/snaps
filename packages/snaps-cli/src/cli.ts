@@ -1,13 +1,12 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import packageJson from '@metamask/snaps-cli/package.json';
 import type { SemVer } from 'semver';
-import semver from 'semver';
+import { minVersion, satisfies } from 'semver';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import builders from './builders';
 import { getConfigByArgv } from './config';
 import { error, getYargsErrorMessage, sanitizeInputs } from './utils';
+import packageJson from '@metamask/snaps-cli/package.json';
 
 /**
  * Check the Node version. If the Node version is less than the minimum required
@@ -19,13 +18,12 @@ export function checkNodeVersion(
   nodeVersion: string = process.version.slice(1),
 ) {
   const versionRange = packageJson.engines.node;
-  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
+  const minimumVersion = (minVersion(versionRange) as SemVer).format();
 
-  if (!semver.satisfies(nodeVersion, versionRange)) {
+  if (!satisfies(nodeVersion, versionRange)) {
     error(
       `Node version ${nodeVersion} is not supported. Please use Node ${minimumVersion} or later.`,
     );
-    // eslint-disable-next-line n/no-process-exit
     process.exit(1);
   }
 }
@@ -77,7 +75,6 @@ export async function cli(argv: string[], commands: any) {
 
     .fail((message, failure) => {
       error(getYargsErrorMessage(message, failure));
-      // eslint-disable-next-line n/no-process-exit
       process.exit(1);
     })
 

@@ -2,9 +2,9 @@ import { logError } from '@metamask/snaps-utils';
 import type { FunctionComponent } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
+import { PREINSTALLED_SNAP_ID, PREINSTALLED_VERSION } from './constants';
 import { useInvokeMutation } from '../../../api';
 import { Result, Snap } from '../../../components';
-import { PREINSTALLED_SNAP_ID, PREINSTALLED_VERSION } from './constants';
 
 export const Preinstalled: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();

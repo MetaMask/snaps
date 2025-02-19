@@ -10,10 +10,10 @@ import {
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
+import { AccountSelector } from './AccountSelector';
 import btcIcon from '../images/btc.svg';
 import jazzicon3 from '../images/jazzicon3.svg';
 import type { Account, SendFormErrors } from '../types';
-import { AccountSelector } from './AccountSelector';
 
 /**
  * The props for the {@link SendForm} component.

@@ -5,14 +5,14 @@ import {
   isFile,
 } from '@metamask/snaps-utils/node';
 import { createModuleLogger } from '@metamask/utils';
-import express from 'express';
+import express, { static as expressStatic } from 'express';
 import { promises as fs } from 'fs';
 import type { Server } from 'http';
 import { createServer } from 'http';
 import { resolve as pathResolve } from 'path';
 
-import type { SnapsEnvironmentOptions } from '../options';
 import { rootLogger } from './logger';
+import type { SnapsEnvironmentOptions } from '../options';
 
 export type ServerOptions = Required<
   // We need a double `Required` for the type to be inferred correctly.
@@ -77,7 +77,7 @@ export async function startServer(options: ServerOptions) {
     next();
   });
 
-  app.use(express.static(pathResolve(process.cwd(), options.root)));
+  app.use(expressStatic(pathResolve(process.cwd(), options.root)));
 
   const server = createServer(app);
   return await new Promise<Server>((resolve, reject) => {

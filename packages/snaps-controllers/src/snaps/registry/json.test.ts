@@ -6,10 +6,10 @@ import {
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
-import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
 import type { JsonSnapsRegistryArgs } from './json';
 import { JsonSnapsRegistry } from './json';
 import { SnapsRegistryStatus } from './registry';
+import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
 
 // Public key for the private key:
 // `0x541c6759fd86c69eceb8d792d7174623db139d81a5b560aa026afcb2dd1bb21c`.
@@ -36,7 +36,6 @@ const MOCK_DATABASE: SnapsRegistryDatabase = {
         name: 'Mock Snap',
       },
       versions: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ['1.0.0' as SemVerVersion]: {
           checksum: DEFAULT_SNAP_SHASUM,
         },
@@ -200,7 +199,6 @@ describe('JsonSnapsRegistry', () => {
 
     const { messenger } = getRegistry();
     const result = await messenger.call('SnapsRegistry:get', {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         version: '0.1.10' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -208,7 +206,6 @@ describe('JsonSnapsRegistry', () => {
     });
 
     expect(result).toStrictEqual({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       'npm:@consensys/starknet-snap': {
         status: SnapsRegistryStatus.Blocked,
         reason: { explanation: 'vuln' },
@@ -446,7 +443,6 @@ describe('JsonSnapsRegistry', () => {
                   name: 'Mock Snap',
                 },
                 versions: {
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
                   ['0.0.1' as SemVerVersion]: {
                     checksum: DEFAULT_SNAP_SHASUM,
                   },

@@ -4,14 +4,14 @@ import { promisify } from 'util';
 import type { Compiler, Watching } from 'webpack';
 import { WebpackError, ProvidePlugin } from 'webpack';
 
-import * as evalImplementation from '../commands/eval/implementation';
-import { compile, getCompiler } from '../test-utils';
 import {
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,
   SnapsStatsPlugin,
   SnapsWatchPlugin,
 } from './plugins';
+import * as evalImplementation from '../commands/eval/implementation';
+import { compile, getCompiler } from '../test-utils';
 
 jest.dontMock('fs');
 jest.mock('../commands/eval/implementation');
@@ -170,7 +170,6 @@ describe('SnapsStatsPlugin', () => {
     expect(tap).toHaveBeenCalled();
     const callback = tap.mock.calls[0][1];
 
-    // eslint-disable-next-line n/callback-return
     await callback();
     expect(log).not.toHaveBeenCalled();
   });

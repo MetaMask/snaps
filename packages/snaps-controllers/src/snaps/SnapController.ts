@@ -129,31 +129,8 @@ import { createMachine, interpret } from '@xstate/fsm';
 import { Mutex } from 'async-mutex';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import semver from 'semver';
+import { gt } from 'semver';
 
-import { forceStrict, validateMachine } from '../fsm';
-import type { CreateInterface, GetInterface } from '../interface';
-import { log } from '../logging';
-import type {
-  ExecuteSnapAction,
-  ExecutionServiceEvents,
-  HandleRpcRequestAction,
-  SnapErrorJson,
-  TerminateAllSnapsAction,
-  TerminateSnapAction,
-} from '../services';
-import type { EncryptionResult } from '../types';
-import {
-  type ExportableKeyEncryptor,
-  type KeyDerivationOptions,
-} from '../types';
-import {
-  fetchSnap,
-  hasTimedOut,
-  permissionsDiff,
-  setDiff,
-  withTimeout,
-} from '../utils';
 import {
   ALLOWED_PERMISSIONS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
@@ -173,6 +150,29 @@ import { SnapsRegistryStatus } from './registry';
 import { RequestQueue } from './RequestQueue';
 import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
+import { forceStrict, validateMachine } from '../fsm';
+import type { CreateInterface, GetInterface } from '../interface';
+import { log } from '../logging';
+import type {
+  ExecuteSnapAction,
+  ExecutionServiceEvents,
+  HandleRpcRequestAction,
+  SnapErrorJson,
+  TerminateAllSnapsAction,
+  TerminateSnapAction,
+} from '../services';
+import type {
+  EncryptionResult,
+  ExportableKeyEncryptor,
+  KeyDerivationOptions,
+} from '../types';
+import {
+  fetchSnap,
+  hasTimedOut,
+  permissionsDiff,
+  setDiff,
+  withTimeout,
+} from '../utils';
 
 export const controllerName = 'SnapController';
 
@@ -194,19 +194,19 @@ export type PendingRequest = {
   timer: Timer;
 };
 
-export interface PreinstalledSnapFile {
+export type PreinstalledSnapFile = {
   path: string;
   value: string | Uint8Array;
-}
+};
 
-export interface PreinstalledSnap {
+export type PreinstalledSnap = {
   snapId: SnapId;
   manifest: SnapManifest;
   files: PreinstalledSnapFile[];
   removable?: boolean;
   hidden?: boolean;
   hideSnapBranding?: boolean;
-}
+};
 
 type SnapRpcHandler = (
   options: SnapRpcHookArgs & { timeout: number },
@@ -217,7 +217,7 @@ type SnapRpcHandler = (
  * It is not persisted in state as it contains non-serializable data and is only relevant for the
  * current session.
  */
-export interface SnapRuntimeData {
+export type SnapRuntimeData = {
   /**
    * A promise that resolves when the Snap has finished installing
    */
@@ -286,7 +286,7 @@ export interface SnapRuntimeData {
    * A mutex to prevent concurrent state updates.
    */
   stateMutex: Mutex;
-}
+};
 
 export type SnapError = {
   message: string;
@@ -811,7 +811,6 @@ function truncateSnap(snap: Snap): TruncatedSnap {
     {},
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   return truncatedSnap as TruncatedSnap;
 }
 
@@ -827,38 +826,39 @@ export class SnapController extends BaseController<
   SnapControllerState,
   SnapControllerMessenger
 > {
-  #closeAllConnections?: CloseAllConnectionsFunction;
+  readonly #closeAllConnections?: CloseAllConnectionsFunction;
 
-  #dynamicPermissions: string[];
+  readonly #dynamicPermissions: string[];
 
-  #environmentEndowmentPermissions: string[];
+  readonly #environmentEndowmentPermissions: string[];
 
-  #excludedPermissions: Record<string, string>;
+  readonly #excludedPermissions: Record<string, string>;
 
-  #featureFlags: FeatureFlags;
+  readonly #featureFlags: FeatureFlags;
 
-  #fetchFunction: typeof fetch;
+  readonly #fetchFunction: typeof fetch;
 
-  #idleTimeCheckInterval: number;
+  readonly #idleTimeCheckInterval: number;
 
-  #maxIdleTime: number;
+  readonly #maxIdleTime: number;
 
   // This property cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly maxRequestTime: number;
 
-  #encryptor: ExportableKeyEncryptor;
+  readonly #encryptor: ExportableKeyEncryptor;
 
-  #getMnemonic: () => Promise<Uint8Array>;
+  readonly #getMnemonic: () => Promise<Uint8Array>;
 
-  #getFeatureFlags: () => DynamicFeatureFlags;
+  readonly #getFeatureFlags: () => DynamicFeatureFlags;
 
-  #clientCryptography: CryptographicFunctions | undefined;
+  readonly #clientCryptography: CryptographicFunctions | undefined;
 
-  #detectSnapLocation: typeof detectSnapLocation;
+  readonly #detectSnapLocation: typeof detectSnapLocation;
 
-  #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
+  readonly #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
 
-  #rollbackSnapshots: Map<string, RollbackSnapshot>;
+  readonly #rollbackSnapshots: Map<string, RollbackSnapshot>;
 
   #timeoutForLastRequestStatus?: number;
 
@@ -868,7 +868,7 @@ export class SnapController extends BaseController<
     StatusStates
   >;
 
-  #preinstalledSnaps: PreinstalledSnap[] | null;
+  readonly #preinstalledSnaps: PreinstalledSnap[] | null;
 
   constructor({
     closeAllConnections,
@@ -1251,7 +1251,7 @@ export class SnapController extends BaseController<
         ) ?? [];
 
       const validatedLocalizationFiles = getValidatedLocalizationFiles(
-        localizationFiles.filter(Boolean) as VirtualFile<unknown>[],
+        localizationFiles.filter(Boolean) as VirtualFile[],
       );
 
       assert(
@@ -1566,7 +1566,7 @@ export class SnapController extends BaseController<
     this.#assertCanUsePlatform();
     const snap = this.state.snaps[snapId];
 
-    if (snap.enabled === false) {
+    if (!snap.enabled) {
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
@@ -2557,6 +2557,9 @@ export class SnapController extends BaseController<
    * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async processRequestedSnap(
     origin: string,
     snapId: SnapId,
@@ -3067,8 +3070,6 @@ export class SnapController extends BaseController<
 
     if (
       dedupedEndowments.length <
-      // This is a bug in TypeScript: https://github.com/microsoft/TypeScript/issues/48313
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       DEFAULT_ENDOWMENTS.length + allEndowments.length
     ) {
       logError(
@@ -3260,7 +3261,7 @@ export class SnapController extends BaseController<
       return;
     }
 
-    if (semver.gt(platformVersion, getPlatformVersion())) {
+    if (gt(platformVersion, getPlatformVersion())) {
       const message = `The Snap "${snapId}" requires platform version "${platformVersion}" which is greater than the current platform version "${getPlatformVersion()}".`;
 
       if (this.#featureFlags.rejectInvalidPlatformVersion) {
@@ -3281,6 +3282,7 @@ export class SnapController extends BaseController<
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
+  // eslint-disable-next-line no-restricted-syntax
   private async authorize(
     snapId: SnapId,
     pendingApproval: PendingApproval,
@@ -3487,7 +3489,7 @@ export class SnapController extends BaseController<
       request,
       timeout,
     }: SnapRpcHookArgs & { timeout: number }) => {
-      if (this.state.snaps[snapId].enabled === false) {
+      if (!this.state.snaps[snapId].enabled) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
 

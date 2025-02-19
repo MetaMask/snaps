@@ -12,7 +12,6 @@ export enum NodeType {
   Heading = 'heading',
   Panel = 'panel',
   Spinner = 'spinner',
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   Text = 'text',
   Image = 'image',
   Row = 'row',

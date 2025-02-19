@@ -6,6 +6,7 @@ import throttle from 'lodash.throttle';
 import type { FunctionComponent, ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 
+import { mergeValue } from './utils';
 import {
   getSnapInterfaceController,
   getSnapInterface,
@@ -13,7 +14,6 @@ import {
   setSnapInterfaceState,
 } from '../features';
 import { useDispatch, useSelector } from '../hooks';
-import { mergeValue } from './utils';
 
 /**
  * A no-op function.
@@ -143,7 +143,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   const handleEvent: HandleEvent = ({
     event,
     name,
-    value = name ? (state as FormState)[name] ?? undefined : undefined,
+    value = name ? ((state as FormState)[name] ?? undefined) : undefined,
   }) => {
     const fn = THROTTLED_EVENTS.includes(event)
       ? snapRequestThrottled

@@ -1,6 +1,8 @@
-import { createSnapComponent } from '../../component';
+// TODO: Either fix this lint violation or explain why it's necessary to
+//  ignore.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Dropdown } from './Dropdown';
+import type { Dropdown } from './Dropdown';
+import { createSnapComponent } from '../../component';
 
 /**
  * The props of the {@link Option} component.

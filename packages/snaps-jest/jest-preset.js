@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
-
 const { resolve } = require('path');
 
 /**

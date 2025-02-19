@@ -46,7 +46,7 @@ export async function isFile(pathString: string): Promise<boolean> {
   try {
     const stats = await fs.stat(pathString);
     return stats.isFile();
-  } catch (error) {
+  } catch {
     return false;
   }
 }

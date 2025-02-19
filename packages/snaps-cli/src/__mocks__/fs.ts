@@ -15,10 +15,8 @@ const BROWSERIFY_FILES = [
 ];
 
 for (const file of BROWSERIFY_FILES) {
-  /* eslint-disable n/no-sync */
   volume.mkdirSync(dirname(file), { recursive: true });
   volume.writeFileSync(file, jest.requireActual('fs').readFileSync(file));
-  /* eslint-enable n/no-sync */
 }
 
 export = createFsFromVolume(volume);

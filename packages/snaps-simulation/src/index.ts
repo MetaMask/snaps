@@ -7,5 +7,5 @@ export * from './request';
 export * from './simulation';
 export * from './store';
 export * from './structs';
-export * from './types';
+export type * from './types';
 export * from './validation';

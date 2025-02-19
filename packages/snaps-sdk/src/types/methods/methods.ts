@@ -1,4 +1,3 @@
-import type { Method } from '../../internals';
 import type {
   CancelBackgroundEventParams,
   CancelBackgroundEventResult,
@@ -75,6 +74,7 @@ import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
+import type { Method } from '../../internals';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the

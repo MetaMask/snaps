@@ -31,4 +31,4 @@ export * from './url';
 export * from './validation';
 export * from './versions';
 export * from './virtual-file';
-export * from './promise';
+export type * from './promise';

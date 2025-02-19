@@ -1,5 +1,3 @@
-/* eslint-disable no-restricted-globals */
-
 import { assert, bytesToBase64 } from '@metamask/utils';
 import { dirname, resolve } from 'path';
 import type { LoaderDefinitionFunction } from 'webpack';
@@ -82,7 +80,6 @@ const loader: LoaderDefinitionFunction = async function loader(
 
   const wasmModule = await WebAssembly.compile(source);
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow
   const exports = WebAssembly.Module.exports(wasmModule);
   const imports = WebAssembly.Module.imports(wasmModule).reduce<
     Record<string, string[]>

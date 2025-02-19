@@ -87,7 +87,10 @@ describe('Tooltip', () => {
 
   it('renders a tooltip with a conditional value', () => {
     const result = (
-      <Tooltip content="Hello">{false && <Text>World</Text>}</Tooltip>
+      <Tooltip content="Hello">
+        {/* eslint-disable-next-line no-constant-binary-expression */}
+        {false && <Text>World</Text>}
+      </Tooltip>
     );
 
     expect(result).toStrictEqual({

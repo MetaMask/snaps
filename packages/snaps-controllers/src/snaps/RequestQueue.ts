@@ -1,6 +1,9 @@
 export class RequestQueue {
   public readonly maxQueueSize: number;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly queueSizes: Map<string, number>;
 
   constructor(maxQueueSize: number) {

@@ -6,8 +6,6 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import createSpinner from 'yocto-spinner';
 
-// ESLint doesn't understand the JSON import type.
-// eslint-disable-next-line
 import packageFile from '../package.json' with { type: 'json' };
 
 const CURRENT_PATH = dirname(fileURLToPath(import.meta.url));
@@ -44,14 +42,16 @@ async function fileExists(filePath: string) {
  */
 async function getSnapFiles() {
   if (!(await fileExists(SNAP_BUNDLE_PATH))) {
-    throw new Error('Bundle file not found. Make sure to build the project first.');
+    throw new Error(
+      'Bundle file not found. Make sure to build the project first.',
+    );
   }
 
   const files: { path: string; value: string }[] = [
     {
       path: 'dist/bundle.js',
       value: await readFile(SNAP_BUNDLE_PATH, 'utf-8'),
-    }
+    },
   ];
 
   if (await fileExists(SNAP_ICON_PATH)) {
