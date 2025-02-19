@@ -19,8 +19,8 @@ import {
 import { is } from '@metamask/superstruct';
 import { assert, hasProperty } from '@metamask/utils';
 import type { NodeModel } from '@minoru/react-dnd-treeview';
-import typescript from 'prettier/parser-typescript';
-import { format } from 'prettier/standalone';
+import typescript from 'prettier-2/parser-typescript';
+import { format } from 'prettier-2/standalone';
 
 /**
  * Get the text of a node model.
