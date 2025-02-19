@@ -147,8 +147,10 @@ export class SnapsBrowserifyTransform extends Transform {
 
     postBundle(this.#options, result.code)
       .catch((error) => {
-        // Wrapped in `setTimeout` to avoid calling `callback` twice.
-        setTimeout(() => callback(error), 0);
+        // TODO: Either fix this lint violation or explain why it's necessary to
+        //  ignore.
+        // eslint-disable-next-line promise/no-callback-in-promise
+        callback(error);
       })
       .finally(() => {
         this.push(result.code);

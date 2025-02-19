@@ -5733,6 +5733,7 @@ __metadata:
     monaco-editor: "npm:^0.38.0"
     monaco-editor-webpack-plugin: "npm:^7.0.1"
     prettier: "npm:^3.3.3"
+    prettier-2: "npm:prettier@^2.8.8"
     process: "npm:^0.11.10"
     react: "npm:^18.2.0"
     react-dnd: "npm:^16.0.1"

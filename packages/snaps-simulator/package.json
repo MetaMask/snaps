@@ -70,6 +70,7 @@
     "lodash.memoize": "^4.1.2",
     "lodash.throttle": "^4.1.1",
     "monaco-editor": "^0.38.0",
+    "prettier-2": "npm:prettier@^2.8.8",
     "react": "^18.2.0",
     "react-dnd": "^16.0.1",
     "react-dom": "^18.2.0",

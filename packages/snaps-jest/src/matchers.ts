@@ -333,7 +333,9 @@ const toRenderLegacy: MatcherFunction<[expected: Component]> = function (
 };
 
 export const toRender: MatcherFunction<[expected: ComponentOrElement]> =
-  async function (actual, expected) {
+  // This should not return a promise.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  function (actual, expected) {
     assertHasInterface(actual, 'toRender');
 
     if (!isJSXElementUnsafe(expected)) {
