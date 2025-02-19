@@ -1,4 +1,3 @@
-/* eslint-disable */
 const { TestEnvironment } = require('jest-environment-node');
 
 // Custom test environment copied from https://github.com/jsdom/jsdom/issues/2524

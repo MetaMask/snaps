@@ -7,11 +7,8 @@ import {
   type ScheduleBackgroundEventParams,
   type ScheduleBackgroundEventResult,
 } from '@metamask/snaps-sdk';
-import type { CronjobRpcRequest } from '@metamask/snaps-utils';
-import {
-  CronjobRpcRequestStruct,
-  type InferMatching,
-} from '@metamask/snaps-utils';
+import type { CronjobRpcRequest, InferMatching } from '@metamask/snaps-utils';
+import { CronjobRpcRequestStruct } from '@metamask/snaps-utils';
 import {
   StructError,
   create,

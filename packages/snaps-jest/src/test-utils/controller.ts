@@ -46,8 +46,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
 ) => {
   const snapInterfaceControllerMessenger = messenger.getRestricted<
     'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions['type'],
-    never
+    SnapInterfaceControllerAllowedActions['type']
   >({
     name: 'SnapInterfaceController',
     allowedActions: [

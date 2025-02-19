@@ -7,7 +7,6 @@ import type { Configuration } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
-import type { ProcessedWebpackConfig } from '../config';
 import { getFunctionLoader, wasm } from './loaders';
 import {
   SnapsBuiltInResolver,
@@ -24,6 +23,7 @@ import {
   getImageSVG,
   getProgressHandler,
 } from './utils';
+import type { ProcessedWebpackConfig } from '../config';
 
 export type WebpackOptions = {
   /**
@@ -74,8 +74,7 @@ export async function getDefaultConfiguration(
 ): Promise<Configuration> {
   const spinnerText = options.spinner?.text;
   const builtInResolver =
-    config.stats.builtIns &&
-    new SnapsBuiltInResolver(config.stats.builtIns, options.spinner);
+    config.stats.builtIns && new SnapsBuiltInResolver(config.stats.builtIns);
 
   return {
     /**

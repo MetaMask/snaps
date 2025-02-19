@@ -327,7 +327,6 @@ describe('snap_manageState', () => {
           method: 'snap_manageState',
           params: {
             operation: ManageStateOperation.UpdateState,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error - invalid type for testing purposes
             newState,
           },
@@ -369,7 +368,6 @@ describe('snap_manageState', () => {
           method: 'snap_manageState',
           params: {
             operation: ManageStateOperation.UpdateState,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error - invalid type for testing purposes
             newState,
           },

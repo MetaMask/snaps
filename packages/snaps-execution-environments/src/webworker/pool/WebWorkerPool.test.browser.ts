@@ -109,14 +109,14 @@ describe('WebWorkerPool', () => {
     await terminateJob(mockStream);
 
     expect(executor.jobs.get(MOCK_JOB_ID)).toBeUndefined();
-    expect(terminateSpy.calls.length).toBe(1);
+    expect(terminateSpy.calls).toHaveLength(1);
   });
 
   it('creates a worker pool', async () => {
     const mockStream = new MockPostMessageStream();
 
     const executor = WebWorkerPool.initialize(mockStream, WORKER_URL);
-    expect(executor.pool.length).toBe(0);
+    expect(executor.pool).toHaveLength(0);
 
     // Send ping to ensure that the worker is created.
     writeMessage(mockStream, {
@@ -131,7 +131,7 @@ describe('WebWorkerPool', () => {
     // Wait for the response, so that we know the worker is created.
     await getResponse(mockStream);
 
-    expect(executor.pool.length).toBe(3);
+    expect(executor.pool).toHaveLength(3);
     const nextWorker = executor.pool[0];
 
     writeMessage(
@@ -150,7 +150,7 @@ describe('WebWorkerPool', () => {
     // Wait for the response, so that we know the worker is created.
     await getResponse(mockStream);
 
-    expect(executor.pool.length).toBe(3);
+    expect(executor.pool).toHaveLength(3);
     expect(executor.pool[0]).not.toBe(nextWorker);
   });
 
@@ -183,6 +183,6 @@ describe('WebWorkerPool', () => {
       },
     });
 
-    expect(fetchSpy.calls.length).toBe(1);
+    expect(fetchSpy.calls).toHaveLength(1);
   });
 });

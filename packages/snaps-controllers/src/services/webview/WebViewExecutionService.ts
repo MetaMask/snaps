@@ -1,10 +1,10 @@
-import type { TerminateJobArgs } from '../AbstractExecutionService';
-import {
-  AbstractExecutionService,
-  type ExecutionServiceArgs,
-} from '../AbstractExecutionService';
 import type { WebViewInterface } from './WebViewMessageStream';
 import { WebViewMessageStream } from './WebViewMessageStream';
+import { AbstractExecutionService } from '../AbstractExecutionService';
+import type {
+  ExecutionServiceArgs,
+  TerminateJobArgs,
+} from '../AbstractExecutionService';
 
 export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
   createWebView: (jobId: string) => Promise<WebViewInterface>;

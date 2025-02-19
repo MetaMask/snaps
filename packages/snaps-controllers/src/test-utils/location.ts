@@ -45,15 +45,15 @@ const coerceManifest = (manifest: VirtualFile<SnapManifest>) => {
 };
 
 export class LoopbackLocation implements SnapLocation {
-  #manifest: VirtualFile<SnapManifest>;
+  readonly #manifest: VirtualFile<SnapManifest>;
 
-  #files: VirtualFile[];
+  readonly #files: VirtualFile[];
 
-  #shouldAlwaysReload: boolean;
+  readonly #shouldAlwaysReload: boolean;
 
-  #requestedRange: SemVerRange;
+  readonly #requestedRange: SemVerRange;
 
-  #resolveVersion: (range: SemVerRange) => Promise<SemVerRange>;
+  readonly #resolveVersion: (range: SemVerRange) => Promise<SemVerRange>;
 
   constructor(opts: LoopbackOptions = {}) {
     this.#requestedRange = opts.versionRange ?? DEFAULT_REQUESTED_SNAP_VERSION;
@@ -124,7 +124,6 @@ export class LoopbackLocation implements SnapLocation {
     this.#files = files;
   }
 
-  /* eslint-disable @typescript-eslint/require-await */
   manifest = jest.fn(async () => this.#manifest);
 
   fetch = jest.fn(async (path: string) => {
@@ -146,7 +145,6 @@ export class LoopbackLocation implements SnapLocation {
     );
     return file;
   });
-  /* eslint-enable @typescript-eslint/require-await */
 
   get shouldAlwaysReload() {
     return this._shouldAlwaysReload();

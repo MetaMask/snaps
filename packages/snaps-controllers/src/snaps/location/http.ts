@@ -11,23 +11,38 @@ import { assert, assertStruct } from '@metamask/utils';
 
 import type { SnapLocation } from './location';
 
-export interface HttpOptions {
+export type HttpOptions = {
   /**
    * @default fetch
    */
   fetch?: typeof fetch;
   fetchOptions?: RequestInit;
-}
+};
 
 export class HttpLocation implements SnapLocation {
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly cache = new Map<string, VirtualFile>();
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private validatedManifest?: VirtualFile<SnapManifest>;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly url: URL;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly fetchFn: typeof fetch;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly fetchOptions?: RequestInit;
 
   constructor(url: URL, opts: HttpOptions = {}) {
@@ -100,6 +115,9 @@ export class HttpLocation implements SnapLocation {
     return new URL(this.url);
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private toCanonical(path: string): URL {
     assert(!path.startsWith('/'), 'Tried to parse absolute path.');
     return new URL(path, this.url);

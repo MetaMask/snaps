@@ -124,10 +124,10 @@ export class CronjobController extends BaseController<
 > {
   #dailyTimer!: Timer;
 
-  #timers: Map<string, Timer>;
+  readonly #timers: Map<string, Timer>;
 
   // Mapping from jobId to snapId
-  #snapIds: Map<string, SnapId>;
+  readonly #snapIds: Map<string, SnapId>;
 
   constructor({ messenger, state }: CronjobControllerArgs) {
     super({
@@ -213,7 +213,6 @@ export class CronjobController extends BaseController<
     const filteredSnaps = getRunnableSnaps(snaps);
 
     const jobs = filteredSnaps.map((snap) => this.#getSnapJobs(snap.id));
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     return jobs.flat().filter((job) => job !== undefined) as Cronjob[];
   }
 
@@ -566,6 +565,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _handleSnapRegisterEvent(snap: TruncatedSnap) {
     this.register(snap.id);
   }
@@ -576,6 +578,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _handleSnapEnabledEvent(snap: TruncatedSnap) {
     const events = this.getBackgroundEvents(snap.id);
     this.#rescheduleBackgroundEvents(events);
@@ -587,6 +592,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _handleSnapUnregisterEvent(snap: TruncatedSnap) {
     this.unregister(snap.id);
   }
@@ -596,6 +604,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _handleSnapDisabledEvent(snap: TruncatedSnap) {
     this.unregister(snap.id, true);
   }
@@ -605,6 +616,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _handleEventSnapUpdated(snap: TruncatedSnap) {
     this.unregister(snap.id);
     this.register(snap.id);

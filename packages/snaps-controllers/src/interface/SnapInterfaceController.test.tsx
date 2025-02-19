@@ -24,12 +24,12 @@ import {
 } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
+import { SnapInterfaceController } from './SnapInterfaceController';
 import {
   MockApprovalController,
   getRestrictedSnapInterfaceControllerMessenger,
   getRootSnapInterfaceControllerMessenger,
 } from '../test-utils';
-import { SnapInterfaceController } from './SnapInterfaceController';
 
 jest.mock('@metamask/snaps-utils', () => ({
   ...jest.requireActual('@metamask/snaps-utils'),
@@ -1222,6 +1222,9 @@ describe('SnapInterfaceController', () => {
         id,
       });
 
+      // TODO: Either fix this lint violation or explain why it's necessary to
+      //  ignore.
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       rootMessenger.call(
         'SnapInterfaceController:resolveInterface',
         MOCK_SNAP_ID,

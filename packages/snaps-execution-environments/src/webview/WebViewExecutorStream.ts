@@ -10,11 +10,11 @@ type WebViewExecutorStreamArgs = {
 };
 
 export class WebViewExecutorStream extends BasePostMessageStream {
-  #name;
+  readonly #name;
 
-  #target;
+  readonly #target;
 
-  #targetWindow;
+  readonly #targetWindow;
 
   /**
    * A special post-message-stream to be used by the WebView executor.
@@ -61,6 +61,9 @@ export class WebViewExecutorStream extends BasePostMessageStream {
     );
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _onMessage(event: PostMessageEvent): void {
     if (!Array.isArray(event.data)) {
       return;

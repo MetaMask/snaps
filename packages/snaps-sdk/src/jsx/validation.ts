@@ -29,15 +29,6 @@ import {
   JsonStruct,
 } from '@metamask/utils';
 
-import type { Describe } from '../internals';
-import {
-  literal,
-  nullUnion,
-  selectiveUnion,
-  svg,
-  typedUnion,
-} from '../internals';
-import type { EmptyObject } from '../types';
 import type {
   GenericSnapChildren,
   GenericSnapElement,
@@ -48,44 +39,54 @@ import type {
   SnapsChildren,
   StringElement,
 } from './component';
-import type { AvatarElement, SkeletonElement } from './components';
-import {
-  type AddressElement,
-  type BoldElement,
-  type BoxElement,
-  type ButtonElement,
-  type CheckboxElement,
-  type CardElement,
-  type CopyableElement,
-  type DividerElement,
-  type DropdownElement,
-  type OptionElement,
-  type RadioElement,
-  type RadioGroupElement,
-  type FieldElement,
-  type FormElement,
-  type HeadingElement,
-  type ImageElement,
-  type InputElement,
-  type ItalicElement,
-  type JSXElement,
-  type LinkElement,
-  type RowElement,
-  type SpinnerElement,
-  type StandardFormattingElement,
-  type TextElement,
-  type TooltipElement,
-  type ValueElement,
-  type FileInputElement,
-  type ContainerElement,
-  type FooterElement,
-  type IconElement,
-  type SectionElement,
-  type SelectorElement,
-  type SelectorOptionElement,
-  type BannerElement,
-  IconName,
+import type {
+  AvatarElement,
+  SkeletonElement,
+  AddressElement,
+  BoldElement,
+  BoxElement,
+  ButtonElement,
+  CheckboxElement,
+  CardElement,
+  CopyableElement,
+  DividerElement,
+  DropdownElement,
+  OptionElement,
+  RadioElement,
+  RadioGroupElement,
+  FieldElement,
+  FormElement,
+  HeadingElement,
+  ImageElement,
+  InputElement,
+  ItalicElement,
+  JSXElement,
+  LinkElement,
+  RowElement,
+  SpinnerElement,
+  StandardFormattingElement,
+  TextElement,
+  TooltipElement,
+  ValueElement,
+  FileInputElement,
+  ContainerElement,
+  FooterElement,
+  IconElement,
+  SectionElement,
+  SelectorElement,
+  SelectorOptionElement,
+  BannerElement,
 } from './components';
+import { IconName } from './components';
+import type { Describe } from '../internals';
+import {
+  literal,
+  nullUnion,
+  selectiveUnion,
+  svg,
+  typedUnion,
+} from '../internals';
+import type { EmptyObject } from '../types';
 
 /**
  * A struct for the {@link Key} type.
@@ -557,7 +558,6 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   children: children([
     string(),
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     lazy(() => BoldStruct) as unknown as Struct<
       SnapElement<JsonObject, 'Bold'>
     >,

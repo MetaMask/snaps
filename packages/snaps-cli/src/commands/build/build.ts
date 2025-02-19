@@ -2,13 +2,13 @@ import { isFile } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
 import { resolve as pathResolve } from 'path';
 
+import { build } from './implementation';
+import { getBundleAnalyzerPort } from './utils';
 import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { success, executeSteps, info } from '../../utils';
 import { evaluate } from '../eval';
-import { build } from './implementation';
-import { getBundleAnalyzerPort } from './utils';
 
 type BuildContext = {
   analyze: boolean;

@@ -976,6 +976,7 @@ describe('getJsxChildren', () => {
     const element = (
       <Box>
         <Text>Hello</Text>
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && <Text>Foo</Text>}
         <Text>World</Text>
       </Box>
@@ -991,6 +992,7 @@ describe('getJsxChildren', () => {
     const element = (
       <Text>
         Hello
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && 'Foo'}
         World
       </Text>

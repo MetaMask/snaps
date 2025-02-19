@@ -254,6 +254,8 @@ export function getHelpers({
     return response;
   };
 
+  // This can't be async because it returns a `SnapRequest`.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   const onCronjob = (request: CronjobOptions) => {
     log('Running cronjob %o.', options);
 
@@ -268,6 +270,8 @@ export function getHelpers({
     });
   };
 
+  // This can't be async because it returns a `SnapRequest`.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   const onKeyringRequest = (request: KeyringOptions) => {
     log('Sending keyring request %o.', request);
 
@@ -283,6 +287,8 @@ export function getHelpers({
   };
 
   return {
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     request: (request) => {
       log('Sending request %o.', request);
 
@@ -302,6 +308,8 @@ export function getHelpers({
 
     onKeyringRequest,
 
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     onInstall: (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onInstall handler.');
 
@@ -319,6 +327,8 @@ export function getHelpers({
       });
     },
 
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     onUpdate: (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onUpdate handler.');
 

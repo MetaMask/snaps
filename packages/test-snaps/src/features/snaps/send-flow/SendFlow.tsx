@@ -2,14 +2,14 @@ import { logError } from '@metamask/snaps-utils';
 import type { FunctionComponent } from 'react';
 import { Button } from 'react-bootstrap';
 
-import { useInvokeMutation } from '../../../api';
-import { Result, Snap } from '../../../components';
-import { getSnapId } from '../../../utils';
 import {
   SEND_FLOW_SNAP_ID,
   SEND_FLOW_SNAP_PORT,
   SEND_FLOW_VERSION,
 } from './constants';
+import { useInvokeMutation } from '../../../api';
+import { Result, Snap } from '../../../components';
+import { getSnapId } from '../../../utils';
 
 export const SendFlow: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data }] = useInvokeMutation();

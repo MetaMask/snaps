@@ -29,7 +29,9 @@ export type Options = PluginOptions &
  */
 async function postBundle(options: Partial<Options>, code: string) {
   if (options.eval) {
-    await useTemporaryFile('snaps-bundle.js', code, (path) => evalBundle(path));
+    await useTemporaryFile('snaps-bundle.js', code, async (path) =>
+      evalBundle(path),
+    );
   }
 
   if (options.manifestPath) {
@@ -145,6 +147,9 @@ export class SnapsBrowserifyTransform extends Transform {
 
     postBundle(this.#options, result.code)
       .catch((error) => {
+        // TODO: Either fix this lint violation or explain why it's necessary to
+        //  ignore.
+        // eslint-disable-next-line promise/no-callback-in-promise
         callback(error);
       })
       .finally(() => {

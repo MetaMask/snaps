@@ -1,11 +1,11 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import { Box, Container } from '@metamask/snaps-sdk/jsx';
 
-import type { Account, Currency } from '../types';
 import { SendFlowFooter } from './SendFlowFooter';
 import { SendFlowHeader } from './SendFlowHeader';
 import { SendForm } from './SendForm';
 import { TransactionSummary } from './TransactionSummary';
+import type { Account, Currency } from '../types';
 
 /**
  * The props for the {@link SendFlow} component.

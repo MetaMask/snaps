@@ -33,7 +33,6 @@ export const Editor: FunctionComponent<EditorProps> = ({
       inherit: true,
       rules: [],
       colors: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'editor.background': '#24272A',
       },
     });

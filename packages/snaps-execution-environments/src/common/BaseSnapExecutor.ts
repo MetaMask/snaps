@@ -36,7 +36,6 @@ import {
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
-import { log } from '../logging';
 import type { CommandMethodsMapping } from './commands';
 import { getCommandMethodImplementations } from './commands';
 import { createEndowments } from './endowments';
@@ -56,6 +55,7 @@ import {
   SnapRpcRequestArgumentsStruct,
   TerminateRequestArgumentsStruct,
 } from './validation';
+import { log } from '../logging';
 
 type EvaluationData = {
   stop: () => void;
@@ -117,18 +117,39 @@ export type NotifyFunction = (
 ) => Promise<void>;
 
 export class BaseSnapExecutor {
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly snapData: Map<string, SnapData>;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly commandStream: Duplex;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly rpcStream: Duplex;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly methods: CommandMethodsMapping;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private snapErrorHandler?: (event: ErrorEvent) => void;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private lastTeardown = 0;
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
@@ -163,7 +184,7 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        let result = await this.executeInSnapContext(target, () =>
+        let result = await this.executeInSnapContext(target, async () =>
           // TODO: fix handler args type cast
           handler(args as any),
         );
@@ -189,6 +210,9 @@ export class BaseSnapExecutor {
     );
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private errorHandler(error: unknown, data: Record<string, Json>) {
     const serializedError = serializeError(error, {
       fallbackError: unhandledError,
@@ -198,6 +222,9 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line promise/no-promise-in-callback
     this.#notify({
       method: 'UnhandledError',
       params: {
@@ -214,6 +241,9 @@ export class BaseSnapExecutor {
     });
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
       if (
@@ -458,6 +488,9 @@ export class BaseSnapExecutor {
     this.snapData.clear();
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async registerSnapExports(snapId: string, snapModule: any) {
     const data = this.snapData.get(snapId);
     // Somebody deleted the snap before we could register.
@@ -486,6 +519,9 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The snap provider object.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private createSnapGlobal(provider: StreamProvider): SnapsProvider {
     const originalRequest = provider.request.bind(provider);
 
@@ -523,6 +559,9 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The EIP-1193 Ethereum provider object.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private createEIP1193Provider(
     provider: StreamProvider,
   ): SnapsEthereumProvider {
@@ -561,6 +600,9 @@ export class BaseSnapExecutor {
    *
    * @param snapId - The id of the snap to remove.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private removeSnap(snapId: string): void {
     this.snapData.delete(snapId);
   }
@@ -576,6 +618,9 @@ export class BaseSnapExecutor {
    * @returns The executor's return value.
    * @template Result - The return value of the executor.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async executeInSnapContext<Result>(
     snapId: string,
     executor: () => Promise<Result> | Result,
@@ -589,7 +634,7 @@ export class BaseSnapExecutor {
 
     let stop: () => void;
     const stopPromise = new Promise<never>(
-      (_, reject) =>
+      (_resolve, reject) =>
         (stop = () =>
           reject(
             // TODO(rekmarks): Specify / standardize error code for this case.

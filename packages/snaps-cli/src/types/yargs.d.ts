@@ -2,7 +2,7 @@ import type { Options } from 'yargs';
 
 import type { ProcessedConfig } from '../config';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type OptionalArguments<Type = {}> = Type & {
   /** Non-option arguments */
   _?: (string | number)[];

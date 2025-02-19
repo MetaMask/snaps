@@ -1,5 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import cliPackageJson from '@metamask/create-snap/package.json';
 import type { NpmSnapPackageJson } from '@metamask/snaps-utils';
 import {
   NpmSnapFileNames,
@@ -10,9 +8,8 @@ import {
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
 import type { SemVer } from 'semver';
-import semver from 'semver';
+import { minVersion, satisfies } from 'semver';
 
-import type { YargsArgs } from '../../types/yargs';
 import {
   buildSnap,
   cloneTemplate,
@@ -23,6 +20,8 @@ import {
   SNAP_LOCATION,
   yarnInstall,
 } from './initUtils';
+import type { YargsArgs } from '../../types/yargs';
+import cliPackageJson from '@metamask/create-snap/package.json';
 
 /**
  * Creates a new snap package, based on one of the provided templates. This
@@ -38,9 +37,9 @@ export async function initHandler(argv: YargsArgs) {
   const { directory } = argv;
 
   const versionRange = cliPackageJson.engines.node;
-  const minimumVersion = (semver.minVersion(versionRange) as SemVer).format();
+  const minimumVersion = (minVersion(versionRange) as SemVer).format();
 
-  const isVersionSupported = semver.satisfies(process.version, versionRange);
+  const isVersionSupported = satisfies(process.version, versionRange);
 
   if (!isVersionSupported) {
     throw new Error(
@@ -71,7 +70,7 @@ export async function initHandler(argv: YargsArgs) {
       force: true,
       recursive: true,
     });
-  } catch (error) {
+  } catch {
     throw new Error('Init Error: Failed to create template.');
   }
 
@@ -106,7 +105,7 @@ export async function initHandler(argv: YargsArgs) {
     ...argv,
     dist: distPath[0],
     outfileName: distPath[1],
-    src: packageJson.main || 'src/index.js',
+    src: packageJson.main ?? 'src/index.js',
     snapLocation,
   };
 }
