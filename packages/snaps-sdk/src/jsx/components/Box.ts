@@ -7,7 +7,7 @@ import { createSnapComponent } from '../component';
  * @property children - The children of the box.
  * @property direction - The direction to stack the components within the box. Defaults to `vertical`.
  * @property alignment - The alignment mode to use within the box. Defaults to `start`.
- * @property crossAlignment - The cross alignment mode to use within the box. Defaults to `start`.
+ * @property crossAlignment - The cross alignment mode to use within the box.
  * @property center - Whether to center the children within the box. Defaults to `false`.
  */
 export type BoxProps = {
@@ -32,6 +32,10 @@ const TYPE = 'Box';
  *
  * @param props - The props of the component.
  * @param props.children - The children of the box.
+ * @param props.direction - The direction to stack the components within the box. Defaults to `vertical`.
+ * @param props.alignment - The alignment mode to use within the box. Defaults to `start`.
+ * @param props.crossAlignment - The cross alignment mode to use within the box.
+ * @param props.center - Whether to center the children within the box. Defaults to `false`.
  * @returns A box element.
  * @example
  * <Box>
