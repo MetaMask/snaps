@@ -120,6 +120,14 @@ function getComponentStateValue(
     case 'Checkbox':
       return element.props.checked;
 
+    case 'AddressInput':
+      if (!element.props.value) {
+        return null;
+      }
+
+      // Construct CAIP-10 Id
+      return `${element.props.chainId}:${element.props.value}`;
+
     default:
       return element.props.value;
   }

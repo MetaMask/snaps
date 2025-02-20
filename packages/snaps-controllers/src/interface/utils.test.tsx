@@ -293,7 +293,7 @@ describe('constructState', () => {
 
     const result = constructState({}, element);
     expect(result).toStrictEqual({
-      foo: '0x123',
+      foo: 'eip155:1:0x123',
     });
   });
 
