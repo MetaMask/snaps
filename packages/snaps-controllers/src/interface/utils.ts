@@ -17,6 +17,7 @@ import type {
   RadioElement,
   SelectorElement,
   SelectorOptionElement,
+  AddressInputElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -70,7 +71,8 @@ function constructComponentSpecificDefaultState(
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AddressInputElement,
 ) {
   switch (element.type) {
     case 'Dropdown': {
@@ -111,11 +113,20 @@ function getComponentStateValue(
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AddressInputElement,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
+
+    case 'AddressInput':
+      if (!element.props.value) {
+        return null;
+      }
+
+      // Construct CAIP-10 Id
+      return `${element.props.chainId}:${element.props.value}`;
 
     default:
       return element.props.value;
@@ -138,7 +149,8 @@ function constructInputState(
     | RadioGroupElement
     | FileInputElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AddressInputElement,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -196,7 +208,8 @@ export function constructState(
         component.type === 'RadioGroup' ||
         component.type === 'FileInput' ||
         component.type === 'Checkbox' ||
-        component.type === 'Selector')
+        component.type === 'Selector' ||
+        component.type === 'AddressInput')
     ) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
@@ -215,7 +228,8 @@ export function constructState(
       component.type === 'RadioGroup' ||
       component.type === 'FileInput' ||
       component.type === 'Checkbox' ||
-      component.type === 'Selector'
+      component.type === 'Selector' ||
+      component.type === 'AddressInput'
     ) {
       assertNameIsUnique(newState, component.props.name);
       newState[component.props.name] = constructInputState(oldState, component);
