@@ -277,6 +277,14 @@ function getComponentStateValue(
     case 'AssetSelector':
       return getAssetSelectorStateValue(element.props.value, getAssetsState);
 
+    case 'AddressInput':
+      if (!element.props.value) {
+        return null;
+      }
+
+      // Construct CAIP-10 Id
+      return `${element.props.chainId}:${element.props.value}`;
+
     default:
       return element.props.value;
   }
