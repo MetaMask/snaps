@@ -12,14 +12,13 @@ import {
   enums,
   intersection,
   literal,
-  pattern,
   refine,
   string,
   union,
   validate,
 } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
-import { assert, isObject, assertStruct } from '@metamask/utils';
+import { assert, isObject, assertStruct, definePattern } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import stableStringify from 'fast-json-stable-stringify';
 import validateNPMPackage from 'validate-npm-package-name';
@@ -228,7 +227,10 @@ export async function validateSnapShasum(
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
 // Require snap ids to only consist of printable ASCII characters
-export const BaseSnapIdStruct = pattern(string(), /^[\x21-\x7E]*$/u);
+export const BaseSnapIdStruct = definePattern(
+  'Base Snap Id',
+  /^[\x21-\x7E]*$/u,
+);
 
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),
