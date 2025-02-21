@@ -1,8 +1,10 @@
 import { logError } from '@metamask/snaps-utils';
+import { numberToHex } from '@metamask/utils';
 import type { FunctionComponent } from 'react';
+import { useState } from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-import { SignMessage, SignTypedData } from './components';
+import { SignMessage, SignTypedData, SwitchChain } from './components';
 import {
   ETHEREUM_PROVIDER_SNAP_ID,
   ETHEREUM_PROVIDER_SNAP_PORT,
@@ -14,11 +16,15 @@ import { getSnapId } from '../../../utils';
 
 export const EthereumProvider: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
+  const [chainId, setChainId] = useState<number>(1);
 
   const handleSubmit = (method: string) => {
     invokeSnap({
       snapId: getSnapId(ETHEREUM_PROVIDER_SNAP_ID, ETHEREUM_PROVIDER_SNAP_PORT),
       method,
+      params: {
+        chainId: numberToHex(chainId),
+      },
     }).catch(logError);
   };
 
@@ -33,6 +39,7 @@ export const EthereumProvider: FunctionComponent = () => {
       version={ETHEREUM_PROVIDER_VERSION}
       testId="ethereum-provider"
     >
+      <SwitchChain onChange={setChainId} />
       <ButtonGroup>
         <Button
           variant="secondary"
@@ -59,8 +66,8 @@ export const EthereumProvider: FunctionComponent = () => {
           {JSON.stringify(error, null, 2)}
         </span>
       </Result>
-      <SignMessage />
-      <SignTypedData />
+      <SignMessage chainId={chainId} />
+      <SignTypedData chainId={chainId} />
     </Snap>
   );
 };
