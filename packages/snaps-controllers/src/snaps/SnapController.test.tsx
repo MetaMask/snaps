@@ -5778,6 +5778,139 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('grants the `endowment:caip25` permission when updating a Snap with `endowment:ethereum-provider` if the `useCaip25Permission` feature flag is enabled', async () => {
+      const newVersion = '1.0.2';
+      const newVersionRange = '>=1.0.1';
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'SelectedNetworkController:getNetworkClientIdForDomain',
+        () => 'mainnet',
+      );
+
+      rootMessenger.registerActionHandler(
+        'NetworkController:getNetworkClientById',
+        () => ({
+          configuration: {
+            chainId: '0x1',
+          },
+        }),
+      );
+
+      const { manifest: originalManifest } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            initialPermissions: {
+              'endowment:page-home': {},
+            },
+          }),
+        });
+
+      const { manifest: updatedManifest } =
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            version: newVersion,
+            initialPermissions: {
+              'endowment:page-home': {},
+              'endowment:ethereum-provider': {},
+            },
+          }),
+        });
+
+      const detectLocationMock = jest
+        .fn()
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: originalManifest,
+            }),
+        )
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: updatedManifest,
+            }),
+        );
+
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: detectLocationMock,
+          featureFlags: {
+            useCaip25Permission: true,
+          },
+        }),
+      );
+
+      await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
+      await controller.stopSnap(MOCK_SNAP_ID);
+
+      const approvedPermissions = {
+        'endowment:page-home': {
+          caveats: null,
+        },
+      };
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions,
+          subject: { origin: MOCK_SNAP_ID },
+          requestData: expect.any(Object),
+        },
+      );
+
+      jest.mocked(messenger.call).mockClear();
+
+      const result = await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: newVersionRange },
+      });
+
+      const updatedApprovedPermissions = {
+        'endowment:page-home': {
+          caveats: null,
+        },
+        'endowment:ethereum-provider': {},
+        'endowment:caip25': {
+          caveats: [
+            {
+              type: 'authorizedScopes',
+              value: {
+                requiredScopes: {},
+                optionalScopes: {
+                  'eip155:1': {
+                    accounts: [],
+                  },
+                },
+                sessionProperties: {},
+                isMultichainOrigin: false,
+              },
+            },
+          ],
+        },
+      };
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: updatedApprovedPermissions,
+          subject: { origin: MOCK_SNAP_ID },
+          requestData: expect.any(Object),
+        },
+      );
+
+      expect(result).toStrictEqual({
+        [MOCK_SNAP_ID]: getTruncatedSnap({
+          version: newVersion,
+          initialPermissions: updatedManifest.result.initialPermissions,
+        }),
+      });
+
+      controller.destroy();
+    });
+
     it('does not grant the `endowment:caip25` permission to a Snap with `endowment:ethereum-provider` if the `useCaip25Permission` feature flag is disabled', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
