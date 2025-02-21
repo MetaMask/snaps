@@ -5410,7 +5410,7 @@ __metadata:
     tar-stream: "npm:^3.1.7"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    vite: "npm:^4.3.9"
+    vite: "npm:^4.5.6"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
     wdio-geckodriver-service: "npm:^5.0.2"
@@ -5483,7 +5483,7 @@ __metadata:
     terser: "npm:^5.17.7"
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
-    vite: "npm:^4.3.9"
+    vite: "npm:^4.5.6"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
     wdio-geckodriver-service: "npm:^5.0.2"
@@ -5823,7 +5823,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     typescript: "npm:~5.3.3"
     validate-npm-package-name: "npm:^5.0.0"
-    vite: "npm:^4.3.9"
+    vite: "npm:^4.5.6"
     vite-tsconfig-paths: "npm:^4.0.5"
     wdio-chromedriver-service: "npm:^8.1.1"
     wdio-geckodriver-service: "npm:^5.0.2"
@@ -19851,7 +19851,7 @@ __metadata:
     tsx: "npm:^4.19.1"
     typescript: "npm:~5.3.3"
     typescript-eslint: "npm:^8.6.0"
-    vite: "npm:^4.3.9"
+    vite: "npm:^4.5.6"
   languageName: unknown
   linkType: soft
 
@@ -22154,9 +22154,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.3.9":
-  version: 4.5.5
-  resolution: "vite@npm:4.5.5"
+"vite@npm:^4.5.6":
+  version: 4.5.9
+  resolution: "vite@npm:4.5.9"
   dependencies:
     esbuild: "npm:^0.18.10"
     fsevents: "npm:~2.3.2"
@@ -22190,7 +22190,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/2e8b39e004f2b2e72506b816700b3aafaf3f85bdcb9dd9392075bb234ce7333f859a0d2078a85ce5d0039f0f659ca564a7366af587848e5166f14b136cb0ad37
+  checksum: 10/9b1984c89f5d6e57e26b767ba6bb8791a9a9b1329f72cd2c4f6079bb4ad74fb4e0b43ae13cbb31812a00c706dfa70d894bfc7dd6b5b3db82e18b7997f23e5072
   languageName: node
   linkType: hard
 
