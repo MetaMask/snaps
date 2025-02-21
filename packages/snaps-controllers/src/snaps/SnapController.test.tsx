@@ -6597,7 +6597,7 @@ describe('SnapController', () => {
           [snapId]: {},
         }),
       ).rejects.toThrow(
-        `Invalid snap ID: Invalid or no prefix found for "foo".`,
+        `Invalid snap ID: Invalid or no prefix found. Expected Snap ID to start with one of: "npm:", "local:", but received: "foo".`,
       );
 
       controller.destroy();

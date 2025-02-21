@@ -14,6 +14,7 @@ import {
   verifyRequestedSnapPermissions,
   stripSnapPrefix,
   isSnapId,
+  SnapIdPrefixStruct,
 } from './snaps';
 import { MOCK_SNAP_ID } from './test-utils';
 import { uri, WALLET_SNAP_PERMISSION_KEY } from './types';
@@ -59,7 +60,7 @@ describe('assertIsValidSnapId', () => {
 
   it('throws for invalid snap id', () => {
     expect(() => assertIsValidSnapId('foo:bar')).toThrow(
-      `Invalid snap ID: Invalid or no prefix found for "foo:bar".`,
+      `Invalid snap ID: Invalid or no prefix found. Expected Snap ID to start with one of: "npm:", "local:", but received: "foo:bar".`,
     );
   });
 
@@ -77,7 +78,7 @@ describe('assertIsValidSnapId', () => {
 
   it('disallows whitespace at the beginning', () => {
     expect(() => assertIsValidSnapId(' local:http://localhost:8000')).toThrow(
-      'Invalid snap ID: Invalid or no prefix found for " local:http://localhost:8000".',
+      'Invalid snap ID: Invalid or no prefix found. Expected Snap ID to start with one of: "npm:", "local:", but received: " local:http://localhost:8000".',
     );
   });
 
@@ -95,7 +96,7 @@ describe('assertIsValidSnapId', () => {
     'disallows non-ASCII symbols #%#',
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
-        `"Invalid snap ID: Expected a value of type \`Base Snap Id\`, but received: "${value}".`,
+        `Invalid snap ID: Expected a value of type \`Base Snap Id\`, but received: \`"${value}"\`.`,
       );
     },
   );
@@ -240,6 +241,36 @@ describe('HttpSnapIdStruct', () => {
     'http://github.com/snap?foo=true#bar',
   ])('invalidates an improper http ID (#%#)', (value) => {
     expect(is(value, HttpSnapIdStruct)).toBe(false);
+  });
+});
+
+describe('SnapIdPrefixStruct', () => {
+  it.each(['local:', 'npm:', 'local:foobar', 'npm:foobar'])(
+    'validates "%s" as proper Snap ID prefix',
+    (value) => {
+      expect(is(value, SnapIdPrefixStruct)).toBe(true);
+    },
+  );
+
+  it.each([
+    0,
+    1,
+    false,
+    true,
+    {},
+    [],
+    uri,
+    URL,
+    new URL('http://github.com'),
+    '',
+    'local',
+    'npm',
+    'foo:npm',
+    'foo:local',
+    'localfoobar',
+    'npmfoobar',
+  ])('invalidates an improper Snap ID prefix', (value) => {
+    expect(is(value, SnapIdPrefixStruct)).toBe(false);
   });
 });
 

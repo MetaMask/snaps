@@ -299,7 +299,11 @@ export const SnapIdPrefixStruct = refine(
       return true;
     }
 
-    return `Invalid or no prefix found for "${value}"`;
+    const allowedPrefixes = Object.values(SnapIdPrefixes)
+      .map((prefix) => `"${prefix}"`)
+      .join(', ');
+
+    return `Invalid or no prefix found. Expected Snap ID to start with one of: ${allowedPrefixes}, but received: "${value}"`;
   },
 );
 
