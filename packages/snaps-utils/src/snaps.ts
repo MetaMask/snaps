@@ -291,7 +291,7 @@ export const HttpSnapIdStruct = intersection([
 
 export const SnapIdPrefixStruct = refine(
   string(),
-  'Valid Prefix Snap Id',
+  'Snap ID prefix',
   (value) => {
     if (
       Object.values(SnapIdPrefixes).some((prefix) => value.startsWith(prefix))
