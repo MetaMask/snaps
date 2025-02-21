@@ -4,7 +4,11 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type { SnapId, Snap as TruncatedSnap } from '@metamask/snaps-sdk';
+import {
+  selectiveUnion,
+  type SnapId,
+  type Snap as TruncatedSnap,
+} from '@metamask/snaps-sdk';
 import type { Struct } from '@metamask/superstruct';
 import {
   is,
@@ -14,7 +18,6 @@ import {
   literal,
   refine,
   string,
-  union,
   validate,
 } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
@@ -286,7 +289,31 @@ export const HttpSnapIdStruct = intersection([
   }),
 ]) as unknown as Struct<string, null>;
 
-export const SnapIdStruct = union([NpmSnapIdStruct, LocalSnapIdStruct]);
+export const SnapIdPrefixStruct = refine(
+  string(),
+  'Valid Prefix Snap Id',
+  (value) => {
+    if (
+      Object.values(SnapIdPrefixes).some((prefix) => value.startsWith(prefix))
+    ) {
+      return true;
+    }
+
+    return `Invalid or no prefix found for "${value}"`;
+  },
+);
+
+export const SnapIdStruct = selectiveUnion((value) => {
+  if (typeof value === 'string' && value.startsWith(SnapIdPrefixes.npm)) {
+    return NpmSnapIdStruct;
+  }
+
+  if (typeof value === 'string' && value.startsWith(SnapIdPrefixes.local)) {
+    return LocalSnapIdStruct;
+  }
+
+  return SnapIdPrefixStruct;
+});
 
 /**
  * Extracts the snap prefix from a snap ID.

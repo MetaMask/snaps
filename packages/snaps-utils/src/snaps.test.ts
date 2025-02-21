@@ -52,14 +52,14 @@ describe('assertIsValidSnapId', () => {
         // TODO: Either fix this lint violation or explain why it's necessary to
         //  ignore.
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | Base Snap Id\`, but received: ${value}.`,
+        `Invalid snap ID: Expected a string, but received: ${value}.`,
       );
     },
   );
 
   it('throws for invalid snap id', () => {
     expect(() => assertIsValidSnapId('foo:bar')).toThrow(
-      `Invalid snap ID: Expected the value to satisfy a union of \`intersection | Base Snap Id\`, but received: "foo:bar".`,
+      `Invalid snap ID: Invalid or no prefix found for "foo:bar".`,
     );
   });
 
@@ -75,14 +75,19 @@ describe('assertIsValidSnapId', () => {
     ).not.toThrow();
   });
 
+  it('disallows whitespace at the beginning', () => {
+    expect(() => assertIsValidSnapId(' local:http://localhost:8000')).toThrow(
+      'Invalid snap ID: Invalid or no prefix found for " local:http://localhost:8000".',
+    );
+  });
+
   it.each([
-    ' local:http://localhost:8000',
     'local:http://localhost:8000 ',
     'local:http://localhost:8000\n',
     'local:http://localhost:8000\r',
   ])('disallows whitespace #%#', (value) => {
     expect(() => assertIsValidSnapId(value)).toThrow(
-      /Invalid snap ID: Expected the value to satisfy a union of `intersection \| Base Snap Id`, but received: .+\./u,
+      /Invalid snap ID: Expected a value of type `Base Snap Id`, but received: .+\./u,
     );
   });
 
@@ -90,7 +95,7 @@ describe('assertIsValidSnapId', () => {
     'disallows non-ASCII symbols #%#',
     (value) => {
       expect(() => assertIsValidSnapId(value)).toThrow(
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | Base Snap Id\`, but received: "${value}".`,
+        `"Invalid snap ID: Expected a value of type \`Base Snap Id\`, but received: "${value}".`,
       );
     },
   );
