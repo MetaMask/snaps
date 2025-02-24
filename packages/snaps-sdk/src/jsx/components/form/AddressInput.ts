@@ -6,6 +6,8 @@ export type AddressInputProps = {
   name: string;
   value?: string | undefined;
   chainId: CaipChainId;
+  placeholder?: string | undefined;
+  disabled?: boolean | undefined;
 };
 
 const TYPE = 'AddressInput';
@@ -17,6 +19,8 @@ const TYPE = 'AddressInput';
  * @param props.name - The name of the input field.
  * @param props.value - The value of the input field.
  * @param props.chainId - The CAIP-2 chain ID of the address.
+ * @param props.placeholder - The placeholder text of the input field.
+ * @param props.disabled - Whether the input field is disabled.
  * @returns An input element.
  * @example
  * <AddressInput name="address" value="0x1234567890123456789012345678901234567890" chainId="eip155:1" />

@@ -348,12 +348,17 @@ export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
   },
 );
 
+/**
+ * A struct for the {@link AddressInputElement} type.
+ */
 export const AddressInputStruct: Describe<AddressInputElement> = element(
   'AddressInput',
   {
     name: string(),
     chainId: CaipChainIdStruct as unknown as Struct<CaipChainId, CaipChainId>,
     value: optional(string()),
+    placeholder: optional(string()),
+    disabled: optional(boolean()),
   },
 );
 
