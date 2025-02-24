@@ -26,6 +26,7 @@ import {
   getJsxElementFromComponent,
   walkJsx,
 } from '@metamask/snaps-utils';
+import { toCaipAccountId } from '@metamask/utils';
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -120,14 +121,15 @@ function getComponentStateValue(
     case 'Checkbox':
       return element.props.checked;
 
-    case 'AddressInput':
+    case 'AddressInput': {
       if (!element.props.value) {
         return null;
       }
 
       // Construct CAIP-10 Id
-      return `${element.props.chainId}:${element.props.value}`;
-
+      const [namespace, reference] = element.props.chainId.split(':');
+      return toCaipAccountId(namespace, reference, element.props.value);
+    }
     default:
       return element.props.value;
   }
