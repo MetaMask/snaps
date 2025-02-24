@@ -6,7 +6,12 @@ import {
   string,
   union,
 } from '@metamask/superstruct';
-import { JsonStruct, hasProperty, isObject } from '@metamask/utils';
+import {
+  CaipAccountIdStruct,
+  JsonStruct,
+  hasProperty,
+  isObject,
+} from '@metamask/utils';
 
 import { AssetSelectorStateStruct, FileStruct } from './handlers';
 import { selectiveUnion } from '../internals';
@@ -27,6 +32,7 @@ export const StateStruct = union([
   FileStruct,
   string(),
   boolean(),
+  CaipAccountIdStruct,
 ]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));

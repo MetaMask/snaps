@@ -37,6 +37,7 @@ import {
   parseCaipAccountId,
   parseCaipAssetType,
 } from '@metamask/utils';
+import { toCaipAccountId } from '@metamask/utils';
 
 /**
  * A function to get the MultichainAssetController state.
@@ -71,7 +72,6 @@ type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
 };
-
 /**
  * Get a JSX element from a component or JSX element. If the component is a
  * JSX element, it is returned as is. Otherwise, the component is converted to
@@ -277,14 +277,15 @@ function getComponentStateValue(
     case 'AssetSelector':
       return getAssetSelectorStateValue(element.props.value, getAssetsState);
 
-    case 'AddressInput':
+    case 'AddressInput': {
       if (!element.props.value) {
         return null;
       }
 
       // Construct CAIP-10 Id
-      return `${element.props.chainId}:${element.props.value}`;
-
+      const [namespace, reference] = element.props.chainId.split(':');
+      return toCaipAccountId(namespace, reference, element.props.value);
+    }
     default:
       return element.props.value;
   }
