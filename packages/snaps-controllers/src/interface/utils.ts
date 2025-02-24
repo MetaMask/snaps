@@ -36,8 +36,9 @@ import {
   type CaipAccountId,
   parseCaipAccountId,
   parseCaipAssetType,
+  toCaipAccountId,
+  parseCaipChainId,
 } from '@metamask/utils';
-import { toCaipAccountId } from '@metamask/utils';
 
 /**
  * A function to get the MultichainAssetController state.
@@ -283,7 +284,7 @@ function getComponentStateValue(
       }
 
       // Construct CAIP-10 Id
-      const [namespace, reference] = element.props.chainId.split(':');
+      const { namespace, reference } = parseCaipChainId(element.props.chainId);
       return toCaipAccountId(namespace, reference, element.props.value);
     }
     default:
