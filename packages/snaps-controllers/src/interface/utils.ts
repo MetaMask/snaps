@@ -26,7 +26,7 @@ import {
   getJsxElementFromComponent,
   walkJsx,
 } from '@metamask/snaps-utils';
-import { toCaipAccountId } from '@metamask/utils';
+import { toCaipAccountId, parseCaipChainId } from '@metamask/utils';
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -127,7 +127,7 @@ function getComponentStateValue(
       }
 
       // Construct CAIP-10 Id
-      const [namespace, reference] = element.props.chainId.split(':');
+      const { namespace, reference } = parseCaipChainId(element.props.chainId);
       return toCaipAccountId(namespace, reference, element.props.value);
     }
     default:
