@@ -6597,7 +6597,7 @@ describe('SnapController', () => {
           [snapId]: {},
         }),
       ).rejects.toThrow(
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "foo".`,
+        `Invalid snap ID: Invalid or no prefix found. Expected Snap ID to start with one of: "npm:", "local:", but received: "foo".`,
       );
 
       controller.destroy();
