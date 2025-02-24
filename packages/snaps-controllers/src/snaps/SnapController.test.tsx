@@ -10700,4 +10700,57 @@ describe('SnapController', () => {
       snapController.destroy();
     });
   });
+
+  describe('SnapController:updateLastInteraction', () => {
+    it('should update last snap interaction time', () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      const handlerType = HandlerType.OnRpcRequest;
+      const spyOnUpdate = jest.spyOn(snapController as any, 'update');
+
+      snapController.updateLastInteraction(snap.id, handlerType);
+
+      expect(spyOnUpdate).toHaveBeenCalledTimes(1);
+      expect(spyOnUpdate).toHaveBeenCalledWith(expect.any(Function));
+
+      const stateUpdater = spyOnUpdate.mock.calls[0][0] as (state: any) => void;
+      const mockState: { snaps: Record<string, any> } = {
+        snaps: { [snap.id]: {} },
+      };
+      stateUpdater(mockState);
+      expect(mockState.snaps[snap.id]?.lastInteraction).toBeDefined();
+    });
+
+    it('should not update last interaction if handler is not on allowlist', () => {
+      const messenger = getSnapControllerMessenger();
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      const handlerType = HandlerType.OnCronjob;
+      // @ts-expect-error Spying on private method
+      const spyOnUpdate = jest.spyOn(snapController, 'update');
+
+      snapController.updateLastInteraction(snap.id, handlerType);
+
+      expect(spyOnUpdate).toHaveBeenCalledTimes(0);
+    });
+  });
 });
