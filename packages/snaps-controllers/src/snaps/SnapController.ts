@@ -1507,7 +1507,10 @@ export class SnapController extends BaseController<
     );
   }
 
-  _onUnhandledSnapError(snapId: string, _error: SnapErrorJson) {
+  _onUnhandledSnapError(snapId: string, error: SnapErrorJson) {
+    // Log the error that caused the crash
+    // so it gets raised to the developer for debugging purposes.
+    logError(error);
     this.stopSnap(snapId as SnapId, SnapStatusEvents.Crash).catch(
       (stopSnapError) => {
         // TODO: Decide how to handle errors.
