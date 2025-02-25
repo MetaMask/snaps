@@ -64,6 +64,7 @@
     "@metamask/name-lookup-example-snap": "workspace:^",
     "@metamask/network-example-snap": "workspace:^",
     "@metamask/notification-example-snap": "workspace:^",
+    "@metamask/preferences-example-snap": "workspace:^",
     "@metamask/preinstalled-example-snap": "workspace:^",
     "@metamask/protocol-example-snap": "workspace:^",
     "@metamask/send-flow-example-snap": "workspace:^",

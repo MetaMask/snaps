@@ -66,6 +66,9 @@ The following is a list of the snaps in this directory.
 - [**`packages/notifications`**](./packages/notifications): This snap
   demonstrates how to use the `snap_notify` method to display notifications to
   the user, either as a MetaMask notification or as a desktop notification.
+- - [**`packages/preferences`**](./packages/preferences): This snap
+    demonstrates how to use the `snap_getPreferences` method to get the user's preferences
+    from the executing client.
 - [**`packages/transaction-insights`**](./packages/transaction-insights):
   This snap demonstrates how to use `endowment:transaction-insights` permission,
   and provide transaction insights to the user.
