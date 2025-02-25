@@ -37,7 +37,7 @@
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../../../scripts/since-latest-release.sh",
     "start": "mm-snap watch",
-    "test": "jest --reporters=jest-silent-reporter --passWithNoTests",
+    "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
