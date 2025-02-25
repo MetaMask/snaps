@@ -41,5 +41,33 @@ describe('onRpcRequest', () => {
         useExternalPricingData: true,
       });
     });
+
+    it('returns the result from snap_getPreferences with set options', async () => {
+      const { request } = await installSnap({
+        options: {
+          locale: 'foo',
+          useTokenDetection: false,
+          useNftDetection: false,
+          useExternalPricingData: false,
+        },
+      });
+
+      const response = await request({
+        method: 'getPreferences',
+      });
+
+      expect(response).toRespondWith({
+        currency: 'usd',
+        locale: 'foo',
+        hideBalances: false,
+        useSecurityAlerts: true,
+        simulateOnChainActions: true,
+        useTokenDetection: false,
+        batchCheckBalances: true,
+        displayNftMedia: true,
+        useNftDetection: false,
+        useExternalPricingData: false,
+      });
+    });
   });
 });
