@@ -37,6 +37,7 @@ describe('snap_getPreferences', () => {
           displayNftMedia: false,
           useNftDetection: false,
           useExternalPricingData: true,
+          enableAnalytics: false,
         }),
       };
 
@@ -60,6 +61,7 @@ describe('snap_getPreferences', () => {
         displayNftMedia: false,
         useNftDetection: false,
         useExternalPricingData: true,
+        enableAnalytics: false,
       });
     });
   });

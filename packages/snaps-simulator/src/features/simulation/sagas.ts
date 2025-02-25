@@ -141,6 +141,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         displayNftMedia: true,
         useNftDetection: true,
         useExternalPricingData: true,
+        enableAnalytics: true,
       }),
       getUnlockPromise: async () => Promise.resolve(true),
       showDialog: async (...args: Parameters<typeof showDialog>) =>

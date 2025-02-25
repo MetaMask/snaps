@@ -19,6 +19,7 @@ describe('getOptions', () => {
         "useNftDetection": true,
         "useSecurityAlerts": true,
         "useTokenDetection": true,
+        "enableAnalytics": true,
       }
     `);
   });
@@ -44,6 +45,7 @@ describe('getOptions', () => {
         "useNftDetection": true,
         "useSecurityAlerts": true,
         "useTokenDetection": true,
+        "enableAnalytics": true,
       }
     `);
   });

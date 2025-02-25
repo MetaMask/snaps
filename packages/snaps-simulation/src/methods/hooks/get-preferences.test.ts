@@ -20,6 +20,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       displayNftMedia: true,
       useNftDetection: true,
       useExternalPricingData: true,
+      enableAnalytics: true,
     });
   });
 
@@ -41,6 +42,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       displayNftMedia: true,
       useNftDetection: true,
       useExternalPricingData: true,
+      enableAnalytics: true,
     });
   });
 
@@ -62,6 +64,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       displayNftMedia: true,
       useNftDetection: true,
       useExternalPricingData: true,
+      enableAnalytics: true,
     });
   });
 
@@ -83,6 +86,7 @@ describe('getGetPreferencesMethodImplementation', () => {
       displayNftMedia: true,
       useNftDetection: true,
       useExternalPricingData: true,
+      enableAnalytics: true,
     });
   });
 });
