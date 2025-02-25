@@ -15,6 +15,7 @@ import {
  * @returns The JSON-RPC response.
  * @see https://docs.metamask.io/snaps/reference/exports/#onrpcrequest
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#wallet_invokesnap
+ * @see https://docs.metamask.io/snaps/reference/snaps-api/#snap_getpreferences
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
