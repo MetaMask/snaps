@@ -32,7 +32,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
     "since-latest-release": "../../scripts/since-latest-release.sh",
-    "start": "yarn workspaces foreach --parallel --verbose --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
+    "start": "yarn workspaces foreach --parallel --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",
     "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",

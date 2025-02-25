@@ -32,7 +32,7 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!packages/**\" --ignore-path ../../.gitignore",
     "since-latest-release": "../../scripts/since-latest-release.sh",
-    "start": "yarn workspaces foreach --worktree --parallel --verbose --interlaced --no-private --jobs unlimited run start",
+    "start": "yarn workspaces filter --include 'packages/examples/packages/**' --parallel --interlaced --no-private --jobs unlimited run start",
     "start:test": "yarn start",
     "test": "jest --reporters=jest-silent-reporter",
     "test:clean": "jest --clearCache",
