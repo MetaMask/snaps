@@ -1,18 +1,15 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
-  copyable,
-  UserRejectedRequestError,
   MethodNotFoundError,
+  UserRejectedRequestError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { sign } from '@noble/bls12-381';
 
 import type { SignMessageParams } from './types';
-import { getEntropy } from './utils';
+import { getEntropy, getEntropySourceName } from './utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -31,19 +28,22 @@ import { getEntropy } from './utils';
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'signMessage': {
-      const { message, salt } = request.params as SignMessageParams;
+      const { message, salt, source } = request.params as SignMessageParams;
 
       const approved = await snap.request({
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Signature request'),
-            text(
-              'Do you want to sign the following message with snap entropy?',
-            ),
-            copyable(message),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>
+                Do you want to sign the following message with Snap entropy, and
+                the entropy source "{await getEntropySourceName(source)}"?
+              </Text>
+              <Copyable value={message} />
+            </Box>
+          ),
         },
       });
 
@@ -51,9 +51,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         throw new UserRejectedRequestError();
       }
 
-      const privateKey = await getEntropy(salt);
+      const privateKey = await getEntropy(salt, source);
       const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
+    }
+
+    case 'getEntropySources': {
+      return await snap.request({
+        method: 'snap_listEntropySources',
+      });
     }
 
     default:

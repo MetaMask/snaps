@@ -15,4 +15,10 @@ export type SignMessageParams = {
    * Defaults to "Signing key".
    */
   salt?: string;
+
+  /**
+   * The entropy source to use for the signature. If not provided, the primary
+   * entropy source will be used.
+   */
+  source?: string | undefined;
 };
