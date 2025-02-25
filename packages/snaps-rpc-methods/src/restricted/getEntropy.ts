@@ -33,6 +33,7 @@ type GetEntropySpecification = ValidPermissionSpecification<{
 export const GetEntropyArgsStruct = object({
   version: literal(1),
   salt: optional(string()),
+  source: optional(string()),
 });
 
 /**
@@ -74,9 +75,14 @@ export const getEntropyBuilder = Object.freeze({
 
 export type GetEntropyHooks = {
   /**
-   * @returns The mnemonic of the user's primary keyring.
+   * Get the mnemonic of the provided source. If no source is provided, the
+   * mnemonic of the primary keyring will be returned.
+   *
+   * @param source - The optional ID of the source to get the mnemonic of.
+   * @returns The mnemonic of the provided source, or the default source if no
+   * source is provided.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -130,7 +136,7 @@ function getEntropyImplementation({
     );
 
     await getUnlockPromise(true);
-    const mnemonicPhrase = await getMnemonic();
+    const mnemonicPhrase = await getMnemonic(params.source);
 
     return deriveEntropy({
       input: origin,
