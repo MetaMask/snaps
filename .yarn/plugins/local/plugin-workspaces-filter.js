@@ -144,6 +144,16 @@ module.exports = {
         validator: isBoolean,
       });
 
+      interlaced = Option.Boolean(`--interlaced`, false, {
+        description: `Print the output of commands in real-time instead of buffering it`,
+        validator: isBoolean,
+      });
+
+      jobs = Option.String(`--jobs`, {
+        description: `Number of jobs to run concurrently`,
+        validator: isString,
+      });
+
       include = Option.String('--include', {
         description: `List workspaces based on a glob pattern`,
         validator: isString,
@@ -176,6 +186,14 @@ module.exports = {
         if (this.topological) {
           extraArgs.push('--topological');
           extraArgs.push('--topological-dev');
+        }
+
+        if (this.interlaced) {
+          extraArgs.push('--interlaced');
+        }
+
+        if (this.jobs) {
+          extraArgs.push('--jobs', this.jobs.toString());
         }
 
         const includes = workspaces.map((workspace) => workspace.manifest.name)
