@@ -5933,6 +5933,7 @@ __metadata:
     "@metamask/providers": "npm:^20.0.0"
     "@metamask/send-flow-example-snap": "workspace:^"
     "@metamask/signature-insights-example-snap": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/utils": "npm:^11.2.0"
     "@metamask/wasm-example-snap": "workspace:^"

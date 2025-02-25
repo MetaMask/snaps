@@ -1,3 +1,5 @@
+export * from './get-entropy-sources';
+export * from './get-mnemonic';
 export * from './get-preferences';
 export * from './interface';
 export * from './notifications';
