@@ -4,5 +4,5 @@
     "baseUrl": "./",
     "composite": false
   },
-  "include": ["src", "rollup.config.js"]
+  "include": ["src", "rollup.config.mjs"]
 }

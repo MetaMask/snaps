@@ -64,7 +64,6 @@ export type RpcOrigins = Infer<typeof RpcOriginsStruct>;
  */
 export function assertIsRpcOrigins(
   value: unknown,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   ErrorWrapper?: AssertionErrorConstructor,
 ): asserts value is RpcOrigins {
   assertStruct(
@@ -91,7 +90,6 @@ export type KeyringOrigins = Infer<typeof KeyringOriginsStruct>;
  */
 export function assertIsKeyringOrigins(
   value: unknown,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   ErrorWrapper?: AssertionErrorConstructor,
 ): asserts value is KeyringOrigins {
   assertStruct(

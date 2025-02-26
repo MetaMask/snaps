@@ -23,9 +23,8 @@ import {
   createUnion,
   validateLink,
   validateTextLinks,
-  type Snap,
 } from '@metamask/snaps-utils';
-import type { InferMatching } from '@metamask/snaps-utils';
+import type { InferMatching, Snap } from '@metamask/snaps-utils';
 import { object, string, optional } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';

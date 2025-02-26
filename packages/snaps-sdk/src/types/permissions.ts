@@ -1,7 +1,5 @@
 import type { SupportedCurve } from '@metamask/key-tree';
-import type { JsonRpcRequest } from '@metamask/utils';
-
-import type { ChainId } from './caip';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 
 export type EmptyObject = Record<string, never>;
 
@@ -49,7 +47,7 @@ export type InitialPermissions = Partial<{
     maxRequestTime?: number;
   };
   'endowment:name-lookup': {
-    chains?: ChainId[];
+    chains?: CaipChainId[];
     matchers?: NameLookupMatchers;
     maxRequestTime?: number;
   };

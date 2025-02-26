@@ -29,6 +29,7 @@ describe('Bold', () => {
     const result = (
       <Bold>
         Hello
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && 'world'}
       </Bold>
     );

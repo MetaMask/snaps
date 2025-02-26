@@ -22,15 +22,15 @@ import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
-import { log } from '../logging';
-import { Timer } from '../snaps/Timer';
-import { hasTimedOut, withTimeout } from '../utils';
 import type {
   ExecutionService,
   ExecutionServiceMessenger,
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';
+import { log } from '../logging';
+import { Timer } from '../snaps/Timer';
+import { hasTimedOut, withTimeout } from '../utils';
 
 const controllerName = 'ExecutionService';
 
@@ -64,27 +64,32 @@ export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
-  #snapRpcHooks: Map<string, SnapRpcHook>;
+  name: typeof controllerName = controllerName;
+
+  state = null;
+
+  readonly #snapRpcHooks: Map<string, SnapRpcHook>;
 
   // Cannot be hash private yet because of tests.
   protected jobs: Map<string, Job<WorkerType>>;
 
   // Cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private readonly setupSnapProvider: SetupSnapProvider;
 
-  #snapToJobMap: Map<string, string>;
+  readonly #snapToJobMap: Map<string, string>;
 
-  #jobToSnapMap: Map<string, string>;
+  readonly #jobToSnapMap: Map<string, string>;
 
-  #messenger: ExecutionServiceMessenger;
+  readonly #messenger: ExecutionServiceMessenger;
 
-  #initTimeout: number;
+  readonly #initTimeout: number;
 
-  #pingTimeout: number;
+  readonly #pingTimeout: number;
 
-  #terminationTimeout: number;
+  readonly #terminationTimeout: number;
 
-  #usePing: boolean;
+  readonly #usePing: boolean;
 
   constructor({
     setupSnapProvider,
@@ -112,6 +117,9 @@ export abstract class AbstractExecutionService<WorkerType>
    * Constructor helper for registering the controller's messaging system
    * actions.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private registerMessageHandlers(): void {
     this.#messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
@@ -356,6 +364,9 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap whose message handler to get.
    * @returns The RPC request handler for the snap.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private getRpcRequestHandler(snapId: string) {
     return this.#snapRpcHooks.get(snapId);
   }
@@ -433,6 +444,7 @@ export abstract class AbstractExecutionService<WorkerType>
   }
 
   // Cannot be hash private yet because of tests.
+  // eslint-disable-next-line no-restricted-syntax
   private async command(
     jobId: string,
     message: JsonRpcRequest,
@@ -443,8 +455,6 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    // eslint is blocking `await` usage even though `handle` overload returns a promise.
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     const response = await job.rpcEngine.handle(message);
 
     if (isJsonRpcFailure(response)) {

@@ -11,14 +11,17 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type {
+  PendingJsonRpcResponse,
+  Json,
+  JsonRpcRequest,
+} from '@metamask/utils';
 import {
   getJsonSize,
   hasProperty,
   isObject,
   assert,
   JsonStruct,
-  type Json,
 } from '@metamask/utils';
 
 import {
@@ -232,7 +235,6 @@ async function getNewState(
  * @returns The new object with the key set to the value.
  */
 export function set(
-  // eslint-disable-next-line @typescript-eslint/default-param-last
   object: Record<string, Json> | null,
   key: string,
   value: Json,

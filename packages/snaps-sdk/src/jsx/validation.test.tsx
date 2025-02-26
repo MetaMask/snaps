@@ -589,7 +589,7 @@ describe('BoxStruct', () => {
         <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
-    <Box direction="horizontal" alignment="space-between">
+    <Box direction="horizontal" alignment="space-between" crossAlignment="end">
       <Text>foo</Text>
       <Row label="label">
         <Image src="<svg />" alt="alt" />
@@ -636,6 +636,10 @@ describe('BoxStruct', () => {
         <Image src="<svg />" alt="alt" />
       </Row>
     </Box>,
+    // @ts-expect-error - Invalid props.
+    <Box crossAlignment="bar">
+      <Text>foo</Text>
+    </Box>,
     <Box>
       <Value extra="foo" value="bar" />
     </Box>,
@@ -654,6 +658,7 @@ describe('FooterStruct', () => {
       <Button name="confirm">Confirm</Button>
     </Footer>,
     <Footer>
+      {/* eslint-disable-next-line no-constant-binary-expression */}
       <Button name="cancel">Cancel {true && 'foo'}</Button>
     </Footer>,
     <Footer requireScroll>

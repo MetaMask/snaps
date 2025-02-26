@@ -243,7 +243,7 @@ describe('nameLookupCaveatSpecifications', () => {
           value: ['eip155'],
         }),
       ).toThrow(
-        'Assertion failed: At path: 0 -- Expected a Chain ID matching `/^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/` but received "eip155".',
+        'Assertion failed: At path: 0 -- Expected a value of type `CaipChainId`, but received: `"eip155"`.',
       );
 
       expect(() =>

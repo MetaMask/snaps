@@ -5,8 +5,8 @@ import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { Configuration } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
-import type { ProcessedWebpackConfig } from '../config';
 import { getFunctionLoader, wasm } from './loaders';
 import {
   SnapsBuiltInResolver,
@@ -23,8 +23,14 @@ import {
   getImageSVG,
   getProgressHandler,
 } from './utils';
+import type { ProcessedWebpackConfig } from '../config';
 
 export type WebpackOptions = {
+  /**
+   * Whether to analyze the bundle.
+   */
+  analyze?: boolean;
+
   /**
    * Whether to watch for changes.
    */
@@ -68,8 +74,7 @@ export async function getDefaultConfiguration(
 ): Promise<Configuration> {
   const spinnerText = options.spinner?.text;
   const builtInResolver =
-    config.stats.builtIns &&
-    new SnapsBuiltInResolver(config.stats.builtIns, options.spinner);
+    config.stats.builtIns && new SnapsBuiltInResolver(config.stats.builtIns);
 
   return {
     /**
@@ -353,6 +358,13 @@ export async function getDefaultConfiguration(
           },
           options.spinner,
         ),
+
+      options.analyze &&
+        new BundleAnalyzerPlugin({
+          analyzerPort: 0,
+          logLevel: 'silent',
+          openAnalyzer: false,
+        }),
 
       /**
        * The `ProviderPlugin` is a Webpack plugin that automatically load

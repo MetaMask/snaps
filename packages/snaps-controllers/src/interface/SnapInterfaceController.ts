@@ -3,7 +3,7 @@ import type {
   HasApprovalRequest,
 } from '@metamask/approval-controller';
 import type {
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
@@ -26,12 +26,12 @@ import { assert, hasProperty } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
-import type { GetSnap } from '../snaps';
 import {
   constructState,
   getJsxInterface,
   validateInterfaceContext,
 } from './utils';
+import type { GetSnap } from '../snaps';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
@@ -127,7 +127,7 @@ export type SnapInterfaceControllerEvents =
   | SnapInterfaceControllerStateChangeEvent
   | NotificationListUpdatedEvent;
 
-export type SnapInterfaceControllerMessenger = RestrictedControllerMessenger<
+export type SnapInterfaceControllerMessenger = RestrictedMessenger<
   typeof controllerName,
   SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
   SnapInterfaceControllerEvents,

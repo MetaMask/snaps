@@ -5,12 +5,12 @@ set -u
 set -o pipefail
 
 # To get the latest version, run `yarn update-chrome`
-CHROME_VERSION='132.0.6834.83-1'
+CHROME_VERSION='133.0.6943.141-1'
 CHROME_BINARY="google-chrome-stable_${CHROME_VERSION}_amd64.deb"
 CHROME_BINARY_URL="https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/${CHROME_BINARY}"
 
 # To retrieve this checksum, run the `wget` and `shasum` commands below
-CHROME_BINARY_SHA512SUM='3e8b9fcf711f89241b17071f1187021d651c5ea147395e1d12f1d9f47e7b1f0704fc217bb2fa04b13ee3c8b6eac2f84da4a26140c536c03dd5ae466afa033d5c'
+CHROME_BINARY_SHA512SUM='84aad5d0f5ebd717ed8baf781e19be3c956503c0c13c4ed7b9e6e86194b2d682b8de8a1dbdb62c09b59d22b626655242046167f51a73dd40ac771e2db3aa26c7'
 
 wget -O "${CHROME_BINARY}" -t 5 "${CHROME_BINARY_URL}"
 

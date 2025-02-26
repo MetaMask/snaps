@@ -1,18 +1,18 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import {
   getSnapManifest,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
-import { getControllers, registerSnap } from '../controllers';
-import type { RestrictedMiddlewareHooks } from '../simulation';
-import { getMockOptions } from '../test-utils/options';
 import {
   asyncResolve,
   getEndowments,
   getPermissionSpecifications,
   resolve,
 } from './specifications';
+import { getControllers, registerSnap } from '../controllers';
+import type { RestrictedMiddlewareHooks } from '../simulation';
+import { getMockOptions } from '../test-utils/options';
 
 const MOCK_HOOKS: RestrictedMiddlewareHooks = {
   getMnemonic: jest.fn(),
@@ -45,7 +45,7 @@ describe('getPermissionSpecifications', () => {
         hooks: MOCK_HOOKS,
         runSaga: jest.fn(),
         options: getMockOptions(),
-        controllerMessenger: new ControllerMessenger(),
+        controllerMessenger: new Messenger(),
       }),
     ).toMatchInlineSnapshot(`
       {
@@ -144,6 +144,19 @@ describe('getPermissionSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:page-settings",
+        },
+        "endowment:protocol": {
+          "allowedCaveats": [
+            "protocolSnapScopes",
+            "maxRequestTime",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:protocol",
+          "validator": [Function],
         },
         "endowment:rpc": {
           "allowedCaveats": [
@@ -311,7 +324,7 @@ describe('getPermissionSpecifications', () => {
 describe('getEndowments', () => {
   it('returns the endowments', async () => {
     const controllers = getControllers({
-      controllerMessenger: new ControllerMessenger(),
+      controllerMessenger: new Messenger(),
       hooks: MOCK_HOOKS,
       runSaga: jest.fn(),
       options: getMockOptions(),
@@ -321,7 +334,6 @@ describe('getEndowments', () => {
       MOCK_SNAP_ID,
       getSnapManifest({
         initialPermissions: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           'endowment:network-access': {},
         },
       }),

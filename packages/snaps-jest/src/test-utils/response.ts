@@ -48,5 +48,6 @@ export function getMockInterfaceResponse(
     selectFromRadioGroup: jest.fn(),
     selectFromSelector: jest.fn(),
     uploadFile: jest.fn(),
+    waitForUpdate: jest.fn(),
   };
 }

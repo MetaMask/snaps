@@ -42,6 +42,7 @@ describe('Dropdown', () => {
     const result = (
       <Dropdown name="dropdown" value="foo">
         <Option value="foo">Foo</Option>
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && <Option value="bar">Bar</Option>}
       </Dropdown>
     );

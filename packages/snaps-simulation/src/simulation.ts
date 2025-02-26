@@ -2,7 +2,7 @@ import type {
   ActionConstraint,
   EventConstraint,
 } from '@metamask/base-controller';
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import {
   type CryptographicFunctions,
@@ -75,26 +75,27 @@ export type ExecutionServiceOptions<
  * @template Service - The type of the execution service.
  */
 export type InstallSnapOptions<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService<unknown>
-  >,
-> = ExecutionServiceOptions<Service> extends Record<string, never>
-  ? {
-      executionService: Service;
-      executionServiceOptions?: ExecutionServiceOptions<Service>;
-      options?: SimulationUserOptions;
-    }
-  : {
-      executionService: Service;
-      executionServiceOptions: ExecutionServiceOptions<Service>;
-      options?: SimulationUserOptions;
-    };
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService<unknown>>,
+> =
+  ExecutionServiceOptions<Service> extends Record<string, never>
+    ? {
+        executionService: Service;
+        executionServiceOptions?: ExecutionServiceOptions<Service>;
+        options?: SimulationUserOptions;
+      }
+    : {
+        executionService: Service;
+        executionServiceOptions: ExecutionServiceOptions<Service>;
+        options?: SimulationUserOptions;
+      };
 
 export type InstalledSnap = {
   snapId: SnapId;
   store: Store;
   executionService: InstanceType<typeof AbstractExecutionService>;
-  controllerMessenger: ControllerMessenger<ActionConstraint, EventConstraint>;
+  controllerMessenger: Messenger<ActionConstraint, EventConstraint>;
   runSaga: RunSagaFunction;
 };
 
@@ -253,9 +254,9 @@ export type PermittedMiddlewareHooks = {
  * @template Service - The type of the execution service.
  */
 export async function installSnap<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService
-  >,
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService>,
 >(
   snapId: SnapId,
   {
@@ -276,7 +277,7 @@ export async function installSnap<
   // Create Redux store.
   const { store, runSaga } = createStore(options);
 
-  const controllerMessenger = new ControllerMessenger<any, any>();
+  const controllerMessenger = new Messenger<any, any>();
 
   registerActions(controllerMessenger, runSaga);
 

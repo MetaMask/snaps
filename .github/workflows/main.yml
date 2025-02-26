@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  merge_group:
 
 jobs:
   check-workflows:
@@ -20,6 +21,30 @@ jobs:
         run: ${{ steps.download-actionlint.outputs.executable }} -color
         shell: bash
 
+  analyse-code:
+    name: Code scanner
+    needs: check-workflows
+    uses: ./.github/workflows/security-code-scanner.yml
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    secrets:
+      SECURITY_SCAN_METRICS_TOKEN: ${{ secrets.SECURITY_SCAN_METRICS_TOKEN }}
+      APPSEC_BOT_SLACK_WEBHOOK: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}
+
+  update-pull-request:
+    name: Update pull request
+    needs: check-workflows
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]' && github.actor != 'metamaskbot' }}
+    uses: ./.github/workflows/update-pull-request.yml
+    with:
+      dependabot: true
+      pull-request: ${{ github.event.pull_request.number }}
+      pull-request-title: ${{ github.event.pull_request.title }}
+    secrets:
+      PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+
   lint-build-test:
     name: Build, lint, and test
     needs: check-workflows
@@ -30,7 +55,7 @@ jobs:
   publish-staging-simulator:
     name: Publish Snaps Simulator to `staging` folder
     needs: lint-build-test
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml

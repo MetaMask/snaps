@@ -1,6 +1,7 @@
+import type { CaipChainId } from '@metamask/utils';
+
 import type { ComponentOrElement } from '..';
 import type { EnumToUnion } from '../../internals';
-import type { ChainId } from '../caip';
 
 /**
  * The severity level of content being returned from a transaction insight.
@@ -87,7 +88,7 @@ export type Transaction = EIP1559Transaction | LegacyTransaction;
  * @param args - The request arguments.
  * @param args.transaction - The transaction object, containing the address,
  * value, data, and other properties of the transaction.
- * @param args.chainId - The CAIP-2 {@link ChainId} of the network the
+ * @param args.chainId - The CAIP-2 {@link CaipChainId} of the network the
  * transaction is being submitted to.
  * @param args.transactionOrigin - The origin of the transaction. This is the
  * URL of the website that submitted the transaction. This is only available if
@@ -99,7 +100,7 @@ export type Transaction = EIP1559Transaction | LegacyTransaction;
  */
 export type OnTransactionHandler = (args: {
   transaction: Transaction;
-  chainId: ChainId;
+  chainId: CaipChainId;
   transactionOrigin?: string;
 }) => Promise<OnTransactionResponse | null>;
 

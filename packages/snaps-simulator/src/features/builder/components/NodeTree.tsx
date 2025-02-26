@@ -10,9 +10,9 @@ import { Tree } from '@minoru/react-dnd-treeview';
 import type { FunctionComponent } from 'react';
 import { useEffect, useRef } from 'react';
 
-import { canDropElement } from '../utils';
 import { Node } from './Node';
 import { Start } from './Start';
+import { canDropElement } from '../utils';
 
 export type NodeTreeProps = {
   items: NodeModel<JSXElement>[];
@@ -44,7 +44,7 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
         return {
           ...item,
           data: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unnecessary-type-assertion
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             type: item.data!.type,
             ...item.data,
             props: {
@@ -133,13 +133,11 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
       borderRadius="lg"
       flex="1"
       sx={{
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         '& > ul': {
           display: 'flex',
           flexDirection: 'column',
           flex: 1,
           marginY: '4',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           '& > li': {
             display: 'flex',
             flexDirection: 'column',
@@ -148,7 +146,6 @@ export const NodeTree: FunctionComponent<NodeTreeProps> = ({
           },
         },
         ul: { listStyleType: 'none' },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         li: { marginTop: '2' },
       }}
     >

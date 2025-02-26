@@ -1,7 +1,7 @@
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedControllerMessenger,
+  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
@@ -88,7 +88,7 @@ export type SnapsRegistryStateChangeEvent = ControllerStateChangeEvent<
 
 export type SnapsRegistryEvents = SnapsRegistryStateChangeEvent;
 
-export type SnapsRegistryMessenger = RestrictedControllerMessenger<
+export type SnapsRegistryMessenger = RestrictedMessenger<
   'SnapsRegistry',
   SnapsRegistryActions,
   SnapsRegistryEvents,
@@ -115,15 +115,15 @@ export class JsonSnapsRegistry extends BaseController<
   SnapsRegistryState,
   SnapsRegistryMessenger
 > {
-  #url: JsonSnapsRegistryUrl;
+  readonly #url: JsonSnapsRegistryUrl;
 
-  #publicKey: Hex;
+  readonly #publicKey: Hex;
 
-  #fetchFunction: typeof fetch;
+  readonly #fetchFunction: typeof fetch;
 
-  #recentFetchThreshold: number;
+  readonly #recentFetchThreshold: number;
 
-  #refetchOnAllowlistMiss: boolean;
+  readonly #refetchOnAllowlistMiss: boolean;
 
   #currentUpdate: Promise<void> | null;
 

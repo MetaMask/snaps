@@ -29,6 +29,7 @@ describe('Heading', () => {
     const result = (
       <Heading>
         Hello
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && 'world'}
       </Heading>
     );

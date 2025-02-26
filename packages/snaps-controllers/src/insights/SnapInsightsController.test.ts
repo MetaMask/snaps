@@ -8,6 +8,7 @@ import {
 import { createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
+import { SnapInsightsController } from './SnapInsightsController';
 import {
   getRestrictedSnapInsightsControllerMessenger,
   getRootSnapInsightsControllerMessenger,
@@ -17,7 +18,6 @@ import {
   TYPED_SIGNATURE_MOCK,
   MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS,
 } from '../test-utils';
-import { SnapInsightsController } from './SnapInsightsController';
 
 describe('SnapInsightsController', () => {
   it('adds insight for transactions', async () => {

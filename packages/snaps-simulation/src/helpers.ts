@@ -141,9 +141,7 @@ export type SnapHelpers = {
    * @param keyringRequest - Keyring request.
    * @returns The response.
    */
-  onKeyringRequest(
-    keyringRequest: KeyringOptions,
-  ): Promise<SnapResponseWithoutInterface>;
+  onKeyringRequest(keyringRequest: KeyringOptions): SnapRequest;
 
   /**
    * Get the response from the Snap's `onInstall` handler.
@@ -256,6 +254,8 @@ export function getHelpers({
     return response;
   };
 
+  // This can't be async because it returns a `SnapRequest`.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
   const onCronjob = (request: CronjobOptions) => {
     log('Running cronjob %o.', options);
 
@@ -270,12 +270,12 @@ export function getHelpers({
     });
   };
 
-  const onKeyringRequest = async (
-    request: KeyringOptions,
-  ): Promise<SnapResponseWithoutInterface> => {
+  // This can't be async because it returns a `SnapRequest`.
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  const onKeyringRequest = (request: KeyringOptions) => {
     log('Sending keyring request %o.', request);
 
-    const response = await handleRequest({
+    return handleRequest({
       snapId,
       store,
       executionService,
@@ -284,11 +284,11 @@ export function getHelpers({
       handler: HandlerType.OnKeyringRequest,
       request,
     });
-
-    return response;
   };
 
   return {
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     request: (request) => {
       log('Sending request %o.', request);
 
@@ -308,6 +308,8 @@ export function getHelpers({
 
     onKeyringRequest,
 
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     onInstall: (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onInstall handler.');
 
@@ -325,6 +327,8 @@ export function getHelpers({
       });
     },
 
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
     onUpdate: (request?: Pick<RequestOptions, 'origin'>) => {
       log('Running onUpdate handler.');
 

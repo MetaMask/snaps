@@ -2,7 +2,6 @@ import {
   instance,
   is,
   optional,
-  pattern,
   refine,
   size,
   string,
@@ -12,7 +11,7 @@ import {
 } from '@metamask/superstruct';
 import type { Infer, Struct } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
-import { VersionStruct } from '@metamask/utils';
+import { definePattern, VersionStruct } from '@metamask/utils';
 
 import type { SnapCaveatType } from './caveats';
 import type { SnapFunctionExports, SnapRpcHookArgs } from './handlers';
@@ -26,8 +25,8 @@ export enum NpmSnapFileNames {
 }
 
 export const NameStruct = size(
-  pattern(
-    string(),
+  definePattern(
+    'Snap Name',
     /^(?:@[a-z0-9-*~][a-z0-9-*._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/u,
   ),
   1,

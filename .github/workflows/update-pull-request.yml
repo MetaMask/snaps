@@ -4,11 +4,28 @@ on:
   issue_comment:
     types:
       - created
+  workflow_call:
+    secrets:
+      PULL_REQUEST_UPDATE_TOKEN:
+        required: true
+    inputs:
+      dependabot:
+        type: boolean
+        required: false
+        default: false
+      pull-request:
+        type: number
+        required: false
+        default: 0
+      pull-request-title:
+        type: string
+        required: false
+        default: ''
 
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-pr') }}
+    if: ${{ inputs.dependabot == true || (github.event.issue.pull_request && startsWith(github.event.comment.body, '@metamaskbot update-pr')) }}
     runs-on: ubuntu-latest
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
@@ -19,14 +36,15 @@ jobs:
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
   react-to-comment:
     name: React to the comment
     runs-on: ubuntu-latest
-    needs: is-fork-pull-request
+    needs:
+      - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
-    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -46,7 +64,8 @@ jobs:
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
-    needs: is-fork-pull-request
+    needs:
+      - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     outputs:
@@ -58,7 +77,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -81,7 +100,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -110,7 +129,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
         uses: actions/cache/restore@v4
         with:
@@ -145,7 +164,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
         uses: actions/cache/restore@v4
         with:
@@ -170,6 +189,37 @@ jobs:
           path: packages/examples/packages
           key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
 
+  update-chrome:
+    name: Update Chrome
+    runs-on: ubuntu-latest
+    if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+    needs:
+      - prepare
+      - dedupe-yarn-lock
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Restore yarn.lock
+        uses: actions/cache/restore@v4
+        with:
+          path: yarn.lock
+          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable
+      - name: Update Chrome
+        run: yarn update-chrome
+      - name: Cache install script
+        uses: actions/cache/save@v4
+        with:
+          path: scripts/install-chrome.sh
+          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
+
   commit-result:
     name: Commit result
     runs-on: ubuntu-latest
@@ -178,6 +228,7 @@ jobs:
       - dedupe-yarn-lock
       - regenerate-lavamoat-policies
       - update-examples
+      - update-chrome
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -189,7 +240,7 @@ jobs:
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.issue.number }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Configure Git
         run: |
           git config --global user.name 'MetaMask Bot'
@@ -203,10 +254,13 @@ jobs:
           path: yarn.lock
           key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
+      - name: Set commit prefix
+        if: ${{ inputs.dependabot == true }}
+        run: echo "COMMIT_PREFIX=[dependabot skip] " >> "$GITHUB_ENV"
       - name: Commit yarn.lock
         run: |
           git add yarn.lock
-          git commit -m "Deduplicate yarn.lock" || true
+          git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
         uses: actions/cache/restore@v4
         with:
@@ -216,7 +270,7 @@ jobs:
       - name: Commit LavaMoat policies
         run: |
           git add packages/snaps-execution-environments/lavamoat
-          git commit -m "Update LavaMoat policies" || true
+          git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
       - name: Restore examples
         uses: actions/cache/restore@v4
         with:
@@ -226,6 +280,18 @@ jobs:
       - name: Commit examples
         run: |
           git add packages/examples/packages
-          git commit -m "Update example snaps" || true
+          git commit -m "${COMMIT_PREFIX}Update example snaps" || true
+      - name: Restore install script
+        if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+        uses: actions/cache/restore@v4
+        with:
+          path: scripts/install-chrome.sh
+          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+      - name: Commit install script
+        if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
+        run: |
+          git add scripts/install-chrome.sh
+          git commit -m "${COMMIT_PREFIX}Update install Chrome script" || true
       - name: Push changes
         run: git push

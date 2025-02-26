@@ -1,5 +1,6 @@
 import type { FunctionComponent } from 'react';
 
+import { ClearData, SendData } from './components';
 import { Result, Snap } from '../../../components';
 import {
   MANAGE_STATE_SNAP_ID,
@@ -7,7 +8,6 @@ import {
   MANAGE_STATE_VERSION,
 } from '../state/constants';
 import { useSnapState } from '../state/hooks';
-import { ClearData, SendData } from './components';
 
 export const LegacyState: FunctionComponent = () => {
   const encryptedState = useSnapState('legacy_getState', true);

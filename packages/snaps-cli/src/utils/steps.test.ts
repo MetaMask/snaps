@@ -63,6 +63,44 @@ describe('executeSteps', () => {
     });
   });
 
+  it('updates the context if a step returns an object', async () => {
+    const steps = [
+      {
+        name: 'Step 1',
+        task: jest.fn(),
+      },
+      {
+        name: 'Step 2',
+        task: jest.fn().mockResolvedValue({ foo: 'baz' }),
+      },
+      {
+        name: 'Step 3',
+        task: jest.fn(),
+      },
+    ];
+
+    const context = {
+      foo: 'bar',
+    };
+
+    await executeSteps(steps, context);
+
+    expect(steps[0].task).toHaveBeenCalledWith({
+      ...context,
+      spinner: expect.any(Object),
+    });
+
+    expect(steps[0].task).toHaveBeenCalledWith({
+      ...context,
+      spinner: expect.any(Object),
+    });
+
+    expect(steps[2].task).toHaveBeenCalledWith({
+      foo: 'baz',
+      spinner: expect.any(Object),
+    });
+  });
+
   it('sets the exit code to 1 if a step throws an error', async () => {
     const log = jest.spyOn(console, 'error').mockImplementation();
 

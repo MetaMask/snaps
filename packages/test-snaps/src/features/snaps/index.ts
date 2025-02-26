@@ -22,6 +22,8 @@ export * from './name-lookup';
 export * from './network-access';
 export * from './notifications';
 export * from './preinstalled';
+export * from './preferences';
+export * from './protocol';
 export * from './transaction-insights';
 export * from './signature-insights';
 export * from './updates';

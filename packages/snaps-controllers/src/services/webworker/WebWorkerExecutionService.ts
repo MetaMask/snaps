@@ -18,7 +18,7 @@ type WebWorkerExecutionEnvironmentServiceArgs = {
 export const WORKER_POOL_ID = 'snaps-worker-pool';
 
 export class WebWorkerExecutionService extends AbstractExecutionService<string> {
-  #documentUrl: URL;
+  readonly #documentUrl: URL;
 
   #runtimeStream?: BasePostMessageStream;
 
@@ -37,8 +37,10 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
     documentUrl,
     messenger,
     setupSnapProvider,
+    ...args
   }: WebWorkerExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
     });
@@ -51,6 +53,9 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    *
    * @param job - The job to terminate.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected async terminateJob(job: TerminateJobArgs<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.
@@ -92,6 +97,9 @@ export class WebWorkerExecutionService extends AbstractExecutionService<string> 
    *
    * If the document already exists, this does nothing.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private async createDocument() {
     // We only want to create a single pool.
     if (document.getElementById(WORKER_POOL_ID)) {
