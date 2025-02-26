@@ -23,6 +23,8 @@ import {
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
+  CaipAssetTypeOrIdStruct,
+  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -40,6 +42,7 @@ import type {
   StringElement,
 } from './component';
 import type {
+  AssetSelectorElement,
   AvatarElement,
   SkeletonElement,
   AddressElement,
@@ -86,7 +89,10 @@ import {
   svg,
   typedUnion,
 } from '../internals';
-import type { EmptyObject } from '../types';
+import {
+  MatchingAddressesCaipAccountIdListStruct,
+  type EmptyObject,
+} from '../types';
 
 /**
  * A struct for the {@link Key} type.
@@ -408,6 +414,22 @@ export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
 });
 
 /**
+ * A struct for the {@link AssetSelectorElement} type.
+ */
+export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
+  'AssetSelector',
+  {
+    addresses: MatchingAddressesCaipAccountIdListStruct,
+    chainIds: optional(array(CaipChainIdStruct)) as unknown as Struct<
+      Infer<typeof CaipChainIdStruct>[] | undefined,
+      null
+    >,
+    value: optional(CaipAssetTypeOrIdStruct),
+    disabled: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link RadioElement} type.
  */
 export const RadioStruct: Describe<RadioElement> = element('Radio', {
@@ -475,6 +497,7 @@ const BOX_INPUT_BOTH = [
  * A subset of JSX elements that are allowed as single children of the Field component.
  */
 const FIELD_CHILDREN_ARRAY = [
+  AssetSelectorStruct,
   InputStruct,
   DropdownStruct,
   RadioGroupStruct,
@@ -482,6 +505,7 @@ const FIELD_CHILDREN_ARRAY = [
   CheckboxStruct,
   SelectorStruct,
 ] as [
+  typeof AssetSelectorStruct,
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
@@ -873,6 +897,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  */
 export const BoxChildStruct = typedUnion([
   AddressStruct,
+  AssetSelectorStruct,
   BoldStruct,
   BoxStruct,
   ButtonStruct,
@@ -936,6 +961,7 @@ export const RootJSXElementStruct = typedUnion([
  * A struct for the {@link JSXElement} type.
  */
 export const JSXElementStruct: Describe<JSXElement> = typedUnion([
+  AssetSelectorStruct,
   ButtonStruct,
   InputStruct,
   FileInputStruct,
