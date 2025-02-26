@@ -67,6 +67,36 @@ describe('validateBIP44Params', () => {
       'Invalid "coinType" parameter. Coin type must be a non-negative integer.',
     );
   });
+
+  it.each([
+    {},
+    [],
+    true,
+    false,
+    null,
+    -1,
+    1.1,
+    Infinity,
+    -Infinity,
+    NaN,
+    0x80000000,
+  ])('throws an error if the source is invalid', (value) => {
+    expect(() => {
+      validateBIP44Params({ coinType: 1, source: value });
+    }).toThrow(
+      'Invalid "source" parameter. Source must be a string if provided.',
+    );
+  });
+
+  it.each([
+    { coinType: 1 },
+    { coinType: 1, source: 'source-id' },
+    { coinType: 1, source: undefined },
+  ])('does not throw if the parameters are valid', (value) => {
+    expect(() => {
+      validateBIP44Params(value);
+    }).not.toThrow();
+  });
 });
 
 describe('validateBIP44Caveat', () => {

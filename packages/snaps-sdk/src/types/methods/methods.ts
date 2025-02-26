@@ -55,6 +55,10 @@ import type {
 } from './invoke-keyring';
 import type { InvokeSnapParams, InvokeSnapResult } from './invoke-snap';
 import type {
+  ListEntropySourcesParams,
+  ListEntropySourcesResult,
+} from './list-entropy-sources';
+import type {
   ManageAccountsParams,
   ManageAccountsResult,
 } from './manage-accounts';
@@ -94,6 +98,7 @@ export type SnapMethods = {
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
   snap_getPreferences: [GetPreferencesParams, GetPreferencesResult];
   snap_getState: [GetStateParams, GetStateResult];
+  snap_listEntropySources: [ListEntropySourcesParams, ListEntropySourcesResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
   snap_notify: [NotifyParams, NotifyResult];

@@ -288,10 +288,13 @@ export type DefaultSnapInterfaceWithoutFooter =
     ok(): Promise<void>;
   };
 
-export type DefaultSnapInterface =
+export type DefaultSnapInterface = (
   | DefaultSnapInterfaceWithFooter
   | DefaultSnapInterfaceWithPartialFooter
-  | DefaultSnapInterfaceWithoutFooter;
+  | DefaultSnapInterfaceWithoutFooter
+) & {
+  type?: never;
+};
 
 export type SnapInterface = (
   | SnapAlertInterface

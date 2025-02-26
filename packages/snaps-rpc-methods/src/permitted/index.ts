@@ -9,6 +9,7 @@ import type { GetCurrencyRateMethodHooks } from './getCurrencyRate';
 import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
 import type { GetSnapsHooks } from './getSnaps';
 import type { GetStateHooks } from './getState';
+import type { ListEntropySourcesHooks } from './listEntropySources';
 import type { RequestSnapsHooks } from './requestSnaps';
 import type { ResolveInterfaceMethodHooks } from './resolveInterface';
 import type { ScheduleBackgroundEventMethodHooks } from './scheduleBackgroundEvent';
@@ -20,6 +21,7 @@ export type PermittedRpcMethodHooks = ClearStateHooks &
   GetClientStatusHooks &
   GetSnapsHooks &
   GetStateHooks &
+  ListEntropySourcesHooks &
   RequestSnapsHooks &
   CreateInterfaceMethodHooks &
   UpdateInterfaceMethodHooks &

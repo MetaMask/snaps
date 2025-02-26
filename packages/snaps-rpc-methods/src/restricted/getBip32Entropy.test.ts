@@ -1,6 +1,9 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
+import {
+  MOCK_SNAP_ID,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+} from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip32EntropyBuilder,
@@ -191,6 +194,45 @@ describe('getBip32EntropyImplementation', () => {
           "publicKey": "0xd91d18b4540a2f30341e8463d5f9b25b14fae9a236dcbea338b668a318bb0867",
         }
       `);
+    });
+
+    it('calls `getMnemonic` with a different entropy source', async () => {
+      const getMnemonic = jest
+        .fn()
+        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      const getUnlockPromise = jest.fn();
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      expect(
+        await getBip32EntropyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+        })({
+          method: 'snap_getBip32Entropy',
+          context: { origin: MOCK_SNAP_ID },
+          params: {
+            path: ['m', "44'", "1'"],
+            curve: 'secp256k1',
+            source: 'source-id',
+          },
+        }),
+      ).toMatchInlineSnapshot(`
+        {
+          "chainCode": "0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
+          "curve": "secp256k1",
+          "depth": 2,
+          "index": 2147483649,
+          "masterFingerprint": 1404659567,
+          "network": "mainnet",
+          "parentFingerprint": 1829122711,
+          "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
+          "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
+        }
+      `);
+
+      expect(getMnemonic).toHaveBeenCalledWith('source-id');
     });
 
     it('uses custom client cryptography functions', async () => {

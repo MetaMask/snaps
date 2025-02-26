@@ -22,9 +22,14 @@ const targetName = 'snap_getBip32Entropy';
 
 export type GetBip32EntropyMethodHooks = {
   /**
-   * @returns The mnemonic of the user's primary keyring.
+   * Get the mnemonic of the provided source. If no source is provided, the
+   * mnemonic of the primary keyring will be returned.
+   *
+   * @param source - The optional ID of the source to get the mnemonic of.
+   * @returns The mnemonic of the provided source, or the default source if no
+   * source is provided.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -128,7 +133,7 @@ export function getBip32EntropyImplementation({
     const node = await getNode({
       curve: params.curve,
       path: params.path,
-      secretRecoveryPhrase: await getMnemonic(),
+      secretRecoveryPhrase: await getMnemonic(params.source),
       cryptographicFunctions: getClientCryptography(),
     });
 

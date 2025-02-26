@@ -16,6 +16,7 @@ export type * from './get-snaps';
 export type * from './get-state';
 export type * from './invoke-keyring';
 export type * from './invoke-snap';
+export type * from './list-entropy-sources';
 export type * from './manage-accounts';
 export * from './manage-state';
 export type * from './methods';

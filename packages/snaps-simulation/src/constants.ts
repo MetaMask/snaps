@@ -6,6 +6,13 @@ export const DEFAULT_SRP =
   'test test test test test test test test test test test ball';
 
 /**
+ * An alternative secret recovery phrase that is used for testing purposes. Do
+ * not use this to store any real funds!
+ */
+export const DEFAULT_ALTERNATIVE_SRP =
+  'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+
+/**
  * The default locale.
  */
 export const DEFAULT_LOCALE = 'en';
