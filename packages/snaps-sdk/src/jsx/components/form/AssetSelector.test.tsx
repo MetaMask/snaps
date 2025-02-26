@@ -4,6 +4,7 @@ describe('AssetSelector', () => {
   it('renders an asset selector', () => {
     const result = (
       <AssetSelector
+        name="foo"
         addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
       />
     );
@@ -11,6 +12,7 @@ describe('AssetSelector', () => {
     expect(result).toStrictEqual({
       type: 'AssetSelector',
       props: {
+        name: 'foo',
         addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
       },
       key: null,
@@ -20,6 +22,7 @@ describe('AssetSelector', () => {
   it('renders an asset selector with optional props', () => {
     const result = (
       <AssetSelector
+        name="foo"
         addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
         chainIds={['eip155:1']}
         value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
@@ -30,6 +33,7 @@ describe('AssetSelector', () => {
     expect(result).toStrictEqual({
       type: 'AssetSelector',
       props: {
+        name: 'foo',
         addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
         chainIds: ['eip155:1'],
         value: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',

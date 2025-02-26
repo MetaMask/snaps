@@ -781,6 +781,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'MultichainAssetsController:getState',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -798,6 +799,14 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       result: false,
       type: 'all',
     }));
+
+    messenger.registerActionHandler(
+      'MultichainAssetsController:getState',
+      () => ({
+        assetsMetadata: {},
+        accountsAssets: {},
+      }),
+    );
   }
 
   return snapInterfaceControllerMessenger;

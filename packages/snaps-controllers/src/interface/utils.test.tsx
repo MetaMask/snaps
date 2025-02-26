@@ -15,9 +15,15 @@ import {
   Selector,
   Card,
   SelectorOption,
+  AssetSelector,
 } from '@metamask/snaps-sdk/jsx';
 
-import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
+import {
+  assertNameIsUnique,
+  constructState,
+  getAssetSelectorStateValue,
+  getJsxInterface,
+} from './utils';
 
 describe('getJsxInterface', () => {
   it('returns the JSX interface for a JSX element', () => {
@@ -64,6 +70,10 @@ describe('assertNameIsUnique', () => {
 });
 
 describe('constructState', () => {
+  const elementDataGetters = {
+    getAssetMetadata: jest.fn(),
+  };
+
   it('can construct a new component state', () => {
     const element = (
       <Box>
@@ -76,7 +86,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -94,7 +104,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -116,7 +126,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
 
@@ -137,7 +147,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
 
@@ -169,7 +179,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
 
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
@@ -197,7 +207,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
@@ -235,7 +245,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -251,7 +261,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -264,7 +274,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -277,7 +287,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -293,7 +303,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -309,7 +319,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -329,7 +339,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -349,7 +359,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -365,7 +375,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -381,7 +391,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -401,7 +411,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -421,7 +431,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -434,7 +444,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: true,
     });
@@ -451,7 +461,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: false },
     });
@@ -468,7 +478,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: true },
     });
@@ -488,7 +498,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -508,7 +518,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -532,7 +542,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -556,9 +566,136 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
+    });
+  });
+
+  it('sets default value for root level AssetSelector', () => {
+    elementDataGetters.getAssetMetadata.mockReturnValue({
+      name: 'foobar',
+      symbol: 'FOO',
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
+  it('supports root level AssetSelector', () => {
+    elementDataGetters.getAssetMetadata.mockReturnValue({
+      name: 'foobar',
+      symbol: 'FOO',
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+          value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: {
+        asset: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        name: 'foobar',
+        symbol: 'FOO',
+      },
+    });
+  });
+
+  it('sets default value for AssetSelector in form', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AssetSelector
+              name="foo"
+              addresses={[
+                'eip155:0:0x1234567890123456789012345678901234567890',
+              ]}
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      form: { foo: null },
+    });
+  });
+
+  it('supports AssetSelector in form', () => {
+    elementDataGetters.getAssetMetadata.mockReturnValue({
+      name: 'foobar',
+      symbol: 'FOO',
+    });
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AssetSelector
+              name="foo"
+              addresses={[
+                'eip155:0:0x1234567890123456789012345678901234567890',
+              ]}
+              value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          asset: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+          name: 'foobar',
+          symbol: 'FOO',
+        },
+      },
+    });
+  });
+
+  it('sets the value to null if the asset metadata is not found', () => {
+    elementDataGetters.getAssetMetadata.mockReturnValue(undefined);
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+          value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: null,
     });
   });
 
@@ -579,7 +716,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { bar: 'option2' },
     });
@@ -610,7 +747,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { baz: 'option4' },
       form2: { bar: 'option2' },
@@ -624,7 +761,11 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({ foo: null, bar: null }, element);
+    const result = constructState(
+      { foo: null, bar: null },
+      element,
+      elementDataGetters,
+    );
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -641,7 +782,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -654,7 +795,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -672,7 +813,7 @@ describe('constructState', () => {
       </Form>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
@@ -685,7 +826,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
@@ -702,8 +843,45 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
+  });
+});
+
+describe('getAssetSelectorStateValue', () => {
+  const getAssetMetadata = jest.fn();
+
+  it('returns the asset selector state value', () => {
+    getAssetMetadata.mockReturnValue({
+      name: 'foobar',
+      symbol: 'FOO',
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        getAssetMetadata,
+      ),
+    ).toStrictEqual({
+      asset: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+      name: 'foobar',
+      symbol: 'FOO',
+    });
+  });
+
+  it('returns null if the value is not set', () => {
+    expect(getAssetSelectorStateValue(undefined, getAssetMetadata)).toBeNull();
+  });
+
+  it('returns null if the asset metadata is not found', () => {
+    getAssetMetadata.mockReturnValue(undefined);
+
+    expect(
+      getAssetSelectorStateValue(
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        getAssetMetadata,
+      ),
+    ).toBeNull();
   });
 });

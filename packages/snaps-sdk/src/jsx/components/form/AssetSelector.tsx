@@ -1,4 +1,4 @@
-import type { CaipAssetTypeOrId, CaipChainId } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
 import type { MatchingAddressesCaipAccountIdList } from 'src/types';
 
 import { createSnapComponent } from '../../component';
@@ -6,6 +6,8 @@ import { createSnapComponent } from '../../component';
 /**
  * The props of the {@link AssetSelector} component.
  *
+ * @property name - The name of the asset selector. This is used to identify the
+ * state in the form data.
  * @property addresses - The addresses of the account to pull the assets from.
  * Only one address is supported, but different chains can be used.
  * @property chainIds - The chain IDs to filter the assets.
@@ -13,9 +15,10 @@ import { createSnapComponent } from '../../component';
  * @property disabled - Whether the asset selector is disabled.
  */
 export type AssetSelectorProps = {
+  name: string;
   addresses: MatchingAddressesCaipAccountIdList;
   chainIds?: CaipChainId[] | undefined;
-  value?: CaipAssetTypeOrId | undefined;
+  value?: CaipAssetType | undefined;
   disabled?: boolean | undefined;
 };
 

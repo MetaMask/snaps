@@ -23,7 +23,7 @@ import {
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
-  CaipAssetTypeOrIdStruct,
+  CaipAssetTypeStruct,
   CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
@@ -419,12 +419,13 @@ export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
 export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
   'AssetSelector',
   {
+    name: string(),
     addresses: MatchingAddressesCaipAccountIdListStruct,
     chainIds: optional(array(CaipChainIdStruct)) as unknown as Struct<
       Infer<typeof CaipChainIdStruct>[] | undefined,
       null
     >,
-    value: optional(CaipAssetTypeOrIdStruct),
+    value: optional(CaipAssetTypeStruct),
     disabled: optional(boolean()),
   },
 );

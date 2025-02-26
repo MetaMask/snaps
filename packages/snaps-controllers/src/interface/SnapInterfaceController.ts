@@ -17,11 +17,12 @@ import type {
   SnapId,
   ComponentOrElement,
   InterfaceContext,
+  FungibleAssetMetadata,
 } from '@metamask/snaps-sdk';
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
+import type { CaipAssetType, Json } from '@metamask/utils';
 import { assert, hasProperty } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
@@ -72,12 +73,23 @@ export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   SnapInterfaceControllerState
 >;
 
+type MultichainAssetsControllerGetStateAction = ControllerGetStateAction<
+  'MultichainAssetsController',
+  {
+    assetsMetadata: {
+      [asset: CaipAssetType]: FungibleAssetMetadata;
+    };
+    accountsAssets: { [account: string]: CaipAssetType[] };
+  }
+>;
+
 export type SnapInterfaceControllerAllowedActions =
   | TestOrigin
   | MaybeUpdateState
   | HasApprovalRequest
   | AcceptRequest
-  | GetSnap;
+  | GetSnap
+  | MultichainAssetsControllerGetStateAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -249,7 +261,9 @@ export class SnapInterfaceController extends BaseController<
     validateInterfaceContext(context);
 
     const id = nanoid();
-    const componentState = constructState({}, element);
+    const componentState = constructState({}, element, {
+      getAssetMetadata: this.#getAssetMetadata.bind(this),
+    });
 
     this.update((draftState) => {
       // @ts-expect-error - TS2589: Type instantiation is excessively deep and
@@ -299,7 +313,9 @@ export class SnapInterfaceController extends BaseController<
     validateInterfaceContext(context);
 
     const oldState = this.state.interfaces[id].state;
-    const newState = constructState(oldState, element);
+    const newState = constructState(oldState, element, {
+      getAssetMetadata: this.#getAssetMetadata.bind(this),
+    });
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
@@ -424,6 +440,15 @@ export class SnapInterfaceController extends BaseController<
       id,
       value,
     );
+  }
+
+  #getAssetMetadata(assetId: CaipAssetType) {
+    // TODO: Introduce an action in MultichainAssetsController to get a specific asset metadata.
+    const assets = this.messagingSystem.call(
+      'MultichainAssetsController:getState',
+    );
+
+    return assets.assetsMetadata[assetId];
   }
 
   /**

@@ -8,7 +8,7 @@ import {
 } from '@metamask/superstruct';
 import { JsonStruct, hasProperty, isObject } from '@metamask/utils';
 
-import { FileStruct } from './handlers';
+import { AssetSelectorStateStruct, FileStruct } from './handlers';
 import { selectiveUnion } from '../internals';
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
@@ -22,7 +22,12 @@ import { ComponentStruct } from '../ui';
  * either the value of an input or a sub-state of a form.
  */
 
-export const StateStruct = union([FileStruct, string(), boolean()]);
+export const StateStruct = union([
+  AssetSelectorStateStruct,
+  FileStruct,
+  string(),
+  boolean(),
+]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));
 
