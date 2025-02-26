@@ -10039,9 +10039,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:^133.0.2":
-  version: 133.0.2
-  resolution: "chromedriver@npm:133.0.2"
+"chromedriver@npm:^133.0.3":
+  version: 133.0.3
+  resolution: "chromedriver@npm:133.0.3"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -10052,7 +10052,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10/577f5cbc3ab3f8f2d93a71fc7a6d315b786feaa9e515c71c696c4882cae0eff19e11793e7af90561b40a522ff48cc9ba689223106501807c0cdf0164c128d298
+  checksum: 10/e35a8efb628ca50534aad08ec29553963277f532a7fa7e6112205a0165b8773481bb5c2fe309828846846d5c37181ed58eed35b564c407f5da2971e00b77c246
   languageName: node
   linkType: hard
 
@@ -19849,7 +19849,7 @@ __metadata:
     "@types/lodash": "npm:^4"
     "@types/node": "npm:18.14.2"
     "@yarnpkg/types": "npm:^4.0.0"
-    chromedriver: "npm:^133.0.2"
+    chromedriver: "npm:^133.0.3"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
     eslint-config-prettier: "npm:^9.1.0"
