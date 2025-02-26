@@ -39,7 +39,7 @@ describe('onRpcRequest', () => {
           <Heading>Signature request</Heading>
           <Text>
             Do you want to sign the following message with Snap entropy, and the
-            entropy source "{'Primary source'}"?
+            entropy source "{'primary source'}"?
           </Text>
           <Copyable value="Hello, world!" />
         </Box>,
@@ -70,7 +70,7 @@ describe('onRpcRequest', () => {
           <Heading>Signature request</Heading>
           <Text>
             Do you want to sign the following message with Snap entropy, and the
-            entropy source "{'Primary source'}"?
+            entropy source "{'primary source'}"?
           </Text>
           <Copyable value="Hello, world!" />
         </Box>,

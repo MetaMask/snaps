@@ -6,10 +6,16 @@ describe('getGetEntropySourcesImplementation', () => {
 
     expect(fn()).toStrictEqual([
       {
-        id: 'entropy-source-1',
-        name: 'Entropy Source 1',
+        id: 'default',
+        name: 'Default Secret Recovery Phrase',
         type: 'mnemonic',
         primary: true,
+      },
+      {
+        id: 'alternative',
+        name: 'Alternative Secret Recovery Phrase',
+        type: 'mnemonic',
+        primary: false,
       },
     ]);
   });

@@ -1,10 +1,7 @@
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 
 import { getGetMnemonicImplementation } from './get-mnemonic';
-import {
-  DEFAULT_ALTERNATIVE_SRP,
-  DEFAULT_SRP,
-} from '@metamask/snaps-simulation';
+import { DEFAULT_ALTERNATIVE_SRP, DEFAULT_SRP } from '../../constants';
 
 describe('getGetMnemonicImplementation', () => {
   it('returns the default mnemonic phrase', async () => {
