@@ -1,6 +1,6 @@
 import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-import type { MatchingAddressesCaipAccountIdList } from 'src/types';
 
+import type { MatchingAddressesCaipAccountIdList } from '../../../types';
 import { createSnapComponent } from '../../component';
 
 /**
