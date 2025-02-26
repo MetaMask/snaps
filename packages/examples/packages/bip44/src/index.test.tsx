@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { assertIsConfirmationDialog, installSnap } from '@metamask/snaps-jest';
-import { copyable, heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -35,6 +35,23 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith(
         '0x96e2b36a8af526928326683f6d8ddb82fbfcd1ba1cd3f0382a4f092a19fcb46b87e836dd34075514c9b1a3b8f7bdc4f0',
+      );
+    });
+
+    it('returns a BIP-44 public key for a given coin type and address index with a different source', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'getPublicKey',
+        params: {
+          coinType: 3,
+          addressIndex: 5,
+          source: 'alternative',
+        },
+      });
+
+      expect(response).toRespondWith(
+        '0xadf494f336c373de010491dfb442a9dda4b6f640fbb81f0139deed7edb236817eaf8621722b01553134c4c91fbe89c45',
       );
     });
 
@@ -86,21 +103,54 @@ describe('onRpcRequest', () => {
       assertIsConfirmationDialog(ui);
 
       expect(ui).toRender(
-        panel([
-          heading('Signature request'),
-          text(
-            `Do you want to BLS sign "Hello, world!" with the following public key?`,
-          ),
-          copyable(
-            '0x96e2b36a8af526928326683f6d8ddb82fbfcd1ba1cd3f0382a4f092a19fcb46b87e836dd34075514c9b1a3b8f7bdc4f0',
-          ),
-        ]),
+        <Box>
+          <Heading>Signature request</Heading>
+          <Text>
+            Do you want to BLS sign "{'Hello, world!'}" with the following
+            public key?
+          </Text>
+          <Copyable value="0x96e2b36a8af526928326683f6d8ddb82fbfcd1ba1cd3f0382a4f092a19fcb46b87e836dd34075514c9b1a3b8f7bdc4f0" />
+        </Box>,
       );
 
       await ui.ok();
 
       expect(await response).toRespondWith(
         '0xa02ae3c1ecb58e91a9a1ca9184f06a1df68ac19539147011f43717cc480489340e4a4f64b4fd2b64399ee68c1b0afddb18011d97998cd0c61baed0195710e77a949cc8a0f398319294ff6e3e0752c199bd5d553a17ce5b5e3e45015fc5acb16b',
+      );
+    });
+
+    it('signs a message for the given coin type and address index with a different source', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'signMessage',
+        params: {
+          coinType: 3,
+          addressIndex: 5,
+          message: 'Hello, world!',
+          source: 'alternative',
+        },
+      });
+
+      const ui = await response.getInterface();
+      assertIsConfirmationDialog(ui);
+
+      expect(ui).toRender(
+        <Box>
+          <Heading>Signature request</Heading>
+          <Text>
+            Do you want to BLS sign "{'Hello, world!'}" with the following
+            public key?
+          </Text>
+          <Copyable value="0xadf494f336c373de010491dfb442a9dda4b6f640fbb81f0139deed7edb236817eaf8621722b01553134c4c91fbe89c45" />
+        </Box>,
+      );
+
+      await ui.ok();
+
+      expect(await response).toRespondWith(
+        '0xb01b6dd84f1aae227b25f8679d739508112c304819276843d057806e436cc0ccba16966e7b5b1bef1d55699531f31ed40908ce2a8d349e0bb5a8a5d840fb928b3fad499c6f117afdc740ac205d76c1ece8d4134822f88156243e926ddac99ab0',
       );
     });
 
@@ -118,15 +168,14 @@ describe('onRpcRequest', () => {
       assertIsConfirmationDialog(ui);
 
       expect(ui).toRender(
-        panel([
-          heading('Signature request'),
-          text(
-            `Do you want to BLS sign "Hello, world!" with the following public key?`,
-          ),
-          copyable(
-            '0xa9ad546540fca1662bdf3de110a456f2d825271e6d960cc5028224d4dc37c0e7fdd806b22fe94d9325548933e9c1ee68',
-          ),
-        ]),
+        <Box>
+          <Heading>Signature request</Heading>
+          <Text>
+            Do you want to BLS sign "{'Hello, world!'}" with the following
+            public key?
+          </Text>
+          <Copyable value="0xa9ad546540fca1662bdf3de110a456f2d825271e6d960cc5028224d4dc37c0e7fdd806b22fe94d9325548933e9c1ee68" />
+        </Box>,
       );
 
       await ui.ok();

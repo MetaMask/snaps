@@ -21,6 +21,12 @@ export type GetBip32PublicKeyParams = {
   compressed?: boolean | undefined;
 
   /**
+   * The entropy source to use for the signature. If not provided, the primary
+   * entropy source will be used.
+   */
+  source?: string | undefined;
+
+  /**
    * Miscellaneous parameters, which are passed to `snap_getBip32PublicKey`.
    */
   [key: string]: unknown;
@@ -47,4 +53,10 @@ export type SignMessageParams = {
    * The curve used to derive the account.
    */
   curve: 'secp256k1' | 'ed25519' | 'ed25519Bip32';
+
+  /**
+   * The entropy source to use for the signature. If not provided, the primary
+   * entropy source will be used.
+   */
+  source?: string | undefined;
 };

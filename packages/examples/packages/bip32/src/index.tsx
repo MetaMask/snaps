@@ -1,14 +1,11 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
-  copyable,
   InvalidParamsError,
   UserRejectedRequestError,
   MethodNotFoundError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import {
   add0x,
   assert,
@@ -62,13 +59,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Signature request'),
-            text(
-              `Do you want to ${curve} sign "${message}" with the following public key?`,
-            ),
-            copyable(add0x(node.publicKey)),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>
+                Do you want to {curve} sign "{message}" with the following
+                public key?
+              </Text>
+              <Copyable value={add0x(node.publicKey)} />
+            </Box>
+          ),
         },
       });
 

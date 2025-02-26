@@ -1,13 +1,10 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
-  copyable,
   MethodNotFoundError,
   UserRejectedRequestError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { getPublicKey, sign } from '@noble/bls12-381';
 
@@ -48,13 +45,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Signature request'),
-            text(
-              `Do you want to BLS sign "${message}" with the following public key?`,
-            ),
-            copyable(publicKey),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>
+                Do you want to BLS sign "{message}" with the following public
+                key?
+              </Text>
+              <Copyable value={publicKey} />
+            </Box>
+          ),
         },
       });
 

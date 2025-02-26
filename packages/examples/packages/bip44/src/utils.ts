@@ -13,12 +13,14 @@ import type { GetAccountParams } from './types';
  * specified, it defaults to the Bitcoin coin type (1).
  * @param params.addressIndex - The address index to get the account for. If
  * this is not specified, it defaults to the first address (`address_index` = 0).
+ * @param params.source - The entropy source to use for the entropy derivation.
  * @returns A private key, as a hexadecimal string, without the leading `0x`.
  * @see https://docs.metamask.io/snaps/reference/rpc-api/#snap_getbip44entropy
  */
 export const getPrivateKey = async ({
   coinType = 1,
   addressIndex = 0,
+  source,
 }: GetAccountParams = {}) => {
   // `snap_getBip44Entropy` returns a `JsonBIP44CoinTypeNode` object, which can
   // be used with the `deriveBIP44AddressKey` function from `@metamask/key-tree`
@@ -27,6 +29,7 @@ export const getPrivateKey = async ({
     method: 'snap_getBip44Entropy',
     params: {
       coinType,
+      source,
     },
   });
 

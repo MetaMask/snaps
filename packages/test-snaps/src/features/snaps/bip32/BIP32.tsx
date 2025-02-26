@@ -3,8 +3,11 @@ import type { FunctionComponent } from 'react';
 import { PublicKey, SignMessage } from './components';
 import { BIP_32_PORT, BIP_32_SNAP_ID, BIP_32_VERSION } from './constants';
 import { Snap } from '../../../components';
+import { useEntropySelector } from '../get-entropy/hooks';
 
 export const BIP32: FunctionComponent = () => {
+  const { selector, source } = useEntropySelector();
+
   return (
     <Snap
       name="BIP-32 Snap"
@@ -13,10 +16,11 @@ export const BIP32: FunctionComponent = () => {
       version={BIP_32_VERSION}
       testId="bip32"
     >
-      <PublicKey />
-      <SignMessage curve="secp256k1" />
-      <SignMessage curve="ed25519" />
-      <SignMessage curve="ed25519Bip32" />
+      {selector}
+      <PublicKey source={source} />
+      <SignMessage curve="secp256k1" source={source} />
+      <SignMessage curve="ed25519" source={source} />
+      <SignMessage curve="ed25519Bip32" source={source} />
     </Snap>
   );
 };

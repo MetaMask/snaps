@@ -1,16 +1,16 @@
 import type { FunctionComponent } from 'react';
-import { useState } from 'react';
 
-import { EntropySources, SignMessage } from './components';
+import { SignMessage } from './components';
 import {
   GET_ENTROPY_PORT,
   GET_ENTROPY_SNAP_ID,
   GET_ENTROPY_VERSION,
 } from './constants';
+import { useEntropySelector } from './hooks';
 import { Snap } from '../../../components';
 
 export const GetEntropy: FunctionComponent = () => {
-  const [source, setSource] = useState<string | undefined>(undefined);
+  const { selector, source } = useEntropySelector(true);
 
   return (
     <Snap
@@ -20,7 +20,7 @@ export const GetEntropy: FunctionComponent = () => {
       version={GET_ENTROPY_VERSION}
       testId="GetEntropySnap"
     >
-      <EntropySources onChange={setSource} />
+      {selector}
       <SignMessage source={source} />
     </Snap>
   );

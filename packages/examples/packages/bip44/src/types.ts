@@ -14,6 +14,12 @@ export type GetAccountParams = {
    * defaults to the first address (`address_index` = 0).
    */
   addressIndex?: number;
+
+  /**
+   * The entropy source to use for the signature. If not provided, the primary
+   * entropy source will be used.
+   */
+  source?: string | undefined;
 };
 
 /**
