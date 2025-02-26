@@ -6,13 +6,13 @@ import {
   Icon,
   Image,
   Input,
+  AddressInput,
   Text,
   type SnapComponent,
 } from '@metamask/snaps-sdk/jsx';
 
 import { AccountSelector } from './AccountSelector';
 import btcIcon from '../images/btc.svg';
-import jazzicon3 from '../images/jazzicon3.svg';
 import type { Account, SendFormErrors } from '../types';
 
 /**
@@ -22,7 +22,6 @@ import type { Account, SendFormErrors } from '../types';
  * @property accounts - The available accounts.
  * @property errors - The form errors.
  * @property selectedCurrency - The selected currency to display.
- * @property displayClearIcon - Whether to display the clear icon or not.
  * @property flushToAddress - Whether to flush the address field or not.
  */
 export type SendFormProps = {
@@ -30,7 +29,6 @@ export type SendFormProps = {
   accounts: Account[];
   errors?: SendFormErrors;
   selectedCurrency: 'BTC' | '$';
-  displayClearIcon: boolean;
   flushToAddress?: boolean;
 };
 
@@ -42,7 +40,6 @@ export type SendFormProps = {
  * @param props.accounts - The available accounts.
  * @param props.errors - The form errors.
  * @param props.selectedCurrency - The selected currency to display.
- * @param props.displayClearIcon - Whether to display the clear icon or not.
  * @param props.flushToAddress - Whether to flush the address field or not.
  * @returns The SendForm component.
  */
@@ -51,7 +48,6 @@ export const SendForm: SnapComponent<SendFormProps> = ({
   accounts,
   errors,
   selectedCurrency,
-  displayClearIcon,
   flushToAddress,
 }) => (
   <Form name="sendForm">
@@ -69,21 +65,12 @@ export const SendForm: SnapComponent<SendFormProps> = ({
       </Box>
     </Field>
     <Field label="To account" error={errors?.to}>
-      <Box>
-        <Image src={jazzicon3} />
-      </Box>
-      <Input
+      <AddressInput
         name="to"
+        chainId="eip155:0"
         placeholder="Enter receiving address"
         value={flushToAddress ? '' : undefined}
       />
-      {displayClearIcon && (
-        <Box>
-          <Button name="clear">
-            <Icon name="close" color="primary" />
-          </Button>
-        </Box>
-      )}
     </Field>
   </Form>
 );
