@@ -4,7 +4,11 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import type { BlockReason } from '@metamask/snaps-registry';
-import type { SnapId, Snap as TruncatedSnap } from '@metamask/snaps-sdk';
+import {
+  selectiveUnion,
+  type SnapId,
+  type Snap as TruncatedSnap,
+} from '@metamask/snaps-sdk';
 import type { Struct } from '@metamask/superstruct';
 import {
   is,
@@ -12,14 +16,12 @@ import {
   enums,
   intersection,
   literal,
-  pattern,
   refine,
   string,
-  union,
   validate,
 } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
-import { assert, isObject, assertStruct } from '@metamask/utils';
+import { assert, isObject, assertStruct, definePattern } from '@metamask/utils';
 import { base64 } from '@scure/base';
 import stableStringify from 'fast-json-stable-stringify';
 import validateNPMPackage from 'validate-npm-package-name';
@@ -228,7 +230,10 @@ export async function validateSnapShasum(
 export const LOCALHOST_HOSTNAMES = ['localhost', '127.0.0.1', '[::1]'] as const;
 
 // Require snap ids to only consist of printable ASCII characters
-export const BaseSnapIdStruct = pattern(string(), /^[\x21-\x7E]*$/u);
+export const BaseSnapIdStruct = definePattern(
+  'Base Snap Id',
+  /^[\x21-\x7E]*$/u,
+);
 
 const LocalSnapIdSubUrlStruct = uri({
   protocol: enums(['http:', 'https:']),
@@ -284,7 +289,35 @@ export const HttpSnapIdStruct = intersection([
   }),
 ]) as unknown as Struct<string, null>;
 
-export const SnapIdStruct = union([NpmSnapIdStruct, LocalSnapIdStruct]);
+export const SnapIdPrefixStruct = refine(
+  string(),
+  'Snap ID prefix',
+  (value) => {
+    if (
+      Object.values(SnapIdPrefixes).some((prefix) => value.startsWith(prefix))
+    ) {
+      return true;
+    }
+
+    const allowedPrefixes = Object.values(SnapIdPrefixes)
+      .map((prefix) => `"${prefix}"`)
+      .join(', ');
+
+    return `Invalid or no prefix found. Expected Snap ID to start with one of: ${allowedPrefixes}, but received: "${value}"`;
+  },
+);
+
+export const SnapIdStruct = selectiveUnion((value) => {
+  if (typeof value === 'string' && value.startsWith(SnapIdPrefixes.npm)) {
+    return NpmSnapIdStruct;
+  }
+
+  if (typeof value === 'string' && value.startsWith(SnapIdPrefixes.local)) {
+    return LocalSnapIdStruct;
+  }
+
+  return SnapIdPrefixStruct;
+});
 
 /**
  * Extracts the snap prefix from a snap ID.
@@ -331,21 +364,6 @@ export function isSnapId(value: unknown): value is SnapId {
  */
 export function assertIsValidSnapId(value: unknown): asserts value is SnapId {
   assertStruct(value, SnapIdStruct, 'Invalid snap ID');
-}
-
-/**
- * Typeguard to ensure a chainId follows the CAIP-2 standard.
- *
- * @param chainId - The chainId being tested.
- * @returns `true` if the value is a valid CAIP chain id, and `false` otherwise.
- */
-export function isCaipChainId(chainId: unknown): chainId is string {
-  return (
-    typeof chainId === 'string' &&
-    /^(?<namespace>[-a-z0-9]{3,8}):(?<reference>[-a-zA-Z0-9]{1,32})$/u.test(
-      chainId,
-    )
-  );
 }
 
 /**

@@ -75,6 +75,7 @@ describe('Link', () => {
     const result = (
       <Link href="https://example.com">
         Hello
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && 'world'}
       </Link>
     );

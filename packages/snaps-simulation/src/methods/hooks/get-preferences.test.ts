@@ -1,5 +1,5 @@
-import { getMockOptions } from '../../test-utils/options';
 import { getGetPreferencesMethodImplementation } from './get-preferences';
+import { getMockOptions } from '../../test-utils/options';
 
 describe('getGetPreferencesMethodImplementation', () => {
   it('returns the implementation of the `getPreferences` hook', async () => {
@@ -13,6 +13,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'en',
       hideBalances: false,
+      useSecurityAlerts: true,
+      simulateOnChainActions: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -27,6 +34,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'nl',
       hideBalances: false,
+      useSecurityAlerts: true,
+      simulateOnChainActions: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -41,6 +55,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'dkk',
       locale: 'en',
       hideBalances: false,
+      useSecurityAlerts: true,
+      simulateOnChainActions: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      useExternalPricingData: true,
     });
   });
 
@@ -55,6 +76,13 @@ describe('getGetPreferencesMethodImplementation', () => {
       currency: 'usd',
       locale: 'en',
       hideBalances: true,
+      useSecurityAlerts: true,
+      simulateOnChainActions: true,
+      useTokenDetection: true,
+      batchCheckBalances: true,
+      displayNftMedia: true,
+      useNftDetection: true,
+      useExternalPricingData: true,
     });
   });
 });

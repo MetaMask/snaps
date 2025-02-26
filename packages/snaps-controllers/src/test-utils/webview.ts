@@ -1,23 +1,23 @@
-import { base64ToBytes, bytesToString } from '@metamask/utils';
+import { bytesToString } from '@metamask/utils';
 
 import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
 
 /**
- * Parses the injected JS and returns the decoded base64 payload.
+ * Parses the injected JS and returns the JSON payload.
  *
  * @param js - The injected JS.
- * @returns The parsed base64 payload as a string.
+ * @returns The decoded JSON as a string.
  */
 export function parseInjectedJS(js: string) {
-  const base64 = js.slice(20, -2);
-  const bytes = base64ToBytes(base64);
+  const byteString = js.slice(19, -1);
+  const bytes = new Uint8Array(JSON.parse(byteString));
   return bytesToString(bytes);
 }
 
 /**
  * Takes no param and return mocks necessary for testing WebViewMessageStream.
  *
- * @returns The mockWebView, mockGetWebView, and mockStream.
+ * @returns The mockWebView, and mockStream.
  */
 export function createWebViewObjects() {
   const registerMessageListenerA = jest.fn();
@@ -45,26 +45,21 @@ export function createWebViewObjects() {
     }),
   };
 
-  const mockGetWebViewA = jest.fn().mockResolvedValue(mockWebViewA);
-  const mockGetWebViewB = jest.fn().mockResolvedValue(mockWebViewB);
-
   const streamA = new WebViewMessageStream({
     name: 'a',
     target: 'b',
-    getWebView: mockGetWebViewA,
+    webView: mockWebViewA,
   });
 
   const streamB = new WebViewMessageStream({
     name: 'b',
     target: 'a',
-    getWebView: mockGetWebViewB,
+    webView: mockWebViewB,
   });
 
   return {
     mockWebViewA,
     mockWebViewB,
-    mockGetWebViewA,
-    mockGetWebViewB,
     streamA,
     streamB,
   };

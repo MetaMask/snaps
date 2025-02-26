@@ -50,7 +50,6 @@
       },
       "packages": {
         "@metamask/json-rpc-engine": true,
-        "@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/providers>is-stream": true,

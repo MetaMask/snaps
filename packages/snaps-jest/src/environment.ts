@@ -19,16 +19,14 @@ import { rootLogger, startServer } from './internals';
 import type { SnapsEnvironmentOptions } from './options';
 import { getOptions } from './options';
 
-/* eslint-disable */
 declare global {
   const snapsEnvironment: SnapsEnvironment;
 }
-/* eslint-enable */
 
 const log = createModuleLogger(rootLogger, 'environment');
 
 export class SnapsEnvironment extends NodeEnvironment {
-  #options: SnapsEnvironmentOptions;
+  readonly #options: SnapsEnvironmentOptions;
 
   #server: Server | undefined;
 
@@ -85,9 +83,9 @@ export class SnapsEnvironment extends NodeEnvironment {
    * @returns The installed Snap.
    */
   async installSnap<
-    Service extends new (...args: any[]) => InstanceType<
-      typeof AbstractExecutionService
-    >,
+    Service extends new (
+      ...args: any[]
+    ) => InstanceType<typeof AbstractExecutionService>,
   >(
     snapId: string = this.snapId,
     options: Partial<InstallSnapOptions<Service>> = {},

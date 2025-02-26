@@ -1,3 +1,5 @@
+import type { Compiler } from 'webpack';
+
 import type { ProcessedWebpackConfig } from '../../config';
 import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
@@ -14,7 +16,7 @@ export async function build(
   options?: WebpackOptions,
 ) {
   const compiler = await getCompiler(config, options);
-  return await new Promise<void>((resolve, reject) => {
+  return await new Promise<Compiler>((resolve, reject) => {
     compiler.run((runError) => {
       if (runError) {
         reject(runError);
@@ -27,7 +29,7 @@ export async function build(
           return;
         }
 
-        resolve();
+        resolve(compiler);
       });
     });
   });

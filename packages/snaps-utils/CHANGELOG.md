@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0]
+
+### Changed
+
+- **BREAKING:** Remove duplicate CAIP types ([#3071](https://github.com/MetaMask/snaps/pull/3071))
+  - The following functions, values, types, and structs were removed from `@metamask/snaps-utils`:
+    - `CHAIN_ID_REGEX`
+    - `ACCOUNT_ID_REGEX`
+    - `ACCOUNT_ADDRESS_REGEX`
+    - `parseChainId`
+    - `parseAccountId`
+    - `LimitedString`
+    - `ChainIdStringStruct`
+    - `ChainIdStruct`
+    - `AccountIdStruct`
+    - `AccountIdArrayStruct`
+    - `AccountAddressStruct`
+    - `AccountAddress`
+    - `ChainStruct`
+    - `Chain`
+    - `NamespaceStruct`
+    - `Namespace`
+    - `NamespaceIdStruct`
+    - `NamespaceId`
+    - `isNamespaceId`
+    - `isChainId`
+    - `isAccountId`
+    - `isAccountIdArray`
+    - `isNamespace`
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3082](https://github.com/MetaMask/snaps/pull/3082), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
+## [8.10.0]
+
+### Added
+
+- Add support for `onProtocolRequest` handler ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+- Add `URLSearchParams` as a default global ([#3047](https://github.com/MetaMask/snaps/pull/3047))
+
 ## [8.9.1]
 
 ### Fixed
@@ -528,7 +566,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.0.0...HEAD
+[9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.10.0...@metamask/snaps-utils@9.0.0
+[8.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.1...@metamask/snaps-utils@8.10.0
 [8.9.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.9.0...@metamask/snaps-utils@8.9.1
 [8.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.8.0...@metamask/snaps-utils@8.9.0
 [8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.7.0...@metamask/snaps-utils@8.8.0

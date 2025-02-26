@@ -1,14 +1,9 @@
 import { expect } from '@jest/globals';
-import { NodeProcessExecutionService } from '@metamask/snaps-controllers/node';
 import { installSnap } from '@metamask/snaps-jest';
 
 describe('onRpcRequest', () => {
-  // This test is disabled as it does not currently work
-  // TODO(ritave): Fix this test
   it('throws an error if the requested method does not exist', async () => {
-    const { request } = await installSnap({
-      executionService: NodeProcessExecutionService,
-    });
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -27,10 +22,9 @@ describe('onRpcRequest', () => {
 
   describe('fetch', () => {
     // This test is disabled as it is flaky.
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('fetches a URL and returns the JSON response', async () => {
-      const { request } = await installSnap({
-        executionService: NodeProcessExecutionService,
-      });
+      const { request } = await installSnap();
 
       const url = 'https://dummyjson.com/http/200';
       const response = await request({

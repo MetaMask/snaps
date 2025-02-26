@@ -5,13 +5,13 @@ import {
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import type { PermissionConstraint } from '@metamask/permission-controller';
-import {
-  SubjectType,
-  type Caveat,
-  type SubjectPermissions,
-  type ValidPermission,
+import type {
+  PermissionConstraint,
+  Caveat,
+  SubjectPermissions,
+  ValidPermission,
 } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   WALLET_SNAP_PERMISSION_KEY,
@@ -68,8 +68,16 @@ import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
-import semver from 'semver';
+import { inc } from 'semver';
 
+import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
+import { SnapsRegistryStatus } from './registry';
+import type { SnapControllerState } from './SnapController';
+import {
+  SNAP_APPROVAL_INSTALL,
+  SNAP_APPROVAL_RESULT,
+  SNAP_APPROVAL_UPDATE,
+} from './SnapController';
 import { setupMultiplex } from '../services';
 import type { NodeThreadExecutionService } from '../services/node';
 import {
@@ -103,14 +111,6 @@ import {
   waitForStateChange,
 } from '../test-utils';
 import { delay } from '../utils';
-import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
-import { SnapsRegistryStatus } from './registry';
-import type { SnapControllerState } from './SnapController';
-import {
-  SNAP_APPROVAL_INSTALL,
-  SNAP_APPROVAL_RESULT,
-  SNAP_APPROVAL_UPDATE,
-} from './SnapController';
 
 if (!('CryptoKey' in globalThis)) {
   // We can remove this once we drop Node 18
@@ -142,7 +142,6 @@ const OTHER_ENCRYPTION_KEY =
 
 describe('SnapController', () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/require-await
     fetchMock.mockImplementation(async () => {
       throw new AssertionError({ message: 'Unmocked access to internet.' });
     });
@@ -1842,6 +1841,7 @@ describe('SnapController', () => {
   });
 
   // This isn't stable in CI unfortunately
+  // eslint-disable-next-line jest/no-disabled-tests
   it.skip('throws if the Snap is terminated while executing', async () => {
     const { manifest, sourceCode, svgIcon } =
       await getMockSnapFilesWithUpdatedChecksum({
@@ -2111,7 +2111,6 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
-    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
       getTruncatedSnap(),
@@ -3955,7 +3954,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: assets.foo -- Expected a string matching`,
+        `Assertion failed: At path: assets.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();
@@ -4187,7 +4186,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: conversionRates.foo -- Expected a string matching`,
+        `Assertion failed: At path: conversionRates.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();
@@ -4483,8 +4482,8 @@ describe('SnapController', () => {
       );
 
       let resolveExecutePromise: any;
-      const deferredExecutePromise = new Promise((res) => {
-        resolveExecutePromise = res;
+      const deferredExecutePromise = new Promise((resolve) => {
+        resolveExecutePromise = resolve;
       });
 
       rootMessenger.registerActionHandler(
@@ -4571,7 +4570,7 @@ describe('SnapController', () => {
       // we need an rpc message handler function to be returned
       jest
         .spyOn(messenger, 'call')
-        .mockImplementation((method, ..._args: unknown[]) => {
+        .mockImplementation(async (method, ..._args: unknown[]) => {
           if (method === 'ExecutionService:executeSnap') {
             return deferredExecutePromise;
           } else if (method === 'ExecutionService:handleRpcRequest') {
@@ -6050,7 +6049,6 @@ describe('SnapController', () => {
           snaps: false,
           dapps: true,
         },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'endowment:webassembly': {},
       };
 
@@ -6067,7 +6065,6 @@ describe('SnapController', () => {
           detectSnapLocation: loopbackDetect({
             manifest: manifest.result,
           }),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           excludedPermissions: { 'endowment:webassembly': 'foobar' },
         }),
       );
@@ -6108,7 +6105,7 @@ describe('SnapController', () => {
           [MOCK_SNAP_ID]: {},
         }),
       ).rejects.toThrow(
-        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home, endowment:page-settings, endowment:signature-insight, endowment:assets.',
+        'A snap must request at least one of the following permissions: endowment:rpc, endowment:transaction-insight, endowment:cronjob, endowment:name-lookup, endowment:lifecycle-hooks, endowment:keyring, endowment:page-home, endowment:page-settings, endowment:signature-insight, endowment:assets, endowment:protocol.',
       );
 
       controller.destroy();
@@ -6143,10 +6140,7 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the specified platform version is newer than the supported platform version', async () => {
-      const newerVersion = semver.inc(
-        getPlatformVersion(),
-        'minor',
-      ) as SemVerVersion;
+      const newerVersion = inc(getPlatformVersion(), 'minor') as SemVerVersion;
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -6178,10 +6172,7 @@ describe('SnapController', () => {
     it('logs a warning if the specified platform version is newer than the supported platform version and `rejectInvalidPlatformVersion` is disabled', async () => {
       const log = jest.spyOn(console, 'warn').mockImplementation();
 
-      const newerVersion = semver.inc(
-        getPlatformVersion(),
-        'minor',
-      ) as SemVerVersion;
+      const newerVersion = inc(getPlatformVersion(), 'minor') as SemVerVersion;
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -6218,7 +6209,6 @@ describe('SnapController', () => {
 
     it('maps permission caveats to the proper format', async () => {
       const initialPermissions = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'endowment:rpc': { snaps: false, dapps: true },
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_getBip32Entropy: [
@@ -6607,7 +6597,7 @@ describe('SnapController', () => {
           [snapId]: {},
         }),
       ).rejects.toThrow(
-        `Invalid snap ID: Expected the value to satisfy a union of \`intersection | string\`, but received: "foo".`,
+        `Invalid snap ID: Invalid or no prefix found. Expected Snap ID to start with one of: "npm:", "local:", but received: "foo".`,
       );
 
       controller.destroy();
@@ -6976,13 +6966,11 @@ describe('SnapController', () => {
       expect(controller.get(snapId1)?.status).toBe('stopped');
       expect(controller.get(snapId2)?.status).toBe('stopped');
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapInstalled',
         expect.anything(),
       );
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapUpdated',
         expect.anything(),
@@ -8302,7 +8290,6 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'ApprovalController:addRequest',
         async (request) => {
-          // eslint-disable-next-line jest/no-conditional-expect
           expect(request.id).toBe(
             (request.requestData?.metadata as { id: string })?.id,
           );
@@ -9864,6 +9851,9 @@ describe('SnapController', () => {
         throw errorValue;
       });
 
+      // TODO: Either fix this lint violation or explain why it's necessary to
+      //  ignore.
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
       await promise;
@@ -9986,6 +9976,9 @@ describe('SnapController', () => {
         }),
       );
 
+      // TODO: Either fix this lint violation or explain why it's necessary to
+      //  ignore.
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = await messenger.call(
         'SnapController:getPermitted',
         mockSnap.origin,
@@ -10016,6 +10009,38 @@ describe('SnapController', () => {
       );
 
       const result = messenger.call('SnapController:getAll');
+      expect(result).toStrictEqual([getTruncatedSnap()]);
+
+      snapController.destroy();
+    });
+  });
+
+  describe('SnapController:getRunnableSnaps', () => {
+    it('calls SnapController.getRunnableSnaps()', () => {
+      const messenger = getSnapControllerMessenger();
+      const mockSnap = getMockSnapData({
+        id: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+      });
+      const mockSnap2 = getMockSnapData({
+        id: `${MOCK_SNAP_ID}2` as SnapId,
+        origin: MOCK_ORIGIN,
+        enabled: false,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(
+              mockSnap.stateObject,
+              mockSnap2.stateObject,
+            ),
+          },
+        }),
+      );
+
+      const result = messenger.call('SnapController:getRunnableSnaps');
       expect(result).toStrictEqual([getTruncatedSnap()]);
 
       snapController.destroy();

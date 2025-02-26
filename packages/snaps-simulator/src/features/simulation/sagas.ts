@@ -1,4 +1,4 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
@@ -24,8 +24,11 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
-import { type Component, type ComponentOrElement } from '@metamask/snaps-sdk';
+import type {
+  Component,
+  ComponentOrElement,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import type {
   SnapManifest,
   SnapRpcHookArgs,
@@ -45,10 +48,6 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 
-import { runSaga } from '../../store/middleware';
-import { getSnapId, getSrp, setSnapId } from '../configuration';
-import { addError } from '../console';
-import { ManifestStatus, setValid } from '../manifest';
 import { JSON_RPC_ENDPOINT } from './constants';
 import {
   createInterface,
@@ -83,23 +82,24 @@ import {
   getEndowments,
   unrestrictedMethods,
 } from './snap-permissions';
+import { runSaga } from '../../store/middleware';
+import { getSnapId, getSrp, setSnapId } from '../configuration';
+import { addError } from '../console';
+import { ManifestStatus, setValid } from '../manifest';
 
 const DEFAULT_ENVIRONMENT_URL = `https://execution.metamask.io/iframe/${packageJson.version}/index.html`;
 
 /**
  * Register the misc controller actions.
  *
- * @param controllerMessenger - The controller messenger.
+ * @param messenger - The messenger.
  */
-export function registerActions(
-  controllerMessenger: ControllerMessenger<any, any>,
-) {
-  controllerMessenger.registerActionHandler(
-    'PhishingController:testOrigin',
-    () => ({ result: false }),
-  );
+export function registerActions(messenger: Messenger<any, any>) {
+  messenger.registerActionHandler('PhishingController:testOrigin', () => ({
+    result: false,
+  }));
 
-  controllerMessenger.registerActionHandler(
+  messenger.registerActionHandler(
     'PhishingController:maybeUpdateState',
     async () => Promise.resolve(),
   );
@@ -114,9 +114,9 @@ export function registerActions(
  * @yields Puts the execution environment after creation.
  */
 export function* initSaga({ payload }: PayloadAction<string>) {
-  const controllerMessenger = new ControllerMessenger<any, any>();
+  const messenger = new Messenger<any, any>();
 
-  registerActions(controllerMessenger);
+  registerActions(messenger);
 
   const srp: string = yield select(getSrp);
 
@@ -134,6 +134,13 @@ export function* initSaga({ payload }: PayloadAction<string>) {
         locale: 'en',
         currency: 'usd',
         hideBalances: false,
+        useSecurityAlerts: true,
+        simulateOnChainActions: true,
+        useTokenDetection: true,
+        batchCheckBalances: true,
+        displayNftMedia: true,
+        useNftDetection: true,
+        useExternalPricingData: true,
       }),
       getUnlockPromise: async () => Promise.resolve(true),
       showDialog: async (...args: Parameters<typeof showDialog>) =>
@@ -161,7 +168,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   };
 
   const subjectMetadataController = new SubjectMetadataController({
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'SubjectMetadataController',
       allowedActions: [],
       allowedEvents: [],
@@ -170,7 +177,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   });
 
   const permissionController = new PermissionController({
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'PermissionController',
       allowedActions: [
         `ApprovalController:addRequest`,
@@ -192,7 +199,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   });
 
   const snapInterfaceController = new SnapInterfaceController({
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'SnapInterfaceController',
       allowedActions: [
         `PhishingController:testOrigin`,
@@ -244,7 +251,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const executionService = new IframeExecutionService({
     iframeUrl: new URL(environmentUrl),
-    messenger: controllerMessenger.getRestricted({
+    messenger: messenger.getRestricted({
       name: 'ExecutionService',
       allowedActions: [],
       allowedEvents: [],
@@ -277,9 +284,8 @@ export function* initSaga({ payload }: PayloadAction<string>) {
  */
 export function* rebootSaga({ payload }: PayloadAction<VirtualFile<string>>) {
   const snapId: string = yield select(getSnapId);
-  const executionService: IframeExecutionService = yield select(
-    getExecutionService,
-  );
+  const executionService: IframeExecutionService =
+    yield select(getExecutionService);
   const permissionController: GenericPermissionController = yield select(
     getPermissionController,
   );
@@ -317,9 +323,8 @@ export function* requestSaga({ payload }: PayloadAction<SnapRpcHookArgs>) {
   yield put({ type: `${payload.handler}/setRequest`, payload });
 
   const snapId: string = yield select(getSnapId);
-  const executionService: IframeExecutionService = yield select(
-    getExecutionService,
-  );
+  const executionService: IframeExecutionService =
+    yield select(getExecutionService);
 
   try {
     const result: unknown = yield call(

@@ -6,7 +6,6 @@ import { base64ToBytes, stringToBytes } from '@metamask/utils';
 import { File } from 'buffer';
 import { expectSaga } from 'redux-saga-test-plan';
 
-import { addNotification } from '../notifications';
 import {
   createInterface,
   getInterface,
@@ -34,6 +33,7 @@ import {
 } from './slice';
 import { getSnapInterfaceController as getTestSnapInterfaceController } from './test/controllers';
 import { MOCK_MANIFEST_FILE } from './test/mockManifest';
+import { addNotification } from '../notifications';
 
 Object.defineProperty(globalThis, 'Notification', {
   value: class Notification {
@@ -68,6 +68,9 @@ describe('showDialog', () => {
       Box({ children: null }),
     );
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const snapInterface = await snapInterfaceController.getInterface(
       snapId as SnapId,
       interfaceId,
@@ -351,6 +354,9 @@ describe('getInterfaceState', () => {
       Box({ children: Input({ name: 'foo', value: 'bar' }) }),
     );
 
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line @typescript-eslint/await-thenable
     const snapInterface = await snapInterfaceController.getInterface(
       snapId as SnapId,
       interfaceId,

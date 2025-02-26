@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.12.0]
+
+### Added
+
+- Add additional properties to `snap_getPreferences` ([#3093](https://github.com/MetaMask/snaps/pull/3093))
+
+### Changed
+
+- Bump MetaMask dependencies ([#3091](https://github.com/MetaMask/snaps/pull/3091), [#3082](https://github.com/MetaMask/snaps/pull/3082), [#3050](https://github.com/MetaMask/snaps/pull/3050))
+
+## [11.11.0]
+
+### Added
+
+- Add `endowment:protocol` permission ([#2875](https://github.com/MetaMask/snaps/pull/2875))
+
 ## [11.10.0]
 
 ### Added
@@ -374,7 +390,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.10.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.12.0...HEAD
+[11.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.11.0...@metamask/snaps-rpc-methods@11.12.0
+[11.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.10.0...@metamask/snaps-rpc-methods@11.11.0
 [11.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.1...@metamask/snaps-rpc-methods@11.10.0
 [11.9.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.9.0...@metamask/snaps-rpc-methods@11.9.1
 [11.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.8.0...@metamask/snaps-rpc-methods@11.9.0

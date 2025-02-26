@@ -448,9 +448,7 @@ export type Snap = {
    * @param keyringRequest - Keyring request options.
    * @returns The response.
    */
-  onKeyringRequest(
-    keyringRequest: KeyringOptions,
-  ): Promise<SnapResponseWithoutInterface>;
+  onKeyringRequest(keyringRequest: KeyringOptions): SnapRequest;
 
   /**
    * Get the response from the Snap's `onInstall` handler.

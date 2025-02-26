@@ -1,5 +1,5 @@
-import { Card } from '../Card';
 import { SelectorOption } from './SelectorOption';
+import { Card } from '../Card';
 
 describe('Option', () => {
   it('renders a selector option', () => {

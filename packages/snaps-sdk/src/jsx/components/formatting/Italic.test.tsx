@@ -29,6 +29,7 @@ describe('Italic', () => {
     const result = (
       <Italic>
         Hello
+        {/* eslint-disable-next-line no-constant-binary-expression */}
         {false && 'world'}
       </Italic>
     );

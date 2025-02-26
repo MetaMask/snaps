@@ -6,7 +6,6 @@ import {
 } from '@metamask/snaps-utils/node';
 import { promises as fs } from 'fs';
 import pathUtils from 'path';
-// eslint-disable-next-line @typescript-eslint/no-shadow
 import type { Plugin, SourceMapInput } from 'rollup';
 
 type PluginOptions = {

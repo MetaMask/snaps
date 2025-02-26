@@ -16,9 +16,9 @@ const log = createModuleLogger(rootLogger, 'helpers');
  * @returns The options.
  */
 function getOptions<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService
-  >,
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService>,
 >(
   snapId: SnapId | Partial<InstallSnapOptions<Service>> | undefined,
   options: Partial<InstallSnapOptions<Service>>,
@@ -83,9 +83,9 @@ export async function installSnap(): Promise<Snap>;
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService
-  >,
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService>,
 >(options: Partial<InstallSnapOptions<Service>>): Promise<Snap>;
 
 /**
@@ -121,9 +121,9 @@ export async function installSnap<
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService
-  >,
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService>,
 >(
   snapId: SnapId,
   options?: Partial<InstallSnapOptions<Service>>,
@@ -162,14 +162,18 @@ export async function installSnap<
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (...args: any[]) => InstanceType<
-    typeof AbstractExecutionService
-  >,
+  Service extends new (
+    ...args: any[]
+  ) => InstanceType<typeof AbstractExecutionService>,
 >(
   snapId?: SnapId | Partial<InstallSnapOptions<Service>>,
   options: Partial<InstallSnapOptions<Service>> = {},
 ): Promise<Snap> {
   const resolvedOptions = getOptions(snapId, options);
+
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  /* eslint-disable @typescript-eslint/unbound-method */
   const {
     request,
     onTransaction,
@@ -187,6 +191,7 @@ export async function installSnap<
     mockJsonRpc,
     close,
   } = await getEnvironment().installSnap(...resolvedOptions);
+  /* eslint-enable @typescript-eslint/unbound-method */
 
   return {
     request,

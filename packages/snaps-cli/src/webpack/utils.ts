@@ -7,14 +7,11 @@ import { dirname, resolve } from 'path';
 import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
-import type { ProcessedWebpackConfig } from '../config';
 import { browserify, getFunctionLoader } from './loaders';
+import type { ProcessedWebpackConfig } from '../config';
 
 export const BROWSERSLIST_FILE = resolve(
-  dirname(
-    // eslint-disable-next-line n/no-extraneous-require
-    require.resolve('@metamask/snaps-cli/package.json'),
-  ),
+  dirname(require.resolve('@metamask/snaps-cli/package.json')),
   '.browserslistrc',
 );
 
@@ -202,7 +199,7 @@ export function getDevTool(
     return 'inline-source-map';
   }
 
-  if (sourceMap === true) {
+  if (sourceMap) {
     return 'source-map';
   }
 

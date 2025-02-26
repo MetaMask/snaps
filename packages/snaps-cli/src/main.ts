@@ -13,7 +13,6 @@ import commands from './commands';
  *  npx update-browserslist-db@latest
  *  Why you should do it regularly: https://github.com/browserslist/update-db#readme
  */
-// eslint-disable-next-line n/no-process-env
 process.env.BROWSERSLIST_IGNORE_OLD_DATA = '1';
 
 cli(process.argv, commands).catch((error) => {

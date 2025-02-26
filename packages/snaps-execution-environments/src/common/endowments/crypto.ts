@@ -14,7 +14,7 @@ export const createCrypto = () => {
   }
   // For now, we expose the experimental webcrypto API for Node.js execution environments
   // TODO: Figure out if this is enough long-term or if we should use a polyfill.
-  /* eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require */
+  /* eslint-disable-next-line @typescript-eslint/no-require-imports, import-x/no-nodejs-modules, no-restricted-globals */
   const crypto = require('crypto').webcrypto;
   return {
     crypto: harden(crypto),

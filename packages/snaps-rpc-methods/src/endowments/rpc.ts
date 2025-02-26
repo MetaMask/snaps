@@ -28,6 +28,9 @@ type RpcSpecification = ValidPermissionSpecification<{
   subjectTypes: readonly SubjectType[];
 }>;
 
+// TODO: Either fix this lint violation or explain why it's necessary to
+//  ignore.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type RpcSpecificationBuilderOptions = {
   // Empty for now.
 };

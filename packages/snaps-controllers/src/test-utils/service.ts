@@ -1,30 +1,26 @@
-import { ControllerMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { logError } from '@metamask/snaps-utils';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
+import { MOCK_BLOCK_NUMBER } from './execution-environment';
 import type { ErrorMessageEvent } from '../services';
 import { setupMultiplex } from '../services';
-import { MOCK_BLOCK_NUMBER } from './execution-environment';
 
 export const createService = <
   Service extends new (...args: any[]) => InstanceType<Service>,
 >(
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   ServiceClass: Service,
   options?: Omit<
     ConstructorParameters<Service>[0],
     'messenger' | 'setupSnapProvider'
   >,
 ) => {
-  const controllerMessenger = new ControllerMessenger<
-    never,
-    ErrorMessageEvent
-  >();
+  const messenger = new Messenger<never, ErrorMessageEvent>();
 
-  const messenger = controllerMessenger.getRestricted<
+  const restrictedMessenger = messenger.getRestricted<
     'ExecutionService',
     never,
     ErrorMessageEvent['type']
@@ -33,7 +29,7 @@ export const createService = <
   });
 
   const service = new ServiceClass({
-    messenger,
+    messenger: restrictedMessenger,
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'foo');
       const stream = mux.createStream('metamask-provider');
@@ -56,5 +52,8 @@ export const createService = <
     ...options,
   });
 
-  return { service, messenger, controllerMessenger };
+  return {
+    service,
+    messenger: restrictedMessenger,
+  };
 };

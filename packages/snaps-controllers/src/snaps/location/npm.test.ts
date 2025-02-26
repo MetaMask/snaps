@@ -35,7 +35,6 @@ describe('NpmLocation', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           'dist-tags': {
             latest: templateSnapVersion,
           },
@@ -50,9 +49,9 @@ describe('NpmLocation', () => {
         }),
       } as any)
       .mockResolvedValue({
-        ok: true,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        // eslint-disable-next-line no-restricted-globals
         headers: new Headers({ 'content-length': '5477' }),
+        ok: true,
         body: Readable.toWeb(
           createReadStream(
             path.resolve(
@@ -133,7 +132,7 @@ describe('NpmLocation', () => {
 
     customFetchMock.mockResolvedValue({
       ok: true,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line no-restricted-globals
       headers: new Headers({ 'content-length': '5477' }),
       body: Readable.toWeb(
         createReadStream(
@@ -203,7 +202,7 @@ describe('NpmLocation', () => {
 
     customFetchMock.mockResolvedValue({
       ok: true,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      // eslint-disable-next-line no-restricted-globals
       headers: new Headers({ 'content-length': '5477' }),
       body: Readable.toWeb(
         createReadStream(
@@ -283,7 +282,6 @@ describe('NpmLocation', () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () => ({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           'dist-tags': {
             latest: templateSnapVersion,
           },
@@ -324,7 +322,6 @@ describe('NpmLocation', () => {
     customFetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'dist-tags': {
           latest: templateSnapVersion,
         },

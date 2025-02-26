@@ -7,8 +7,8 @@ import { StreamProvider } from '@metamask/providers/stream-provider';
 import type { SnapsEthereumProvider } from '@metamask/snaps-sdk';
 import { SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 
-import { assertEthereumOutboundRequest, withTeardown } from '../utils';
 import { SILENT_LOGGER } from './logger';
+import { assertEthereumOutboundRequest, withTeardown } from '../utils';
 
 /**
  * Object walker test utility function.
@@ -44,7 +44,6 @@ export function getMockedStreamProvider(): SnapsEthereumProvider {
   const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
   const provider = new StreamProvider(rpcStream, {
-    jsonRpcStreamName: 'metamask-provider',
     rpcMiddleware: [createIdRemapMiddleware()],
     logger: SILENT_LOGGER,
   });

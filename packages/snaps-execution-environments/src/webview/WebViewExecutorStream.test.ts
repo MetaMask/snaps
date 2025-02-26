@@ -1,5 +1,5 @@
 import { sleep } from '@metamask/snaps-utils/test-utils';
-import { bytesToBase64, stringToBytes } from '@metamask/utils';
+import { stringToBytes } from '@metamask/utils';
 
 import { WebViewExecutorStream } from './WebViewExecutorStream';
 
@@ -8,9 +8,8 @@ describe('WebViewExecutorStream', () => {
     const addEventListener = jest.fn();
     const postMessage = jest.fn().mockImplementation((message) => {
       const bytes = stringToBytes(message);
-      const base64 = bytesToBase64(bytes);
       addEventListener.mock.calls.forEach(([_type, listener]) => {
-        setTimeout(() => listener({ data: base64 }));
+        setTimeout(() => listener({ data: Array.from(bytes) }));
       });
     });
     const mockWindow = {
@@ -19,6 +18,7 @@ describe('WebViewExecutorStream', () => {
       removeEventListener: jest.fn(),
     };
 
+    // eslint-disable-next-line no-restricted-globals
     global.window = mockWindow as any;
   });
 

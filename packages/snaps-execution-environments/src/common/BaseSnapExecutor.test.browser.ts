@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-shadow, import/no-unassigned-import */
+/* eslint-disable @typescript-eslint/restrict-template-expressions, import-x/no-unassigned-import */
 
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -458,7 +458,6 @@ describe('BaseSnapExecutor', () => {
 
     const mockSnapsResult = {
       snaps: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'npm:@metamask/example-snap': {
           version: '1.0.0',
         },
@@ -1683,11 +1682,52 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onProtocolRequest export', async () => {
+    const CODE = `
+      module.exports.onProtocolRequest = ({ origin, scope, request }) => ({ origin, scope, request })
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const params = {
+      scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      request: {
+        jsonrpc: '2.0',
+        id: 'foo',
+        method: 'getVersion',
+      },
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnProtocolRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: { origin: MOCK_ORIGIN, ...params },
+    });
+  });
+
   describe('lifecycle hooks', () => {
     const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
 
     for (const handler of LIFECYCLE_HOOKS) {
-      // eslint-disable-next-line no-loop-func
       it(`supports \`${handler}\` export`, async () => {
         const CODE = `
           module.exports.${handler} = ({ origin }) => origin;
@@ -1721,7 +1761,6 @@ describe('BaseSnapExecutor', () => {
         });
       });
 
-      // eslint-disable-next-line no-loop-func
       it(`does not throw if \`${handler}\` is called, but the snap does not export it`, async () => {
         const CODE = `
           module.exports.onRpcRequest = () => 'foo';
@@ -2222,7 +2261,7 @@ describe('BaseSnapExecutor', () => {
       params: [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, {}],
     });
 
-    expect(consoleSpy.calls[0]?.args[0]).toStrictEqual(
+    expect(consoleSpy.calls[0]?.args[0]).toBe(
       'Command stream received a non-JSON-RPC request, and was unable to respond.',
     );
   });

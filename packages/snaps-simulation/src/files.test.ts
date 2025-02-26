@@ -57,7 +57,7 @@ describe('getFileSize', () => {
   it('returns the file size for a file path', async () => {
     expect(
       await getFileSize(resolve(__dirname, './test-utils/snap/snap.js')),
-    ).toBe(112);
+    ).toBe(73);
   });
 });
 
@@ -73,9 +73,9 @@ describe('getFileToUpload', () => {
     expect(file).toStrictEqual({
       name: 'bar.js',
       contentType: 'application/foo',
-      size: 112,
+      size: 73,
       contents:
-        'Ly8gZXNsaW50LWRpc2FibGUtbmV4dC1saW5lIG5vLWNvbnNvbGUKY29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
+        'Y29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
     });
   });
 
@@ -87,9 +87,9 @@ describe('getFileToUpload', () => {
     expect(file).toStrictEqual({
       name: 'bar.js',
       contentType: 'application/javascript',
-      size: 112,
+      size: 73,
       contents:
-        'Ly8gZXNsaW50LWRpc2FibGUtbmV4dC1saW5lIG5vLWNvbnNvbGUKY29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
+        'Y29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
     });
   });
 
@@ -99,9 +99,9 @@ describe('getFileToUpload', () => {
     expect(file).toStrictEqual({
       name: 'snap.js',
       contentType: 'application/javascript',
-      size: 112,
+      size: 73,
       contents:
-        'Ly8gZXNsaW50LWRpc2FibGUtbmV4dC1saW5lIG5vLWNvbnNvbGUKY29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
+        'Y29uc29sZS5sb2coJ0hlbGxvLCB3b3JsZCEnKTsKCm1vZHVsZS5leHBvcnRzLm9uUnBjUmVxdWVzdCA9ICgpID0+IG51bGw7Cg==',
     });
   });
 

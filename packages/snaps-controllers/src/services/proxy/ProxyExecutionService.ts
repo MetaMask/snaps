@@ -30,8 +30,10 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
     stream,
     messenger,
     setupSnapProvider,
+    ...args
   }: ProxyExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
       usePing: false,
@@ -45,6 +47,9 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
    *
    * @param job - The job to terminate.
    */
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected async terminateJob(job: TerminateJobArgs<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.

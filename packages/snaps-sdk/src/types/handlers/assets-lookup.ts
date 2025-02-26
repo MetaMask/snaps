@@ -8,6 +8,7 @@ import {
   refine,
   string,
   record,
+  nullable,
 } from '@metamask/superstruct';
 import {
   assert,
@@ -46,7 +47,7 @@ export const FungibleAssetMetadataStruct = object({
 });
 
 export const OnAssetsLookupResponseStruct = object({
-  assets: record(CaipAssetTypeStruct, FungibleAssetMetadataStruct),
+  assets: record(CaipAssetTypeStruct, nullable(FungibleAssetMetadataStruct)),
 });
 
 export type FungibleAssetMetadata = Infer<typeof FungibleAssetMetadataStruct>;
@@ -68,8 +69,8 @@ export type OnAssetsLookupHandler = (
 /**
  * The response from the query, containing metadata about each requested asset.
  *
- * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object.
+ * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object or null.
  */
 export type OnAssetsLookupResponse = {
-  assets: Record<CaipAssetType, FungibleAssetMetadata>;
+  assets: Record<CaipAssetType, FungibleAssetMetadata | null>;
 };

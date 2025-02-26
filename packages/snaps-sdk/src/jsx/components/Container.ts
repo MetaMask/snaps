@@ -1,6 +1,6 @@
+import type { FooterElement } from './Footer';
 import type { GenericSnapElement } from '../component';
 import { createSnapComponent } from '../component';
-import type { FooterElement } from './Footer';
 
 /**
  * Definition of container background colors.

@@ -1,8 +1,7 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
-import { logError } from '@metamask/snaps-utils';
-import { assert, bytesToBase64, stringToBytes } from '@metamask/utils';
+import { assert, stringToBytes } from '@metamask/utils';
 
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
@@ -13,18 +12,18 @@ export type WebViewInterface = {
 export type WebViewStreamArgs = {
   name: string;
   target: string;
-  getWebView: () => Promise<WebViewInterface>;
+  webView: WebViewInterface;
 };
 
 /**
  * A special postMessage stream used to interface with a WebView.
  */
 export class WebViewMessageStream extends BasePostMessageStream {
-  #name;
+  readonly #name;
 
-  #target;
+  readonly #target;
 
-  #webView: WebViewInterface | undefined;
+  readonly #webView: WebViewInterface | undefined;
 
   /**
    * Creates a stream for communicating with other streams inside a WebView.
@@ -33,9 +32,9 @@ export class WebViewMessageStream extends BasePostMessageStream {
    * @param args.name - The name of the stream. Used to differentiate between
    * multiple streams sharing the same window object.
    * @param args.target - The name of the stream to exchange messages with.
-   * @param args.getWebView - A asynchronous getter for the webview.
+   * @param args.webView - A reference to the WebView.
    */
-  constructor({ name, target, getWebView }: WebViewStreamArgs) {
+  constructor({ name, target, webView }: WebViewStreamArgs) {
     super();
 
     this.#name = name;
@@ -43,19 +42,11 @@ export class WebViewMessageStream extends BasePostMessageStream {
 
     this._onMessage = this._onMessage.bind(this);
 
-    // This is a bit atypical from other post-message streams.
-    // We have to wait for the WebView to fully load before we can continue using the stream.
-    getWebView()
-      .then((webView) => {
-        this.#webView = webView;
-        // This method is already bound.
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        webView.registerMessageListener(this._onMessage);
-        this._handshake();
-      })
-      .catch((error) => {
-        logError(error);
-      });
+    this.#webView = webView;
+    // This method is already bound.
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    this.#webView.registerMessageListener(this._onMessage);
+    this._handshake();
   }
 
   protected _postMessage(data: unknown): void {
@@ -65,14 +56,16 @@ export class WebViewMessageStream extends BasePostMessageStream {
       data,
     });
 
-    // To prevent XSS, we base64 encode the message before injecting it.
-    // This adds significant performance overhead.
-    // TODO: Should we use mobile native base64 here?
-    const bytes = stringToBytes(json);
-    const base64 = bytesToBase64(bytes);
-    this.#webView.injectJavaScript(`window.postMessage('${base64}')`);
+    // To prevent XSS, we encode the message before injecting it.
+    // This adds significant performance overhead for larger messages.
+    const bytes = new Uint8Array(stringToBytes(json));
+
+    this.#webView.injectJavaScript(`window.postMessage([${bytes.toString()}])`);
   }
 
+  // TODO: Either fix this lint violation or explain why it's necessary to
+  //  ignore.
+  // eslint-disable-next-line no-restricted-syntax
   private _onMessage(event: PostMessageEvent): void {
     if (typeof event.data !== 'string') {
       return;

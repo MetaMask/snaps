@@ -29,9 +29,9 @@ const INVALID_VALUES = [
   'a',
   '0',
   '1',
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line no-empty-function
   () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  // eslint-disable-next-line no-empty-function
   function () {},
   Symbol('a'),
 ];

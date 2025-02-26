@@ -27,13 +27,13 @@ import {
   isValidSemVerRange,
   inMilliseconds,
   Duration,
+  CaipChainIdStruct,
 } from '@metamask/utils';
 
 import { isEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
-import { ChainIdStruct } from '../namespace';
 import { SnapIdStruct } from '../snaps';
 import { mergeStructs, type InferMatching } from '../structs';
 import { NameStruct, NpmSnapFileNames, uri } from '../types';
@@ -150,7 +150,7 @@ export const SnapIdsStruct = refine(
 
 export type SnapIds = Infer<typeof SnapIdsStruct>;
 
-export const ChainIdsStruct = size(array(ChainIdStruct), 1, Infinity);
+export const ChainIdsStruct = size(array(CaipChainIdStruct), 1, Infinity);
 
 export const LookupMatchersStruct = union([
   object({
@@ -172,6 +172,11 @@ export const MaxRequestTimeStruct = size(
   integer(),
   MINIMUM_REQUEST_TIMEOUT,
   MAXIMUM_REQUEST_TIMEOUT,
+);
+
+export const ProtocolScopesStruct = record(
+  CaipChainIdStruct,
+  object({ methods: array(string()) }),
 );
 
 // Utility type to union with for all handler structs
@@ -200,6 +205,12 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
   'endowment:ethereum-provider': optional(EmptyObjectStruct),
   'endowment:keyring': optional(
     mergeStructs(HandlerCaveatsStruct, KeyringOriginsStruct),
+  ),
+  'endowment:protocol': optional(
+    mergeStructs(
+      HandlerCaveatsStruct,
+      object({ scopes: ProtocolScopesStruct }),
+    ),
   ),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(

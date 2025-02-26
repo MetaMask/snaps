@@ -155,9 +155,7 @@ export type SignatureControllerState = {
   unapprovedTypedMessagesCount: number;
 };
 
-const signatureControllerName = 'SignatureController';
-
 export type SignatureStateChange = ControllerStateChangeEvent<
-  typeof signatureControllerName,
+  'SignatureController',
   SignatureControllerState
 >;

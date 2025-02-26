@@ -25,8 +25,10 @@ export class OffscreenExecutionService extends ProxyExecutionService {
     messenger,
     setupSnapProvider,
     offscreenPromise,
+    ...args
   }: OffscreenExecutionEnvironmentServiceArgs) {
     super({
+      ...args,
       messenger,
       setupSnapProvider,
       stream: new BrowserRuntimePostMessageStream({

@@ -1,6 +1,6 @@
+import type { SelectorOptionElement } from './SelectorOption';
 import type { SnapsChildren } from '../../component';
 import { createSnapComponent } from '../../component';
-import type { SelectorOptionElement } from './SelectorOption';
 
 /**
  * The props of the {@link Selector} component.

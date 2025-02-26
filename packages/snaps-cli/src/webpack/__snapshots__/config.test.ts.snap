@@ -3440,3 +3440,199 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "target": "browserslist:/foo/bar/.browserslistrc",
 }
 `;
+
+exports[`getDefaultConfiguration returns the default Webpack configuration when \`analyze\` is \`true\` 1`] = `
+{
+  "devtool": false,
+  "entry": "/foo/bar/src/index.js",
+  "infrastructureLogging": {
+    "level": "none",
+  },
+  "mode": "production",
+  "module": {
+    "rules": [
+      {
+        "exclude": /node_modules/u,
+        "test": /\\\\\\.\\(js\\|jsx\\|mjs\\|cjs\\|ts\\|tsx\\)\\$/u,
+        "use": {
+          "loader": "/foo/bar/node_modules/swc-loader/index.js",
+          "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
+            "jsc": {
+              "parser": {
+                "syntax": "typescript",
+                "tsx": true,
+              },
+              "transform": {
+                "react": {
+                  "importSource": "@metamask/snaps-sdk",
+                  "runtime": "automatic",
+                  "useBuiltins": true,
+                },
+              },
+            },
+            "module": {
+              "type": "es6",
+            },
+            "sourceMaps": false,
+            "sync": false,
+          },
+        },
+      },
+      {
+        "resolve": {
+          "fullySpecified": false,
+        },
+        "test": /\\\\\\.m\\?js\\$/u,
+      },
+      {
+        "test": /\\\\\\.svg\\$/u,
+        "type": "asset/source",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.png\\$/u,
+        "type": "asset/inline",
+      },
+      {
+        "generator": {
+          "dataUrl": [Function],
+        },
+        "test": /\\\\\\.jpe\\?g\\$/u,
+        "type": "asset/inline",
+      },
+      false,
+    ],
+  },
+  "optimization": {
+    "minimize": true,
+    "minimizer": [
+      TerserPlugin {
+        "options": {
+          "exclude": undefined,
+          "extractComments": true,
+          "include": undefined,
+          "minimizer": {
+            "implementation": [Function],
+            "options": {},
+          },
+          "parallel": true,
+          "test": /\\\\\\.\\[cm\\]\\?js\\(\\\\\\?\\.\\*\\)\\?\\$/i,
+        },
+      },
+    ],
+    "nodeEnv": false,
+  },
+  "output": {
+    "chunkFormat": "commonjs",
+    "clean": false,
+    "filename": "bundle.js",
+    "library": {
+      "name": "module.exports",
+      "type": "assign",
+    },
+    "path": "/foo/bar/dist",
+    "publicPath": "/",
+  },
+  "performance": {
+    "hints": false,
+  },
+  "plugins": [
+    SnapsWebpackPlugin {
+      "options": {
+        "eval": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
+        "writeManifest": true,
+      },
+    },
+    SnapsStatsPlugin {
+      "options": {
+        "verbose": false,
+      },
+    },
+    DefinePlugin {
+      "definitions": {
+        "process.env.DEBUG": ""false"",
+        "process.env.NODE_DEBUG": ""false"",
+        "process.env.NODE_ENV": ""production"",
+      },
+    },
+    ProgressPlugin {
+      "dependenciesCount": 10000,
+      "handler": [Function],
+      "modulesCount": 5000,
+      "percentBy": undefined,
+      "profile": false,
+      "showActiveModules": false,
+      "showDependencies": true,
+      "showEntries": true,
+      "showModules": true,
+    },
+    SnapsBundleWarningsPlugin {
+      "options": {
+        "buffer": true,
+        "builtInResolver": SnapsBuiltInResolver {
+          "options": {
+            "ignore": [],
+          },
+          "unresolvedModules": Set {},
+        },
+        "builtIns": true,
+      },
+    },
+    BundleAnalyzerPlugin {
+      "logger": Logger {
+        "activeLevels": Set {
+          "silent",
+        },
+      },
+      "opts": {
+        "analyzerHost": "127.0.0.1",
+        "analyzerMode": "server",
+        "analyzerPort": 0,
+        "analyzerUrl": [Function],
+        "defaultSizes": "parsed",
+        "excludeAssets": null,
+        "generateStatsFile": false,
+        "logLevel": "silent",
+        "openAnalyzer": false,
+        "reportFilename": null,
+        "reportTitle": [Function],
+        "startAnalyzer": true,
+        "statsFilename": "stats.json",
+        "statsOptions": null,
+      },
+      "server": null,
+    },
+  ],
+  "resolve": {
+    "extensions": [
+      ".js",
+      ".jsx",
+      ".mjs",
+      ".cjs",
+      ".ts",
+      ".tsx",
+    ],
+    "fallback": {
+      "buffer": false,
+      "fs": false,
+      "path": false,
+    },
+    "plugins": [
+      SnapsBuiltInResolver {
+        "options": {
+          "ignore": [],
+        },
+        "unresolvedModules": Set {},
+      },
+    ],
+  },
+  "stats": "none",
+  "target": "browserslist:/foo/bar/.browserslistrc",
+}
+`;

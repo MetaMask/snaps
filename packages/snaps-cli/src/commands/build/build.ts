@@ -1,15 +1,19 @@
 import { isFile } from '@metamask/snaps-utils/node';
+import { assert } from '@metamask/utils';
 import { resolve as pathResolve } from 'path';
 
+import { build } from './implementation';
+import { getBundleAnalyzerPort } from './utils';
 import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { executeSteps, info } from '../../utils';
+import { success, executeSteps, info } from '../../utils';
 import { evaluate } from '../eval';
-import { build } from './implementation';
 
 type BuildContext = {
+  analyze: boolean;
   config: ProcessedWebpackConfig;
+  port?: number;
 };
 
 const steps: Steps<BuildContext> = [
@@ -27,10 +31,25 @@ const steps: Steps<BuildContext> = [
   },
   {
     name: 'Building the snap bundle.',
-    task: async ({ config, spinner }) => {
+    task: async ({ analyze, config, spinner }) => {
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
-      return await build(config, { evaluate: false, spinner });
+      const compiler = await build(config, {
+        analyze,
+        evaluate: false,
+        spinner,
+      });
+
+      if (analyze) {
+        return {
+          analyze,
+          config,
+          spinner,
+          port: await getBundleAnalyzerPort(compiler),
+        };
+      }
+
+      return undefined;
     },
   },
   {
@@ -48,6 +67,16 @@ const steps: Steps<BuildContext> = [
       info(`Snap bundle evaluated successfully.`, spinner);
     },
   },
+  {
+    name: 'Running analyser.',
+    condition: ({ analyze }) => analyze,
+    task: async ({ spinner, port }) => {
+      assert(port, 'Port is not defined.');
+      success(`Bundle analyzer running at http://localhost:${port}.`, spinner);
+
+      spinner.stop();
+    },
+  },
 ] as const;
 
 /**
@@ -57,10 +86,15 @@ const steps: Steps<BuildContext> = [
  * This creates the destination directory if it doesn't exist.
  *
  * @param config - The config object.
+ * @param analyze - Whether to analyze the bundle.
  * @returns Nothing.
  */
-export async function buildHandler(config: ProcessedConfig): Promise<void> {
+export async function buildHandler(
+  config: ProcessedConfig,
+  analyze = false,
+): Promise<void> {
   return await executeSteps(steps, {
     config,
+    analyze,
   });
 }

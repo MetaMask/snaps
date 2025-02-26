@@ -20,12 +20,12 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 
-import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import {
   requestSnapsHandler,
   hasRequestedSnaps,
   getSnapPermissionsRequest,
 } from './requestSnaps';
+import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
@@ -178,7 +178,7 @@ describe('implementation', () => {
       installSnaps: jest.fn(),
       requestPermissions: jest.fn(),
       getPermissions: jest.fn(),
-    } as any);
+    }) as any;
 
   it('requests permissions if needed', async () => {
     const { implementation } = requestSnapsHandler;

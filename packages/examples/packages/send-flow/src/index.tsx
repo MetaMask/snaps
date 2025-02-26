@@ -2,11 +2,9 @@ import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   OnHomePageHandler,
   OnUserInputHandler,
+  OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
-import {
-  UserInputEventType,
-  type OnRpcRequestHandler,
-} from '@metamask/snaps-sdk';
+import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import { SendFlow } from './components';
 import { accountsArray, accounts } from './data';

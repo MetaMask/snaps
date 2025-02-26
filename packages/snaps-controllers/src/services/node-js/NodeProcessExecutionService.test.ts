@@ -1,10 +1,10 @@
 import { JsonRpcError } from '@metamask/rpc-errors';
 import { HandlerType } from '@metamask/snaps-utils';
 
+import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
 import { delay } from '../../utils';
 import type { SnapErrorJson } from '../ExecutionService';
-import { NodeProcessExecutionService } from './NodeProcessExecutionService';
 
 const ON_RPC_REQUEST = HandlerType.OnRpcRequest;
 
@@ -93,9 +93,7 @@ describe('NodeProcessExecutionService', () => {
 
   it('can handle errors out of band', async () => {
     expect.assertions(2);
-    const { service, controllerMessenger } = createService(
-      NodeProcessExecutionService,
-    );
+    const { service, messenger } = createService(NodeProcessExecutionService);
     const snapId = 'TestSnap';
     await service.executeSnap({
       snapId,
@@ -118,7 +116,7 @@ describe('NodeProcessExecutionService', () => {
     });
 
     const unhandledErrorPromise = new Promise((resolve) => {
-      controllerMessenger.subscribe(
+      messenger.subscribe(
         'ExecutionService:unhandledError',
         (_snapId: string, error: SnapErrorJson) => {
           resolve(error);

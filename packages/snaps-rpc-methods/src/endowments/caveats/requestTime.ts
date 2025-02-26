@@ -19,7 +19,7 @@ import type { CaveatMapperFunction, CaveatMapperReturnValue } from './generic';
  * @throws If the value is not a valid `maxRequestTime` value.
  */
 function assertIsMaxRequestTime(
-  value: unknown, // eslint-disable-next-line @typescript-eslint/naming-convention
+  value: unknown,
   ErrorWrapper?: AssertionErrorConstructor,
 ): asserts value is number {
   assertStruct(

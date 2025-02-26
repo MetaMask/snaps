@@ -1,14 +1,15 @@
 import type yargs from 'yargs';
 
+import { buildHandler } from './build';
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
-import { buildHandler } from './build';
 
 const command = {
   command: ['build', 'b'],
   desc: 'Build snap from source',
   builder: (yarg: yargs.Argv) => {
     yarg
+      .option('analyze', builders.analyze)
       .option('dist', builders.dist)
       .option('eval', builders.eval)
       .option('manifest', builders.manifest)
@@ -22,7 +23,8 @@ const command = {
       .implies('writeManifest', 'manifest')
       .implies('depsToTranspile', 'transpilationMode');
   },
-  handler: async (argv: YargsArgs) => buildHandler(argv.context.config),
+  handler: async (argv: YargsArgs) =>
+    buildHandler(argv.context.config, argv.analyze),
 };
 
 export * from './implementation';

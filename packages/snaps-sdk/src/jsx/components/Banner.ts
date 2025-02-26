@@ -1,10 +1,10 @@
-import { createSnapComponent, type SnapsChildren } from '../component';
 import type { ButtonElement } from './form/Button';
 import type { StandardFormattingElement } from './formatting';
 import type { IconElement } from './Icon';
 import type { LinkElement } from './Link';
 import type { SkeletonElement } from './Skeleton';
 import type { TextElement } from './Text';
+import { createSnapComponent, type SnapsChildren } from '../component';
 
 /**
  * Types of children components that can be used with Banner.

@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "description": "MetaMask example Snap demonstrating the use of `endowment:protocol`",
+  "proposedName": "Protocol Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "YPhx24LcxilLojXYKl4IPlqlLJsmIQ9mXyw25KbDflA=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/protocol-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:protocol": {
+      "scopes": {
+        "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1": {
+          "methods": ["getBlockHeight", "getGenesisHash"]
+        }
+      }
+    },
+    "endowment:network-access": {}
+  },
+  "platformVersion": "6.18.0",
+  "manifestVersion": "0.1"
+}

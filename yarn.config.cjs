@@ -4,8 +4,6 @@
 // manifests of each package in the monorepo to ensure they follow a standard
 // format, but also check the presence of certain files as well.
 
-/* eslint-disable jsdoc/valid-types */
-
 const { defineConfig } = require('@yarnpkg/types');
 const { readFile } = require('fs/promises');
 const { get } = require('lodash');
@@ -39,6 +37,9 @@ module.exports = defineConfig({
       const workspaceBasename = getWorkspaceBasename(workspace);
       const isChildWorkspace = workspace.cwd !== '.';
       const isPrivate =
+        // TODO: Either fix this lint violation or explain why it's necessary to
+        //  ignore.
+        // eslint-disable-next-line no-restricted-syntax
         'private' in workspace.manifest && workspace.manifest.private === true;
       const dependenciesByIdentAndType = getDependenciesByIdentAndType(
         Yarn.dependencies({ workspace }),
@@ -173,7 +174,7 @@ module.exports = defineConfig({
               'scripts.test',
               'jest --reporters=jest-silent-reporter && yarn test:browser',
             );
-          } else {
+          } else if (workspace.cwd !== 'packages/examples/packages/protocol') {
             expectWorkspaceField(
               workspace,
               'scripts.test',
@@ -389,6 +390,9 @@ async function workspaceFileExists(workspace, path) {
   try {
     await getWorkspaceFile(workspace, path);
   } catch (error) {
+    // TODO: Either fix this lint violation or explain why it's necessary to
+    //  ignore.
+    // eslint-disable-next-line no-restricted-syntax
     if ('code' in error && error.code === 'ENOENT') {
       return false;
     }

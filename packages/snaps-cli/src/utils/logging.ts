@@ -1,9 +1,24 @@
 import { logError, logInfo, logWarning } from '@metamask/snaps-utils';
-import { blue, dim, red, yellow } from 'chalk';
+import { blue, dim, green, red, yellow } from 'chalk';
 import type { Ora } from 'ora';
 
 /**
- * Log a warning message. The message is prefixed with "Warning:".
+ * Log a success message. The message is prefixed with a green checkmark.
+ *
+ * @param message - The message to log.
+ * @param spinner - The spinner to clear.
+ */
+export function success(message: string, spinner?: Ora) {
+  if (spinner) {
+    spinner.clear();
+    spinner.frame();
+  }
+
+  logInfo(`${green('✔')} ${message}`);
+}
+
+/**
+ * Log a warning message. The message is prefixed with a yellow warning sign.
  *
  * @param message - The message to log.
  * @param spinner - The spinner to clear.

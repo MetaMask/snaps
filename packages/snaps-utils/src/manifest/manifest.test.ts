@@ -1,6 +1,18 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
 
+import {
+  checkManifest,
+  getSnapFilePaths,
+  getSnapFiles,
+  getSnapIcon,
+  getSnapSourceCode,
+  getWritableManifest,
+  runFixes,
+} from './manifest';
+import type { SnapManifest } from './validation';
+import { runValidators } from './validator';
+import type { ValidatorMeta } from './validator-types';
 import { readJsonFile } from '../fs';
 import { getPlatformVersion } from '../platform-version';
 import { getSnapChecksum } from '../snaps';
@@ -15,18 +27,6 @@ import {
   getMockSnapFiles,
 } from '../test-utils';
 import { NpmSnapFileNames } from '../types';
-import {
-  checkManifest,
-  getSnapFilePaths,
-  getSnapFiles,
-  getSnapIcon,
-  getSnapSourceCode,
-  getWritableManifest,
-  runFixes,
-} from './manifest';
-import type { SnapManifest } from './validation';
-import { runValidators } from './validator';
-import type { ValidatorMeta } from './validator-types';
 
 jest.mock('fs');
 
@@ -139,7 +139,6 @@ describe('checkManifest', () => {
   });
 
   it('returns a warning if package.json is missing recommended fields', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { repository, ...packageJson } = getPackageJson();
 
     await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(packageJson));
