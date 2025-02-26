@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  merge_group:
 
 jobs:
   check-workflows:
@@ -54,7 +55,7 @@ jobs:
   publish-staging-simulator:
     name: Publish Snaps Simulator to `staging` folder
     needs: lint-build-test
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'main' && github.event_name == 'push' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
