@@ -26,9 +26,6 @@ export type EntropySource = {
 
 /**
  * The request parameters for the `snap_listEntropySources` method.
- *
- * @property snapId - The ID of the snap to invoke.
- * @property request - The JSON-RPC request to send to the snap.
  */
 export type ListEntropySourcesParams = never;
 
