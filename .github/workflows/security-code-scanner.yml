@@ -1,4 +1,4 @@
-name: 'MetaMask Security Code Scanner'
+name: MetaMask Security Code Scanner
 
 on:
   workflow_call:
@@ -7,6 +7,7 @@ on:
         required: false
       APPSEC_BOT_SLACK_WEBHOOK:
         required: false
+  workflow_dispatch:
 
 jobs:
   run-security-scan:
