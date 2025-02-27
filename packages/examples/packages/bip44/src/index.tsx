@@ -13,13 +13,14 @@ import { getPrivateKey } from './utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles three methods:
  *
  * - `getPublicKey`: Get a BIP-44 public key for a given BIP-44 coin type and
  * address index. The public key is returned in hex format.
  * - `signMessage`: Derive a BIP-44 private key for a given BIP-44 coin type and
  * address index, and use it to sign a message. The signature is returned in hex
  * format.
+ * - `getEntropySources`: Get the list of entropy sources available to the Snap.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -64,6 +65,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
       const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
+    }
+
+    case 'getEntropySources': {
+      return await snap.request({
+        method: 'snap_listEntropySources',
+      });
     }
 
     default:

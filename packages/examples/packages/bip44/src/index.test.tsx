@@ -207,4 +207,29 @@ describe('onRpcRequest', () => {
       });
     });
   });
+
+  describe('getEntropySources', () => {
+    it('returns the entropy sources', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getEntropySources',
+      });
+
+      expect(await response).toRespondWith([
+        {
+          id: 'default',
+          name: 'Default Secret Recovery Phrase',
+          type: 'mnemonic',
+          primary: true,
+        },
+        {
+          id: 'alternative',
+          name: 'Alternative Secret Recovery Phrase',
+          type: 'mnemonic',
+          primary: false,
+        },
+      ]);
+    });
+  });
 });

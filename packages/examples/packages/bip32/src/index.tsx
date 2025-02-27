@@ -27,6 +27,7 @@ import { getPrivateNode, getPublicKey } from './utils';
  * key is returned in hex format.
  * - `signMessage`: Derive a BIP-32 private key for a given BIP-32 path, and use
  * it to sign a message. The signature is returned in hex format.
+ * - `getEntropySources`: Get the list of entropy sources available to the Snap.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -95,6 +96,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       // This is guaranteed to never happen because of the `assert` above. But
       // TypeScript doesn't know that, so we need to throw an error here.
       throw new Error(`Unsupported curve: ${String(curve)}.`);
+    }
+
+    case 'getEntropySources': {
+      return await snap.request({
+        method: 'snap_listEntropySources',
+      });
     }
 
     default:

@@ -11,7 +11,10 @@ import { useEntropySelector } from '../get-entropy/hooks';
 
 export const BIP44: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
-  const { selector, source } = useEntropySelector();
+  const { selector, source } = useEntropySelector({
+    snapId: BIP_44_SNAP_ID,
+    port: BIP_44_PORT,
+  });
 
   const handleClick = (method: string, coinType: number) => () => {
     invokeSnap({

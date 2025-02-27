@@ -6,7 +6,10 @@ import { Snap } from '../../../components';
 import { useEntropySelector } from '../get-entropy/hooks';
 
 export const BIP32: FunctionComponent = () => {
-  const { selector, source } = useEntropySelector();
+  const { selector, source } = useEntropySelector({
+    snapId: BIP_32_SNAP_ID,
+    port: BIP_32_PORT,
+  });
 
   return (
     <Snap
