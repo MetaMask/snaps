@@ -22,7 +22,7 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getNode } from '../utils';
+import { getSecretRecoveryPhrase, getNode } from '../utils';
 
 const targetName = 'snap_getBip32PublicKey';
 
@@ -150,10 +150,15 @@ export function getBip32PublicKeyImplementation({
     );
 
     const { params } = args;
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
+
     const node = await getNode({
       curve: params.curve,
       path: params.path,
-      secretRecoveryPhrase: await getMnemonic(params.source),
+      secretRecoveryPhrase,
       cryptographicFunctions: getClientCryptography(),
     });
 

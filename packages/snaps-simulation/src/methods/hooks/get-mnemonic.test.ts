@@ -36,7 +36,7 @@ describe('getGetMnemonicImplementation', () => {
   it('throws an error for an unknown entropy source', async () => {
     const getMnemonic = getGetMnemonicImplementation();
     await expect(getMnemonic('unknown')).rejects.toThrow(
-      'Unknown entropy source: "unknown".',
+      'Entropy source with ID "unknown" not found.',
     );
   });
 });

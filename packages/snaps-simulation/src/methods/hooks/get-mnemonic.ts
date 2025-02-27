@@ -23,7 +23,7 @@ export function getGetMnemonicImplementation(
       case 'alternative':
         return mnemonicPhraseToBytes(DEFAULT_ALTERNATIVE_SRP);
       default:
-        throw new Error(`Unknown entropy source: "${source}".`);
+        throw new Error(`Entropy source with ID "${source}" not found.`);
     }
   };
 }
