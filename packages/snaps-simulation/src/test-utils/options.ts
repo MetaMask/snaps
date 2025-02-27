@@ -18,6 +18,7 @@ import type { SimulationOptions } from '../options';
  * @param options.displayNftMedia - Whether to display NFT media.
  * @param options.useNftDetection - Whether to auto-detect NFTs.
  * @param options.useExternalPricingData - Whether to get token price data from an external source.
+ * @param options.enableAnalytics - Whether to enable analytics.
  * @returns The options for the simulation.
  */
 export function getMockOptions({
@@ -34,6 +35,7 @@ export function getMockOptions({
   displayNftMedia = true,
   useNftDetection = true,
   useExternalPricingData = true,
+  enableAnalytics = true,
 }: Partial<SimulationOptions> = {}): SimulationOptions {
   return {
     currency,
@@ -49,5 +51,6 @@ export function getMockOptions({
     displayNftMedia,
     useNftDetection,
     useExternalPricingData,
+    enableAnalytics,
   };
 }

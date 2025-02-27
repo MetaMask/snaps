@@ -30,6 +30,7 @@ const SimulationOptionsStruct = object({
   displayNftMedia: defaulted(optional(boolean()), true),
   useNftDetection: defaulted(optional(boolean()), true),
   useExternalPricingData: defaulted(optional(boolean()), true),
+  enableAnalytics: defaulted(optional(boolean()), true),
 });
 
 /**
@@ -48,6 +49,7 @@ const SimulationOptionsStruct = object({
  * @property displayNftMedia - Whether to display NFT media.
  * @property useNftDetection - Whether to auto-detect NFTs.
  * @property useExternalPricingData - Whether to get token price data from an external source.
+ * @property enableAnalytics - Whether to enable analytics.
  */
 export type SimulationUserOptions = Infer<typeof SimulationOptionsStruct>;
 
