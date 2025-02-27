@@ -9,6 +9,7 @@ import {
   ContentType,
 } from '@metamask/snaps-sdk';
 import {
+  AssetSelector,
   Box,
   Field,
   FileInput,
@@ -157,6 +158,36 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
+    });
+
+    it('calls the multichain asset controller to construct an asset selector state', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = (
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+          value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+        />
+      );
+
+      await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'MultichainAssetsController:getState',
+      );
     });
 
     it('can create a new interface from JSX', async () => {

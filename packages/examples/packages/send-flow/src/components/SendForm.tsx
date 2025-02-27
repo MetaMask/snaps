@@ -1,4 +1,5 @@
 import {
+  AssetSelector,
   Box,
   Button,
   Field,
@@ -60,6 +61,9 @@ export const SendForm: SnapComponent<SendFormProps> = ({
       <Box>
         <Image src={btcIcon} />
       </Box>
+      <Field label="Asset">
+        <AssetSelector name="asset" addresses={} />
+      </Field>
       <Input name="amount" type="number" placeholder="Enter amount to send" />
       <Box direction="horizontal" center>
         <Text color="alternative">{selectedCurrency}</Text>
