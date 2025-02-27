@@ -16,7 +16,7 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getNode } from '../utils';
+import { getSecretRecoveryPhrase, getNode } from '../utils';
 
 const targetName = 'snap_getBip32Entropy';
 
@@ -130,10 +130,15 @@ export function getBip32EntropyImplementation({
     const { params } = args;
     assert(params);
 
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
+
     const node = await getNode({
       curve: params.curve,
       path: params.path,
-      secretRecoveryPhrase: await getMnemonic(params.source),
+      secretRecoveryPhrase,
       cryptographicFunctions: getClientCryptography(),
     });
 

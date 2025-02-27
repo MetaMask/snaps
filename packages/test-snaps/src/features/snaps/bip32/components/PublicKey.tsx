@@ -8,7 +8,11 @@ import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
 import { BIP_32_PORT, BIP_32_SNAP_ID } from '../constants';
 
-export const PublicKey: FunctionComponent = () => {
+export type PublicKeyProps = {
+  source?: string | undefined;
+};
+
+export const PublicKey: FunctionComponent<PublicKeyProps> = ({ source }) => {
   const [invokeSnap, { isLoading, data }] = useInvokeMutation();
 
   const handleClick = (method: string, params: JsonRpcParams) => () => {
@@ -28,6 +32,7 @@ export const PublicKey: FunctionComponent = () => {
             path: ['m', "44'", "0'"],
             curve: 'secp256k1',
             compressed: false,
+            ...(source !== undefined && { source }),
           })}
           disabled={isLoading}
         >
@@ -51,6 +56,7 @@ export const PublicKey: FunctionComponent = () => {
           onClick={handleClick('getPublicKey', {
             path: ['m', "44'", "1'"],
             curve: 'secp256k1',
+            ...(source !== undefined && { source }),
           })}
           disabled={isLoading}
         >

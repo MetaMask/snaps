@@ -1,13 +1,10 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
-  copyable,
   MethodNotFoundError,
   UserRejectedRequestError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import { bytesToHex, stringToBytes } from '@metamask/utils';
 import { getPublicKey, sign } from '@noble/bls12-381';
 
@@ -16,13 +13,14 @@ import { getPrivateKey } from './utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles three methods:
  *
  * - `getPublicKey`: Get a BIP-44 public key for a given BIP-44 coin type and
  * address index. The public key is returned in hex format.
  * - `signMessage`: Derive a BIP-44 private key for a given BIP-44 coin type and
  * address index, and use it to sign a message. The signature is returned in hex
  * format.
+ * - `getEntropySources`: Get the list of entropy sources available to the Snap.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -48,13 +46,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Signature request'),
-            text(
-              `Do you want to BLS sign "${message}" with the following public key?`,
-            ),
-            copyable(publicKey),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>
+                Do you want to BLS sign "{message}" with the following public
+                key?
+              </Text>
+              <Copyable value={publicKey} />
+            </Box>
+          ),
         },
       });
 
@@ -64,6 +65,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
       const newLocal = await sign(stringToBytes(message), privateKey);
       return bytesToHex(newLocal);
+    }
+
+    case 'getEntropySources': {
+      return await snap.request({
+        method: 'snap_listEntropySources',
+      });
     }
 
     default:

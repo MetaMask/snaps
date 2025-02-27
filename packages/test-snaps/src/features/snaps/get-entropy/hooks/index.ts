@@ -1,1 +1,1 @@
-export * from './useEntropySources';
+export * from './useEntropySelector';

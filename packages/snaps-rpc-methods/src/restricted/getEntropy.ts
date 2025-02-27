@@ -14,7 +14,7 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { deriveEntropy } from '../utils';
+import { getSecretRecoveryPhrase, deriveEntropy } from '../utils';
 
 const targetName = 'snap_getEntropy';
 
@@ -136,7 +136,10 @@ function getEntropyImplementation({
     );
 
     await getUnlockPromise(true);
-    const mnemonicPhrase = await getMnemonic(params.source);
+    const mnemonicPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
 
     return deriveEntropy({
       input: origin,

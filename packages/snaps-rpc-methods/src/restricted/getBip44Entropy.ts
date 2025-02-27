@@ -16,6 +16,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { getSecretRecoveryPhrase } from '../utils';
 
 const targetName = 'snap_getBip44Entropy';
 
@@ -131,13 +132,13 @@ export function getBip44EntropyImplementation({
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
     const params = args.params as GetBip44EntropyParams;
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
 
     const node = await BIP44CoinTypeNode.fromDerivationPath(
-      [
-        await getMnemonic(params.source),
-        `bip32:44'`,
-        `bip32:${params.coinType}'`,
-      ],
+      [secretRecoveryPhrase, `bip32:44'`, `bip32:${params.coinType}'`],
       'mainnet',
       getClientCryptography(),
     );

@@ -1,2 +1,2 @@
-export * from './EntropySources';
+export * from './EntropySelector';
 export * from './SignMessage';

@@ -13,10 +13,11 @@ import { getEntropy, getEntropySourceName } from './utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles a single method:
+ * `wallet_invokeSnap` method. This handler handles two methods:
  *
- * - `signMessage`: Derive a private key using the snap's own entropy, and sign
+ * - `signMessage`: Derive a private key using the Snap's own entropy, and sign
  * a message using it. The signature is returned in hex format.
+ * - `getEntropySources`: Get the list of entropy sources available to the Snap.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
