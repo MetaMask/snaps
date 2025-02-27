@@ -15,6 +15,7 @@ import {
   Selector,
   Card,
   SelectorOption,
+  AddressInput,
 } from '@metamask/snaps-sdk/jsx';
 
 import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
@@ -280,6 +281,49 @@ describe('constructState', () => {
     const result = constructState({}, element);
     expect(result).toStrictEqual({
       foo: null,
+    });
+  });
+
+  it('handles root level AddressInput with value', () => {
+    const element = (
+      <Box>
+        <AddressInput name="foo" chainId="eip155:1" value="0x123" />
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: 'eip155:1:0x123',
+    });
+  });
+
+  it('handles root level AddressInput without value', () => {
+    const element = (
+      <Box>
+        <AddressInput name="foo" chainId="eip155:1" />
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
+  it('handles AddressInput in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AddressInput name="foo" chainId="eip155:1" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element);
+    expect(result).toStrictEqual({
+      form: { foo: null },
     });
   });
 
