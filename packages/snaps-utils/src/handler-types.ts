@@ -40,3 +40,15 @@ export type SnapHandler = {
 };
 
 export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
+
+/**
+ * A subset of handler types that are allowed for Snap interaction tracking.
+ */
+export const TRACKABLE_HANDLER_TYPES = new Set<HandlerType>([
+  HandlerType.OnRpcRequest,
+  HandlerType.OnInstall,
+  HandlerType.OnUpdate,
+  HandlerType.OnHomePage,
+  HandlerType.OnSettingsPage,
+  HandlerType.OnUserInput,
+]);
