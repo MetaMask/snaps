@@ -5,7 +5,8 @@ import { Result } from '../../../../components';
 
 export type EntropySourcesProps = {
   sources: EntropySource[];
-  raw: boolean;
+  id: string;
+  raw?: boolean | undefined;
   onChange: (source: string | undefined) => void;
 };
 
@@ -27,6 +28,7 @@ function getSourceName(source: EntropySource) {
 
 export const EntropySelector: FunctionComponent<EntropySourcesProps> = ({
   sources,
+  id,
   raw,
   onChange,
 }) => {
@@ -43,7 +45,7 @@ export const EntropySelector: FunctionComponent<EntropySourcesProps> = ({
     <>
       <h3 className="h6">Entropy source</h3>
       <select
-        id="select-chain"
+        id={`${id}-entropy-selector`}
         className="form-select mb-3"
         onChange={handleChange}
       >
@@ -53,10 +55,11 @@ export const EntropySelector: FunctionComponent<EntropySourcesProps> = ({
             {getSourceName(source)}
           </option>
         ))}
+        <option value="invalid">Invalid</option>
       </select>
       {raw && (
         <Result className="mb-3">
-          <pre id="entropySourcesResult" style={{ margin: 0 }}>
+          <pre id={`${id}-raw-entropy-sources`} style={{ margin: 0 }}>
             {JSON.stringify(sources, null, 2)}
           </pre>
         </Result>
