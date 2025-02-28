@@ -5,6 +5,8 @@ import type {
   ComponentOrElement,
   InterfaceContext,
   State,
+  FungibleAssetMetadata,
+  AssetSelectorState,
 } from '@metamask/snaps-sdk';
 import type {
   DropdownElement,
@@ -17,6 +19,7 @@ import type {
   RadioElement,
   SelectorElement,
   SelectorOptionElement,
+  AssetSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import {
@@ -25,6 +28,28 @@ import {
   getJsxElementFromComponent,
   walkJsx,
 } from '@metamask/snaps-utils';
+import type { CaipAssetType } from '@metamask/utils';
+
+/**
+ * A function to get asset metadata.
+ * This is used to get the metadata of an asset by its ID.
+ *
+ * @param assetId - The asset ID.
+ * @returns The asset metadata or undefined if not found.
+ */
+type GetAssetMetadata = (
+  assetId: CaipAssetType,
+) => FungibleAssetMetadata | undefined;
+
+/**
+ * Data getters for elements.
+ * This is used to get data from elements that is not directly accessible from the element itself.
+ *
+ * @param getAssetMetadata - A function to get asset metadata.
+ */
+type ElementDataGetters = {
+  getAssetMetadata: GetAssetMetadata;
+};
 
 /**
  * Get a JSX element from a component or JSX element. If the component is a
@@ -70,7 +95,8 @@ function constructComponentSpecificDefaultState(
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AssetSelectorElement,
 ) {
   switch (element.type) {
     case 'Dropdown': {
@@ -97,12 +123,41 @@ function constructComponentSpecificDefaultState(
 }
 
 /**
+ * Get the state value for an asset selector.
+ *
+ * @param value - The asset selector value.
+ * @param getAssetMetadata - A function to get asset metadata.
+ * @returns The state value for the asset selector or null.
+ */
+export function getAssetSelectorStateValue(
+  value: CaipAssetType | undefined,
+  getAssetMetadata: GetAssetMetadata,
+): AssetSelectorState | null {
+  if (!value) {
+    return null;
+  }
+
+  const asset = getAssetMetadata(value);
+
+  if (!asset) {
+    return null;
+  }
+
+  return {
+    asset: value,
+    name: asset.name,
+    symbol: asset.symbol,
+  };
+}
+
+/**
  * Get the state value for a stateful component.
  *
  * Most components store the state value as a `value` prop.
  * This function exists to account for components where that isn't the case.
  *
  * @param element - The input element.
+ * @param elementDataGetters - Data getters for the element.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -111,11 +166,19 @@ function getComponentStateValue(
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AssetSelectorElement,
+  elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
+
+    case 'AssetSelector':
+      return getAssetSelectorStateValue(
+        element.props.value,
+        elementDataGetters.getAssetMetadata,
+      );
 
     default:
       return element.props.value;
@@ -127,6 +190,7 @@ function getComponentStateValue(
  *
  * @param oldState - The previous state.
  * @param element - The input element.
+ * @param elementDataGetters - Data getters for the element.
  * @param form - An optional form that the input is enclosed in.
  * @returns The input state.
  */
@@ -138,7 +202,9 @@ function constructInputState(
     | RadioGroupElement
     | FileInputElement
     | CheckboxElement
-    | SelectorElement,
+    | SelectorElement
+    | AssetSelectorElement,
+  elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
   const oldStateUnwrapped = form ? (oldState[form] as FormState) : oldState;
@@ -149,7 +215,7 @@ function constructInputState(
   }
 
   return (
-    getComponentStateValue(element) ??
+    getComponentStateValue(element, elementDataGetters) ??
     oldInputState ??
     constructComponentSpecificDefaultState(element) ??
     null
@@ -161,11 +227,13 @@ function constructInputState(
  *
  * @param oldState - The previous state.
  * @param rootComponent - The UI component to construct state from.
+ * @param elementDataGetters - Data getters for the elements.
  * @returns The interface state of the passed component.
  */
 export function constructState(
   oldState: InterfaceState,
   rootComponent: JSXElement,
+  elementDataGetters: ElementDataGetters,
 ): InterfaceState {
   const newState: InterfaceState = {};
 
@@ -189,6 +257,7 @@ export function constructState(
     }
 
     // Stateful components inside a form
+    // TODO: This is becoming a bit of a mess, we should consider refactoring this.
     if (
       currentForm &&
       (component.type === 'Input' ||
@@ -196,29 +265,37 @@ export function constructState(
         component.type === 'RadioGroup' ||
         component.type === 'FileInput' ||
         component.type === 'Checkbox' ||
-        component.type === 'Selector')
+        component.type === 'Selector' ||
+        component.type === 'AssetSelector')
     ) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
       formState[component.props.name] = constructInputState(
         oldState,
         component,
+        elementDataGetters,
         currentForm.name,
       );
       return;
     }
 
     // Stateful components outside a form
+    // TODO: This is becoming a bit of a mess, we should consider refactoring this.
     if (
       component.type === 'Input' ||
       component.type === 'Dropdown' ||
       component.type === 'RadioGroup' ||
       component.type === 'FileInput' ||
       component.type === 'Checkbox' ||
-      component.type === 'Selector'
+      component.type === 'Selector' ||
+      component.type === 'AssetSelector'
     ) {
       assertNameIsUnique(newState, component.props.name);
-      newState[component.props.name] = constructInputState(oldState, component);
+      newState[component.props.name] = constructInputState(
+        oldState,
+        component,
+        elementDataGetters,
+      );
     }
   });
 

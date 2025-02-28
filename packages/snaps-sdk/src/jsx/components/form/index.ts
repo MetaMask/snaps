@@ -1,3 +1,4 @@
+import type { AssetSelectorElement } from './AssetSelector';
 import type { ButtonElement } from './Button';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
@@ -11,6 +12,7 @@ import type { RadioGroupElement } from './RadioGroup';
 import type { SelectorElement } from './Selector';
 import type { SelectorOptionElement } from './SelectorOption';
 
+export * from './AssetSelector';
 export * from './Button';
 export * from './Checkbox';
 export * from './Dropdown';
@@ -25,6 +27,7 @@ export * from './Selector';
 export * from './SelectorOption';
 
 export type StandardFormElement =
+  | AssetSelectorElement
   | ButtonElement
   | CheckboxElement
   | FormElement
