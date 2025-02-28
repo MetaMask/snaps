@@ -195,6 +195,7 @@ export class CronjobController extends BaseController<
       'SnapController:snapUpdated',
       this._handleEventSnapUpdated,
     );
+    /* eslint-enable @typescript-eslint/unbound-method */
   }
 
   /**
