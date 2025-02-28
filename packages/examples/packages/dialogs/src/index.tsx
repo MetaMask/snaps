@@ -11,7 +11,7 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 
-import { CustomDialog } from './components';
+import { CustomDialog, RequireScrollContent } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -88,6 +88,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         params: {
           content: <CustomDialog />,
         },
+      });
+
+    case 'showRequireScrollContent':
+      return snap.request({
+        method: 'snap_dialog',
+        params: { content: <RequireScrollContent /> },
       });
 
     default:
