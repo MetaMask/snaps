@@ -99,6 +99,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Alert],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -106,6 +107,7 @@ describe('getInterfaceResponse', () => {
 
     expect(response).toStrictEqual({
       type: DialogType.Alert,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -127,6 +129,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -134,6 +137,7 @@ describe('getInterfaceResponse', () => {
     assertIsConfirmationDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -156,6 +160,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -163,6 +168,7 @@ describe('getInterfaceResponse', () => {
     assertIsConfirmationDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Confirmation,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -185,6 +191,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -192,6 +199,7 @@ describe('getInterfaceResponse', () => {
     assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -214,6 +222,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -221,6 +230,7 @@ describe('getInterfaceResponse', () => {
     assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -243,6 +253,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+      'foo',
       <Text>foo</Text>,
       interfaceActions,
     );
@@ -250,6 +261,7 @@ describe('getInterfaceResponse', () => {
     assertIsPromptDialog(response);
     expect(response).toStrictEqual({
       type: DialogType.Prompt,
+      id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
       typeInField: expect.any(Function),
@@ -272,6 +284,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES.default,
+      'foo',
       <Container>
         <Box>
           <Text>foo</Text>
@@ -288,6 +301,7 @@ describe('getInterfaceResponse', () => {
     assertCustomDialogHasFooter(response);
 
     expect(response).toStrictEqual({
+      id: 'foo',
       content: (
         <Container>
           <Box>
@@ -314,6 +328,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES.default,
+      'foo',
       <Container>
         <Box>
           <Text>foo</Text>
@@ -329,6 +344,7 @@ describe('getInterfaceResponse', () => {
     assertCustomDialogHasPartialFooter(response);
 
     expect(response).toStrictEqual({
+      id: 'foo',
       content: (
         <Container>
           <Box>
@@ -355,6 +371,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       DIALOG_APPROVAL_TYPES.default,
+      'foo',
       <Container>
         <Box>
           <Text>foo</Text>
@@ -367,6 +384,7 @@ describe('getInterfaceResponse', () => {
     assertCustomDialogHasNoFooter(response);
 
     expect(response).toStrictEqual({
+      id: 'foo',
       content: (
         <Container>
           <Box>
@@ -391,6 +409,7 @@ describe('getInterfaceResponse', () => {
     const response = getInterfaceResponse(
       runSaga,
       'Notification',
+      'foo',
       <Box>
         <Text>Foo</Text>
       </Box>,
@@ -398,6 +417,7 @@ describe('getInterfaceResponse', () => {
     );
 
     expect(response).toStrictEqual({
+      id: 'foo',
       content: (
         <Box>
           <Text>Foo</Text>
@@ -1280,6 +1300,7 @@ describe('getInterface', () => {
       rootControllerMessenger,
     ).toPromise();
     expect(result).toStrictEqual({
+      id,
       type,
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
@@ -1311,6 +1332,7 @@ describe('getInterface', () => {
 
     const result = await promise;
     expect(result).toStrictEqual({
+      id,
       type,
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
