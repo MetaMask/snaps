@@ -4,10 +4,7 @@ import type {
 } from '@metamask/base-controller';
 import { Messenger } from '@metamask/base-controller';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import {
-  type CryptographicFunctions,
-  mnemonicPhraseToBytes,
-} from '@metamask/key-tree';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -23,6 +20,7 @@ import type {
   InterfaceState,
   InterfaceContext,
   SnapId,
+  EntropySource,
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
@@ -43,6 +41,8 @@ import {
   getPermittedClearSnapStateMethodImplementation,
   getPermittedGetSnapStateMethodImplementation,
   getPermittedUpdateSnapStateMethodImplementation,
+  getGetEntropySourcesImplementation,
+  getGetMnemonicImplementation,
 } from './methods/hooks';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
@@ -103,9 +103,10 @@ export type RestrictedMiddlewareHooks = {
   /**
    * A hook that returns the user's secret recovery phrase.
    *
+   * @param source - The entropy source to get the mnemonic from.
    * @returns The user's secret recovery phrase.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * A hook that returns whether the client is locked or not.
@@ -131,6 +132,13 @@ export type PermittedMiddlewareHooks = {
    * @returns Whether the origin has the permission.
    */
   hasPermission: (permissionName: string) => boolean;
+
+  /**
+   * A hook that returns the entropy sources available to the Snap.
+   *
+   * @returns The entropy sources available to the Snap.
+   */
+  getEntropySources: () => EntropySource[];
 
   /**
    * A hook that returns a promise that resolves once the extension is unlocked.
@@ -373,8 +381,7 @@ export function getRestrictedHooks(
   options: SimulationOptions,
 ): RestrictedMiddlewareHooks {
   return {
-    getMnemonic: async () =>
-      Promise.resolve(mnemonicPhraseToBytes(options.secretRecoveryPhrase)),
+    getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
   };
@@ -434,6 +441,7 @@ export function getPermittedHooks(
         ...args,
       ),
 
+    getEntropySources: getGetEntropySourcesImplementation(),
     getSnapState: getPermittedGetSnapStateMethodImplementation(runSaga),
     updateSnapState: getPermittedUpdateSnapStateMethodImplementation(runSaga),
     clearSnapState: getPermittedClearSnapStateMethodImplementation(runSaga),

@@ -16,6 +16,7 @@ declare global {
 
 export enum Tag {
   Accounts = 'Accounts',
+  EntropySources = 'Entropy Sources',
   InstalledSnaps = 'Installed Snaps',
   TestState = 'Test State',
   UnencryptedTestState = 'Unencrypted Test State',

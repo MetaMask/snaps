@@ -16,14 +16,20 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { getSecretRecoveryPhrase } from '../utils';
 
 const targetName = 'snap_getBip44Entropy';
 
 export type GetBip44EntropyMethodHooks = {
   /**
-   * @returns The mnemonic of the user's primary keyring.
+   * Get the mnemonic of the provided source. If no source is provided, the
+   * mnemonic of the primary keyring will be returned.
+   *
+   * @param source - The optional ID of the source to get the mnemonic of.
+   * @returns The mnemonic of the provided source, or the default source if no
+   * source is provided.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -126,9 +132,13 @@ export function getBip44EntropyImplementation({
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
     const params = args.params as GetBip44EntropyParams;
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
 
     const node = await BIP44CoinTypeNode.fromDerivationPath(
-      [await getMnemonic(), `bip32:44'`, `bip32:${params.coinType}'`],
+      [secretRecoveryPhrase, `bip32:44'`, `bip32:${params.coinType}'`],
       'mainnet',
       getClientCryptography(),
     );

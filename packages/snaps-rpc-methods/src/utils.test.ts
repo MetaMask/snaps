@@ -1,3 +1,4 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
 import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
 import { create, is } from '@metamask/superstruct';
@@ -7,6 +8,7 @@ import {
   deriveEntropy,
   getNode,
   getPathPrefix,
+  getSecretRecoveryPhrase,
   isValidStateKey,
   StateKeyStruct,
 } from './utils';
@@ -126,4 +128,43 @@ describe('StateKeyStruct', () => {
       );
     },
   );
+});
+
+describe('getSecretRecoveryPhrase', () => {
+  it('returns the secret recovery phrase', async () => {
+    const getMnemonic = jest
+      .fn()
+      .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      'foo',
+    );
+
+    expect(secretRecoveryPhrase).toBe(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+    expect(getMnemonic).toHaveBeenCalledWith('foo');
+  });
+
+  it('throws an invalid params error if `getMnemonic` throws with an error', async () => {
+    const getMnemonic = jest.fn().mockRejectedValue(new Error('foo'));
+
+    await expect(getSecretRecoveryPhrase(getMnemonic)).rejects.toThrow(
+      rpcErrors.invalidParams({
+        message: 'foo',
+      }),
+    );
+  });
+
+  it('throws an internal error if `getMnemonic` throws with a non-error', async () => {
+    const getMnemonic = jest.fn().mockRejectedValue('foo');
+
+    await expect(getSecretRecoveryPhrase(getMnemonic)).rejects.toThrow(
+      rpcErrors.internal({
+        message: 'An unknown error occurred.',
+        data: {
+          error: 'foo',
+        },
+      }),
+    );
+  });
 });
