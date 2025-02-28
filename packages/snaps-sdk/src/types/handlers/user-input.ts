@@ -11,6 +11,7 @@ import {
   union,
   boolean,
 } from '@metamask/superstruct';
+import { CaipAssetTypeStruct } from '@metamask/utils';
 
 import type { InterfaceContext } from '../interface';
 
@@ -71,11 +72,31 @@ export const FileStruct = object({
  */
 export type File = Infer<typeof FileStruct>;
 
+export const AssetSelectorStateStruct = object({
+  asset: CaipAssetTypeStruct,
+  name: string(),
+  symbol: string(),
+});
+
+/**
+ * The state of the asset selector component.
+ *
+ * @property asset - The CAIP-19 asset ID.
+ * @property name - The name of the asset.
+ * @property ticker - The ticker of the asset.
+ */
+export type AssetSelectorState = Infer<typeof AssetSelectorStateStruct>;
+
 export const FormSubmitEventStruct = assign(
   GenericEventStruct,
   object({
     type: literal(UserInputEventType.FormSubmitEvent),
-    value: record(string(), nullable(union([string(), FileStruct, boolean()]))),
+    value: record(
+      string(),
+      nullable(
+        union([string(), FileStruct, boolean(), AssetSelectorStateStruct]),
+      ),
+    ),
     name: string(),
   }),
 );
@@ -100,7 +121,7 @@ export const InputChangeEventStruct = assign(
   object({
     type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
-    value: union([string(), boolean()]),
+    value: union([string(), boolean(), AssetSelectorStateStruct]),
   }),
 );
 
