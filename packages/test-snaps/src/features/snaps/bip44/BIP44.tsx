@@ -63,7 +63,7 @@ export const BIP44: FunctionComponent = () => {
         </span>
       </Result>
 
-      <SignMessage />
+      <SignMessage source={source} />
     </Snap>
   );
 };
