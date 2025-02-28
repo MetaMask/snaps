@@ -551,7 +551,8 @@ const FieldChildStruct = selectiveUnion((value) => {
   | FileInputElement
   | InputElement
   | CheckboxElement
-  | SelectorElement,
+  | SelectorElement
+  | AssetSelectorElement,
   null
 >;
 
