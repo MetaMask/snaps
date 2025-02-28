@@ -109,6 +109,7 @@ describe('handleRequest', () => {
         },
         key: null,
       },
+      id: expect.any(String),
       ok: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),

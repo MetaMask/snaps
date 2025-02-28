@@ -48,6 +48,7 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
  *
  * @param runSaga - A function to run a saga outside the usual Redux flow.
  * @param type - The type of the interface.
+ * @param id - The interface ID.
  * @param content - The content to show in the interface.
  * @param interfaceActions - The actions to interact with the interface.
  * @returns The user interface object.
@@ -55,6 +56,7 @@ const MAX_FILE_SIZE = 10_000_000; // 10 MB
 export function getInterfaceResponse(
   runSaga: RunSagaFunction,
   type: DialogApprovalTypes[DialogType | 'default'] | 'Notification',
+  id: string,
   content: JSXElement,
   interfaceActions: SnapInterfaceActions,
 ): SnapInterface {
@@ -64,6 +66,8 @@ export function getInterfaceResponse(
         ...interfaceActions,
         type: DialogType.Alert,
         content,
+        id,
+
         ok: resolveWith(runSaga, null),
       };
 
@@ -72,6 +76,7 @@ export function getInterfaceResponse(
         ...interfaceActions,
         type: DialogType.Confirmation,
         content,
+        id,
 
         ok: resolveWith(runSaga, true),
         cancel: resolveWith(runSaga, false),
@@ -82,6 +87,7 @@ export function getInterfaceResponse(
         ...interfaceActions,
         type: DialogType.Prompt,
         content,
+        id,
 
         ok: resolveWithInput(runSaga),
         cancel: resolveWith(runSaga, null),
@@ -95,6 +101,7 @@ export function getInterfaceResponse(
         return {
           ...interfaceActions,
           content,
+          id,
 
           ok: resolveWith(runSaga, null),
           cancel: resolveWith(runSaga, null),
@@ -106,6 +113,7 @@ export function getInterfaceResponse(
         return {
           ...interfaceActions,
           content,
+          id,
 
           cancel: resolveWith(runSaga, null),
         };
@@ -115,6 +123,7 @@ export function getInterfaceResponse(
       return {
         ...interfaceActions,
         content,
+        id,
       };
     }
 
@@ -122,6 +131,7 @@ export function getInterfaceResponse(
       return {
         ...interfaceActions,
         content,
+        id,
       };
     }
 
@@ -1017,6 +1027,7 @@ export function* getInterface(
   return getInterfaceResponse(
     runSaga,
     storedInterface.type,
+    storedInterface.id,
     storedInterface.content,
     interfaceActions,
   );
