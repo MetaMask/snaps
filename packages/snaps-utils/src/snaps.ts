@@ -161,6 +161,11 @@ export type Snap = TruncatedSnap & {
    * Flag to signal whether this snap should hide the Snap branding like header or avatar in the UI or not.
    */
   hideSnapBranding?: boolean;
+
+  /**
+   * Date in ISO String format, representing time of the last interaction with snap.
+   */
+  lastInteraction?: string;
 };
 
 export type TruncatedSnapFields =
