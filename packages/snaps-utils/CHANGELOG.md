@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.0.1]
 
-### Uncategorized
+### Fixed
 
-- chore: Remove `pattern` in favour of `definePattern` ([#3142](https://github.com/MetaMask/snaps/pull/3142))
-- chore(deps-dev): bump vite from 4.5.5 to 4.5.6 in the npm_and_yarn group across 1 directory ([#3140](https://github.com/MetaMask/snaps/pull/3140))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
+- Improve error messaging ([#3142](https://github.com/MetaMask/snaps/pull/3142))
 
 ## [9.0.0]
 

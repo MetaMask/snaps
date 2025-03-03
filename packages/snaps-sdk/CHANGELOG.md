@@ -9,12 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.19.0]
 
-### Uncategorized
+### Added
 
-- Refactor SIP-30 implementation and update examples ([#3165](https://github.com/MetaMask/snaps/pull/3165))
-- Implement SIP-30 ([#3156](https://github.com/MetaMask/snaps/pull/3156))
-- fix: Update `Box` `crossAlignment` default value ([#3133](https://github.com/MetaMask/snaps/pull/3133))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
+- Implement SIP-30 ([#3156](https://github.com/MetaMask/snaps/pull/3156), [#3165](https://github.com/MetaMask/snaps/pull/3165))
+  - This adds a `snap_listEntropySources` method, which returns a list of
+    entropy sources.
+  - The `snap_get*Entropy` methods now accept an optional `source` parameter to
+    specify the entropy source to use.
+
+### Changed
+
+- Update `Box` `crossAlignment` default value ([#3133](https://github.com/MetaMask/snaps/pull/3133))
 
 ## [6.18.0]
 
