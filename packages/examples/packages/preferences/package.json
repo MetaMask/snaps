@@ -1,6 +1,6 @@
 {
   "name": "@metamask/preferences-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating the use of `snap_getPreferences`",
   "keywords": [
     "MetaMask",

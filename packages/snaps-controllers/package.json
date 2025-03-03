@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "Controllers for MetaMask Snaps",
   "keywords": [
     "MetaMask",

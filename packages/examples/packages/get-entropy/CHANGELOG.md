@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.2.0]
+
+### Added
+
+- Add support for SIP-30 ([#3165](https://github.com/MetaMask/snaps/pull/3165))
+  - The Snap now has a `getEntropySources` method that returns an array of
+    entropy sources.
+  - The existing methods now have an optional `source` parameter that can be
+    used to specify the entropy source to use.
+
 ## [2.1.3]
 
 ### Fixed
@@ -78,7 +88,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.1.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.2.0...HEAD
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.1.3...@metamask/get-entropy-example-snap@2.2.0
 [2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.1.2...@metamask/get-entropy-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.1.1...@metamask/get-entropy-example-snap@2.1.2
 [2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/get-entropy-example-snap@2.1.0...@metamask/get-entropy-example-snap@2.1.1
