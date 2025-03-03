@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Release 91.0.0 ([#3185](https://github.com/MetaMask/snaps/pull/3185))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
-
 ## [1.0.0]
 
 ### Added
