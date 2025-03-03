@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Refactor SIP-30 implementation and update examples ([#3165](https://github.com/MetaMask/snaps/pull/3165))
+- Implement SIP-30 ([#3156](https://github.com/MetaMask/snaps/pull/3156))
+- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
+
 ## [11.12.0]
 
 ### Added

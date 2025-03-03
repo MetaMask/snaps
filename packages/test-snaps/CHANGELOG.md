@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Add ID to entropy selector and invalid option for E2E testing ([#3172](https://github.com/MetaMask/snaps/pull/3172))
+- Refactor SIP-30 implementation and update examples ([#3165](https://github.com/MetaMask/snaps/pull/3165))
+- Implement SIP-30 ([#3156](https://github.com/MetaMask/snaps/pull/3156))
+- feat: Add the preferences example snap ([#3154](https://github.com/MetaMask/snaps/pull/3154))
+- Fix start command in `test-snaps` ([#3155](https://github.com/MetaMask/snaps/pull/3155))
+- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
+
 ## [2.19.0]
 
 ### Added
