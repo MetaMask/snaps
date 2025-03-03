@@ -37,7 +37,6 @@ export async function generateSendFlow({
           selectedCurrency="BTC"
           total={{ amount: 0, fiat: 0 }}
           fees={fees}
-          displayClearIcon={false}
         />
       ),
       context: {
