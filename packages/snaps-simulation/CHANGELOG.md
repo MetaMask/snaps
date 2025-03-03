@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Add the interface ID to the return value of `getInterface` ([#3174](https://github.com/MetaMask/snaps/pull/3174))
 - Bump `@metamask/phishing-controller` from `12.3.2` to `12.4.0` ([#3171](https://github.com/MetaMask/snaps/pull/3171))
 - Bump `@metamask/eth-json-rpc-middleware` from `15.2.0` to `15.3.0` ([#3148](https://github.com/MetaMask/snaps/pull/3148))
 
