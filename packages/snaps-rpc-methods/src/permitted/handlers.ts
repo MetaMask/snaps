@@ -13,6 +13,7 @@ import { getSnapsHandler } from './getSnaps';
 import { getStateHandler } from './getState';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
+import { listEntropySourcesHandler } from './listEntropySources';
 import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
@@ -34,6 +35,7 @@ export const methodHandlers = {
   snap_updateInterface: updateInterfaceHandler,
   snap_getInterfaceState: getInterfaceStateHandler,
   snap_getInterfaceContext: getInterfaceContextHandler,
+  snap_listEntropySources: listEntropySourcesHandler,
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
   snap_experimentalProviderRequest: providerRequestHandler,

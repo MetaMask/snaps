@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "2.19.0",
+  "version": "2.20.1",
   "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "keywords": [
@@ -69,6 +69,7 @@
     "@metamask/protocol-example-snap": "workspace:^",
     "@metamask/send-flow-example-snap": "workspace:^",
     "@metamask/signature-insights-example-snap": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/utils": "^11.2.0",
     "@metamask/wasm-example-snap": "workspace:^",

@@ -6,6 +6,7 @@ import type {
   CryptographicFunctions,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { MagicValue } from '@metamask/snaps-utils';
 import { refine, string } from '@metamask/superstruct';
 import type { Hex } from '@metamask/utils';
@@ -263,3 +264,33 @@ export const StateKeyStruct = refine(string(), 'state key', (value) => {
 
   return true;
 });
+
+/**
+ * Get the secret recovery phrase of the user. This calls the `getMnemonic` hook
+ * and handles any errors that occur, throwing formatted JSON-RPC errors.
+ *
+ * @param getMnemonic - The `getMnemonic` hook.
+ * @param source - The entropy source to use.
+ * @returns The secret recovery phrase.
+ */
+export async function getSecretRecoveryPhrase(
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>,
+  source?: string | undefined,
+): Promise<Uint8Array> {
+  try {
+    return await getMnemonic(source);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw rpcErrors.invalidParams({
+        message: error.message,
+      });
+    }
+
+    throw rpcErrors.internal({
+      message: 'An unknown error occurred.',
+      data: {
+        error: error.toString(),
+      },
+    });
+  }
+}

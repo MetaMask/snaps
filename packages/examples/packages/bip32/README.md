@@ -56,4 +56,4 @@ JSON-RPC methods:
   (ECDSA for `secp256k1` and EdDSA for `ed25519`).
 
 For more information, you can refer to
-[the end-to-end tests](./src/index.test.ts).
+[the end-to-end tests](./src/index.test.tsx).

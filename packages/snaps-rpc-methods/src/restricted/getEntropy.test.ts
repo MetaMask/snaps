@@ -73,6 +73,43 @@ describe('getEntropyImplementation', () => {
     );
   });
 
+  it('calls `getMnemonic` with a different entropy source', async () => {
+    const getMnemonic = jest
+      .fn()
+      .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+    const getUnlockPromise = jest.fn();
+    const getClientCryptography = jest.fn().mockReturnValue({});
+
+    const methodHooks = {
+      getMnemonic,
+      getUnlockPromise,
+      getClientCryptography,
+    };
+
+    const implementation = getEntropyBuilder.specificationBuilder({
+      methodHooks,
+    }).methodImplementation;
+
+    const result = await implementation({
+      method: 'snap_getEntropy',
+      params: {
+        version: 1,
+        salt: 'foo',
+        source: 'source-id',
+      },
+      context: {
+        origin: MOCK_SNAP_ID,
+      },
+    });
+
+    expect(result).toBe(
+      '0x6d8e92de419401c7da3cedd5f60ce5635b26059c2a4a8003877fec83653a4921',
+    );
+
+    expect(getMnemonic).toHaveBeenCalledWith('source-id');
+  });
+
   it('uses custom client cryptography functions', async () => {
     const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
     const getMnemonic = jest
