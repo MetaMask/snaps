@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.20.1]
 
-### Uncategorized
+### Fixed
 
 - Use Webpack plugin example Snap for testing updates ([#3186](https://github.com/MetaMask/snaps/pull/3186))
 
