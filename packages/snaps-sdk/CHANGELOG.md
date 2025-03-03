@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.19.0]
+
 ### Uncategorized
 
 - Refactor SIP-30 implementation and update examples ([#3165](https://github.com/MetaMask/snaps/pull/3165))
@@ -506,7 +508,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...HEAD
+[6.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0
 [6.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...@metamask/snaps-sdk@6.18.0
 [6.17.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...@metamask/snaps-sdk@6.17.1
 [6.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.16.0...@metamask/snaps-sdk@6.17.0

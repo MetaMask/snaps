@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0]
+
 ### Uncategorized
 
 - chore(deps): bump @metamask/phishing-controller from 12.3.2 to 12.4.0 ([#3171](https://github.com/MetaMask/snaps/pull/3171))
@@ -125,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.3.0...HEAD
+[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.2.0...@metamask/snaps-simulation@2.3.0
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.1.0...@metamask/snaps-simulation@2.2.0
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
 [2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@1.5.0...@metamask/snaps-simulation@2.0.0
