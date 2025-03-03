@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update `Box` `crossAlignment` default value ([#3133](https://github.com/MetaMask/snaps/pull/3133))
+- Update documentation of `Box` `crossAlignment` property ([#3133](https://github.com/MetaMask/snaps/pull/3133))
 
 ## [6.18.0]
 
