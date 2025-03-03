@@ -14,24 +14,23 @@ import {
  */
 export const RequireScrollContent: SnapComponent = () => (
   <Container>
-    <Box direction="vertical">
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
-      <Text>lorem ipsum dolor sit amet</Text>
+    <Box>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
+      <Text>Lorem ipsum dolor sit amet.</Text>
     </Box>
-    <Footer requireScroll>
+    <Footer>
       <Button name="reject">Reject</Button>
       <Button name="accept">Yes</Button>
     </Footer>

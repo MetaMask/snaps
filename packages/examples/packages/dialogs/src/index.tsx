@@ -15,13 +15,13 @@ import { CustomDialog, RequireScrollContent } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles three methods, one for each
- * type of dialog:
+ * `wallet_invokeSnap` method. This handler handles four methods:
  *
  * - `showAlert`: Show an alert dialog.
  * - `showConfirmation`: Show a confirmation dialog.
  * - `showPrompt`: Show a prompt dialog.
  * - `showCustom`: Show a custom dialog with the resolution handled by the snap.
+ * - `showRequireScrollContent`: Show a custom dialog with content that requires scrolling.
  *
  * The dialogs are shown using the [`snap_dialog`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
  * method.
