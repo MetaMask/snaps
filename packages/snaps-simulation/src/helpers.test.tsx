@@ -146,6 +146,7 @@ describe('helpers', () => {
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         waitForUpdate: expect.any(Function),
+        id: expect.any(String),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -209,6 +210,7 @@ describe('helpers', () => {
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         waitForUpdate: expect.any(Function),
+        id: expect.any(String),
         ok: expect.any(Function),
         cancel: expect.any(Function),
       });
@@ -272,6 +274,7 @@ describe('helpers', () => {
         selectFromSelector: expect.any(Function),
         uploadFile: expect.any(Function),
         waitForUpdate: expect.any(Function),
+        id: expect.any(String),
         ok: expect.any(Function),
       });
 

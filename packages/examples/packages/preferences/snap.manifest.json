@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating the use of `snap_getPreferences`",
   "proposedName": "Preferences Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "xb+s96cyPehIGt7HbyEaJwU9oA5vEyYKsGaMVOtor7o=",
+    "shasum": "I256k2BDHu9ZRRnDVfP335n69beXXTqN/7Hlih+Jnqc=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -23,6 +23,6 @@
     },
     "snap_getPreferences": {}
   },
-  "platformVersion": "6.18.0",
+  "platformVersion": "6.19.0",
   "manifestVersion": "0.1"
 }

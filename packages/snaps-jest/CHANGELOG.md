@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.13.0]
+
+### Added
+
+- Add support for SIP-30 ([#3156](https://github.com/MetaMask/snaps/pull/3156), [#3165](https://github.com/MetaMask/snaps/pull/3165))
+- Add the interface ID to the return value of `getInterface` ([#3174](https://github.com/MetaMask/snaps/pull/3174))
+
 ## [8.12.0]
 
 ### Changed
@@ -340,7 +347,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.12.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.13.0...HEAD
+[8.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.12.0...@metamask/snaps-jest@8.13.0
 [8.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.11.0...@metamask/snaps-jest@8.12.0
 [8.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.10.0...@metamask/snaps-jest@8.11.0
 [8.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.9.0...@metamask/snaps-jest@8.10.0
