@@ -8,6 +8,7 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   MaybeUpdateState,
   TestOrigin,
@@ -22,14 +23,15 @@ import type {
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
-import type { CaipAssetType, Json } from '@metamask/utils';
-import { assert, hasProperty } from '@metamask/utils';
+import type { CaipAccountId, CaipAssetType, Json } from '@metamask/utils';
+import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
 import {
   constructState,
   getJsxInterface,
+  validateAssetSelector,
   validateInterfaceContext,
 } from './utils';
 import type { GetSnap } from '../snaps';
@@ -68,6 +70,11 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
+type AccountsControllerGetAccountByAddressAction = {
+  type: `AccountsController:getAccountByAddress`;
+  handler: (address: string) => InternalAccount | undefined;
+};
+
 export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapInterfaceControllerState
@@ -89,7 +96,8 @@ export type SnapInterfaceControllerAllowedActions =
   | HasApprovalRequest
   | AcceptRequest
   | GetSnap
-  | MultichainAssetsControllerGetStateAction;
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetAccountByAddressAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -442,6 +450,27 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
+  /**
+   * Get an account by its address.
+   *
+   * @param address - The account address.
+   * @returns The account or undefined if not found.
+   */
+  #getAccountByAddress(address: CaipAccountId) {
+    const { address: parsedAddress } = parseCaipAccountId(address);
+
+    return this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      parsedAddress,
+    );
+  }
+
+  /**
+   * Get the asset metadata for a given asset ID.
+   *
+   * @param assetId - The asset ID.
+   * @returns The asset metadata or undefined if not found.
+   */
   #getAssetMetadata(assetId: CaipAssetType) {
     // TODO: Introduce an action in MultichainAssetsController to get a specific asset metadata.
     const assets = this.messagingSystem.call(
@@ -472,6 +501,8 @@ export class SnapInterfaceController extends BaseController<
       this.#checkPhishingList.bind(this),
       (id: string) => this.messagingSystem.call('SnapController:get', id),
     );
+
+    validateAssetSelector(element, this.#getAccountByAddress.bind(this));
   }
 
   #onNotificationsListUpdated(notificationsList: Notification[]) {

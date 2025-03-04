@@ -83,7 +83,12 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
+<<<<<<< HEAD
     "@metamask/key-tree": "^10.1.0",
+=======
+    "@metamask/key-tree": "^10.0.2",
+    "@metamask/keyring-internal-api": "^6.0.0",
+>>>>>>> 1e98fa8c (add account handling)
     "@metamask/object-multiplex": "^2.1.0",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/phishing-controller": "^12.4.0",

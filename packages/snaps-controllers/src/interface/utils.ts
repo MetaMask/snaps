@@ -1,3 +1,4 @@
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { assert } from '@metamask/snaps-sdk';
 import type {
   FormState,
@@ -28,11 +29,10 @@ import {
   getJsxElementFromComponent,
   walkJsx,
 } from '@metamask/snaps-utils';
-import type { CaipAssetType } from '@metamask/utils';
+import { type CaipAssetType, type CaipAccountId } from '@metamask/utils';
 
 /**
  * A function to get asset metadata.
- * This is used to get the metadata of an asset by its ID.
  *
  * @param assetId - The asset ID.
  * @returns The asset metadata or undefined if not found.
@@ -40,6 +40,16 @@ import type { CaipAssetType } from '@metamask/utils';
 type GetAssetMetadata = (
   assetId: CaipAssetType,
 ) => FungibleAssetMetadata | undefined;
+
+/**
+ * A function to get an account by its address.
+ *
+ * @param address - The account address.
+ * @returns The account or undefined if not found.
+ */
+type GetAccountByAddress = (
+  address: CaipAccountId,
+) => InternalAccount | undefined;
 
 /**
  * Data getters for elements.
@@ -78,6 +88,33 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
   );
+}
+
+/**
+ * Validate the asset selector component.
+ *
+ * @param node - The JSX node to validate.
+ * @param getAccountByAddress - A function to get an account by its address.
+ *
+ * @throws If the asset selector is invalid.
+ */
+export function validateAssetSelector(
+  node: JSXElement,
+  getAccountByAddress: GetAccountByAddress,
+) {
+  walkJsx(node, (childNode) => {
+    if (childNode.type !== 'AssetSelector') {
+      return;
+    }
+
+    // We can assume that the addresses are the same for all CAIP account IDs
+    const account = getAccountByAddress(childNode.props.addresses[0]);
+
+    assert(
+      account,
+      `Could not find account for address: ${childNode.props.addresses[0]}`,
+    );
+  });
 }
 
 /**

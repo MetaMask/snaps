@@ -185,7 +185,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+        4,
         'MultichainAssetsController:getState',
       );
     });
@@ -443,6 +443,66 @@ describe('SnapInterfaceController', () => {
       );
     });
 
+    it('throws if an address passed to an asset selector is not available in the client', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'MultichainAssetsController:getState',
+        () => ({
+          assetsMetadata: {},
+          accountsAssets: {},
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        () => undefined,
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AssetSelector
+            name="foo"
+            addresses={['eip155:1:0x1234567890123456789012345678901234567890']}
+          />
+        </Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+        ),
+      ).rejects.toThrow(
+        'Could not find account for address: eip155:1:0x1234567890123456789012345678901234567890',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'AccountsController:getAccountByAddress',
+        '0x1234567890123456789012345678901234567890',
+      );
+    });
     it('throws if UI content is too large', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(

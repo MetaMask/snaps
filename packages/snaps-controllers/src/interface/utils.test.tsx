@@ -23,6 +23,7 @@ import {
   constructState,
   getAssetSelectorStateValue,
   getJsxInterface,
+  validateAssetSelector,
 } from './utils';
 
 describe('getJsxInterface', () => {
@@ -883,5 +884,39 @@ describe('getAssetSelectorStateValue', () => {
         getAssetMetadata,
       ),
     ).toBeNull();
+  });
+});
+
+describe('validateAssetSelector', () => {
+  it('passes if the address is available in the client', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: 'foo',
+    });
+
+    expect(
+      validateAssetSelector(
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+        />,
+        getAccountByAddress,
+      ),
+    ).toBeUndefined();
+  });
+
+  it('throws if the address is not available in the client', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    expect(() =>
+      validateAssetSelector(
+        <AssetSelector
+          name="foo"
+          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+        />,
+        getAccountByAddress,
+      ),
+    ).toThrow(
+      `Could not find account for address: eip155:0:0x1234567890123456789012345678901234567890`,
+    );
   });
 });
