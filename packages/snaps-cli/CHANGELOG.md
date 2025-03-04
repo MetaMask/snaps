@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
-- chore(deps): bump @metamask/utils from 11.1.0 to 11.2.0 ([#3091](https://github.com/MetaMask/snaps/pull/3091))
-
 ## [6.7.0]
 
 ### Added

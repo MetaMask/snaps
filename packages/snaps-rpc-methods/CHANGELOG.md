@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.13.1]
+
 ### Uncategorized
 
 - Unlock client before calling `getEntropySources` in `snap_listEntropySources` method ([#3194](https://github.com/MetaMask/snaps/pull/3194))
@@ -404,7 +406,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.1...HEAD
+[11.13.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.0...@metamask/snaps-rpc-methods@11.13.1
 [11.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.12.0...@metamask/snaps-rpc-methods@11.13.0
 [11.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.11.0...@metamask/snaps-rpc-methods@11.12.0
 [11.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.10.0...@metamask/snaps-rpc-methods@11.11.0
