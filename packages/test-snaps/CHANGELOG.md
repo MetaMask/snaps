@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.20.1]
-
-### Fixed
-
-- Use Webpack plugin example Snap for testing updates ([#3186](https://github.com/MetaMask/snaps/pull/3186))
-
 ## [2.20.0]
 
 ### Added
@@ -295,8 +289,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.1...HEAD
-[2.20.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.0...@metamask/test-snaps@2.20.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.0...HEAD
 [2.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.19.0...@metamask/test-snaps@2.20.0
 [2.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.1...@metamask/test-snaps@2.19.0
 [2.18.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.0...@metamask/test-snaps@2.18.1
