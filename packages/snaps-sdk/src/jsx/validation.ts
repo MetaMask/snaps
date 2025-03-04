@@ -21,7 +21,6 @@ import {
   assign,
   union,
 } from '@metamask/superstruct';
-import type { CaipChainId } from '@metamask/utils';
 import {
   CaipAccountIdStruct,
   CaipChainIdStruct,
@@ -30,6 +29,7 @@ import {
   isPlainObject,
   JsonStruct,
 } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 
 import type {
   GenericSnapChildren,
