@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Unlock client before calling `getEntropySources` in `snap_listEntropySources` method ([#3194](https://github.com/MetaMask/snaps/pull/3194))
+
 ## [11.13.0]
 
 ### Added
