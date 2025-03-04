@@ -16,6 +16,7 @@ describe('snap_listEntropySources', () => {
         hookNames: {
           hasPermission: true,
           getEntropySources: true,
+          getUnlockPromise: true,
         },
       });
     });
@@ -25,6 +26,7 @@ describe('snap_listEntropySources', () => {
     it('returns the result from the `getEntropySources` hook', async () => {
       const { implementation } = listEntropySourcesHandler;
 
+      const getUnlockPromise = jest.fn();
       const getEntropySources = jest.fn().mockReturnValue([
         {
           name: 'Secret recovery phrase 1',
@@ -49,6 +51,7 @@ describe('snap_listEntropySources', () => {
       const hooks = {
         hasPermission: jest.fn().mockReturnValue(true),
         getEntropySources,
+        getUnlockPromise,
       };
 
       const engine = new JsonRpcEngine();
@@ -71,6 +74,7 @@ describe('snap_listEntropySources', () => {
         method: 'snap_listEntropySources',
       });
 
+      expect(getUnlockPromise).toHaveBeenCalledWith(true);
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -100,9 +104,11 @@ describe('snap_listEntropySources', () => {
     it('returns an unauthorized error if the requesting origin does not have the required permission', async () => {
       const { implementation } = listEntropySourcesHandler;
 
+      const getUnlockPromise = jest.fn();
       const hooks = {
         hasPermission: jest.fn().mockReturnValue(false),
         getEntropySources: jest.fn(),
+        getUnlockPromise,
       };
 
       const engine = new JsonRpcEngine();
@@ -125,6 +131,7 @@ describe('snap_listEntropySources', () => {
         method: 'snap_listEntropySources',
       });
 
+      expect(getUnlockPromise).not.toHaveBeenCalled();
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
