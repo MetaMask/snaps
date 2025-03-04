@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.4]
 
-### Uncategorized
+### Fixed
 
 - Bump `test-snaps` version ([#3192](https://github.com/MetaMask/snaps/pull/3192))
 
