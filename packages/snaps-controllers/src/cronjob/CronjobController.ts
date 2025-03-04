@@ -244,16 +244,9 @@ export class CronjobController extends BaseController<
    * @param ms - Time in milliseconds.
    * @param snapId - ID of a Snap.
    * @param onComplete - Callback function to be executed when the timer completes.
-   * @param validateTime - Whether the time should be validated.
    */
-  #setupTimer(
-    id: string,
-    ms: number,
-    snapId: SnapId,
-    onComplete: () => void,
-    validateTime = true,
-  ) {
-    if (validateTime && ms <= 0) {
+  #setupTimer(id: string, ms: number, snapId: SnapId, onComplete: () => void) {
+    if (ms <= 0) {
       throw new Error('Cannot schedule execution in the past.');
     }
 
@@ -352,17 +345,11 @@ export class CronjobController extends BaseController<
       return;
     }
 
-    this.#setupTimer(
-      job.id,
-      ms,
-      job.snapId,
-      () => {
-        // TODO: Decide how to handle errors.
-        this.#executeCronjob(job).catch(logError);
-        this.#schedule(job);
-      },
-      false,
-    );
+    this.#setupTimer(job.id, ms, job.snapId, () => {
+      // TODO: Decide how to handle errors.
+      this.#executeCronjob(job).catch(logError);
+      this.#schedule(job);
+    });
 
     if (!this.state.jobs[job.id]?.lastRun) {
       this.#updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
