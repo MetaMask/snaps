@@ -16,7 +16,7 @@ jobs:
         uses: ./.github/actions/retry-action
         with:
           command: |
-            i=${$ATTEMPT:-0}
+            i=${ATTEMPT:-0}
             i=$((i + 1))
             echo "ATTEMPT=$i" >> "$GITHUB_ENV"
             if [[ $i -lt 3 ]]; then
