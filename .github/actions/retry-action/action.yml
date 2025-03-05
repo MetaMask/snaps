@@ -16,11 +16,11 @@ runs:
   steps:
     - name: Run command with retries
       run: |
-        function command() {
-          ${{ inputs.command }}
+        command() {
+          bash -c "${{ inputs.command }}"
         }
 
-        for i in $(seq 1 3); do
+        for i in $(seq 1 ${{ inputs.max-retries }}); do
           echo "Running command (attempt $i)."
           if command; then
             echo "Command succeeded on attempt $i."
@@ -29,5 +29,6 @@ runs:
             echo "Command failed on attempt $i."
           fi
         done
+        echo "Command failed after ${{ inputs.max-retries }} attempts."
         exit 1
       shell: bash
