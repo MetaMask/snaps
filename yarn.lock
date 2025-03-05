@@ -5542,7 +5542,7 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    express: "npm:^4.18.2"
+    express: "npm:^4.21.2"
     jest: "npm:^29.0.2"
     jest-environment-node: "npm:^29.5.0"
     jest-it-up: "npm:^2.0.0"
@@ -5679,7 +5679,7 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    express: "npm:^4.18.2"
+    express: "npm:^4.21.2"
     fast-deep-equal: "npm:^3.1.3"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
@@ -5741,7 +5741,7 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    express: "npm:^4.18.2"
+    express: "npm:^4.21.2"
     fast-deep-equal: "npm:^3.1.3"
     favicons: "npm:^7.1.2"
     favicons-webpack-plugin: "npm:^6.0.0"
@@ -11658,8 +11658,8 @@ __metadata:
   linkType: hard
 
 "elliptic@npm:^6.5.3, elliptic@npm:^6.5.4":
-  version: 6.5.7
-  resolution: "elliptic@npm:6.5.7"
+  version: 6.6.1
+  resolution: "elliptic@npm:6.6.1"
   dependencies:
     bn.js: "npm:^4.11.9"
     brorand: "npm:^1.1.0"
@@ -11668,7 +11668,7 @@ __metadata:
     inherits: "npm:^2.0.4"
     minimalistic-assert: "npm:^1.0.1"
     minimalistic-crypto-utils: "npm:^1.0.1"
-  checksum: 10/fbad1fad0a5cc07df83f80cc1f7a784247ef59075194d3e340eaeb2f4dd594825ee24c7e9b0cf279c9f1982efe610503bb3139737926428c4821d4fca1bcf348
+  checksum: 10/dc678c9febd89a219c4008ba3a9abb82237be853d9fd171cd602c8fb5ec39927e65c6b5e7a1b2a4ea82ee8e0ded72275e7932bb2da04a5790c2638b818e4e1c5
   languageName: node
   linkType: hard
 
@@ -12828,9 +12828,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.14.0, express@npm:^4.17.3, express@npm:^4.18.2":
-  version: 4.21.1
-  resolution: "express@npm:4.21.1"
+"express@npm:^4.14.0, express@npm:^4.17.3, express@npm:^4.21.2":
+  version: 4.21.2
+  resolution: "express@npm:4.21.2"
   dependencies:
     accepts: "npm:~1.3.8"
     array-flatten: "npm:1.1.1"
@@ -12851,7 +12851,7 @@ __metadata:
     methods: "npm:~1.1.2"
     on-finished: "npm:2.4.1"
     parseurl: "npm:~1.3.3"
-    path-to-regexp: "npm:0.1.10"
+    path-to-regexp: "npm:0.1.12"
     proxy-addr: "npm:~2.0.7"
     qs: "npm:6.13.0"
     range-parser: "npm:~1.2.1"
@@ -12863,7 +12863,7 @@ __metadata:
     type-is: "npm:~1.6.18"
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
-  checksum: 10/5d4a36dd03c1d1cce93172e9b185b5cd13a978d29ee03adc51cd278be7b4a514ae2b63e2fdaec0c00fdc95c6cfb396d9dd1da147917ffd337d6cd0778e08c9bc
+  checksum: 10/34571c442fc8c9f2c4b442d2faa10ea1175cf8559237fc6a278f5ce6254a8ffdbeb9a15d99f77c1a9f2926ab183e3b7ba560e3261f1ad4149799e3412ab66bd1
   languageName: node
   linkType: hard
 
@@ -14287,8 +14287,8 @@ __metadata:
   linkType: hard
 
 "http-proxy-middleware@npm:^2.0.3":
-  version: 2.0.6
-  resolution: "http-proxy-middleware@npm:2.0.6"
+  version: 2.0.7
+  resolution: "http-proxy-middleware@npm:2.0.7"
   dependencies:
     "@types/http-proxy": "npm:^1.17.8"
     http-proxy: "npm:^1.18.1"
@@ -14300,7 +14300,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/express":
       optional: true
-  checksum: 10/768e7ae5a422bbf4b866b64105b4c2d1f468916b7b0e9c96750551c7732383069b411aa7753eb7b34eab113e4f77fb770122cb7fb9c8ec87d138d5ddaafda891
+  checksum: 10/4a51bf612b752ad945701995c1c029e9501c97e7224c0cf3f8bf6d48d172d6a8f2b57c20fec469534fdcac3aa8a6f332224a33c6b0d7f387aa2cfff9b67216fd
   languageName: node
   linkType: hard
 
@@ -18201,10 +18201,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:0.1.10":
-  version: 0.1.10
-  resolution: "path-to-regexp@npm:0.1.10"
-  checksum: 10/894e31f1b20e592732a87db61fff5b95c892a3fe430f9ab18455ebe69ee88ef86f8eb49912e261f9926fc53da9f93b46521523e33aefd9cb0a7b0d85d7096006
+"path-to-regexp@npm:0.1.12":
+  version: 0.1.12
+  resolution: "path-to-regexp@npm:0.1.12"
+  checksum: 10/2e30f6a0144679c1f95c98e166b96e6acd1e72be9417830fefc8de7ac1992147eb9a4c7acaa59119fb1b3c34eec393b2129ef27e24b2054a3906fc4fb0d1398e
   languageName: node
   linkType: hard
 
@@ -22869,7 +22869,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.17.1, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.8.0":
+"ws@npm:8.17.1":
   version: 8.17.1
   resolution: "ws@npm:8.17.1"
   peerDependencies:
@@ -22896,6 +22896,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/9c796b84ba80ffc2c2adcdfc9c8e9a219ba99caa435c9a8d45f9ac593bba325563b3f83edc5eb067cc6d21b9a6bf2c930adf76dd40af5f58a5ca6859e81858f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.8.0":
+  version: 8.18.1
+  resolution: "ws@npm:8.18.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/3f38e9594f2af5b6324138e86b74df7d77bbb8e310bf8188679dd80bac0d1f47e51536a1923ac3365f31f3d8b25ea0b03e4ade466aa8292a86cd5defca64b19b
   languageName: node
   linkType: hard
 
