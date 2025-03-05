@@ -21,7 +21,7 @@ runs:
         }
 
         for i in $(seq 1 3); do
-          echo "Running command (attempt $i): ${{ inputs.command }}"
+          echo "Running command (attempt $i)."
           if command; then
             echo "Command succeeded on attempt $i."
             exit 0
