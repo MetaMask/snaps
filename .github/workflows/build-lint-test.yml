@@ -7,24 +7,6 @@ on:
         required: true
 
 jobs:
-  test-retry:
-    name: Test retry
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run command with retries
-        uses: ./.github/actions/retry-action
-        with:
-          command: |
-            i=${ATTEMPT:-0}
-            i=$((i + 1))
-            echo "ATTEMPT=$i" >> "$GITHUB_ENV"
-            if [[ $i -lt 3 ]]; then
-              exit 1
-            fi
-            echo "Great success!"
-          max-retries: 3
-
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
@@ -43,7 +25,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
-      - run: yarn --immutable
+      - name: Install Yarn dependencies
+        uses: ./.github/actions/retry-action
+        with:
+          command: yarn --immutable
       - name: Cache "@metamask/snaps-execution-environments" build
         id: cache-snaps-execution-environments-build
         uses: actions/cache@v4
