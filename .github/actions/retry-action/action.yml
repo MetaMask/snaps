@@ -1,0 +1,33 @@
+name: Retry action
+description: >
+  Retry a failed action up to a given number of times (by default 3 times).
+
+inputs:
+  command:
+    description: The command or commands to run.
+    required: true
+  max-retries:
+    description: The number of times to retry. Default is 3.
+    required: false
+    default: '3'
+
+runs:
+  using: composite
+  steps:
+    - name: Run command with retries
+      run: |
+        function command() {
+          ${{ inputs.command }}
+        }
+
+        for i in $(seq 1 3); do
+          echo "Running command (attempt $i): ${{ inputs.command }}"
+          if command; then
+            echo "Command succeeded on attempt $i."
+            exit 0
+          else
+            echo "Command failed on attempt $i."
+          fi
+        done
+        exit 1
+      shell: bash
