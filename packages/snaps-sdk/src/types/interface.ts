@@ -6,7 +6,12 @@ import {
   string,
   union,
 } from '@metamask/superstruct';
-import { JsonStruct, hasProperty, isObject } from '@metamask/utils';
+import {
+  CaipAccountIdStruct,
+  JsonStruct,
+  hasProperty,
+  isObject,
+} from '@metamask/utils';
 
 import { FileStruct } from './handlers';
 import { selectiveUnion } from '../internals';
@@ -22,7 +27,12 @@ import { ComponentStruct } from '../ui';
  * either the value of an input or a sub-state of a form.
  */
 
-export const StateStruct = union([FileStruct, string(), boolean()]);
+export const StateStruct = union([
+  FileStruct,
+  string(),
+  boolean(),
+  CaipAccountIdStruct,
+]);
 
 export const FormStateStruct = record(string(), nullable(StateStruct));
 

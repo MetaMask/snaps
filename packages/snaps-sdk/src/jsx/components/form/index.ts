@@ -1,3 +1,4 @@
+import type { AddressInputElement } from './AddressInput';
 import type { ButtonElement } from './Button';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
@@ -23,8 +24,10 @@ export * from './Form';
 export * from './Input';
 export * from './Selector';
 export * from './SelectorOption';
+export * from './AddressInput';
 
 export type StandardFormElement =
+  | AddressInputElement
   | ButtonElement
   | CheckboxElement
   | FormElement
