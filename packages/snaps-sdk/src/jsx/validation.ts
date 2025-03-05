@@ -29,7 +29,6 @@ import {
   isPlainObject,
   JsonStruct,
 } from '@metamask/utils';
-import type { CaipChainId } from '@metamask/utils';
 
 import type {
   GenericSnapChildren,
@@ -355,7 +354,7 @@ export const AddressInputStruct: Describe<AddressInputElement> = element(
   'AddressInput',
   {
     name: string(),
-    chainId: CaipChainIdStruct as unknown as Struct<CaipChainId, CaipChainId>,
+    chainId: CaipChainIdStruct,
     value: optional(string()),
     placeholder: optional(string()),
     disabled: optional(boolean()),
