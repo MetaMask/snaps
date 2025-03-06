@@ -5,6 +5,7 @@ import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapRpcHook, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
+import { getPreferences } from '@metamask/snaps-sdk';
 import type {
   Json,
   JsonRpcNotification,
@@ -140,6 +141,11 @@ export abstract class AbstractExecutionService<WorkerType>
     this.#messenger.registerActionHandler(
       `${controllerName}:terminateAllSnaps`,
       async () => this.terminateAllSnaps(),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${controllerName}:getPreferences`,
+      async (snapId: string) => this.getPreferences(snapId),
     );
   }
 
@@ -526,6 +532,16 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     return rpcRequestHandler(options);
+  }
+
+  /**
+   * Get the preferences for a given snap.
+   *
+   * @param snapId - The snap id.
+   * @returns The preferences for the snap.
+   */
+  async getPreferences(snapId: string) {
+    return getPreferences(snapId);
   }
 }
 

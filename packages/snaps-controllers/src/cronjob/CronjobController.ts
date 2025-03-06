@@ -10,6 +10,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { BackgroundEvent, SnapId } from '@metamask/snaps-sdk';
+import { getPreferences } from '@metamask/snaps-sdk';
 import type {
   TruncatedSnap,
   CronjobSpecification,

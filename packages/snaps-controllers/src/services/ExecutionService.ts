@@ -1,4 +1,5 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
+import { getPreferences } from '@metamask/snaps-sdk';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
@@ -21,6 +22,7 @@ export type ExecutionService = {
   terminateAllSnaps: TerminateAll;
   executeSnap: ExecuteSnap;
   handleRpcRequest: HandleRpcRequest;
+  getPreferences: (snapId: string) => Promise<Json>;
 };
 
 export type SnapExecutionData = {
@@ -89,11 +91,17 @@ export type TerminateAllSnapsAction = {
   handler: ExecutionService['terminateAllSnaps'];
 };
 
+export type GetPreferencesAction = {
+  type: `${ControllerName}:getPreferences`;
+  handler: ExecutionService['getPreferences'];
+};
+
 export type ExecutionServiceActions =
   | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateSnapAction
-  | TerminateAllSnapsAction;
+  | TerminateAllSnapsAction
+  | GetPreferencesAction;
 
 export type ExecutionServiceMessenger = RestrictedMessenger<
   'ExecutionService',

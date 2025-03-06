@@ -18,7 +18,7 @@ import type {
   ComponentOrElement,
   InterfaceContext,
 } from '@metamask/snaps-sdk';
-import { ContentType } from '@metamask/snaps-sdk';
+import { ContentType, getPreferences } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
@@ -226,6 +226,11 @@ export class SnapInterfaceController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:resolveInterface`,
       this.resolveInterface.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getPreferences`,
+      this.getPreferences.bind(this),
     );
   }
 
@@ -479,5 +484,15 @@ export class SnapInterfaceController extends BaseController<
         }
       });
     });
+  }
+
+  /**
+   * Get the preferences for a given snap.
+   *
+   * @param snapId - The snap id.
+   * @returns The preferences for the snap.
+   */
+  async getPreferences(snapId: SnapId) {
+    return getPreferences(snapId);
   }
 }

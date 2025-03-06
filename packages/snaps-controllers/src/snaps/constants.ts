@@ -12,6 +12,7 @@ export const ALLOWED_PERMISSIONS = Object.freeze([
   SnapEndowments.EthereumProvider,
   SnapEndowments.TransactionInsight,
   SnapEndowments.SignatureInsight,
+  'snap_getPreferences',
 ]);
 
 export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
