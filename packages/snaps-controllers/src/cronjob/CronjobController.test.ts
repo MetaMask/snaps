@@ -244,6 +244,66 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
+  it('schedules a cronjob to run in 15 seconds if the cronjob is set to run less than every 15 seconds', () => {
+    const expression = '*/1 * * * * *'; // Every second
+
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return {
+          [SnapEndowments.Cronjob]: getCronjobPermission({ expression }),
+        };
+      },
+    );
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    cronjobController.register(MOCK_SNAP_ID);
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'PermissionController:getPermissions',
+      MOCK_SNAP_ID,
+    );
+
+    jest.advanceTimersByTime(11_000);
+
+    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethod',
+          params: ['p1'],
+        },
+      },
+    );
+
+    jest.advanceTimersByTime(4_000);
+
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethod',
+          params: ['p1'],
+        },
+      },
+    );
+
+    cronjobController.destroy();
+  });
+
   it('schedules a background event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
