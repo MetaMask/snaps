@@ -132,7 +132,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          node-version: ${{ matrix.node-version }}
       - name: Generate LavaMoat policy
         run: yarn workspace @metamask/snaps-execution-environments build:lavamoat:policy
       - name: Require clean working directory
@@ -152,7 +151,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-          node-version: ${{ matrix.node-version }}
       - name: Lint
         run: yarn lint
       - name: Require clean working directory
