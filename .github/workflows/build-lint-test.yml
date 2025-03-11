@@ -33,7 +33,9 @@ jobs:
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
           retention-days: 1
-          path: packages/snaps-execution-environments/dist/browserify
+          path: |
+            .nvmrc
+            packages/snaps-execution-environments/dist/browserify
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
@@ -60,7 +62,9 @@ jobs:
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
           retention-days: 1
-          path: packages/*/dist
+          path: |
+            .nvmrc
+            packages/*/dist
       - name: Require clean working directory
         shell: bash
         run: |
@@ -82,7 +86,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-22.x-${{ github.sha }}
-          path: packages/snaps-execution-environments/dist/browserify
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v4
@@ -181,12 +184,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-          path: packages/snaps-execution-environments/dist/browserify
       - name: Restore build files
         uses: actions/download-artifact@v4
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
-          path: packages/*/dist
       - name: Install Google Chrome
         if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         run: yarn install-chrome
@@ -194,7 +195,6 @@ jobs:
       - name: Get coverage folder
         id: get-coverage-folder
         run: |
-          echo "stub" >> stub
           echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
           echo "artifact-name=$(echo ${{ matrix.package-name }} | sed 's:.*/::')" >> "$GITHUB_OUTPUT"
         shell: bash
@@ -204,7 +204,7 @@ jobs:
         with:
           name: coverage-${{ steps.get-coverage-folder.outputs.artifact-name }}
           path: |
-            stub
+            .nvmrc
             ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
           if-no-files-found: warn
           retention-days: 1
@@ -254,12 +254,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-          path: packages/snaps-execution-environments/dist/browserify
       - name: Restore build files
         uses: actions/download-artifact@v4
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
-          path: packages/*/dist
       - name: Build snap
         run: yarn workspace ${{ matrix.package-name }} run build
       - name: Run E2E test
