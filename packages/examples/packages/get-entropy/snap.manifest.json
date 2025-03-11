@@ -1,5 +1,5 @@
 {
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "MetaMask example snap demonstrating the use of `snap_getEntropy`.",
   "proposedName": "Get Entropy Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "lmkCL1vKbBcM9oIiHMkfGq1P7CATFx/fksf+kvlv+eU=",
+    "shasum": "vUiybKJcdxY44IuamgNJQadSEl+o9n152JyZ84jGc7w=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -23,6 +23,6 @@
     "snap_dialog": {},
     "snap_getEntropy": {}
   },
-  "platformVersion": "6.18.0",
+  "platformVersion": "6.19.0",
   "manifestVersion": "0.1"
 }

@@ -57,6 +57,17 @@ export function validateBIP44Params(
     });
   }
 
+  if (
+    hasProperty(value, 'source') &&
+    typeof value.source !== 'undefined' &&
+    typeof value.source !== 'string'
+  ) {
+    throw rpcErrors.invalidParams({
+      message:
+        'Invalid "source" parameter. Source must be a string if provided.',
+    });
+  }
+
   if (FORBIDDEN_COIN_TYPES.includes(value.coinType)) {
     throw rpcErrors.invalidParams({
       message: `Coin type ${value.coinType} is forbidden.`,

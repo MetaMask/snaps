@@ -17,20 +17,25 @@ import {
   CurveStruct,
   SnapCaveatType,
 } from '@metamask/snaps-utils';
-import { boolean, object, optional } from '@metamask/superstruct';
+import { boolean, object, optional, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getNode } from '../utils';
+import { getSecretRecoveryPhrase, getNode } from '../utils';
 
 const targetName = 'snap_getBip32PublicKey';
 
 export type GetBip32PublicKeyMethodHooks = {
   /**
-   * @returns The mnemonic of the user's primary keyring.
+   * Get the mnemonic of the provided source. If no source is provided, the
+   * mnemonic of the primary keyring will be returned.
+   *
+   * @param source - The optional ID of the source to get the mnemonic of.
+   * @returns The mnemonic of the provided source, or the default source if no
+   * source is provided.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -66,6 +71,7 @@ export const Bip32PublicKeyArgsStruct = bip32entropy(
     path: Bip32PathStruct,
     curve: CurveStruct,
     compressed: optional(boolean()),
+    source: optional(string()),
   }),
 );
 
@@ -144,10 +150,15 @@ export function getBip32PublicKeyImplementation({
     );
 
     const { params } = args;
+    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+      getMnemonic,
+      params.source,
+    );
+
     const node = await getNode({
       curve: params.curve,
       path: params.path,
-      secretRecoveryPhrase: await getMnemonic(),
+      secretRecoveryPhrase,
       cryptographicFunctions: getClientCryptography(),
     });
 

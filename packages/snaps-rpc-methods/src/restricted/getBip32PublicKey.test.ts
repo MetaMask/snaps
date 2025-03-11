@@ -1,6 +1,9 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
-import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
+import {
+  MOCK_SNAP_ID,
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+} from '@metamask/snaps-utils/test-utils';
 
 import {
   getBip32PublicKeyBuilder,
@@ -153,6 +156,35 @@ describe('getBip32PublicKeyImplementation', () => {
       ).toMatchInlineSnapshot(
         `"0x022de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914"`,
       );
+    });
+
+    it('calls `getMnemonic` with a different entropy source', async () => {
+      const getMnemonic = jest
+        .fn()
+        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
+
+      const getUnlockPromise = jest.fn();
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      expect(
+        await getBip32PublicKeyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getClientCryptography,
+        })({
+          method: 'snap_getBip32PublicKey',
+          context: { origin: MOCK_SNAP_ID },
+          params: {
+            path: ['m', "44'", "1'", '1', '2', '3'],
+            curve: 'secp256k1',
+            source: 'source-id',
+          },
+        }),
+      ).toMatchInlineSnapshot(
+        `"0x042de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914f7c31d378fe68f4723b297a04e49ef55fbf490605c4a3f9ca947a4af4f06526a"`,
+      );
+
+      expect(getMnemonic).toHaveBeenCalledWith('source-id');
     });
 
     it('uses custom client cryptography functions', async () => {

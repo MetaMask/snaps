@@ -195,6 +195,11 @@ export type SnapAlertInterface = {
   content: JSXElement;
 
   /**
+   * The ID of the interface.
+   */
+  id: string;
+
+  /**
    * Close the alert.
    */
   ok(): Promise<void>;
@@ -213,6 +218,11 @@ export type SnapConfirmationInterface = {
    * The content to show in the confirmation.
    */
   content: JSXElement;
+
+  /**
+   * The ID of the interface.
+   */
+  id: string;
 
   /**
    * Close the confirmation.
@@ -240,6 +250,11 @@ export type SnapPromptInterface = {
   content: JSXElement;
 
   /**
+   * The ID of the interface.
+   */
+  id: string;
+
+  /**
    * Close the prompt.
    *
    * @param value - The value to close the prompt with.
@@ -261,6 +276,11 @@ export type DefaultSnapInterfaceWithFooter = {
    * The content to show in the interface.
    */
   content: JSXElement;
+
+  /**
+   * The ID of the interface.
+   */
+  id: string;
 };
 
 /**
@@ -288,10 +308,13 @@ export type DefaultSnapInterfaceWithoutFooter =
     ok(): Promise<void>;
   };
 
-export type DefaultSnapInterface =
+export type DefaultSnapInterface = (
   | DefaultSnapInterfaceWithFooter
   | DefaultSnapInterfaceWithPartialFooter
-  | DefaultSnapInterfaceWithoutFooter;
+  | DefaultSnapInterfaceWithoutFooter
+) & {
+  type?: never;
+};
 
 export type SnapInterface = (
   | SnapAlertInterface

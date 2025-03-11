@@ -1,6 +1,6 @@
 {
   "name": "@metamask/bip44-example-snap",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "MetaMask example snap demonstrating the use of `snap_getBip44Entropy`",
   "keywords": [
     "MetaMask",

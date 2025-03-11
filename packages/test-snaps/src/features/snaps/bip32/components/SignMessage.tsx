@@ -10,9 +10,13 @@ import { BIP_32_PORT, BIP_32_SNAP_ID } from '../constants';
 
 export type SignMessageProps = {
   curve: 'secp256k1' | 'ed25519' | 'ed25519Bip32';
+  source?: string | undefined;
 };
 
-export const SignMessage: FunctionComponent<SignMessageProps> = ({ curve }) => {
+export const SignMessage: FunctionComponent<SignMessageProps> = ({
+  curve,
+  source,
+}) => {
   const [message, setMessage] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
@@ -30,6 +34,7 @@ export const SignMessage: FunctionComponent<SignMessageProps> = ({ curve }) => {
         message,
         curve,
         path: ['m', "44'", "0'"],
+        ...(source !== undefined && { source }),
       },
     }).catch(logError);
   };

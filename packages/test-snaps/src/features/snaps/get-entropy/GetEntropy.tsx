@@ -6,9 +6,17 @@ import {
   GET_ENTROPY_SNAP_ID,
   GET_ENTROPY_VERSION,
 } from './constants';
+import { useEntropySelector } from './hooks';
 import { Snap } from '../../../components';
 
 export const GetEntropy: FunctionComponent = () => {
+  const { selector, source } = useEntropySelector({
+    id: 'get-entropy',
+    raw: true,
+    snapId: GET_ENTROPY_SNAP_ID,
+    port: GET_ENTROPY_PORT,
+  });
+
   return (
     <Snap
       name="Get Entropy Snap"
@@ -17,7 +25,8 @@ export const GetEntropy: FunctionComponent = () => {
       version={GET_ENTROPY_VERSION}
       testId="GetEntropySnap"
     >
-      <SignMessage />
+      {selector}
+      <SignMessage source={source} />
     </Snap>
   );
 };

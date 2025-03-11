@@ -1,6 +1,6 @@
 {
   "name": "root",
-  "version": "90.0.0",
+  "version": "93.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -23,7 +23,6 @@
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
     "clean": "yarn workspaces foreach --all --parallel --verbose run clean",
     "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
-    "postinstall": "simple-git-hooks",
     "install-chrome": "./scripts/install-chrome.sh",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
     "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
@@ -33,6 +32,7 @@
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
     "prepare-preview-builds": "./scripts/prepare-preview-builds.sh",
     "publish-previews": "yarn workspaces foreach --all --parallel --verbose run publish:preview",
+    "setup": "simple-git-hooks",
     "test": "yarn workspaces foreach --all --parallel --verbose run test",
     "test:browser": "yarn workspaces foreach --all --verbose run test:browser",
     "test:clean": "yarn workspaces foreach --all --parallel --verbose run test:clean",
@@ -79,7 +79,7 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
     "@metamask/auto-changelog": "^4.1.0",
-    "@metamask/create-release-branch": "^4.0.0",
+    "@metamask/create-release-branch": "^4.1.0",
     "@metamask/eslint-config": "^14.0.0",
     "@metamask/eslint-config-browser": "^14.0.0",
     "@metamask/eslint-config-jest": "^14.0.0",
@@ -92,7 +92,7 @@
     "@types/lodash": "^4",
     "@types/node": "18.14.2",
     "@yarnpkg/types": "^4.0.0",
-    "chromedriver": "^133.0.3",
+    "chromedriver": "^134.0.0",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
     "eslint-config-prettier": "^9.1.0",

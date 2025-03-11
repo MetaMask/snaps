@@ -223,7 +223,9 @@ jobs:
   commit-result:
     name: Commit result
     runs-on: ubuntu-latest
+    if: ${{ !failure() && !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     needs:
+      - is-fork-pull-request
       - prepare
       - dedupe-yarn-lock
       - regenerate-lavamoat-policies

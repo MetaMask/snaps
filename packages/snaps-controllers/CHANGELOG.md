@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.1]
+
+### Changed
+
+- Log unhandled Snap errors ([#3157](https://github.com/MetaMask/snaps/pull/3157))
+- Bump `@metamask/phishing-controller` from `12.3.2` to `12.4.0` ([#3171](https://github.com/MetaMask/snaps/pull/3171))
+
+### Fixed
+
+- Improve error messaging ([#3142](https://github.com/MetaMask/snaps/pull/3142))
+
 ## [10.0.0]
 
 ### Changed
@@ -646,7 +657,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.1...HEAD
+[10.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.0...@metamask/snaps-controllers@10.0.1
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.1...@metamask/snaps-controllers@10.0.0
 [9.19.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...@metamask/snaps-controllers@9.19.1
 [9.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.18.0...@metamask/snaps-controllers@9.19.0
