@@ -30,7 +30,8 @@ jobs:
     outputs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -78,13 +79,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install Yarn dependencies
-        run: yarn --immutable
+          is-high-risk-environment: false
+          cache-node-modules: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -101,20 +100,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Deduplicate yarn.lock
         run: yarn dedupe
-      - name: Cache yarn.lock
-        uses: actions/cache/save@v4
+      - name: Save yarn.lock
+        uses: actions/upload-artifact@v4
         with:
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: yarn.lock
-          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   regenerate-lavamoat-policies:
     name: Regenerate LavaMoat policies
@@ -131,25 +127,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: yarn.lock
-          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable
+          is-high-risk-environment: false
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
-      - name: Cache LavaMoat policies
-        uses: actions/cache/save@v4
+      - name: Save LavaMoat policies
+        uses: actions/upload-artifact@v4
         with:
-          path: packages/snaps-execution-environments/lavamoat
-          key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
+          name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            .nvmrc
+            packages/snaps-execution-environments/lavamoat
 
   update-examples:
     name: Update examples
@@ -166,28 +159,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: yarn.lock
-          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable
+          is-high-risk-environment: false
       - name: Build dependencies
         run: |
           yarn build:ci
       - name: Update examples
         run: yarn build:examples
-      - name: Cache examples
-        uses: actions/cache/save@v4
+      - name: Save examples
+        uses: actions/upload-artifact@v4
         with:
-          path: packages/examples/packages
-          key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
+          name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            .nvmrc
+            packages/examples/packages
 
   update-chrome:
     name: Update Chrome
@@ -199,26 +189,28 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: yarn.lock
-          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
-      - name: Install dependencies from cache
-        run: yarn --immutable
+          is-high-risk-environment: false
       - name: Update Chrome
         run: yarn update-chrome
-      - name: Cache install script
-        uses: actions/cache/save@v4
+      - name: Save install script
+        uses: actions/upload-artifact@v4
         with:
-          path: scripts/install-chrome.sh
-          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
+          name: chrome-install-script-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            .nvmrc
+            scripts/install-chrome.sh
 
   commit-result:
     name: Commit result
@@ -251,11 +243,9 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore yarn.lock
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: yarn.lock
-          key: cache-yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Set commit prefix
         if: ${{ inputs.dependabot == true }}
         run: echo "COMMIT_PREFIX=[dependabot skip] " >> "$GITHUB_ENV"
@@ -264,32 +254,26 @@ jobs:
           git add yarn.lock
           git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: packages/snaps-execution-environments/lavamoat
-          key: cache-lavamoat-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit LavaMoat policies
         run: |
           git add packages/snaps-execution-environments/lavamoat
           git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
       - name: Restore examples
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: packages/examples/packages
-          key: cache-examples-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit examples
         run: |
           git add packages/examples/packages
           git commit -m "${COMMIT_PREFIX}Update example snaps" || true
       - name: Restore install script
         if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
-        uses: actions/cache/restore@v4
+        uses: actions/download-artifact@v4
         with:
-          path: scripts/install-chrome.sh
-          key: cache-chrome-${{ needs.prepare.outputs.COMMIT_SHA }}
-          fail-on-cache-miss: true
+          name: chrome-install-script-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit install script
         if: ${{ inputs.dependabot == true && contains(inputs.pull-request-title, 'chromedriver') }}
         run: |
