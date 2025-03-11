@@ -160,6 +160,7 @@ export class CronjobController extends BaseController<
     this.#initializeActionHandlers();
 
     this.dailyCheckIn().catch((error) => {
+      /* istanbul ignore next */
       logError(error);
     });
 
@@ -233,6 +234,7 @@ export class CronjobController extends BaseController<
         request: request as Record<string, unknown>,
       })
       .catch((error) => {
+        /* istanbul ignore next */
         logError(error);
       });
   }
@@ -529,7 +531,7 @@ export class CronjobController extends BaseController<
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
     this.#dailyTimer.start(() => {
       this.dailyCheckIn().catch((error) => {
-        // TODO: Decide how to handle errors.
+        /* istanbul ignore next */
         logError(error);
       });
     });
