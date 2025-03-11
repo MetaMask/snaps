@@ -674,6 +674,7 @@ export const FooterChildStruct = selectiveUnion((value) => {
  */
 export const FooterStruct: Describe<FooterElement> = element('Footer', {
   children: FooterChildStruct,
+  requireScroll: optional(boolean()),
 });
 
 /**
