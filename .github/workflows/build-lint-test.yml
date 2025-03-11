@@ -25,7 +25,6 @@ jobs:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
           cache-node-modules: ${{ matrix.node-version == '20.x' }}
-      - run: yarn --immutable
       - name: Prepare "@metamask/snaps-execution-environments" build
         run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat
       - name: Save "@metamask/snaps-execution-environments" build
