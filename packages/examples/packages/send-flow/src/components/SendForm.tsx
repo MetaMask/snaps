@@ -1,5 +1,4 @@
 import {
-  AssetSelector,
   Box,
   Button,
   Field,
@@ -12,6 +11,7 @@ import {
 } from '@metamask/snaps-sdk/jsx';
 
 import { AccountSelector } from './AccountSelector';
+import btcIcon from '../images/btc.svg';
 import jazzicon3 from '../images/jazzicon3.svg';
 import type { Account, SendFormErrors } from '../types';
 
@@ -56,31 +56,18 @@ export const SendForm: SnapComponent<SendFormProps> = ({
 }) => (
   <Form name="sendForm">
     <AccountSelector selectedAccount={selectedAccount} accounts={accounts} />
-
-    <AssetSelector
-      name="asset"
-      addresses={[
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:2pvE8WojpCju8XQEFAKrHgsxgUtsDxeq8PWZ4RP6YYWL',
-      ]}
-    />
-    <Box direction="horizontal">
-      <Field label="Asset">
-        <AssetSelector
-          name="asset2"
-          addresses={['eip155:0:0xc366063eA70eBD30316062C9C82445591c772870']}
-        />
-      </Field>
-      <Field label="Send amount" error={errors?.amount}>
-        <Input name="amount" type="number" placeholder="Enter amount to send" />
-        <Box direction="horizontal" center>
-          <Text color="alternative">{selectedCurrency}</Text>
-          <Button name="swap">
-            <Icon name="swap-vertical" color="primary" size="md" />
-          </Button>
-        </Box>
-      </Field>
-    </Box>
-
+    <Field label="Send amount" error={errors?.amount}>
+      <Box>
+        <Image src={btcIcon} />
+      </Box>
+      <Input name="amount" type="number" placeholder="Enter amount to send" />
+      <Box direction="horizontal" center>
+        <Text color="alternative">{selectedCurrency}</Text>
+        <Button name="swap">
+          <Icon name="swap-vertical" color="primary" size="md" />
+        </Button>
+      </Box>
+    </Field>
     <Field label="To account" error={errors?.to}>
       <Box>
         <Image src={jazzicon3} />
