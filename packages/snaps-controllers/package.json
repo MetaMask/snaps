@@ -83,7 +83,7 @@
     "@metamask/base-controller": "^8.0.0",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
-    "@metamask/key-tree": "^10.0.2",
+    "@metamask/key-tree": "^10.1.0",
     "@metamask/object-multiplex": "^2.1.0",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/phishing-controller": "^12.4.0",
