@@ -182,6 +182,10 @@ export function getBip32PublicKeyImplementation({
         cryptographicFunctions: getClientCryptography(),
       });
 
+      if (params.compressed) {
+        return node.compressedPublicKey;
+      }
+
       return node.publicKey;
     }
 
