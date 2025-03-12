@@ -13,7 +13,7 @@ import type { Json, NonEmptyArray } from '@metamask/utils';
 import { isObject, getJsonSize } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { deriveEntropy } from '../utils';
+import { deriveEntropyFromSeed } from '../utils';
 
 // The salt used for SIP-6-based entropy derivation.
 export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
@@ -111,7 +111,7 @@ export const STORAGE_SIZE_LIMIT = 64_000_000; // In bytes (64 MB)
 
 type GetEncryptionKeyArgs = {
   snapId: string;
-  mnemonicPhrase: Uint8Array;
+  seed: Uint8Array;
   cryptographicFunctions?: CryptographicFunctions | undefined;
 };
 
@@ -124,19 +124,19 @@ type GetEncryptionKeyArgs = {
  *
  * @param args - The encryption key args.
  * @param args.snapId - The ID of the snap to get the encryption key for.
- * @param args.mnemonicPhrase - The mnemonic phrase to derive the encryption key
+ * @param args.seed - The mnemonic seed to derive the encryption key
  * from.
  * @param args.cryptographicFunctions - The cryptographic functions to use for
  * the client.
  * @returns The state encryption key.
  */
 export async function getEncryptionEntropy({
-  mnemonicPhrase,
+  seed,
   snapId,
   cryptographicFunctions,
 }: GetEncryptionKeyArgs) {
-  return await deriveEntropy({
-    mnemonicPhrase,
+  return await deriveEntropyFromSeed({
+    seed,
     input: snapId,
     salt: STATE_ENCRYPTION_SALT,
     magic: STATE_ENCRYPTION_MAGIC_VALUE,
