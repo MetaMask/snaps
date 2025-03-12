@@ -174,7 +174,7 @@ describe('getBip32PublicKeyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(
-        `"0x042de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914f7c31d378fe68f4723b297a04e49ef55fbf490605c4a3f9ca947a4af4f06526a"`,
+        `"0x022de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914"`,
       );
     });
 
@@ -277,7 +277,7 @@ describe('getBip32PublicKeyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(
-        `"0x042de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914f7c31d378fe68f4723b297a04e49ef55fbf490605c4a3f9ca947a4af4f06526a"`,
+        `"0x022de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914"`,
       );
 
       expect(hmacSha512).toHaveBeenCalledTimes(6);
