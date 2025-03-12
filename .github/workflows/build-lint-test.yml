@@ -17,25 +17,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: yarn --immutable
-      - name: Cache "@metamask/snaps-execution-environments" build
-        id: cache-snaps-execution-environments-build
-        uses: actions/cache@v4
-        with:
-          path: |
-            packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          cache-node-modules: ${{ matrix.node-version == '20.x' }}
       - name: Prepare "@metamask/snaps-execution-environments" build
-        if: steps.cache-snaps-execution-environments-build.outputs.cache-hit != 'true'
         run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat
+      - name: Save "@metamask/snaps-execution-environments" build
+        id: cache-snaps-execution-environments-build
+        uses: actions/upload-artifact@v4
+        with:
+          name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
+          retention-days: 1
+          path: |
+            .nvmrc
+            packages/snaps-execution-environments/dist/browserify
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
@@ -51,21 +51,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Build
         run: yarn build:ci
-      - name: Cache build files
-        uses: actions/cache@v4
+      - name: Save build files
+        uses: actions/upload-artifact@v4
         with:
+          name: build-source-${{ runner.os }}-${{ github.sha }}
+          retention-days: 1
           path: |
+            .nvmrc
             packages/*/dist
-          key: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -79,20 +78,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/cache@v4
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-18.x-${{ github.sha }}
-          fail-on-cache-miss: true
+          name: snaps-execution-environments-build-${{ runner.os }}-22.x-${{ github.sha }}
       - name: Cache Webpack vendor
         id: cache-webpack-vendor
         uses: actions/cache@v4
@@ -105,13 +98,6 @@ jobs:
         run: yarn workspace @metamask/snaps-simulator run build:vendor
       - name: Build
         run: yarn workspace @metamask/snaps-simulator run build:webpack
-      - name: Cache "@metamask/snaps-simulator" build
-        id: cache-e2e-simulator-build
-        uses: actions/cache@v4
-        with:
-          path: |
-            packages/snaps-simulator/dist/webpack
-          key: e2e-simulator-build-${{ runner.os }}-${{ github.sha }}
       - name: Require clean working directory
         shell: bash
         run: |
@@ -125,13 +111,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Build
         run: yarn workspace @metamask/test-snaps run build
       - name: Require clean working directory
@@ -147,13 +130,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Generate LavaMoat policy
         run: yarn workspace @metamask/snaps-execution-environments build:lavamoat:policy
       - name: Require clean working directory
@@ -169,13 +149,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable --immutable-cache
+          is-high-risk-environment: false
       - name: Lint
         run: yarn lint
       - name: Require clean working directory
@@ -195,47 +172,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
         package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
-          cache: yarn
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/cache@v4
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-          fail-on-cache-miss: true
+          name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/cache@v4
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            packages/*/dist
-          key: build-source-${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - run: yarn --immutable --immutable-cache
+          name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Install Google Chrome
+        if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         run: yarn install-chrome
       - run: yarn workspace ${{ matrix.package-name }} run test
       - name: Get coverage folder
         id: get-coverage-folder
         run: |
-          echo "stub" >> stub
           echo "coverage-folder=$(yarn workspaces list --json | grep ${{ matrix.package-name }} | jq -r '.location')/coverage" >> "$GITHUB_OUTPUT"
           echo "artifact-name=$(echo ${{ matrix.package-name }} | sed 's:.*/::')" >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Upload coverage artifact
-        if: ${{ matrix.node-version == '18.x' }}
+        if: ${{ matrix.node-version == '22.x' }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ steps.get-coverage-folder.outputs.artifact-name }}
           path: |
-            stub
+            .nvmrc
             ${{ steps.get-coverage-folder.outputs.coverage-folder }}/**/coverage-final.json
           if-no-files-found: warn
           retention-days: 1
@@ -273,30 +242,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [18.x, 20.x, 22.x]
         package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
-          cache: yarn
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/cache@v4
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            packages/snaps-execution-environments/dist/browserify
-          key: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
-          fail-on-cache-miss: true
+          name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/cache@v4
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            packages/*/dist
-          key: build-source-${{ runner.os }}-${{ github.sha }}
-          fail-on-cache-miss: true
-      - run: yarn --immutable --immutable-cache
+          name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Build snap
         run: yarn workspace ${{ matrix.package-name }} run build
       - name: Run E2E test
@@ -317,12 +278,9 @@ jobs:
       matrix:
         os: [macOS-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn --immutable
+          is-high-risk-environment: false
       - run: yarn build:ci
       - run: yarn workspace @metamask/snaps-cli run test

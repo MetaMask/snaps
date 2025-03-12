@@ -33,14 +33,11 @@ jobs:
     outputs:
       tag: ${{ steps.get-release-tag.outputs.tag }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - run: yarn install --immutable
       - name: Get release tag
         id: get-release-tag
         run: echo "tag=$(yarn get-release-tag)" >> "$GITHUB_OUTPUT"
@@ -53,14 +50,13 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-      - uses: MetaMask/action-publish-release@v3
+      - name: Publish release to GitHub
+        uses: MetaMask/action-publish-release@v3
         id: publish-release
         with:
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
@@ -70,32 +66,31 @@ jobs:
         run: |
           yarn install --immutable
           yarn build
-      - uses: actions/cache@v4
-        id: restore-build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
         with:
+          name: publish-release-artifacts-${{ github.sha }}
+          include-hidden-files: true
+          retention-days: 4
           path: |
             ./packages/**/dist
-            ./node_modules
-          key: ${{ github.sha }}
+            ./node_modules/.yarn-state.yml
 
   npm-publish-dry-run:
     name: Publish to NPM (dry run)
     runs-on: ubuntu-latest
     needs: publish-release
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - uses: actions/cache@v4
-        id: restore-build
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            ./packages/**/dist
-            ./node_modules
-          key: ${{ github.sha }}
-          fail-on-cache-miss: true
-      - run: npm config set ignore-scripts true
-      - name: Dry Run Publish
+          name: publish-release-artifacts-${{ github.sha }}
+      - name: Dry run publish to NPM
         uses: MetaMask/action-npm-publish@v5
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -110,17 +105,15 @@ jobs:
       - npm-publish-dry-run
       - get-release-tag
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - uses: actions/cache@v4
-        id: restore-build
+      - name: Restore build artifacts
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            ./packages/**/dist
-            ./node_modules
-          key: ${{ github.sha }}
-          fail-on-cache-miss: true
+          name: publish-release-artifacts-${{ github.sha }}
       - name: Publish ${{ needs.get-release-tag.outputs.tag }} to NPM
         uses: MetaMask/action-npm-publish@v5
         with:
@@ -134,8 +127,10 @@ jobs:
     outputs:
       IS_ENVIRONMENT_RELEASE: ${{ steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
           fetch-depth: 2
       - name: Check if this is an environment release
@@ -154,8 +149,10 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
       - id: version
         name: Get release version
@@ -219,8 +216,10 @@ jobs:
       IS_TEST_SNAPS_RELEASE: ${{ steps.set-output.outputs.IS_TEST_SNAPS_RELEASE }}
       TEST_SNAPS_VERSION: ${{ steps.set-output.outputs.TEST_SNAPS_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
           fetch-depth: 2
       - name: Check if this is a test snaps release
@@ -270,8 +269,10 @@ jobs:
       IS_SIMULATOR_RELEASE: ${{ steps.set-output.outputs.IS_SIMULATOR_RELEASE }}
       SIMULATOR_VERSION: ${{ steps.set-output.outputs.SIMULATOR_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
           fetch-depth: 2
       - name: Check if this is a simulator release
