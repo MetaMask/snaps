@@ -142,9 +142,9 @@ type MnemonicDeriveEntropyOptions = BaseDeriveEntropyOptions & {
  */
 function getEntropyDerivationPath({
   input,
-  salt = '',
+  salt,
   magic,
-}: Omit<BaseDeriveEntropyOptions, 'cryptographicFunctions'>):
+}: Required<Omit<BaseDeriveEntropyOptions, 'cryptographicFunctions'>>):
   | BIP32Node[]
   | SLIP10PathNode[] {
   const inputBytes = stringToBytes(input);

@@ -31,7 +31,6 @@ import {
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
-  TEST_SECRET_RECOVERY_PHRASE_BYTES,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
@@ -615,7 +614,8 @@ export const getSnapControllerWithEESOptions = ({
     closeAllConnections: jest.fn(),
     messenger: snapControllerMessenger,
     rootMessenger,
-    getMnemonic: async () => Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_BYTES),
+    getMnemonicSeed: async () =>
+      Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
     encryptor: getSnapControllerEncryptor(),
     fetchFunction: jest.fn(),
     ...options,
