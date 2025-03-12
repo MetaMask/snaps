@@ -2,7 +2,12 @@ import type { Infer } from '@metamask/superstruct';
 import { array, refine } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
+  CaipAssetTypeStruct,
+  CaipChainIdStruct,
+  KnownCaipNamespace,
   parseCaipAccountId,
+  parseCaipAssetType,
+  parseCaipChainId,
   type CaipAccountId,
   type CaipChainId,
 } from '@metamask/utils';
@@ -61,3 +66,78 @@ export const MatchingAddressesCaipAccountIdListStruct = refine(
 export type MatchingAddressesCaipAccountIdList = Infer<
   typeof MatchingAddressesCaipAccountIdListStruct
 >;
+
+/**
+ * A struct representing a list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
+ */
+export const NonEip155MatchingAddressesCaipAccountIdListStruct = refine(
+  MatchingAddressesCaipAccountIdListStruct,
+  'Non-EIP-155 Matching Addresses Account ID List',
+  (value) => {
+    const containsEip155 = value.some((accountId) => {
+      const {
+        chain: { namespace },
+      } = parseCaipAccountId(accountId);
+
+      return namespace === KnownCaipNamespace.Eip155;
+    });
+
+    if (containsEip155) {
+      return 'All account IDs must have non-EIP-155 chain namespaces.';
+    }
+    return true;
+  },
+);
+
+/**
+ * A list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
+ */
+export type NonEip155MatchingAddressesCaipAccountIdList = Infer<
+  typeof NonEip155MatchingAddressesCaipAccountIdListStruct
+>;
+
+/**
+ * A struct representing a non-EIP-155 chain ID.
+ */
+export const NonEip155ChainIdStruct = refine(
+  CaipChainIdStruct,
+  'Non-EIP-155 Chain ID',
+  (value) => {
+    const { namespace } = parseCaipChainId(value);
+
+    if (namespace === KnownCaipNamespace.Eip155) {
+      return 'Chain ID must not be an EIP-155 chain ID.';
+    }
+
+    return true;
+  },
+);
+
+/**
+ * A non-EIP-155 chain ID.
+ */
+export type NonEip155ChainId = Infer<typeof NonEip155ChainIdStruct>;
+
+/**
+ * A struct representing a non-EIP-155 asset type.
+ */
+export const NonEip155AssetTypeStruct = refine(
+  CaipAssetTypeStruct,
+  'Non-EIP-155 Asset Type',
+  (value) => {
+    const {
+      chain: { namespace },
+    } = parseCaipAssetType(value);
+
+    if (namespace === KnownCaipNamespace.Eip155) {
+      return 'Asset type must not be an EIP-155 asset type.';
+    }
+
+    return true;
+  },
+);
+
+/**
+ * A non-EIP-155 asset type.
+ */
+export type NonEip155AssetType = Infer<typeof NonEip155AssetTypeStruct>;

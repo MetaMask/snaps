@@ -173,8 +173,10 @@ describe('SnapInterfaceController', () => {
       const components = (
         <AssetSelector
           name="foo"
-          addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
-          value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105"
         />
       );
 
@@ -482,7 +484,9 @@ describe('SnapInterfaceController', () => {
         <Box>
           <AssetSelector
             name="foo"
-            addresses={['eip155:1:0x1234567890123456789012345678901234567890']}
+            addresses={[
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            ]}
           />
         </Box>
       );
@@ -494,15 +498,16 @@ describe('SnapInterfaceController', () => {
           element,
         ),
       ).rejects.toThrow(
-        'Could not find account for address: eip155:1:0x1234567890123456789012345678901234567890',
+        'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'AccountsController:getAccountByAddress',
-        '0x1234567890123456789012345678901234567890',
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
     });
+
     it('throws if UI content is too large', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(

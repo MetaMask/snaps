@@ -23,8 +23,6 @@ import {
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
-  CaipAssetTypeStruct,
-  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -90,7 +88,9 @@ import {
   typedUnion,
 } from '../internals';
 import {
-  MatchingAddressesCaipAccountIdListStruct,
+  NonEip155AssetTypeStruct,
+  NonEip155ChainIdStruct,
+  NonEip155MatchingAddressesCaipAccountIdListStruct,
   type EmptyObject,
 } from '../types';
 
@@ -420,12 +420,12 @@ export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
   'AssetSelector',
   {
     name: string(),
-    addresses: MatchingAddressesCaipAccountIdListStruct,
-    chainIds: optional(array(CaipChainIdStruct)) as unknown as Struct<
-      Infer<typeof CaipChainIdStruct>[] | undefined,
+    addresses: NonEip155MatchingAddressesCaipAccountIdListStruct,
+    chainIds: optional(array(NonEip155ChainIdStruct)) as unknown as Struct<
+      Infer<typeof NonEip155ChainIdStruct>[] | undefined,
       null
     >,
-    value: optional(CaipAssetTypeStruct),
+    value: optional(NonEip155AssetTypeStruct),
     disabled: optional(boolean()),
   },
 );

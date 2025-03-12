@@ -35,6 +35,7 @@ import {
   Avatar,
   Banner,
   Skeleton,
+  AssetSelector,
 } from './components';
 import {
   AddressStruct,
@@ -74,6 +75,7 @@ import {
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  AssetSelectorStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1685,5 +1687,66 @@ describe('SkeletonStruct', () => {
     </Skeleton>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SkeletonStruct)).toBe(false);
+  });
+});
+
+describe('AssetSelectorStruct', () => {
+  it.each([
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+      value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      disabled={true}
+    />,
+  ])(`validates an AssetSelector element`, (value) => {
+    expect(is(value, AssetSelectorStruct)).toBe(true);
+  });
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AssetSelector />,
+    // @ts-expect-error - Invalid props.
+    <AssetSelector foo="bar">foo</AssetSelector>,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+      // @ts-expect-error - Invalid props.
+      disabled="foo"
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+      chainIds={['eip155:1']}
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+      value="eip155:1/slip44:60"
+    />,
+  ])(`does not validate "%p"`, (value) => {
+    expect(is(value, AssetSelectorStruct)).toBe(false);
   });
 });

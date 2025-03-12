@@ -805,7 +805,9 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'MultichainAssetsController:getState',
       () => ({
         assetsMetadata: {},
-        accountsAssets: {},
+        accountsAssets: {
+          foo: [],
+        },
       }),
     );
 
@@ -815,7 +817,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       (address: string) => ({
         address,
         id: 'foo',
-        scopes: ['eip155:0'],
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       }),
     );
   }

@@ -271,6 +271,8 @@ export class SnapInterfaceController extends BaseController<
     const id = nanoid();
     const componentState = constructState({}, element, {
       getAssetMetadata: this.#getAssetMetadata.bind(this),
+      getAssetsState: this.#getAssetsState.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
     });
 
     this.update((draftState) => {
@@ -323,6 +325,8 @@ export class SnapInterfaceController extends BaseController<
     const oldState = this.state.interfaces[id].state;
     const newState = constructState(oldState, element, {
       getAssetMetadata: this.#getAssetMetadata.bind(this),
+      getAssetsState: this.#getAssetsState.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
     });
 
     this.update((draftState) => {
@@ -466,18 +470,24 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
+   * Get the MultichainAssetsController state.
+   *
+   * @returns The MultichainAssetsController state.
+   */
+  #getAssetsState() {
+    return this.messagingSystem.call('MultichainAssetsController:getState');
+  }
+
+  /**
    * Get the asset metadata for a given asset ID.
    *
    * @param assetId - The asset ID.
    * @returns The asset metadata or undefined if not found.
    */
   #getAssetMetadata(assetId: CaipAssetType) {
-    // TODO: Introduce an action in MultichainAssetsController to get a specific asset metadata.
-    const assets = this.messagingSystem.call(
-      'MultichainAssetsController:getState',
-    );
+    const { assetsMetadata } = this.#getAssetsState();
 
-    return assets.assetsMetadata[assetId];
+    return assetsMetadata[assetId];
   }
 
   /**

@@ -8,6 +8,7 @@ import type {
   State,
   FungibleAssetMetadata,
   AssetSelectorState,
+  CaipChainId,
 } from '@metamask/snaps-sdk';
 import type {
   DropdownElement,
@@ -29,7 +30,24 @@ import {
   getJsxElementFromComponent,
   walkJsx,
 } from '@metamask/snaps-utils';
-import { type CaipAssetType, type CaipAccountId } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipAccountId,
+  parseCaipAccountId,
+  parseCaipAssetType,
+} from '@metamask/utils';
+
+/**
+ * A function to get the MultichainAssetController state.
+ *
+ * @returns The MultichainAssetController state.
+ */
+type GetAssetsState = () => {
+  assetsMetadata: {
+    [asset: CaipAssetType]: FungibleAssetMetadata;
+  };
+  accountsAssets: { [account: string]: CaipAssetType[] };
+};
 
 /**
  * A function to get asset metadata.
@@ -40,7 +58,6 @@ import { type CaipAssetType, type CaipAccountId } from '@metamask/utils';
 type GetAssetMetadata = (
   assetId: CaipAssetType,
 ) => FungibleAssetMetadata | undefined;
-
 /**
  * A function to get an account by its address.
  *
@@ -56,9 +73,13 @@ type GetAccountByAddress = (
  * This is used to get data from elements that is not directly accessible from the element itself.
  *
  * @param getAssetMetadata - A function to get asset metadata.
+ * @param getDefaultAsset - A function to get the default asset for an address.
+ * @param getAssetState - A function to get the MultichainAssetController state.
  */
 type ElementDataGetters = {
   getAssetMetadata: GetAssetMetadata;
+  getAssetsState: GetAssetsState;
+  getAccountByAddress: GetAccountByAddress;
 };
 
 /**
@@ -88,6 +109,68 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
   );
+}
+
+/**
+ * Get a default asset for a given address.
+ *
+ * @param addresses - The account addresses.
+ * @param chainIds - The chain IDs to filter the assets.
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getAccountByAddress - A function to get an account by its address.
+ * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
+ *
+ * @returns The default asset for the account or undefined if not found.
+ */
+export function getDefaultAsset(
+  addresses: CaipAccountId[],
+  chainIds: CaipChainId[] | undefined,
+  { getAccountByAddress, getAssetsState }: ElementDataGetters,
+) {
+  const { assetsMetadata, accountsAssets } = getAssetsState();
+
+  const parsedAccounts = addresses.map((address) =>
+    parseCaipAccountId(address),
+  );
+
+  const accountChainIds = parsedAccounts.map(({ chainId }) => chainId);
+
+  const filteredChainIds =
+    chainIds && chainIds.length > 0
+      ? accountChainIds.filter((accountChainId) =>
+          chainIds.includes(accountChainId),
+        )
+      : accountChainIds;
+
+  const accountId = getAccountByAddress(addresses[0])?.id;
+
+  if (!accountId) {
+    return undefined;
+  }
+
+  const accountAssets = accountsAssets[accountId];
+
+  if (accountAssets.length === 0) {
+    return undefined;
+  }
+
+  const nativeAsset = accountAssets.find((asset) => {
+    const { chainId, assetNamespace } = parseCaipAssetType(asset);
+
+    return filteredChainIds.includes(chainId) && assetNamespace === 'slip44';
+  });
+
+  if (!nativeAsset) {
+    return {
+      address: accountAssets[0],
+      ...assetsMetadata[accountAssets[0]],
+    };
+  }
+
+  return {
+    address: nativeAsset,
+    ...assetsMetadata[nativeAsset],
+  };
 }
 
 /**
@@ -124,6 +207,8 @@ export function validateAssetSelector(
  * for component specific defaults and will not override the component value or existing form state.
  *
  * @param element - The input element.
+ * @param elementDataGetters - Data getters for the element.
+ *
  * @returns The default state for the specific component, if any.
  */
 function constructComponentSpecificDefaultState(
@@ -134,6 +219,7 @@ function constructComponentSpecificDefaultState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement,
+  elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Dropdown': {
@@ -154,9 +240,38 @@ function constructComponentSpecificDefaultState(
     case 'Checkbox':
       return false;
 
+    case 'AssetSelector':
+      return getAssetSelectorDefaultState(element, elementDataGetters);
+
     default:
       return null;
   }
+}
+
+/**
+ * Get the default state for an asset selector.
+ *
+ * @param element - The asset selector element.
+ * @param elementDataGetters - Data getters for the element.
+ * @returns The default state for the asset selector or null.
+ */
+export function getAssetSelectorDefaultState(
+  element: AssetSelectorElement,
+  elementDataGetters: ElementDataGetters,
+) {
+  const { chainIds, addresses } = element.props;
+
+  const asset = getDefaultAsset(addresses, chainIds, elementDataGetters);
+
+  if (!asset) {
+    return null;
+  }
+
+  return {
+    asset: asset.address,
+    name: asset.name,
+    symbol: asset.symbol,
+  };
 }
 
 /**
@@ -195,6 +310,7 @@ export function getAssetSelectorStateValue(
  *
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getAssetMetadata - A function to get asset metadata.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -205,17 +321,14 @@ function getComponentStateValue(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement,
-  elementDataGetters: ElementDataGetters,
+  { getAssetMetadata }: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
 
     case 'AssetSelector':
-      return getAssetSelectorStateValue(
-        element.props.value,
-        elementDataGetters.getAssetMetadata,
-      );
+      return getAssetSelectorStateValue(element.props.value, getAssetMetadata);
 
     default:
       return element.props.value;
@@ -254,7 +367,7 @@ function constructInputState(
   return (
     getComponentStateValue(element, elementDataGetters) ??
     oldInputState ??
-    constructComponentSpecificDefaultState(element) ??
+    constructComponentSpecificDefaultState(element, elementDataGetters) ??
     null
   );
 }

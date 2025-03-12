@@ -5,7 +5,9 @@ describe('AssetSelector', () => {
     const result = (
       <AssetSelector
         name="foo"
-        addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
       />
     );
 
@@ -13,7 +15,9 @@ describe('AssetSelector', () => {
       type: 'AssetSelector',
       props: {
         name: 'foo',
-        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        addresses: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
       },
       key: null,
     });
@@ -23,9 +27,11 @@ describe('AssetSelector', () => {
     const result = (
       <AssetSelector
         name="foo"
-        addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
-        chainIds={['eip155:1']}
-        value="eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f"
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
+        chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
         disabled={true}
       />
     );
@@ -34,9 +40,12 @@ describe('AssetSelector', () => {
       type: 'AssetSelector',
       props: {
         name: 'foo',
-        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
-        chainIds: ['eip155:1'],
-        value: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+        addresses: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        chainIds: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        value:
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         disabled: true,
       },
       key: null,
