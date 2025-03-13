@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- perf!: Use mnemonic seed for state persistence key derivation ([#3217](https://github.com/MetaMask/snaps-skunkworks.git/pull/3217))
+- chore(deps): bump @metamask/controller-utils from 11.5.0 to 11.6.0 ([#3204](https://github.com/MetaMask/snaps-skunkworks.git/pull/3204))
+
 ## [2.3.0]
 
 ### Added
@@ -87,15 +92,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.3.0...HEAD
-[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.2.1...@metamask/bip32-example-snap@2.3.0
-[2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.2.0...@metamask/bip32-example-snap@2.2.1
-[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.1.2...@metamask/bip32-example-snap@2.2.0
-[2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.1.1...@metamask/bip32-example-snap@2.1.2
-[2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.1.0...@metamask/bip32-example-snap@2.1.1
-[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.0.1...@metamask/bip32-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@2.0.0...@metamask/bip32-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@1.0.0...@metamask/bip32-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@0.37.3-flask.1...@metamask/bip32-example-snap@1.0.0
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/bip32-example-snap@0.37.2-flask.1...@metamask/bip32-example-snap@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/bip32-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.3.0...HEAD
+[2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.2.1...@metamask/bip32-example-snap@2.3.0
+[2.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.2.0...@metamask/bip32-example-snap@2.2.1
+[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.1.2...@metamask/bip32-example-snap@2.2.0
+[2.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.1.1...@metamask/bip32-example-snap@2.1.2
+[2.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.1.0...@metamask/bip32-example-snap@2.1.1
+[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.0.1...@metamask/bip32-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@2.0.0...@metamask/bip32-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@1.0.0...@metamask/bip32-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@0.37.3-flask.1...@metamask/bip32-example-snap@1.0.0
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/bip32-example-snap@0.37.2-flask.1...@metamask/bip32-example-snap@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/bip32-example-snap@0.37.2-flask.1
