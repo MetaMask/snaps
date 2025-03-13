@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.0]
+
 ### Uncategorized
 
 - perf!: Use mnemonic seed for entropy RPC methods ([#3220](https://github.com/MetaMask/snaps-skunkworks.git/pull/3220))
@@ -411,7 +413,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.13.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@12.0.0...HEAD
+[12.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.13.1...@metamask/snaps-rpc-methods@12.0.0
 [11.13.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.13.0...@metamask/snaps-rpc-methods@11.13.1
 [11.13.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.12.0...@metamask/snaps-rpc-methods@11.13.0
 [11.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-rpc-methods@11.11.0...@metamask/snaps-rpc-methods@11.12.0

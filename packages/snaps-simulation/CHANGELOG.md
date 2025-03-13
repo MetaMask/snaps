@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0]
+
 ### Uncategorized
 
 - perf!: Use mnemonic seed for entropy RPC methods ([#3220](https://github.com/MetaMask/snaps-skunkworks.git/pull/3220))
@@ -137,7 +139,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.4.0...HEAD
+[2.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.3.0...@metamask/snaps-simulation@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.2.0...@metamask/snaps-simulation@2.3.0
 [2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.1.0...@metamask/snaps-simulation@2.2.0
 [2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
