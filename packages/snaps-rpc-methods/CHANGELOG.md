@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.0]
+
+### Changed
+
+- **BREAKING:** Use mnemonic seed for `snap_get*Entropy` RPC methods ([#3220](https://github.com/MetaMask/snaps/pull/3220))
+  - A `getMnemonicSeed` hook is now required to support the RPC methods.
+- Use mnemonic seed for state encryption key derivation ([#3217](https://github.com/MetaMask/snaps/pull/3217))
+
 ## [11.13.1]
 
 ### Fixed
@@ -406,7 +414,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.0.0...HEAD
+[12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.1...@metamask/snaps-rpc-methods@12.0.0
 [11.13.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.0...@metamask/snaps-rpc-methods@11.13.1
 [11.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.12.0...@metamask/snaps-rpc-methods@11.13.0
 [11.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.11.0...@metamask/snaps-rpc-methods@11.12.0

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0]
+
+### Added
+
+- Add support for `getMnemonicSeed` hook required by latest RPC methods ([#3220](https://github.com/MetaMask/snaps/pull/3220))
+
+### Changed
+
+- Bump `express` to `^4.21.2` ([#3196](https://github.com/MetaMask/snaps/pull/3196))
+
 ## [2.3.0]
 
 ### Added
@@ -131,7 +141,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.4.0...HEAD
+[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.3.0...@metamask/snaps-simulation@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.2.0...@metamask/snaps-simulation@2.3.0
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.1.0...@metamask/snaps-simulation@2.2.0
 [2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.0.0...@metamask/snaps-simulation@2.1.0
