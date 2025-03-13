@@ -1,11 +1,15 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import { SIP_6_MAGIC_VALUE } from '@metamask/snaps-utils';
-import { TEST_SECRET_RECOVERY_PHRASE_BYTES } from '@metamask/snaps-utils/test-utils';
+import {
+  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+  TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+} from '@metamask/snaps-utils/test-utils';
 import { create, is } from '@metamask/superstruct';
 
 import { ENTROPY_VECTORS } from './__fixtures__';
 import {
-  deriveEntropy,
+  deriveEntropyFromMnemonic,
+  deriveEntropyFromSeed,
   getNode,
   getPathPrefix,
   getSecretRecoveryPhrase,
@@ -13,15 +17,32 @@ import {
   StateKeyStruct,
 } from './utils';
 
-describe('deriveEntropy', () => {
+describe('deriveEntropyFromMnemonic', () => {
   it.each(ENTROPY_VECTORS)(
     'derives entropy from the given parameters',
     async ({ snapId, salt, entropy }) => {
       expect(
-        await deriveEntropy({
+        await deriveEntropyFromMnemonic({
           input: snapId,
           salt,
           mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+          magic: SIP_6_MAGIC_VALUE,
+          cryptographicFunctions: {},
+        }),
+      ).toStrictEqual(entropy);
+    },
+  );
+});
+
+describe('deriveEntropyFromSeed', () => {
+  it.each(ENTROPY_VECTORS)(
+    'derives entropy from the given parameters',
+    async ({ snapId, salt, entropy }) => {
+      expect(
+        await deriveEntropyFromSeed({
+          input: snapId,
+          salt,
+          seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
           magic: SIP_6_MAGIC_VALUE,
           cryptographicFunctions: {},
         }),

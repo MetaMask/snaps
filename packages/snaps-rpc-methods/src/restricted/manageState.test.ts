@@ -2,7 +2,7 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
 import {
   MOCK_SNAP_ID,
-  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+  TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import { webcrypto } from 'crypto';
 
@@ -20,7 +20,7 @@ const ENCRYPTION_KEY =
 describe('getEncryptionEntropy', () => {
   it('returns the encryption entropy for the snap ID', async () => {
     const result = await getEncryptionEntropy({
-      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
       snapId: MOCK_SNAP_ID,
     });
 
@@ -29,7 +29,7 @@ describe('getEncryptionEntropy', () => {
 
   it('accepts custom cryptographic functions', async () => {
     const result = await getEncryptionEntropy({
-      mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
       snapId: MOCK_SNAP_ID,
       cryptographicFunctions: {},
     });

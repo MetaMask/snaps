@@ -52,17 +52,18 @@ import {
   MOCK_SNAP_NAME,
   DEFAULT_SOURCE_PATH,
   DEFAULT_ICON_PATH,
-  TEST_SECRET_RECOVERY_PHRASE_BYTES,
+  TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
-  hexToBytes,
   assert,
   AssertionError,
   base64ToBytes,
   stringToBytes,
   createDeferredPromise,
 } from '@metamask/utils';
+import { hmac } from '@noble/hashes/hmac';
+import { sha512 } from '@noble/hashes/sha512';
 import { File } from 'buffer';
 import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
@@ -2134,9 +2135,9 @@ describe('SnapController', () => {
       DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
     );
 
-    const getMnemonic = jest
+    const getMnemonicSeed = jest
       .fn()
-      .mockReturnValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      .mockReturnValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -2149,14 +2150,14 @@ describe('SnapController', () => {
             [MOCK_SNAP_ID]: mockEncryptedState,
           },
         },
-        getMnemonic,
+        getMnemonicSeed,
       }),
     );
 
     expect(
       await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
     ).toStrictEqual(state);
-    expect(getMnemonic).toHaveBeenCalledTimes(1);
+    expect(getMnemonicSeed).toHaveBeenCalledTimes(1);
 
     rootMessenger.publish('KeyringController:lock');
 
@@ -2168,7 +2169,7 @@ describe('SnapController', () => {
     // decrypt the state again. This is not an ideal way to test this, but it
     // is the easiest to test this without exposing the internal state of the
     // `SnapController`.
-    expect(getMnemonic).toHaveBeenCalledTimes(2);
+    expect(getMnemonicSeed).toHaveBeenCalledTimes(2);
 
     snapController.destroy();
   });
@@ -9628,9 +9629,11 @@ describe('SnapController', () => {
     it('uses custom client cryptography functions', async () => {
       const messenger = getSnapControllerMessenger();
 
-      const pbkdf2Sha512 = jest
+      const hmacSha512 = jest
         .fn()
-        .mockResolvedValue(hexToBytes(ENCRYPTION_KEY));
+        .mockImplementation((key: Uint8Array, data: Uint8Array) =>
+          hmac(sha512, key, data),
+        );
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -9639,7 +9642,7 @@ describe('SnapController', () => {
             snaps: getPersistedSnapsState(),
           },
           clientCryptography: {
-            pbkdf2Sha512,
+            hmacSha512,
           },
         }),
       );
@@ -9656,7 +9659,7 @@ describe('SnapController', () => {
 
       await promise;
 
-      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
+      expect(hmacSha512).toHaveBeenCalledTimes(10);
 
       snapController.destroy();
     });

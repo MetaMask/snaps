@@ -90,7 +90,7 @@ function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
   return array;
 }
 
-type DeriveEntropyOptions = {
+type BaseDeriveEntropyOptions = {
   /**
    * The input value to derive entropy from.
    */
@@ -100,11 +100,6 @@ type DeriveEntropyOptions = {
    * An optional salt to use when deriving entropy.
    */
   salt?: string;
-
-  /**
-   * The mnemonic phrase to use for entropy derivation.
-   */
-  mnemonicPhrase: Uint8Array;
 
   /**
    * A hardened BIP-32 index, which is used to derive the root key from the
@@ -117,6 +112,95 @@ type DeriveEntropyOptions = {
    */
   cryptographicFunctions: CryptographicFunctions | undefined;
 };
+
+type SeedDeriveEntropyOptions = BaseDeriveEntropyOptions & {
+  /**
+   * The mnemonic seed to use for entropy derivation.
+   */
+  seed: Uint8Array;
+};
+
+type MnemonicDeriveEntropyOptions = BaseDeriveEntropyOptions & {
+  /**
+   * The mnemonic phrase to use for entropy derivation.
+   */
+  mnemonicPhrase: Uint8Array;
+};
+
+/**
+ * Get the derivation path to use for entropy derivation.
+ *
+ * This is based on the reference implementation of
+ * [SIP-6](https://metamask.github.io/SIPs/SIPS/sip-6).
+ *
+ * @param options - The options for entropy derivation.
+ * @param options.input - The input value to derive entropy from.
+ * @param options.salt - An optional salt to use when deriving entropy.
+ * @param options.magic - A hardened BIP-32 index, which is used to derive the
+ * root key from the mnemonic phrase.
+ * @returns The derivation path to be used for entropy key derivation.
+ */
+function getEntropyDerivationPath({
+  input,
+  salt,
+  magic,
+}: Required<Omit<BaseDeriveEntropyOptions, 'cryptographicFunctions'>>):
+  | BIP32Node[]
+  | SLIP10PathNode[] {
+  const inputBytes = stringToBytes(input);
+  const saltBytes = stringToBytes(salt);
+
+  // Get the derivation path from the snap ID.
+  const hash = keccak256(concatBytes([inputBytes, keccak256(saltBytes)]));
+  const computedDerivationPath = getDerivationPathArray(hash);
+
+  return [`bip32:${magic}`, ...computedDerivationPath];
+}
+
+/**
+ * Derive entropy from the given mnemonic seed and salt.
+ *
+ * This is based on the reference implementation of
+ * [SIP-6](https://metamask.github.io/SIPs/SIPS/sip-6).
+ *
+ * @param options - The options for entropy derivation.
+ * @param options.input - The input value to derive entropy from.
+ * @param options.salt - An optional salt to use when deriving entropy.
+ * @param options.seed - The mnemonic seed to use for entropy
+ * derivation.
+ * @param options.magic - A hardened BIP-32 index, which is used to derive the
+ * root key from the mnemonic phrase.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the derivation.
+ * @returns The derived entropy.
+ */
+export async function deriveEntropyFromSeed({
+  input,
+  salt = '',
+  seed,
+  magic,
+  cryptographicFunctions,
+}: SeedDeriveEntropyOptions) {
+  const computedDerivationPath = getEntropyDerivationPath({
+    input,
+    salt,
+    magic,
+  });
+
+  // Derive the private key using BIP-32.
+  const { privateKey } = await SLIP10Node.fromSeed(
+    {
+      derivationPath: [seed, ...computedDerivationPath],
+      curve: 'secp256k1',
+    },
+    cryptographicFunctions,
+  );
+
+  // This should never happen, but this keeps TypeScript happy.
+  assert(privateKey, 'Failed to derive the entropy.');
+
+  return add0x(privateKey);
+}
 
 /**
  * Derive entropy from the given mnemonic phrase and salt.
@@ -135,28 +219,23 @@ type DeriveEntropyOptions = {
  * for the derivation.
  * @returns The derived entropy.
  */
-export async function deriveEntropy({
+export async function deriveEntropyFromMnemonic({
   input,
   salt = '',
   mnemonicPhrase,
   magic,
   cryptographicFunctions,
-}: DeriveEntropyOptions): Promise<Hex> {
-  const inputBytes = stringToBytes(input);
-  const saltBytes = stringToBytes(salt);
-
-  // Get the derivation path from the snap ID.
-  const hash = keccak256(concatBytes([inputBytes, keccak256(saltBytes)]));
-  const computedDerivationPath = getDerivationPathArray(hash);
+}: MnemonicDeriveEntropyOptions): Promise<Hex> {
+  const computedDerivationPath = getEntropyDerivationPath({
+    input,
+    salt,
+    magic,
+  });
 
   // Derive the private key using BIP-32.
   const { privateKey } = await SLIP10Node.fromDerivationPath(
     {
-      derivationPath: [
-        mnemonicPhrase,
-        `bip32:${magic}`,
-        ...computedDerivationPath,
-      ],
+      derivationPath: [mnemonicPhrase, ...computedDerivationPath],
       curve: 'secp256k1',
     },
     cryptographicFunctions,
