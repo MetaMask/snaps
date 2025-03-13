@@ -103,6 +103,7 @@ import {
   getLocalizedSnapManifest,
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
+  TRACKABLE_HANDLER_TYPES,
 } from '@metamask/snaps-utils';
 import type {
   Json,
@@ -3452,6 +3453,8 @@ export class SnapController extends BaseController<
 
     const timeout = this.#getExecutionTimeout(handlerPermissions);
 
+    this.updateLastInteraction(snapId, handlerType);
+
     return handler({ origin, handler: handlerType, request, timeout });
   }
 
@@ -4186,6 +4189,21 @@ export class SnapController extends BaseController<
       runtime.encryptionKey = null;
       runtime.encryptionSalt = null;
       runtime.state = undefined;
+    }
+  }
+
+  /**
+   * Track usage of a Snap by updating last interaction with it.
+   * Note: Interaction tracking is done only for specific handler types.
+   *
+   * @param snapId - ID of a Snap.
+   * @param handlerType - Type of Snap handler.
+   */
+  updateLastInteraction(snapId: SnapId, handlerType: HandlerType): void {
+    if (TRACKABLE_HANDLER_TYPES.has(handlerType)) {
+      this.update((state) => {
+        state.snaps[snapId].lastInteraction = new Date().toISOString();
+      });
     }
   }
 }
