@@ -14,11 +14,3 @@ updates:
     target-branch: 'main'
     versioning-strategy: 'increase'
     open-pull-requests-limit: 10
-    groups:
-      metamask:
-        applies-to: version-updates
-        patterns:
-          - '@metamask/*'
-        update-types:
-          - 'minor'
-          - 'patch'
