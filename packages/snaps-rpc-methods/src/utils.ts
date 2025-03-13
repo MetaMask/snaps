@@ -9,7 +9,6 @@ import { SLIP10Node } from '@metamask/key-tree';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { MagicValue } from '@metamask/snaps-utils';
 import { refine, string } from '@metamask/superstruct';
-import type { Hex } from '@metamask/utils';
 import {
   assertExhaustive,
   add0x,
@@ -120,13 +119,6 @@ type SeedDeriveEntropyOptions = BaseDeriveEntropyOptions & {
   seed: Uint8Array;
 };
 
-type MnemonicDeriveEntropyOptions = BaseDeriveEntropyOptions & {
-  /**
-   * The mnemonic phrase to use for entropy derivation.
-   */
-  mnemonicPhrase: Uint8Array;
-};
-
 /**
  * Get the derivation path to use for entropy derivation.
  *
@@ -203,51 +195,6 @@ export async function deriveEntropyFromSeed({
 }
 
 /**
- * Derive entropy from the given mnemonic phrase and salt.
- *
- * This is based on the reference implementation of
- * [SIP-6](https://metamask.github.io/SIPs/SIPS/sip-6).
- *
- * @param options - The options for entropy derivation.
- * @param options.input - The input value to derive entropy from.
- * @param options.salt - An optional salt to use when deriving entropy.
- * @param options.mnemonicPhrase - The mnemonic phrase to use for entropy
- * derivation.
- * @param options.magic - A hardened BIP-32 index, which is used to derive the
- * root key from the mnemonic phrase.
- * @param options.cryptographicFunctions - The cryptographic functions to use
- * for the derivation.
- * @returns The derived entropy.
- */
-export async function deriveEntropyFromMnemonic({
-  input,
-  salt = '',
-  mnemonicPhrase,
-  magic,
-  cryptographicFunctions,
-}: MnemonicDeriveEntropyOptions): Promise<Hex> {
-  const computedDerivationPath = getEntropyDerivationPath({
-    input,
-    salt,
-    magic,
-  });
-
-  // Derive the private key using BIP-32.
-  const { privateKey } = await SLIP10Node.fromDerivationPath(
-    {
-      derivationPath: [mnemonicPhrase, ...computedDerivationPath],
-      curve: 'secp256k1',
-    },
-    cryptographicFunctions,
-  );
-
-  // This should never happen, but this keeps TypeScript happy.
-  assert(privateKey, 'Failed to derive the entropy.');
-
-  return add0x(privateKey);
-}
-
-/**
  * Get the path prefix to use for key derivation in `key-tree`. This assumes the
  * following:
  *
@@ -277,11 +224,18 @@ export function getPathPrefix(
   }
 }
 
-type GetNodeArgs = {
+type BaseGetNodeArgs = {
   curve: SupportedCurve;
-  secretRecoveryPhrase: Uint8Array;
   path: string[];
   cryptographicFunctions: CryptographicFunctions | undefined;
+};
+
+type GetNodeArgsMnemonic = BaseGetNodeArgs & {
+  secretRecoveryPhrase: Uint8Array;
+};
+
+type GetNodeArgsSeed = BaseGetNodeArgs & {
+  seed: Uint8Array;
 };
 
 /**
@@ -300,12 +254,12 @@ type GetNodeArgs = {
  * for the node.
  * @returns The `key-tree` SLIP-10 node.
  */
-export async function getNode({
+export async function getNodeFromMnemonic({
   curve,
   secretRecoveryPhrase,
   path,
   cryptographicFunctions,
-}: GetNodeArgs) {
+}: GetNodeArgsMnemonic) {
   const prefix = getPathPrefix(curve);
 
   return await SLIP10Node.fromDerivationPath(
@@ -313,6 +267,44 @@ export async function getNode({
       curve,
       derivationPath: [
         secretRecoveryPhrase,
+        ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+          | BIP32Node[]
+          | SLIP10PathNode[]),
+      ],
+    },
+    cryptographicFunctions,
+  );
+}
+
+/**
+ * Get a `key-tree`-compatible node.
+ *
+ * Note: This function assumes that all the parameters have been validated
+ * beforehand.
+ *
+ * @param options - The derivation options.
+ * @param options.curve - The curve to use for derivation.
+ * @param options.seed - The BIP-39 to use for
+ * derivation.
+ * @param options.path - The derivation path to use as array, starting with an
+ * "m" as the first item.
+ * @param options.cryptographicFunctions - The cryptographic functions to use
+ * for the node.
+ * @returns The `key-tree` SLIP-10 node.
+ */
+export async function getNodeFromSeed({
+  curve,
+  seed,
+  path,
+  cryptographicFunctions,
+}: GetNodeArgsSeed) {
+  const prefix = getPathPrefix(curve);
+
+  return await SLIP10Node.fromSeed(
+    {
+      curve,
+      derivationPath: [
+        seed,
         ...(path.slice(1).map((index) => `${prefix}:${index}`) as
           | BIP32Node[]
           | SLIP10PathNode[]),
@@ -345,19 +337,20 @@ export const StateKeyStruct = refine(string(), 'state key', (value) => {
 });
 
 /**
- * Get the secret recovery phrase of the user. This calls the `getMnemonic` hook
- * and handles any errors that occur, throwing formatted JSON-RPC errors.
+ * Get a value using the entropy source hooks: getMnemonic or getMnemonicSeed.
+ * This function calls the passed hook and handles any errors that occur,
+ * throwing formatted JSON-RPC errors.
  *
- * @param getMnemonic - The `getMnemonic` hook.
+ * @param hook - The hook.
  * @param source - The entropy source to use.
  * @returns The secret recovery phrase.
  */
-export async function getSecretRecoveryPhrase(
-  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>,
+export async function getValueFromEntropySource(
+  hook: (source?: string | undefined) => Promise<Uint8Array>,
   source?: string | undefined,
 ): Promise<Uint8Array> {
   try {
-    return await getMnemonic(source);
+    return await hook(source);
   } catch (error) {
     if (error instanceof Error) {
       throw rpcErrors.invalidParams({

@@ -8,31 +8,14 @@ import { create, is } from '@metamask/superstruct';
 
 import { ENTROPY_VECTORS } from './__fixtures__';
 import {
-  deriveEntropyFromMnemonic,
   deriveEntropyFromSeed,
-  getNode,
+  getNodeFromMnemonic,
+  getNodeFromSeed,
   getPathPrefix,
-  getSecretRecoveryPhrase,
+  getValueFromEntropySource,
   isValidStateKey,
   StateKeyStruct,
 } from './utils';
-
-describe('deriveEntropyFromMnemonic', () => {
-  it.each(ENTROPY_VECTORS)(
-    'derives entropy from the given parameters',
-    async ({ snapId, salt, entropy }) => {
-      expect(
-        await deriveEntropyFromMnemonic({
-          input: snapId,
-          salt,
-          mnemonicPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
-          magic: SIP_6_MAGIC_VALUE,
-          cryptographicFunctions: {},
-        }),
-      ).toStrictEqual(entropy);
-    },
-  );
-});
 
 describe('deriveEntropyFromSeed', () => {
   it.each(ENTROPY_VECTORS)(
@@ -72,9 +55,9 @@ describe('getPathPrefix', () => {
   });
 });
 
-describe('getNode', () => {
+describe('getNodeFromMnemonic', () => {
   it('returns a secp256k1 node', async () => {
-    const node = await getNode({
+    const node = await getNodeFromMnemonic({
       curve: 'secp256k1',
       path: ['m', "44'", "1'"],
       secretRecoveryPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
@@ -97,10 +80,58 @@ describe('getNode', () => {
   });
 
   it('returns an ed25519 node', async () => {
-    const node = await getNode({
+    const node = await getNodeFromMnemonic({
       curve: 'ed25519',
       path: ['m', "44'", "1'"],
       secretRecoveryPhrase: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+      cryptographicFunctions: {},
+    });
+
+    expect(node).toMatchInlineSnapshot(`
+      {
+        "chainCode": "0xcecf799c541108016e8febb5956379533702574d509b52e1078df95fbc6ae054",
+        "curve": "ed25519",
+        "depth": 2,
+        "index": 2147483649,
+        "masterFingerprint": 650419359,
+        "network": "mainnet",
+        "parentFingerprint": 4080844380,
+        "privateKey": "0x9dee85af06f9b94d2451549f5a9b0a3bbba9e2513daebc793ca5c9a13e80cafa",
+        "publicKey": "0x00c9aaf347832dc3b1dbb7aab4f41e5e04c64446b819c0761571c27b9f90eacb27",
+      }
+    `);
+  });
+});
+
+describe('getNodeFromSeed', () => {
+  it('returns a secp256k1 node', async () => {
+    const node = await getNodeFromSeed({
+      curve: 'secp256k1',
+      path: ['m', "44'", "1'"],
+      seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+      cryptographicFunctions: {},
+    });
+
+    expect(node).toMatchInlineSnapshot(`
+      {
+        "chainCode": "0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
+        "curve": "secp256k1",
+        "depth": 2,
+        "index": 2147483649,
+        "masterFingerprint": 1404659567,
+        "network": "mainnet",
+        "parentFingerprint": 1829122711,
+        "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
+        "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
+      }
+    `);
+  });
+
+  it('returns an ed25519 node', async () => {
+    const node = await getNodeFromSeed({
+      curve: 'ed25519',
+      path: ['m', "44'", "1'"],
+      seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
       cryptographicFunctions: {},
     });
 
@@ -151,13 +182,13 @@ describe('StateKeyStruct', () => {
   );
 });
 
-describe('getSecretRecoveryPhrase', () => {
+describe('getValueFromEntropySource', () => {
   it('returns the secret recovery phrase', async () => {
     const getMnemonic = jest
       .fn()
       .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
 
-    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+    const secretRecoveryPhrase = await getValueFromEntropySource(
       getMnemonic,
       'foo',
     );
@@ -169,7 +200,7 @@ describe('getSecretRecoveryPhrase', () => {
   it('throws an invalid params error if `getMnemonic` throws with an error', async () => {
     const getMnemonic = jest.fn().mockRejectedValue(new Error('foo'));
 
-    await expect(getSecretRecoveryPhrase(getMnemonic)).rejects.toThrow(
+    await expect(getValueFromEntropySource(getMnemonic)).rejects.toThrow(
       rpcErrors.invalidParams({
         message: 'foo',
       }),
@@ -179,7 +210,7 @@ describe('getSecretRecoveryPhrase', () => {
   it('throws an internal error if `getMnemonic` throws with a non-error', async () => {
     const getMnemonic = jest.fn().mockRejectedValue('foo');
 
-    await expect(getSecretRecoveryPhrase(getMnemonic)).rejects.toThrow(
+    await expect(getValueFromEntropySource(getMnemonic)).rejects.toThrow(
       rpcErrors.internal({
         message: 'An unknown error occurred.',
         data: {
