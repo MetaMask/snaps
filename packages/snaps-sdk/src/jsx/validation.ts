@@ -90,7 +90,7 @@ import {
 import {
   NonEip155AssetTypeStruct,
   NonEip155ChainIdStruct,
-  NonEip155MatchingAddressesCaipAccountIdListStruct,
+  NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
   type EmptyObject,
 } from '../types';
 
@@ -420,7 +420,7 @@ export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
   'AssetSelector',
   {
     name: string(),
-    addresses: NonEip155MatchingAddressesCaipAccountIdListStruct,
+    addresses: NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
     chainIds: optional(array(NonEip155ChainIdStruct)) as unknown as Struct<
       Infer<typeof NonEip155ChainIdStruct>[] | undefined,
       null

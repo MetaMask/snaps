@@ -1,13 +1,13 @@
 import { is } from '@metamask/superstruct';
 
 import {
-  MatchingAddressesCaipAccountIdListStruct,
+  CaipAccountIdsMatchedByAddressAndNamespaceStruct,
   NonEip155AssetTypeStruct,
   NonEip155ChainIdStruct,
-  NonEip155MatchingAddressesCaipAccountIdListStruct,
+  NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
 } from './caip';
 
-describe('MatchingAddressesCaipAccountIdListStruct', () => {
+describe('CaipAccountIdsMatchedByAddressAndNamespaceStruct', () => {
   it('validates an array of matchin addresses', () => {
     expect(
       is(
@@ -16,7 +16,7 @@ describe('MatchingAddressesCaipAccountIdListStruct', () => {
           'eip155:2:0x1234567890123456789012345678901234567890',
           'eip155:3:0x1234567890123456789012345678901234567890',
         ],
-        MatchingAddressesCaipAccountIdListStruct,
+        CaipAccountIdsMatchedByAddressAndNamespaceStruct,
       ),
     ).toBe(true);
   });
@@ -29,7 +29,7 @@ describe('MatchingAddressesCaipAccountIdListStruct', () => {
           'eip155:2:0x1234567890123456789012225678901234567890',
           'eip155:3:0x1234567890123456789012345678901234567890',
         ],
-        MatchingAddressesCaipAccountIdListStruct,
+        CaipAccountIdsMatchedByAddressAndNamespaceStruct,
       ),
     ).toBe(false);
   });
@@ -42,13 +42,13 @@ describe('MatchingAddressesCaipAccountIdListStruct', () => {
           'eip155:2:0x1234567890123456789012345678901234567890',
           'foo:3:0x1234567890123456789012345678901234567890',
         ],
-        MatchingAddressesCaipAccountIdListStruct,
+        CaipAccountIdsMatchedByAddressAndNamespaceStruct,
       ),
     ).toBe(false);
   });
 });
 
-describe('NonEip155MatchingAddressesCaipAccountIdListStruct', () => {
+describe('NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct', () => {
   it('validates an array of matching non EIP-155 namespace addresses', () => {
     expect(
       is(
@@ -56,7 +56,7 @@ describe('NonEip155MatchingAddressesCaipAccountIdListStruct', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
-        NonEip155MatchingAddressesCaipAccountIdListStruct,
+        NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
       ),
     ).toBe(true);
   });
@@ -68,7 +68,7 @@ describe('NonEip155MatchingAddressesCaipAccountIdListStruct', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           'eip155:1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
-        NonEip155MatchingAddressesCaipAccountIdListStruct,
+        NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
       ),
     ).toBe(false);
   });

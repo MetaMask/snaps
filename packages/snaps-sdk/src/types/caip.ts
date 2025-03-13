@@ -38,7 +38,7 @@ export type AccountId = CaipAccountId;
 /**
  * A stuct representing a list of CAIP-10 account IDs where the account addresses and namespaces are the same.
  */
-export const MatchingAddressesCaipAccountIdListStruct = refine(
+export const CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
   array(CaipAccountIdStruct),
   'Matching Addresses Account ID List',
   (value) => {
@@ -53,7 +53,7 @@ export const MatchingAddressesCaipAccountIdListStruct = refine(
           namespace === parsedAccountIds[0].chain.namespace,
       )
     ) {
-      return 'All account IDs must have the same address and chain namespace.';
+      return 'All account IDs must have the same address and namespace.';
     }
 
     return true;
@@ -64,14 +64,14 @@ export const MatchingAddressesCaipAccountIdListStruct = refine(
  * A list of CAIP-10 account IDs where the account addresses are the same.
  */
 export type MatchingAddressesCaipAccountIdList = Infer<
-  typeof MatchingAddressesCaipAccountIdListStruct
+  typeof CaipAccountIdsMatchedByAddressAndNamespaceStruct
 >;
 
 /**
  * A struct representing a list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
  */
-export const NonEip155MatchingAddressesCaipAccountIdListStruct = refine(
-  MatchingAddressesCaipAccountIdListStruct,
+export const NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
+  CaipAccountIdsMatchedByAddressAndNamespaceStruct,
   'Non-EIP-155 Matching Addresses Account ID List',
   (value) => {
     const containsEip155 = value.some((accountId) => {
@@ -83,7 +83,7 @@ export const NonEip155MatchingAddressesCaipAccountIdListStruct = refine(
     });
 
     if (containsEip155) {
-      return 'All account IDs must have non-EIP-155 chain namespaces.';
+      return 'All account IDs must have non-EIP-155 namespaces.';
     }
     return true;
   },
@@ -93,7 +93,7 @@ export const NonEip155MatchingAddressesCaipAccountIdListStruct = refine(
  * A list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
  */
 export type NonEip155MatchingAddressesCaipAccountIdList = Infer<
-  typeof NonEip155MatchingAddressesCaipAccountIdListStruct
+  typeof NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct
 >;
 
 /**
