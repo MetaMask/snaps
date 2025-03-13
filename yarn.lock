@@ -6254,19 +6254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 "@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
-=======
-<<<<<<< HEAD
-"@noble/curves@npm:1.4.2, @noble/curves@npm:^1.1.0, @noble/curves@npm:^1.2.0, @noble/curves@npm:~1.4.0":
-=======
-"@noble/curves@npm:1.4.2, @noble/curves@npm:~1.4.0":
->>>>>>> 97d29693 (add account handling)
->>>>>>> 1e98fa8c (add account handling)
-=======
-"@noble/curves@npm:1.4.2, @noble/curves@npm:^1.1.0, @noble/curves@npm:^1.2.0, @noble/curves@npm:~1.4.0":
->>>>>>> c47feb14 (refactor to only support non-EIP155 values)
   version: 1.4.2
   resolution: "@noble/curves@npm:1.4.2"
   dependencies:
