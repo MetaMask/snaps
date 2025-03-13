@@ -257,6 +257,7 @@ describe('getBip32EntropyImplementation', () => {
       `);
 
       expect(getMnemonic).toHaveBeenCalledWith('source-id');
+      expect(getMnemonicSeed).not.toHaveBeenCalled();
     });
 
     it('calls `getMnemonicSeed` with a different entropy source', async () => {
@@ -300,6 +301,7 @@ describe('getBip32EntropyImplementation', () => {
       `);
 
       expect(getMnemonicSeed).toHaveBeenCalledWith('source-id');
+      expect(getMnemonic).not.toHaveBeenCalled();
     });
 
     it('uses custom client cryptography functions', async () => {
