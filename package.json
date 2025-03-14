@@ -74,7 +74,8 @@
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch",
     "tsconfig-paths@^3.11.0": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
     "tsconfig-paths@^3.14.1": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
-    "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch"
+    "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
+    "vite": "^6.2.2"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
