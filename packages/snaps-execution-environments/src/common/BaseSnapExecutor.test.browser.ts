@@ -8,7 +8,8 @@ import {
   spy,
   sleep,
 } from '@metamask/snaps-utils/test-utils';
-import { assertIsJsonRpcSuccess, isPlainObject } from '@metamask/utils';
+import { assertIsJsonRpcSuccess, isPlainObject, assert } from '@metamask/utils';
+import { describe, expect, it, beforeAll } from 'vitest';
 
 import {
   getMockedStreamProvider,
@@ -20,7 +21,7 @@ import { testEndowmentHardening } from './test-utils/hardening';
 import 'ses';
 
 describe('BaseSnapExecutor', () => {
-  before(() => {
+  beforeAll(() => {
     // @ts-expect-error - `globalThis.process` is not optional.
     delete globalThis.process;
 
@@ -2570,7 +2571,7 @@ describe('BaseSnapExecutor', () => {
   });
 
   describe('hardening', () => {
-    before(() => {
+    beforeAll(() => {
       // We define a global `harden` function for the tests, but the `lockdown`
       // function will fail if such function is already defined. We therefore
       // delete it here.
@@ -2661,9 +2662,8 @@ describe('BaseSnapExecutor', () => {
       });
     });
 
-    ['ethereum', 'snap'].forEach((endowment) => {
-      it(`properly hardens ${endowment}`, async () => {
-        const CODE = `
+    it.each(['ethereum', 'snap'])(`properly hardens %s`, async (endowment) => {
+      const CODE = `
         module.exports.onRpcRequest = () => {
           let result = 'ENDOWMENT_SECURED';
           let errors = [];
@@ -2694,41 +2694,40 @@ describe('BaseSnapExecutor', () => {
         };
       `;
 
-        const executor = new TestSnapExecutor();
-        await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['ethereum']);
 
-        expect(await executor.readCommand()).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 1,
-          result: 'OK',
-        });
+      expect(await executor.readCommand()).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: 'OK',
+      });
 
-        await executor.writeCommand({
-          jsonrpc: '2.0',
-          id: 2,
-          method: 'snapRpc',
-          params: [
-            MOCK_SNAP_ID,
-            HandlerType.OnRpcRequest,
-            MOCK_ORIGIN,
-            { jsonrpc: '2.0', method: '', params: [] },
-          ],
-        });
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: [
+          MOCK_SNAP_ID,
+          HandlerType.OnRpcRequest,
+          MOCK_ORIGIN,
+          { jsonrpc: '2.0', method: '', params: [] },
+        ],
+      });
 
-        const command = await executor.readCommand();
+      const command = await executor.readCommand();
 
-        assertIsJsonRpcSuccess(command);
-        assert(isPlainObject(command.result));
+      assertIsJsonRpcSuccess(command);
+      assert(isPlainObject(command.result));
 
-        expect(command.result.errors).toHaveLength(5);
-        expect(command).toStrictEqual({
-          jsonrpc: '2.0',
-          id: 2,
-          result: {
-            result: 'ENDOWMENT_SECURED',
-            errors: expect.any(Array),
-          },
-        });
+      expect(command.result.errors).toHaveLength(5);
+      expect(command).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 2,
+        result: {
+          result: 'ENDOWMENT_SECURED',
+          errors: expect.any(Array),
+        },
       });
     });
 

@@ -3,6 +3,7 @@
 import 'ses';
 
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import { describe, expect, it } from 'vitest';
 
 import buildCommonEndowments from './commonEndowmentFactory';
 import consoleEndowment from './console';
@@ -41,6 +42,7 @@ describe('endowments', () => {
   describe('hardening', () => {
     const modules = buildCommonEndowments();
     modules.forEach((endowment) =>
+      // @ts-expect-error: Partial mock.
       endowment.factory({ snapId: MOCK_SNAP_ID, notify: mockNotify }),
     );
 
@@ -63,6 +65,7 @@ describe('endowments', () => {
       Headers: HeadersHardened,
       Response: ResponseHardened,
     } = network.factory({
+      // @ts-expect-error: Partial mock.
       notify: mockNotify,
     });
     const { Date: DateAttenuated } = date.factory();
@@ -154,8 +157,6 @@ describe('endowments', () => {
       },
       AbortSignal: {
         endowments: { AbortSignal },
-        // @ts-expect-error - `abort()` method exists in browser, but not in
-        // Node.js.
         factory: () => AbortSignal.abort(),
       },
       DateAttenuated: {

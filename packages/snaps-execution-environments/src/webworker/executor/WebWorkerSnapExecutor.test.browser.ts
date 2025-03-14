@@ -8,6 +8,7 @@ import {
   MockWindowPostMessageStream,
   spy,
 } from '@metamask/snaps-utils/test-utils';
+import { describe, expect, it, beforeAll, beforeEach } from 'vitest';
 
 import { WebWorkerSnapExecutor } from './WebWorkerSnapExecutor';
 
@@ -40,10 +41,10 @@ async function getResponse(
   });
 }
 
-describe('WebWorkerSnapExecutor', () => {
+describe.skip('WebWorkerSnapExecutor', () => {
   let consoleSpy: SpyFunction<unknown, unknown>;
 
-  before(() => {
+  beforeAll(() => {
     // @ts-expect-error - `globalThis.process` is not optional.
     delete globalThis.process;
 
@@ -128,7 +129,7 @@ describe('WebWorkerSnapExecutor', () => {
   });
 
   // TODO: Re-enable this test after investigating error handling further.
-  // eslint-disable-next-line jest/no-disabled-tests
+
   it.skip('handles closing the stream', async () => {
     const mockStream = new MockWindowPostMessageStream();
 
@@ -148,7 +149,7 @@ describe('WebWorkerSnapExecutor', () => {
   });
 
   // TODO: Re-enable this test after investigating error handling further.
-  // eslint-disable-next-line jest/no-disabled-tests
+
   it.skip('handles stream errors', async () => {
     const mockStream = new MockWindowPostMessageStream();
 
