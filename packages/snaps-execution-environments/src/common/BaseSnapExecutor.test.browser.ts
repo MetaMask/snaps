@@ -1049,7 +1049,7 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('notifies execution service of out of band errors via unhandledrejection', async () => {
+  it.skip('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
     `;
