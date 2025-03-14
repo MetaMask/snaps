@@ -92,7 +92,7 @@
     "@types/lodash": "^4",
     "@types/node": "18.14.2",
     "@yarnpkg/types": "^4.0.0",
-    "chromedriver": "^134.0.2",
+    "chromedriver": "^134.0.3",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
     "eslint-config-prettier": "^9.1.0",
