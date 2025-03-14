@@ -9,6 +9,7 @@ import {
   ContentType,
 } from '@metamask/snaps-sdk';
 import {
+  AssetSelector,
   Box,
   Field,
   FileInput,
@@ -157,6 +158,52 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
+    });
+
+    it('calls the multichain asset controller to construct an asset selector state', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const components = (
+        <AssetSelector
+          name="foo"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105"
+        />
+      );
+
+      const interfaceId = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        components,
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'MultichainAssetsController:getState',
+      );
+
+      const { state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        interfaceId,
+      );
+
+      expect(state).toStrictEqual({
+        foo: {
+          asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      });
     });
 
     it('can create a new interface from JSX', async () => {
@@ -409,6 +456,116 @@ describe('SnapInterfaceController', () => {
         3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
+      );
+    });
+
+    it('throws if a link tries to navigate to a snap that is not installed', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SnapController:get',
+        () => undefined,
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Text>
+            Foo <Link href={`metamask://snap/${MOCK_SNAP_ID}/home`}>Bar</Link>
+          </Text>
+        </Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+        ),
+      ).rejects.toThrow(
+        'Invalid URL: The Snap being navigated to is not installed.',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'SnapController:get',
+        MOCK_SNAP_ID,
+      );
+    });
+
+    it('throws if an address passed to an asset selector is not available in the client', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:maybeUpdateState',
+        jest.fn(),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PhishingController:testOrigin',
+        () => ({ result: true, type: 'all' }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'MultichainAssetsController:getState',
+        () => ({
+          assetsMetadata: {},
+          accountsAssets: {},
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        () => undefined,
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AssetSelector
+            name="foo"
+            addresses={[
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            ]}
+          />
+        </Box>
+      );
+
+      await expect(
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+        ),
+      ).rejects.toThrow(
+        'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'AccountsController:getAccountByAddress',
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
     });
 

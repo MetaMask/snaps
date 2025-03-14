@@ -6,6 +6,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
+import type { InternalAccount } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
   CaipAccountId,
@@ -41,19 +42,6 @@ export type MultichainRouterGetSupportedAccountsAction = {
 export type MultichainRouterIsSupportedScopeAction = {
   type: `${typeof name}:isSupportedScope`;
   handler: MultichainRouter['isSupportedScope'];
-};
-
-// Since the AccountsController depends on snaps-controllers we manually type this
-type InternalAccount = {
-  id: string;
-  type: string;
-  address: string;
-  options: Record<string, Json>;
-  methods: string[];
-  metadata: {
-    name: string;
-    snap?: { id: SnapId; enabled: boolean; name: string };
-  };
 };
 
 type SnapKeyring = {

@@ -17,12 +17,14 @@ import type {
   SnapId,
   ComponentOrElement,
   InterfaceContext,
+  FungibleAssetMetadata,
 } from '@metamask/snaps-sdk';
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
-import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
-import { assert, hasProperty } from '@metamask/utils';
+import type { InternalAccount } from '@metamask/snaps-utils';
+import { getJsonSizeUnsafe, validateJsxElements } from '@metamask/snaps-utils';
+import type { CaipAccountId, CaipAssetType, Json } from '@metamask/utils';
+import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
@@ -67,9 +69,24 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
+type AccountsControllerGetAccountByAddressAction = {
+  type: `AccountsController:getAccountByAddress`;
+  handler: (address: string) => InternalAccount | undefined;
+};
+
 export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapInterfaceControllerState
+>;
+
+type MultichainAssetsControllerGetStateAction = ControllerGetStateAction<
+  'MultichainAssetsController',
+  {
+    assetsMetadata: {
+      [asset: CaipAssetType]: FungibleAssetMetadata;
+    };
+    accountsAssets: { [account: string]: CaipAssetType[] };
+  }
 >;
 
 export type SnapInterfaceControllerAllowedActions =
@@ -77,7 +94,9 @@ export type SnapInterfaceControllerAllowedActions =
   | MaybeUpdateState
   | HasApprovalRequest
   | AcceptRequest
-  | GetSnap;
+  | GetSnap
+  | MultichainAssetsControllerGetStateAction
+  | AccountsControllerGetAccountByAddressAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -249,7 +268,10 @@ export class SnapInterfaceController extends BaseController<
     validateInterfaceContext(context);
 
     const id = nanoid();
-    const componentState = constructState({}, element);
+    const componentState = constructState({}, element, {
+      getAssetsState: this.#getAssetsState.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
+    });
 
     this.update((draftState) => {
       // @ts-expect-error - TS2589: Type instantiation is excessively deep and
@@ -299,7 +321,10 @@ export class SnapInterfaceController extends BaseController<
     validateInterfaceContext(context);
 
     const oldState = this.state.interfaces[id].state;
-    const newState = constructState(oldState, element);
+    const newState = constructState(oldState, element, {
+      getAssetsState: this.#getAssetsState.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
+    });
 
     this.update((draftState) => {
       draftState.interfaces[id].state = newState;
@@ -427,6 +452,40 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
+   * Get an account by its address.
+   *
+   * @param address - The account address.
+   * @returns The account or undefined if not found.
+   */
+  #getAccountByAddress(address: CaipAccountId) {
+    const { address: parsedAddress } = parseCaipAccountId(address);
+
+    return this.messagingSystem.call(
+      'AccountsController:getAccountByAddress',
+      parsedAddress,
+    );
+  }
+
+  /**
+   * Get the MultichainAssetsController state.
+   *
+   * @returns The MultichainAssetsController state.
+   */
+  #getAssetsState() {
+    return this.messagingSystem.call('MultichainAssetsController:getState');
+  }
+
+  /**
+   * Get a snap by its id.
+   *
+   * @param id - The snap id.
+   * @returns The snap.
+   */
+  #getSnap(id: string) {
+    return this.messagingSystem.call('SnapController:get', id);
+  }
+
+  /**
    * Utility function to validate the components of an interface.
    * Throws if something is invalid.
    *
@@ -442,11 +501,12 @@ export class SnapInterfaceController extends BaseController<
     );
 
     await this.#triggerPhishingListUpdate();
-    validateJsxLinks(
-      element,
-      this.#checkPhishingList.bind(this),
-      (id: string) => this.messagingSystem.call('SnapController:get', id),
-    );
+
+    validateJsxElements(element, {
+      isOnPhishingList: this.#checkPhishingList.bind(this),
+      getSnap: this.#getSnap.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
+    });
   }
 
   #onNotificationsListUpdated(notificationsList: Notification[]) {
