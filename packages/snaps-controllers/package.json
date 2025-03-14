@@ -129,17 +129,17 @@
     "@types/readable-stream": "^4.0.15",
     "@types/semver": "^7.5.0",
     "@types/tar-stream": "^3.1.1",
-    "@wdio/browser-runner": "^8.19.0",
-    "@wdio/cli": "^8.19.0",
-    "@wdio/globals": "^8.19.0",
-    "@wdio/mocha-framework": "^8.19.0",
-    "@wdio/spec-reporter": "^8.19.0",
-    "@wdio/static-server-service": "^8.19.0",
+    "@wdio/browser-runner": "^9.12.0",
+    "@wdio/cli": "^9.12.0",
+    "@wdio/globals": "^9.12.0",
+    "@wdio/mocha-framework": "^9.11.0",
+    "@wdio/spec-reporter": "^9.11.0",
+    "@wdio/static-server-service": "^9.10.1",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "esbuild": "^0.25.1",
     "eslint": "^9.11.0",
-    "expect-webdriverio": "^4.4.1",
+    "expect-webdriverio": "^5.1.0",
     "istanbul-lib-coverage": "^3.2.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
@@ -155,7 +155,7 @@
     "vite-tsconfig-paths": "^4.0.5",
     "wdio-chromedriver-service": "^8.1.1",
     "wdio-geckodriver-service": "^5.0.2",
-    "webdriverio": "^8.19.0"
+    "webdriverio": "^9.12.0"
   },
   "peerDependencies": {
     "@metamask/snaps-execution-environments": "workspace:^"
