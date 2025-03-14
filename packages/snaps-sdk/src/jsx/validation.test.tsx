@@ -314,6 +314,14 @@ describe('FieldStruct', () => {
         </SelectorOption>
       </Selector>
     </Field>,
+    <Field label="foo">
+      <AssetSelector
+        name="foo"
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
+      />
+    </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
   });

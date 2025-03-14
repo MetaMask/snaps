@@ -25,7 +25,6 @@ import {
   getAssetSelectorStateValue,
   getDefaultAsset,
   getJsxInterface,
-  validateAssetSelector,
 } from './utils';
 
 describe('getJsxInterface', () => {
@@ -74,7 +73,6 @@ describe('assertNameIsUnique', () => {
 
 describe('constructState', () => {
   const elementDataGetters = {
-    getAssetMetadata: jest.fn(),
     getAssetsState: jest.fn(),
     getAccountByAddress: jest.fn(),
   };
@@ -617,9 +615,16 @@ describe('constructState', () => {
   });
 
   it('supports root level AssetSelector', () => {
-    elementDataGetters.getAssetMetadata.mockReturnValue({
-      name: 'Solana',
-      symbol: 'SOL',
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+      },
     });
 
     const element = (
@@ -691,9 +696,16 @@ describe('constructState', () => {
   });
 
   it('supports AssetSelector in form', () => {
-    elementDataGetters.getAssetMetadata.mockReturnValue({
-      name: 'Solana',
-      symbol: 'SOL',
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+      },
     });
 
     const element = (
@@ -725,8 +737,7 @@ describe('constructState', () => {
     });
   });
 
-  it('sets the value to null if the asset metadata is not found', () => {
-    elementDataGetters.getAssetMetadata.mockReturnValue(undefined);
+  it('sets the value to the default asset if the asset metadata is not found', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
       assetsMetadata: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
@@ -750,7 +761,7 @@ describe('constructState', () => {
           addresses={[
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
-          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105"
+          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
         />
       </Box>
     );
@@ -948,18 +959,25 @@ describe('constructState', () => {
 });
 
 describe('getAssetSelectorStateValue', () => {
-  const getAssetMetadata = jest.fn();
+  const getAssetsState = jest.fn();
 
   it('returns the asset selector state value', () => {
-    getAssetMetadata.mockReturnValue({
-      name: 'Solana',
-      symbol: 'SOL',
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        foo: [],
+      },
     });
 
     expect(
       getAssetSelectorStateValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        getAssetMetadata,
+        getAssetsState,
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -969,16 +987,27 @@ describe('getAssetSelectorStateValue', () => {
   });
 
   it('returns null if the value is not set', () => {
-    expect(getAssetSelectorStateValue(undefined, getAssetMetadata)).toBeNull();
+    expect(getAssetSelectorStateValue(undefined, getAssetsState)).toBeNull();
   });
 
   it('returns null if the asset metadata is not found', () => {
-    getAssetMetadata.mockReturnValue(undefined);
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            name: 'USDC',
+            symbol: 'USDC',
+          },
+      },
+      accountsAssets: {
+        foo: [],
+      },
+    });
 
     expect(
       getAssetSelectorStateValue(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        getAssetMetadata,
+        getAssetsState,
       ),
     ).toBeNull();
   });
@@ -1002,8 +1031,6 @@ describe('getAssetSelectorDefaultState', () => {
       },
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getAssetSelectorDefaultState(
         <AssetSelector
@@ -1012,7 +1039,7 @@ describe('getAssetSelectorDefaultState', () => {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
         />,
-        { getAccountByAddress, getAssetsState, getAssetMetadata },
+        { getAccountByAddress, getAssetsState },
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1038,8 +1065,6 @@ describe('getAssetSelectorDefaultState', () => {
       },
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getAssetSelectorDefaultState(
         <AssetSelector
@@ -1048,47 +1073,9 @@ describe('getAssetSelectorDefaultState', () => {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
         />,
-        { getAccountByAddress, getAssetsState, getAssetMetadata },
+        { getAccountByAddress, getAssetsState },
       ),
     ).toBeNull();
-  });
-});
-
-describe('validateAssetSelector', () => {
-  it('passes if the address is available in the client', () => {
-    const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
-    });
-
-    expect(
-      validateAssetSelector(
-        <AssetSelector
-          name="foo"
-          addresses={[
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-          ]}
-        />,
-        getAccountByAddress,
-      ),
-    ).toBeUndefined();
-  });
-
-  it('throws if the address is not available in the client', () => {
-    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
-
-    expect(() =>
-      validateAssetSelector(
-        <AssetSelector
-          name="foo"
-          addresses={[
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-          ]}
-        />,
-        getAccountByAddress,
-      ),
-    ).toThrow(
-      `Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv`,
-    );
   });
 });
 
@@ -1110,15 +1097,13 @@ describe('getDefaultAsset', () => {
       id: 'foo',
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getDefaultAsset(
         [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress, getAssetMetadata },
+        { getAssetsState, getAccountByAddress },
       ),
     ).toStrictEqual({
       address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1147,15 +1132,13 @@ describe('getDefaultAsset', () => {
       id: 'foo',
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getDefaultAsset(
         [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress, getAssetMetadata },
+        { getAssetsState, getAccountByAddress },
       ),
     ).toStrictEqual({
       address:
@@ -1177,15 +1160,13 @@ describe('getDefaultAsset', () => {
       id: 'foo',
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getDefaultAsset(
         [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress, getAssetMetadata },
+        { getAssetsState, getAccountByAddress },
       ),
     ).toBeUndefined();
   });
@@ -1214,8 +1195,6 @@ describe('getDefaultAsset', () => {
       id: 'foo',
     });
 
-    const getAssetMetadata = jest.fn();
-
     expect(
       getDefaultAsset(
         [
@@ -1223,7 +1202,7 @@ describe('getDefaultAsset', () => {
           'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-        { getAssetsState, getAccountByAddress, getAssetMetadata },
+        { getAssetsState, getAccountByAddress },
       ),
     ).toStrictEqual({
       address: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1232,7 +1211,7 @@ describe('getDefaultAsset', () => {
     });
   });
 
-  it('returns undefined if the account is not found', () => {
+  it('throws if the account is not found', () => {
     const getAssetsState = jest.fn().mockReturnValue({
       assetsMetadata: {},
       accountsAssets: {
@@ -1242,16 +1221,16 @@ describe('getDefaultAsset', () => {
 
     const getAccountByAddress = jest.fn().mockReturnValue(undefined);
 
-    const getAssetMetadata = jest.fn();
-
-    expect(
+    expect(() =>
       getDefaultAsset(
         [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress, getAssetMetadata },
+        { getAssetsState, getAccountByAddress },
       ),
-    ).toBeUndefined();
+    ).toThrow(
+      'Account not found for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv.',
+    );
   });
 });

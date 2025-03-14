@@ -1,4 +1,3 @@
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { assert } from '@metamask/snaps-sdk';
 import type {
   FormState,
@@ -24,6 +23,7 @@ import type {
   AssetSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
+import type { InternalAccount } from '@metamask/snaps-utils';
 import {
   getJsonSizeUnsafe,
   getJsxChildren,
@@ -50,15 +50,6 @@ type GetAssetsState = () => {
 };
 
 /**
- * A function to get asset metadata.
- *
- * @param assetId - The asset ID.
- * @returns The asset metadata or undefined if not found.
- */
-type GetAssetMetadata = (
-  assetId: CaipAssetType,
-) => FungibleAssetMetadata | undefined;
-/**
  * A function to get an account by its address.
  *
  * @param address - The account address.
@@ -72,12 +63,10 @@ type GetAccountByAddress = (
  * Data getters for elements.
  * This is used to get data from elements that is not directly accessible from the element itself.
  *
- * @param getAssetMetadata - A function to get asset metadata.
- * @param getDefaultAsset - A function to get the default asset for an address.
  * @param getAssetState - A function to get the MultichainAssetController state.
+ * @param getAccountByAddress - A function to get an account by its address.
  */
 type ElementDataGetters = {
-  getAssetMetadata: GetAssetMetadata;
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
 };
@@ -144,9 +133,8 @@ export function getDefaultAsset(
 
   const accountId = getAccountByAddress(addresses[0])?.id;
 
-  if (!accountId) {
-    return undefined;
-  }
+  // We should never fail on this assertion as the address is already validated.
+  assert(accountId, `Account not found for address: ${addresses[0]}.`);
 
   const accountAssets = accountsAssets[accountId];
 
@@ -171,33 +159,6 @@ export function getDefaultAsset(
     address: nativeAsset,
     ...assetsMetadata[nativeAsset],
   };
-}
-
-/**
- * Validate the asset selector component.
- *
- * @param node - The JSX node to validate.
- * @param getAccountByAddress - A function to get an account by its address.
- *
- * @throws If the asset selector is invalid.
- */
-export function validateAssetSelector(
-  node: JSXElement,
-  getAccountByAddress: GetAccountByAddress,
-) {
-  walkJsx(node, (childNode) => {
-    if (childNode.type !== 'AssetSelector') {
-      return;
-    }
-
-    // We can assume that the addresses are the same for all CAIP account IDs
-    const account = getAccountByAddress(childNode.props.addresses[0]);
-
-    assert(
-      account,
-      `Could not find account for address: ${childNode.props.addresses[0]}`,
-    );
-  });
 }
 
 /**
@@ -278,18 +239,19 @@ export function getAssetSelectorDefaultState(
  * Get the state value for an asset selector.
  *
  * @param value - The asset selector value.
- * @param getAssetMetadata - A function to get asset metadata.
+ * @param getAssetState - A function to get the MultichainAssetController state.
  * @returns The state value for the asset selector or null.
  */
 export function getAssetSelectorStateValue(
   value: CaipAssetType | undefined,
-  getAssetMetadata: GetAssetMetadata,
+  getAssetState: GetAssetsState,
 ): AssetSelectorState | null {
   if (!value) {
     return null;
   }
 
-  const asset = getAssetMetadata(value);
+  const { assetsMetadata } = getAssetState();
+  const asset = assetsMetadata[value];
 
   if (!asset) {
     return null;
@@ -310,7 +272,7 @@ export function getAssetSelectorStateValue(
  *
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
- * @param elementDataGetters.getAssetMetadata - A function to get asset metadata.
+ * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -321,14 +283,14 @@ function getComponentStateValue(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement,
-  { getAssetMetadata }: ElementDataGetters,
+  { getAssetsState }: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
 
     case 'AssetSelector':
-      return getAssetSelectorStateValue(element.props.value, getAssetMetadata);
+      return getAssetSelectorStateValue(element.props.value, getAssetsState);
 
     default:
       return element.props.value;

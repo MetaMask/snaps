@@ -1,8 +1,9 @@
 import type {
-  NonEip155AssetType,
-  NonEip155ChainId,
-  NonEip155MatchingAddressesCaipAccountIdList,
-} from '../../../types';
+  CaipChainId,
+  CaipAssetType,
+  CaipAccountId,
+} from '@metamask/utils';
+
 import { createSnapComponent } from '../../component';
 
 /**
@@ -10,8 +11,8 @@ import { createSnapComponent } from '../../component';
  *
  * @property name - The name of the asset selector. This is used to identify the
  * state in the form data.
- * @property addresses - The addresses of the account to pull the assets from.
- * Only one address is supported, but different chains can be used.
+ * @property addresses - The addresses of the account to pull the assets from as CAIP-10 Account IDs.
+ * Multiple CAIP-10 Account IDs can be provided, but the account address should be the same on all Account IDs.
  * Only non-EIP-155 namespaces are supported for now.
  * @property chainIds - The chain IDs to filter the assets.
  * Only non-EIP-155 namespaces are supported for now.
@@ -21,9 +22,9 @@ import { createSnapComponent } from '../../component';
  */
 export type AssetSelectorProps = {
   name: string;
-  addresses: NonEip155MatchingAddressesCaipAccountIdList;
-  chainIds?: NonEip155ChainId[] | undefined;
-  value?: NonEip155AssetType | undefined;
+  addresses: CaipAccountId[];
+  chainIds?: CaipChainId[] | undefined;
+  value?: CaipAssetType | undefined;
   disabled?: boolean | undefined;
 };
 
@@ -33,8 +34,8 @@ const TYPE = 'AssetSelector';
  * An asset selector component, which is used to create an asset selector.
  *
  * @param props - The props of the component.
- * @param props.addresses - The addresses of the account to pull the assets from.
- * Only one address is supported, but different chains can be used.
+ * @property addresses - The addresses of the account to pull the assets from as CAIP-10 Account IDs.
+ * Multiple CAIP-10 Account IDs can be provided, but the account address should be the same on all Account IDs.
  * Only non-EIP-155 namespaces are supported for now.
  * @param props.chainIds - The chain IDs to filter the assets.
  * Only non-EIP-155 namespaces are supported for now.

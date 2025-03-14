@@ -22,7 +22,7 @@ import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import { text, type SnapId } from '@metamask/snaps-sdk';
+import type { SnapId, text } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -32,6 +32,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+  getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
@@ -783,6 +784,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'ApprovalController:acceptRequest',
       'MultichainAssetsController:getState',
       'AccountsController:getAccountByAddress',
+      'SnapController:get',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -804,7 +806,13 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     messenger.registerActionHandler(
       'MultichainAssetsController:getState',
       () => ({
-        assetsMetadata: {},
+        assetsMetadata: {
+          // @ts-expect-error partial mock
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+            name: 'Solana',
+            symbol: 'SOL',
+          },
+        },
         accountsAssets: {
           foo: [],
         },
@@ -820,6 +828,10 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       }),
     );
+
+    messenger.registerActionHandler('SnapController:get', (snapId: string) => {
+      return getSnapObject({ id: snapId as SnapId });
+    });
   }
 
   return snapInterfaceControllerMessenger;

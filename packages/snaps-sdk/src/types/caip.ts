@@ -1,4 +1,3 @@
-import type { Infer } from '@metamask/superstruct';
 import { array, refine } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
@@ -61,13 +60,6 @@ export const CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
 );
 
 /**
- * A list of CAIP-10 account IDs where the account addresses are the same.
- */
-export type MatchingAddressesCaipAccountIdList = Infer<
-  typeof CaipAccountIdsMatchedByAddressAndNamespaceStruct
->;
-
-/**
  * A struct representing a list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
  */
 export const NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
@@ -88,14 +80,6 @@ export const NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
     return true;
   },
 );
-
-/**
- * A list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
- */
-export type NonEip155MatchingAddressesCaipAccountIdList = Infer<
-  typeof NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct
->;
-
 /**
  * A struct representing a non-EIP-155 chain ID.
  */
@@ -112,11 +96,6 @@ export const NonEip155ChainIdStruct = refine(
     return true;
   },
 );
-
-/**
- * A non-EIP-155 chain ID.
- */
-export type NonEip155ChainId = Infer<typeof NonEip155ChainIdStruct>;
 
 /**
  * A struct representing a non-EIP-155 asset type.
@@ -136,8 +115,3 @@ export const NonEip155AssetTypeStruct = refine(
     return true;
   },
 );
-
-/**
- * A non-EIP-155 asset type.
- */
-export type NonEip155AssetType = Infer<typeof NonEip155AssetTypeStruct>;

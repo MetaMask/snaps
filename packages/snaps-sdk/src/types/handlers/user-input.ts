@@ -83,7 +83,7 @@ export const AssetSelectorStateStruct = object({
  *
  * @property asset - The CAIP-19 asset ID.
  * @property name - The name of the asset.
- * @property ticker - The ticker of the asset.
+ * @property symbol - The symbol of the asset.
  */
 export type AssetSelectorState = Infer<typeof AssetSelectorStateStruct>;
 

@@ -8,7 +8,6 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type {
   MaybeUpdateState,
   TestOrigin,
@@ -22,7 +21,8 @@ import type {
 } from '@metamask/snaps-sdk';
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
-import { getJsonSizeUnsafe, validateJsxLinks } from '@metamask/snaps-utils';
+import type { InternalAccount } from '@metamask/snaps-utils';
+import { getJsonSizeUnsafe, validateJsxElements } from '@metamask/snaps-utils';
 import type { CaipAccountId, CaipAssetType, Json } from '@metamask/utils';
 import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
@@ -31,7 +31,6 @@ import { nanoid } from 'nanoid';
 import {
   constructState,
   getJsxInterface,
-  validateAssetSelector,
   validateInterfaceContext,
 } from './utils';
 import type { GetSnap } from '../snaps';
@@ -270,7 +269,6 @@ export class SnapInterfaceController extends BaseController<
 
     const id = nanoid();
     const componentState = constructState({}, element, {
-      getAssetMetadata: this.#getAssetMetadata.bind(this),
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
     });
@@ -324,7 +322,6 @@ export class SnapInterfaceController extends BaseController<
 
     const oldState = this.state.interfaces[id].state;
     const newState = constructState(oldState, element, {
-      getAssetMetadata: this.#getAssetMetadata.bind(this),
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
     });
@@ -479,15 +476,13 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Get the asset metadata for a given asset ID.
+   * Get a snap by its id.
    *
-   * @param assetId - The asset ID.
-   * @returns The asset metadata or undefined if not found.
+   * @param id - The snap id.
+   * @returns The snap.
    */
-  #getAssetMetadata(assetId: CaipAssetType) {
-    const { assetsMetadata } = this.#getAssetsState();
-
-    return assetsMetadata[assetId];
+  #getSnap(id: string) {
+    return this.messagingSystem.call('SnapController:get', id);
   }
 
   /**
@@ -506,13 +501,12 @@ export class SnapInterfaceController extends BaseController<
     );
 
     await this.#triggerPhishingListUpdate();
-    validateJsxLinks(
-      element,
-      this.#checkPhishingList.bind(this),
-      (id: string) => this.messagingSystem.call('SnapController:get', id),
-    );
 
-    validateAssetSelector(element, this.#getAccountByAddress.bind(this));
+    validateJsxElements(element, {
+      isOnPhishingList: this.#checkPhishingList.bind(this),
+      getSnap: this.#getSnap.bind(this),
+      getAccountByAddress: this.#getAccountByAddress.bind(this),
+    });
   }
 
   #onNotificationsListUpdated(notificationsList: Notification[]) {
