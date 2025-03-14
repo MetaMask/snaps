@@ -18,9 +18,9 @@ const JEST_COVERAGE_FILE = resolve(
   'coverage-final.json',
 );
 
-const WDIO_COVERAGE_FILE = resolve(
+const VITE_COVERAGE_FILE = resolve(
   COVERAGE_PATH,
-  'wdio',
+  'vite',
   'coverage-final.json',
 );
 
@@ -54,15 +54,16 @@ function generateSummaryReport<Report extends ReportType>(
 }
 
 /**
- * Merge the coverage reports from Jest and WebdriverIO. This checks if the
- * coverage for a given file is higher in WebdriverIO than in Jest. If it is,
- * it replaces the Jest coverage with the WebdriverIO coverage.
+ * Merge the coverage reports from Jest and Vite. This checks if the coverage
+ * for a given file is higher in Vite than in Jest. If it is, it replaces the
+ * Jest coverage with the Vite coverage.
  *
- * This is a workaround for WebdriverIO's coverage reporting having inaccurate
- * line numbers.
+ * This is a workaround for Vite's coverage reporting having inaccurate line
+ * numbers.
  *
  * @returns The summary of the merged coverage.
  */
+// TODO: Check if Vite's coverage is actually inaccurate.
 async function mergeReports() {
   const jestMap = await fs
     .readFile(JEST_COVERAGE_FILE, 'utf8')
@@ -70,7 +71,7 @@ async function mergeReports() {
     .then(createCoverageMap);
 
   const wdioMap = await fs
-    .readFile(WDIO_COVERAGE_FILE, 'utf8')
+    .readFile(VITE_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
     .then(createCoverageMap);
 
