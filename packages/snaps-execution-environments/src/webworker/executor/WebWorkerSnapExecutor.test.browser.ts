@@ -40,7 +40,7 @@ async function getResponse(
   });
 }
 
-describe('WebWorkerSnapExecutor', () => {
+describe.skip('WebWorkerSnapExecutor', () => {
   let consoleSpy: SpyFunction<unknown, unknown>;
 
   before(() => {

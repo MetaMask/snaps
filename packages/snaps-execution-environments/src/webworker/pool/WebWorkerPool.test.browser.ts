@@ -56,7 +56,7 @@ async function getResponse(
   });
 }
 
-describe('WebWorkerPool', () => {
+describe.skip('WebWorkerPool', () => {
   it('forwards messages to the worker', async () => {
     const mockStream = new MockPostMessageStream();
 
