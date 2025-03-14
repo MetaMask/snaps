@@ -2051,7 +2051,7 @@ export class SnapController extends BaseController<
    */
   async getSnapState(snapId: SnapId, encrypted: boolean): Promise<Json> {
     const runtime = this.#getRuntimeExpect(snapId);
-    return await runtime.getStateMutex.runExclusive(() => {
+    return await runtime.getStateMutex.runExclusive(async () => {
       const cachedState = encrypted ? runtime.state : runtime.unencryptedState;
 
       if (cachedState !== undefined) {
@@ -2076,6 +2076,7 @@ export class SnapController extends BaseController<
       }
 
       const decrypted = await this.#decryptSnapState(snapId, state);
+      // eslint-disable-next-line require-atomic-updates
       runtime.state = decrypted;
 
       return decrypted;
