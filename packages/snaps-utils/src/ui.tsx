@@ -430,6 +430,7 @@ export function validateAssetSelector(
  * @param node - The JSX node to walk.
  * @param hooks - The hooks to use for validation.
  * @param hooks.isOnPhishingList - The function that checks the link against the
+ * phishing list.
  * @param hooks.getSnap - The function that returns a snap if installed, undefined otherwise.
  * @param hooks.getAccountByAddress - The function that returns an account by address.
  */
