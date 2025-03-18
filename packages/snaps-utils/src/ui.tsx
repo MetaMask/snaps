@@ -454,7 +454,8 @@ export function validateJsxElements(
         break;
       case 'AssetSelector':
         validateAssetSelector(
-          // We assume that the address part of the CAIP-10 account ID are the same.
+          // We assume that the address part of the CAIP-10 account ID are the same, as
+          // that is already validated in the struct.
           childNode.props.addresses[0],
           getAccountByAddress,
         );
