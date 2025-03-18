@@ -35,11 +35,11 @@ export type ChainId = CaipChainId;
 export type AccountId = CaipAccountId;
 
 /**
- * A struct representing a list of CAIP-10 account IDs where the account addresses and namespaces are the same.
+ * A struct representing a list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
  */
-export const CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
+export const NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
   array(CaipAccountIdStruct),
-  'Matching Addresses Account ID List',
+  'Non-EIP-155 Matching Addresses Account ID List',
   (value) => {
     const parsedAccountIds = value.map((accountId) =>
       parseCaipAccountId(accountId),
@@ -55,31 +55,18 @@ export const CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
       return 'All account IDs must have the same address and namespace.';
     }
 
-    return true;
-  },
-);
-
-/**
- * A struct representing a list of non-EIP-155 CAIP-10 account IDs where the account addresses are the same.
- */
-export const NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
-  CaipAccountIdsMatchedByAddressAndNamespaceStruct,
-  'Non-EIP-155 Matching Addresses Account ID List',
-  (value) => {
-    const containsEip155 = value.some((accountId) => {
-      const {
-        chain: { namespace },
-      } = parseCaipAccountId(accountId);
-
+    const containsEip155 = parsedAccountIds.some(({ chain: { namespace } }) => {
       return namespace === KnownCaipNamespace.Eip155;
     });
 
     if (containsEip155) {
       return 'All account IDs must have non-EIP-155 namespaces.';
     }
+
     return true;
   },
 );
+
 /**
  * A struct representing a non-EIP-155 chain ID.
  */
