@@ -63,60 +63,9 @@
         "process": true
       },
       "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight": true,
-        "vite>postcss>picocolors": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>@babel/highlight>js-tokens": true,
         "vite>postcss>picocolors": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>supports-color": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight>chalk>supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "@babel/core>@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
-      }
-    },
-    "@babel/core>@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
       }
     },
     "@babel/core>@babel/generator": {
@@ -213,8 +162,7 @@
     "@babel/core>@babel/helpers": {
       "packages": {
         "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse": true
+        "@babel/core>@babel/types": true
       }
     },
     "@babel/core>@babel/template": {
@@ -227,11 +175,10 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
+        "process.env": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/core>@babel/types>to-fast-properties": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
@@ -2339,8 +2286,8 @@
         "console.log": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "depcheck>@babel/traverse": true,
+        "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
     "readable-stream": {
