@@ -138,8 +138,10 @@ export function getDefaultAsset(
 
   const accountAssets = accountsAssets[accountId];
 
+  // The Asset component in the UI will be disabled if there is no asset available for the account
+  // and networks provided. In this case, we return null to indicate that there is no default asset.
   if (accountAssets.length === 0) {
-    return undefined;
+    return null;
   }
 
   const nativeAsset = accountAssets.find((asset) => {
@@ -148,16 +150,18 @@ export function getDefaultAsset(
     return filteredChainIds.includes(chainId) && assetNamespace === 'slip44';
   });
 
-  if (!nativeAsset) {
+  if (nativeAsset) {
     return {
-      address: accountAssets[0],
-      ...assetsMetadata[accountAssets[0]],
+      asset: nativeAsset,
+      name: assetsMetadata[nativeAsset].name,
+      symbol: assetsMetadata[nativeAsset].symbol,
     };
   }
 
   return {
-    address: nativeAsset,
-    ...assetsMetadata[nativeAsset],
+    asset: accountAssets[0],
+    name: assetsMetadata[accountAssets[0]].name,
+    symbol: assetsMetadata[accountAssets[0]].symbol,
   };
 }
 
@@ -202,37 +206,15 @@ function constructComponentSpecificDefaultState(
       return false;
 
     case 'AssetSelector':
-      return getAssetSelectorDefaultState(element, elementDataGetters);
+      return getDefaultAsset(
+        element.props.addresses,
+        element.props.chainIds,
+        elementDataGetters,
+      );
 
     default:
       return null;
   }
-}
-
-/**
- * Get the default state for an asset selector.
- *
- * @param element - The asset selector element.
- * @param elementDataGetters - Data getters for the element.
- * @returns The default state for the asset selector or null.
- */
-export function getAssetSelectorDefaultState(
-  element: AssetSelectorElement,
-  elementDataGetters: ElementDataGetters,
-) {
-  const { chainIds, addresses } = element.props;
-
-  const asset = getDefaultAsset(addresses, chainIds, elementDataGetters);
-
-  if (!asset) {
-    return null;
-  }
-
-  return {
-    asset: asset.address,
-    name: asset.name,
-    symbol: asset.symbol,
-  };
 }
 
 /**
