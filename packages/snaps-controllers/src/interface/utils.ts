@@ -138,8 +138,8 @@ export function getDefaultAsset(
 
   const accountAssets = accountsAssets[accountId];
 
-  // The Asset component in the UI will be disabled if there is no asset available for the account
-  // and networks provided. In this case, we return null to indicate that there is no default asset.
+  // The AssetSelector component in the UI will be disabled if there is no asset available for the account
+  // and networks provided. In this case, we return null to indicate that there is no default selected asset.
   if (accountAssets.length === 0) {
     return null;
   }
