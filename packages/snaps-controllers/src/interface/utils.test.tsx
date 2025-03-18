@@ -17,7 +17,6 @@ import {
   SelectorOption,
   AssetSelector,
 } from '@metamask/snaps-sdk/jsx';
-import { MOCK_ACCOUNT_ID } from 'src/test-utils';
 
 import {
   assertNameIsUnique,
@@ -27,6 +26,7 @@ import {
   getDefaultAsset,
   getJsxInterface,
 } from './utils';
+import { MOCK_ACCOUNT_ID } from '../test-utils';
 
 describe('getJsxInterface', () => {
   it('returns the JSX interface for a JSX element', () => {
