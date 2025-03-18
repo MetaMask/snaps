@@ -15,9 +15,17 @@ import {
   Selector,
   Card,
   SelectorOption,
+  AssetSelector,
 } from '@metamask/snaps-sdk/jsx';
 
-import { assertNameIsUnique, constructState, getJsxInterface } from './utils';
+import {
+  assertNameIsUnique,
+  constructState,
+  getAssetSelectorStateValue,
+  getDefaultAsset,
+  getJsxInterface,
+} from './utils';
+import { MOCK_ACCOUNT_ID } from '../test-utils';
 
 describe('getJsxInterface', () => {
   it('returns the JSX interface for a JSX element', () => {
@@ -64,6 +72,11 @@ describe('assertNameIsUnique', () => {
 });
 
 describe('constructState', () => {
+  const elementDataGetters = {
+    getAssetsState: jest.fn(),
+    getAccountByAddress: jest.fn(),
+  };
+
   it('can construct a new component state', () => {
     const element = (
       <Box>
@@ -76,7 +89,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -94,7 +107,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
 
     expect(result).toStrictEqual({ foo: { bar: null } });
   });
@@ -116,7 +129,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({ foo: { bar: 'test', baz: null } });
   });
 
@@ -137,7 +150,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({ form: { bar: 'test', baz: null } });
   });
 
@@ -169,7 +182,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
 
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
@@ -197,7 +210,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
     });
@@ -235,7 +248,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       form1: { bar: 'test', baz: null },
       form2: { bar: 'def', baz: null },
@@ -251,7 +264,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -264,7 +277,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -277,7 +290,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -293,7 +306,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -309,7 +322,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -329,7 +342,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -349,7 +362,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -365,7 +378,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -381,7 +394,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -401,7 +414,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -421,7 +434,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
     });
@@ -434,7 +447,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: true,
     });
@@ -451,7 +464,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: false },
     });
@@ -468,7 +481,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: true },
     });
@@ -488,7 +501,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option1',
     });
@@ -508,7 +521,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'option2',
     });
@@ -532,7 +545,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option1' },
     });
@@ -556,9 +569,250 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
+    });
+  });
+
+  it('sets default value for root level AssetSelector', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
+      },
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: {
+        asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    });
+  });
+
+  it('supports root level AssetSelector', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
+      },
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: {
+        asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    });
+  });
+
+  it('sets default value for AssetSelector in form', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
+      },
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AssetSelector
+              name="foo"
+              addresses={[
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+              ]}
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+    });
+  });
+
+  it('supports AssetSelector in form', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
+      },
+    });
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AssetSelector
+              name="foo"
+              addresses={[
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+              ]}
+              value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105"
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+    });
+  });
+
+  it('sets the value to the default asset if the asset metadata is not found', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+          value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
+  it('sets the value to null if the account has no assets', () => {
+    elementDataGetters.getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    const element = (
+      <Box>
+        <AssetSelector
+          name="foo"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: null,
     });
   });
 
@@ -579,7 +833,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { bar: 'option2' },
     });
@@ -610,7 +864,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { baz: 'option4' },
       form2: { bar: 'option2' },
@@ -624,7 +878,11 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({ foo: null, bar: null }, element);
+    const result = constructState(
+      { foo: null, bar: null },
+      element,
+      elementDataGetters,
+    );
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -641,7 +899,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState(state, element);
+    const result = constructState(state, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'bar',
     });
@@ -654,7 +912,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -672,7 +930,7 @@ describe('constructState', () => {
       </Form>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "foo".`,
     );
   });
@@ -685,7 +943,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
     );
   });
@@ -702,8 +960,221 @@ describe('constructState', () => {
       </Box>
     );
 
-    expect(() => constructState({}, element)).toThrow(
+    expect(() => constructState({}, element, elementDataGetters)).toThrow(
       `Duplicate component names are not allowed, found multiple instances of: "test".`,
+    );
+  });
+});
+
+describe('getAssetSelectorStateValue', () => {
+  const getAssetsState = jest.fn();
+
+  it('returns the asset selector state value', () => {
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getAssetsState,
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Solana',
+      symbol: 'SOL',
+    });
+  });
+
+  it('returns null if the value is not set', () => {
+    expect(getAssetSelectorStateValue(undefined, getAssetsState)).toBeNull();
+  });
+
+  it('returns null if the asset metadata is not found', () => {
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            name: 'USDC',
+            symbol: 'USDC',
+          },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getAssetsState,
+      ),
+    ).toBeNull();
+  });
+});
+
+describe('getDefaultAsset', () => {
+  it('returns the native asset if available', () => {
+    const getAssetsState = jest.fn().mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        ],
+      },
+    });
+
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    expect(
+      getDefaultAsset(
+        [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        undefined,
+        { getAssetsState, getAccountByAddress },
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Solana',
+      symbol: 'SOL',
+    });
+  });
+
+  it('returns the first asset if no native asset is available', () => {
+    const getAssetsState = jest.fn().mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+          {
+            name: 'USDC',
+            symbol: 'USDC',
+          },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+      },
+    });
+
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    expect(
+      getDefaultAsset(
+        [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        undefined,
+        { getAssetsState, getAccountByAddress },
+      ),
+    ).toStrictEqual({
+      asset:
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      name: 'USDC',
+      symbol: 'USDC',
+    });
+  });
+
+  it('returns undefined if no assets are available', () => {
+    const getAssetsState = jest.fn().mockReturnValue({
+      assetsMetadata: {},
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    expect(
+      getDefaultAsset(
+        [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        undefined,
+        { getAssetsState, getAccountByAddress },
+      ),
+    ).toBeNull();
+  });
+
+  it('selects the default asset from the requested network', () => {
+    const getAssetsState = jest.fn().mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          name: 'Solana',
+          symbol: 'SOL',
+        },
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': {
+          name: 'Solana Devnet',
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        ],
+      },
+    });
+
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+    });
+
+    expect(
+      getDefaultAsset(
+        [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        { getAssetsState, getAccountByAddress },
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Solana',
+      symbol: 'SOL',
+    });
+  });
+
+  it('throws if the account is not found', () => {
+    const getAssetsState = jest.fn().mockReturnValue({
+      assetsMetadata: {},
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    expect(() =>
+      getDefaultAsset(
+        [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ],
+        undefined,
+        { getAssetsState, getAccountByAddress },
+      ),
+    ).toThrow(
+      'Account not found for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv.',
     );
   });
 });

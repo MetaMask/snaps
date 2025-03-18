@@ -22,7 +22,7 @@ import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import { text, type SnapId } from '@metamask/snaps-sdk';
+import type { SnapId, text } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -32,6 +32,7 @@ import {
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+  getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
@@ -149,6 +150,8 @@ export const approvalControllerMock = new MockApprovalController();
 export const snapDialogPermissionKey = 'snap_dialog';
 
 export const MOCK_INTERFACE_ID = 'QovlAsV2Z3xLP5hsrVMsz';
+
+export const MOCK_ACCOUNT_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479';
 
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
@@ -781,6 +784,9 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'MultichainAssetsController:getState',
+      'AccountsController:getAccountByAddress',
+      'SnapController:get',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -798,6 +804,36 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       result: false,
       type: 'all',
     }));
+
+    messenger.registerActionHandler(
+      'MultichainAssetsController:getState',
+      () => ({
+        assetsMetadata: {
+          // @ts-expect-error partial mock
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+            name: 'Solana',
+            symbol: 'SOL',
+          },
+        },
+        accountsAssets: {
+          [MOCK_ACCOUNT_ID]: [],
+        },
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:getAccountByAddress',
+      // @ts-expect-error partial mock
+      (address: string) => ({
+        address,
+        id: 'foo',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      }),
+    );
+
+    messenger.registerActionHandler('SnapController:get', (snapId: string) => {
+      return getSnapObject({ id: snapId as SnapId });
+    });
   }
 
   return snapInterfaceControllerMessenger;

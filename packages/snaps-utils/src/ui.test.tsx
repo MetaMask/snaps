@@ -13,6 +13,7 @@ import {
   spinner,
 } from '@metamask/snaps-sdk';
 import {
+  AssetSelector,
   Address,
   Bold,
   Box,
@@ -37,12 +38,13 @@ import {
   hasChildren,
   getJsxElementFromComponent,
   getTextChildren,
-  validateJsxLinks,
   validateTextLinks,
   walkJsx,
   getJsxChildren,
   serialiseJsx,
   validateLink,
+  validateJsxElements,
+  validateAssetSelector,
 } from './ui';
 
 describe('getTextChildren', () => {
@@ -801,7 +803,35 @@ describe('validateTextLinks', () => {
   });
 });
 
-describe('validateJsxLinks', () => {
+describe('validateAssetSelector', () => {
+  it('passes if the address is available in the client', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: 'foo',
+    });
+
+    expect(() =>
+      validateAssetSelector(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        getAccountByAddress,
+      ),
+    ).not.toThrow();
+  });
+
+  it('throws if the address is not available in the client', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    expect(() =>
+      validateAssetSelector(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        getAccountByAddress,
+      ),
+    ).toThrow(
+      `Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv`,
+    );
+  });
+});
+
+describe('validateJsxElements', () => {
   it.each([
     <Link href="mailto:foo@bar.com">Foo</Link>,
     <Text>
@@ -817,7 +847,11 @@ describe('validateJsxLinks', () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
-      validateJsxLinks(element, isOnPhishingList, jest.fn()),
+      validateJsxElements(element, {
+        isOnPhishingList,
+        getSnap: jest.fn(),
+        getAccountByAddress: jest.fn(),
+      }),
     ).not.toThrow();
   });
 
@@ -825,13 +859,16 @@ describe('validateJsxLinks', () => {
     const isOnPhishingList = () => true;
 
     expect(() =>
-      validateJsxLinks(
+      validateJsxElements(
         <Box>
           <Text>Foo</Text>
           <Text>https://foo.bar</Text>
         </Box>,
-        isOnPhishingList,
-        jest.fn(),
+        {
+          isOnPhishingList,
+          getSnap: jest.fn(),
+          getAccountByAddress: jest.fn(),
+        },
       ),
     ).not.toThrow();
   });
@@ -851,7 +888,11 @@ describe('validateJsxLinks', () => {
     const isOnPhishingList = () => true;
 
     expect(() =>
-      validateJsxLinks(element, isOnPhishingList, jest.fn()),
+      validateJsxElements(element, {
+        isOnPhishingList,
+        getSnap: jest.fn(),
+        getAccountByAddress: jest.fn(),
+      }),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
   });
 
@@ -859,11 +900,11 @@ describe('validateJsxLinks', () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
-      validateJsxLinks(
-        <Link href="ftp://foo.bar">Foo</Link>,
+      validateJsxElements(<Link href="ftp://foo.bar">Foo</Link>, {
         isOnPhishingList,
-        jest.fn(),
-      ),
+        getSnap: jest.fn(),
+        getAccountByAddress: jest.fn(),
+      }),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
     );
@@ -873,12 +914,56 @@ describe('validateJsxLinks', () => {
     const isOnPhishingList = () => false;
 
     expect(() =>
-      validateJsxLinks(
-        <Link href="#foo">Foo</Link>,
+      validateJsxElements(<Link href="#foo">Foo</Link>, {
         isOnPhishingList,
-        jest.fn(),
-      ),
+        getSnap: jest.fn(),
+        getAccountByAddress: jest.fn(),
+      }),
     ).toThrow('Invalid URL: Unable to parse URL.');
+  });
+
+  it('passes for a valid AssetSelector', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
+    });
+
+    expect(() =>
+      validateJsxElements(
+        <AssetSelector
+          name="bar"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+        />,
+        {
+          getAccountByAddress,
+          isOnPhishingList: jest.fn(),
+          getSnap: jest.fn(),
+        },
+      ),
+    ).not.toThrow();
+  });
+
+  it('throws for an invalid AssetSelector', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    expect(() =>
+      validateJsxElements(
+        <AssetSelector
+          name="bar"
+          addresses={[
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ]}
+        />,
+        {
+          getAccountByAddress,
+          isOnPhishingList: jest.fn(),
+          getSnap: jest.fn(),
+        },
+      ),
+    ).toThrow(
+      'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+    );
   });
 });
 
