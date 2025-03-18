@@ -1754,6 +1754,13 @@ describe('AssetSelectorStruct', () => {
       addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
       value="eip155:1/slip44:60"
     />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:3PWWwUkCPALDXBcwQBRTYiob2C6xfCm35kzuoJr7ubuw',
+      ]}
+    />,
   ])(`does not validate "%p"`, (value) => {
     expect(is(value, AssetSelectorStruct)).toBe(false);
   });
