@@ -924,7 +924,7 @@ describe('validateJsxElements', () => {
 
   it('passes for a valid AssetSelector', () => {
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479',
     });
 
     expect(() =>

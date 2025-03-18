@@ -17,6 +17,7 @@ import {
   SelectorOption,
   AssetSelector,
 } from '@metamask/snaps-sdk/jsx';
+import { MOCK_ACCOUNT_ID } from 'src/test-utils';
 
 import {
   assertNameIsUnique,
@@ -584,12 +585,14 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
       },
     });
 
     elementDataGetters.getAccountByAddress.mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const element = (
@@ -623,7 +626,9 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
       },
     });
 
@@ -659,12 +664,14 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
       },
     });
 
     elementDataGetters.getAccountByAddress.mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const element = (
@@ -704,7 +711,9 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
+        ],
       },
     });
 
@@ -746,12 +755,12 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
     elementDataGetters.getAccountByAddress.mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const element = (
@@ -782,12 +791,12 @@ describe('constructState', () => {
         },
       },
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
     elementDataGetters.getAccountByAddress.mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const element = (
@@ -970,7 +979,7 @@ describe('getAssetSelectorStateValue', () => {
         },
       },
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
@@ -1000,7 +1009,7 @@ describe('getAssetSelectorStateValue', () => {
           },
       },
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
@@ -1016,7 +1025,7 @@ describe('getAssetSelectorStateValue', () => {
 describe('getAssetSelectorDefaultState', () => {
   it('returns the default asset for an asset selector', () => {
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const getAssetsState = jest.fn().mockReturnValue({
@@ -1027,7 +1036,9 @@ describe('getAssetSelectorDefaultState', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        ],
       },
     });
 
@@ -1050,7 +1061,7 @@ describe('getAssetSelectorDefaultState', () => {
 
   it('returns null if the default asset is not found', () => {
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     const getAssetsState = jest.fn().mockReturnValue({
@@ -1061,7 +1072,7 @@ describe('getAssetSelectorDefaultState', () => {
         },
       },
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
@@ -1089,12 +1100,14 @@ describe('getDefaultAsset', () => {
         },
       },
       accountsAssets: {
-        foo: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+        [MOCK_ACCOUNT_ID]: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        ],
       },
     });
 
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     expect(
@@ -1122,14 +1135,14 @@ describe('getDefaultAsset', () => {
           },
       },
       accountsAssets: {
-        foo: [
+        [MOCK_ACCOUNT_ID]: [
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
         ],
       },
     });
 
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     expect(
@@ -1152,12 +1165,12 @@ describe('getDefaultAsset', () => {
     const getAssetsState = jest.fn().mockReturnValue({
       assetsMetadata: {},
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     expect(
@@ -1184,7 +1197,7 @@ describe('getDefaultAsset', () => {
         },
       },
       accountsAssets: {
-        foo: [
+        [MOCK_ACCOUNT_ID]: [
           'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
         ],
@@ -1192,7 +1205,7 @@ describe('getDefaultAsset', () => {
     });
 
     const getAccountByAddress = jest.fn().mockReturnValue({
-      id: 'foo',
+      id: MOCK_ACCOUNT_ID,
     });
 
     expect(
@@ -1215,7 +1228,7 @@ describe('getDefaultAsset', () => {
     const getAssetsState = jest.fn().mockReturnValue({
       assetsMetadata: {},
       accountsAssets: {
-        foo: [],
+        [MOCK_ACCOUNT_ID]: [],
       },
     });
 

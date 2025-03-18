@@ -151,6 +151,8 @@ export const snapDialogPermissionKey = 'snap_dialog';
 
 export const MOCK_INTERFACE_ID = 'QovlAsV2Z3xLP5hsrVMsz';
 
+export const MOCK_ACCOUNT_ID = 'f47ac10b-58cc-4372-a567-0e02b2c3d479';
+
 export const MOCK_SNAP_SUBJECT_METADATA: SubjectMetadata = {
   origin: MOCK_SNAP_ID,
   subjectType: SubjectType.Snap,
@@ -814,7 +816,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
           },
         },
         accountsAssets: {
-          foo: [],
+          [MOCK_ACCOUNT_ID]: [],
         },
       }),
     );
