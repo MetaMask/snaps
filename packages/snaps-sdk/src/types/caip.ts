@@ -35,7 +35,7 @@ export type ChainId = CaipChainId;
 export type AccountId = CaipAccountId;
 
 /**
- * A stuct representing a list of CAIP-10 account IDs where the account addresses and namespaces are the same.
+ * A struct representing a list of CAIP-10 account IDs where the account addresses and namespaces are the same.
  */
 export const CaipAccountIdsMatchedByAddressAndNamespaceStruct = refine(
   array(CaipAccountIdStruct),
