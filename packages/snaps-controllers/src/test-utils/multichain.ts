@@ -95,7 +95,11 @@ type MockSnapKeyring = {
   ) => Promise<{ address: CaipAccountId } | null>;
 };
 
-type MockOperationCallback = (keyring: MockSnapKeyring) => Promise<Json>;
+type MockOperationCallback = ({
+  keyring,
+}: {
+  keyring: MockSnapKeyring;
+}) => Promise<Json>;
 
 export const getMockWithSnapKeyring = (
   { submitRequest = jest.fn(), resolveAccountAddress = jest.fn() } = {
@@ -105,7 +109,9 @@ export const getMockWithSnapKeyring = (
 ) => {
   return async (callback: MockOperationCallback) =>
     callback({
-      submitRequest,
-      resolveAccountAddress,
+      keyring: {
+        submitRequest,
+        resolveAccountAddress,
+      },
     });
 };

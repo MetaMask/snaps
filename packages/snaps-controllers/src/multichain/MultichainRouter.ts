@@ -72,7 +72,7 @@ type SnapKeyring = {
 
 // Expecting a bound function that calls KeyringController.withKeyring selecting the Snap keyring
 type WithSnapKeyringFunction = <ReturnType>(
-  operation: (keyring: SnapKeyring) => Promise<ReturnType>,
+  operation: ({ keyring }: { keyring: SnapKeyring }) => Promise<ReturnType>,
 ) => Promise<ReturnType>;
 
 export type AccountsControllerListMultichainAccountsAction = {
@@ -165,7 +165,7 @@ export class MultichainRouter {
     request: JsonRpcRequest,
   ) {
     try {
-      const result = await this.#withSnapKeyring(async (keyring) =>
+      const result = await this.#withSnapKeyring(async ({ keyring }) =>
         keyring.resolveAccountAddress(snapId, scope, request),
       );
       const address = result?.address;
@@ -323,7 +323,7 @@ export class MultichainRouter {
     );
 
     if (accountId) {
-      return this.#withSnapKeyring(async (keyring) =>
+      return this.#withSnapKeyring(async ({ keyring }) =>
         keyring.submitRequest({
           account: accountId,
           scope,
