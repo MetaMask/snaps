@@ -354,9 +354,9 @@ describe('SnapInterfaceController', () => {
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
-          { foo: 'a'.repeat(1_000_000) },
+          { foo: 'a'.repeat(5_000_000) },
         ),
-      ).rejects.toThrow('A Snap interface context may not be larger than 1 MB');
+      ).rejects.toThrow('A Snap interface context may not be larger than 5 MB');
     });
 
     it('throws if a link is on the phishing list', async () => {

@@ -396,7 +396,7 @@ export function constructState(
   return newState;
 }
 
-const MAX_CONTEXT_SIZE = 1_000_000; // 1 mb
+const MAX_CONTEXT_SIZE = 5_000_000; // 5 mb
 
 /**
  * Validate a JSON blob to be used as the interface context.
