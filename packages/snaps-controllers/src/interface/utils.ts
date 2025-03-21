@@ -73,6 +73,7 @@ type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
 };
+
 /**
  * Get a JSX element from a component or JSX element. If the component is a
  * JSX element, it is returned as is. Otherwise, the component is converted to
