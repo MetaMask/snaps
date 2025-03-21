@@ -304,7 +304,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: 'eip155:1:0x123',
     });
@@ -317,7 +317,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       foo: null,
     });
@@ -334,7 +334,7 @@ describe('constructState', () => {
       </Box>
     );
 
-    const result = constructState({}, element);
+    const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: null },
     });
