@@ -10,6 +10,7 @@ import type {
   Struct,
   UnionToIntersection,
 } from '@metamask/superstruct';
+import type { CaipChainId } from '@metamask/utils';
 
 import { union } from './structs';
 import type { EmptyObject } from '../types';
@@ -34,11 +35,13 @@ type StructSchema<Type> =
       : [Type] extends [string | undefined | null]
         ? [Type] extends [`0x${string}`]
           ? null
-          : [Type] extends [IsMatch<Type, string | undefined | null>]
+          : [Type] extends [CaipChainId]
             ? null
-            : [Type] extends [IsUnion<Type>]
-              ? EnumSchema<Type>
-              : Type
+            : [Type] extends [IsMatch<Type, string | undefined | null>]
+              ? null
+              : [Type] extends [IsUnion<Type>]
+                ? EnumSchema<Type>
+                : Type
         : [Type] extends [number | undefined | null]
           ? [Type] extends [IsMatch<Type, number | undefined | null>]
             ? null

@@ -21,6 +21,7 @@ import type {
   SelectorElement,
   SelectorOptionElement,
   AssetSelectorElement,
+  AddressInputElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
@@ -35,6 +36,8 @@ import {
   type CaipAccountId,
   parseCaipAccountId,
   parseCaipAssetType,
+  toCaipAccountId,
+  parseCaipChainId,
 } from '@metamask/utils';
 
 /**
@@ -183,7 +186,8 @@ function constructComponentSpecificDefaultState(
     | RadioGroupElement
     | CheckboxElement
     | SelectorElement
-    | AssetSelectorElement,
+    | AssetSelectorElement
+    | AddressInputElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -264,7 +268,8 @@ function getComponentStateValue(
     | RadioGroupElement
     | CheckboxElement
     | SelectorElement
-    | AssetSelectorElement,
+    | AssetSelectorElement
+    | AddressInputElement,
   { getAssetsState }: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -274,6 +279,15 @@ function getComponentStateValue(
     case 'AssetSelector':
       return getAssetSelectorStateValue(element.props.value, getAssetsState);
 
+    case 'AddressInput': {
+      if (!element.props.value) {
+        return null;
+      }
+
+      // Construct CAIP-10 Id
+      const { namespace, reference } = parseCaipChainId(element.props.chainId);
+      return toCaipAccountId(namespace, reference, element.props.value);
+    }
     default:
       return element.props.value;
   }
@@ -297,7 +311,8 @@ function constructInputState(
     | FileInputElement
     | CheckboxElement
     | SelectorElement
-    | AssetSelectorElement,
+    | AssetSelectorElement
+    | AddressInputElement,
   elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
@@ -360,7 +375,8 @@ export function constructState(
         component.type === 'FileInput' ||
         component.type === 'Checkbox' ||
         component.type === 'Selector' ||
-        component.type === 'AssetSelector')
+        component.type === 'AssetSelector' ||
+        component.type === 'AddressInput')
     ) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
@@ -382,7 +398,8 @@ export function constructState(
       component.type === 'FileInput' ||
       component.type === 'Checkbox' ||
       component.type === 'Selector' ||
-      component.type === 'AssetSelector'
+      component.type === 'AssetSelector' ||
+      component.type === 'AddressInput'
     ) {
       assertNameIsUnique(newState, component.props.name);
       newState[component.props.name] = constructInputState(
