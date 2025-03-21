@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@metamask/auto-changelog": "^4.1.0",
-    "@metamask/providers": "^20.0.0",
+    "@metamask/providers": "^21.0.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@swc/core": "1.3.78",
     "@swc/jest": "^0.2.26",
