@@ -25,6 +25,7 @@ import {
   getAssetSelectorStateValue,
   getDefaultAsset,
   getJsxInterface,
+  isStatefulComponent,
 } from './utils';
 import { MOCK_ACCOUNT_ID } from '../test-utils';
 
@@ -1220,5 +1221,15 @@ describe('getDefaultAsset', () => {
     ).toThrow(
       'Account not found for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv.',
     );
+  });
+});
+
+describe('isStatefulComponent', () => {
+  it('returns true for stateful components', () => {
+    expect(isStatefulComponent(<Input name="foo" />)).toBe(true);
+  });
+
+  it('returns false for stateless components', () => {
+    expect(isStatefulComponent(<Text>foo</Text>)).toBe(false);
   });
 });
