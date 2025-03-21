@@ -143,21 +143,6 @@
         "TextEncoder": true
       }
     },
-    "@wdio/mocha-framework>mocha>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true,
-        "os": true,
-        "tty": true
-      }
-    },
     "browserify>browser-pack>safe-buffer": {
       "builtin": {
         "buffer": true
@@ -200,8 +185,8 @@
         "process": true
       },
       "packages": {
-        "@wdio/mocha-framework>mocha>supports-color": true,
         "eslint>debug>ms": true,
+        "jest>@jest/core>jest-runner>jest-worker>supports-color": true,
         "tty": true,
         "util": true
       }
@@ -209,6 +194,21 @@
     "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
+      }
+    },
+    "jest>@jest/core>jest-runner>jest-worker>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "istanbul-lib-report>supports-color>has-flag": true,
+        "os": true,
+        "tty": true
       }
     },
     "readable-stream": {
