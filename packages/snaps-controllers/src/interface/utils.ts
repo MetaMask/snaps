@@ -43,7 +43,7 @@ import {
 /**
  * A list of stateful component types.
  */
-export const STATEFUL_COMPONENT_TYPES = [
+const STATEFUL_COMPONENT_TYPES = [
   'Input',
   'Dropdown',
   'RadioGroup',
