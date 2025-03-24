@@ -41,7 +41,6 @@ import type {
   StringElement,
 } from './component';
 import type {
-  AddressInputElement,
   AssetSelectorElement,
   AvatarElement,
   SkeletonElement,
