@@ -41,6 +41,41 @@ import {
 } from '@metamask/utils';
 
 /**
+ * A list of stateful component types.
+ */
+const STATEFUL_COMPONENT_TYPES = [
+  'Input',
+  'Dropdown',
+  'RadioGroup',
+  'FileInput',
+  'Checkbox',
+  'Selector',
+  'AssetSelector',
+  'AddressInput',
+] as const;
+
+/**
+ * Type for stateful component types.
+ */
+type StatefulComponentType = (typeof STATEFUL_COMPONENT_TYPES)[number];
+
+/**
+ * Check if a component is a stateful component.
+ *
+ * @param component - The component to check.
+ * @param component.type - The type of the component.
+ *
+ * @returns Whether the component is a stateful component.
+ */
+export function isStatefulComponent(component: { type: string }): component is {
+  type: StatefulComponentType;
+} {
+  return STATEFUL_COMPONENT_TYPES.includes(
+    component.type as StatefulComponentType,
+  );
+}
+
+/**
  * A function to get the MultichainAssetController state.
  *
  * @returns The MultichainAssetController state.
@@ -366,18 +401,7 @@ export function constructState(
     }
 
     // Stateful components inside a form
-    // TODO: This is becoming a bit of a mess, we should consider refactoring this.
-    if (
-      currentForm &&
-      (component.type === 'Input' ||
-        component.type === 'Dropdown' ||
-        component.type === 'RadioGroup' ||
-        component.type === 'FileInput' ||
-        component.type === 'Checkbox' ||
-        component.type === 'Selector' ||
-        component.type === 'AssetSelector' ||
-        component.type === 'AddressInput')
-    ) {
+    if (currentForm && isStatefulComponent(component)) {
       const formState = newState[currentForm.name] as FormState;
       assertNameIsUnique(formState, component.props.name);
       formState[component.props.name] = constructInputState(
@@ -390,17 +414,7 @@ export function constructState(
     }
 
     // Stateful components outside a form
-    // TODO: This is becoming a bit of a mess, we should consider refactoring this.
-    if (
-      component.type === 'Input' ||
-      component.type === 'Dropdown' ||
-      component.type === 'RadioGroup' ||
-      component.type === 'FileInput' ||
-      component.type === 'Checkbox' ||
-      component.type === 'Selector' ||
-      component.type === 'AssetSelector' ||
-      component.type === 'AddressInput'
-    ) {
+    if (isStatefulComponent(component)) {
       assertNameIsUnique(newState, component.props.name);
       newState[component.props.name] = constructInputState(
         oldState,
