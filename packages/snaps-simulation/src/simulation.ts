@@ -44,6 +44,7 @@ import {
   getGetEntropySourcesImplementation,
   getGetMnemonicImplementation,
 } from './methods/hooks';
+import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
@@ -107,6 +108,14 @@ export type RestrictedMiddlewareHooks = {
    * @returns The user's secret recovery phrase.
    */
   getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
+
+  /**
+   * A hook that returns the seed derived from the user's secret recovery phrase.
+   *
+   * @param source - The entropy source to get the seed from.
+   * @returns The seed.
+   */
+  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * A hook that returns whether the client is locked or not.
@@ -382,6 +391,9 @@ export function getRestrictedHooks(
 ): RestrictedMiddlewareHooks {
   return {
     getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
+    getMnemonicSeed: getGetMnemonicSeedImplementation(
+      options.secretRecoveryPhrase,
+    ),
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
   };

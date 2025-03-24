@@ -1,4 +1,5 @@
 import type { AddressInputElement } from './AddressInput';
+import type { AssetSelectorElement } from './AssetSelector';
 import type { CheckboxElement } from './Checkbox';
 import type { DropdownElement } from './Dropdown';
 import type { FileInputElement } from './FileInput';
@@ -28,6 +29,7 @@ export type FieldProps = {
     | InputElement
     | CheckboxElement
     | SelectorElement
+    | AssetSelectorElement
     | AddressInputElement;
 };
 

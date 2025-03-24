@@ -1,3 +1,4 @@
+export type * from './account';
 export * from './array';
 export * from './auxiliary-files';
 export * from './base64';

@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download actionlint
         id: download-actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.25
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.7.7
         shell: bash
       - name: Check workflow files
         run: ${{ steps.download-actionlint.outputs.executable }} -color
@@ -121,7 +121,7 @@ jobs:
   re-run:
     name: Re-run failed jobs
     needs: lint-build-test
-    if: failure() && fromJSON(github.run_attempt) < 3 && github.event.pull_request.user.login != 'dependabot[bot]'
+    if: failure() && fromJSON(github.run_attempt) < 3 && github.event.pull_request.user.login != 'dependabot[bot]' && github.event_name != 'merge_group'
     runs-on: ubuntu-latest
     permissions:
       actions: write

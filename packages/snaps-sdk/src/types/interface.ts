@@ -13,7 +13,7 @@ import {
   isObject,
 } from '@metamask/utils';
 
-import { FileStruct } from './handlers';
+import { AssetSelectorStateStruct, FileStruct } from './handlers';
 import { selectiveUnion } from '../internals';
 import type { JSXElement } from '../jsx';
 import { RootJSXElementStruct } from '../jsx';
@@ -28,6 +28,7 @@ import { ComponentStruct } from '../ui';
  */
 
 export const StateStruct = union([
+  AssetSelectorStateStruct,
   FileStruct,
   string(),
   boolean(),

@@ -1,4 +1,4 @@
-import type { Component } from '@metamask/snaps-sdk';
+import type { CaipAccountId, Component } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
@@ -39,6 +39,7 @@ import {
 import { lexer, walkTokens } from 'marked';
 import type { Token, Tokens } from 'marked';
 
+import type { InternalAccount } from './account';
 import type { Snap } from './snaps';
 import { parseMetaMaskUrl } from './url';
 
@@ -406,25 +407,63 @@ export function validateTextLinks(
 }
 
 /**
- * Walk a JSX tree and validate each {@link LinkElement} node against the
- * phishing list.
+ * Validate the asset selector component.
+ *
+ * @param address - The address of the account to pull the assets from.
+ * @param getAccountByAddress - A function to get an account by its address.
+ *
+ * @throws If the asset selector is invalid.
+ */
+export function validateAssetSelector(
+  address: CaipAccountId,
+  getAccountByAddress: (address: CaipAccountId) => InternalAccount | undefined,
+) {
+  const account = getAccountByAddress(address);
+
+  assert(account, `Could not find account for address: ${address}`);
+}
+
+/**
+ * Walk a JSX tree and validate elements.
+ * This function validates Links and AssetSelectors.
  *
  * @param node - The JSX node to walk.
- * @param isOnPhishingList - The function that checks the link against the
+ * @param hooks - The hooks to use for validation.
+ * @param hooks.isOnPhishingList - The function that checks the link against the
  * phishing list.
- * @param getSnap - The function that returns a snap if installed, undefined otherwise.
+ * @param hooks.getSnap - The function that returns a snap if installed, undefined otherwise.
+ * @param hooks.getAccountByAddress - The function that returns an account by address.
  */
-export function validateJsxLinks(
+export function validateJsxElements(
   node: JSXElement,
-  isOnPhishingList: (url: string) => boolean,
-  getSnap: (id: string) => Snap | undefined,
+  {
+    isOnPhishingList,
+    getSnap,
+    getAccountByAddress,
+  }: {
+    isOnPhishingList: (url: string) => boolean;
+    getSnap: (id: string) => Snap | undefined;
+    getAccountByAddress: (
+      address: CaipAccountId,
+    ) => InternalAccount | undefined;
+  },
 ) {
   walkJsx(node, (childNode) => {
-    if (childNode.type !== 'Link') {
-      return;
+    switch (childNode.type) {
+      case 'Link':
+        validateLink(childNode.props.href, isOnPhishingList, getSnap);
+        break;
+      case 'AssetSelector':
+        validateAssetSelector(
+          // We assume that the address part of the CAIP-10 account ID are the same, as
+          // that is already validated in the struct.
+          childNode.props.addresses[0],
+          getAccountByAddress,
+        );
+        break;
+      default:
+        break;
     }
-
-    validateLink(childNode.props.href, isOnPhishingList, getSnap);
   });
 }
 

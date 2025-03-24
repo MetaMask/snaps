@@ -6,6 +6,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
+import type { InternalAccount } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
   CaipAccountId,
@@ -43,19 +44,6 @@ export type MultichainRouterIsSupportedScopeAction = {
   handler: MultichainRouter['isSupportedScope'];
 };
 
-// Since the AccountsController depends on snaps-controllers we manually type this
-type InternalAccount = {
-  id: string;
-  type: string;
-  address: string;
-  options: Record<string, Json>;
-  methods: string[];
-  metadata: {
-    name: string;
-    snap?: { id: SnapId; enabled: boolean; name: string };
-  };
-};
-
 type SnapKeyring = {
   submitRequest: (request: {
     account: string;
@@ -72,7 +60,7 @@ type SnapKeyring = {
 
 // Expecting a bound function that calls KeyringController.withKeyring selecting the Snap keyring
 type WithSnapKeyringFunction = <ReturnType>(
-  operation: (keyring: SnapKeyring) => Promise<ReturnType>,
+  operation: ({ keyring }: { keyring: SnapKeyring }) => Promise<ReturnType>,
 ) => Promise<ReturnType>;
 
 export type AccountsControllerListMultichainAccountsAction = {
@@ -165,7 +153,7 @@ export class MultichainRouter {
     request: JsonRpcRequest,
   ) {
     try {
-      const result = await this.#withSnapKeyring(async (keyring) =>
+      const result = await this.#withSnapKeyring(async ({ keyring }) =>
         keyring.resolveAccountAddress(snapId, scope, request),
       );
       const address = result?.address;
@@ -323,7 +311,7 @@ export class MultichainRouter {
     );
 
     if (accountId) {
-      return this.#withSnapKeyring(async (keyring) =>
+      return this.#withSnapKeyring(async ({ keyring }) =>
         keyring.submitRequest({
           account: accountId,
           scope,

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.14.0]
+
+### Added
+
+- Add support for `getMnemonicSeed` hook required by latest RPC methods ([#3220](https://github.com/MetaMask/snaps/pull/3220))
+
+### Changed
+
+- Bump `express` to `^4.21.2` ([#3196](https://github.com/MetaMask/snaps/pull/3196))
+
 ## [8.13.0]
 
 ### Added
@@ -347,7 +357,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.13.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.0...HEAD
+[8.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.13.0...@metamask/snaps-jest@8.14.0
 [8.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.12.0...@metamask/snaps-jest@8.13.0
 [8.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.11.0...@metamask/snaps-jest@8.12.0
 [8.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.10.0...@metamask/snaps-jest@8.11.0

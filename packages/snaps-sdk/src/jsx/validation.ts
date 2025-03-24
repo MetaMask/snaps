@@ -41,6 +41,8 @@ import type {
   StringElement,
 } from './component';
 import type {
+  AddressInputElement,
+  AssetSelectorElement,
   AvatarElement,
   SkeletonElement,
   AddressElement,
@@ -88,7 +90,12 @@ import {
   svg,
   typedUnion,
 } from '../internals';
-import type { CaipChainId, EmptyObject } from '../types';
+import {
+  NonEip155AssetTypeStruct,
+  NonEip155ChainIdStruct,
+  NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
+  type EmptyObject,
+} from '../types';
 
 /**
  * A struct for the {@link Key} type.
@@ -348,7 +355,7 @@ export const AddressInputStruct: Describe<AddressInputElement> = element(
   'AddressInput',
   {
     name: string(),
-    chainId: CaipChainIdStruct as unknown as Struct<CaipChainId, CaipChainId>,
+    chainId: CaipChainIdStruct,
     value: optional(string()),
     placeholder: optional(string()),
     disabled: optional(boolean()),
@@ -424,6 +431,23 @@ export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
 });
 
 /**
+ * A struct for the {@link AssetSelectorElement} type.
+ */
+export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
+  'AssetSelector',
+  {
+    name: string(),
+    addresses: NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
+    chainIds: optional(array(NonEip155ChainIdStruct)) as unknown as Struct<
+      Infer<typeof NonEip155ChainIdStruct>[] | undefined,
+      null
+    >,
+    value: optional(NonEip155AssetTypeStruct),
+    disabled: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link RadioElement} type.
  */
 export const RadioStruct: Describe<RadioElement> = element('Radio', {
@@ -491,6 +515,7 @@ const BOX_INPUT_BOTH = [
  * A subset of JSX elements that are allowed as single children of the Field component.
  */
 const FIELD_CHILDREN_ARRAY = [
+  AssetSelectorStruct,
   AddressInputStruct,
   InputStruct,
   DropdownStruct,
@@ -499,6 +524,7 @@ const FIELD_CHILDREN_ARRAY = [
   CheckboxStruct,
   SelectorStruct,
 ] as [
+  typeof AssetSelectorStruct,
   typeof AddressInputStruct,
   typeof InputStruct,
   typeof DropdownStruct,
@@ -545,6 +571,7 @@ const FieldChildStruct = selectiveUnion((value) => {
   | InputElement
   | CheckboxElement
   | SelectorElement
+  | AssetSelectorElement
   | AddressInputElement,
   null
 >;
@@ -892,6 +919,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  */
 export const BoxChildStruct = typedUnion([
   AddressStruct,
+  AssetSelectorStruct,
   AddressInputStruct,
   BoldStruct,
   BoxStruct,
@@ -956,6 +984,7 @@ export const RootJSXElementStruct = typedUnion([
  * A struct for the {@link JSXElement} type.
  */
 export const JSXElementStruct: Describe<JSXElement> = typedUnion([
+  AssetSelectorStruct,
   AddressInputStruct,
   ButtonStruct,
   InputStruct,
