@@ -1225,11 +1225,43 @@ describe('getDefaultAsset', () => {
 });
 
 describe('isStatefulComponent', () => {
-  it('returns true for stateful components', () => {
+  it.each([
+    <Input name="foo" />,
+    <Dropdown name="foo">
+      <Option value="option1">Option 1</Option>
+    </Dropdown>,
+    <RadioGroup name="foo">
+      <Radio value="option1">Option 1</Radio>
+    </RadioGroup>,
+    <Checkbox name="foo" />,
+    <Selector name="foo" title="Choose an option">
+      <SelectorOption value="option1">
+        <Text>Option 1</Text>
+      </SelectorOption>
+    </Selector>,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+    />,
+    <FileInput name="foo" />,
+    <AddressInput name="foo" chainId="eip155:1" />,
+  ])('returns true for "%p"', () => {
     expect(isStatefulComponent(<Input name="foo" />)).toBe(true);
   });
 
   it('returns false for stateless components', () => {
     expect(isStatefulComponent(<Text>foo</Text>)).toBe(false);
+  });
+
+  it('returns false for nested stateful components', () => {
+    expect(
+      isStatefulComponent(
+        <Box>
+          <Input name="foo" />
+        </Box>,
+      ),
+    ).toBe(false);
   });
 });

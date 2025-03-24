@@ -69,7 +69,6 @@ type StatefulComponentType = (typeof STATEFUL_COMPONENT_TYPES)[number];
  */
 export function isStatefulComponent(component: { type: string }): component is {
   type: StatefulComponentType;
-  props: Record<string, any>;
 } {
   return STATEFUL_COMPONENT_TYPES.includes(
     component.type as StatefulComponentType,
