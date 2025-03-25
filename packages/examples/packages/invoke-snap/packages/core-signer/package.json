@@ -43,7 +43,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/key-tree": "^10.1.0",
+    "@metamask/key-tree": "^10.1.1",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/utils": "^11.2.0",
     "@noble/curves": "^1.1.0",
