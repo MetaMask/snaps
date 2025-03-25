@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump @metamask/key-tree from 10.0.2 to 10.1.1 ([#3254](https://github.com/MetaMask/snaps/pull/3254), [#3217](https://github.com/MetaMask/snaps/pull/3217))
+- Bump `@metamask/key-tree` from `10.0.2` to `10.1.1` ([#3254](https://github.com/MetaMask/snaps/pull/3254), [#3217](https://github.com/MetaMask/snaps/pull/3217))
 
 ## [9.0.1]
 

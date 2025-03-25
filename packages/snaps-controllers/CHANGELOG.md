@@ -18,8 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Increase Snap interface context size limit slightly ([#3246](https://github.com/MetaMask/snaps/pull/3246))
-- Bump @metamask/key-tree from 10.1.0 to 10.1.1 ([#3254](https://github.com/MetaMask/snaps/pull/3254))
-- Bump nanoid from 3.1.31 to 3.3.9 ([#3228](https://github.com/MetaMask/snaps/pull/3228))
+- Bump `@metamask/key-tree` from `10.1.0` to `10.1.1` ([#3254](https://github.com/MetaMask/snaps/pull/3254))
+- Bump `nanoid` from `3.1.31` to `3.3.9` ([#3228](https://github.com/MetaMask/snaps/pull/3228))
 
 ## [11.0.1]
 
