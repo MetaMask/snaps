@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps-skunkworks.git/pull/3118))
-
 ## [4.2.0]
 
 ### Added
@@ -93,17 +89,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.2.0...HEAD
-[4.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.2...@metamask/snaps-browserify-plugin@4.2.0
-[4.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.1...@metamask/snaps-browserify-plugin@4.1.2
-[4.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.1.0...@metamask/snaps-browserify-plugin@4.1.1
-[4.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.0.1...@metamask/snaps-browserify-plugin@4.1.0
-[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@4.0.0...@metamask/snaps-browserify-plugin@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.3...@metamask/snaps-browserify-plugin@4.0.0
-[3.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.2...@metamask/snaps-browserify-plugin@3.0.3
-[3.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.1...@metamask/snaps-browserify-plugin@3.0.2
-[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@3.0.0...@metamask/snaps-browserify-plugin@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@2.0.0...@metamask/snaps-browserify-plugin@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@0.37.3-flask.1...@metamask/snaps-browserify-plugin@2.0.0
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-browserify-plugin@0.37.2-flask.1...@metamask/snaps-browserify-plugin@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-browserify-plugin@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.2.0...HEAD
+[4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.1.2...@metamask/snaps-browserify-plugin@4.2.0
+[4.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.1.1...@metamask/snaps-browserify-plugin@4.1.2
+[4.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.1.0...@metamask/snaps-browserify-plugin@4.1.1
+[4.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.0.1...@metamask/snaps-browserify-plugin@4.1.0
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@4.0.0...@metamask/snaps-browserify-plugin@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.3...@metamask/snaps-browserify-plugin@4.0.0
+[3.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.2...@metamask/snaps-browserify-plugin@3.0.3
+[3.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.1...@metamask/snaps-browserify-plugin@3.0.2
+[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@3.0.0...@metamask/snaps-browserify-plugin@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@2.0.0...@metamask/snaps-browserify-plugin@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@0.37.3-flask.1...@metamask/snaps-browserify-plugin@2.0.0
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-browserify-plugin@0.37.2-flask.1...@metamask/snaps-browserify-plugin@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-browserify-plugin@0.37.2-flask.1

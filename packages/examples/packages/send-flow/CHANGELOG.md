@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Uncategorized
 
 - Update send flow snap to use new `AddressInput` component ([#3167](https://github.com/MetaMask/snaps-skunkworks.git/pull/3167))
@@ -31,5 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of the `@metamask/send-flow-example-snap` example.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/send-flow-example-snap@1.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/send-flow-example-snap@1.1.0...HEAD
+[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/send-flow-example-snap@1.0.0...@metamask/send-flow-example-snap@1.1.0
 [1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/send-flow-example-snap@1.0.0

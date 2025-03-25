@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.20.0]
+
 ### Uncategorized
 
 - chore(deps): bump @metamask/key-tree from 10.1.0 to 10.1.1 ([#3254](https://github.com/MetaMask/snaps-skunkworks.git/pull/3254))
@@ -522,7 +524,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.20.0...HEAD
+[6.20.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
 [6.19.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0
 [6.18.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.17.1...@metamask/snaps-sdk@6.18.0
 [6.17.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.17.0...@metamask/snaps-sdk@6.17.1
