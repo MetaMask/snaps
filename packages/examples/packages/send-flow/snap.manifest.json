@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "MetaMask example snap demonstrating a send flow with UI components.",
   "proposedName": "Send flow Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "K4N1OVwbY1dfSZpc4QvAWprZVI0FQSR8KB5NZoOXPFY=",
+    "shasum": "wE+wX6shyn8Q1Tu8SrUCOdSjARmQrq2jbCKiRqFz5EY=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -23,6 +23,6 @@
     "snap_dialog": {},
     "endowment:page-home": {}
   },
-  "platformVersion": "6.19.0",
+  "platformVersion": "6.20.0",
   "manifestVersion": "0.1"
 }
