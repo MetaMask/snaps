@@ -1800,6 +1800,23 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Check if a given Snap has a cached encryption key stored in the runtime.
+   *
+   * @param snapId - The Snap ID.
+   * @param runtime - The Snap runtime data.
+   * @returns True if the Snap has a cached encryption key, otherwise false.
+   */
+  #hasCachedEncryptionKey(
+    snapId: SnapId,
+    runtime = this.#getRuntimeExpect(snapId),
+  ): runtime is SnapRuntimeData & {
+    encryptionKey: string;
+    encryptionSalt: string;
+  } {
+    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
+  }
+
+  /**
    * Generate an encryption key to be used for state encryption for a given Snap.
    *
    * @param options - An options bag.
@@ -1822,7 +1839,7 @@ export class SnapController extends BaseController<
   }): Promise<{ key: unknown; salt: string }> {
     const runtime = this.#getRuntimeExpect(snapId);
 
-    if (runtime.encryptionKey && runtime.encryptionSalt && useCache) {
+    if (this.#hasCachedEncryptionKey(snapId, runtime) && useCache) {
       return {
         key: await this.#encryptor.importKey(runtime.encryptionKey),
         salt: runtime.encryptionSalt,
@@ -1852,17 +1869,6 @@ export class SnapController extends BaseController<
       runtime.encryptionSalt = salt;
     }
     return { key: encryptionKey, salt };
-  }
-
-  /**
-   * Check if a given Snap has a cached encryption key stored in the runtime.
-   *
-   * @param snapId - The Snap ID.
-   * @returns True if the Snap has a cached encryption key, otherwise false.
-   */
-  #hasCachedEncryptionKey(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
   }
 
   /**

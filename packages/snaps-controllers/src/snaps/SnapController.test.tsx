@@ -9736,9 +9736,26 @@ describe('SnapController', () => {
       expect(encryptWithKey).not.toHaveBeenCalled();
 
       jest.advanceTimersByTime(5_000);
-
       await promise;
+
       expect(encryptWithKey).toHaveBeenCalledTimes(1);
+
+      const nextStateChange = waitForStateChange(messenger);
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { qux: 'quux' },
+        true,
+      );
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual({ qux: 'quux' });
+
+      jest.advanceTimersByTime(5_000);
+      await nextStateChange;
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(2);
 
       snapController.destroy();
     });
