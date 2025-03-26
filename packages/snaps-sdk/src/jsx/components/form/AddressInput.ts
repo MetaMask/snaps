@@ -8,7 +8,7 @@ export type AddressInputProps = {
   chainId: CaipChainId;
   placeholder?: string | undefined;
   disabled?: boolean | undefined;
-  displayAvatar?: boolean | undefined;
+  displayName?: string | undefined;
 };
 
 const TYPE = 'AddressInput';
@@ -22,7 +22,7 @@ const TYPE = 'AddressInput';
  * @param props.chainId - The CAIP-2 chain ID of the address.
  * @param props.placeholder - The placeholder text of the input field.
  * @param props.disabled - Whether the input field is disabled.
- * @param props.displayAvatar - Whether to display the avatar of the address.
+ * @param props.displayName - The display name of the address.
  * @returns An input element.
  * @example
  * <AddressInput name="address" value="0x1234567890123456789012345678901234567890" chainId="eip155:1" />
