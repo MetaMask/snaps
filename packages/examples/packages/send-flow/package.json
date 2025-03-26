@@ -45,7 +45,6 @@
   "dependencies": {
     "@metamask/rpc-errors": "^7.0.2",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/superstruct": "^3.1.0",
     "@metamask/utils": "^11.2.0"
   },
   "devDependencies": {
