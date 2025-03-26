@@ -22,14 +22,14 @@ import type { Account, SendFormErrors } from '../types';
  * @property accounts - The available accounts.
  * @property errors - The form errors.
  * @property selectedCurrency - The selected currency to display.
- * @property displayName - The display name of the address.
+ * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFormProps = {
   selectedAccount: string;
   accounts: Account[];
   errors?: SendFormErrors;
   selectedCurrency: 'BTC' | '$';
-  displayName?: string | undefined;
+  displayAvatar?: boolean | undefined;
 };
 
 /**
@@ -40,7 +40,7 @@ export type SendFormProps = {
  * @param props.accounts - The available accounts.
  * @param props.errors - The form errors.
  * @param props.selectedCurrency - The selected currency to display.
- * @param props.displayName - The display name of the address.
+ * @param props.displayAvatar - Whether to display the avatar of the address.
  * @returns The SendForm component.
  */
 export const SendForm: SnapComponent<SendFormProps> = ({
@@ -48,7 +48,7 @@ export const SendForm: SnapComponent<SendFormProps> = ({
   accounts,
   errors,
   selectedCurrency,
-  displayName,
+  displayAvatar,
 }) => (
   <Form name="sendForm">
     <AccountSelector selectedAccount={selectedAccount} accounts={accounts} />
@@ -69,7 +69,7 @@ export const SendForm: SnapComponent<SendFormProps> = ({
         name="to"
         chainId="eip155:0"
         placeholder="Enter receiving address"
-        displayName={displayName}
+        displayAvatar={displayAvatar}
       />
     </Field>
   </Form>

@@ -16,7 +16,7 @@ import type { Account, Currency } from '../types';
  * @property total - The total cost of the transaction.
  * @property fees - The fees for the transaction.
  * @property errors - The form errors.
- * @property displayName - The display name of the address.
+ * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFlowProps = {
   accounts: Account[];
@@ -28,7 +28,7 @@ export type SendFlowProps = {
     amount?: string;
     to?: string;
   };
-  displayName?: string | undefined;
+  displayAvatar?: boolean | undefined;
 };
 
 /**
@@ -41,7 +41,7 @@ export type SendFlowProps = {
  * @param props.total - The total cost of the transaction.
  * @param props.errors - The form errors.
  * @param props.fees - The fees for the transaction.
- * @param props.displayName - The display name of the address.
+ * @param props.displayAvatar - Whether to display the avatar of the address.
  * @returns The SendFlow component.
  */
 export const SendFlow: SnapComponent<SendFlowProps> = ({
@@ -51,7 +51,7 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
   total,
   fees,
   errors,
-  displayName,
+  displayAvatar,
 }) => {
   return (
     <Container>
@@ -62,7 +62,7 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
           accounts={accounts}
           selectedCurrency={selectedCurrency}
           errors={errors}
-          displayName={displayName}
+          displayAvatar={displayAvatar}
         />
         <TransactionSummary fees={fees} total={total} />
       </Box>

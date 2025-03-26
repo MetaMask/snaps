@@ -224,7 +224,7 @@ describe('AddressInputStruct', () => {
     <AddressInput
       name="address"
       chainId="eip155:1"
-      displayName="foo"
+      displayAvatar={true}
       value="0x1234567890abcdef1234567890abcdef12345678"
     />,
   ])('validates an address input element', (value) => {
@@ -252,7 +252,7 @@ describe('AddressInputStruct', () => {
       name="foo"
       chainId="eip155:1"
       // @ts-expect-error - Invalid props.
-      displayName={123}
+      displayAvatar={123}
       value="0x1234567890abcdef1234567890abcdef12345678"
     />,
   ])('does not validate "%p"', (value) => {

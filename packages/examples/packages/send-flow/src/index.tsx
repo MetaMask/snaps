@@ -99,27 +99,26 @@ export const onUserInput: OnUserInputHandler = async ({
     switch (event.name) {
       case 'amount':
       case 'to': {
-        await snap.request({
-          method: 'snap_updateInterface',
-          params: {
-            id,
-            ui: (
-              <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
-                total={total}
-                fees={fees}
-                errors={formErrors}
-                displayName={
-                  event.value === '0x0000000000000000000000000000000000000000'
-                    ? 'Zero Address'
-                    : undefined
-                }
-              />
-            ),
-          },
-        });
+        // For testing purposes, we display the avatar of the zero address.
+        if (event.value === '0x0000000000000000000000000000000000000000') {
+          await snap.request({
+            method: 'snap_updateInterface',
+            params: {
+              id,
+              ui: (
+                <SendFlow
+                  accounts={accountsArray}
+                  selectedAccount={sendForm.accountSelector}
+                  selectedCurrency={selectedCurrency}
+                  total={total}
+                  fees={fees}
+                  errors={formErrors}
+                  displayAvatar={true}
+                />
+              ),
+            },
+          });
+        }
         break;
       }
       case 'accountSelector': {

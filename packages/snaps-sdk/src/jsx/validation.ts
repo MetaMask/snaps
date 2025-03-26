@@ -358,7 +358,7 @@ export const AddressInputStruct: Describe<AddressInputElement> = element(
     value: optional(string()),
     placeholder: optional(string()),
     disabled: optional(boolean()),
-    displayName: optional(string()),
+    displayAvatar: optional(boolean()),
   },
 );
 
