@@ -102,25 +102,23 @@ export const onUserInput: OnUserInputHandler = async ({
       case 'amount':
       case 'to': {
         // For testing purposes, we display the avatar if the address is a valid hex checksum address.
-        if (is(event.value, HexChecksumAddressStruct)) {
-          await snap.request({
-            method: 'snap_updateInterface',
-            params: {
-              id,
-              ui: (
-                <SendFlow
-                  accounts={accountsArray}
-                  selectedAccount={sendForm.accountSelector}
-                  selectedCurrency={selectedCurrency}
-                  total={total}
-                  fees={fees}
-                  errors={formErrors}
-                  displayAvatar={true}
-                />
-              ),
-            },
-          });
-        }
+        await snap.request({
+          method: 'snap_updateInterface',
+          params: {
+            id,
+            ui: (
+              <SendFlow
+                accounts={accountsArray}
+                selectedAccount={sendForm.accountSelector}
+                selectedCurrency={selectedCurrency}
+                total={total}
+                fees={fees}
+                errors={formErrors}
+                displayAvatar={is(event.value, HexChecksumAddressStruct)}
+              />
+            ),
+          },
+        });
         break;
       }
       case 'accountSelector': {
