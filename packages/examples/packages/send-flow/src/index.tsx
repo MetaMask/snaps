@@ -5,6 +5,8 @@ import type {
   OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 import { UserInputEventType } from '@metamask/snaps-sdk';
+import { is } from '@metamask/superstruct';
+import { HexChecksumAddressStruct } from '@metamask/utils';
 
 import { SendFlow } from './components';
 import { accountsArray, accounts } from './data';
@@ -99,8 +101,8 @@ export const onUserInput: OnUserInputHandler = async ({
     switch (event.name) {
       case 'amount':
       case 'to': {
-        // For testing purposes, we display the avatar of the zero address.
-        if (event.value === '0x0000000000000000000000000000000000000000') {
+        // For testing purposes, we display the avatar if the address is a valid hex checksum address.
+        if (is(event.value, HexChecksumAddressStruct)) {
           await snap.request({
             method: 'snap_updateInterface',
             params: {
