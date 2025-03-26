@@ -1,3 +1,11 @@
+import type { Hex } from '@metamask/utils';
+import {
+  isStrictHexString,
+  isCaipAccountId,
+  parseCaipAccountId,
+  isValidHexAddress,
+} from '@metamask/utils';
+
 import { SendFlow } from './components';
 import type {
   Account,
@@ -87,4 +95,19 @@ export function truncate(str: string, length: number): string {
   return str.length > length
     ? `${str.slice(0, 5)}...${str.slice(str.length - 5, str.length)}`
     : str;
+}
+
+/**
+ * Check if a string is a valid hex address.
+ *
+ * @param value - The value to check.
+ * @returns Whether the value is a valid hex address.
+ */
+export function isCaipHexAddress(value: unknown): value is Hex {
+  if (isCaipAccountId(value)) {
+    const { address } = parseCaipAccountId(value);
+    return isStrictHexString(address) && isValidHexAddress(address);
+  }
+
+  return false;
 }
