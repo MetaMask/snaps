@@ -134,6 +134,7 @@ import { gt } from 'semver';
 import {
   ALLOWED_PERMISSIONS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+  STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -2000,7 +2001,7 @@ export class SnapController extends BaseController<
         })
         .catch(logError);
     },
-    5_000,
+    STATE_DEBOUNCE_TIMEOUT,
   );
 
   /**

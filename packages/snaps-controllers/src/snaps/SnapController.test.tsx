@@ -71,7 +71,10 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 import { inc } from 'semver';
 
-import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
+import {
+  LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+  STATE_DEBOUNCE_TIMEOUT,
+} from './constants';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
@@ -9324,7 +9327,7 @@ describe('SnapController', () => {
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       const result = await messenger.call(
@@ -9376,7 +9379,7 @@ describe('SnapController', () => {
         true,
       );
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       const encryptedState1 = await encrypt(
@@ -9605,7 +9608,7 @@ describe('SnapController', () => {
         true,
       );
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
@@ -9641,7 +9644,7 @@ describe('SnapController', () => {
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(
@@ -9682,7 +9685,7 @@ describe('SnapController', () => {
         true,
       );
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(hmacSha512).toHaveBeenCalledTimes(10);
@@ -9735,7 +9738,7 @@ describe('SnapController', () => {
 
       expect(encryptWithKey).not.toHaveBeenCalled();
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(encryptWithKey).toHaveBeenCalledTimes(1);
@@ -9752,7 +9755,7 @@ describe('SnapController', () => {
         await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
       ).toStrictEqual({ qux: 'quux' });
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await nextStateChange;
 
       expect(encryptWithKey).toHaveBeenCalledTimes(2);
@@ -9788,7 +9791,7 @@ describe('SnapController', () => {
         true,
       );
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(error).toHaveBeenCalledWith(errorValue);
@@ -9894,7 +9897,7 @@ describe('SnapController', () => {
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
-      jest.advanceTimersByTime(5_000);
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(error).toHaveBeenCalledWith(errorValue);
