@@ -190,8 +190,13 @@ jobs:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Install Google Chrome
         if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
-        run: yarn install-chrome
-      - run: yarn workspace ${{ matrix.package-name }} run test
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn install-chrome
+      - name: Run tests
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn workspace ${{ matrix.package-name }} run test
       - name: Get coverage folder
         id: get-coverage-folder
         run: |
@@ -260,8 +265,10 @@ jobs:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Build snap
         run: yarn workspace ${{ matrix.package-name }} run build
-      - name: Run E2E test
-        run: yarn workspace ${{ matrix.package-name }} run test
+      - name: Run E2E tests
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn workspace ${{ matrix.package-name }} run test:e2e
       - name: Require clean working directory
         shell: bash
         run: |
@@ -282,5 +289,9 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
-      - run: yarn build:ci
-      - run: yarn workspace @metamask/snaps-cli run test
+      - name: Build dependencies
+        run: yarn build:ci
+      - name: Run tests
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn workspace @metamask/snaps-cli run test

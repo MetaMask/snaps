@@ -117,17 +117,3 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
-
-  re-run:
-    name: Re-run failed jobs
-    needs: lint-build-test
-    if: failure() && fromJSON(github.run_attempt) < 3 && github.event.pull_request.user.login != 'dependabot[bot]' && github.event_name != 'merge_group'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-    steps:
-      - env:
-          GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
-          GH_DEBUG: api
-        run: gh workflow run re-run.yml -F run-id=${{ github.run_id }}
