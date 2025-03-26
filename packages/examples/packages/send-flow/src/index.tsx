@@ -3,10 +3,11 @@ import type {
   OnHomePageHandler,
   OnUserInputHandler,
   OnRpcRequestHandler,
+  CaipAccountId,
 } from '@metamask/snaps-sdk';
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import { is } from '@metamask/superstruct';
-import { HexChecksumAddressStruct } from '@metamask/utils';
+import { HexChecksumAddressStruct, parseCaipAccountId } from '@metamask/utils';
 
 import { SendFlow } from './components';
 import { accountsArray, accounts } from './data';
@@ -102,6 +103,14 @@ export const onUserInput: OnUserInputHandler = async ({
       case 'amount':
       case 'to': {
         // For testing purposes, we display the avatar if the address is a valid hex checksum address.
+        let parsedAddress;
+        try {
+          parsedAddress = parseCaipAccountId(
+            event.value as CaipAccountId,
+          ).address;
+        } catch {
+          /** noop */
+        }
         await snap.request({
           method: 'snap_updateInterface',
           params: {
@@ -114,7 +123,7 @@ export const onUserInput: OnUserInputHandler = async ({
                 total={total}
                 fees={fees}
                 errors={formErrors}
-                displayAvatar={is(event.value, HexChecksumAddressStruct)}
+                displayAvatar={is(parsedAddress, HexChecksumAddressStruct)}
               />
             ),
           },
