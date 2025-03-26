@@ -268,7 +268,7 @@ jobs:
       - name: Run E2E tests
         uses: MetaMask/action-retry-command@v1
         with:
-          command: yarn workspace ${{ matrix.package-name }} run test:e2e
+          command: yarn workspace ${{ matrix.package-name }} run test
       - name: Require clean working directory
         shell: bash
         run: |
