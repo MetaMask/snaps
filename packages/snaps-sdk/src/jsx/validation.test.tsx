@@ -221,6 +221,12 @@ describe('AddressInputStruct', () => {
     />,
     <AddressInput name="address" chainId="eip155:1" placeholder="foo" />,
     <AddressInput name="address" chainId="eip155:1" disabled={true} />,
+    <AddressInput
+      name="address"
+      chainId="eip155:1"
+      displayAvatar={true}
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
   ])('validates an address input element', (value) => {
     expect(is(value, AddressInputStruct)).toBe(true);
   });
@@ -242,6 +248,13 @@ describe('AddressInputStruct', () => {
     <AddressInput name="foo" chainId="eip155:1" placeholder={32} />,
     // @ts-expect-error - Invalid props.
     <AddressInput name="foo" chainId="eip155:1" disabled="bar" />,
+    <AddressInput
+      name="foo"
+      chainId="eip155:1"
+      // @ts-expect-error - Invalid props.
+      displayAvatar={123}
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
   ])('does not validate "%p"', (value) => {
     expect(is(value, AddressInputStruct)).toBe(false);
   });

@@ -15,8 +15,8 @@ import type { Account, Currency } from '../types';
  * @property selectedCurrency - The selected currency to display.
  * @property total - The total cost of the transaction.
  * @property fees - The fees for the transaction.
- * @property flushToAddress - Whether to flush the address field or not.
  * @property errors - The form errors.
+ * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFlowProps = {
   accounts: Account[];
@@ -24,11 +24,11 @@ export type SendFlowProps = {
   selectedCurrency: 'BTC' | '$';
   total: Currency;
   fees: Currency;
-  flushToAddress?: boolean;
   errors?: {
     amount?: string;
     to?: string;
   };
+  displayAvatar?: boolean | undefined;
 };
 
 /**
@@ -41,7 +41,7 @@ export type SendFlowProps = {
  * @param props.total - The total cost of the transaction.
  * @param props.errors - The form errors.
  * @param props.fees - The fees for the transaction.
- * @param props.flushToAddress - Whether to flush the address field or not.
+ * @param props.displayAvatar - Whether to display the avatar of the address.
  * @returns The SendFlow component.
  */
 export const SendFlow: SnapComponent<SendFlowProps> = ({
@@ -50,8 +50,8 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
   selectedCurrency,
   total,
   fees,
-  flushToAddress,
   errors,
+  displayAvatar,
 }) => {
   return (
     <Container>
@@ -61,8 +61,8 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
           selectedAccount={selectedAccount}
           accounts={accounts}
           selectedCurrency={selectedCurrency}
-          flushToAddress={flushToAddress}
           errors={errors}
+          displayAvatar={displayAvatar}
         />
         <TransactionSummary fees={fees} total={total} />
       </Box>

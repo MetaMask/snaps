@@ -5,6 +5,8 @@ import type {
   OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 import { UserInputEventType } from '@metamask/snaps-sdk';
+import { is } from '@metamask/superstruct';
+import { HexChecksumAddressStruct } from '@metamask/utils';
 
 import { SendFlow } from './components';
 import { accountsArray, accounts } from './data';
@@ -98,7 +100,27 @@ export const onUserInput: OnUserInputHandler = async ({
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
-      case 'to':
+      case 'to': {
+        // For testing purposes, we display the avatar if the address is a valid hex checksum address.
+        await snap.request({
+          method: 'snap_updateInterface',
+          params: {
+            id,
+            ui: (
+              <SendFlow
+                accounts={accountsArray}
+                selectedAccount={sendForm.accountSelector}
+                selectedCurrency={selectedCurrency}
+                total={total}
+                fees={fees}
+                errors={formErrors}
+                displayAvatar={is(event.value, HexChecksumAddressStruct)}
+              />
+            ),
+          },
+        });
+        break;
+      }
       case 'accountSelector': {
         await snap.request({
           method: 'snap_updateInterface',
@@ -119,30 +141,6 @@ export const onUserInput: OnUserInputHandler = async ({
 
         break;
       }
-      default:
-        break;
-    }
-  } else if (event.type === UserInputEventType.ButtonClickEvent) {
-    switch (event.name) {
-      case 'clear':
-        await snap.request({
-          method: 'snap_updateInterface',
-          params: {
-            id,
-            ui: (
-              <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
-                total={total}
-                fees={fees}
-                flushToAddress={true}
-                errors={formErrors}
-              />
-            ),
-          },
-        });
-        break;
       default:
         break;
     }
