@@ -167,6 +167,7 @@ import type {
   KeyDerivationOptions,
 } from '../types';
 import {
+  debounce,
   fetchSnap,
   hasTimedOut,
   permissionsDiff,
@@ -1966,30 +1967,35 @@ export class SnapController extends BaseController<
    * @param encrypted - A flag to indicate whether to use encrypted storage or
    * not.
    */
-  async #persistSnapState(
-    snapId: SnapId,
-    newSnapState: Record<string, Json> | null,
-    encrypted: boolean,
-  ) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    await runtime.stateMutex.runExclusive(async () => {
-      const newState = await this.#getStateToPersist(
-        snapId,
-        newSnapState,
-        encrypted,
-      );
+  readonly #persistSnapState = debounce(
+    (
+      snapId: SnapId,
+      newSnapState: Record<string, Json> | null,
+      encrypted: boolean,
+    ) => {
+      const runtime = this.#getRuntimeExpect(snapId);
+      runtime.stateMutex
+        .runExclusive(async () => {
+          const newState = await this.#getStateToPersist(
+            snapId,
+            newSnapState,
+            encrypted,
+          );
 
-      if (encrypted) {
-        return this.update((state) => {
-          state.snapStates[snapId] = newState;
-        });
-      }
+          if (encrypted) {
+            return this.update((state) => {
+              state.snapStates[snapId] = newState;
+            });
+          }
 
-      return this.update((state) => {
-        state.unencryptedSnapStates[snapId] = newState;
-      });
-    });
-  }
+          return this.update((state) => {
+            state.unencryptedSnapStates[snapId] = newState;
+          });
+        })
+        .catch(logError);
+    },
+    5_000,
+  );
 
   /**
    * Updates the own state of the snap with the given id.
@@ -2012,11 +2018,7 @@ export class SnapController extends BaseController<
       runtime.unencryptedState = newSnapState;
     }
 
-    // This is intentionally run asynchronously to avoid blocking the main
-    // thread.
-    this.#persistSnapState(snapId, newSnapState, encrypted).catch((error) => {
-      logError(error);
-    });
+    this.#persistSnapState(snapId, newSnapState, encrypted);
   }
 
   /**
@@ -2034,11 +2036,7 @@ export class SnapController extends BaseController<
       runtime.unencryptedState = null;
     }
 
-    // This is intentionally run asynchronously to avoid blocking the main
-    // thread.
-    this.#persistSnapState(snapId, null, encrypted).catch((error) => {
-      logError(error);
-    });
+    this.#persistSnapState(snapId, null, encrypted);
   }
 
   /**

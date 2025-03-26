@@ -13,7 +13,7 @@ import {
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_DIALOG_PERMISSION,
 } from './test-utils';
-import { getSnapFiles, permissionsDiff, setDiff } from './utils';
+import { debounce, getSnapFiles, permissionsDiff, setDiff } from './utils';
 import { SnapEndowments } from '../../snaps-rpc-methods/src/endowments';
 
 describe('setDiff', () => {
@@ -178,5 +178,32 @@ describe('getSnapFiles', () => {
         value: 'bar',
       }),
     ]);
+  });
+});
+
+describe('debounce', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it('debounces a function based on a key', () => {
+    const fn = jest.fn();
+    const debounced = debounce(fn, 100);
+
+    expect(debounced('foo')).toBeUndefined();
+    expect(debounced('foo')).toBeUndefined();
+    expect(debounced('bar')).toBeUndefined();
+    expect(debounced('bar')).toBeUndefined();
+
+    expect(fn).toHaveBeenCalledTimes(0);
+
+    jest.advanceTimersByTime(100);
+    expect(fn).toHaveBeenCalledTimes(2);
+    expect(fn).toHaveBeenNthCalledWith(1, 'foo');
+    expect(fn).toHaveBeenNthCalledWith(2, 'bar');
   });
 });
