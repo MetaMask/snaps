@@ -97,7 +97,9 @@ jobs:
   all-jobs-complete:
     name: All jobs complete
     runs-on: ubuntu-latest
-    needs: lint-build-test
+    needs:
+      - analyse-code
+      - lint-build-test
     outputs:
       passed: ${{ steps.set-output.outputs.passed }}
     steps:
