@@ -84,12 +84,7 @@
     "@metamask/base-controller": "^8.0.1",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
-<<<<<<< HEAD
     "@metamask/key-tree": "^10.1.1",
-=======
-    "@metamask/key-tree": "^10.0.2",
-    "@metamask/keyring-internal-api": "^4.0.1",
->>>>>>> 6d5e7b45 (move `keyring-internal-api` to regular deps)
     "@metamask/object-multiplex": "^2.1.0",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/phishing-controller": "^12.5.0",
