@@ -7,37 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Release 96.0.0 ([#3256](https://github.com/MetaMask/snaps-skunkworks.git/pull/3256))
-- chore(deps): bump @metamask/key-tree from 10.1.0 to 10.1.1 ([#3254](https://github.com/MetaMask/snaps-skunkworks.git/pull/3254))
-- perf!: Use mnemonic seed for state persistence key derivation ([#3217](https://github.com/MetaMask/snaps-skunkworks.git/pull/3217))
-- Release 91.0.0 ([#3185](https://github.com/MetaMask/snaps-skunkworks.git/pull/3185))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps-skunkworks.git/pull/3118))
-- Release 90.0.0 ([#3123](https://github.com/MetaMask/snaps-skunkworks.git/pull/3123))
-- chore(deps): bump @metamask/utils from 11.1.0 to 11.2.0 ([#3091](https://github.com/MetaMask/snaps-skunkworks.git/pull/3091))
-- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps-skunkworks.git/pull/3050))
-- Release 88.0.0 ([#3061](https://github.com/MetaMask/snaps-skunkworks.git/pull/3061))
-- Release 87.0.0 ([#3055](https://github.com/MetaMask/snaps-skunkworks.git/pull/3055))
-- Release 85.0.0 ([#3038](https://github.com/MetaMask/snaps-skunkworks.git/pull/3038))
-- Release 82.0.0 ([#3012](https://github.com/MetaMask/snaps-skunkworks.git/pull/3012))
-- Bump MetaMask dependencies ([#2946](https://github.com/MetaMask/snaps-skunkworks.git/pull/2946))
-- chore(deps): bump @metamask/rpc-errors from 7.0.1 to 7.0.2 ([#2989](https://github.com/MetaMask/snaps-skunkworks.git/pull/2989))
-- Release 81.0.0 ([#2964](https://github.com/MetaMask/snaps-skunkworks.git/pull/2964))
-- feat: Automatically add `platformVersion` to manifest ([#2938](https://github.com/MetaMask/snaps-skunkworks.git/pull/2938))
-- feat: Allow async initialization logic ([#2918](https://github.com/MetaMask/snaps-skunkworks.git/pull/2918))
-- Add property and hook for specifying custom cryptography functions ([#2909](https://github.com/MetaMask/snaps-skunkworks.git/pull/2909))
-- chore: Bump MetaMask dependencies ([#2853](https://github.com/MetaMask/snaps-skunkworks.git/pull/2853))
-- Add TypeScript typechecking to snaps-cli ([#2783](https://github.com/MetaMask/snaps-skunkworks.git/pull/2783))
-- Set target back to ES2020 ([#2767](https://github.com/MetaMask/snaps-skunkworks.git/pull/2767))
-- Set target to ES2022 and lib to ES2023 ([#2751](https://github.com/MetaMask/snaps-skunkworks.git/pull/2751))
-- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps-skunkworks.git/pull/2740))
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps-skunkworks.git/pull/2748))
-- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps-skunkworks.git/pull/2744))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps-skunkworks.git/pull/2745))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps-skunkworks.git/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps-skunkworks.git/pull/2741))
-
 ## [2.1.3]
 
 ### Fixed
@@ -107,14 +76,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.1.3...HEAD
-[2.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.1.2...@metamask/consumer-signer-example-snap@2.1.3
-[2.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.1.1...@metamask/consumer-signer-example-snap@2.1.2
-[2.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.1.0...@metamask/consumer-signer-example-snap@2.1.1
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.0.1...@metamask/consumer-signer-example-snap@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@2.0.0...@metamask/consumer-signer-example-snap@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@1.0.0...@metamask/consumer-signer-example-snap@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@0.38.1-flask.1...@metamask/consumer-signer-example-snap@1.0.0
-[0.38.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@0.38.0-flask.1...@metamask/consumer-signer-example-snap@0.38.1-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/consumer-signer-example-snap@0.37.2-flask.1...@metamask/consumer-signer-example-snap@0.38.0-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/consumer-signer-example-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.1.3...HEAD
+[2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.1.2...@metamask/consumer-signer-example-snap@2.1.3
+[2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.1.1...@metamask/consumer-signer-example-snap@2.1.2
+[2.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.1.0...@metamask/consumer-signer-example-snap@2.1.1
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.0.1...@metamask/consumer-signer-example-snap@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@2.0.0...@metamask/consumer-signer-example-snap@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@1.0.0...@metamask/consumer-signer-example-snap@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@0.38.1-flask.1...@metamask/consumer-signer-example-snap@1.0.0
+[0.38.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@0.38.0-flask.1...@metamask/consumer-signer-example-snap@0.38.1-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/consumer-signer-example-snap@0.37.2-flask.1...@metamask/consumer-signer-example-snap@0.38.0-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/consumer-signer-example-snap@0.37.2-flask.1
