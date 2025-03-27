@@ -419,7 +419,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.clickElement('foo');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      5,
+      4,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -466,7 +466,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.typeInField('foo', 'bar');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      6,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -519,7 +519,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectInDropdown('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      6,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -572,7 +572,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectFromRadioGroup('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      6,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -629,7 +629,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectFromSelector('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      6,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {

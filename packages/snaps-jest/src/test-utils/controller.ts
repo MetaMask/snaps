@@ -10,11 +10,6 @@ export const getRootControllerMessenger = (mocked = true) => {
   >();
 
   if (mocked) {
-    messenger.registerActionHandler(
-      'PhishingController:maybeUpdateState',
-      async () => Promise.resolve(),
-    );
-
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
       type: 'all',
@@ -51,7 +46,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     name: 'SnapInterfaceController',
     allowedActions: [
       'PhishingController:testOrigin',
-      'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
     ],

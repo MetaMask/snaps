@@ -84,7 +84,6 @@ export function getControllers(options: GetControllersOptions): Controllers {
     messenger: controllerMessenger.getRestricted({
       name: 'SnapInterfaceController',
       allowedActions: [
-        'PhishingController:maybeUpdateState',
         'PhishingController:testOrigin',
         'ApprovalController:hasRequest',
         'ApprovalController:acceptRequest',

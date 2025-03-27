@@ -491,7 +491,6 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissionForAllSubjects',
       'PermissionController:updateCaveat',
       'PermissionController:getSubjectNames',
-      'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',
       'SnapController:get',
       'SnapController:handleRequest',
@@ -781,7 +780,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     name: 'SnapInterfaceController',
     allowedActions: [
       'PhishingController:testOrigin',
-      'PhishingController:maybeUpdateState',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
       'MultichainAssetsController:getState',
@@ -795,11 +793,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   });
 
   if (mocked) {
-    messenger.registerActionHandler(
-      'PhishingController:maybeUpdateState',
-      async () => Promise.resolve(),
-    );
-
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
       type: 'all',
