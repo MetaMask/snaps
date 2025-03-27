@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Slightly refactor send flow example ([#3268](https://github.com/MetaMask/snaps-skunkworks.git/pull/3268))
+- Fix send flow snap ([#3267](https://github.com/MetaMask/snaps-skunkworks.git/pull/3267))
+- Add `displayAvatar` prop to `AddressInput` component ([#3264](https://github.com/MetaMask/snaps-skunkworks.git/pull/3264))
+
 ## [1.1.0]
 
 ### Changed
@@ -19,6 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of the `@metamask/send-flow-example-snap` example.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.0...HEAD
-[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.0.0...@metamask/send-flow-example-snap@1.1.0
-[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/send-flow-example-snap@1.0.0
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/send-flow-example-snap@1.1.0...HEAD
+[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/send-flow-example-snap@1.0.0...@metamask/send-flow-example-snap@1.1.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/send-flow-example-snap@1.0.0
