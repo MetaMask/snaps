@@ -8,10 +8,7 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import type {
-  MaybeUpdateState,
-  TestOrigin,
-} from '@metamask/phishing-controller';
+import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
   SnapId,
@@ -91,7 +88,6 @@ type MultichainAssetsControllerGetStateAction = ControllerGetStateAction<
 
 export type SnapInterfaceControllerAllowedActions =
   | TestOrigin
-  | MaybeUpdateState
   | HasApprovalRequest
   | AcceptRequest
   | GetSnap
@@ -407,13 +403,6 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Trigger a Phishing list update if needed.
-   */
-  async #triggerPhishingListUpdate() {
-    await this.messagingSystem.call('PhishingController:maybeUpdateState');
-  }
-
-  /**
    * Check an origin against the phishing list.
    *
    * @param origin - The origin to check.
@@ -499,8 +488,6 @@ export class SnapInterfaceController extends BaseController<
       size <= MAX_UI_CONTENT_SIZE,
       `A Snap UI may not be larger than ${MAX_UI_CONTENT_SIZE / 1000000} MB.`,
     );
-
-    await this.#triggerPhishingListUpdate();
 
     validateJsxElements(element, {
       isOnPhishingList: this.#checkPhishingList.bind(this),
