@@ -98,11 +98,6 @@ export function registerActions(messenger: Messenger<any, any>) {
   messenger.registerActionHandler('PhishingController:testOrigin', () => ({
     result: false,
   }));
-
-  messenger.registerActionHandler(
-    'PhishingController:maybeUpdateState',
-    async () => Promise.resolve(),
-  );
 }
 
 /**
@@ -202,10 +197,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
   const snapInterfaceController = new SnapInterfaceController({
     messenger: messenger.getRestricted({
       name: 'SnapInterfaceController',
-      allowedActions: [
-        `PhishingController:testOrigin`,
-        `PhishingController:maybeUpdateState`,
-      ],
+      allowedActions: [`PhishingController:testOrigin`],
       allowedEvents: [
         'NotificationServicesController:notificationsListUpdated',
       ],

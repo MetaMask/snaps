@@ -631,14 +631,6 @@ describe('registerActions', () => {
   const { runSaga, store } = createStore(getMockOptions());
   const controllerMessenger = getRootControllerMessenger(false);
 
-  it('registers `PhishingController:maybeUpdateState`', async () => {
-    registerActions(controllerMessenger, runSaga);
-
-    expect(
-      await controllerMessenger.call('PhishingController:maybeUpdateState'),
-    ).toBeUndefined();
-  });
-
   it('registers `PhishingController:testOrigin`', async () => {
     registerActions(controllerMessenger, runSaga);
 
