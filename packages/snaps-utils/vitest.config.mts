@@ -7,8 +7,6 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
 
   optimizeDeps: {
-    include: ['@lavamoat/lavatube'],
-
     esbuildOptions: {
       plugins: [
         // @ts-expect-error: Incompatibility between Vite versions.
@@ -30,12 +28,6 @@ export default defineConfig({
     // The files to include in the test run.
     include: ['src/**/*.test.browser.ts'],
 
-    server: {
-      deps: {
-        inline: ['@lavamoat/lavatube'],
-      },
-    },
-
     browser: {
       enabled: true,
       provider: 'playwright',
@@ -47,9 +39,9 @@ export default defineConfig({
 
       reportsDirectory: 'coverage/vite',
 
-      // Configure the coverage provider. We can't use `istanbul` because it
-      // changes functions, which breaks SES.
-      provider: 'v8',
+      // Configure the coverage provider. We use `istanbul` instead of `v8`
+      // because it seems to be more reliable.
+      provider: 'istanbul',
 
       // The files to include in the coverage report.
       include: [
@@ -65,12 +57,11 @@ export default defineConfig({
         'src/**/index.ts',
         'src/**/*.d.ts',
         'src/**/*.test.ts',
+        'src/**/*.test.tsx',
         'src/**/test-utils/**',
+        'src/**/__mocks__/**',
+        'src/eval-worker.ts',
       ],
     },
-
-    // These break SES lockdown.
-    printConsoleTrace: false,
-    includeTaskLocation: false,
   },
 });

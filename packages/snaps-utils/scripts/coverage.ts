@@ -18,9 +18,9 @@ const JEST_COVERAGE_FILE = resolve(
   'coverage-final.json',
 );
 
-const WDIO_COVERAGE_FILE = resolve(
+const VITE_COVERAGE_FILE = resolve(
   COVERAGE_PATH,
-  'wdio',
+  'vite',
   'coverage-final.json',
 );
 
@@ -54,36 +54,37 @@ function generateSummaryReport<Report extends ReportType>(
 }
 
 /**
- * Merge the coverage reports from Jest and WebdriverIO. This checks if the
- * coverage for a given file is higher in WebdriverIO than in Jest. If it is,
- * it replaces the Jest coverage with the WebdriverIO coverage.
+ * Merge the coverage reports from Jest and Vite. This checks if the coverage
+ * for a given file is higher in Vite than in Jest. If it is, it replaces the
+ * Jest coverage with the Vite coverage.
  *
- * This is a workaround for WebdriverIO's coverage reporting having inaccurate
- * line numbers.
+ * This is a workaround for Vite's coverage reporting having inaccurate line
+ * numbers.
  *
  * @returns The summary of the merged coverage.
  */
+// TODO: Check if Vite's coverage is actually inaccurate.
 async function mergeReports() {
   const jestMap = await fs
     .readFile(JEST_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
     .then(createCoverageMap);
 
-  const wdioMap = await fs
-    .readFile(WDIO_COVERAGE_FILE, 'utf8')
+  const viteMap = await fs
+    .readFile(VITE_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
     .then(createCoverageMap);
 
   const jestFiles = jestMap.files();
 
-  wdioMap.files().forEach((file) => {
-    const coverage = wdioMap.fileCoverageFor(file);
-    const wdioSummary = coverage.toSummary();
+  viteMap.files().forEach((file) => {
+    const coverage = viteMap.fileCoverageFor(file);
+    const viteSummary = coverage.toSummary();
     const jestSummary = jestMap.fileCoverageFor(file).toSummary();
 
     if (
       !jestFiles.includes(file) ||
-      COVERAGE_KEYS.every((key) => wdioSummary[key].pct >= jestSummary[key].pct)
+      COVERAGE_KEYS.every((key) => viteSummary[key].pct >= jestSummary[key].pct)
     ) {
       jestMap.filter((jestFile) => jestFile !== file);
       jestMap.addFileCoverage(coverage);

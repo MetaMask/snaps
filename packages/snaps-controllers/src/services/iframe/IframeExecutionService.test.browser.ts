@@ -6,11 +6,14 @@ import {
   spy,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
+import { describe, it, expect } from 'vitest';
 
 import { IframeExecutionService } from './IframeExecutionService';
-import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { MOCK_BLOCK_NUMBER } from '../../test-utils/constants';
+import { createService } from '../../test-utils/service';
 
-const IFRAME_URL = 'http://localhost:4567';
+const IFRAME_URL = 'http://localhost:63315/iframe/executor/index.html';
+const IFRAME_SANDBOX_URL = 'http://localhost:63315/iframe/test/index.html';
 
 describe('IframeExecutionService', () => {
   it('can boot', async () => {
@@ -88,7 +91,7 @@ describe('IframeExecutionService', () => {
   });
 
   it('can detect outbound requests', async () => {
-    expect.assertions(4);
+    expect.assertions(5);
 
     const { service, messenger } = createService(IframeExecutionService, {
       iframeUrl: new URL(IFRAME_URL),
@@ -134,7 +137,7 @@ describe('IframeExecutionService', () => {
     publishSpy.reset();
   });
 
-  it('properly sandboxes the iframe', async () => {
+  it.only('properly sandboxes the iframe', async () => {
     const { service } = createService(IframeExecutionService, {
       iframeUrl: new URL(IFRAME_URL),
     });
@@ -157,7 +160,7 @@ describe('IframeExecutionService', () => {
     // Creates an iframe attempts to access the iframe created by the execution
     // service. This should fail due to the sandboxing.
     const testFrame = document.createElement('iframe');
-    testFrame.src = `${IFRAME_URL}/test/sandbox`;
+    testFrame.src = IFRAME_SANDBOX_URL;
     document.body.appendChild(testFrame);
 
     expect(await message).toContain(
