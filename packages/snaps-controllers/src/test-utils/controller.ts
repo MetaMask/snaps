@@ -23,7 +23,6 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId, text } from '@metamask/snaps-sdk';
-import type { InternalAccount } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -829,32 +828,19 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       // @ts-expect-error partial mock
       (address: string) => ({
         address,
-        id: 'foo',
-<<<<<<< HEAD
+        id: MOCK_ACCOUNT_ID,
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-=======
-        scopes: ['eip155:0'],
->>>>>>> 82969fe5 (address requested changes)
       }),
     );
 
     messenger.registerActionHandler(
       'AccountsController:getSelectedMultichainAccount',
-<<<<<<< HEAD
-      () =>
-        ({
-          address: '0x1234567890123456789012345678901234567890',
-          id: 'foo',
-          scopes: ['eip155:0'],
-        }) as unknown as InternalAccount,
-=======
       // @ts-expect-error partial mock
       () => ({
         address: '0x1234567890123456789012345678901234567890',
-        id: 'foo',
+        id: MOCK_ACCOUNT_ID,
         scopes: ['eip155:0'],
       }),
->>>>>>> 82969fe5 (address requested changes)
     );
 
     messenger.registerActionHandler(
