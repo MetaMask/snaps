@@ -1,6 +1,6 @@
 {
   "name": "@metamask/example-snaps",
-  "version": "3.17.0",
+  "version": "3.18.0",
   "private": true,
   "description": "A collection of examples demonstrating how to build MetaMask Snaps",
   "keywords": [
