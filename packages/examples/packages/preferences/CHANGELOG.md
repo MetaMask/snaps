@@ -7,4 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/
+## [1.0.0]
+
+### Added
+
+- Initial release ([#3154](https://github.com/MetaMask/snaps/pull/3154))
+
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preferences-example-snap@1.0.0...HEAD
+[1.0.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/preferences-example-snap@1.0.0

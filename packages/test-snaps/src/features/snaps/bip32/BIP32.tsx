@@ -7,6 +7,7 @@ import { useEntropySelector } from '../get-entropy/hooks';
 
 export const BIP32: FunctionComponent = () => {
   const { selector, source } = useEntropySelector({
+    id: 'bip32',
     snapId: BIP_32_SNAP_ID,
     port: BIP_32_PORT,
   });

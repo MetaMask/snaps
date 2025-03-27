@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.3]
+
+- Use latest versions of example Snaps ([#3269](https://github.com/MetaMask/snaps/pull/3269))
+
+## [2.20.2]
+
+### Changed
+
+- Use latest versions of example Snaps ([#3256](https://github.com/MetaMask/snaps/pull/3256))
+
+## [2.20.1]
+
+### Fixed
+
+- Use Webpack plugin example Snap for testing updates ([#3186](https://github.com/MetaMask/snaps/pull/3186))
+
+## [2.20.0]
+
+### Added
+
+- Add SIP-30 support to entropy Snaps ([#3156](https://github.com/MetaMask/snaps/pull/3156), [#3165](https://github.com/MetaMask/snaps/pull/3165), [#3172](https://github.com/MetaMask/snaps/pull/3172))
+- Add preferences example Snap ([#3154](https://github.com/MetaMask/snaps/pull/3154))
+
 ## [2.19.0]
 
 ### Added
@@ -282,7 +305,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.3...HEAD
+[2.20.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.2...@metamask/test-snaps@2.20.3
+[2.20.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.1...@metamask/test-snaps@2.20.2
+[2.20.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.0...@metamask/test-snaps@2.20.1
+[2.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.19.0...@metamask/test-snaps@2.20.0
 [2.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.1...@metamask/test-snaps@2.19.0
 [2.18.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.0...@metamask/test-snaps@2.18.1
 [2.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.17.0...@metamask/test-snaps@2.18.0

@@ -14,7 +14,7 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getSecretRecoveryPhrase, deriveEntropy } from '../utils';
+import { getValueFromEntropySource, deriveEntropyFromSeed } from '../utils';
 
 const targetName = 'snap_getEntropy';
 
@@ -62,7 +62,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<GetEntropyHooks> = {
-  getMnemonic: true,
+  getMnemonicSeed: true,
   getUnlockPromise: true,
   getClientCryptography: true,
 };
@@ -75,14 +75,14 @@ export const getEntropyBuilder = Object.freeze({
 
 export type GetEntropyHooks = {
   /**
-   * Get the mnemonic of the provided source. If no source is provided, the
-   * mnemonic of the primary keyring will be returned.
+   * Get the mnemonic seed of the provided source. If no source is provided, the
+   * mnemonic seed of the primary keyring will be returned.
    *
    * @param source - The optional ID of the source to get the mnemonic of.
-   * @returns The mnemonic of the provided source, or the default source if no
+   * @returns The mnemonic seed of the provided source, or the default source if no
    * source is provided.
    */
-  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
+  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -107,8 +107,8 @@ export type GetEntropyHooks = {
  * [SIP-6](https://metamask.github.io/SIPs/SIPS/sip-6).
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.getMnemonic - The method to get the mnemonic of the user's
- * primary keyring.
+ * @param hooks.getMnemonicSeed - A function to retrieve the BIP-39 seed
+ * of the user.
  * @param hooks.getUnlockPromise - The method to get a promise that resolves
  * once the extension is unlocked.
  * @param hooks.getClientCryptography - A function to retrieve the cryptographic
@@ -116,7 +116,7 @@ export type GetEntropyHooks = {
  * @returns The method implementation.
  */
 function getEntropyImplementation({
-  getMnemonic,
+  getMnemonicSeed,
   getUnlockPromise,
   getClientCryptography,
 }: GetEntropyHooks) {
@@ -136,15 +136,15 @@ function getEntropyImplementation({
     );
 
     await getUnlockPromise(true);
-    const mnemonicPhrase = await getSecretRecoveryPhrase(
-      getMnemonic,
+    const seed = await getValueFromEntropySource(
+      getMnemonicSeed,
       params.source,
     );
 
-    return deriveEntropy({
+    return deriveEntropyFromSeed({
       input: origin,
       salt: params.salt,
-      mnemonicPhrase,
+      seed,
       magic: SIP_6_MAGIC_VALUE,
       cryptographicFunctions: getClientCryptography(),
     });

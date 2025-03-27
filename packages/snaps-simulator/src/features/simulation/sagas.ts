@@ -2,7 +2,7 @@ import { Messenger } from '@metamask/base-controller';
 import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import { mnemonicPhraseToBytes, mnemonicToSeed } from '@metamask/key-tree';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
   PermissionController,
@@ -122,6 +122,7 @@ export function* initSaga({ payload }: PayloadAction<string>) {
 
   const sharedHooks = {
     getMnemonic: async () => mnemonicPhraseToBytes(srp),
+    getMnemonicSeed: async () => mnemonicToSeed(srp),
   };
 
   const permissionSpecifications = {

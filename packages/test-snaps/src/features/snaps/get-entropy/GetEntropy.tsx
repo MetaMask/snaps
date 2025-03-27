@@ -11,6 +11,7 @@ import { Snap } from '../../../components';
 
 export const GetEntropy: FunctionComponent = () => {
   const { selector, source } = useEntropySelector({
+    id: 'get-entropy',
     raw: true,
     snapId: GET_ENTROPY_SNAP_ID,
     port: GET_ENTROPY_PORT,

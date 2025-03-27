@@ -8,7 +8,13 @@ import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
 import { BIP_44_PORT, BIP_44_SNAP_ID } from '../constants';
 
-export const SignMessage: FunctionComponent = () => {
+export type SignMessageProps = {
+  source: string | undefined;
+};
+
+export const SignMessage: FunctionComponent<SignMessageProps> = ({
+  source,
+}) => {
   const [message, setMessage] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
@@ -24,6 +30,7 @@ export const SignMessage: FunctionComponent = () => {
       method: 'signMessage',
       params: {
         message,
+        ...(source !== undefined && { source }),
       },
     }).catch(logError);
   };

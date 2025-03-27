@@ -16,20 +16,20 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getSecretRecoveryPhrase } from '../utils';
+import { getValueFromEntropySource } from '../utils';
 
 const targetName = 'snap_getBip44Entropy';
 
 export type GetBip44EntropyMethodHooks = {
   /**
-   * Get the mnemonic of the provided source. If no source is provided, the
-   * mnemonic of the primary keyring will be returned.
+   * Get the mnemonic seed of the provided source. If no source is provided, the
+   * mnemonic seed of the primary keyring will be returned.
    *
    * @param source - The optional ID of the source to get the mnemonic of.
-   * @returns The mnemonic of the provided source, or the default source if no
+   * @returns The mnemonic seed of the provided source, or the default source if no
    * source is provided.
    */
-  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
+  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -95,7 +95,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<GetBip44EntropyMethodHooks> = {
-  getMnemonic: true,
+  getMnemonicSeed: true,
   getUnlockPromise: true,
   getClientCryptography: true,
 };
@@ -110,7 +110,7 @@ export const getBip44EntropyBuilder = Object.freeze({
  * Builds the method implementation for `snap_getBip44Entropy`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase
+ * @param hooks.getMnemonicSeed - A function to retrieve the BIP-39 seed
  * of the user.
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
@@ -121,7 +121,7 @@ export const getBip44EntropyBuilder = Object.freeze({
  * @throws If the params are invalid.
  */
 export function getBip44EntropyImplementation({
-  getMnemonic,
+  getMnemonicSeed,
   getUnlockPromise,
   getClientCryptography,
 }: GetBip44EntropyMethodHooks) {
@@ -132,14 +132,16 @@ export function getBip44EntropyImplementation({
 
     // `args.params` is validated by the decorator, so it's safe to assert here.
     const params = args.params as GetBip44EntropyParams;
-    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
-      getMnemonic,
+    const seed = await getValueFromEntropySource(
+      getMnemonicSeed,
       params.source,
     );
 
-    const node = await BIP44CoinTypeNode.fromDerivationPath(
-      [secretRecoveryPhrase, `bip32:44'`, `bip32:${params.coinType}'`],
-      'mainnet',
+    const node = await BIP44CoinTypeNode.fromSeed(
+      {
+        derivationPath: [seed, `bip32:44'`, `bip32:${params.coinType}'`],
+        network: 'mainnet',
+      },
       getClientCryptography(),
     );
 

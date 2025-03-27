@@ -3,7 +3,10 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_BYTES,
+  TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import { hmac } from '@noble/hashes/hmac';
+import { sha512 } from '@noble/hashes/sha512';
 
 import {
   getBip32PublicKeyBuilder,
@@ -13,6 +16,7 @@ import {
 describe('specificationBuilder', () => {
   const methodHooks = {
     getMnemonic: jest.fn(),
+    getMnemonicSeed: jest.fn(),
     getUnlockPromise: jest.fn(),
     getClientCryptography: jest.fn(),
   };
@@ -66,12 +70,16 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
@@ -90,12 +98,16 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
@@ -114,12 +126,16 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
@@ -138,12 +154,16 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
@@ -162,6 +182,9 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
 
       const getUnlockPromise = jest.fn();
       const getClientCryptography = jest.fn().mockReturnValue({});
@@ -170,6 +193,41 @@ describe('getBip32PublicKeyImplementation', () => {
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
+          getClientCryptography,
+        })({
+          method: 'snap_getBip32PublicKey',
+          context: { origin: MOCK_SNAP_ID },
+          params: {
+            path: ['m', "44'", "1'", '1', '2', '3'],
+            curve: 'ed25519Bip32',
+            source: 'source-id',
+          },
+        }),
+      ).toMatchInlineSnapshot(
+        `"0x03303da49ddfafc90587b7559eacdd5523028e75be81f2a9f158733fee1211a6"`,
+      );
+
+      expect(getMnemonic).toHaveBeenCalledWith('source-id');
+      expect(getMnemonicSeed).not.toHaveBeenCalled();
+    });
+
+    it('calls `getMnemonicSeed` with a different entropy source', async () => {
+      const getMnemonic = jest
+        .fn()
+        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
+
+      const getUnlockPromise = jest.fn();
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      expect(
+        await getBip32PublicKeyImplementation({
+          getUnlockPromise,
+          getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
         })({
           method: 'snap_getBip32PublicKey',
@@ -184,7 +242,8 @@ describe('getBip32PublicKeyImplementation', () => {
         `"0x042de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914f7c31d378fe68f4723b297a04e49ef55fbf490605c4a3f9ca947a4af4f06526a"`,
       );
 
-      expect(getMnemonic).toHaveBeenCalledWith('source-id');
+      expect(getMnemonicSeed).toHaveBeenCalledWith('source-id');
+      expect(getMnemonic).not.toHaveBeenCalled();
     });
 
     it('uses custom client cryptography functions', async () => {
@@ -192,16 +251,24 @@ describe('getBip32PublicKeyImplementation', () => {
       const getMnemonic = jest
         .fn()
         .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
+      const getMnemonicSeed = jest
+        .fn()
+        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
 
-      const pbkdf2Sha512 = jest.fn().mockResolvedValue(new Uint8Array(64));
+      const hmacSha512 = jest
+        .fn()
+        .mockImplementation((key: Uint8Array, data: Uint8Array) =>
+          hmac(sha512, key, data),
+        );
       const getClientCryptography = jest.fn().mockReturnValue({
-        pbkdf2Sha512,
+        hmacSha512,
       });
 
       expect(
         await getBip32PublicKeyImplementation({
           getUnlockPromise,
           getMnemonic,
+          getMnemonicSeed,
           getClientCryptography,
           // @ts-expect-error Missing other required properties.
         })({
@@ -212,10 +279,10 @@ describe('getBip32PublicKeyImplementation', () => {
           },
         }),
       ).toMatchInlineSnapshot(
-        `"0x03102d63c39b6dda3f9aa06b247c50653cd9d01a91efce00ccc8735e9714058a01"`,
+        `"0x022de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914"`,
       );
 
-      expect(pbkdf2Sha512).toHaveBeenCalledTimes(1);
+      expect(hmacSha512).toHaveBeenCalledTimes(6);
     });
   });
 });

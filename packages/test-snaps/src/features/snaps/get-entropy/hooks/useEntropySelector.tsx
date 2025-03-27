@@ -7,9 +7,14 @@ import { EntropySelector } from '../components';
 
 export type UseEntropySelectorOptions = {
   /**
+   * The prefix to add to the HTML ID for E2E testing purposes.
+   */
+  id: string;
+
+  /**
    * Whether to show the raw list of entropy sources.
    */
-  raw?: boolean;
+  raw?: boolean | undefined;
 
   /**
    * The snap ID to use for the entropy sources.
@@ -28,12 +33,15 @@ export type UseEntropySelectorOptions = {
  * @param options - The options to use.
  * @param options.snapId - The snap ID to use for the entropy sources.
  * @param options.port - The port to use for the entropy sources.
+ * @param options.id - The prefix to add to the HTML ID for E2E testing
+ * purposes.
  * @param options.raw - Whether to show the raw list of entropy sources.
  * @returns The entropy source and selector.
  */
 export const useEntropySelector = ({
   snapId: publicSnapId,
   port,
+  id,
   raw = false,
 }: UseEntropySelectorOptions) => {
   const [source, setSource] = useState<string | undefined>(undefined);
@@ -54,6 +62,8 @@ export const useEntropySelector = ({
   return {
     source,
     sources: data,
-    selector: <EntropySelector sources={data} raw={raw} onChange={setSource} />,
+    selector: (
+      <EntropySelector id={id} sources={data} raw={raw} onChange={setSource} />
+    ),
   };
 };
