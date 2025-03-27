@@ -24,4 +24,4 @@ export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
 /**
  * The timeout for debouncing state updates.
  */
-export const STATE_DEBOUNCE_TIMEOUT = 1_000;
+export const STATE_DEBOUNCE_TIMEOUT = 500;
