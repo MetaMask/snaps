@@ -385,7 +385,12 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
+  address: selectiveUnion((value) => {
+    if (typeof value === 'string' && value.startsWith('0x')) {
+      return HexChecksumAddressStruct;
+    }
+    return CaipAccountIdStruct;
+  }),
   truncate: optional(boolean()),
   displayName: optional(boolean()),
   avatar: optional(boolean()),
