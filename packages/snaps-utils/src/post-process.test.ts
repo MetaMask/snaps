@@ -327,7 +327,7 @@ describe('postProcessBundle', () => {
 
   it(`doesn't break template literals with special characters`, () => {
     // eslint-disable-next-line
-    const code = 'const foo = `<!-- \\` ${foo} \\` -->`;';
+    const code = "const foo = `<!-- \\` ${foo} \\` -->`;";
 
     const processedCode = postProcessBundle(code);
     expect(processedCode).toMatchInlineSnapshot(`
@@ -413,6 +413,7 @@ describe('postProcessBundle', () => {
         "code": "const foo = 'bar';",
         "sourceMap": {
           "file": undefined,
+          "ignoreList": [],
           "mappings": "AACM,MAAMA,GAAG,GAAG,KAAK",
           "names": [
             "foo",
@@ -445,7 +446,7 @@ describe('postProcessBundle', () => {
     expect(processedCode).toMatchInlineSnapshot(`
       {
         "code": "const foo = 'bar';
-      //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBSyJ9",
+      //# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJmb28iXSwic291cmNlcyI6WyJ1bmtub3duIl0sInNvdXJjZXNDb250ZW50IjpbIlxuICAgICAgY29uc3QgZm9vID0gJ2Jhcic7XG4gICAgIl0sIm1hcHBpbmdzIjoiQUFDTSxNQUFNQSxHQUFHLEdBQUcsS0FBSyIsImlnbm9yZUxpc3QiOltdfQ==",
         "sourceMap": null,
         "warnings": [],
       }
@@ -486,6 +487,7 @@ describe('postProcessBundle', () => {
       exports.foo = 'bar';",
         "sourceMap": {
           "file": undefined,
+          "ignoreList": [],
           "mappings": ";;;;;AAAaA,OAAG,CAAGC,GAAA,GAAM",
           "names": [
             "exports",

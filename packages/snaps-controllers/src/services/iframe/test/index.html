@@ -11,7 +11,7 @@
     <script>
       (function () {
         try {
-          const snap = top.querySelector('iframe[data-testid="snaps-iframe"]');
+          const snap = parent.document.querySelector('iframe[data-testid="snaps-iframe"]');
           if (!snap) {
             window.parent.postMessage('Failed to find snap iframe.', '*');
             return;

@@ -70,21 +70,21 @@ async function mergeReports() {
     .then(JSON.parse)
     .then(createCoverageMap);
 
-  const wdioMap = await fs
+  const viteMap = await fs
     .readFile(VITE_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
     .then(createCoverageMap);
 
   const jestFiles = jestMap.files();
 
-  wdioMap.files().forEach((file) => {
-    const coverage = wdioMap.fileCoverageFor(file);
-    const wdioSummary = coverage.toSummary();
+  viteMap.files().forEach((file) => {
+    const coverage = viteMap.fileCoverageFor(file);
+    const viteSummary = coverage.toSummary();
     const jestSummary = jestMap.fileCoverageFor(file).toSummary();
 
     if (
       !jestFiles.includes(file) ||
-      COVERAGE_KEYS.every((key) => wdioSummary[key].pct >= jestSummary[key].pct)
+      COVERAGE_KEYS.every((key) => viteSummary[key].pct >= jestSummary[key].pct)
     ) {
       jestMap.filter((jestFile) => jestFile !== file);
       jestMap.addFileCoverage(coverage);
