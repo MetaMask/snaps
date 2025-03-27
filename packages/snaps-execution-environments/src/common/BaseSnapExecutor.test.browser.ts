@@ -22,9 +22,6 @@ import 'ses';
 
 describe('BaseSnapExecutor', () => {
   beforeAll(() => {
-    // @ts-expect-error - `globalThis.process` is not optional.
-    delete globalThis.process;
-
     globalThis.harden = (value) => value;
   });
 

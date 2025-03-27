@@ -137,7 +137,7 @@ describe('IframeExecutionService', () => {
     publishSpy.reset();
   });
 
-  it.only('properly sandboxes the iframe', async () => {
+  it('properly sandboxes the iframe', async () => {
     const { service } = createService(IframeExecutionService, {
       iframeUrl: new URL(IFRAME_URL),
     });

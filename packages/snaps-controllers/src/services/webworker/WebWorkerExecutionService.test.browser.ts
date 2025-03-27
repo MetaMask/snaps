@@ -124,7 +124,7 @@ describe('WebWorkerExecutionService', () => {
   });
 
   it('can detect outbound requests', async () => {
-    expect.assertions(4);
+    expect.assertions(5);
 
     const { service, messenger } = createService(WebWorkerExecutionService, {
       documentUrl: new URL(WORKER_POOL_URL),
