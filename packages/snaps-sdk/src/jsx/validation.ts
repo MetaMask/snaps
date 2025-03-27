@@ -23,6 +23,7 @@ import {
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
+  CaipChainIdStruct,
   hasProperty,
   HexChecksumAddressStruct,
   isPlainObject,
@@ -40,9 +41,11 @@ import type {
   StringElement,
 } from './component';
 import type {
+  AssetSelectorElement,
   AvatarElement,
   SkeletonElement,
   AddressElement,
+  AddressInputElement,
   BoldElement,
   BoxElement,
   ButtonElement,
@@ -86,7 +89,12 @@ import {
   svg,
   typedUnion,
 } from '../internals';
-import type { EmptyObject } from '../types';
+import {
+  NonEip155AssetTypeStruct,
+  NonEip155ChainIdStruct,
+  NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
+  type EmptyObject,
+} from '../types';
 
 /**
  * A struct for the {@link Key} type.
@@ -340,6 +348,21 @@ export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
 );
 
 /**
+ * A struct for the {@link AddressInputElement} type.
+ */
+export const AddressInputStruct: Describe<AddressInputElement> = element(
+  'AddressInput',
+  {
+    name: string(),
+    chainId: CaipChainIdStruct,
+    value: optional(string()),
+    placeholder: optional(string()),
+    disabled: optional(boolean()),
+    displayAvatar: optional(boolean()),
+  },
+);
+
+/**
  * A struct for the {@link OptionElement} type.
  */
 export const OptionStruct: Describe<OptionElement> = element('Option', {
@@ -362,7 +385,12 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
-  address: nullUnion([HexChecksumAddressStruct, CaipAccountIdStruct]),
+  address: selectiveUnion((value) => {
+    if (typeof value === 'string' && value.startsWith('0x')) {
+      return HexChecksumAddressStruct;
+    }
+    return CaipAccountIdStruct;
+  }),
   truncate: optional(boolean()),
   displayName: optional(boolean()),
   avatar: optional(boolean()),
@@ -406,6 +434,23 @@ export const SelectorStruct: Describe<SelectorElement> = element('Selector', {
   children: children([SelectorOptionStruct]),
   disabled: optional(boolean()),
 });
+
+/**
+ * A struct for the {@link AssetSelectorElement} type.
+ */
+export const AssetSelectorStruct: Describe<AssetSelectorElement> = element(
+  'AssetSelector',
+  {
+    name: string(),
+    addresses: NonEip155CaipAccountIdsMatchedByAddressAndNamespaceStruct,
+    chainIds: optional(array(NonEip155ChainIdStruct)) as unknown as Struct<
+      Infer<typeof NonEip155ChainIdStruct>[] | undefined,
+      null
+    >,
+    value: optional(NonEip155AssetTypeStruct),
+    disabled: optional(boolean()),
+  },
+);
 
 /**
  * A struct for the {@link RadioElement} type.
@@ -475,6 +520,8 @@ const BOX_INPUT_BOTH = [
  * A subset of JSX elements that are allowed as single children of the Field component.
  */
 const FIELD_CHILDREN_ARRAY = [
+  AssetSelectorStruct,
+  AddressInputStruct,
   InputStruct,
   DropdownStruct,
   RadioGroupStruct,
@@ -482,6 +529,8 @@ const FIELD_CHILDREN_ARRAY = [
   CheckboxStruct,
   SelectorStruct,
 ] as [
+  typeof AssetSelectorStruct,
+  typeof AddressInputStruct,
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
@@ -526,7 +575,9 @@ const FieldChildStruct = selectiveUnion((value) => {
   | FileInputElement
   | InputElement
   | CheckboxElement
-  | SelectorElement,
+  | SelectorElement
+  | AssetSelectorElement
+  | AddressInputElement,
   null
 >;
 
@@ -873,6 +924,8 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  */
 export const BoxChildStruct = typedUnion([
   AddressStruct,
+  AssetSelectorStruct,
+  AddressInputStruct,
   BoldStruct,
   BoxStruct,
   ButtonStruct,
@@ -936,6 +989,8 @@ export const RootJSXElementStruct = typedUnion([
  * A struct for the {@link JSXElement} type.
  */
 export const JSXElementStruct: Describe<JSXElement> = typedUnion([
+  AssetSelectorStruct,
+  AddressInputStruct,
   ButtonStruct,
   InputStruct,
   FileInputStruct,

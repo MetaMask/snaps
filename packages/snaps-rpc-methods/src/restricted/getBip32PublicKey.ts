@@ -22,7 +22,11 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
-import { getSecretRecoveryPhrase, getNode } from '../utils';
+import {
+  getValueFromEntropySource,
+  getNodeFromMnemonic,
+  getNodeFromSeed,
+} from '../utils';
 
 const targetName = 'snap_getBip32PublicKey';
 
@@ -36,6 +40,16 @@ export type GetBip32PublicKeyMethodHooks = {
    * source is provided.
    */
   getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
+
+  /**
+   * Get the mnemonic seed of the provided source. If no source is provided, the
+   * mnemonic seed of the primary keyring will be returned.
+   *
+   * @param source - The optional ID of the source to get the mnemonic of.
+   * @returns The mnemonic seed of the provided source, or the default source if no
+   * source is provided.
+   */
+  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
 
   /**
    * Waits for the extension to be unlocked.
@@ -110,6 +124,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<GetBip32PublicKeyMethodHooks> = {
   getMnemonic: true,
+  getMnemonicSeed: true,
   getUnlockPromise: true,
   getClientCryptography: true,
 };
@@ -125,6 +140,7 @@ export const getBip32PublicKeyBuilder = Object.freeze({
  *
  * @param hooks - The RPC method hooks.
  * @param hooks.getMnemonic - A function to retrieve the Secret Recovery Phrase of the user.
+ * @param hooks.getMnemonicSeed - A function to retrieve the BIP-39 seed of the user.
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask extension is unlocked
  * and prompts the user to unlock their MetaMask if it is locked.
  * @param hooks.getClientCryptography - A function to retrieve the cryptographic
@@ -134,6 +150,7 @@ export const getBip32PublicKeyBuilder = Object.freeze({
  */
 export function getBip32PublicKeyImplementation({
   getMnemonic,
+  getMnemonicSeed,
   getUnlockPromise,
   getClientCryptography,
 }: GetBip32PublicKeyMethodHooks) {
@@ -150,12 +167,34 @@ export function getBip32PublicKeyImplementation({
     );
 
     const { params } = args;
-    const secretRecoveryPhrase = await getSecretRecoveryPhrase(
+
+    // Using the seed is much faster, but we can only do it for these specific curves.
+    if (params.curve === 'secp256k1' || params.curve === 'ed25519') {
+      const seed = await getValueFromEntropySource(
+        getMnemonicSeed,
+        params.source,
+      );
+
+      const node = await getNodeFromSeed({
+        curve: params.curve,
+        path: params.path,
+        seed,
+        cryptographicFunctions: getClientCryptography(),
+      });
+
+      if (params.compressed) {
+        return node.compressedPublicKey;
+      }
+
+      return node.publicKey;
+    }
+
+    const secretRecoveryPhrase = await getValueFromEntropySource(
       getMnemonic,
       params.source,
     );
 
-    const node = await getNode({
+    const node = await getNodeFromMnemonic({
       curve: params.curve,
       path: params.path,
       secretRecoveryPhrase,

@@ -35,6 +35,8 @@ import {
   Avatar,
   Banner,
   Skeleton,
+  AssetSelector,
+  AddressInput,
 } from './components';
 import {
   AddressStruct,
@@ -74,6 +76,8 @@ import {
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  AssetSelectorStruct,
+  AddressInputStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -207,6 +211,55 @@ describe('ButtonStruct', () => {
   });
 });
 
+describe('AddressInputStruct', () => {
+  it.each([
+    <AddressInput name="address" chainId="eip155:1" />,
+    <AddressInput
+      name="address"
+      chainId="eip155:1"
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
+    <AddressInput name="address" chainId="eip155:1" placeholder="foo" />,
+    <AddressInput name="address" chainId="eip155:1" disabled={true} />,
+    <AddressInput
+      name="address"
+      chainId="eip155:1"
+      displayAvatar={true}
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
+  ])('validates an address input element', (value) => {
+    expect(is(value, AddressInputStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AddressInput />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput name="foo" chainId="foo" />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput chainId="eip155:1" />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput name="foo" chainId="eip155:1" placeholder={32} />,
+    // @ts-expect-error - Invalid props.
+    <AddressInput name="foo" chainId="eip155:1" disabled="bar" />,
+    <AddressInput
+      name="foo"
+      chainId="eip155:1"
+      // @ts-expect-error - Invalid props.
+      displayAvatar={123}
+      value="0x1234567890abcdef1234567890abcdef12345678"
+    />,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, AddressInputStruct)).toBe(false);
+  });
+});
+
 describe('InputStruct', () => {
   it.each([
     <Input name="foo" type="text" />,
@@ -311,6 +364,17 @@ describe('FieldStruct', () => {
           <Card title="bar" value="$1" />
         </SelectorOption>
       </Selector>
+    </Field>,
+    <Field label="foo">
+      <AssetSelector
+        name="foo"
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
+      />
+    </Field>,
+    <Field label="foo">
+      <AddressInput name="address" chainId="eip155:1" />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -1685,5 +1749,73 @@ describe('SkeletonStruct', () => {
     </Skeleton>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SkeletonStruct)).toBe(false);
+  });
+});
+
+describe('AssetSelectorStruct', () => {
+  it.each([
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+      value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      disabled={true}
+    />,
+  ])(`validates an AssetSelector element`, (value) => {
+    expect(is(value, AssetSelectorStruct)).toBe(true);
+  });
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <AssetSelector />,
+    // @ts-expect-error - Invalid props.
+    <AssetSelector foo="bar">foo</AssetSelector>,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ]}
+      chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+      // @ts-expect-error - Invalid props.
+      disabled="foo"
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+      chainIds={['eip155:1']}
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={['eip155:0:0x1234567890123456789012345678901234567890']}
+      value="eip155:1/slip44:60"
+    />,
+    <AssetSelector
+      name="foo"
+      addresses={[
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:3PWWwUkCPALDXBcwQBRTYiob2C6xfCm35kzuoJr7ubuw',
+      ]}
+    />,
+  ])(`does not validate "%p"`, (value) => {
+    expect(is(value, AssetSelectorStruct)).toBe(false);
   });
 });

@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.21.0]
+
+### Added
+
+- Add `displayAvatar` prop to `AddressInput` component ([#3264](https://github.com/MetaMask/snaps/pull/3264))
+
+## [6.20.0]
+
+### Added
+
+- Add `AddressInput` component ([#3129](https://github.com/MetaMask/snaps/pull/3129))
+- Add `AssetSelector` component ([#3166](https://github.com/MetaMask/snaps/pull/3166))
+
+### Changed
+
+- Bump `@metamask/key-tree` from `10.0.2` to `10.1.1` ([#3254](https://github.com/MetaMask/snaps/pull/3254), [#3217](https://github.com/MetaMask/snaps/pull/3217))
+- Bump `@metamask/providers` from `20.0.0` to `21.0.0` ([#3247](https://github.com/MetaMask/snaps/pull/3247))
+
 ## [6.19.0]
 
 ### Added
@@ -513,7 +531,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...HEAD
+[6.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0
+[6.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
 [6.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0
 [6.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...@metamask/snaps-sdk@6.18.0
 [6.17.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.0...@metamask/snaps-sdk@6.17.1

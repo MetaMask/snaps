@@ -286,6 +286,11 @@ export type SnapRuntimeData = {
    * A mutex to prevent concurrent state updates.
    */
   stateMutex: Mutex;
+
+  /**
+   * A mutex to prevent concurrent state decryption.
+   */
+  getStateMutex: Mutex;
 };
 
 export type SnapError = {
@@ -747,11 +752,11 @@ type SnapControllerArgs = {
   encryptor: ExportableKeyEncryptor;
 
   /**
-   * A hook to access the mnemonic of the user's primary keyring.
+   * A hook to access the mnemonic seed of the user's primary keyring.
    *
-   * @returns The mnemonic as bytes.
+   * @returns The mnemonic seed as bytes.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getMnemonicSeed: () => Promise<Uint8Array>;
 
   /**
    * A hook to get dynamic feature flags at runtime.
@@ -848,7 +853,7 @@ export class SnapController extends BaseController<
 
   readonly #encryptor: ExportableKeyEncryptor;
 
-  readonly #getMnemonic: () => Promise<Uint8Array>;
+  readonly #getMnemonicSeed: () => Promise<Uint8Array>;
 
   readonly #getFeatureFlags: () => DynamicFeatureFlags;
 
@@ -885,7 +890,7 @@ export class SnapController extends BaseController<
     detectSnapLocation: detectSnapLocationFunction = detectSnapLocation,
     preinstalledSnaps = null,
     encryptor,
-    getMnemonic,
+    getMnemonicSeed,
     getFeatureFlags = () => ({}),
     clientCryptography,
   }: SnapControllerArgs) {
@@ -941,7 +946,7 @@ export class SnapController extends BaseController<
     this.maxRequestTime = maxRequestTime;
     this.#detectSnapLocation = detectSnapLocationFunction;
     this.#encryptor = encryptor;
-    this.#getMnemonic = getMnemonic;
+    this.#getMnemonicSeed = getMnemonicSeed;
     this.#getFeatureFlags = getFeatureFlags;
     this.#clientCryptography = clientCryptography;
     this.#preinstalledSnaps = preinstalledSnaps;
@@ -1824,11 +1829,11 @@ export class SnapController extends BaseController<
     }
 
     const salt = passedSalt ?? this.#encryptor.generateSalt();
-    const mnemonicPhrase = await this.#getMnemonic();
+    const seed = await this.#getMnemonicSeed();
 
     const entropy = await getEncryptionEntropy({
       snapId,
-      mnemonicPhrase,
+      seed,
       cryptographicFunctions: this.#clientCryptography,
     });
 
@@ -2046,33 +2051,36 @@ export class SnapController extends BaseController<
    */
   async getSnapState(snapId: SnapId, encrypted: boolean): Promise<Json> {
     const runtime = this.#getRuntimeExpect(snapId);
-    const cachedState = encrypted ? runtime.state : runtime.unencryptedState;
+    return await runtime.getStateMutex.runExclusive(async () => {
+      const cachedState = encrypted ? runtime.state : runtime.unencryptedState;
 
-    if (cachedState !== undefined) {
-      return cachedState;
-    }
+      if (cachedState !== undefined) {
+        return cachedState;
+      }
 
-    const state = encrypted
-      ? this.state.snapStates[snapId]
-      : this.state.unencryptedSnapStates[snapId];
+      const state = encrypted
+        ? this.state.snapStates[snapId]
+        : this.state.unencryptedSnapStates[snapId];
 
-    if (state === null || state === undefined) {
-      return null;
-    }
+      if (state === null || state === undefined) {
+        return null;
+      }
 
-    if (!encrypted) {
-      // For performance reasons, we do not validate that the state is JSON,
-      // since we control serialization.
-      const json = JSON.parse(state);
-      runtime.unencryptedState = json;
+      if (!encrypted) {
+        // For performance reasons, we do not validate that the state is JSON,
+        // since we control serialization.
+        const json = JSON.parse(state);
+        runtime.unencryptedState = json;
 
-      return json;
-    }
+        return json;
+      }
 
-    const decrypted = await this.#decryptSnapState(snapId, state);
-    runtime.state = decrypted;
+      const decrypted = await this.#decryptSnapState(snapId, state);
+      // eslint-disable-next-line require-atomic-updates
+      runtime.state = decrypted;
 
-    return decrypted;
+      return decrypted;
+    });
   }
 
   /**
@@ -3968,6 +3976,7 @@ export class SnapController extends BaseController<
       interpreter,
       stopping: false,
       stateMutex: new Mutex(),
+      getStateMutex: new Mutex(),
     });
   }
 

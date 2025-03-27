@@ -1,6 +1,6 @@
 {
   "name": "@metamask/send-flow-example-snap",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "MetaMask example Snap demonstrating a send flow with UI components",
   "keywords": [
     "MetaMask",
@@ -44,7 +44,8 @@
   },
   "dependencies": {
     "@metamask/rpc-errors": "^7.0.2",
-    "@metamask/snaps-sdk": "workspace:^"
+    "@metamask/snaps-sdk": "workspace:^",
+    "@metamask/utils": "^11.2.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

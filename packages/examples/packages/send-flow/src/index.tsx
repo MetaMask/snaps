@@ -9,7 +9,7 @@ import { UserInputEventType } from '@metamask/snaps-sdk';
 import { SendFlow } from './components';
 import { accountsArray, accounts } from './data';
 import type { SendFormState, SendFlowContext } from './types';
-import { formValidation, generateSendFlow } from './utils';
+import { formValidation, generateSendFlow, isCaipHexAddress } from './utils';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -98,7 +98,29 @@ export const onUserInput: OnUserInputHandler = async ({
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
-      case 'to':
+      case 'to': {
+        await snap.request({
+          method: 'snap_updateInterface',
+          params: {
+            id,
+            ui: (
+              <SendFlow
+                accounts={accountsArray}
+                selectedAccount={sendForm.accountSelector}
+                selectedCurrency={selectedCurrency}
+                total={total}
+                fees={fees}
+                errors={formErrors}
+                // For testing purposes, we display the avatar if the address is
+                // a valid hex checksum address.
+                displayAvatar={isCaipHexAddress(event.value)}
+              />
+            ),
+          },
+        });
+        break;
+      }
+
       case 'accountSelector': {
         await snap.request({
           method: 'snap_updateInterface',
@@ -111,7 +133,6 @@ export const onUserInput: OnUserInputHandler = async ({
                 selectedCurrency={selectedCurrency}
                 total={total}
                 fees={fees}
-                displayClearIcon={Boolean(sendForm.to) && sendForm.to !== ''}
                 errors={formErrors}
               />
             ),
@@ -120,31 +141,7 @@ export const onUserInput: OnUserInputHandler = async ({
 
         break;
       }
-      default:
-        break;
-    }
-  } else if (event.type === UserInputEventType.ButtonClickEvent) {
-    switch (event.name) {
-      case 'clear':
-        await snap.request({
-          method: 'snap_updateInterface',
-          params: {
-            id,
-            ui: (
-              <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
-                total={total}
-                fees={fees}
-                flushToAddress={true}
-                displayClearIcon={false}
-                errors={formErrors}
-              />
-            ),
-          },
-        });
-        break;
+
       default:
         break;
     }

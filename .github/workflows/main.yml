@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download actionlint
         id: download-actionlint
-        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.25
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.7.7
         shell: bash
       - name: Check workflow files
         run: ${{ steps.download-actionlint.outputs.executable }} -color
@@ -97,7 +97,9 @@ jobs:
   all-jobs-complete:
     name: All jobs complete
     runs-on: ubuntu-latest
-    needs: lint-build-test
+    needs:
+      - analyse-code
+      - lint-build-test
     outputs:
       passed: ${{ steps.set-output.outputs.passed }}
     steps:
@@ -117,17 +119,3 @@ jobs:
           if [[ $passed != "true" ]]; then
             exit 1
           fi
-
-  re-run:
-    name: Re-run failed jobs
-    needs: lint-build-test
-    if: failure() && fromJSON(github.run_attempt) < 3 && github.event.pull_request.user.login != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    permissions:
-      actions: write
-    steps:
-      - env:
-          GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ github.token }}
-          GH_DEBUG: api
-        run: gh workflow run re-run.yml -F run-id=${{ github.run_id }}

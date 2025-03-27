@@ -33,12 +33,10 @@ jobs:
       - name: Ensure `publish_dir` is not empty
         if: ${{ inputs.publish_dir == '' }}
         run: exit 1
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          node-version-file: '.nvmrc'
-      - run: yarn --immutable
+          is-high-risk-environment: true
       - name: Run build script
         run: ${{ inputs.build_script }}
       - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch

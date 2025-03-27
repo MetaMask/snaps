@@ -29,6 +29,7 @@ const REQUIRED_PERMISSIONS = [
 const hookNames: MethodHooksObject<ListEntropySourcesHooks> = {
   hasPermission: true,
   getEntropySources: true,
+  getUnlockPromise: true,
 };
 
 export type ListEntropySourcesHooks = {
@@ -46,6 +47,13 @@ export type ListEntropySourcesHooks = {
    * @returns The entropy sources.
    */
   getEntropySources: () => EntropySource[];
+
+  /**
+   * Wait for the extension to be unlocked.
+   *
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
 export const listEntropySourcesHandler: PermittedHandlerExport<
@@ -59,7 +67,7 @@ export const listEntropySourcesHandler: PermittedHandlerExport<
 };
 
 /**
- * The `snap_getInterfaceContext` method implementation.
+ * The `snap_listEntropySources` method implementation.
  *
  * @param _request - The JSON-RPC request object. Not used by this function.
  * @param response - The JSON-RPC response object.
@@ -70,19 +78,26 @@ export const listEntropySourcesHandler: PermittedHandlerExport<
  * @param hooks.hasPermission - The function to check if the origin has a
  * permission.
  * @param hooks.getEntropySources - The function to get the entropy sources.
+ * @param hooks.getUnlockPromise - The function to get the unlock promise.
  * @returns Noting.
  */
-function listEntropySourcesImplementation(
+async function listEntropySourcesImplementation(
   _request: JsonRpcRequest<ListEntropySourcesParams>,
   response: PendingJsonRpcResponse<ListEntropySourcesResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, getEntropySources }: ListEntropySourcesHooks,
-): void {
+  {
+    hasPermission,
+    getEntropySources,
+    getUnlockPromise,
+  }: ListEntropySourcesHooks,
+): Promise<void> {
   const isPermitted = REQUIRED_PERMISSIONS.some(hasPermission);
   if (!isPermitted) {
     return end(providerErrors.unauthorized());
   }
+
+  await getUnlockPromise(true);
 
   response.result = getEntropySources();
   return end();

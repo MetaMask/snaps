@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.0]
+
+### Added
+
+- Add support for the `AddressInput` component ([#3129](https://github.com/MetaMask/snaps/pull/3129))
+- Add support for the `AssetSelector` component ([#3166](https://github.com/MetaMask/snaps/pull/3166))
+- Add mutex to `getSnapState` to prevent concurrent decryption ([#3234](https://github.com/MetaMask/snaps/pull/3234))
+
+### Changed
+
+- Increase Snap interface context size limit slightly ([#3246](https://github.com/MetaMask/snaps/pull/3246))
+- Bump `@metamask/key-tree` from `10.1.0` to `10.1.1` ([#3254](https://github.com/MetaMask/snaps/pull/3254))
+- Bump `nanoid` from `3.1.31` to `3.3.10` ([#3228](https://github.com/MetaMask/snaps/pull/3228), [#3255](https://github.com/MetaMask/snaps/pull/3255))
+
+## [11.0.1]
+
+### Fixed
+
+- Handle `withKeyring` breaking change in `MultichainRouter` ([#3238](https://github.com/MetaMask/snaps/pull/3238))
+
+## [11.0.0]
+
+### Changed
+
+- **BREAKING:** Use mnemonic seed for state encryption key derivation ([#3217](https://github.com/MetaMask/snaps/pull/3217))
+  - `SnapController` now expects a `getMnemonicSeed` hook that must return the BIP-39 seed for the user's primary mnemonic.
+
 ## [10.0.1]
 
 ### Changed
@@ -657,7 +684,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...HEAD
+[11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.1...@metamask/snaps-controllers@11.1.0
+[11.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.0...@metamask/snaps-controllers@11.0.1
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.1...@metamask/snaps-controllers@11.0.0
 [10.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.0...@metamask/snaps-controllers@10.0.1
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.1...@metamask/snaps-controllers@10.0.0
 [9.19.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@9.19.0...@metamask/snaps-controllers@9.19.1
