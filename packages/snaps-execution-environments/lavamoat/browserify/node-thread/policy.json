@@ -186,17 +186,12 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "jest>@jest/core>jest-runner>jest-worker>supports-color": true,
+        "istanbul-lib-report>supports-color": true,
         "tty": true,
         "util": true
       }
     },
-    "istanbul-lib-report>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "jest>@jest/core>jest-runner>jest-worker>supports-color": {
+    "istanbul-lib-report>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -209,6 +204,11 @@
         "istanbul-lib-report>supports-color>has-flag": true,
         "os": true,
         "tty": true
+      }
+    },
+    "istanbul-lib-report>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "readable-stream": {
