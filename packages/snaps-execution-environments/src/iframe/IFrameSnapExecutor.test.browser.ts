@@ -41,9 +41,6 @@ async function getResponse(
 
 describe('IFrameSnapExecutor', () => {
   beforeAll(() => {
-    // @ts-expect-error - `globalThis.process` is not optional.
-    delete globalThis.process;
-
     lockdown({
       domainTaming: 'unsafe',
       errorTaming: 'unsafe',

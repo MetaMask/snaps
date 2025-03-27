@@ -59,7 +59,7 @@
     "test": "jest --reporters=jest-silent-reporter && yarn test:browser",
     "test:browser": "vitest",
     "test:clean": "jest --clearCache",
-    "test:post": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/wdio",
+    "test:post": "ts-node scripts/coverage.ts && rimraf coverage/jest coverage/vite",
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
@@ -109,7 +109,6 @@
     "jest-silent-reporter": "^0.6.0",
     "lavamoat": "^8.0.4",
     "lavamoat-browserify": "^17.0.5",
-    "playwright": "^1.51.0",
     "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
