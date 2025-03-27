@@ -491,7 +491,7 @@ describe('getPermittedHooks', () => {
     await updateInterface(id, content);
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      3,
+      2,
       'SnapInterfaceController:updateInterface',
       snapId,
       id,
@@ -532,7 +532,7 @@ describe('getPermittedHooks', () => {
     const result = getInterfaceState(id);
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      3,
+      2,
       'SnapInterfaceController:getInterface',
       snapId,
       id,
@@ -573,7 +573,7 @@ describe('getPermittedHooks', () => {
     const result = getInterfaceContext(id);
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      3,
+      2,
       'SnapInterfaceController:getInterface',
       snapId,
       id,
@@ -616,7 +616,7 @@ describe('getPermittedHooks', () => {
     await resolveInterface(id, 'foobar');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      2,
+      1,
       'SnapInterfaceController:resolveInterface',
       snapId,
       id,
