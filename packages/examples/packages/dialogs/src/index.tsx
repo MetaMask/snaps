@@ -142,6 +142,20 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
         break;
       }
 
+      case 'accept':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: { id, value: true },
+        });
+        break;
+
+      case 'reject':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: { id, value: false },
+        });
+        break;
+
       default:
         break;
     }
