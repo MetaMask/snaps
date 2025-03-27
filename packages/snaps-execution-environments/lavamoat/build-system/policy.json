@@ -1966,7 +1966,7 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "jest>@jest/core>jest-runner>jest-worker>supports-color": true
+        "istanbul-lib-report>supports-color": true
       }
     },
     "eslint>espree>acorn-jsx": {
@@ -1981,12 +1981,7 @@
         "util.promisify": true
       }
     },
-    "istanbul-lib-report>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
-    "jest>@jest/core>jest-runner>jest-worker>supports-color": {
+    "istanbul-lib-report>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -1997,6 +1992,11 @@
       },
       "packages": {
         "istanbul-lib-report>supports-color>has-flag": true
+      }
+    },
+    "istanbul-lib-report>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "jest>@jest/core>strip-ansi": {
