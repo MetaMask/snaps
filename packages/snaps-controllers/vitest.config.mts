@@ -109,9 +109,5 @@ export default defineConfig({
         'src/services/node.ts',
       ],
     },
-
-    printConsoleTrace: false,
-    includeTaskLocation: false,
-    disableConsoleIntercept: false,
   },
 });
