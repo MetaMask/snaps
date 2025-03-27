@@ -164,7 +164,7 @@ describe('IframeExecutionService', () => {
     document.body.appendChild(testFrame);
 
     expect(await message).toContain(
-      'Failed to access document of the snap iframe: SecurityError',
+      'Failed to access document of the snap iframe.',
     );
   });
 

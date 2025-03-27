@@ -19,15 +19,12 @@
 
           // We try to access the snap iframe document. If this works, it means
           // that the iframe is not sandboxed. Otherwise it will throw an error.
-          snap.document;
-
-          window.parent.postMessage(
-            'Same origin frames access worked which might suggest sandboxing failed.',
-            '*',
-          );
+          if (snap.document === null || snap.document === undefined) {
+            window.parent.postMessage('Failed to access document of the snap iframe.', '*');
+          }
         } catch (e) {
           window.parent.postMessage(
-            `Failed to access document of the snap iframe: ${e.toString()}`,
+            `An unknown error occurred: ${e.toString()}`,
             '*',
           );
         }
