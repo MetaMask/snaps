@@ -152,9 +152,26 @@ export class CronjobController extends BaseController<
     this._handleEventSnapUpdated = this._handleEventSnapUpdated.bind(this);
     this._handleSnapDisabledEvent = this._handleSnapDisabledEvent.bind(this);
     this._handleSnapEnabledEvent = this._handleSnapEnabledEvent.bind(this);
-    // Subscribe to Snap events
-    /* eslint-disable @typescript-eslint/unbound-method */
 
+    // Subscribe to Snap events
+    this.#initializeEventListeners();
+
+    // Register action handlers
+    this.#initializeActionHandlers();
+
+    this.dailyCheckIn().catch((error) => {
+      /* istanbul ignore next */
+      logError(error);
+    });
+
+    this.#rescheduleBackgroundEvents(Object.values(this.state.events));
+  }
+
+  /**
+   * Initialize event listeners.
+   */
+  #initializeEventListeners() {
+    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
       this._handleSnapRegisterEvent,
@@ -180,7 +197,12 @@ export class CronjobController extends BaseController<
       this._handleEventSnapUpdated,
     );
     /* eslint-enable @typescript-eslint/unbound-method */
+  }
 
+  /**
+   * Initialize action handlers.
+   */
+  #initializeActionHandlers() {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:scheduleBackgroundEvent`,
       (...args) => this.scheduleBackgroundEvent(...args),
@@ -195,12 +217,64 @@ export class CronjobController extends BaseController<
       `${controllerName}:getBackgroundEvents`,
       (...args) => this.getBackgroundEvents(...args),
     );
+  }
 
-    this.dailyCheckIn().catch((error) => {
-      logError(error);
+  /**
+   * Execute a request.
+   *
+   * @param snapId - ID of a Snap.
+   * @param request - Request to be executed.
+   */
+  async #executeRequest(snapId: SnapId, request: unknown) {
+    await this.messagingSystem
+      .call('SnapController:handleRequest', {
+        snapId,
+        origin: '',
+        handler: HandlerType.OnCronjob,
+        request: request as Record<string, unknown>,
+      })
+      .catch((error) => {
+        /* istanbul ignore next */
+        logError(error);
+      });
+  }
+
+  /**
+   * Setup a timer.
+   *
+   * @param id - ID of a timer.
+   * @param ms - Time in milliseconds.
+   * @param snapId - ID of a Snap.
+   * @param onComplete - Callback function to be executed when the timer completes.
+   */
+  #setupTimer(id: string, ms: number, snapId: SnapId, onComplete: () => void) {
+    if (ms <= 0) {
+      throw new Error('Cannot schedule execution in the past.');
+    }
+
+    const timer = new Timer(ms);
+    timer.start(() => {
+      onComplete();
+      this.#timers.delete(id);
+      this.#snapIds.delete(id);
     });
 
-    this.#rescheduleBackgroundEvents(Object.values(this.state.events));
+    this.#timers.set(id, timer);
+    this.#snapIds.set(id, snapId);
+  }
+
+  /**
+   * Cleanup a timer.
+   *
+   * @param id - ID of a timer.
+   */
+  #cleanupTimer(id: string) {
+    const timer = this.#timers.get(id);
+    if (timer) {
+      timer.cancel();
+      this.#timers.delete(id);
+      this.#snapIds.delete(id);
+    }
   }
 
   /**
@@ -273,23 +347,15 @@ export class CronjobController extends BaseController<
       return;
     }
 
-    const timer = new Timer(ms);
-    timer.start(() => {
-      this.#executeCronjob(job).catch((error) => {
-        // TODO: Decide how to handle errors.
-        logError(error);
-      });
-
-      this.#timers.delete(job.id);
+    this.#setupTimer(job.id, ms, job.snapId, () => {
+      // TODO: Decide how to handle errors.
+      this.#executeCronjob(job).catch(logError);
       this.#schedule(job);
     });
 
     if (!this.state.jobs[job.id]?.lastRun) {
       this.#updateJobLastRunState(job.id, 0); // 0 for init, never ran actually
     }
-
-    this.#timers.set(job.id, timer);
-    this.#snapIds.set(job.id, job.snapId);
   }
 
   /**
@@ -299,12 +365,7 @@ export class CronjobController extends BaseController<
    */
   async #executeCronjob(job: Cronjob) {
     this.#updateJobLastRunState(job.id, Date.now());
-    await this.messagingSystem.call('SnapController:handleRequest', {
-      snapId: job.snapId,
-      origin: '',
-      handler: HandlerType.OnCronjob,
-      request: job.request,
-    });
+    await this.#executeRequest(job.snapId, job.request);
   }
 
   /**
@@ -358,10 +419,7 @@ export class CronjobController extends BaseController<
       'Only the origin that scheduled this event can cancel it.',
     );
 
-    const timer = this.#timers.get(id);
-    timer?.cancel();
-    this.#timers.delete(id);
-    this.#snapIds.delete(id);
+    this.#cleanupTimer(id);
     this.update((state) => {
       delete state.events[id];
     });
@@ -377,32 +435,12 @@ export class CronjobController extends BaseController<
     const now = new Date();
     const ms = date.getTime() - now.getTime();
 
-    if (ms <= 0) {
-      throw new Error('Cannot schedule an event in the past.');
-    }
-
-    const timer = new Timer(ms);
-    timer.start(() => {
-      this.messagingSystem
-        .call('SnapController:handleRequest', {
-          snapId: event.snapId,
-          origin: '',
-          handler: HandlerType.OnCronjob,
-          request: event.request,
-        })
-        .catch((error) => {
-          logError(error);
-        });
-
-      this.#timers.delete(event.id);
-      this.#snapIds.delete(event.id);
+    this.#setupTimer(event.id, ms, event.snapId, () => {
+      this.#executeRequest(event.snapId, event.request).catch(logError);
       this.update((state) => {
         delete state.events[event.id];
       });
     });
-
-    this.#timers.set(event.id, timer);
-    this.#snapIds.set(event.id, event.snapId);
   }
 
   /**
@@ -493,7 +531,7 @@ export class CronjobController extends BaseController<
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
     this.#dailyTimer.start(() => {
       this.dailyCheckIn().catch((error) => {
-        // TODO: Decide how to handle errors.
+        /* istanbul ignore next */
         logError(error);
       });
     });
