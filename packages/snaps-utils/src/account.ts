@@ -1,6 +1,6 @@
-<<<<<<< HEAD
 import type { SnapId } from '@metamask/snaps-sdk';
-import type { Json } from '@metamask/utils';
+import type { Json, CaipAccountId, CaipChainId } from '@metamask/utils';
+import { parseCaipChainId, toCaipAccountId } from '@metamask/utils';
 
 /**
  * Copy of the original type from
@@ -12,14 +12,12 @@ export type InternalAccount = {
   address: string;
   options: Record<string, Json>;
   methods: string[];
+  scopes: CaipChainId[];
   metadata: {
     name: string;
     snap?: { id: SnapId; enabled: boolean; name: string };
   };
 };
-=======
-import type { CaipAccountId, CaipChainId } from '@metamask/utils';
-import { parseCaipChainId, toCaipAccountId } from '@metamask/utils';
 
 /**
  * Create a list of CAIP account IDs from an address and a list of scopes.
@@ -37,4 +35,3 @@ export function createAccountList(
     return toCaipAccountId(namespace, reference, address);
   });
 }
->>>>>>> 82969fe5 (address requested changes)

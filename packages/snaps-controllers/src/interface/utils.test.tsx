@@ -623,6 +623,214 @@ describe('constructState', () => {
     });
   });
 
+  it('sets default value for root level AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (address: string) => ({
+        id: MOCK_ACCOUNT_ID,
+        address,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    const element = (
+      <Box>
+        <AccountSelector name="foo" />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
+    });
+  });
+
+  it('supports root level AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (address: string) => ({
+        id: MOCK_ACCOUNT_ID,
+        address,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    const element = (
+      <Box>
+        <AccountSelector
+          name="foo"
+          value="eip155:0:0x1234567890123456789012345678901234567890"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
+    });
+  });
+
+  it('sets default value for AccountSelector in form', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (address: string) => ({
+        id: MOCK_ACCOUNT_ID,
+        address,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AccountSelector name="foo" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        },
+      },
+    });
+  });
+
+  it('supports AccountSelector in form', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (address: string) => ({
+        id: MOCK_ACCOUNT_ID,
+        address,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AccountSelector
+              name="foo"
+              value="eip155:0:0x1234567890123456789012345678901234567890"
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        },
+      },
+    });
+  });
+
+  it('sets the selected account to the currently selected account if the account does not exist for AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue(undefined);
+
+    const element = (
+      <Box>
+        <AccountSelector
+          name="foo"
+          value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
+    });
+  });
+
+  it('sets the selected account to null if there is no selected account', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue(undefined);
+
+    const element = (
+      <Box>
+        <AccountSelector name="foo" />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
+  it('switches the selected account if `switchGlobalAccount` is set', () => {
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (address: string) => ({
+        id: MOCK_ACCOUNT_ID,
+        address,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    const element = (
+      <Box>
+        <AccountSelector
+          name="foo"
+          value="eip155:0:0x1234567890123456789012345678901234567890"
+          switchGlobalAccount
+        />
+      </Box>
+    );
+
+    constructState({}, element, elementDataGetters);
+
+    expect(elementDataGetters.setSelectedAccount).toHaveBeenCalledWith(
+      MOCK_ACCOUNT_ID,
+    );
+  });
+
   it('sets default value for root level AssetSelector', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
       assetsMetadata: {
@@ -646,13 +854,9 @@ describe('constructState', () => {
       <Box>
         <AssetSelector
           name="foo"
-<<<<<<< HEAD
           addresses={[
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
-=======
-          value="eip155:0:0x1234567890123456789012345678901234567890"
->>>>>>> 82969fe5 (address requested changes)
         />
       </Box>
     );
@@ -731,13 +935,9 @@ describe('constructState', () => {
           <Field label="foo">
             <AssetSelector
               name="foo"
-<<<<<<< HEAD
               addresses={[
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
               ]}
-=======
-              value="eip155:0:0x1234567890123456789012345678901234567890"
->>>>>>> 82969fe5 (address requested changes)
             />
           </Field>
         </Form>
@@ -774,7 +974,6 @@ describe('constructState', () => {
 
     const element = (
       <Box>
-<<<<<<< HEAD
         <Form name="form">
           <Field label="foo">
             <AssetSelector
@@ -786,12 +985,6 @@ describe('constructState', () => {
             />
           </Field>
         </Form>
-=======
-        <AccountSelector
-          name="foo"
-          value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
-        />
->>>>>>> 82969fe5 (address requested changes)
       </Box>
     );
 
@@ -844,7 +1037,6 @@ describe('constructState', () => {
     });
   });
 
-<<<<<<< HEAD
   it('sets the value to null if the account has no assets', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
       assetsMetadata: {
@@ -861,27 +1053,14 @@ describe('constructState', () => {
     elementDataGetters.getAccountByAddress.mockReturnValue({
       id: MOCK_ACCOUNT_ID,
     });
-=======
-  it('switches the selected account if `switchGlobalAccount` is set', () => {
-    getAccountByAddress.mockImplementation((address: string) => ({
-      id: 'foo',
-      address,
-      scopes: ['eip155:0'],
-    }));
->>>>>>> 82969fe5 (address requested changes)
 
     const element = (
       <Box>
         <AssetSelector
           name="foo"
-<<<<<<< HEAD
           addresses={[
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
           ]}
-=======
-          value="eip155:0:0x1234567890123456789012345678901234567890"
-          switchGlobalAccount
->>>>>>> 82969fe5 (address requested changes)
         />
       </Box>
     );
@@ -1196,7 +1375,12 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          setSelectedAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1231,7 +1415,12 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          setSelectedAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset:
@@ -1259,7 +1448,12 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          setSelectedAccount: jest.fn(),
+        },
       ),
     ).toBeNull();
   });
@@ -1295,7 +1489,12 @@ describe('getDefaultAsset', () => {
           'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          setSelectedAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1320,7 +1519,12 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          setSelectedAccount: jest.fn(),
+        },
       ),
     ).toThrow(
       'Account not found for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv.',
