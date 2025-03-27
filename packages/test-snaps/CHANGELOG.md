@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.3]
+
+- Use latest versions of example Snaps ([#3269](https://github.com/MetaMask/snaps/pull/3269))
+
 ## [2.20.2]
 
 ### Changed
@@ -301,7 +305,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.3...HEAD
+[2.20.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.2...@metamask/test-snaps@2.20.3
 [2.20.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.1...@metamask/test-snaps@2.20.2
 [2.20.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.0...@metamask/test-snaps@2.20.1
 [2.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.19.0...@metamask/test-snaps@2.20.0

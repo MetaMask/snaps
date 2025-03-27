@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.21.0]
+
+### Added
+
+- Add `displayAvatar` prop to `AddressInput` component ([#3264](https://github.com/MetaMask/snaps/pull/3264))
+
 ## [6.20.0]
 
 ### Added
@@ -525,7 +531,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...HEAD
+[6.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0
 [6.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
 [6.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0
 [6.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.17.1...@metamask/snaps-sdk@6.18.0
