@@ -189,15 +189,10 @@ jobs:
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Install Google Chrome
-        if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-utils' }}
+        if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         uses: MetaMask/action-retry-command@v1
         with:
-          command: yarn install-chrome
-      - name: Install Chromium
-        if: ${{ matrix.package-name == '@metamask/snaps-execution-environments' }}
-        uses: MetaMask/action-retry-command@v1
-        with:
-          command: yarn playwright install --with-deps
+          command: yarn playwright install --with-deps --only-shell chromium
       - name: Run tests
         uses: MetaMask/action-retry-command@v1
         with:
