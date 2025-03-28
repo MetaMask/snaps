@@ -1,4 +1,5 @@
 export * from './confirmations';
+export * from './constants';
 export * from './controller';
 export * from './execution-environment';
 export * from './service';

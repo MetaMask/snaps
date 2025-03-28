@@ -5,7 +5,7 @@ import { logError } from '@metamask/snaps-utils';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
-import { MOCK_BLOCK_NUMBER } from './execution-environment';
+import { MOCK_BLOCK_NUMBER } from './constants';
 import type { ErrorMessageEvent } from '../services';
 import { setupMultiplex } from '../services';
 

@@ -1,3 +1,5 @@
+import { describe, expect, it, afterEach } from 'vitest';
+
 import { createWindow } from './iframe';
 
 const IFRAME_URL = `http://localhost:4569`;

@@ -11,26 +11,35 @@
     <script>
       (function () {
         try {
-          const snap = top.querySelector('iframe[data-testid="snaps-iframe"]');
+          // Parent is the iframe created by Vitest containing the Snap iframe
+          // and this page as a sibling iframe. We try to access the Snap iframe
+          // from the parent iframe.
+          const snap = parent.document.querySelector(
+            'iframe[data-testid="snaps-iframe"]',
+          );
           if (!snap) {
-            window.parent.postMessage('Failed to find snap iframe.', '*');
+            window.parent.postMessage('Failed to find Snap iframe.', '*');
             return;
           }
 
           // We try to access the snap iframe document. If this works, it means
           // that the iframe is not sandboxed. Otherwise it will throw an error.
-          snap.document;
-
-          window.parent.postMessage(
-            'Same origin frames access worked which might suggest sandboxing failed.',
-            '*',
-          );
+          if (snap.contentDocument === null) {
+            window.parent.postMessage(
+              'Failed to access document of the snap iframe.',
+              '*',
+            );
+            return;
+          }
         } catch (e) {
           window.parent.postMessage(
-            `Failed to access document of the snap iframe: ${e.toString()}`,
+            `An unknown error occurred: ${e.toString()}`,
             '*',
           );
         }
+
+        // Fall through case, which should not happen.
+        window.parent.postMessage('Unexpected success.', '*');
       })();
     </script>
   </body>

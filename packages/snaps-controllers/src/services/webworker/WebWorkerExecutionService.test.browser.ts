@@ -6,14 +6,16 @@ import {
   MOCK_SNAP_ID,
   spy,
 } from '@metamask/snaps-utils/test-utils';
+import { describe, it, expect, afterEach } from 'vitest';
 
 import {
   WebWorkerExecutionService,
   WORKER_POOL_ID,
 } from './WebWorkerExecutionService';
-import { createService, MOCK_BLOCK_NUMBER } from '../../test-utils';
+import { MOCK_BLOCK_NUMBER } from '../../test-utils/constants';
+import { createService } from '../../test-utils/service';
 
-const WORKER_POOL_URL = 'http://localhost:4567/worker/pool';
+const WORKER_POOL_URL = 'http://localhost:63315/worker/pool/index.html';
 
 describe('WebWorkerExecutionService', () => {
   afterEach(() => {
@@ -122,7 +124,7 @@ describe('WebWorkerExecutionService', () => {
   });
 
   it('can detect outbound requests', async () => {
-    expect.assertions(4);
+    expect.assertions(5);
 
     const { service, messenger } = createService(WebWorkerExecutionService, {
       documentUrl: new URL(WORKER_POOL_URL),
