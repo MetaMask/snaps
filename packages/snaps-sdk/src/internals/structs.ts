@@ -109,12 +109,16 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
     type: 'union',
     schema: flatStructs,
     *entries(value, context) {
-      if (!isObject(value) || !hasProperty(value, 'type')) {
+      if (
+        !isObject(value) ||
+        !hasProperty(value, 'type') ||
+        typeof value.type !== 'string'
+      ) {
         return;
       }
 
       const { type } = value;
-      const struct = structSet[type as string];
+      const struct = structSet[type];
 
       if (!struct) {
         return;
@@ -125,12 +129,16 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       }
     },
     coercer(value, context) {
-      if (!isObject(value) || !hasProperty(value, 'type')) {
+      if (
+        !isObject(value) ||
+        !hasProperty(value, 'type') ||
+        typeof value.type !== 'string'
+      ) {
         return value;
       }
 
       const { type } = value;
-      const struct = structSet[type as string];
+      const struct = structSet[type];
       if (struct) {
         return struct.coercer(value, context);
       }
