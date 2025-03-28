@@ -7,17 +7,14 @@
     "@metamask/eslint-*",
     "@types/*",
     "@typescript-eslint/*",
-    "@wdio/*",
+    "@vitest/coverage-istanbul",
     "eslint-config-*",
     "eslint-plugin-*",
     "jest-silent-reporter",
-    "expect-webdriverio",
     "prettier-plugin-packagejson",
     "ts-node",
     "typedoc",
     "typescript",
-    "vite",
-    "wdio-*",
-    "webdriverio"
+    "vite"
   ]
 }

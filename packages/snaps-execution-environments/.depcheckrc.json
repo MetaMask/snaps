@@ -8,18 +8,14 @@
     "@types/*",
     "@typescript-eslint/*",
     "@vitest/coverage-v8",
-    "@wdio/*",
     "eslint-config-*",
     "eslint-plugin-*",
     "jest-silent-reporter",
-    "expect-webdriverio",
     "prettier-plugin-packagejson",
     "ts-node",
     "typedoc",
     "typescript",
     "vite",
-    "wdio-*",
-    "webdriverio",
     "@metamask/snaps-execution-environments"
   ]
 }
