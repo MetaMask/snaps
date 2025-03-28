@@ -1,24 +1,9 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
-
-  optimizeDeps: {
-    esbuildOptions: {
-      plugins: [
-        // @ts-expect-error: Incompatibility between Vite versions.
-        NodeModulesPolyfillPlugin(),
-
-        // @ts-expect-error: Incompatibility between Vite versions.
-        NodeGlobalsPolyfillPlugin({
-          buffer: true,
-        }),
-      ],
-    },
-  },
+  plugins: [tsconfigPaths(), nodePolyfills()],
 
   test: {
     // Vitest enables watch mode by default. We disable it here, so it can be
