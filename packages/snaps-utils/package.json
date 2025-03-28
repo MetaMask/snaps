@@ -103,8 +103,6 @@
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
-    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
-    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@lavamoat/allow-scripts": "^3.0.4",
     "@metamask/auto-changelog": "^5.0.1",
     "@metamask/post-message-stream": "^9.0.0",
@@ -132,6 +130,7 @@
     "ts-node": "^10.9.1",
     "typescript": "~5.3.3",
     "vite": "^6.2.3",
+    "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^4.0.5",
     "vitest": "^3.0.8"
   },
