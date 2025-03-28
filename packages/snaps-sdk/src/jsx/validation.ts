@@ -43,6 +43,7 @@ import type {
 import type {
   AssetSelectorElement,
   AvatarElement,
+  AccountSelectorElement,
   SkeletonElement,
   AddressElement,
   AddressInputElement,
@@ -397,6 +398,23 @@ export const AddressStruct: Describe<AddressElement> = element('Address', {
 });
 
 /**
+ * A struct for the {@link AccountSelectorElement} type.
+ */
+export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
+  'AccountSelector',
+  {
+    name: string(),
+    hideExternalAccounts: optional(boolean()),
+    chainIds: optional(array(CaipChainIdStruct)) as unknown as Struct<
+      Infer<typeof CaipChainIdStruct>[] | undefined,
+      null
+    >,
+    switchGlobalAccount: optional(boolean()),
+    value: optional(CaipAccountIdStruct),
+  },
+);
+
+/**
  * A struct for the {@link CardElement} type.
  */
 export const CardStruct: Describe<CardElement> = element('Card', {
@@ -522,6 +540,7 @@ const BOX_INPUT_BOTH = [
 const FIELD_CHILDREN_ARRAY = [
   AssetSelectorStruct,
   AddressInputStruct,
+  AccountSelectorStruct,
   InputStruct,
   DropdownStruct,
   RadioGroupStruct,
@@ -531,6 +550,7 @@ const FIELD_CHILDREN_ARRAY = [
 ] as [
   typeof AssetSelectorStruct,
   typeof AddressInputStruct,
+  typeof AccountSelectorStruct,
   typeof InputStruct,
   typeof DropdownStruct,
   typeof RadioGroupStruct,
@@ -923,6 +943,7 @@ export const SpinnerStruct: Describe<SpinnerElement> = element('Spinner');
  * another component (e.g., Field must be contained in a Form).
  */
 export const BoxChildStruct = typedUnion([
+  AccountSelectorStruct,
   AddressStruct,
   AssetSelectorStruct,
   AddressInputStruct,
@@ -991,6 +1012,7 @@ export const RootJSXElementStruct = typedUnion([
 export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   AssetSelectorStruct,
   AddressInputStruct,
+  AccountSelectorStruct,
   ButtonStruct,
   InputStruct,
   FileInputStruct,

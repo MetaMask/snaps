@@ -785,6 +785,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'MultichainAssetsController:getState',
       'AccountsController:getAccountByAddress',
       'SnapController:get',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:setSelectedAccount',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -819,9 +821,26 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       // @ts-expect-error partial mock
       (address: string) => ({
         address,
-        id: 'foo',
+        id: MOCK_ACCOUNT_ID,
         scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:getSelectedMultichainAccount',
+      // @ts-expect-error partial mock
+      () => ({
+        address: '0x1234567890123456789012345678901234567890',
+        id: MOCK_ACCOUNT_ID,
+        scopes: ['eip155:0'],
+      }),
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:setSelectedAccount',
+      (_id: string) => {
+        // no-op
+      },
     );
 
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
