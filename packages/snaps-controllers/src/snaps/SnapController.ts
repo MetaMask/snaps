@@ -1966,8 +1966,10 @@ export class SnapController extends BaseController<
   /**
    * Persist the state of a Snap.
    *
-   * This is run with a mutex to ensure that only one state update per Snap is
-   * processed at a time, avoiding possible race conditions.
+   * This function is debounced per Snap, meaning that multiple calls to this
+   * function for the same Snap will only result in one state update. It also
+   * uses a mutex to ensure that only one state update per Snap is processed at
+   * a time, avoiding possible race conditions.
    *
    * @param snapId - The Snap ID.
    * @param newSnapState - The new state of the Snap.
