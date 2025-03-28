@@ -3,7 +3,13 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "scripts", "package.json", "react-native.d.ts", "vitest.config.mts"],
+  "include": [
+    "./src",
+    "scripts",
+    "package.json",
+    "react-native.d.ts",
+    "vitest.config.mts"
+  ],
   "references": [
     { "path": "../snaps-execution-environments" },
     { "path": "../snaps-rpc-methods" },
