@@ -2,6 +2,8 @@ import { VirtualFile } from '@metamask/snaps-utils';
 import {
   getMockSnapFiles,
   getSnapManifest,
+  MOCK_LOCAL_SNAP_ID,
+  MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
 
@@ -13,7 +15,12 @@ import {
   MOCK_RPC_ORIGINS_PERMISSION,
   MOCK_SNAP_DIALOG_PERMISSION,
 } from './test-utils';
-import { debounce, getSnapFiles, permissionsDiff, setDiff } from './utils';
+import {
+  debouncePersistState,
+  getSnapFiles,
+  permissionsDiff,
+  setDiff,
+} from './utils';
 import { SnapEndowments } from '../../snaps-rpc-methods/src/endowments';
 
 describe('setDiff', () => {
@@ -181,7 +188,7 @@ describe('getSnapFiles', () => {
   });
 });
 
-describe('debounce', () => {
+describe('debouncePersistState', () => {
   beforeAll(() => {
     jest.useFakeTimers();
   });
@@ -190,20 +197,27 @@ describe('debounce', () => {
     jest.useRealTimers();
   });
 
-  it('debounces a function based on a key', () => {
+  it('debounces persisting the state based on the Snap ID and whether it should be encrypted or not', () => {
     const fn = jest.fn();
-    const debounced = debounce(fn, 100);
+    const debounced = debouncePersistState(fn, 100);
 
-    expect(debounced('foo')).toBeUndefined();
-    expect(debounced('foo')).toBeUndefined();
-    expect(debounced('bar')).toBeUndefined();
-    expect(debounced('bar')).toBeUndefined();
+    expect(debounced(MOCK_SNAP_ID, {}, true)).toBeUndefined();
+    expect(debounced(MOCK_SNAP_ID, {}, true)).toBeUndefined();
+    expect(debounced(MOCK_SNAP_ID, {}, false)).toBeUndefined();
+    expect(debounced(MOCK_SNAP_ID, {}, false)).toBeUndefined();
+
+    expect(debounced(MOCK_LOCAL_SNAP_ID, {}, true)).toBeUndefined();
+    expect(debounced(MOCK_LOCAL_SNAP_ID, {}, true)).toBeUndefined();
+    expect(debounced(MOCK_LOCAL_SNAP_ID, {}, false)).toBeUndefined();
+    expect(debounced(MOCK_LOCAL_SNAP_ID, {}, false)).toBeUndefined();
 
     expect(fn).toHaveBeenCalledTimes(0);
 
     jest.advanceTimersByTime(100);
-    expect(fn).toHaveBeenCalledTimes(2);
-    expect(fn).toHaveBeenNthCalledWith(1, 'foo');
-    expect(fn).toHaveBeenNthCalledWith(2, 'bar');
+    expect(fn).toHaveBeenCalledTimes(4);
+    expect(fn).toHaveBeenNthCalledWith(1, MOCK_SNAP_ID, {}, true);
+    expect(fn).toHaveBeenNthCalledWith(2, MOCK_SNAP_ID, {}, false);
+    expect(fn).toHaveBeenNthCalledWith(3, MOCK_LOCAL_SNAP_ID, {}, true);
+    expect(fn).toHaveBeenNthCalledWith(4, MOCK_LOCAL_SNAP_ID, {}, false);
   });
 });

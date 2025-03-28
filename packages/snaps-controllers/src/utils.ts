@@ -8,6 +8,7 @@ import {
   validateAuxiliaryFiles,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 
 import type { SnapLocation } from './snaps';
@@ -331,29 +332,36 @@ export async function fetchSnap(snapId: SnapId, location: SnapLocation) {
 }
 
 /**
- * Debounce a function based on the given key, i.e., the function will only be
- * called after the timeout has passed since the last call for the same key.
+ * Debounce persisting Snap state changes.
  *
  * @param fn - The function to debounce.
  * @param timeout - The timeout in milliseconds. Defaults to 1000.
- * @returns A debounced function.
- * @template Key - The key to debounce the function on.
- * @template Args - The arguments of the function.
+ * @returns The debounced function.
  * @example
- * const originalFunction = (key: string, value: number) => {
- *   console.log(`Called with key: ${key} and value: ${value}`);
+ * const originalUpdate = (snapId, newSnapState, encrypted) => {
+ *   console.log(`Called with Snap ID: ${snapId} and state: ${newSnapState}`);
  * };
  *
- * const debouncedFunction = debounce(originalFunction);
- * debouncedFunction('foo', 1);
+ * const debouncedUpdate = debounce(originalUpdate);
+ * debouncedFunction('npm:foo-snap', { foo: 'bar' }, false);
  */
-export function debounce<Key, Args extends unknown[]>(
-  fn: (key: Key, ...args: Args) => void,
+export function debouncePersistState(
+  fn: (
+    snapId: SnapId,
+    newSnapState: Record<string, Json> | null,
+    encrypted: boolean,
+  ) => void,
   timeout = 1000,
 ) {
-  const timeouts = new Map<Key, NodeJS.Timeout>();
+  const timeouts = new Map<string, NodeJS.Timeout>();
 
-  return (key: Key, ...args: Args): void => {
+  return (
+    snapId: SnapId,
+    newSnapState: Record<string, Json> | null,
+    encrypted: boolean,
+  ): void => {
+    const key = `${snapId}-${encrypted}`;
+
     if (timeouts.has(key)) {
       clearTimeout(timeouts.get(key));
     }
@@ -361,7 +369,7 @@ export function debounce<Key, Args extends unknown[]>(
     timeouts.set(
       key,
       setTimeout(() => {
-        fn(key, ...args);
+        fn(snapId, newSnapState, encrypted);
         timeouts.delete(key);
       }, timeout),
     );

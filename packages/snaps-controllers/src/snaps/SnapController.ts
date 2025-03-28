@@ -168,7 +168,7 @@ import type {
   KeyDerivationOptions,
 } from '../types';
 import {
-  debounce,
+  debouncePersistState,
   fetchSnap,
   hasTimedOut,
   permissionsDiff,
@@ -1976,7 +1976,7 @@ export class SnapController extends BaseController<
    * @param encrypted - A flag to indicate whether to use encrypted storage or
    * not.
    */
-  readonly #persistSnapState = debounce(
+  readonly #persistSnapState = debouncePersistState(
     (
       snapId: SnapId,
       newSnapState: Record<string, Json> | null,
