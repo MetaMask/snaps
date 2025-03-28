@@ -2,12 +2,12 @@ import type { Infer } from '@metamask/superstruct';
 import {
   assign,
   boolean,
-  literal,
   object,
   optional,
   string,
 } from '@metamask/superstruct';
 
+import { literal } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 

@@ -1,5 +1,5 @@
 import type { Infer, Struct } from '@metamask/superstruct';
-import { array, assign, lazy, literal, object } from '@metamask/superstruct';
+import { array, assign, lazy, object } from '@metamask/superstruct';
 
 import { AddressStruct } from './address';
 import { ButtonStruct } from './button';
@@ -12,7 +12,7 @@ import { InputStruct } from './input';
 import { RowStruct } from './row';
 import { SpinnerStruct } from './spinner';
 import { TextStruct } from './text';
-import { typedUnion } from '../../internals';
+import { typedUnion, literal } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 

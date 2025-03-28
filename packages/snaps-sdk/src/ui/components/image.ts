@@ -1,7 +1,7 @@
 import type { Infer } from '@metamask/superstruct';
-import { assign, literal, object } from '@metamask/superstruct';
+import { assign, object } from '@metamask/superstruct';
 
-import { svg } from '../../internals';
+import { svg, literal } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 

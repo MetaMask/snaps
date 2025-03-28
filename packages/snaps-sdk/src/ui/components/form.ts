@@ -1,15 +1,9 @@
 import type { Infer } from '@metamask/superstruct';
-import {
-  array,
-  assign,
-  literal,
-  object,
-  string,
-  union,
-} from '@metamask/superstruct';
+import { array, assign, object, string, union } from '@metamask/superstruct';
 
 import { ButtonStruct } from './button';
 import { InputStruct } from './input';
+import { literal } from '../../internals';
 import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 
