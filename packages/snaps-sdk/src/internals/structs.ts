@@ -2,12 +2,11 @@ import type { AnyStruct, Infer, InferStructTuple } from '@metamask/superstruct';
 import {
   Struct,
   define,
-  is,
   literal as superstructLiteral,
   union as superstructUnion,
 } from '@metamask/superstruct';
 import type { PlainObject } from '@metamask/utils';
-import { hasProperty, isPlainObject } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 import type { EnumToUnion } from './helpers';
 
@@ -99,16 +98,23 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
     )
     .flat(Infinity);
   const types = flatStructs.map(({ schema }) => schema.type.type);
+  const structSet = flatStructs.reduce<Record<string, Struct>>(
+    (accumulator, struct) => {
+      accumulator[JSON.parse(struct.schema.type.type)] = struct;
+      return accumulator;
+    },
+    {},
+  );
   return new Struct({
     type: 'union',
     schema: flatStructs,
     *entries(value, context) {
-      if (!isPlainObject(value) || !hasProperty(value, 'type')) {
+      if (!isObject(value) || !hasProperty(value, 'type')) {
         return;
       }
 
       const { type } = value;
-      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
+      const struct = structSet[type as string];
 
       if (!struct) {
         return;
@@ -119,12 +125,12 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       }
     },
     coercer(value, context) {
-      if (!isPlainObject(value) || !hasProperty(value, 'type')) {
+      if (!isObject(value) || !hasProperty(value, 'type')) {
         return value;
       }
 
       const { type } = value;
-      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
+      const struct = structSet[type as string];
       if (struct) {
         return struct.coercer(value, context);
       }
@@ -133,15 +139,13 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
     },
     // At this point we know the value to be an object.
     *refiner(value: PlainObject, context) {
-      const struct = flatStructs.find(({ schema }) =>
-        is(value.type, schema.type),
-      );
+      const struct = structSet[value.type as string];
 
       yield* struct.refiner(value, context);
     },
     validator(value, context) {
       if (
-        !isPlainObject(value) ||
+        !isObject(value) ||
         !hasProperty(value, 'type') ||
         typeof value.type !== 'string'
       ) {
@@ -152,7 +156,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
 
       const { type } = value;
 
-      const struct = flatStructs.find(({ schema }) => is(type, schema.type));
+      const struct = structSet[type];
 
       if (struct) {
         // This only validates the root of the struct, entries does the rest of the work.

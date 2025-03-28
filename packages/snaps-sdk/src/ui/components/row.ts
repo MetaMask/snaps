@@ -1,17 +1,10 @@
 import type { Infer } from '@metamask/superstruct';
-import {
-  assign,
-  literal,
-  object,
-  string,
-  optional,
-  union,
-} from '@metamask/superstruct';
+import { assign, object, string, optional, union } from '@metamask/superstruct';
 
 import { AddressStruct } from './address';
 import { ImageStruct } from './image';
 import { TextStruct } from './text';
-import { enumValue } from '../../internals';
+import { enumValue, literal } from '../../internals';
 import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
