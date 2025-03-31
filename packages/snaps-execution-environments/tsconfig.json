@@ -10,7 +10,8 @@
     "webpack.config.js",
     "scripts",
     "package.json",
-    "vitest.config.mts"
+    "vitest.config.mts",
+    "vitest.config.firefox.mts"
   ],
   "references": [
     {

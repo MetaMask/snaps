@@ -1,0 +1,24 @@
+import { mergeConfig } from 'vitest/config';
+import config from './vitest.config.mjs';
+import {UserConfig} from "vite";
+
+// `config` seems to be inferred incorrectly, so we need to explicitly type it.
+const defaultConfig: UserConfig = config;
+delete defaultConfig.test.browser.instances;
+
+export default mergeConfig(defaultConfig, {
+  test: {
+    coverage: {
+      // Firefox does not support coverage with V8.
+      enabled: false,
+    },
+
+    browser: {
+      instances: [
+        {
+          browser: 'firefox'
+        }
+      ]
+    },
+  }
+})

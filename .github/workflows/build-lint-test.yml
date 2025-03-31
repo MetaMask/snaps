@@ -197,6 +197,11 @@ jobs:
         uses: MetaMask/action-retry-command@v1
         with:
           command: yarn workspace ${{ matrix.package-name }} run test
+      - name: Run Firefox tests
+        if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn workspace ${{ matrix.package-name }} run test:browser:firefox
       - name: Get coverage folder
         id: get-coverage-folder
         run: |
