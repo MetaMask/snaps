@@ -7,6 +7,7 @@ import {
   getValidatedLocalizationFiles,
   validateAuxiliaryFiles,
   validateFetchedSnap,
+  HandlerType,
 } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
@@ -374,4 +375,69 @@ export function debouncePersistState(
       }, timeout),
     );
   };
+}
+
+/**
+ * Handlers allowed for tracking.
+ */
+export const TRACKABLE_HANDLERS = [
+  HandlerType.OnHomePage,
+  HandlerType.OnInstall,
+  HandlerType.OnNameLookup,
+  HandlerType.OnRpcRequest,
+  HandlerType.OnSignature,
+  HandlerType.OnTransaction,
+  HandlerType.OnUpdate,
+] as const;
+
+/**
+ * A union type representing all possible trackable handler types.
+ */
+export type TrackableHandler = (typeof TRACKABLE_HANDLERS)[number];
+
+/**
+ * Throttles event tracking calls per unique combination of parameters.
+ *
+ * @param fn - The tracking function to throttle.
+ * @param timeout - The timeout in milliseconds. Defaults to 60000 (1 minute).
+ * @returns The throttled function.
+ */
+export function throttleTracking(
+  fn: (
+    snapId: SnapId,
+    handler: TrackableHandler,
+    success: boolean,
+    origin: string,
+  ) => Promise<void>,
+  timeout = 60000,
+) {
+  const previousCalls = new Map<string, number>();
+
+  return async (
+    snapId: SnapId,
+    handler: TrackableHandler,
+    success: boolean,
+    origin: string,
+  ): Promise<void> => {
+    const key = `${snapId}${handler}${origin}`;
+    const now = Date.now();
+    const lastCall = previousCalls.get(key) ?? 0;
+
+    if (now - lastCall >= timeout) {
+      previousCalls.set(key, now);
+      await fn(snapId, handler, success, origin);
+    }
+  };
+}
+
+/**
+ * Whether the handler type if allowed for tracking.
+ *
+ * @param handler Type of a handler.
+ * @returns True if handler is allowed for tracking, false otherwise.
+ */
+export function isTrackableHandler(
+  handler: HandlerType,
+): handler is TrackableHandler {
+  return TRACKABLE_HANDLERS.includes(handler as TrackableHandler);
 }
