@@ -98,7 +98,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
     )
     .flat(Infinity);
   const types = flatStructs.map(({ schema }) => schema.type.type);
-  const structSet = flatStructs.reduce<Record<string, Struct>>(
+  const structMap = flatStructs.reduce<Record<string, Struct>>(
     (accumulator, struct) => {
       accumulator[JSON.parse(struct.schema.type.type)] = struct;
       return accumulator;
@@ -118,7 +118,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       }
 
       const { type } = value;
-      const struct = structSet[type];
+      const struct = structMap[type];
 
       if (!struct) {
         return;
@@ -138,7 +138,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       }
 
       const { type } = value;
-      const struct = structSet[type];
+      const struct = structMap[type];
       if (struct) {
         return struct.coercer(value, context);
       }
@@ -146,8 +146,8 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
       return value;
     },
     // At this point we know the value to be an object.
-    *refiner(value: PlainObject, context) {
-      const struct = structSet[value.type as string];
+    *refiner(value: PlainObject & { type: string }, context) {
+      const struct = structMap[value.type];
 
       yield* struct.refiner(value, context);
     },
@@ -164,7 +164,7 @@ export function typedUnion<Head extends AnyStruct, Tail extends AnyStruct[]>(
 
       const { type } = value;
 
-      const struct = structSet[type];
+      const struct = structMap[type];
 
       if (struct) {
         // This only validates the root of the struct, entries does the rest of the work.
