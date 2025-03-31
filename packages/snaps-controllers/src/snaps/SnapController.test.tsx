@@ -4702,7 +4702,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(4);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(5);
       expect(rootMessenger.call).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
@@ -11058,6 +11058,110 @@ describe('SnapController', () => {
       expect(snapController.state.snaps[mockSnap.id].status).toBe('stopped');
       expect(snapController.state.snaps[mockSnap2.id].status).toBe('stopped');
 
+      snapController.destroy();
+    });
+  });
+
+  describe('SnapController:trackEvent', () => {
+    it('should track event for allowed handler', async () => {
+      const mockTrackEvent = jest.fn();
+      const rootMessenger = getControllerMessenger();
+      const executionEnvironmentStub = new ExecutionEnvironmentStub(
+        getNodeEESMessenger(rootMessenger),
+      ) as unknown as NodeThreadExecutionService;
+
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          rootMessenger,
+          trackEvent: mockTrackEvent,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+        executionEnvironmentStub,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await snapController.startSnap(snap.id);
+
+      await snapController.handleRequest({
+        snapId: snap.id,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        category: 'Snaps',
+        event: 'SnapExportUsed',
+        properties: {
+          export: 'onRpcRequest',
+          origin: 'https://example.com',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_category: null,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: 'npm:@metamask/example-snap',
+          success: true,
+        },
+      });
+      snapController.destroy();
+    });
+
+    it('should not track event for disallowed handler', async () => {
+      const mockTrackEvent = jest.fn();
+      const rootMessenger = getControllerMessenger();
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Cronjob]: {
+            caveats: [{ type: SnapCaveatType.SnapCronjob, value: '* * * * *' }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Cronjob,
+          },
+        }),
+      );
+
+      const executionEnvironmentStub = new ExecutionEnvironmentStub(
+        getNodeEESMessenger(rootMessenger),
+      ) as unknown as NodeThreadExecutionService;
+
+      const [snapController] = getSnapControllerWithEES(
+        getSnapControllerWithEESOptions({
+          environmentEndowmentPermissions: ['endowment:cronjob'],
+          rootMessenger,
+          trackEvent: mockTrackEvent,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+        executionEnvironmentStub,
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+      await snapController.startSnap(snap.id);
+
+      await snapController.handleRequest({
+        snapId: snap.id,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnCronjob,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      });
+
+      expect(mockTrackEvent).not.toHaveBeenCalled();
       snapController.destroy();
     });
   });
