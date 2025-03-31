@@ -1,7 +1,21 @@
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+// eslint-disable-next-line import-x/no-nodejs-modules
+import { join } from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
+
+const IFRAME_PATH = join(import.meta.dirname, './dist/browserify/iframe');
+
+const WORKER_EXECUTOR_PATH = join(
+  import.meta.dirname,
+  './dist/browserify/worker-executor',
+);
+
+const WORKER_POOL_PATH = join(
+  import.meta.dirname,
+  './dist/browserify/worker-pool',
+);
 
 export default defineConfig({
   plugins: [tsconfigPaths()],
@@ -18,6 +32,37 @@ export default defineConfig({
         NodeGlobalsPolyfillPlugin({
           buffer: true,
         }),
+      ],
+    },
+  },
+
+  server: {
+    port: 63315,
+    strictPort: true,
+
+    proxy: {
+      '/iframe/executor': {
+        target: `http://localhost:63315/@fs${IFRAME_PATH}`,
+        rewrite: (path) => path.replace(/^\/iframe\/executor/u, ''),
+      },
+
+      '/worker/executor': {
+        target: `http://localhost:63315/@fs${WORKER_EXECUTOR_PATH}`,
+        rewrite: (path) => path.replace(/^\/worker\/executor/u, ''),
+      },
+
+      '/worker/pool': {
+        target: `http://localhost:63315/@fs${WORKER_POOL_PATH}`,
+        rewrite: (path) => path.replace(/^\/worker\/pool/u, ''),
+      },
+    },
+
+    fs: {
+      strict: true,
+      allow: [
+        './dist/browserify/iframe',
+        './dist/browserify/worker-executor',
+        './dist/browserify/worker-pool',
       ],
     },
   },

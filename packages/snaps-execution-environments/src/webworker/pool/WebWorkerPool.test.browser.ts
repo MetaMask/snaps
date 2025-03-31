@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { WebWorkerPool } from './WebWorkerPool';
 
 const MOCK_JOB_ID = 'job-id';
-const WORKER_URL = 'http://localhost:4568/worker/executor/';
+const WORKER_URL = 'http://localhost:63315/worker/executor/bundle.js';
 
 /**
  * Write a message to the stream, wrapped with the job ID.
@@ -57,7 +57,7 @@ async function getResponse(
   });
 }
 
-describe.skip('WebWorkerPool', () => {
+describe('WebWorkerPool', () => {
   it('forwards messages to the worker', async () => {
     const mockStream = new MockPostMessageStream();
 

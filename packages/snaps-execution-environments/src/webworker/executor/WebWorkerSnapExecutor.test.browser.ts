@@ -41,7 +41,7 @@ async function getResponse(
   });
 }
 
-describe.skip('WebWorkerSnapExecutor', () => {
+describe('WebWorkerSnapExecutor', () => {
   let consoleSpy: SpyFunction<unknown, unknown>;
 
   beforeAll(() => {

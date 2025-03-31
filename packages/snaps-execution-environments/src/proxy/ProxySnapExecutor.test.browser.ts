@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { ProxySnapExecutor } from './ProxySnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
-const IFRAME_URL = 'http://localhost:4568';
+const IFRAME_URL = 'http://localhost:63315/iframe/executor/index.html';
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.
@@ -54,7 +54,7 @@ async function getResponse(
   });
 }
 
-describe.skip('ProxySnapExecutor', () => {
+describe('ProxySnapExecutor', () => {
   it('forwards messages to the iframe', async () => {
     const mockStream = new MockPostMessageStream();
 
