@@ -1,4 +1,5 @@
 import type {
+  OnAssetHistoricalPriceHandler,
   OnAssetsConversionHandler,
   OnAssetsLookupHandler,
   OnCronjobHandler,
@@ -92,6 +93,15 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnUserInput,
     required: false,
     validator: (snapExport: unknown): snapExport is OnUserInputHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnAssetHistoricalPrice]: {
+    type: HandlerType.OnAssetHistoricalPrice,
+    required: true,
+    validator: (
+      snapExport: unknown,
+    ): snapExport is OnAssetHistoricalPriceHandler => {
       return typeof snapExport === 'function';
     },
   },

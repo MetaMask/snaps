@@ -19,7 +19,6 @@ import {
   hasProperty,
   type PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { DateTime, Duration } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -77,22 +76,6 @@ export type ScheduleBackgroundEventParameters = InferMatching<
 >;
 
 /**
- * Generates a `DateTime` object based on if a duration or date is provided.
- *
- * @param params - The validated params from the `snap_scheduleBackgroundEvent` call.
- * @returns A `DateTime` object.
- */
-function getStartDate(params: ScheduleBackgroundEventParams) {
-  if ('duration' in params) {
-    return DateTime.fromJSDate(new Date())
-      .toUTC()
-      .plus(Duration.fromISO(params.duration));
-  }
-
-  return DateTime.fromISO(params.date, { setZone: true });
-}
-
-/**
  * The `snap_scheduleBackgroundEvent` method implementation.
  *
  * @param req - The JSON-RPC request object.
@@ -126,7 +109,11 @@ async function getScheduleBackgroundEventImplementation(
 
     const { request } = validatedParams;
 
-    const date = getStartDate(validatedParams);
+    const time = hasProperty(validatedParams, 'date')
+      ? (validatedParams.date as string)
+      : validatedParams.duration;
+
+    const date = getStartDate(time);
 
     // Make sure any millisecond precision is removed.
     const truncatedDate = date.startOf('second').toISO({

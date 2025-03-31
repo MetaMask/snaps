@@ -124,6 +124,25 @@ export type RequestArguments =
   | ExecuteSnapRequestArguments
   | SnapRpcRequestArguments;
 
+/**
+ * Asserts that the given value is a valid request arguments object.
+ *
+ * @param value - The value to validate.
+ * @param requestArgumentsStruct - The struct to validate the value against.
+ * @throws If the value is not a valid request arguments object.
+ */
+function assertRequestArguments<Type, Schema>(
+  value: unknown,
+  requestArgumentsStruct: Struct<Type, Schema>,
+): asserts value is Struct<Type, Schema> {
+  assertStruct(
+    value,
+    requestArgumentsStruct,
+    'Invalid request params',
+    rpcErrors.invalidParams,
+  );
+}
+
 export const OnTransactionRequestArgumentsStruct = object({
   // TODO: Improve `transaction` type.
   transaction: record(string(), JsonStruct),
@@ -146,12 +165,7 @@ export type OnTransactionRequestArguments = Infer<
 export function assertIsOnTransactionRequestArguments(
   value: unknown,
 ): asserts value is OnTransactionRequestArguments {
-  assertStruct(
-    value,
-    OnTransactionRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnTransactionRequestArgumentsStruct);
 }
 
 export const OnSignatureRequestArgumentsStruct = object({
@@ -174,12 +188,7 @@ export type OnSignatureRequestArguments = Infer<
 export function assertIsOnSignatureRequestArguments(
   value: unknown,
 ): asserts value is OnSignatureRequestArguments {
-  assertStruct(
-    value,
-    OnSignatureRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnSignatureRequestArgumentsStruct);
 }
 
 const baseNameLookupArgs = { chainId: CaipChainIdStruct };
@@ -217,12 +226,30 @@ export type PossibleLookupRequestArgs = typeof baseNameLookupArgs & {
 export function assertIsOnNameLookupRequestArguments(
   value: unknown,
 ): asserts value is OnNameLookupRequestArguments {
-  assertStruct(
-    value,
-    OnNameLookupRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnNameLookupRequestArgumentsStruct);
+}
+
+export const OnAssetHistoricalPriceRequestArgumentsStruct = object({
+  from: CaipAssetTypeStruct,
+  to: CaipAssetTypeStruct,
+});
+
+export type OnAssetHistoricalPriceRequestArguments = Infer<
+  typeof OnAssetHistoricalPriceRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnAssetHistoricalPriceRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnAssetHistoricalPriceRequestArguments}
+ * object.
+ */
+export function assertIsOnAssetHistoricalPriceRequestArguments(
+  value: unknown,
+): asserts value is OnAssetHistoricalPriceRequestArguments {
+  assertRequestArguments(value, OnAssetHistoricalPriceRequestArgumentsStruct);
 }
 
 export const OnAssetsLookupRequestArgumentsStruct = object({
@@ -244,12 +271,7 @@ export type OnAssetsLookupRequestArguments = Infer<
 export function assertIsOnAssetsLookupRequestArguments(
   value: unknown,
 ): asserts value is OnAssetsLookupRequestArguments {
-  assertStruct(
-    value,
-    OnAssetsLookupRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnAssetsLookupRequestArgumentsStruct);
 }
 
 export const OnAssetsConversionRequestArgumentsStruct = object({
@@ -280,12 +302,7 @@ export type OnAssetsConversionRequestArguments = Infer<
 export function assertIsOnAssetsConversionRequestArguments(
   value: unknown,
 ): asserts value is OnAssetsConversionRequestArguments {
-  assertStruct(
-    value,
-    OnAssetsConversionRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnAssetsConversionRequestArgumentsStruct);
 }
 
 export const OnUserInputArgumentsStruct = object({
@@ -307,12 +324,7 @@ export type OnUserInputArguments = Infer<typeof OnUserInputArgumentsStruct>;
 export function assertIsOnUserInputRequestArguments(
   value: unknown,
 ): asserts value is OnUserInputArguments {
-  assertStruct(
-    value,
-    OnUserInputArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnUserInputArgumentsStruct);
 }
 
 export const OnProtocolRequestArgumentsStruct = object({
@@ -335,12 +347,7 @@ export type OnProtocolRequestArguments = Infer<
 export function assertIsOnProtocolRequestArguments(
   value: unknown,
 ): asserts value is OnProtocolRequestArguments {
-  assertStruct(
-    value,
-    OnProtocolRequestArgumentsStruct,
-    'Invalid request params',
-    rpcErrors.invalidParams,
-  );
+  assertRequestArguments(value, OnProtocolRequestArgumentsStruct);
 }
 
 // TODO: Either fix this lint violation or explain why it's necessary to ignore.

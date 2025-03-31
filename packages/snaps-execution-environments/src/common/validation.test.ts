@@ -1,6 +1,7 @@
 import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import {
+  assertIsOnAssetHistoricalPriceRequestArguments,
   assertIsOnAssetsConversionRequestArguments,
   assertIsOnAssetsLookupRequestArguments,
   assertIsOnNameLookupRequestArguments,
@@ -375,6 +376,51 @@ describe('assertIsOnProtocolRequestArguments', () => {
       expect(() => assertIsOnProtocolRequestArguments(value as any)).toThrow(
         'Invalid request params:',
       );
+    },
+  );
+});
+
+describe('assertIsOnAssetHistoricalPriceRequestArguments', () => {
+  it.each([
+    {
+      from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      to: 'swift:0/iso4217:USD',
+    },
+  ])(
+    'does not throw for a valid asset historical price request object',
+    (args) => {
+      expect(() =>
+        assertIsOnAssetHistoricalPriceRequestArguments(args),
+      ).not.toThrow();
+    },
+  );
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { from: [], to: 'swift:0/iso4217:USD' },
+    { to: 'swift:0/iso4217:USD', from: 'foo' },
+    { from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' },
+    { to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501' },
+    {
+      from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      to: 'swift:0/iso4217:USD',
+      foo: 'bar',
+    },
+  ])(
+    'throws if the value is not a valid asset historical price request object',
+    (value) => {
+      expect(() =>
+        assertIsOnAssetHistoricalPriceRequestArguments(value as any),
+      ).toThrow('Invalid request params:');
     },
   );
 });

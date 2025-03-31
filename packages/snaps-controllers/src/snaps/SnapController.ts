@@ -104,6 +104,7 @@ import {
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
   isValidUrl,
+  OnAssetHistoricalPriceResponseStruct,
 } from '@metamask/snaps-utils';
 import type {
   Json,
@@ -3819,6 +3820,9 @@ export class SnapController extends BaseController<
         break;
       case HandlerType.OnAssetsConversion:
         assertStruct(result, OnAssetsConversionResponseStruct);
+        break;
+      case HandlerType.OnAssetHistoricalPrice:
+        assertStruct(result, OnAssetHistoricalPriceResponseStruct);
         break;
       default:
         break;
