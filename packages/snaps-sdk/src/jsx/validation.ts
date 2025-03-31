@@ -149,16 +149,14 @@ function children<Head extends AnyStruct, Tail extends AnyStruct[]>(
   Nestable<Infer<Head> | InferStructTuple<Tail>[number] | boolean | null>,
   null
 > {
+  const potentialUnion = structs.length === 1 ? structs[0] : nullUnion(structs);
   return nestable(
     nullable(
       selectiveUnion((value) => {
         if (typeof value === 'boolean') {
           return boolean();
         }
-        if (structs.length === 1) {
-          return structs[0];
-        }
-        return nullUnion(structs);
+        return potentialUnion;
       }),
     ),
   ) as unknown as Struct<
