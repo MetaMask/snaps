@@ -49,5 +49,5 @@ export type SnapsRegistry = {
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  getMetadata(snapId: SnapId): Promise<SnapsRegistryMetadata | null>;
+  getMetadata(snapId: SnapId): SnapsRegistryMetadata | null;
 };

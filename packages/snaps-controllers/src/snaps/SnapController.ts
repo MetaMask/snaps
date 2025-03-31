@@ -146,7 +146,6 @@ import type {
   GetResult,
   ResolveVersion,
   SnapsRegistryInfo,
-  SnapsRegistryMetadata,
   SnapsRegistryRequest,
   Update,
 } from './registry';
@@ -176,7 +175,9 @@ import {
   hasTimedOut,
   permissionsDiff,
   setDiff,
+  throttleTracking,
   withTimeout,
+  isTrackableHandler,
 } from '../utils';
 
 export const controllerName = 'SnapController';
@@ -442,11 +443,6 @@ export type InstallSnaps = {
   handler: SnapController['installSnaps'];
 };
 
-export type GetRegistryMetadata = {
-  type: `${typeof controllerName}:getRegistryMetadata`;
-  handler: SnapController['getRegistryMetadata'];
-};
-
 export type DisconnectOrigin = {
   type: `${typeof controllerName}:disconnectOrigin`;
   handler: SnapController['removeSnapFromSubject'];
@@ -484,7 +480,6 @@ export type SnapControllerActions =
   | GetRunnableSnaps
   | IncrementActiveReferences
   | DecrementActiveReferences
-  | GetRegistryMetadata
   | DisconnectOrigin
   | RevokeDynamicPermissions
   | GetSnapFile
@@ -775,6 +770,11 @@ type SnapControllerArgs = {
    * object to fall back to the default cryptographic functions.
    */
   clientCryptography?: CryptographicFunctions;
+
+  /**
+   * MetaMetrics event tracking hook.
+   */
+  trackEvent: TrackEventHook;
 };
 
 type AddSnapArgs = {
@@ -794,6 +794,14 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   hidden?: boolean;
   hideSnapBranding?: boolean;
 };
+
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 const defaultState: SnapControllerState = {
   snaps: {},
@@ -880,6 +888,10 @@ export class SnapController extends BaseController<
 
   readonly #preinstalledSnaps: PreinstalledSnap[] | null;
 
+  readonly #trackEvent: TrackEventHook;
+
+  readonly #trackSnapExport: ReturnType<typeof throttleTracking>;
+
   constructor({
     closeAllConnections,
     messenger,
@@ -898,6 +910,7 @@ export class SnapController extends BaseController<
     getMnemonicSeed,
     getFeatureFlags = () => ({}),
     clientCryptography,
+    trackEvent,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -960,6 +973,7 @@ export class SnapController extends BaseController<
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
+    this.#trackEvent = trackEvent;
 
     this.#pollForLastRequestStatus();
 
@@ -1024,6 +1038,28 @@ export class SnapController extends BaseController<
 
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
+    );
+
+    this.#trackSnapExport = throttleTracking(
+      (snapId: SnapId, handler: string, success: boolean, origin: string) => {
+        const snapMetadata = this.messagingSystem.call(
+          'SnapsRegistry:getMetadata',
+          snapId,
+        );
+        this.#trackEvent({
+          event: 'SnapExportUsed',
+          category: 'Snaps',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            export: handler,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+            success,
+            origin,
+          },
+        });
+      },
     );
   }
 
@@ -1178,11 +1214,6 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:decrementActiveReferences`,
       (...args) => this.decrementActiveReferences(...args),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:getRegistryMetadata`,
-      async (...args) => this.getRegistryMetadata(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2950,20 +2981,6 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Get metadata for the given snap ID.
-   *
-   * @param snapId - The ID of the snap to get metadata for.
-   * @returns The metadata for the given snap ID, or `null` if the snap is not
-   * verified.
-   */
-  async getRegistryMetadata(
-    snapId: SnapId,
-  ): Promise<SnapsRegistryMetadata | null> {
-    this.#assertCanUsePlatform();
-    return await this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
-  }
-
-  /**
    * Returns a promise representing the complete installation of the requested snap.
    * If the snap is already being installed, the previously pending promise will be returned.
    *
@@ -3582,12 +3599,25 @@ export class SnapController extends BaseController<
           result,
         );
 
-        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
+        this.#recordSnapRpcRequestFinish(
+          snapId,
+          transformedRequest.id,
+          handlerType,
+          origin,
+          true,
+        );
 
         return transformedResult;
       } catch (error) {
         // We flag the RPC request as finished early since termination may affect pending requests
-        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
+        this.#recordSnapRpcRequestFinish(
+          snapId,
+          transformedRequest.id,
+          handlerType,
+          origin,
+          false,
+        );
+
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
@@ -3878,7 +3908,13 @@ export class SnapController extends BaseController<
     runtime.lastRequest = null;
   }
 
-  #recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
+  #recordSnapRpcRequestFinish(
+    snapId: SnapId,
+    requestId: unknown,
+    handlerType: HandlerType,
+    origin: string,
+    success: boolean,
+  ) {
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (request) => request.requestId !== requestId,
@@ -3886,6 +3922,20 @@ export class SnapController extends BaseController<
 
     if (runtime.pendingInboundRequests.length === 0) {
       runtime.lastRequest = Date.now();
+    }
+
+    const snap = this.get(snapId);
+
+    if (isTrackableHandler(handlerType) && !snap?.preinstalled) {
+      try {
+        this.#trackSnapExport(snapId, handlerType, success, origin);
+      } catch (error) {
+        logError(
+          `Error when calling MetaMetrics hook for snap "${snap?.id}": ${getErrorMessage(
+            error,
+          )}`,
+        );
+      }
     }
   }
 

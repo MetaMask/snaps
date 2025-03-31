@@ -1,4 +1,4 @@
-import { VirtualFile } from '@metamask/snaps-utils';
+import { HandlerType, VirtualFile } from '@metamask/snaps-utils';
 import {
   getMockSnapFiles,
   getSnapManifest,
@@ -20,6 +20,8 @@ import {
   getSnapFiles,
   permissionsDiff,
   setDiff,
+  throttleTracking,
+  TRACKABLE_HANDLERS,
 } from './utils';
 import { SnapEndowments } from '../../snaps-rpc-methods/src/endowments';
 
@@ -219,5 +221,163 @@ describe('debouncePersistState', () => {
     expect(fn).toHaveBeenNthCalledWith(2, MOCK_SNAP_ID, {}, false);
     expect(fn).toHaveBeenNthCalledWith(3, MOCK_LOCAL_SNAP_ID, {}, true);
     expect(fn).toHaveBeenNthCalledWith(4, MOCK_LOCAL_SNAP_ID, {}, false);
+  });
+});
+
+describe('TRACKABLE_HANDLERS', () => {
+  it('should contain the expected handler types', () => {
+    expect(TRACKABLE_HANDLERS).toStrictEqual([
+      HandlerType.OnHomePage,
+      HandlerType.OnInstall,
+      HandlerType.OnNameLookup,
+      HandlerType.OnRpcRequest,
+      HandlerType.OnSignature,
+      HandlerType.OnTransaction,
+      HandlerType.OnUpdate,
+    ]);
+  });
+
+  it('should be a readonly array', () => {
+    expect(Object.isFrozen(TRACKABLE_HANDLERS)).toBe(true);
+  });
+
+  it('should contain unique values', () => {
+    const uniqueValues = new Set(TRACKABLE_HANDLERS);
+    expect(uniqueValues.size).toBe(TRACKABLE_HANDLERS.length);
+  });
+});
+
+describe('throttleTracking', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it('throttles tracking calls based on unique combinations of snapId, handler, and origin', () => {
+    const fn = jest.fn();
+    const throttled = throttleTracking(fn, 1000);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnRpcRequest, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin2');
+
+    expect(fn).toHaveBeenCalledTimes(3);
+    expect(fn).toHaveBeenNthCalledWith(
+      1,
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
+    expect(fn).toHaveBeenNthCalledWith(
+      2,
+      MOCK_SNAP_ID,
+      HandlerType.OnRpcRequest,
+      true,
+      'origin1',
+    );
+    expect(fn).toHaveBeenNthCalledWith(
+      3,
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin2',
+    );
+
+    jest.advanceTimersByTime(500);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnRpcRequest, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin2');
+
+    expect(fn).toHaveBeenCalledTimes(3);
+
+    jest.advanceTimersByTime(500);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnRpcRequest, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin2');
+
+    expect(fn).toHaveBeenCalledTimes(3);
+
+    jest.advanceTimersByTime(1000);
+
+    expect(fn).toHaveBeenCalledTimes(6);
+    expect(fn).toHaveBeenNthCalledWith(
+      4,
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
+    expect(fn).toHaveBeenNthCalledWith(
+      5,
+      MOCK_SNAP_ID,
+      HandlerType.OnRpcRequest,
+      true,
+      'origin1',
+    );
+    expect(fn).toHaveBeenNthCalledWith(
+      6,
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin2',
+    );
+
+    jest.advanceTimersByTime(5000);
+    expect(fn).toHaveBeenCalledTimes(6);
+  });
+
+  it('uses default timeout of 60000ms when no timeout is specified', async () => {
+    const fn = jest.fn();
+    const throttled = throttleTracking(fn);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(60000);
+    expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('should execute the last throttled call after timeout', () => {
+    const mockFn = jest.fn();
+    const throttled = throttleTracking(mockFn, 1000);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenLastCalledWith(
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+
+    expect(mockFn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(500);
+
+    expect(mockFn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(500);
+
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenLastCalledWith(
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
   });
 });
