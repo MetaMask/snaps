@@ -8,6 +8,7 @@ import {
   validateAuxiliaryFiles,
   validateFetchedSnap,
 } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
 import deepEqual from 'fast-deep-equal';
 
 import type { SnapLocation } from './snaps';
@@ -328,4 +329,49 @@ export async function fetchSnap(snapId: SnapId, location: SnapLocation) {
       `Failed to fetch snap "${snapId}": ${getErrorMessage(error)}.`,
     );
   }
+}
+
+/**
+ * Debounce persisting Snap state changes.
+ *
+ * @param fn - The function to debounce.
+ * @param timeout - The timeout in milliseconds. Defaults to 1000.
+ * @returns The debounced function.
+ * @example
+ * const originalUpdate = (snapId, newSnapState, encrypted) => {
+ *   console.log(`Called with Snap ID: ${snapId} and state: ${newSnapState}`);
+ * };
+ *
+ * const debouncedUpdate = debounce(originalUpdate);
+ * debouncedFunction('npm:foo-snap', { foo: 'bar' }, false);
+ */
+export function debouncePersistState(
+  fn: (
+    snapId: SnapId,
+    newSnapState: Record<string, Json> | null,
+    encrypted: boolean,
+  ) => void,
+  timeout = 1000,
+) {
+  const timeouts = new Map<string, NodeJS.Timeout>();
+
+  return (
+    snapId: SnapId,
+    newSnapState: Record<string, Json> | null,
+    encrypted: boolean,
+  ): void => {
+    const key = `${snapId}-${encrypted}`;
+
+    if (timeouts.has(key)) {
+      clearTimeout(timeouts.get(key));
+    }
+
+    timeouts.set(
+      key,
+      setTimeout(() => {
+        fn(snapId, newSnapState, encrypted);
+        timeouts.delete(key);
+      }, timeout),
+    );
+  };
 }

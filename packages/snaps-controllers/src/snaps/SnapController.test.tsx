@@ -71,7 +71,10 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 import { inc } from 'semver';
 
-import { LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS } from './constants';
+import {
+  LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+  STATE_DEBOUNCE_TIMEOUT,
+} from './constants';
 import { SnapsRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
@@ -9228,6 +9231,14 @@ describe('SnapController', () => {
   });
 
   describe('SnapController:getSnapState', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it(`gets the snap's state`, async () => {
       const messenger = getSnapControllerMessenger();
 
@@ -9316,6 +9327,7 @@ describe('SnapController', () => {
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       const result = await messenger.call(
@@ -9367,6 +9379,7 @@ describe('SnapController', () => {
         true,
       );
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       const encryptedState1 = await encrypt(
@@ -9557,6 +9570,14 @@ describe('SnapController', () => {
   });
 
   describe('SnapController:updateSnapState', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it(`updates the snap's state`, async () => {
       const messenger = getSnapControllerMessenger();
 
@@ -9587,6 +9608,7 @@ describe('SnapController', () => {
         true,
       );
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
@@ -9611,6 +9633,8 @@ describe('SnapController', () => {
 
       const updateSnapStateSpy = jest.spyOn(snapController, 'updateSnapState');
       const state = { foo: 'bar' };
+
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
@@ -9619,6 +9643,10 @@ describe('SnapController', () => {
       );
 
       expect(updateSnapStateSpy).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
+      await promise;
+
       expect(
         snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
       ).toStrictEqual(JSON.stringify(state));
@@ -9657,6 +9685,7 @@ describe('SnapController', () => {
         true,
       );
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
 
       expect(hmacSha512).toHaveBeenCalledTimes(10);
@@ -9664,23 +9693,11 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('queues multiple state updates', async () => {
+    it('debounces multiple state updates', async () => {
       const messenger = getSnapControllerMessenger();
 
-      jest.useFakeTimers();
-
       const encryptor = getSnapControllerEncryptor();
-      const { promise, resolve } = createDeferredPromise();
-      const encryptWithKey = jest
-        .fn<
-          ReturnType<typeof encryptor.encryptWithKey>,
-          Parameters<typeof encryptor.encryptWithKey>
-        >()
-        .mockImplementation(async (...args) => {
-          resolve();
-          await sleep(1);
-          return await encryptor.encryptWithKey(...args);
-        });
+      const encryptWithKey = jest.spyOn(encryptor, 'encryptWithKey');
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -9696,13 +9713,17 @@ describe('SnapController', () => {
         }),
       );
 
-      const firstStateChange = waitForStateChange(messenger);
+      const promise = waitForStateChange(messenger);
       await messenger.call(
         'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         { foo: 'bar' },
         true,
       );
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual({ foo: 'bar' });
 
       await messenger.call(
         'SnapController:updateSnapState',
@@ -9711,26 +9732,33 @@ describe('SnapController', () => {
         true,
       );
 
-      // We await this promise to ensure the timer is queued.
-      await promise;
-      jest.advanceTimersByTime(1);
-
-      // After this point the second update should be queued.
-      await firstStateChange;
-      const secondStateChange = waitForStateChange(messenger);
-
-      expect(encryptWithKey).toHaveBeenCalledTimes(1);
-
-      // This is a bit hacky, but we can't simply advance the timer by 1ms
-      // because the second timer is not running yet.
-      jest.useRealTimers();
-      await secondStateChange;
-
-      expect(encryptWithKey).toHaveBeenCalledTimes(2);
-
       expect(
         await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
       ).toStrictEqual({ bar: 'baz' });
+
+      expect(encryptWithKey).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
+      await promise;
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(1);
+
+      const nextStateChange = waitForStateChange(messenger);
+      await messenger.call(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { qux: 'quux' },
+        true,
+      );
+
+      expect(
+        await messenger.call('SnapController:getSnapState', MOCK_SNAP_ID, true),
+      ).toStrictEqual({ qux: 'quux' });
+
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
+      await nextStateChange;
+
+      expect(encryptWithKey).toHaveBeenCalledTimes(2);
 
       snapController.destroy();
     });
@@ -9763,7 +9791,9 @@ describe('SnapController', () => {
         true,
       );
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
+
       expect(error).toHaveBeenCalledWith(errorValue);
 
       snapController.destroy();
@@ -9771,6 +9801,14 @@ describe('SnapController', () => {
   });
 
   describe('SnapController:clearSnapState', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it('clears the state of a snap', async () => {
       const messenger = getSnapControllerMessenger();
 
@@ -9859,7 +9897,9 @@ describe('SnapController', () => {
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
+      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
       await promise;
+
       expect(error).toHaveBeenCalledWith(errorValue);
 
       snapController.destroy();

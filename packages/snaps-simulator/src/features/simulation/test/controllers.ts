@@ -16,10 +16,7 @@ export function getSnapInterfaceController() {
   return new SnapInterfaceController({
     messenger: messenger.getRestricted({
       name: 'SnapInterfaceController',
-      allowedActions: [
-        'PhishingController:maybeUpdateState',
-        'PhishingController:testOrigin',
-      ],
+      allowedActions: ['PhishingController:testOrigin'],
       allowedEvents: [
         'NotificationServicesController:notificationsListUpdated',
       ],
