@@ -43,6 +43,12 @@ export const Dialogs: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleSubmitLongContent = () => {
+    invokeSnap({
+      snapId,
+      method: 'showLongContent',
+    }).catch(logError);
+  };
   return (
     <Snap
       name="Dialogs Snap"
@@ -79,6 +85,13 @@ export const Dialogs: FunctionComponent = () => {
           disabled={isLoading}
         >
           Custom
+        </Button>
+        <Button
+          id="triggerLongContentButton"
+          onClick={handleSubmitLongContent}
+          disabled={isLoading}
+        >
+          Long Content
         </Button>
       </ButtonGroup>
 

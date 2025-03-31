@@ -11,17 +11,17 @@ import {
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 
-import { CustomDialog } from './components';
+import { CustomDialog, RequireScrollContent } from './components';
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles three methods, one for each
- * type of dialog:
+ * `wallet_invokeSnap` method. This handler handles four methods:
  *
  * - `showAlert`: Show an alert dialog.
  * - `showConfirmation`: Show a confirmation dialog.
  * - `showPrompt`: Show a prompt dialog.
  * - `showCustom`: Show a custom dialog with the resolution handled by the snap.
+ * - `showLongContent`: Show a custom dialog with content that requires scrolling.
  *
  * The dialogs are shown using the [`snap_dialog`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
  * method.
@@ -90,6 +90,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         },
       });
 
+    case 'showLongContent':
+      return snap.request({
+        method: 'snap_dialog',
+        params: { content: <RequireScrollContent /> },
+      });
+
     default:
       throw new MethodNotFoundError({ method: request.method });
   }
@@ -135,6 +141,20 @@ export const onUserInput: OnUserInputHandler = async ({ id, event }) => {
         });
         break;
       }
+
+      case 'accept':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: { id, value: true },
+        });
+        break;
+
+      case 'reject':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: { id, value: false },
+        });
+        break;
 
       default:
         break;
