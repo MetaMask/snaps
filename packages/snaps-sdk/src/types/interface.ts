@@ -16,7 +16,7 @@ import {
 import {
   AssetSelectorStateStruct,
   FileStruct,
-  AccountSelectorValueStruct,
+  AccountSelectorStateStruct,
 } from './handlers';
 import { selectiveUnion } from '../internals';
 import type { JSXElement } from '../jsx';
@@ -32,7 +32,7 @@ import { ComponentStruct } from '../ui';
  */
 
 export const StateStruct = union([
-  AccountSelectorValueStruct,
+  AccountSelectorStateStruct,
   AssetSelectorStateStruct,
   FileStruct,
   string(),

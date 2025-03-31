@@ -112,7 +112,12 @@ type SetSelectedAccount = (accountId: string) => void;
  *
  * @returns The selected account.
  */
-type GetSelectedAccount = () => InternalAccount | undefined;
+type GetSelectedAccount = () => InternalAccount;
+
+/**
+ * A function to get accounts for the provided chain IDs.
+ */
+type ListAccounts = (chainIds: CaipChainId[]) => InternalAccount[];
 
 /**
  * Data getters for elements.
@@ -120,12 +125,16 @@ type GetSelectedAccount = () => InternalAccount | undefined;
  *
  * @param getAssetState - A function to get the MultichainAssetController state.
  * @param getAccountByAddress - A function to get an account by its address.
+ * @param setSelectedAccount - A function to set the selected account in the client.
+ * @param getSelectedAccount - A function to get the selected account in the client.
+ * @param listAccounts - A function to list accounts for the provided chain IDs.
  */
 type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
   getSelectedAccount: GetSelectedAccount;
   setSelectedAccount: SetSelectedAccount;
+  listAccounts: ListAccounts;
 };
 
 /**
@@ -155,6 +164,21 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
   );
+}
+
+/**
+ * Format the state value for an account selector.
+ *
+ * @param account - The account to format.
+ *
+ * @returns The state value for the account selector.
+ */
+export function formatAccountSelectorStateValue(account: InternalAccount) {
+  const { id, address, scopes } = account;
+
+  const addresses = createAccountList(address, scopes);
+
+  return { accountId: id, addresses };
 }
 
 /**
@@ -223,6 +247,39 @@ export function getDefaultAsset(
 }
 
 /**
+ * Get the default state value for an account selector.
+ *
+ * @param chainIds - The chain IDs to filter the accounts.
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
+ * @param elementDataGetters.listAccounts - A function to list accounts for the provided chain IDs.
+ * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
+ * @returns The default state for the account selector.
+ */
+export function getAccountSelectorDefaultStateValue(
+  chainIds: CaipChainId[] | undefined,
+  { getSelectedAccount, listAccounts, setSelectedAccount }: ElementDataGetters,
+) {
+  const account = getSelectedAccount();
+
+  if (!chainIds || chainIds.length === 0) {
+    return formatAccountSelectorStateValue(account);
+  }
+
+  if (account.scopes.some((scope) => chainIds.includes(scope))) {
+    return formatAccountSelectorStateValue(account);
+  }
+
+  const accounts = listAccounts(chainIds);
+
+  assert(accounts.length > 0, 'No accounts found for the provided chain IDs.');
+
+  setSelectedAccount(accounts[0].id);
+
+  return formatAccountSelectorStateValue(accounts[0]);
+}
+
+/**
  * Construct default state for a component.
  *
  * This function is meant to be used inside constructInputState to account
@@ -262,7 +319,10 @@ function constructComponentSpecificDefaultState(
     }
 
     case 'AccountSelector':
-      return getAccountSelectorDefaultState(elementDataGetters);
+      return getAccountSelectorDefaultStateValue(
+        element.props.chainIds,
+        elementDataGetters,
+      );
 
     case 'Checkbox':
       return false;
@@ -309,41 +369,6 @@ export function getAssetSelectorStateValue(
 }
 
 /**
- * Get the default state for an account selector.
- *
- * @param elementDataGetters - Data getters for the element.
- * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
- *
- * @returns The default state for the account selector.
- */
-export function getAccountSelectorDefaultState({
-  getSelectedAccount,
-}: ElementDataGetters) {
-  const account = getSelectedAccount();
-
-  if (!account) {
-    return null;
-  }
-
-  return formatAccountSelectorStateValue(account);
-}
-
-/**
- * Format the state value for an account selector.
- *
- * @param account - The account to format.
- *
- * @returns The state value for the account selector.
- */
-export function formatAccountSelectorStateValue(account: InternalAccount) {
-  const { id, address, scopes } = account;
-
-  const addresses = createAccountList(address, scopes);
-
-  return { accountId: id, addresses };
-}
-
-/**
  * Get the state value for an account selector.
  *
  * @param element - The account selector element.
@@ -351,19 +376,19 @@ export function formatAccountSelectorStateValue(account: InternalAccount) {
  * @param setSelectedAccount - A function to set the selected account in the client.
  * @returns The state value for the account selector.
  */
-function getAccountSelectorStateValue(
+export function getAccountSelectorStateValue(
   element: AccountSelectorElement,
   getAccountByAddress: GetAccountByAddress,
   setSelectedAccount: SetSelectedAccount,
 ) {
   if (!element.props.value) {
-    return undefined;
+    return null;
   }
 
   const account = getAccountByAddress(element.props.value);
 
   if (!account) {
-    return undefined;
+    return null;
   }
 
   if (element.props.switchGlobalAccount) {

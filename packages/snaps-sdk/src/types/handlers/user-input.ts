@@ -55,18 +55,18 @@ export const ButtonClickEventStruct = assign(
  */
 export type ButtonClickEvent = Infer<typeof ButtonClickEventStruct>;
 
-export const AccountSelectorValueStruct = object({
+export const AccountSelectorStateStruct = object({
   accountId: string(),
   addresses: array(CaipAccountIdStruct),
 });
 
 /**
- * The value of an `AccountSelector` component in state.
+ * The state of an `AccountSelector` component.
  *
  * @property accountId - The account ID of the account.
  * @property addresses - The addresses of the account as CAIP-10 account ID.
  */
-export type AccountSelectorValue = Infer<typeof AccountSelectorValueStruct>;
+export type AccountSelectorState = Infer<typeof AccountSelectorStateStruct>;
 
 export const FileStruct = object({
   name: string(),
@@ -112,7 +112,7 @@ export const FormSubmitEventStruct = assign(
           string(),
           FileStruct,
           boolean(),
-          AccountSelectorValueStruct,
+          AccountSelectorStateStruct,
           AssetSelectorStateStruct,
         ]),
       ),
@@ -144,7 +144,7 @@ export const InputChangeEventStruct = assign(
     value: union([
       string(),
       boolean(),
-      AccountSelectorValueStruct,
+      AccountSelectorStateStruct,
       AssetSelectorStateStruct,
     ]),
   }),

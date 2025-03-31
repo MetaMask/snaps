@@ -28,6 +28,7 @@ import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { SnapInterfaceController } from './SnapInterfaceController';
 import {
+  MOCK_ACCOUNT_ID,
   MockApprovalController,
   getRestrictedSnapInterfaceControllerMessenger,
   getRootSnapInterfaceControllerMessenger,
@@ -225,7 +226,7 @@ describe('SnapInterfaceController', () => {
               <AccountSelector
                 name="baz"
                 switchGlobalAccount
-                value="eip155:0:0x1234567890123456789012345678901234567890"
+                value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv"
               />
             </Field>
             <Field label="foobar">
@@ -256,13 +257,13 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         4,
         'AccountsController:getAccountByAddress',
-        '0x1234567890123456789012345678901234567890',
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         5,
         'AccountsController:setSelectedAccount',
-        'foo',
+        MOCK_ACCOUNT_ID,
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
@@ -275,11 +276,13 @@ describe('SnapInterfaceController', () => {
         foo: {
           bar: null,
           baz: {
-            accountId: 'foo',
-            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+            accountId: MOCK_ACCOUNT_ID,
+            addresses: [
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            ],
           },
           foobar: {
-            accountId: 'foo',
+            accountId: MOCK_ACCOUNT_ID,
             addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
           },
         },
@@ -1361,7 +1364,7 @@ describe('SnapInterfaceController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       rootMessenger.call(
         'SnapInterfaceController:resolveInterface',
         MOCK_SNAP_ID,
