@@ -43,10 +43,10 @@ export const Dialogs: FunctionComponent = () => {
     }).catch(logError);
   };
 
-  const handleSubmitRequireScrollContent = () => {
+  const handleSubmitLongContent = () => {
     invokeSnap({
       snapId,
-      method: 'showRequireScrollContent',
+      method: 'showLongContent',
     }).catch(logError);
   };
   return (
@@ -87,11 +87,11 @@ export const Dialogs: FunctionComponent = () => {
           Custom
         </Button>
         <Button
-          id="triggerRequireScrollContentButton"
-          onClick={handleSubmitRequireScrollContent}
+          id="triggerLongContentButton"
+          onClick={handleSubmitLongContent}
           disabled={isLoading}
         >
-          Require Scroll Content
+          Long Content
         </Button>
       </ButtonGroup>
 

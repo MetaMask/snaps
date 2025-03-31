@@ -21,7 +21,7 @@ import { CustomDialog, RequireScrollContent } from './components';
  * - `showConfirmation`: Show a confirmation dialog.
  * - `showPrompt`: Show a prompt dialog.
  * - `showCustom`: Show a custom dialog with the resolution handled by the snap.
- * - `showRequireScrollContent`: Show a custom dialog with content that requires scrolling.
+ * - `showLongContent`: Show a custom dialog with content that requires scrolling.
  *
  * The dialogs are shown using the [`snap_dialog`](https://docs.metamask.io/snaps/reference/rpc-api/#snap_dialog)
  * method.
@@ -90,7 +90,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         },
       });
 
-    case 'showRequireScrollContent':
+    case 'showLongContent':
       return snap.request({
         method: 'snap_dialog',
         params: { content: <RequireScrollContent /> },
