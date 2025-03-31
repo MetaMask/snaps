@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.0.4",
-    "@metamask/auto-changelog": "^4.1.0",
+    "@metamask/auto-changelog": "^5.0.0",
     "@types/node": "18.14.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
