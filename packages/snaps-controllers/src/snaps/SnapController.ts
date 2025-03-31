@@ -134,6 +134,7 @@ import { gt } from 'semver';
 import {
   ALLOWED_PERMISSIONS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
+  STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
@@ -167,6 +168,7 @@ import type {
   KeyDerivationOptions,
 } from '../types';
 import {
+  debouncePersistState,
   fetchSnap,
   hasTimedOut,
   permissionsDiff,
@@ -1799,6 +1801,23 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Check if a given Snap has a cached encryption key stored in the runtime.
+   *
+   * @param snapId - The Snap ID.
+   * @param runtime - The Snap runtime data.
+   * @returns True if the Snap has a cached encryption key, otherwise false.
+   */
+  #hasCachedEncryptionKey(
+    snapId: SnapId,
+    runtime = this.#getRuntimeExpect(snapId),
+  ): runtime is SnapRuntimeData & {
+    encryptionKey: string;
+    encryptionSalt: string;
+  } {
+    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
+  }
+
+  /**
    * Generate an encryption key to be used for state encryption for a given Snap.
    *
    * @param options - An options bag.
@@ -1821,7 +1840,7 @@ export class SnapController extends BaseController<
   }): Promise<{ key: unknown; salt: string }> {
     const runtime = this.#getRuntimeExpect(snapId);
 
-    if (runtime.encryptionKey && runtime.encryptionSalt && useCache) {
+    if (this.#hasCachedEncryptionKey(snapId, runtime) && useCache) {
       return {
         key: await this.#encryptor.importKey(runtime.encryptionKey),
         salt: runtime.encryptionSalt,
@@ -1851,17 +1870,6 @@ export class SnapController extends BaseController<
       runtime.encryptionSalt = salt;
     }
     return { key: encryptionKey, salt };
-  }
-
-  /**
-   * Check if a given Snap has a cached encryption key stored in the runtime.
-   *
-   * @param snapId - The Snap ID.
-   * @returns True if the Snap has a cached encryption key, otherwise false.
-   */
-  #hasCachedEncryptionKey(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    return runtime.encryptionKey !== null && runtime.encryptionSalt !== null;
   }
 
   /**
@@ -1958,38 +1966,45 @@ export class SnapController extends BaseController<
   /**
    * Persist the state of a Snap.
    *
-   * This is run with a mutex to ensure that only one state update per Snap is
-   * processed at a time, avoiding possible race conditions.
+   * This function is debounced per Snap, meaning that multiple calls to this
+   * function for the same Snap will only result in one state update. It also
+   * uses a mutex to ensure that only one state update per Snap is processed at
+   * a time, avoiding possible race conditions.
    *
    * @param snapId - The Snap ID.
    * @param newSnapState - The new state of the Snap.
    * @param encrypted - A flag to indicate whether to use encrypted storage or
    * not.
    */
-  async #persistSnapState(
-    snapId: SnapId,
-    newSnapState: Record<string, Json> | null,
-    encrypted: boolean,
-  ) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    await runtime.stateMutex.runExclusive(async () => {
-      const newState = await this.#getStateToPersist(
-        snapId,
-        newSnapState,
-        encrypted,
-      );
+  readonly #persistSnapState = debouncePersistState(
+    (
+      snapId: SnapId,
+      newSnapState: Record<string, Json> | null,
+      encrypted: boolean,
+    ) => {
+      const runtime = this.#getRuntimeExpect(snapId);
+      runtime.stateMutex
+        .runExclusive(async () => {
+          const newState = await this.#getStateToPersist(
+            snapId,
+            newSnapState,
+            encrypted,
+          );
 
-      if (encrypted) {
-        return this.update((state) => {
-          state.snapStates[snapId] = newState;
-        });
-      }
+          if (encrypted) {
+            return this.update((state) => {
+              state.snapStates[snapId] = newState;
+            });
+          }
 
-      return this.update((state) => {
-        state.unencryptedSnapStates[snapId] = newState;
-      });
-    });
-  }
+          return this.update((state) => {
+            state.unencryptedSnapStates[snapId] = newState;
+          });
+        })
+        .catch(logError);
+    },
+    STATE_DEBOUNCE_TIMEOUT,
+  );
 
   /**
    * Updates the own state of the snap with the given id.
@@ -2012,11 +2027,7 @@ export class SnapController extends BaseController<
       runtime.unencryptedState = newSnapState;
     }
 
-    // This is intentionally run asynchronously to avoid blocking the main
-    // thread.
-    this.#persistSnapState(snapId, newSnapState, encrypted).catch((error) => {
-      logError(error);
-    });
+    this.#persistSnapState(snapId, newSnapState, encrypted);
   }
 
   /**
@@ -2034,11 +2045,7 @@ export class SnapController extends BaseController<
       runtime.unencryptedState = null;
     }
 
-    // This is intentionally run asynchronously to avoid blocking the main
-    // thread.
-    this.#persistSnapState(snapId, null, encrypted).catch((error) => {
-      logError(error);
-    });
+    this.#persistSnapState(snapId, null, encrypted);
   }
 
   /**

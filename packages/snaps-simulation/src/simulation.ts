@@ -471,11 +471,6 @@ export function registerActions(
   runSaga: RunSagaFunction,
 ) {
   controllerMessenger.registerActionHandler(
-    'PhishingController:maybeUpdateState',
-    async () => Promise.resolve(),
-  );
-
-  controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: PhishingDetectorResultType.All }),
   );

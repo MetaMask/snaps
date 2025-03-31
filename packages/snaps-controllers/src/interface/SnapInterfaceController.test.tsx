@@ -147,11 +147,6 @@ describe('SnapInterfaceController', () => {
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -187,7 +182,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        4,
+        3,
         'MultichainAssetsController:getState',
       );
 
@@ -243,11 +238,6 @@ describe('SnapInterfaceController', () => {
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -367,11 +357,6 @@ describe('SnapInterfaceController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
-      );
-
-      rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
         () => ({ result: true, type: 'all' }),
       );
@@ -399,11 +384,6 @@ describe('SnapInterfaceController', () => {
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -414,11 +394,6 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
         rootMessenger,
         false,
-      );
-
-      rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
       );
 
       rootMessenger.registerActionHandler(
@@ -449,11 +424,6 @@ describe('SnapInterfaceController', () => {
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -464,11 +434,6 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
         rootMessenger,
         false,
-      );
-
-      rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
       );
 
       rootMessenger.registerActionHandler(
@@ -500,7 +465,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+        2,
         'SnapController:get',
         MOCK_SNAP_ID,
       );
@@ -511,11 +476,6 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
         rootMessenger,
         false,
-      );
-
-      rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
       );
 
       rootMessenger.registerActionHandler(
@@ -563,7 +523,7 @@ describe('SnapInterfaceController', () => {
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+        2,
         'AccountsController:getAccountByAddress',
         '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
@@ -934,11 +894,6 @@ describe('SnapInterfaceController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
-      );
-
-      rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
         () => ({ result: true, type: 'all' }),
       );
@@ -977,12 +932,7 @@ describe('SnapInterfaceController', () => {
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        4,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        5,
+        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -993,11 +943,6 @@ describe('SnapInterfaceController', () => {
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
         rootMessenger,
         false,
-      );
-
-      rootMessenger.registerActionHandler(
-        'PhishingController:maybeUpdateState',
-        jest.fn(),
       );
 
       rootMessenger.registerActionHandler(
@@ -1043,12 +988,7 @@ describe('SnapInterfaceController', () => {
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        4,
-        'PhishingController:maybeUpdateState',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        5,
+        3,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
