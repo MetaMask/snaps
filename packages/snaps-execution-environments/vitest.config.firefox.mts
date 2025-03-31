@@ -1,10 +1,11 @@
+import type { UserConfig } from 'vite';
 import { mergeConfig } from 'vitest/config';
+
 import config from './vitest.config.mjs';
-import {UserConfig} from "vite";
 
 // `config` seems to be inferred incorrectly, so we need to explicitly type it.
 const defaultConfig: UserConfig = config;
-delete defaultConfig.test.browser.instances;
+delete defaultConfig.test?.browser?.instances;
 
 export default mergeConfig(defaultConfig, {
   test: {
@@ -16,9 +17,9 @@ export default mergeConfig(defaultConfig, {
     browser: {
       instances: [
         {
-          browser: 'firefox'
-        }
-      ]
+          browser: 'firefox',
+        },
+      ],
     },
-  }
-})
+  },
+});

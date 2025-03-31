@@ -192,7 +192,7 @@ jobs:
         if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         uses: MetaMask/action-retry-command@v1
         with:
-          command: yarn playwright install --with-deps --only-shell chromium
+          command: yarn playwright install --with-deps --only-shell chromium firefox
       - name: Run tests
         uses: MetaMask/action-retry-command@v1
         with:
