@@ -26,7 +26,9 @@ export async function generateSendFlow({ fees }: GenerateSendFlowParams) {
     params: {
       ui: (
         <SendFlow
-          selectedCurrency="BTC"
+          useFiat={false}
+          account={null}
+          asset={null}
           total={{ amount: 0, fiat: 0 }}
           fees={fees}
         />

@@ -20,7 +20,12 @@ import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import { getJsonSizeUnsafe, validateJsxElements } from '@metamask/snaps-utils';
-import type { CaipAccountId, CaipAssetType, Json } from '@metamask/utils';
+import type {
+  CaipAccountId,
+  CaipAssetType,
+  CaipChainId,
+  Json,
+} from '@metamask/utils';
 import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
@@ -76,9 +81,14 @@ type AccountsControllerGetSelectedMultichainAccountAction = {
   handler: () => InternalAccount;
 };
 
-export type AccountsControllerSetSelectedAccountAction = {
+type AccountsControllerSetSelectedAccountAction = {
   type: `AccountsController:setSelectedAccount`;
   handler: (accountId: string) => void;
+};
+
+type AccountsControllerListMultichainAccountsAction = {
+  type: `AccountsController:listMultichainAccounts`;
+  handler: (chainId?: CaipChainId) => InternalAccount[];
 };
 
 export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
@@ -104,7 +114,8 @@ export type SnapInterfaceControllerAllowedActions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetSelectedAccountAction;
+  | AccountsControllerSetSelectedAccountAction
+  | AccountsControllerListMultichainAccountsAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -281,6 +292,7 @@ export class SnapInterfaceController extends BaseController<
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
       setSelectedAccount: this.#setSelectedAccount.bind(this),
+      listAccounts: this.#listAccounts.bind(this),
     });
 
     this.update((draftState) => {
@@ -336,6 +348,7 @@ export class SnapInterfaceController extends BaseController<
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
       setSelectedAccount: this.#setSelectedAccount.bind(this),
+      listAccounts: this.#listAccounts.bind(this),
     });
 
     this.update((draftState) => {
@@ -477,6 +490,20 @@ export class SnapInterfaceController extends BaseController<
       'AccountsController:setSelectedAccount',
       accountId,
     );
+  }
+
+  #listAccounts(chainIds: CaipChainId[]) {
+    const accounts = chainIds.reduce<InternalAccount[]>((acc, chainId) => {
+      const result = this.messagingSystem.call(
+        'AccountsController:listMultichainAccounts',
+        chainId,
+      );
+
+      return [...acc, ...result];
+    }, []);
+
+    // dedupe accounts that could have multiple scopes in common
+    return Array.from(new Set(accounts));
   }
 
   /**

@@ -3,6 +3,7 @@ import type {
   OnHomePageHandler,
   OnUserInputHandler,
   OnRpcRequestHandler,
+  AssetSelectorState,
 } from '@metamask/snaps-sdk';
 import { UserInputEventType } from '@metamask/snaps-sdk';
 
@@ -74,7 +75,7 @@ export const onUserInput: OnUserInputHandler = async ({
   id,
   context,
 }) => {
-  const { selectedCurrency, fees } = context as SendFlowContext;
+  const { useFiat, fees } = context as SendFlowContext;
 
   const state = await snap.request({
     method: 'snap_getInterfaceState',
@@ -93,45 +94,28 @@ export const onUserInput: OnUserInputHandler = async ({
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
-      case 'to': {
+      case 'to':
+      case 'account':
+      case 'asset': {
         await snap.request({
           method: 'snap_updateInterface',
           params: {
             id,
             ui: (
               <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
+                asset={state.asset as AssetSelectorState}
+                account={sendForm.account}
+                useFiat={useFiat}
                 total={total}
                 fees={fees}
                 errors={formErrors}
                 // For testing purposes, we display the avatar if the address is
                 // a valid hex checksum address.
-                displayAvatar={isCaipHexAddress(event.value)}
+                displayAvatar={isCaipHexAddress(state.to)}
               />
             ),
           },
         });
-        break;
-      }
-
-      case 'accountSelector': {
-        await snap.request({
-          method: 'snap_updateInterface',
-          params: {
-            id,
-            ui: (
-              <SendFlow
-                selectedCurrency={selectedCurrency}
-                total={total}
-                fees={fees}
-                errors={formErrors}
-              />
-            ),
-          },
-        });
-
         break;
       }
       default:

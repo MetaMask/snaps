@@ -19,10 +19,15 @@ import {
   AddressInput,
   AccountSelector,
 } from '@metamask/snaps-sdk/jsx';
+import type { CaipAccountId } from '@metamask/utils';
+import { parseCaipAccountId } from '@metamask/utils';
 
 import {
   assertNameIsUnique,
   constructState,
+  formatAccountSelectorStateValue,
+  getAccountSelectorDefaultStateValue,
+  getAccountSelectorStateValue,
   getAssetSelectorStateValue,
   getDefaultAsset,
   getJsxInterface,
@@ -631,11 +636,14 @@ describe('constructState', () => {
     });
 
     elementDataGetters.getAccountByAddress.mockImplementation(
-      (address: string) => ({
-        id: MOCK_ACCOUNT_ID,
-        address,
-        scopes: ['eip155:0'],
-      }),
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
     );
 
     const element = (
@@ -661,11 +669,14 @@ describe('constructState', () => {
     });
 
     elementDataGetters.getAccountByAddress.mockImplementation(
-      (address: string) => ({
-        id: MOCK_ACCOUNT_ID,
-        address,
-        scopes: ['eip155:0'],
-      }),
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
     );
 
     const element = (
@@ -694,11 +705,14 @@ describe('constructState', () => {
     });
 
     elementDataGetters.getAccountByAddress.mockImplementation(
-      (address: string) => ({
-        id: MOCK_ACCOUNT_ID,
-        address,
-        scopes: ['eip155:0'],
-      }),
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
     );
 
     const element = (
@@ -730,11 +744,14 @@ describe('constructState', () => {
     });
 
     elementDataGetters.getAccountByAddress.mockImplementation(
-      (address: string) => ({
-        id: MOCK_ACCOUNT_ID,
-        address,
-        scopes: ['eip155:0'],
-      }),
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
     );
 
     const element = (
@@ -789,29 +806,16 @@ describe('constructState', () => {
     });
   });
 
-  it('sets the selected account to null if there is no selected account', () => {
-    elementDataGetters.getSelectedAccount.mockReturnValue(undefined);
-
-    const element = (
-      <Box>
-        <AccountSelector name="foo" />
-      </Box>
-    );
-
-    const result = constructState({}, element, elementDataGetters);
-
-    expect(result).toStrictEqual({
-      foo: null,
-    });
-  });
-
   it('switches the selected account if `switchGlobalAccount` is set', () => {
     elementDataGetters.getAccountByAddress.mockImplementation(
-      (address: string) => ({
-        id: MOCK_ACCOUNT_ID,
-        address,
-        scopes: ['eip155:0'],
-      }),
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
     );
 
     const element = (
@@ -1571,5 +1575,97 @@ describe('isStatefulComponent', () => {
         </Box>,
       ),
     ).toBe(false);
+  });
+});
+
+describe('formatAccountSelectorStateValue', () => {
+  it('formats the account selector state value', () => {
+    expect(
+      // @ts-expect-error partial mock
+      formatAccountSelectorStateValue({
+        id: MOCK_ACCOUNT_ID,
+        address: '0x1234567890123456789012345678901234567890',
+        scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+      }),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'eip155:1:0x1234567890123456789012345678901234567890',
+        'eip155:2:0x1234567890123456789012345678901234567890',
+        'eip155:3:0x1234567890123456789012345678901234567890',
+      ],
+    });
+  });
+});
+
+describe('getAccountSelectorDefaultStateValue', () => {
+  it('returns the account selector default state value', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+    expect(
+      getAccountSelectorDefaultStateValue({
+        getSelectedAccount,
+        getAccountByAddress: jest.fn(),
+        getAssetsState: jest.fn(),
+        setSelectedAccount: jest.fn(),
+      }),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'eip155:1:0x1234567890123456789012345678901234567890',
+        'eip155:2:0x1234567890123456789012345678901234567890',
+        'eip155:3:0x1234567890123456789012345678901234567890',
+      ],
+    });
+  });
+});
+
+describe('getAccountSelectorStateValue', () => {
+  it('returns the account selector state value', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const setSelectedAccount = jest.fn();
+
+    expect(
+      getAccountSelectorStateValue(
+        <AccountSelector
+          name="foo"
+          value="eip155:1:0x1234567890123456789012345678901234567890"
+        />,
+        getAccountByAddress,
+        setSelectedAccount,
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'eip155:1:0x1234567890123456789012345678901234567890',
+        'eip155:2:0x1234567890123456789012345678901234567890',
+        'eip155:3:0x1234567890123456789012345678901234567890',
+      ],
+    });
+  });
+
+  it('returns the null if the account is not found', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    const setSelectedAccount = jest.fn();
+
+    expect(
+      getAccountSelectorStateValue(
+        <AccountSelector
+          name="foo"
+          value="eip155:1:0x1234567890123456789012345678901234567890"
+        />,
+        getAccountByAddress,
+        setSelectedAccount,
+      ),
+    ).toBeNull();
   });
 });
