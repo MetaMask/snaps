@@ -531,6 +531,7 @@ export class CronjobController extends BaseController<
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
     this.#dailyTimer.start(() => {
       this.dailyCheckIn().catch((error) => {
+        // TODO: Decide how to handle errors.
         /* istanbul ignore next */
         logError(error);
       });
