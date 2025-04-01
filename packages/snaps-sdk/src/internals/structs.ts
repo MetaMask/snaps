@@ -2,6 +2,8 @@ import type { AnyStruct, Infer, InferStructTuple } from '@metamask/superstruct';
 import {
   Struct,
   define,
+  record,
+  refine,
   literal as superstructLiteral,
   union as superstructUnion,
 } from '@metamask/superstruct';
@@ -215,5 +217,21 @@ export function selectiveUnion<Selector extends (value: any) => AnyStruct>(
       // This only validates the root of the struct, entries does the rest of the work.
       return struct.validator(value, context);
     },
+  });
+}
+
+/**
+ * Refine a struct to be a non-empty record.
+ *
+ * @param Key - The struct for the record key.
+ * @param Value - The struct for the record value.
+ * @returns The refined struct.
+ */
+export function nonEmptyRecord<Key extends string, Value>(
+  Key: Struct<Key>,
+  Value: Struct<Value>,
+) {
+  return refine(record(Key, Value), 'Non-empty record', (value) => {
+    return !Array.isArray(value) && Object.keys(value).length > 0;
   });
 }

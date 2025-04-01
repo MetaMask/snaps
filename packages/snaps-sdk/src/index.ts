@@ -11,6 +11,7 @@ export {
   enumValue,
   typedUnion,
   selectiveUnion,
+  nonEmptyRecord,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.
@@ -26,5 +27,4 @@ export * from './errors';
 export * from './error-wrappers';
 export * from './images';
 export * from './types';
-export * from './structs';
 export * from './ui';
