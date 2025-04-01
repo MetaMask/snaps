@@ -1,4 +1,4 @@
-import { SNAP_EXPORTS } from './exports';
+import { SNAP_EXPORT_NAMES, SNAP_EXPORTS } from './exports';
 
 describe('SNAP_EXPORTS', () => {
   describe('validator', () => {
@@ -9,5 +9,26 @@ describe('SNAP_EXPORTS', () => {
         expect(validator('')).toBe(false);
       },
     );
+  });
+});
+
+describe('SNAP_EXPORT_NAMES', () => {
+  it('is an array of all handler types', () => {
+    expect(SNAP_EXPORT_NAMES).toStrictEqual([
+      'onRpcRequest',
+      'onSignature',
+      'onTransaction',
+      'onCronjob',
+      'onInstall',
+      'onUpdate',
+      'onNameLookup',
+      'onKeyringRequest',
+      'onHomePage',
+      'onSettingsPage',
+      'onUserInput',
+      'onAssetsLookup',
+      'onAssetsConversion',
+      'onProtocolRequest',
+    ]);
   });
 });
