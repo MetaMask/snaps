@@ -26,4 +26,5 @@ export * from './errors';
 export * from './error-wrappers';
 export * from './images';
 export * from './types';
+export * from './structs';
 export * from './ui';
