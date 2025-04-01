@@ -82,7 +82,7 @@
     "redux-saga": "^1.2.3"
   },
   "devDependencies": {
-    "@metamask/auto-changelog": "^5.0.0",
+    "@metamask/auto-changelog": "^5.0.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@redux-saga/is": "^1.1.3",
     "@redux-saga/symbols": "^1.1.3",
