@@ -4354,6 +4354,145 @@ describe('SnapController', () => {
     });
   });
 
+  describe('onAssetHistoricalPrice', () => {
+    it('throws if `onAssetHistoricalPrice` handler returns an invalid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            historicalPrice: { foo: {} },
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetHistoricalPrice,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        `Assertion failed: At path: historicalPrice.intervals -- Expected an object, but received: undefined.`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetHistoricalPrice` returns a valid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            historicalPrice: {
+              intervals: {
+                P1D: [[1737548790, '400']],
+              },
+              updateTime: 1737548790,
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'foo.com',
+          handler: HandlerType.OnAssetHistoricalPrice,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+              to: 'swift:0/iso4217:USD',
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        historicalPrice: {
+          intervals: {
+            P1D: [[1737548790, '400']],
+          },
+          updateTime: 1737548790,
+        },
+      });
+
+      snapController.destroy();
+    });
+  });
+
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();

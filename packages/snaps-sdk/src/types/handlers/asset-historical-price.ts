@@ -19,13 +19,13 @@ export type HistoricalPriceIntervals = {
  *
  * @property historicalPrice - The historical price object
  * @property historicalPrice.intervals - The historical price of the asset pair.
- * @property historicalPrice.conversionTime - The time at which the conversion rate was calculated.
- * @property historicalPrice.expirationTime - The time at which the conversion rate expires.
+ * @property historicalPrice.updateTime - The time at which the historical price has been calculated.
+ * @property historicalPrice.expirationTime - The time at which the historical price expires.
  */
 export type OnAssetHistoricalPriceResponse = {
   historicalPrice: {
     intervals: HistoricalPriceIntervals;
-    conversionTime: number;
+    updateTime: number;
     expirationTime?: number;
   };
 } | null;
