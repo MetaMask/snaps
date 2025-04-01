@@ -8,14 +8,12 @@ import {
   type ScheduleBackgroundEventResult,
 } from '@metamask/snaps-sdk';
 import type { CronjobRpcRequest, InferMatching } from '@metamask/snaps-utils';
-import { CronjobRpcRequestStruct } from '@metamask/snaps-utils';
 import {
-  StructError,
-  create,
-  object,
-  refine,
-  string,
-} from '@metamask/superstruct';
+  CronjobRpcRequestStruct,
+  ISO8601DateStruct,
+  ISO8601DurationStruct,
+} from '@metamask/snaps-utils';
+import { StructError, create, object } from '@metamask/superstruct';
 import {
   assert,
   hasProperty,
@@ -56,31 +54,13 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
   hookNames,
 };
 
-const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
-
 const ScheduleBackgroundEventParametersWithDateStruct = object({
-  date: refine(string(), 'date', (val) => {
-    const date = DateTime.fromISO(val);
-    if (date.isValid) {
-      // Luxon doesn't have a reliable way to check if timezone info was not provided
-      if (!offsetRegex.test(val)) {
-        return 'ISO 8601 date must have timezone information';
-      }
-      return true;
-    }
-    return 'Not a valid ISO 8601 date';
-  }),
+  date: ISO8601DateStruct,
   request: CronjobRpcRequestStruct,
 });
 
 const ScheduleBackgroundEventParametersWithDurationStruct = object({
-  duration: refine(string(), 'duration', (val) => {
-    const duration = Duration.fromISO(val);
-    if (!duration.isValid) {
-      return 'Not a valid ISO 8601 duration';
-    }
-    return true;
-  }),
+  duration: ISO8601DurationStruct,
   request: CronjobRpcRequestStruct,
 });
 

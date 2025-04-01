@@ -26,6 +26,7 @@ export * from './platform-version';
 export * from './snaps';
 export * from './strings';
 export * from './structs';
+export * from './time';
 export * from './types';
 export * from './ui';
 export * from './url';
