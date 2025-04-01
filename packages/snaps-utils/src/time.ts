@@ -4,7 +4,7 @@ import { DateTime, Duration } from 'luxon';
 /**
  * Refines a string as an ISO 8601 duration.
  */
-export const Iso8601DurationStruct = refine(
+export const ISO8601DurationStruct = refine(
   string(),
   'ISO 8601 duration',
   (value) => {
@@ -24,7 +24,7 @@ const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
 /**
  * Refines a string as an ISO 8601 date.
  */
-export const Iso8601DateStruct = refine(string(), 'ISO 8601 date', (value) => {
+export const ISO8601DateStruct = refine(string(), 'ISO 8601 date', (value) => {
   const parsedDate = DateTime.fromISO(value);
 
   if (!parsedDate.isValid) {

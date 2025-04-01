@@ -10,8 +10,8 @@ import {
 import type { CronjobRpcRequest, InferMatching } from '@metamask/snaps-utils';
 import {
   CronjobRpcRequestStruct,
-  Iso8601DateStruct,
-  Iso8601DurationStruct,
+  ISO8601DateStruct,
+  ISO8601DurationStruct,
 } from '@metamask/snaps-utils';
 import { StructError, create, object } from '@metamask/superstruct';
 import {
@@ -55,12 +55,12 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
 };
 
 const ScheduleBackgroundEventParametersWithDateStruct = object({
-  date: Iso8601DateStruct,
+  date: ISO8601DateStruct,
   request: CronjobRpcRequestStruct,
 });
 
 const ScheduleBackgroundEventParametersWithDurationStruct = object({
-  duration: Iso8601DurationStruct,
+  duration: ISO8601DurationStruct,
   request: CronjobRpcRequestStruct,
 });
 
