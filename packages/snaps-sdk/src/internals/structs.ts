@@ -221,7 +221,7 @@ export function selectiveUnion<Selector extends (value: any) => AnyStruct>(
 }
 
 /**
- * Refine a struct to be a non-empty record.
+ * Refine a struct to be a non-empty record and disallows usage of arrays.
  *
  * @param Key - The struct for the record key.
  * @param Value - The struct for the record value.
