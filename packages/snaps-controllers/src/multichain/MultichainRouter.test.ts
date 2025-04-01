@@ -399,6 +399,15 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
+      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+        return [getTruncatedSnap()];
+      });
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
         () => MOCK_SOLANA_ACCOUNTS,
@@ -409,7 +418,7 @@ describe('MultichainRouter', () => {
       ).toBe(true);
     });
 
-    it('returns false if no account Snap is found', async () => {
+    it('returns true if a protocol Snap exists', async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
@@ -418,6 +427,40 @@ describe('MultichainRouter', () => {
       new MultichainRouter({
         messenger,
         withSnapKeyring,
+      });
+
+      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+        return [getTruncatedSnap()];
+      });
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SOLANA_SNAP_PERMISSIONS,
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:listMultichainAccounts',
+        () => [],
+      );
+
+      expect(
+        messenger.call('MultichainRouter:isSupportedScope', SOLANA_CAIP2),
+      ).toBe(true);
+    });
+
+    it('returns false if no Snap is found', async () => {
+      const rootMessenger = getRootMultichainRouterMessenger();
+      const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
+      const withSnapKeyring = getMockWithSnapKeyring();
+
+      /* eslint-disable-next-line no-new */
+      new MultichainRouter({
+        messenger,
+        withSnapKeyring,
+      });
+
+      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+        return [];
       });
 
       rootMessenger.registerActionHandler(

@@ -397,9 +397,11 @@ export class MultichainRouter {
    * @returns True if the router can service the scope, otherwise false.
    */
   isSupportedScope(scope: CaipChainId): boolean {
-    // We currently assume here that if one Snap exists that service the scope, we can service the scope generally.
-    return this.#messenger
+    const hasAccountSnap = this.#messenger
       .call('AccountsController:listMultichainAccounts', scope)
       .some((account: InternalAccount) => account.metadata.snap?.enabled);
+    const hasProtocolSnap = this.#getProtocolSnaps(scope).length > 0;
+    // We currently assume here that if one Snap exists that service the scope, we can service the scope generally.
+    return hasAccountSnap || hasProtocolSnap;
   }
 }
