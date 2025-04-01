@@ -1,3 +1,9 @@
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
+};
+
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnSignature = 'onSignature',

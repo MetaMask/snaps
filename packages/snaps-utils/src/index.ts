@@ -14,7 +14,6 @@ export * from './derivation-paths';
 export * from './entropy';
 export * from './errors';
 export * from './handlers';
-export * from './handler-types';
 export * from './iframe';
 export * from './json';
 export * from './json-rpc';
