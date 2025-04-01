@@ -1,4 +1,4 @@
-import { is, refine, string } from '@metamask/superstruct';
+import { refine, string } from '@metamask/superstruct';
 import { DateTime, Duration } from 'luxon';
 
 /**
@@ -38,19 +38,3 @@ export const Iso8601DateStruct = refine(string(), 'ISO 8601 date', (value) => {
 
   return true;
 });
-
-/**
- * Generates a `DateTime` object based on if a duration or date is provided.
- *
- * @param iso8601Time - The ISO 8601 time string.
- * @returns A `DateTime` object.
- */
-export function getStartDate(iso8601Time: string) {
-  if (is(iso8601Time, Iso8601DurationStruct)) {
-    return DateTime.fromJSDate(new Date())
-      .toUTC()
-      .plus(Duration.fromISO(iso8601Time));
-  }
-
-  return DateTime.fromISO(iso8601Time, { setZone: true });
-}

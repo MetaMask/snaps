@@ -1,7 +1,7 @@
 import { create, is } from '@metamask/superstruct';
 import { DateTime } from 'luxon';
 
-import { getStartDate, Iso8601DateStruct, Iso8601DurationStruct } from './time';
+import { Iso8601DateStruct, Iso8601DurationStruct } from './time';
 
 describe('Iso8601dateStruct', () => {
   it('should return true for a valid ISO 8601 date', () => {
@@ -49,27 +49,6 @@ describe('Iso8601DurationStruct', () => {
     const value = '1Millisecond';
     expect(() => create(value, Iso8601DurationStruct)).toThrow(
       'Not a valid ISO 8601 duration',
-    );
-  });
-});
-
-describe('getStartDate', () => {
-  it('should return a DateTime object for a valid ISO 8601 date', () => {
-    const value = '2025-03-31T12:00:00Z';
-    const final = DateTime.fromISO(value, { setZone: true });
-
-    expect(getStartDate(value)).toStrictEqual(final);
-  });
-
-  it('should return a DateTime object with the valid ISO 8601 duration added', () => {
-    jest
-      .useFakeTimers('modern')
-      .setSystemTime(new Date('2025-03-31T12:00:00Z'));
-
-    const value = 'P3Y6M';
-
-    expect(getStartDate(value)).toStrictEqual(
-      DateTime.fromISO('2028-09-30T12:00:00.000Z', { setZone: true }),
     );
   });
 });
