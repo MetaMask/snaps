@@ -14,27 +14,8 @@ import type {
   OnUpdateHandler,
   OnUserInputHandler,
 } from '@metamask/snaps-sdk';
-import { ComponentOrElementStruct, SeverityLevel } from '@metamask/snaps-sdk';
-import {
-  assign,
-  literal,
-  nullable,
-  object,
-  optional,
-  string,
-  array,
-  size,
-  union,
-} from '@metamask/superstruct';
 
-import type { SnapHandler } from './handler-types';
-import { HandlerType } from './handler-types';
-
-export type SnapRpcHookArgs = {
-  origin: string;
-  handler: HandlerType;
-  request: Record<string, unknown>;
-};
+import { HandlerType } from './types';
 
 export const SNAP_EXPORTS = {
   [HandlerType.OnRpcRequest]: {
@@ -141,89 +122,4 @@ export const SNAP_EXPORTS = {
   },
 } as const;
 
-export const OnTransactionSeverityResponseStruct = object({
-  severity: optional(literal(SeverityLevel.Critical)),
-});
-
-export const OnTransactionResponseWithIdStruct = assign(
-  OnTransactionSeverityResponseStruct,
-  object({
-    id: string(),
-  }),
-);
-
-export const OnTransactionResponseWithContentStruct = assign(
-  OnTransactionSeverityResponseStruct,
-  object({
-    content: ComponentOrElementStruct,
-  }),
-);
-
-export const OnTransactionResponseStruct = nullable(
-  union([
-    OnTransactionResponseWithContentStruct,
-    OnTransactionResponseWithIdStruct,
-  ]),
-);
-
-export const OnSignatureResponseStruct = OnTransactionResponseStruct;
-
-export const OnHomePageResponseWithContentStruct = object({
-  content: ComponentOrElementStruct,
-});
-
-export const OnHomePageResponseWithIdStruct = object({
-  id: string(),
-});
-
-export const OnHomePageResponseStruct = union([
-  OnHomePageResponseWithContentStruct,
-  OnHomePageResponseWithIdStruct,
-]);
-
-export const OnSettingsPageResponseStruct = OnHomePageResponseStruct;
-
-export const AddressResolutionStruct = object({
-  protocol: string(),
-  resolvedDomain: string(),
-});
-
-export const DomainResolutionStruct = object({
-  protocol: string(),
-  resolvedAddress: string(),
-  domainName: string(),
-});
-
-export const AddressResolutionResponseStruct = object({
-  resolvedDomains: size(array(AddressResolutionStruct), 1, Infinity),
-});
-
-export const DomainResolutionResponseStruct = object({
-  resolvedAddresses: size(array(DomainResolutionStruct), 1, Infinity),
-});
-
-export const OnNameLookupResponseStruct = nullable(
-  union([AddressResolutionResponseStruct, DomainResolutionResponseStruct]),
-);
-
-/**
- * Utility type for getting the handler function type from a handler type.
- */
-export type HandlerFunction<Type extends SnapHandler> =
-  Type['validator'] extends (snapExport: unknown) => snapExport is infer Handler
-    ? Handler
-    : never;
-
-/**
- * All the function-based handlers that a snap can implement.
- */
-export type SnapFunctionExports = {
-  [Key in keyof typeof SNAP_EXPORTS]?: HandlerFunction<
-    (typeof SNAP_EXPORTS)[Key]
-  >;
-};
-
-/**
- * All handlers that a snap can implement.
- */
-export type SnapExports = SnapFunctionExports;
+export const SNAP_EXPORT_NAMES = Object.values(HandlerType);

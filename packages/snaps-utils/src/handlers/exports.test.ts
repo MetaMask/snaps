@@ -1,4 +1,4 @@
-import { SNAP_EXPORTS } from './handlers';
+import { SNAP_EXPORTS } from './exports';
 
 describe('SNAP_EXPORTS', () => {
   describe('validator', () => {

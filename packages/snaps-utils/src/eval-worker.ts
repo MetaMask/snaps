@@ -6,8 +6,8 @@ import 'ses/lockdown';
 
 import { readFileSync } from 'fs';
 
-import type { HandlerType } from './handler-types';
-import { SNAP_EXPORT_NAMES } from './handler-types';
+import type { HandlerType } from './handlers';
+import { SNAP_EXPORT_NAMES } from './handlers';
 import { generateMockEndowments } from './mock';
 
 declare let lockdown: any, Compartment: any;
