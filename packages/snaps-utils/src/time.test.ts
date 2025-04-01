@@ -1,0 +1,75 @@
+import { create, is } from '@metamask/superstruct';
+import { DateTime } from 'luxon';
+
+import { getStartDate, Iso8601DateStruct, Iso8601DurationStruct } from './time';
+
+describe('Iso8601dateStruct', () => {
+  it('should return true for a valid ISO 8601 date', () => {
+    const value = DateTime.now().toISO();
+    expect(is(value, Iso8601DateStruct)).toBe(true);
+  });
+
+  it('should return false for an invalid ISO 8601 date', () => {
+    const value = 'Mon Mar 31 2025';
+    expect(is(value, Iso8601DateStruct)).toBe(false);
+  });
+
+  it('should return false for an ISO 8601 date without timezone information', () => {
+    const value = '2025-03-31T12:00:00';
+    expect(is(value, Iso8601DateStruct)).toBe(false);
+  });
+
+  it('should return an error message for invalid ISO 8601 date', () => {
+    const value = 'Mon Mar 31 2025';
+    expect(() => create(value, Iso8601DateStruct)).toThrow(
+      'Not a valid ISO 8601 date',
+    );
+  });
+
+  it('should return an error message for ISO 8601 date without timezone information', () => {
+    const value = '2025-03-31T12:00:00';
+    expect(() => create(value, Iso8601DateStruct)).toThrow(
+      'ISO 8601 date must have timezone information',
+    );
+  });
+});
+
+describe('Iso8601DurationStruct', () => {
+  it('should return true for a valid ISO 8601 duration', () => {
+    const value = 'P3Y6M4DT12H30M5S';
+    expect(is(value, Iso8601DurationStruct)).toBe(true);
+  });
+
+  it('should return false for an invalid ISO 8601 duration', () => {
+    const value = 'Millisecond';
+    expect(is(value, Iso8601DurationStruct)).toBe(false);
+  });
+
+  it('should return an error message for invalid ISO 8601 duration', () => {
+    const value = '1Millisecond';
+    expect(() => create(value, Iso8601DurationStruct)).toThrow(
+      'Not a valid ISO 8601 duration',
+    );
+  });
+});
+
+describe('getStartDate', () => {
+  it('should return a DateTime object for a valid ISO 8601 date', () => {
+    const value = '2025-03-31T12:00:00Z';
+    const final = DateTime.fromISO(value, { setZone: true });
+
+    expect(getStartDate(value)).toStrictEqual(final);
+  });
+
+  it('should return a DateTime object with the valid ISO 8601 duration added', () => {
+    jest
+      .useFakeTimers('modern')
+      .setSystemTime(new Date('2025-03-31T12:00:00Z'));
+
+    const value = 'P3Y6M';
+
+    expect(getStartDate(value)).toStrictEqual(
+      DateTime.fromISO('2028-09-30T12:00:00.000Z', { setZone: true }),
+    );
+  });
+});

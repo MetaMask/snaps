@@ -8,20 +8,18 @@ import {
   type ScheduleBackgroundEventResult,
 } from '@metamask/snaps-sdk';
 import type { CronjobRpcRequest, InferMatching } from '@metamask/snaps-utils';
-import { CronjobRpcRequestStruct } from '@metamask/snaps-utils';
 import {
-  StructError,
-  create,
-  object,
-  refine,
-  string,
-} from '@metamask/superstruct';
+  CronjobRpcRequestStruct,
+  getStartDate,
+  Iso8601DateStruct,
+  Iso8601DurationStruct,
+} from '@metamask/snaps-utils';
+import { StructError, create, object } from '@metamask/superstruct';
 import {
   assert,
   hasProperty,
   type PendingJsonRpcResponse,
 } from '@metamask/utils';
-import { DateTime, Duration } from 'luxon';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -56,31 +54,13 @@ export const scheduleBackgroundEventHandler: PermittedHandlerExport<
   hookNames,
 };
 
-const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
-
 const ScheduleBackgroundEventParametersWithDateStruct = object({
-  date: refine(string(), 'date', (val) => {
-    const date = DateTime.fromISO(val);
-    if (date.isValid) {
-      // Luxon doesn't have a reliable way to check if timezone info was not provided
-      if (!offsetRegex.test(val)) {
-        return 'ISO 8601 date must have timezone information';
-      }
-      return true;
-    }
-    return 'Not a valid ISO 8601 date';
-  }),
+  date: Iso8601DateStruct,
   request: CronjobRpcRequestStruct,
 });
 
 const ScheduleBackgroundEventParametersWithDurationStruct = object({
-  duration: refine(string(), 'duration', (val) => {
-    const duration = Duration.fromISO(val);
-    if (!duration.isValid) {
-      return 'Not a valid ISO 8601 duration';
-    }
-    return true;
-  }),
+  duration: Iso8601DurationStruct,
   request: CronjobRpcRequestStruct,
 });
 
@@ -95,22 +75,6 @@ export type ScheduleBackgroundEventParameters = InferMatching<
   typeof ScheduleBackgroundEventParametersStruct,
   ScheduleBackgroundEventParams
 >;
-
-/**
- * Generates a `DateTime` object based on if a duration or date is provided.
- *
- * @param params - The validated params from the `snap_scheduleBackgroundEvent` call.
- * @returns A `DateTime` object.
- */
-function getStartDate(params: ScheduleBackgroundEventParams) {
-  if ('duration' in params) {
-    return DateTime.fromJSDate(new Date())
-      .toUTC()
-      .plus(Duration.fromISO(params.duration));
-  }
-
-  return DateTime.fromISO(params.date, { setZone: true });
-}
 
 /**
  * The `snap_scheduleBackgroundEvent` method implementation.
@@ -146,7 +110,11 @@ async function getScheduleBackgroundEventImplementation(
 
     const { request } = validatedParams;
 
-    const date = getStartDate(validatedParams);
+    const time = hasProperty(validatedParams, 'date')
+      ? (validatedParams.date as string)
+      : validatedParams.duration;
+
+    const date = getStartDate(time);
 
     // Make sure any millisecond precision is removed.
     const truncatedDate = date.startOf('second').toISO({
