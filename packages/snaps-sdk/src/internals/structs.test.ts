@@ -5,9 +5,16 @@ import {
   object,
   string,
   validate,
+  any,
 } from '@metamask/superstruct';
 
-import { enumValue, literal, typedUnion, union } from './structs';
+import {
+  enumValue,
+  literal,
+  typedUnion,
+  union,
+  nonEmptyRecord,
+} from './structs';
 import type { BoxElement } from '../jsx';
 import { Footer, Icon, Text, Button, Box } from '../jsx';
 import {
@@ -144,4 +151,28 @@ describe('typedUnion', () => {
       FieldStruct,
     ]);
   });
+});
+
+describe('nonEmptyRecord', () => {
+  it.each([
+    { foo: 'bar' },
+    {
+      a: {
+        b: 'c',
+      },
+    },
+  ])('validates "%p"', (value) => {
+    const struct = nonEmptyRecord(string(), any());
+
+    expect(is(value, struct)).toBe(true);
+  });
+
+  it.each(['foo', 42, null, undefined, [], {}, [1, 2, 3]])(
+    'does not validate "%p"',
+    (value) => {
+      const struct = nonEmptyRecord(string(), any());
+
+      expect(is(value, struct)).toBe(false);
+    },
+  );
 });
