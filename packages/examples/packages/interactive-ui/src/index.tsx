@@ -33,7 +33,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'dialog': {
       const params = request.params as { disabled: boolean };
-      const { disabled } = params;
+      const disabled = params?.disabled;
       const interfaceId = await snap.request({
         method: 'snap_createInterface',
         params: {
