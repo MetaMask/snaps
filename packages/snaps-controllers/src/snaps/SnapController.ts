@@ -3392,6 +3392,11 @@ export class SnapController extends BaseController<
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     this.#assertCanUsePlatform();
 
+    assert(
+      typeof origin === 'string' && origin.length > 0,
+      "'origin' must be a non-empty string.",
+    );
+
     const request = {
       jsonrpc: '2.0',
       id: nanoid(),

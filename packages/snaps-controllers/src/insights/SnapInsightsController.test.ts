@@ -91,7 +91,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnTransaction,
         request: {
           method: '',
@@ -108,7 +108,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_LOCAL_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnTransaction,
         request: {
           method: '',
@@ -216,7 +216,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',
@@ -237,7 +237,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_LOCAL_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',
@@ -341,7 +341,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',
@@ -361,7 +361,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_LOCAL_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',
@@ -515,7 +515,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnTransaction,
         request: {
           method: '',
@@ -532,7 +532,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_LOCAL_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnTransaction,
         request: {
           method: '',
@@ -613,7 +613,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',
@@ -633,7 +633,7 @@ describe('SnapInsightsController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_LOCAL_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnSignature,
         request: {
           method: '',

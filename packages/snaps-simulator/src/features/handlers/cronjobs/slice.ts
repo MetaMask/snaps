@@ -13,7 +13,7 @@ type Response = JsonRpcResponse<Json>;
 
 export const INITIAL_STATE = {
   request: {
-    origin: '',
+    origin: 'metamask',
   },
   response: null,
   history: [],

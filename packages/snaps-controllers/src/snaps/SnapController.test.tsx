@@ -3771,7 +3771,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnNameLookup,
         request: {
           jsonrpc: '2.0',
@@ -9220,7 +9220,7 @@ describe('SnapController', () => {
         await messenger.call('SnapController:handleRequest', {
           snapId: MOCK_SNAP_ID,
           handler: HandlerType.OnNameLookup,
-          origin: '',
+          origin: 'metamask',
           request: {},
         }),
       ).toBe(true);
@@ -10516,7 +10516,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnInstall,
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),
@@ -10659,7 +10659,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnUpdate,
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),

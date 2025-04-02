@@ -103,7 +103,7 @@ export const SnapInterfaceContextProvider: FunctionComponent<
   ) => {
     dispatch(
       sendRequest({
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',

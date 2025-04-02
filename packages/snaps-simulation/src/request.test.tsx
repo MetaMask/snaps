@@ -423,7 +423,7 @@ describe('getInterfaceApi', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -470,7 +470,7 @@ describe('getInterfaceApi', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -523,7 +523,7 @@ describe('getInterfaceApi', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -576,7 +576,7 @@ describe('getInterfaceApi', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -633,7 +633,7 @@ describe('getInterfaceApi', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',

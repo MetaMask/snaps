@@ -64,7 +64,7 @@ export const Request: FunctionComponent = () => {
     const { chainId, transactionOrigin, ...transaction } = data;
     dispatch(
       sendRequest({
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnTransaction,
         request: {
           jsonrpc: '2.0',
