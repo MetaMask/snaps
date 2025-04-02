@@ -32,11 +32,19 @@ import { decodeData } from './utils';
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'dialog': {
+      const params = request.params as { disabled: boolean };
+      const { disabled } = params;
+      const interfaceId = await snap.request({
+        method: 'snap_createInterface',
+        params: {
+          ui: <InteractiveForm disabled={disabled} />,
+          context: { disabled },
+        },
+      });
       return await snap.request({
         method: 'snap_dialog',
         params: {
-          type: 'confirmation',
-          content: <InteractiveForm />,
+          id: interfaceId,
         },
       });
     }
@@ -139,7 +147,17 @@ export const onUserInput: OnUserInputHandler = async ({
           method: 'snap_updateInterface',
           params: {
             id,
-            ui: <InteractiveForm />,
+            ui: <InteractiveForm disabled={context?.disabled as boolean} />,
+          },
+        });
+        break;
+
+      case 'ok':
+        await snap.request({
+          method: 'snap_resolveInterface',
+          params: {
+            id,
+            value: null,
           },
         });
         break;

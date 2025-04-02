@@ -1,5 +1,13 @@
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
-import { Heading, Button, Box, Text, Copyable } from '@metamask/snaps-sdk/jsx';
+import {
+  Heading,
+  Button,
+  Box,
+  Text,
+  Copyable,
+  Container,
+  Footer,
+} from '@metamask/snaps-sdk/jsx';
 
 import type { InteractiveFormState } from './InteractiveForm';
 
@@ -9,17 +17,20 @@ type ResultProps = {
 
 export const Result: SnapComponent<ResultProps> = ({ values }) => {
   return (
-    <Box>
-      <Heading>Interactive UI Example Snap</Heading>
-      <Text>You submitted the following values:</Text>
+    <Container>
       <Box>
-        {Object.values(values).map((value) => (
-          <Copyable value={value?.toString() ?? ''} />
-        ))}
+        <Heading>Interactive UI Example Snap</Heading>
+        <Text>You submitted the following values:</Text>
+        <Box>
+          {Object.values(values).map((value) => (
+            <Copyable value={value?.toString() ?? ''} />
+          ))}
+        </Box>
       </Box>
-      <Box center>
+      <Footer>
         <Button name="back">Back</Button>
-      </Box>
-    </Box>
+        <Button name="ok">OK</Button>
+      </Footer>
+    </Container>
   );
 };

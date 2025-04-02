@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { assertIsConfirmationDialog, installSnap } from '@metamask/snaps-jest';
+import { assertIsCustomDialog, installSnap } from '@metamask/snaps-jest';
 
 import {
   Insight,
@@ -52,7 +52,7 @@ describe('onRpcRequest', () => {
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
-      assertIsConfirmationDialog(resultScreen);
+      assertIsCustomDialog(resultScreen);
 
       expect(resultScreen).toRender(
         <Result
@@ -65,9 +65,9 @@ describe('onRpcRequest', () => {
           }}
         />,
       );
-      await resultScreen.ok();
+      await resultScreen.clickElement('ok');
 
-      expect(await response).toRespondWith(true);
+      expect(await response).toRespondWith(null);
     });
 
     it('lets users input nothing', async () => {
@@ -84,7 +84,7 @@ describe('onRpcRequest', () => {
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
-      assertIsConfirmationDialog(resultScreen);
+      assertIsCustomDialog(resultScreen);
 
       expect(resultScreen).toRender(
         <Result
@@ -97,9 +97,9 @@ describe('onRpcRequest', () => {
           }}
         />,
       );
-      await resultScreen.ok();
+      await resultScreen.clickElement('ok');
 
-      expect(await response).toRespondWith(true);
+      expect(await response).toRespondWith(null);
     });
   });
 });

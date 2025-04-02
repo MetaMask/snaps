@@ -14,10 +14,13 @@ import { getSnapId } from '../../../utils';
 export const InteractiveUI: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
-  const handleClick = (method: string) => () => {
+  const handleClick = (method: string, disabled: boolean) => () => {
     invokeSnap({
       snapId: getSnapId(INTERACTIVE_UI_SNAP_ID, INTERACTIVE_UI_SNAP_PORT),
       method,
+      params: {
+        disabled,
+      },
     }).catch(logError);
   };
   return (
@@ -33,16 +36,17 @@ export const InteractiveUI: FunctionComponent = () => {
           variant="primary"
           id="createDialogButton"
           disabled={isLoading}
-          onClick={handleClick('dialog')}
+          onClick={handleClick('dialog', false)}
         >
           Create Dialog
         </Button>
         <Button
           variant="primary"
-          id="getInterfaceStateButton"
-          onClick={handleClick('getState')}
+          id="createDisabledDialogButton"
+          disabled={isLoading}
+          onClick={handleClick('dialog', true)}
         >
-          Get interface state
+          Create Disabled Dialog
         </Button>
       </ButtonGroup>
       <Result>
