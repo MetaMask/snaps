@@ -565,7 +565,7 @@ describe('clickElement', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -602,7 +602,7 @@ describe('clickElement', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -619,7 +619,7 @@ describe('clickElement', () => {
     });
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -667,7 +667,7 @@ describe('clickElement', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -684,7 +684,7 @@ describe('clickElement', () => {
     });
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -736,7 +736,7 @@ describe('clickElement', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -754,7 +754,7 @@ describe('clickElement', () => {
     });
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -906,7 +906,7 @@ describe('typeInField', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -1017,7 +1017,7 @@ describe('selectInDropdown', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -1150,7 +1150,7 @@ describe('uploadFile', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -1215,7 +1215,7 @@ describe('uploadFile', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -1370,7 +1370,7 @@ describe('getInterface', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -1412,7 +1412,7 @@ describe('getInterface', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -1460,7 +1460,7 @@ describe('getInterface', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -1507,7 +1507,7 @@ describe('getInterface', () => {
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -1615,7 +1615,7 @@ describe('selectFromRadioGroup', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',
@@ -1761,7 +1761,7 @@ describe('selectFromSelector', () => {
     );
 
     expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnUserInput,
       request: {
         jsonrpc: '2.0',

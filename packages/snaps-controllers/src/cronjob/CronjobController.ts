@@ -301,7 +301,7 @@ export class CronjobController extends BaseController<
     this.#updateJobLastRunState(job.id, Date.now());
     await this.messagingSystem.call('SnapController:handleRequest', {
       snapId: job.snapId,
-      origin: '',
+      origin: 'metamask',
       handler: HandlerType.OnCronjob,
       request: job.request,
     });
@@ -386,7 +386,7 @@ export class CronjobController extends BaseController<
       this.messagingSystem
         .call('SnapController:handleRequest', {
           snapId: event.snapId,
-          origin: '',
+          origin: 'metamask',
           handler: HandlerType.OnCronjob,
           request: event.request,
         })

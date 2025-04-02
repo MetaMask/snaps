@@ -103,6 +103,7 @@ import {
   getLocalizedSnapManifest,
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
+  isValidUrl,
 } from '@metamask/snaps-utils';
 import type {
   Json,
@@ -3391,6 +3392,11 @@ export class SnapController extends BaseController<
     request: rawRequest,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     this.#assertCanUsePlatform();
+
+    assert(
+      origin === 'metamask' || isValidUrl(origin),
+      "'origin' must be a valid URL or 'metamask'.",
+    );
 
     const request = {
       jsonrpc: '2.0',

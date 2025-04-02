@@ -425,7 +425,7 @@ describe('SnapController', () => {
 
     await snapController.handleRequest({
       snapId: snap.id,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnRpcRequest,
       request: {
         jsonrpc: '2.0',
@@ -475,7 +475,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -536,7 +536,7 @@ describe('SnapController', () => {
 
     const results = await snapController.handleRequest({
       snapId: snap.id,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnRpcRequest,
       request: {
         jsonrpc: '2.0',
@@ -1424,7 +1424,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1527,7 +1527,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1612,7 +1612,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1683,7 +1683,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1761,7 +1761,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1809,7 +1809,7 @@ describe('SnapController', () => {
     const results = (await Promise.allSettled([
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1820,7 +1820,7 @@ describe('SnapController', () => {
       }),
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -1875,7 +1875,7 @@ describe('SnapController', () => {
 
     const promise = snapController.handleRequest({
       snapId: snap.id,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnRpcRequest,
       request: {
         jsonrpc: '2.0',
@@ -1928,7 +1928,7 @@ describe('SnapController', () => {
 
     const promise = snapController.handleRequest({
       snapId: snap.id,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnRpcRequest,
       request: {
         jsonrpc: '2.0',
@@ -1993,7 +1993,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -2099,7 +2099,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: snap.id,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -2205,7 +2205,7 @@ describe('SnapController', () => {
         await expect(
           snapController.handleRequest({
             snapId: snap.id,
-            origin: 'foo.com',
+            origin: MOCK_ORIGIN,
             handler,
             request: { jsonrpc: '2.0', method: 'test' },
           }),
@@ -2240,7 +2240,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnUserInput,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
@@ -2270,7 +2270,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.RpcOrigin,
                 value: {
-                  allowedOrigins: ['foo.com'],
+                  allowedOrigins: [MOCK_ORIGIN],
                 },
               },
             ],
@@ -2317,7 +2317,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.KeyringOrigin,
                 value: {
-                  allowedOrigins: ['foo.com'],
+                  allowedOrigins: [MOCK_ORIGIN],
                 },
               },
             ],
@@ -2364,7 +2364,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.RpcOrigin,
                 value: {
-                  allowedOrigins: ['foo.com'],
+                  allowedOrigins: [MOCK_ORIGIN],
                 },
               },
             ],
@@ -2381,7 +2381,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
@@ -2411,7 +2411,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.KeyringOrigin,
                 value: {
-                  allowedOrigins: ['foo.com'],
+                  allowedOrigins: [MOCK_ORIGIN],
                 },
               },
             ],
@@ -2428,7 +2428,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnKeyringRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
@@ -2476,7 +2476,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: snap.id,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
@@ -2585,11 +2585,11 @@ describe('SnapController', () => {
         snaps: true,
       },
       {
-        allowedOrigins: ['foo.com'],
+        allowedOrigins: [MOCK_ORIGIN],
       },
       {
         snaps: true,
-        allowedOrigins: ['foo.com'],
+        allowedOrigins: [MOCK_ORIGIN],
       },
     ])(
       'throws if the origin is not in the `allowedOrigins` list (%p)',
@@ -2629,12 +2629,12 @@ describe('SnapController', () => {
         await expect(
           snapController.handleRequest({
             snapId: snap.id,
-            origin: 'bar.com',
+            origin: 'https://bar.com',
             handler: HandlerType.OnRpcRequest,
             request: { jsonrpc: '2.0', method: 'test' },
           }),
         ).rejects.toThrow(
-          `Snap "${snap.id}" is not permitted to handle requests from "bar.com".`,
+          `Snap "${snap.id}" is not permitted to handle requests from "https://bar.com".`,
         );
 
         snapController.destroy();
@@ -2742,7 +2742,7 @@ describe('SnapController', () => {
               {
                 type: SnapCaveatType.KeyringOrigin,
                 value: {
-                  allowedOrigins: ['foo.com'],
+                  allowedOrigins: [MOCK_ORIGIN],
                 },
               },
             ],
@@ -2759,12 +2759,12 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: snap.id,
-          origin: 'bar.com',
+          origin: 'https://bar.com',
           handler: HandlerType.OnKeyringRequest,
           request: { jsonrpc: '2.0', method: 'test' },
         }),
       ).rejects.toThrow(
-        'Snap "npm:@metamask/example-snap" is not permitted to handle requests from "bar.com".',
+        'Snap "npm:@metamask/example-snap" is not permitted to handle requests from "https://bar.com".',
       );
 
       snapController.destroy();
@@ -2818,7 +2818,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnTransaction,
           request: {
             jsonrpc: '2.0',
@@ -2874,7 +2874,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnTransaction,
           request: {
             jsonrpc: '2.0',
@@ -2929,7 +2929,7 @@ describe('SnapController', () => {
 
       const result = await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnTransaction,
         request: {
           jsonrpc: '2.0',
@@ -2984,7 +2984,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnTransaction,
           request: {
             jsonrpc: '2.0',
@@ -3042,7 +3042,7 @@ describe('SnapController', () => {
 
       const result = await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnTransaction,
         request: {
           jsonrpc: '2.0',
@@ -3105,7 +3105,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnSignature,
           request: {
             jsonrpc: '2.0',
@@ -3161,7 +3161,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnSignature,
           request: {
             jsonrpc: '2.0',
@@ -3217,7 +3217,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnSignature,
           request: {
             jsonrpc: '2.0',
@@ -3270,7 +3270,7 @@ describe('SnapController', () => {
 
       const result = await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnSignature,
         request: {
           jsonrpc: '2.0',
@@ -3324,7 +3324,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnTransaction,
         request: {
           jsonrpc: '2.0',
@@ -3376,7 +3376,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnSignature,
         request: {
           jsonrpc: '2.0',
@@ -3438,7 +3438,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnHomePage,
         request: {
           jsonrpc: '2.0',
@@ -3492,7 +3492,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnHomePage,
         request: {
           jsonrpc: '2.0',
@@ -3545,7 +3545,7 @@ describe('SnapController', () => {
 
     const result = await snapController.handleRequest({
       snapId: MOCK_SNAP_ID,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnHomePage,
       request: {
         jsonrpc: '2.0',
@@ -3608,7 +3608,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnSettingsPage,
         request: {
           jsonrpc: '2.0',
@@ -3662,7 +3662,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnSettingsPage,
         request: {
           jsonrpc: '2.0',
@@ -3715,7 +3715,7 @@ describe('SnapController', () => {
 
     const result = await snapController.handleRequest({
       snapId: MOCK_SNAP_ID,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnSettingsPage,
       request: {
         jsonrpc: '2.0',
@@ -3771,7 +3771,7 @@ describe('SnapController', () => {
     await expect(
       snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnNameLookup,
         request: {
           jsonrpc: '2.0',
@@ -3834,7 +3834,7 @@ describe('SnapController', () => {
 
     const result = await snapController.handleRequest({
       snapId: MOCK_SNAP_ID,
-      origin: 'foo.com',
+      origin: MOCK_ORIGIN,
       handler: HandlerType.OnNameLookup,
       request: {
         jsonrpc: '2.0',
@@ -3887,7 +3887,7 @@ describe('SnapController', () => {
     expect(
       await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnNameLookup,
         request: {
           jsonrpc: '2.0',
@@ -3948,7 +3948,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsLookup,
           request: {
             jsonrpc: '2.0',
@@ -4024,7 +4024,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsLookup,
           request: {
             jsonrpc: '2.0',
@@ -4100,7 +4100,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsLookup,
           request: {
             jsonrpc: '2.0',
@@ -4180,7 +4180,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsConversion,
           request: {
             jsonrpc: '2.0',
@@ -4249,7 +4249,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsConversion,
           request: {
             jsonrpc: '2.0',
@@ -4323,7 +4323,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetsConversion,
           request: {
             jsonrpc: '2.0',
@@ -4374,7 +4374,7 @@ describe('SnapController', () => {
 
       await snapController.handleRequest({
         snapId: MOCK_SNAP_ID,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         handler: HandlerType.OnRpcRequest,
         request: {
           jsonrpc: '2.0',
@@ -4389,7 +4389,7 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             id: 1,
@@ -4419,7 +4419,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: 'kaplar',
@@ -4452,7 +4452,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             method: 'bar',
@@ -4499,7 +4499,7 @@ describe('SnapController', () => {
       const finishPromise = Promise.all([
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -4510,7 +4510,7 @@ describe('SnapController', () => {
         }),
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -4521,7 +4521,7 @@ describe('SnapController', () => {
         }),
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -4532,7 +4532,7 @@ describe('SnapController', () => {
         }),
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -4543,7 +4543,7 @@ describe('SnapController', () => {
         }),
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -4557,7 +4557,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnRpcRequest,
           request: {
             jsonrpc: '2.0',
@@ -8688,7 +8688,7 @@ describe('SnapController', () => {
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
       });
 
       const mockSnapB = getMockSnapData({
@@ -8758,7 +8758,7 @@ describe('SnapController', () => {
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
       });
 
       const snapController = getSnapController(
@@ -8794,7 +8794,7 @@ describe('SnapController', () => {
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         blocked: true,
         enabled: false,
       });
@@ -8856,7 +8856,7 @@ describe('SnapController', () => {
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
       });
 
       const snapController = getSnapController(
@@ -8900,7 +8900,7 @@ describe('SnapController', () => {
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
       });
 
       const snapController = getSnapController(
@@ -9220,7 +9220,7 @@ describe('SnapController', () => {
         await messenger.call('SnapController:handleRequest', {
           snapId: MOCK_SNAP_ID,
           handler: HandlerType.OnNameLookup,
-          origin: '',
+          origin: 'metamask',
           request: {},
         }),
       ).toBe(true);
@@ -9931,7 +9931,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         enabled: false,
       });
 
@@ -9956,7 +9956,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         enabled: true,
       });
 
@@ -9981,7 +9981,7 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
-        origin: 'foo.com',
+        origin: MOCK_ORIGIN,
         enabled: true,
       });
 
@@ -10516,7 +10516,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnInstall,
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),
@@ -10659,7 +10659,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         {
           handler: HandlerType.OnUpdate,
-          origin: '',
+          origin: 'metamask',
           request: {
             jsonrpc: '2.0',
             id: expect.any(String),

@@ -361,7 +361,7 @@ export class SnapInsightsController extends BaseController<
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
       snapId,
-      origin: '',
+      origin: 'metamask',
       handler,
       request: {
         method: '',

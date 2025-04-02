@@ -48,7 +48,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -79,7 +79,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -126,7 +126,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethod',
@@ -177,7 +177,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethod',
@@ -232,7 +232,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethod',
@@ -274,7 +274,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -347,7 +347,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -459,7 +459,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -503,7 +503,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -579,7 +579,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -592,7 +592,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -644,7 +644,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -659,7 +659,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -713,7 +713,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -728,7 +728,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -807,7 +807,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -821,7 +821,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'handleEvent',
@@ -857,7 +857,7 @@ describe('CronjobController', () => {
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnCronjob,
         request: {
           method: 'exampleMethodOne',
@@ -911,7 +911,7 @@ describe('CronjobController', () => {
           'SnapController:handleRequest',
           {
             snapId: MOCK_SNAP_ID,
-            origin: '',
+            origin: 'metamask',
             handler: HandlerType.OnCronjob,
             request: {
               method: 'handleExport',

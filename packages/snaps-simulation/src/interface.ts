@@ -348,7 +348,7 @@ async function handleEvent(
       'ExecutionService:handleRpcRequest',
       snapId,
       {
-        origin: '',
+        origin: 'metamask',
         handler: HandlerType.OnUserInput,
         request: {
           jsonrpc: '2.0',
@@ -539,7 +539,7 @@ export async function typeInField(
   );
 
   await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: '',
+    origin: 'metamask',
     handler: HandlerType.OnUserInput,
     request: {
       jsonrpc: '2.0',
@@ -613,7 +613,7 @@ export async function selectInDropdown(
   );
 
   await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: '',
+    origin: 'metamask',
     handler: HandlerType.OnUserInput,
     request: {
       jsonrpc: '2.0',
@@ -687,7 +687,7 @@ export async function selectFromRadioGroup(
   );
 
   await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: '',
+    origin: 'metamask',
     handler: HandlerType.OnUserInput,
     request: {
       jsonrpc: '2.0',
@@ -761,7 +761,7 @@ export async function selectFromSelector(
   );
 
   await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: '',
+    origin: 'metamask',
     handler: HandlerType.OnUserInput,
     request: {
       jsonrpc: '2.0',
@@ -901,7 +901,7 @@ export async function uploadFile(
   );
 
   await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: '',
+    origin: 'metamask',
     handler: HandlerType.OnUserInput,
     request: {
       jsonrpc: '2.0',
