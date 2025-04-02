@@ -1,3 +1,33 @@
+import type { SNAP_EXPORTS } from './exports';
+
+export type SnapRpcHookArgs = {
+  origin: string;
+  handler: HandlerType;
+  request: Record<string, unknown>;
+};
+
+/**
+ * Utility type for getting the handler function type from a handler type.
+ */
+export type HandlerFunction<Type extends SnapHandler> =
+  Type['validator'] extends (snapExport: unknown) => snapExport is infer Handler
+    ? Handler
+    : never;
+
+/**
+ * All the function-based handlers that a snap can implement.
+ */
+export type SnapFunctionExports = {
+  [Key in keyof typeof SNAP_EXPORTS]?: HandlerFunction<
+    (typeof SNAP_EXPORTS)[Key]
+  >;
+};
+
+/**
+ * All handlers that a snap can implement.
+ */
+export type SnapExports = SnapFunctionExports;
+
 export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnSignature = 'onSignature',
@@ -38,5 +68,3 @@ export type SnapHandler = {
    */
   validator: (snapExport: unknown) => boolean;
 };
-
-export const SNAP_EXPORT_NAMES = Object.values(HandlerType);
