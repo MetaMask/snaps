@@ -11,7 +11,6 @@ import {
   union as superstructUnion,
   array,
   is,
-  any,
 } from '@metamask/superstruct';
 import { assert } from '@metamask/utils';
 import { bold, green, red } from 'chalk';
@@ -32,7 +31,6 @@ import {
   validateUnion,
   createUnion,
   mergeStructs,
-  nonEmptyRecord,
 } from './structs';
 
 jest.mock('@metamask/superstruct', () => {
@@ -512,21 +510,4 @@ describe('mergeStructs', () => {
     expect(is({}, struct)).toBe(false);
     expect(is({ dapps: true }, struct)).toBe(true);
   });
-});
-
-describe('nonEmptyRecord', () => {
-  it.each([[1, 2, 3], { foo: 'bar' }])('validates "%p"', (value) => {
-    const struct = nonEmptyRecord(string(), any());
-
-    expect(is(value, struct)).toBe(true);
-  });
-
-  it.each(['foo', 42, null, undefined, [], {}])(
-    'does not validate "%p"',
-    (value) => {
-      const struct = nonEmptyRecord(string(), any());
-
-      expect(is(value, struct)).toBe(false);
-    },
-  );
 });

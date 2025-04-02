@@ -1,3 +1,4 @@
+import { nonEmptyRecord } from '@metamask/snaps-sdk';
 import {
   array,
   nullable,
@@ -8,14 +9,13 @@ import {
   tuple,
 } from '@metamask/superstruct';
 
-import { nonEmptyRecord } from './structs';
-import { Iso8601DurationStruct } from './time';
+import { ISO8601DurationStruct } from '../time';
 
 /**
  * A struct representing a historical price.
  */
 export const HistoricalPriceStruct = nonEmptyRecord(
-  Iso8601DurationStruct,
+  ISO8601DurationStruct,
   array(tuple([number(), string()])),
 );
 

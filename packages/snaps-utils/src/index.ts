@@ -1,5 +1,4 @@
 export type * from './account';
-export * from './asset-historical-price';
 export * from './array';
 export * from './auxiliary-files';
 export * from './base64';
