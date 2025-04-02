@@ -4401,7 +4401,7 @@ describe('SnapController', () => {
       await expect(
         snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetHistoricalPrice,
           request: {
             jsonrpc: '2.0',
@@ -4468,7 +4468,7 @@ describe('SnapController', () => {
       expect(
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
-          origin: 'foo.com',
+          origin: MOCK_ORIGIN,
           handler: HandlerType.OnAssetHistoricalPrice,
           request: {
             jsonrpc: '2.0',
