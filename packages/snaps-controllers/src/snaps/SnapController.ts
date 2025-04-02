@@ -103,6 +103,7 @@ import {
   getLocalizedSnapManifest,
   MAX_FILE_SIZE,
   OnSettingsPageResponseStruct,
+  isValidUrl,
 } from '@metamask/snaps-utils';
 import type {
   Json,
@@ -3393,8 +3394,8 @@ export class SnapController extends BaseController<
     this.#assertCanUsePlatform();
 
     assert(
-      typeof origin === 'string' && origin.length > 0,
-      "'origin' must be a non-empty string.",
+      origin === 'metamask' || isValidUrl(origin),
+      "'origin' must be a valid URL or 'metamask'.",
     );
 
     const request = {
