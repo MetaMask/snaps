@@ -137,7 +137,7 @@
     "@wdio/static-server-service": "^8.19.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.2",
     "eslint": "^9.11.0",
     "expect-webdriverio": "^4.4.1",
     "istanbul-lib-coverage": "^3.2.0",
