@@ -7,8 +7,8 @@ import {
 } from './asset-historical-price';
 
 describe('HistoricalPriceStruct', () => {
-  it('validates an object', () => {
-    const value = {
+  it.each([
+    {
       P1D: [
         [1737542312, '1'],
         [1737542312, '2'],
@@ -17,8 +17,24 @@ describe('HistoricalPriceStruct', () => {
         [1737542312, '1'],
         [1737542312, '2'],
       ],
-    };
-
+    },
+    {
+      all: [
+        [1737542312, '1'],
+        [1737542312, '2'],
+      ],
+    },
+    {
+      all: [
+        [1737542312, '1'],
+        [1737542312, '2'],
+      ],
+      P1D: [
+        [1737542312, '1'],
+        [1737542312, '2'],
+      ],
+    },
+  ])('validates "%p"', (value) => {
     expect(is(value, HistoricalPriceStruct)).toBe(true);
   });
 
@@ -59,6 +75,28 @@ describe('AssetHistoricalPriceStruct', () => {
     {
       intervals: {
         P1D: [
+          [1737542312, '1'],
+          [1737542312, '2'],
+        ],
+        P1W: [
+          [1737542312, '1'],
+          [1737542312, '2'],
+        ],
+      },
+      updateTime: 1737542312,
+    },
+    {
+      intervals: {
+        all: [
+          [1737542312, '1'],
+          [1737542312, '2'],
+        ],
+      },
+      updateTime: 1737542312,
+    },
+    {
+      intervals: {
+        all: [
           [1737542312, '1'],
           [1737542312, '2'],
         ],
@@ -125,6 +163,34 @@ describe('OnAssetHistoricalPriceResponseStruct', () => {
           ],
         },
         updateTime: 1737542312,
+      },
+    },
+    {
+      historicalPrice: {
+        intervals: {
+          all: [
+            [1737542312, '1'],
+            [1737542312, '2'],
+          ],
+        },
+        updateTime: 1737542312,
+        expirationTime: 1737542312,
+      },
+    },
+    {
+      historicalPrice: {
+        intervals: {
+          all: [
+            [1737542312, '1'],
+            [1737542312, '2'],
+          ],
+          P1W: [
+            [1737542312, '1'],
+            [1737542312, '2'],
+          ],
+        },
+        updateTime: 1737542312,
+        expirationTime: 1737542312,
       },
     },
     {

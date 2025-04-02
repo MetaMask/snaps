@@ -8,7 +8,7 @@ export type HistoricalPriceValue = [number, string];
 
 /**
  * The historical price object.
- * The key is the time period as an ISO 8601 duration, the value is an array of historical price values.
+ * The key is the time period as an ISO 8601 duration or the "all" string, the value is an array of historical price values.
  */
 export type HistoricalPriceIntervals = {
   [key: string]: HistoricalPriceValue[];
@@ -42,7 +42,7 @@ export type OnAssetHistoricalPriceArguments = {
 };
 
 /**
- * The `onAssetHistoricalPrice` handler. This is called by MetaMask when querying about historical price of an asset pair on specific chains.
+ * The `onAssetHistoricalPrice` handler. This is called by MetaMask when querying about the historical price of an asset pair on a specific chain.
  *
  * @returns The historical price of the asset pair. See
  * {@link OnAssetHistoricalPriceResponse}.

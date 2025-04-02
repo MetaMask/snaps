@@ -128,16 +128,16 @@ export type RequestArguments =
  * Asserts that the given value is a valid request arguments object.
  *
  * @param value - The value to validate.
- * @param requestArgumentsStruct - The struct to validate the value against.
+ * @param struct - The struct to validate the value against.
  * @throws If the value is not a valid request arguments object.
  */
 function assertRequestArguments<Type, Schema>(
   value: unknown,
-  requestArgumentsStruct: Struct<Type, Schema>,
+  struct: Struct<Type, Schema>,
 ): asserts value is Struct<Type, Schema> {
   assertStruct(
     value,
-    requestArgumentsStruct,
+    struct,
     'Invalid request params',
     rpcErrors.invalidParams,
   );

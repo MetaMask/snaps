@@ -1,12 +1,14 @@
 import { nonEmptyRecord } from '@metamask/snaps-sdk';
 import {
   array,
+  literal,
   nullable,
   number,
   object,
   optional,
   string,
   tuple,
+  union,
 } from '@metamask/superstruct';
 
 import { ISO8601DurationStruct } from '../time';
@@ -15,7 +17,7 @@ import { ISO8601DurationStruct } from '../time';
  * A struct representing a historical price.
  */
 export const HistoricalPriceStruct = nonEmptyRecord(
-  ISO8601DurationStruct,
+  union([literal('all'), ISO8601DurationStruct]),
   array(tuple([number(), string()])),
 );
 
