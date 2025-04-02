@@ -109,8 +109,14 @@
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
+        "@metamask/snaps-utils>luxon": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-utils>luxon": {
+      "globals": {
+        "Intl": true
       }
     },
     "@metamask/utils": {
