@@ -111,6 +111,7 @@ import type {
   NonEmptyArray,
   SemVerRange,
   CaipAssetType,
+  JsonRpcRequest,
 } from '@metamask/utils';
 import {
   assert,
@@ -213,7 +214,7 @@ export type PreinstalledSnap = {
 };
 
 type SnapRpcHandler = (
-  options: SnapRpcHookArgs & { timeout: number },
+  options: SnapRpcHookArgs & { timeout: number; request: JsonRpcRequest },
 ) => Promise<unknown>;
 
 /**
@@ -3513,7 +3514,7 @@ export class SnapController extends BaseController<
       handler: handlerType,
       request,
       timeout,
-    }: SnapRpcHookArgs & { timeout: number }) => {
+    }: SnapRpcHookArgs & { timeout: number; request: JsonRpcRequest }) => {
       if (!this.state.snaps[snapId].enabled) {
         throw new Error(`Snap "${snapId}" is disabled.`);
       }
@@ -3547,13 +3548,19 @@ export class SnapController extends BaseController<
         }
       }
 
+      const transformedRequest = this.#transformSnapRpcRequest(
+        snapId,
+        handlerType,
+        request,
+      );
+
       const timer = new Timer(timeout);
-      this.#recordSnapRpcRequestStart(snapId, request.id, timer);
+      this.#recordSnapRpcRequestStart(snapId, transformedRequest.id, timer);
 
       const handleRpcRequestPromise = this.messagingSystem.call(
         'ExecutionService:handleRpcRequest',
         snapId,
-        { origin, handler: handlerType, request },
+        { origin, handler: handlerType, request: transformedRequest },
       );
 
       // This will either get the result or reject due to the timeout.
@@ -3566,21 +3573,21 @@ export class SnapController extends BaseController<
           );
         }
 
-        await this.#assertSnapRpcRequestResult(snapId, handlerType, result);
+        await this.#assertSnapRpcResponse(snapId, handlerType, result);
 
-        const transformedResult = await this.#transformSnapRpcRequestResult(
+        const transformedResult = await this.#transformSnapRpcResponse(
           snapId,
           handlerType,
-          request,
+          transformedRequest,
           result,
         );
 
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
+        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
 
         return transformedResult;
       } catch (error) {
         // We flag the RPC request as finished early since termination may affect pending requests
-        this.#recordSnapRpcRequestFinish(snapId, request.id);
+        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
@@ -3629,15 +3636,15 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Transform a RPC request result if necessary.
+   * Transform a RPC response if necessary.
    *
    * @param snapId - The snap ID of the snap that produced the result.
    * @param handlerType - The handler type that produced the result.
    * @param request - The request that returned the result.
-   * @param result - The result.
+   * @param result - The response.
    * @returns The transformed result if applicable, otherwise the original result.
    */
-  async #transformSnapRpcRequestResult(
+  async #transformSnapRpcResponse(
     snapId: SnapId,
     handlerType: HandlerType,
     request: Record<string, unknown>,
@@ -3764,13 +3771,49 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Transforms a JSON-RPC request before sending it to the Snap, if required for a given handler.
+   *
+   * @param snapId - The Snap ID.
+   * @param handlerType - The handler being called.
+   * @param request - The JSON-RPC request.
+   * @returns The potentially transformed JSON-RPC request.
+   */
+  #transformSnapRpcRequest(
+    snapId: SnapId,
+    handlerType: HandlerType,
+    request: JsonRpcRequest,
+  ) {
+    switch (handlerType) {
+      // For onUserInput we inject context, so the client doesn't have to worry about keeping it in sync.
+      case HandlerType.OnUserInput: {
+        assert(request.params && hasProperty(request.params, 'id'));
+
+        const interfaceId = request.params.id as string;
+        const interfaceState = this.messagingSystem.call(
+          'SnapInterfaceController:getInterface',
+          snapId,
+          interfaceId,
+        );
+
+        return {
+          ...request,
+          params: { ...request.params, context: interfaceState.context },
+        };
+      }
+
+      default:
+        return request;
+    }
+  }
+
+  /**
    * Assert that the returned result of a Snap RPC call is the expected shape.
    *
    * @param snapId - The snap ID.
    * @param handlerType - The handler type of the RPC Request.
    * @param result - The result of the RPC request.
    */
-  async #assertSnapRpcRequestResult(
+  async #assertSnapRpcResponse(
     snapId: SnapId,
     handlerType: HandlerType,
     result: unknown,
