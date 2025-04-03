@@ -102,7 +102,7 @@ export type TransactionParams = {
   /**
    * Unique number to prevent replay attacks.
    */
-  nonce?: number | string;
+  nonce?: string;
 
   /**
    * Address to send this transaction to.
