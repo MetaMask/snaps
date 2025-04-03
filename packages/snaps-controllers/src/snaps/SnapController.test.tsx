@@ -19,8 +19,12 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
-import { Text } from '@metamask/snaps-sdk/jsx';
+import {
+  AuxiliaryFileEncoding,
+  text,
+  UserInputEventType,
+} from '@metamask/snaps-sdk';
+import { Text, Box, Button } from '@metamask/snaps-sdk/jsx';
 import type { SnapPermissions, RpcOrigins } from '@metamask/snaps-utils';
 import {
   getPlatformVersion,
@@ -2242,7 +2246,11 @@ describe('SnapController', () => {
           snapId: snap.id,
           origin: MOCK_ORIGIN,
           handler: HandlerType.OnUserInput,
-          request: { jsonrpc: '2.0', method: 'test' },
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: { id: MOCK_INTERFACE_ID },
+          },
         }),
       ).toBeUndefined();
 
@@ -2765,6 +2773,77 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow(
         'Snap "npm:@metamask/example-snap" is not permitted to handle requests from "https://bar.com".',
+      );
+
+      snapController.destroy();
+    });
+
+    it('injects context into onUserInput', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SnapInterfaceController:getInterface',
+        () => ({
+          id: MOCK_INTERFACE_ID,
+          snapId: MOCK_SNAP_ID,
+          content: (
+            <Box>
+              <Button name="button">Click me</Button>
+            </Box>
+          ),
+          state: {},
+          context: { foo: 'bar' },
+          contentType: null,
+        }),
+      );
+
+      await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            id: MOCK_INTERFACE_ID,
+            event: {
+              type: UserInputEventType.ButtonClickEvent,
+              name: 'button',
+            },
+          },
+        },
+      });
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnUserInput,
+          request: {
+            id: expect.any(String),
+            method: ' ',
+            jsonrpc: '2.0',
+            params: {
+              id: MOCK_INTERFACE_ID,
+              event: {
+                type: UserInputEventType.ButtonClickEvent,
+                name: 'button',
+              },
+              context: { foo: 'bar' },
+            },
+          },
+        },
       );
 
       snapController.destroy();
