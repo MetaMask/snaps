@@ -188,7 +188,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
-      - name: Install Google Chrome
+      - name: Install browsers
         if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         uses: MetaMask/action-retry-command@v1
         with:
