@@ -22,7 +22,8 @@ import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId, text } from '@metamask/snaps-sdk';
+import type { SnapId } from '@metamask/snaps-sdk';
+import { text } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -440,7 +441,12 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
       if (id !== MOCK_INTERFACE_ID) {
         throw new Error(`Interface with id '${id}' not found.`);
       }
-      return { snapId, content: text('foo bar'), state: {} } as StoredInterface;
+      return {
+        snapId,
+        content: text('foo bar'),
+        state: {},
+        context: null,
+      } as StoredInterface;
     },
   );
 

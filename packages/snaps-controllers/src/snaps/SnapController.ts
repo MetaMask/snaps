@@ -3789,7 +3789,7 @@ export class SnapController extends BaseController<
         assert(request.params && hasProperty(request.params, 'id'));
 
         const interfaceId = request.params.id as string;
-        const interfaceState = this.messagingSystem.call(
+        const { context } = this.messagingSystem.call(
           'SnapInterfaceController:getInterface',
           snapId,
           interfaceId,
@@ -3797,7 +3797,7 @@ export class SnapController extends BaseController<
 
         return {
           ...request,
-          params: { ...request.params, context: interfaceState.context },
+          params: { ...request.params, context },
         };
       }
 
