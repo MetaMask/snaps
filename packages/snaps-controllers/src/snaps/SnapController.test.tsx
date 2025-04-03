@@ -4476,16 +4476,16 @@ describe('SnapController', () => {
                 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
                   rate: '400',
                   conversionTime: 1737548790,
+                  marketData: {
+                    marketCap: '123',
+                    totalVolume: '123',
+                    circulatingSupply: '123',
+                    allTimeHigh: '123',
+                    allTimeLow: '123',
+                    pricePercentChange: { all: 1.23 },
+                  },
                 },
               },
-            },
-            marketData: {
-              marketCap: '123',
-              totalVolume: '123',
-              circulatingSupply: '123',
-              allTimeHigh: '123',
-              allTimeLow: '123',
-              pricePercentChange: { all: 1.23 },
             },
           }),
       );
@@ -4505,6 +4505,7 @@ describe('SnapController', () => {
                   to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 },
               ],
+              includeMarketData: true,
             },
             id: 1,
           },
