@@ -6,6 +6,7 @@ import {
   MOCK_SNAP_ID,
   MockWindowPostMessageStream,
 } from '@metamask/snaps-utils/test-utils';
+import { describe, expect, it, beforeAll } from 'vitest';
 
 import { IFrameSnapExecutor } from './IFrameSnapExecutor';
 
@@ -39,10 +40,7 @@ async function getResponse(
 }
 
 describe('IFrameSnapExecutor', () => {
-  before(() => {
-    // @ts-expect-error - `globalThis.process` is not optional.
-    delete globalThis.process;
-
+  beforeAll(() => {
     lockdown({
       domainTaming: 'unsafe',
       errorTaming: 'unsafe',

@@ -4,6 +4,7 @@ import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { pipeline } from 'readable-stream';
 
+import { MOCK_BLOCK_NUMBER } from './constants';
 import type {
   ExecutionService,
   ExecutionServiceActions,
@@ -11,8 +12,6 @@ import type {
   SnapExecutionData,
 } from '../services';
 import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
-
-export const MOCK_BLOCK_NUMBER = '0xa70e75';
 
 export const getNodeEESMessenger = (
   messenger: MockControllerMessenger<

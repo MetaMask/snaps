@@ -1,10 +1,11 @@
 import { MockPostMessageStream, spy } from '@metamask/snaps-utils/test-utils';
 import { assert } from '@metamask/utils';
+import { describe, expect, it } from 'vitest';
 
 import { WebWorkerPool } from './WebWorkerPool';
 
 const MOCK_JOB_ID = 'job-id';
-const WORKER_URL = 'http://localhost:4568/worker/executor/';
+const WORKER_URL = 'http://localhost:63316/worker/executor/bundle.js';
 
 /**
  * Write a message to the stream, wrapped with the job ID.
@@ -71,7 +72,6 @@ describe('WebWorkerPool', () => {
       },
     });
 
-    // eslint-disable-next-line jest/prefer-strict-equal
     expect(await getResponse(mockStream)).toEqual({
       jsonrpc: '2.0',
       id: 1,

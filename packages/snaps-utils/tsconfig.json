@@ -3,6 +3,12 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "scripts", "package.json"],
+  "include": [
+    "./src",
+    "scripts",
+    "package.json",
+    "vitest.config.mts",
+    "vitest.config.firefox.mts"
+  ],
   "references": [{ "path": "../snaps-sdk" }]
 }

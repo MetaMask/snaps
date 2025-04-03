@@ -1,4 +1,4 @@
-import { expect } from '@wdio/globals';
+import { describe, expect, it } from 'vitest';
 
 import { executeLockdownEvents } from './lockdown-events';
 

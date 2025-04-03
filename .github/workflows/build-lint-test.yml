@@ -188,15 +188,20 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
-      - name: Install Google Chrome
+      - name: Install browsers
         if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
         uses: MetaMask/action-retry-command@v1
         with:
-          command: yarn install-chrome
+          command: yarn playwright install --with-deps --only-shell chromium firefox
       - name: Run tests
         uses: MetaMask/action-retry-command@v1
         with:
           command: yarn workspace ${{ matrix.package-name }} run test
+      - name: Run Firefox tests
+        if: ${{ matrix.package-name == '@metamask/snaps-controllers' || matrix.package-name == '@metamask/snaps-execution-environments' || matrix.package-name == '@metamask/snaps-utils' }}
+        uses: MetaMask/action-retry-command@v1
+        with:
+          command: yarn workspace ${{ matrix.package-name }} run test:browser:firefox
       - name: Get coverage folder
         id: get-coverage-folder
         run: |

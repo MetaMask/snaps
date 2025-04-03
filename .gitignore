@@ -78,3 +78,6 @@ packages/examples/examples/webpack/index.html
 
 # Ubuntu package files
 .deb
+
+# Vitest test failure screenshots
+__screenshots__

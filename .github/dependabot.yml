@@ -10,7 +10,6 @@ updates:
       time: '06:00'
     allow:
       - dependency-name: '@metamask/*'
-      - dependency-name: 'chromedriver'
     target-branch: 'main'
     versioning-strategy: 'increase'
     open-pull-requests-limit: 10
