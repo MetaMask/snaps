@@ -63,7 +63,7 @@ export default defineConfig({
 
   test: {
     // Vitest enables watch mode by default. We disable it here, so it can be
-    // explicitly enabled with `yarn test:watch`.
+    // explicitly enabled with `yarn test:browser --watch`.
     watch: false,
 
     // The files to include in the test run.
