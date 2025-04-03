@@ -9,6 +9,8 @@ delete defaultConfig.test?.browser?.instances;
 
 export default mergeConfig(defaultConfig, {
   test: {
+    maxWorkers: 1,
+
     coverage: {
       // Firefox does not support coverage with V8.
       enabled: false,
