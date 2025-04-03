@@ -60,7 +60,7 @@
     "@metamask/rpc-errors": "^7.0.2",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/superstruct": "^3.1.0",
+    "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.2.0",
     "@noble/hashes": "^1.7.1",
     "luxon": "^3.5.0"
