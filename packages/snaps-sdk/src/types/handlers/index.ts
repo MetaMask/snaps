@@ -1,5 +1,5 @@
 export type * from './asset-historical-price';
-export * from './assets-conversion';
+export type * from './assets-conversion';
 export * from './assets-lookup';
 export type * from './cronjob';
 export type * from './home-page';
