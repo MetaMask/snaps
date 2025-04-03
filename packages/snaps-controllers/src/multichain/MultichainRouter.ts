@@ -400,8 +400,7 @@ export class MultichainRouter {
     const hasAccountSnap = this.#messenger
       .call('AccountsController:listMultichainAccounts', scope)
       .some((account: InternalAccount) => account.metadata.snap?.enabled);
-    const hasProtocolSnap = this.#getProtocolSnaps(scope).length > 0;
     // We currently assume here that if one Snap exists that service the scope, we can service the scope generally.
-    return hasAccountSnap || hasProtocolSnap;
+    return hasAccountSnap || this.#getProtocolSnaps(scope).length > 0;
   }
 }
