@@ -2,7 +2,7 @@ import { describe, expect, it, afterEach } from 'vitest';
 
 import { createWindow } from './iframe';
 
-const IFRAME_URL = `http://localhost:4569`;
+const IFRAME_URL = 'http://localhost:63317/iframe/executor/index.html';
 
 const MOCK_JOB_ID = 'job-id';
 

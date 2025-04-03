@@ -28,9 +28,6 @@ export default defineConfig({
   plugins: [tsconfigPaths(), nodePolyfills()],
 
   server: {
-    port: 63315,
-    strictPort: true,
-
     proxy: {
       '/iframe/executor': {
         target: `http://localhost:63315/@fs${IFRAME_PATH}`,

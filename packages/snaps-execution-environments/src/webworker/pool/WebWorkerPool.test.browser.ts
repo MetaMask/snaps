@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { WebWorkerPool } from './WebWorkerPool';
 
 const MOCK_JOB_ID = 'job-id';
-const WORKER_URL = 'http://localhost:63315/worker/executor/bundle.js';
+const WORKER_URL = 'http://localhost:63316/worker/executor/bundle.js';
 
 /**
  * Write a message to the stream, wrapped with the job ID.

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { ProxySnapExecutor } from './ProxySnapExecutor';
 
 const MOCK_JOB_ID = 'job-id';
-const IFRAME_URL = 'http://localhost:63315/iframe/executor/index.html';
+const IFRAME_URL = 'http://localhost:63316/iframe/executor/index.html';
 
 /**
  * Write a message to the stream, wrapped with the job ID and frame URL.

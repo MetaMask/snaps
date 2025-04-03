@@ -37,22 +37,19 @@ export default defineConfig({
   },
 
   server: {
-    port: 63315,
-    strictPort: true,
-
     proxy: {
       '/iframe/executor': {
-        target: `http://localhost:63315/@fs${IFRAME_PATH}`,
+        target: `http://localhost:63316/@fs${IFRAME_PATH}`,
         rewrite: (path) => path.replace(/^\/iframe\/executor/u, ''),
       },
 
       '/worker/executor': {
-        target: `http://localhost:63315/@fs${WORKER_EXECUTOR_PATH}`,
+        target: `http://localhost:63316/@fs${WORKER_EXECUTOR_PATH}`,
         rewrite: (path) => path.replace(/^\/worker\/executor/u, ''),
       },
 
       '/worker/pool': {
-        target: `http://localhost:63315/@fs${WORKER_POOL_PATH}`,
+        target: `http://localhost:63316/@fs${WORKER_POOL_PATH}`,
         rewrite: (path) => path.replace(/^\/worker\/pool/u, ''),
       },
     },
@@ -71,6 +68,13 @@ export default defineConfig({
     // Vitest enables watch mode by default. We disable it here, so it can be
     // explicitly enabled with `yarn test:watch`.
     watch: false,
+
+    api: {
+      // The port to use for the test server. This is used by the browser
+      // provider to connect to the test server.
+      port: 63316,
+      strictPort: true,
+    },
 
     // The files to include in the test run.
     include: ['src/**/*.test.browser.ts'],
