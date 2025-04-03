@@ -22,10 +22,12 @@ import type {
   SelectorOptionElement,
   AssetSelectorElement,
   AddressInputElement,
+  AccountSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import {
+  createAccountList,
   getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,
@@ -52,6 +54,7 @@ const STATEFUL_COMPONENT_TYPES = [
   'Selector',
   'AssetSelector',
   'AddressInput',
+  'AccountSelector',
 ] as const;
 
 /**
@@ -98,6 +101,20 @@ type GetAccountByAddress = (
 ) => InternalAccount | undefined;
 
 /**
+ * A function to set the selected account in the client.
+ *
+ * @param accountId - The account ID.
+ */
+type SetSelectedAccount = (accountId: string) => void;
+
+/**
+ * A function to get the selected account in the client.
+ *
+ * @returns The selected account.
+ */
+type GetSelectedAccount = () => InternalAccount | undefined;
+
+/**
  * Data getters for elements.
  * This is used to get data from elements that is not directly accessible from the element itself.
  *
@@ -107,6 +124,8 @@ type GetAccountByAddress = (
 type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
+  getSelectedAccount: GetSelectedAccount;
+  setSelectedAccount: SetSelectedAccount;
 };
 
 /**
@@ -222,7 +241,8 @@ function constructComponentSpecificDefaultState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -240,6 +260,9 @@ function constructComponentSpecificDefaultState(
       const children = getJsxChildren(element) as SelectorOptionElement[];
       return children[0]?.props.value;
     }
+
+    case 'AccountSelector':
+      return getAccountSelectorDefaultState(elementDataGetters);
 
     case 'Checkbox':
       return false;
@@ -286,6 +309,71 @@ export function getAssetSelectorStateValue(
 }
 
 /**
+ * Get the default state for an account selector.
+ *
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
+ *
+ * @returns The default state for the account selector.
+ */
+export function getAccountSelectorDefaultState({
+  getSelectedAccount,
+}: ElementDataGetters) {
+  const account = getSelectedAccount();
+
+  if (!account) {
+    return null;
+  }
+
+  return formatAccountSelectorStateValue(account);
+}
+
+/**
+ * Format the state value for an account selector.
+ *
+ * @param account - The account to format.
+ *
+ * @returns The state value for the account selector.
+ */
+export function formatAccountSelectorStateValue(account: InternalAccount) {
+  const { id, address, scopes } = account;
+
+  const addresses = createAccountList(address, scopes);
+
+  return { accountId: id, addresses };
+}
+
+/**
+ * Get the state value for an account selector.
+ *
+ * @param element - The account selector element.
+ * @param getAccountByAddress - A function to get an account by address.
+ * @param setSelectedAccount - A function to set the selected account in the client.
+ * @returns The state value for the account selector.
+ */
+function getAccountSelectorStateValue(
+  element: AccountSelectorElement,
+  getAccountByAddress: GetAccountByAddress,
+  setSelectedAccount: SetSelectedAccount,
+) {
+  if (!element.props.value) {
+    return undefined;
+  }
+
+  const account = getAccountByAddress(element.props.value);
+
+  if (!account) {
+    return undefined;
+  }
+
+  if (element.props.switchGlobalAccount) {
+    setSelectedAccount(account.id);
+  }
+
+  return formatAccountSelectorStateValue(account);
+}
+
+/**
  * Get the state value for a stateful component.
  *
  * Most components store the state value as a `value` prop.
@@ -294,18 +382,26 @@ export function getAssetSelectorStateValue(
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
+ * @param elementDataGetters.getAccountByAddress - A function to get an account by its address.
+ * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
   element:
+    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
-  { getAssetsState }: ElementDataGetters,
+    | AddressInputElement
+    | AccountSelectorElement,
+  {
+    getAssetsState,
+    getAccountByAddress,
+    setSelectedAccount,
+  }: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
@@ -323,6 +419,14 @@ function getComponentStateValue(
       const { namespace, reference } = parseCaipChainId(element.props.chainId);
       return toCaipAccountId(namespace, reference, element.props.value);
     }
+
+    case 'AccountSelector':
+      return getAccountSelectorStateValue(
+        element,
+        getAccountByAddress,
+        setSelectedAccount,
+      );
+
     default:
       return element.props.value;
   }
@@ -340,6 +444,7 @@ function getComponentStateValue(
 function constructInputState(
   oldState: InterfaceState,
   element:
+    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement
@@ -347,7 +452,8 @@ function constructInputState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
