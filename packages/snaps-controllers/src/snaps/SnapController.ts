@@ -59,7 +59,6 @@ import type {
 import {
   AuxiliaryFileEncoding,
   getErrorMessage,
-  OnAssetsConversionResponseStruct,
   OnAssetsLookupResponseStruct,
 } from '@metamask/snaps-sdk';
 import type {
@@ -105,6 +104,7 @@ import {
   OnSettingsPageResponseStruct,
   isValidUrl,
   OnAssetHistoricalPriceResponseStruct,
+  OnAssetsConversionResponseStruct,
 } from '@metamask/snaps-utils';
 import type {
   Json,

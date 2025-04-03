@@ -4431,6 +4431,97 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('returns the value when `onAssetsConversion` returns a valid response with market data', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            conversionRates: {
+              'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                  rate: '400',
+                  conversionTime: 1737548790,
+                },
+              },
+            },
+            marketData: {
+              marketCap: '123',
+              totalVolume: '123',
+              circulatingSupply: '123',
+              allTimeHigh: '123',
+              allTimeLow: '123',
+              pricePercentChange: { all: 1.23 },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnAssetsConversion,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              conversions: [
+                {
+                  from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                  to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                },
+              ],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        conversionRates: {
+          'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              rate: '400',
+              conversionTime: 1737548790,
+            },
+          },
+        },
+      });
+
+      snapController.destroy();
+    });
   });
 
   describe('onAssetHistoricalPrice', () => {
