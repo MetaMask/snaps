@@ -1,3 +1,4 @@
+export type * from './asset-historical-price';
 export * from './assets-conversion';
 export * from './assets-lookup';
 export type * from './cronjob';

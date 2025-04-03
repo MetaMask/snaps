@@ -126,6 +126,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnSettingsPage]: settingsPageEndowmentBuilder.targetName,
   [HandlerType.OnSignature]: signatureInsightEndowmentBuilder.targetName,
   [HandlerType.OnUserInput]: null,
+  [HandlerType.OnAssetHistoricalPrice]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnAssetsLookup]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnAssetsConversion]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,

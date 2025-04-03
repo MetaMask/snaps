@@ -42,6 +42,7 @@ export enum HandlerType {
   OnUserInput = 'onUserInput',
   OnAssetsLookup = 'onAssetsLookup',
   OnAssetsConversion = 'onAssetsConversion',
+  OnAssetHistoricalPrice = 'onAssetHistoricalPrice',
   OnProtocolRequest = 'onProtocolRequest',
 }
 

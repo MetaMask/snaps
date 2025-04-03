@@ -28,6 +28,7 @@ describe('SNAP_EXPORT_NAMES', () => {
       'onUserInput',
       'onAssetsLookup',
       'onAssetsConversion',
+      'onAssetHistoricalPrice',
       'onProtocolRequest',
     ]);
   });

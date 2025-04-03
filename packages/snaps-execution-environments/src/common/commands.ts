@@ -18,6 +18,7 @@ import {
   assertIsOnAssetsLookupRequestArguments,
   assertIsOnAssetsConversionRequestArguments,
   assertIsOnProtocolRequestArguments,
+  assertIsOnAssetHistoricalPriceRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -59,6 +60,13 @@ export function getHandlerArguments(
       const { signature, signatureOrigin } = request.params;
       return { signature, signatureOrigin };
     }
+
+    case HandlerType.OnAssetHistoricalPrice: {
+      assertIsOnAssetHistoricalPriceRequestArguments(request.params);
+      const { from, to } = request.params;
+      return { from, to };
+    }
+
     case HandlerType.OnAssetsLookup: {
       assertIsOnAssetsLookupRequestArguments(request.params);
       const { assets } = request.params;

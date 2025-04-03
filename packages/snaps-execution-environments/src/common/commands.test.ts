@@ -41,6 +41,17 @@ describe('getHandlerArguments', () => {
     ).toThrow('Invalid request params');
   });
 
+  it('validates the request params for the OnAssetHistoricalPrice handler', () => {
+    expect(() =>
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetHistoricalPrice, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid request params');
+  });
+
   it('throws for invalid handler types', () => {
     expect(() =>
       // @ts-expect-error Invalid handler type.
