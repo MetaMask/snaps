@@ -280,8 +280,8 @@ export function getAssetSelectorStateValue(
 
   return {
     asset: value,
-    name: asset.name,
-    symbol: asset.symbol,
+    name: asset.name ?? asset.symbol ?? 'Unknown',
+    symbol: asset.symbol ?? 'Unknown',
   };
 }
 

@@ -9,6 +9,7 @@ import {
   string,
   record,
   nullable,
+  optional,
 } from '@metamask/superstruct';
 import {
   assert,
@@ -17,8 +18,8 @@ import {
 } from '@metamask/utils';
 
 export const FungibleAssetUnitStruct = object({
-  name: string(),
-  symbol: string(),
+  name: optional(string()),
+  symbol: optional(string()),
   decimals: number(),
 });
 
@@ -39,8 +40,8 @@ export const AssetIconUrlStruct = refine(string(), 'Asset URL', (value) => {
 });
 
 export const FungibleAssetMetadataStruct = object({
-  name: string(),
-  symbol: string(),
+  name: optional(string()),
+  symbol: optional(string()),
   fungible: literal(true),
   iconUrl: AssetIconUrlStruct,
   units: size(array(FungibleAssetUnitStruct), 1, Infinity),
