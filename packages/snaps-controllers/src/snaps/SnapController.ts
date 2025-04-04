@@ -176,7 +176,9 @@ import {
   hasTimedOut,
   permissionsDiff,
   setDiff,
+  throttleTracking,
   withTimeout,
+  isTrackableHandler,
 } from '../utils';
 
 export const controllerName = 'SnapController';
@@ -775,6 +777,11 @@ type SnapControllerArgs = {
    * object to fall back to the default cryptographic functions.
    */
   clientCryptography?: CryptographicFunctions;
+
+  /**
+   * MetaMetrics event tracking hook.
+   */
+  trackEvent: TrackEventHook;
 };
 
 type AddSnapArgs = {
@@ -794,6 +801,14 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   hidden?: boolean;
   hideSnapBranding?: boolean;
 };
+
+type TrackingEventPayload = {
+  event: string;
+  category: string;
+  properties: Record<string, Json>;
+};
+
+type TrackEventHook = (event: TrackingEventPayload) => void;
 
 const defaultState: SnapControllerState = {
   snaps: {},
@@ -880,6 +895,10 @@ export class SnapController extends BaseController<
 
   readonly #preinstalledSnaps: PreinstalledSnap[] | null;
 
+  readonly #trackEvent: TrackEventHook;
+
+  readonly #trackSnapExport: ReturnType<typeof throttleTracking>;
+
   constructor({
     closeAllConnections,
     messenger,
@@ -898,6 +917,7 @@ export class SnapController extends BaseController<
     getMnemonicSeed,
     getFeatureFlags = () => ({}),
     clientCryptography,
+    trackEvent,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -960,6 +980,7 @@ export class SnapController extends BaseController<
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
+    this.#trackEvent = trackEvent;
 
     this.#pollForLastRequestStatus();
 
@@ -1024,6 +1045,30 @@ export class SnapController extends BaseController<
 
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
+    );
+
+    this.#trackSnapExport = throttleTracking(
+      async (
+        snapId: SnapId,
+        handler: string,
+        success: boolean,
+        origin: string,
+      ) => {
+        const snapMetadata = await this.getRegistryMetadata(snapId);
+        this.#trackEvent({
+          event: 'SnapExportUsed',
+          category: 'Snaps',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            export: handler,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+            success,
+            origin,
+          },
+        });
+      },
     );
   }
 
@@ -3584,10 +3629,19 @@ export class SnapController extends BaseController<
 
         this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
 
+        if (isTrackableHandler(handlerType)) {
+          await this.#trackSnapExport(snapId, handlerType, true, origin);
+        }
+
         return transformedResult;
       } catch (error) {
         // We flag the RPC request as finished early since termination may affect pending requests
         this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
+
+        if (isTrackableHandler(handlerType)) {
+          await this.#trackSnapExport(snapId, handlerType, false, origin);
+        }
+
         const [jsonRpcError, handled] = unwrapError(error);
 
         if (!handled) {
