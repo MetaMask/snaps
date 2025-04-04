@@ -1,4 +1,5 @@
 export * from './asset-historical-price';
+export * from './assets-conversion';
 export * from './exports';
 export * from './home-page';
 export * from './name-lookup';

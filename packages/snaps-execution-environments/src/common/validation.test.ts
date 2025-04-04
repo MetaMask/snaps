@@ -283,6 +283,24 @@ describe('assertIsOnAssetsConversionRequestArguments', () => {
         },
       ],
     },
+    {
+      conversions: [
+        {
+          from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          to: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        },
+      ],
+      includeMarketData: true,
+    },
+    {
+      conversions: [
+        {
+          from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          to: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+        },
+      ],
+      includeMarketData: false,
+    },
   ])('does not throw for a valid assets conversion param object', (value) => {
     expect(() =>
       assertIsOnAssetsConversionRequestArguments(value),
@@ -305,6 +323,8 @@ describe('assertIsOnAssetsConversionRequestArguments', () => {
     { conversions: [{}] },
     { conversions: [{ from: 'foo' }] },
     { conversions: [{ from: 'foo', to: 'foo' }] },
+    { includeMarketData: true },
+    { includeMarketData: false },
   ])(
     'throws if the value is not a valid assets conversion params object',
     (value) => {

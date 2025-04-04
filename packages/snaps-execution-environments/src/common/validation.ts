@@ -9,6 +9,7 @@ import {
   any,
   array,
   assign,
+  boolean,
   enums,
   is,
   literal,
@@ -285,6 +286,7 @@ export const OnAssetsConversionRequestArgumentsStruct = object({
     1,
     Infinity,
   ),
+  includeMarketData: optional(boolean()),
 });
 
 export type OnAssetsConversionRequestArguments = Infer<
