@@ -1064,6 +1064,78 @@ describe('getAssetSelectorStateValue', () => {
       ),
     ).toBeNull();
   });
+
+  it('sets the asset name to the symbol if the asset name is undefined in state', () => {
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          symbol: 'SOL',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getAssetsState,
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'SOL',
+      symbol: 'SOL',
+    });
+  });
+
+  it('sets the asset symbol to "Unknown" if the asset symbol is undefined in state', () => {
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          name: 'Solana',
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getAssetsState,
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Solana',
+      symbol: 'Unknown',
+    });
+  });
+
+  it('sets the asset symbol and name to "Unknown" if both are undefined in state', () => {
+    getAssetsState.mockReturnValue({
+      assetsMetadata: {
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+          fungible: true,
+        },
+      },
+      accountsAssets: {
+        [MOCK_ACCOUNT_ID]: [],
+      },
+    });
+
+    expect(
+      getAssetSelectorStateValue(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getAssetsState,
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Unknown',
+      symbol: 'Unknown',
+    });
+  });
 });
 
 describe('getDefaultAsset', () => {

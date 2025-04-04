@@ -33,6 +33,31 @@ describe('FungibleAssetMetadataStruct', () => {
         },
       ],
     },
+    {
+      fungible: true,
+      iconUrl: 'https://metamask.io/sol.svg',
+      units: [
+        {
+          decimals: 9,
+        },
+      ],
+    },
+    {
+      name: 'Solana',
+      symbol: 'SOL',
+      fungible: true,
+      iconUrl: 'https://metamask.io/sol.svg',
+      units: [
+        {
+          name: 'Solana',
+          symbol: 'SOL',
+          decimals: 9,
+        },
+        {
+          decimals: 10,
+        },
+      ],
+    },
   ])('validates an object', (value) => {
     expect(is(value, FungibleAssetMetadataStruct)).toBe(true);
   });
