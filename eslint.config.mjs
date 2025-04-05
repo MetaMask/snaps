@@ -325,6 +325,7 @@ const config = createConfig([
       'packages/snaps-controllers/src/services/iframe/**/*',
       'packages/snaps-controllers/src/services/webworker/**/*',
       'packages/snaps-execution-environments/src/**/*',
+      'packages/snaps-sandbox/src/**/*',
       'packages/snaps-simulator/src/**/*',
       'packages/snaps-simulator/jest.setup.js',
       'packages/test-snaps/src/**/*',

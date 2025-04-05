@@ -21,6 +21,7 @@ Commands:
   mm-snap build     Build snap from source                          [aliases: b]
   mm-snap eval      Attempt to evaluate snap bundle in SES          [aliases: e]
   mm-snap manifest  Validate the snap.manifest.json file            [aliases: m]
+  mm-snap sandbox   Start a sandbox server to interact with the Snap
   mm-snap serve     Locally serve Snap file(s) for testing          [aliases: s]
   mm-snap watch     Build Snap on change                            [aliases: w]
 

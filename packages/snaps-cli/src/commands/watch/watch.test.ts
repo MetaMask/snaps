@@ -1,9 +1,9 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import { watch } from './implementation';
 import { watchHandler } from './watch';
+import { getMockConfig } from '../../test-utils';
 import * as webpack from '../../webpack';
 
 jest.mock('fs');

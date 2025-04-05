@@ -1,10 +1,10 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
 
 import { evaluateHandler } from './eval';
 import { evaluate } from './implementation';
+import { getMockConfig } from '../../test-utils';
 
 jest.mock('fs');
 jest.mock('./implementation');

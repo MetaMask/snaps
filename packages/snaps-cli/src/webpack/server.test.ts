@@ -1,4 +1,3 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
@@ -6,6 +5,7 @@ import http, { IncomingMessage, Server, ServerResponse } from 'http';
 import serveMiddleware from 'serve-handler';
 
 import { getAllowedPaths, getServer } from './server';
+import { getMockConfig } from '../test-utils';
 
 jest.mock('fs');
 jest.mock('serve-handler', () =>

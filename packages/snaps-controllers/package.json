@@ -127,7 +127,7 @@
     "@types/readable-stream": "^4.0.15",
     "@types/semver": "^7.5.0",
     "@types/tar-stream": "^3.1.1",
-    "@vitest/browser": "^3.0.8",
+    "@vitest/browser": "^3.1.1",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
@@ -142,10 +142,10 @@
     "rimraf": "^4.1.2",
     "ts-node": "^10.9.1",
     "typescript": "~5.3.3",
-    "vite": "^6.2.3",
+    "vite": "^6.2.5",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^4.0.5",
-    "vitest": "^3.0.8"
+    "vitest": "^3.1.1"
   },
   "peerDependencies": {
     "@metamask/snaps-execution-environments": "workspace:^"

@@ -1,7 +1,7 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { bytesToString } from '@metamask/utils';
 
 import loader from './browserify';
+import { getMockConfig } from '../../test-utils';
 
 describe('loader', () => {
   it('bundles the contents with Browserify', async () => {
