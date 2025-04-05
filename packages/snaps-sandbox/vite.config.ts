@@ -8,4 +8,7 @@ export default defineConfig({
   plugins: [
     react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }),
   ],
+  resolve: {
+    preserveSymlinks: true,
+  },
 });
