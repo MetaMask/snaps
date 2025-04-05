@@ -1,4 +1,3 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
@@ -6,6 +5,7 @@ import ora from 'ora';
 import { manifest } from './implementation';
 import * as implementation from './implementation';
 import { manifestHandler } from './manifest';
+import { getMockConfig } from '../../test-utils';
 
 jest.mock('fs');
 jest.mock('./implementation');

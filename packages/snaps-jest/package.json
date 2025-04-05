@@ -65,7 +65,7 @@
     "@metamask/snaps-simulation": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.2.0",
-    "express": "^4.21.2",
+    "express": "^5.1.0",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
     "redux": "^4.2.1"
