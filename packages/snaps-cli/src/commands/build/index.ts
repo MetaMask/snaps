@@ -16,4 +16,5 @@ const command = {
 };
 
 export * from './implementation';
+export { steps } from './build';
 export default command;

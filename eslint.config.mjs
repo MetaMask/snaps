@@ -325,6 +325,7 @@ const config = createConfig([
       'packages/snaps-controllers/src/services/iframe/**/*',
       'packages/snaps-controllers/src/services/webworker/**/*',
       'packages/snaps-execution-environments/src/**/*',
+      'packages/snaps-sandbox/src/**/*',
       'packages/test-snaps/src/**/*',
       '**/*.test.browser.ts',
     ],
