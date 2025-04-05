@@ -10,15 +10,17 @@ import type { Steps } from '../../utils';
 import { success, executeSteps, info } from '../../utils';
 import { evaluate } from '../eval';
 
-type BuildContext = {
+export type BuildContext = {
   analyze: boolean;
+  build: boolean;
   config: ProcessedConfig;
   port?: number;
 };
 
-const steps: Steps<BuildContext> = [
+export const steps: Steps<BuildContext> = [
   {
     name: 'Checking the input file.',
+    condition: ({ build }) => build,
     task: async ({ config }) => {
       const { input } = config;
 
@@ -31,7 +33,8 @@ const steps: Steps<BuildContext> = [
   },
   {
     name: 'Building the snap bundle.',
-    task: async ({ analyze, config, spinner }) => {
+    condition: ({ build }) => build,
+    task: async ({ analyze, build: enableBuild, config, spinner }) => {
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
       const compiler = await build(config, {
@@ -43,6 +46,7 @@ const steps: Steps<BuildContext> = [
       if (analyze) {
         return {
           analyze,
+          build: enableBuild,
           config,
           spinner,
           port: await getBundleAnalyzerPort(compiler),
@@ -54,7 +58,7 @@ const steps: Steps<BuildContext> = [
   },
   {
     name: 'Evaluating the snap bundle.',
-    condition: ({ config }) => config.evaluate,
+    condition: ({ build, config }) => build && config.evaluate,
     task: async ({ config, spinner }) => {
       const path = pathResolve(
         process.cwd(),
@@ -94,6 +98,7 @@ export async function buildHandler(
   analyze = false,
 ): Promise<void> {
   return await executeSteps(steps, {
+    build: true,
     config,
     analyze,
   });
