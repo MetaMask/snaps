@@ -768,7 +768,7 @@
         "util.inherits": true
       },
       "packages": {
-        "@vitest/browser>@testing-library/user-event>@testing-library/dom>@babel/runtime": true
+        "@vitest/browser>@testing-library/dom>@babel/runtime": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-reserved-words": {
@@ -1322,11 +1322,11 @@
         "setImmediate": true
       },
       "packages": {
-        "browserify>duplexer2>readable-stream>isarray": true,
         "browserify>duplexer2>readable-stream>safe-buffer": true,
         "browserify>duplexer2>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1501,10 +1501,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>labeled-stream-splicer>stream-splicer>readable-stream>isarray": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1586,10 +1586,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>readable-stream>isarray": true,
         "browserify>module-deps>readable-stream>safe-buffer": true,
         "browserify>module-deps>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1626,10 +1626,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>module-deps>stream-combiner2>readable-stream>isarray": true,
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
         "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1686,10 +1686,10 @@
       },
       "packages": {
         "browserify>inherits": true,
-        "browserify>read-only-stream>readable-stream>isarray": true,
         "browserify>read-only-stream>readable-stream>safe-buffer": true,
         "browserify>read-only-stream>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "readable-stream>util-deprecate": true
       }
@@ -1815,8 +1815,8 @@
       "packages": {
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
+        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
-        "browserify>through2>readable-stream>isarray": true,
         "browserify>through2>readable-stream>safe-buffer": true,
         "browserify>through2>readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
