@@ -34,7 +34,7 @@ jobs:
         if: ${{ inputs.publish_dir == '' }}
         run: exit 1
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
       - name: Run build script

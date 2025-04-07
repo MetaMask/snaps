@@ -34,7 +34,7 @@ jobs:
       tag: ${{ steps.get-release-tag.outputs.tag }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -82,7 +82,7 @@ jobs:
     needs: publish-release
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -106,7 +106,7 @@ jobs:
       - get-release-tag
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -128,7 +128,7 @@ jobs:
       IS_ENVIRONMENT_RELEASE: ${{ steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -150,7 +150,7 @@ jobs:
       version: ${{ steps.version.outputs.VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -217,7 +217,7 @@ jobs:
       TEST_SNAPS_VERSION: ${{ steps.set-output.outputs.TEST_SNAPS_VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -270,7 +270,7 @@ jobs:
       SIMULATOR_VERSION: ${{ steps.set-output.outputs.SIMULATOR_VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}

@@ -20,7 +20,7 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -52,7 +52,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Build
@@ -79,7 +79,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Restore "@metamask/snaps-execution-environments" build
@@ -112,7 +112,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Build
@@ -131,7 +131,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Generate LavaMoat policy
@@ -150,7 +150,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Lint
@@ -176,7 +176,7 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -256,7 +256,7 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -291,7 +291,7 @@ jobs:
         os: [macOS-latest, windows-latest]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@0ef0a3f4f06fa8f53fe9358bc3abfaddc46c5848
         with:
           is-high-risk-environment: false
       - name: Build dependencies
