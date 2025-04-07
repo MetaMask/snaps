@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(deps): bump @metamask/superstruct from 3.1.0 to 3.2.1 ([#3297](https://github.com/MetaMask/snaps-skunkworks.git/pull/3297))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps-skunkworks.git/pull/3283))
+- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps-skunkworks.git/pull/3277))
+- fix: Stop refreshing phishing list when updating interfaces ([#3272](https://github.com/MetaMask/snaps-skunkworks.git/pull/3272))
+
 ## [8.14.0]
 
 ### Added
@@ -357,43 +364,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.0...HEAD
-[8.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.13.0...@metamask/snaps-jest@8.14.0
-[8.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.12.0...@metamask/snaps-jest@8.13.0
-[8.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.11.0...@metamask/snaps-jest@8.12.0
-[8.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.10.0...@metamask/snaps-jest@8.11.0
-[8.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.9.0...@metamask/snaps-jest@8.10.0
-[8.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.8.1...@metamask/snaps-jest@8.9.0
-[8.8.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.8.0...@metamask/snaps-jest@8.8.1
-[8.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.1...@metamask/snaps-jest@8.8.0
-[8.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.7.0...@metamask/snaps-jest@8.7.1
-[8.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.6.0...@metamask/snaps-jest@8.7.0
-[8.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.5.0...@metamask/snaps-jest@8.6.0
-[8.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.4.0...@metamask/snaps-jest@8.5.0
-[8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.2...@metamask/snaps-jest@8.4.0
-[8.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.1...@metamask/snaps-jest@8.3.2
-[8.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.3.0...@metamask/snaps-jest@8.3.1
-[8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.2.0...@metamask/snaps-jest@8.3.0
-[8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.3...@metamask/snaps-jest@8.2.0
-[8.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.2...@metamask/snaps-jest@8.1.3
-[8.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.1...@metamask/snaps-jest@8.1.2
-[8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.1.0...@metamask/snaps-jest@8.1.1
-[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.0.0...@metamask/snaps-jest@8.1.0
-[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.2...@metamask/snaps-jest@8.0.0
-[7.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.1...@metamask/snaps-jest@7.0.2
-[7.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@7.0.0...@metamask/snaps-jest@7.0.1
-[7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.2...@metamask/snaps-jest@7.0.0
-[6.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.1...@metamask/snaps-jest@6.0.2
-[6.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@6.0.0...@metamask/snaps-jest@6.0.1
-[6.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@5.0.0...@metamask/snaps-jest@6.0.0
-[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.1...@metamask/snaps-jest@5.0.0
-[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
-[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
-[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@2.0.0...@metamask/snaps-jest@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@1.0.0...@metamask/snaps-jest@2.0.0
-[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.5-flask.1...@metamask/snaps-jest@1.0.0
-[0.37.5-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.4-flask.1...@metamask/snaps-jest@0.37.5-flask.1
-[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.3-flask.1...@metamask/snaps-jest@0.37.4-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@0.37.2-flask.1...@metamask/snaps-jest@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/snaps-jest@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.14.0...HEAD
+[8.14.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.13.0...@metamask/snaps-jest@8.14.0
+[8.13.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.12.0...@metamask/snaps-jest@8.13.0
+[8.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.11.0...@metamask/snaps-jest@8.12.0
+[8.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.10.0...@metamask/snaps-jest@8.11.0
+[8.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.9.0...@metamask/snaps-jest@8.10.0
+[8.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.8.1...@metamask/snaps-jest@8.9.0
+[8.8.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.8.0...@metamask/snaps-jest@8.8.1
+[8.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.7.1...@metamask/snaps-jest@8.8.0
+[8.7.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.7.0...@metamask/snaps-jest@8.7.1
+[8.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.6.0...@metamask/snaps-jest@8.7.0
+[8.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.5.0...@metamask/snaps-jest@8.6.0
+[8.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.4.0...@metamask/snaps-jest@8.5.0
+[8.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.3.2...@metamask/snaps-jest@8.4.0
+[8.3.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.3.1...@metamask/snaps-jest@8.3.2
+[8.3.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.3.0...@metamask/snaps-jest@8.3.1
+[8.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.2.0...@metamask/snaps-jest@8.3.0
+[8.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.1.3...@metamask/snaps-jest@8.2.0
+[8.1.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.1.2...@metamask/snaps-jest@8.1.3
+[8.1.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.1.1...@metamask/snaps-jest@8.1.2
+[8.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.1.0...@metamask/snaps-jest@8.1.1
+[8.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@8.0.0...@metamask/snaps-jest@8.1.0
+[8.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@7.0.2...@metamask/snaps-jest@8.0.0
+[7.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@7.0.1...@metamask/snaps-jest@7.0.2
+[7.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@7.0.0...@metamask/snaps-jest@7.0.1
+[7.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@6.0.2...@metamask/snaps-jest@7.0.0
+[6.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@6.0.1...@metamask/snaps-jest@6.0.2
+[6.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@6.0.0...@metamask/snaps-jest@6.0.1
+[6.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@5.0.0...@metamask/snaps-jest@6.0.0
+[5.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@4.0.1...@metamask/snaps-jest@5.0.0
+[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@4.0.0...@metamask/snaps-jest@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@3.1.0...@metamask/snaps-jest@4.0.0
+[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@3.0.0...@metamask/snaps-jest@3.1.0
+[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@2.0.0...@metamask/snaps-jest@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@1.0.0...@metamask/snaps-jest@2.0.0
+[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.5-flask.1...@metamask/snaps-jest@1.0.0
+[0.37.5-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.4-flask.1...@metamask/snaps-jest@0.37.5-flask.1
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.3-flask.1...@metamask/snaps-jest@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-jest@0.37.2-flask.1...@metamask/snaps-jest@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/snaps-jest@0.37.2-flask.1
