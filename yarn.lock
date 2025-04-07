@@ -4532,9 +4532,11 @@ __metadata:
     happy-dom: "npm:^17.4.4"
     jotai: "npm:^2.12.2"
     monaco-editor: "patch:monaco-editor@npm%3A0.52.2#~/.yarn/patches/monaco-editor-npm-0.52.2-584d16bfa6.patch"
+    nanoid: "npm:^3.3.10"
     prettier: "npm:^3.3.3"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
+    react-icons: "npm:^5.5.0"
     typescript: "npm:~5.3.3"
     vite: "npm:^6.2.5"
     vitest: "npm:^3.1.1"
@@ -16609,6 +16611,15 @@ __metadata:
   peerDependencies:
     react: ^19.1.0
   checksum: 10/c5b58605862c7b0bb044416b01c73647bb8e89717fb5d7a2c279b11815fb7b49b619fe685c404e59f55eb52c66831236cc565c25ee1c2d042739f4a2cc538aa2
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "react-icons@npm:5.5.0"
+  peerDependencies:
+    react: "*"
+  checksum: 10/67d5b311c23f74829cb90d58b78ddc87959d2087eda7f29b78d1ab6e337b04b0358a00724d73ab60652469d9a2c66ba3c034b8b7d4f32caae942592f92f59a84
   languageName: node
   linkType: hard
 

@@ -60,9 +60,11 @@
     "happy-dom": "^17.4.4",
     "jotai": "^2.12.2",
     "monaco-editor": "patch:monaco-editor@npm%3A0.52.2#~/.yarn/patches/monaco-editor-npm-0.52.2-584d16bfa6.patch",
+    "nanoid": "^3.3.10",
     "prettier": "^3.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-icons": "^5.5.0",
     "typescript": "~5.3.3",
     "vite": "^6.2.5",
     "vitest": "^3.1.1"

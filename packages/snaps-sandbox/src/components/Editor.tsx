@@ -1,4 +1,4 @@
-import { Box, Spinner } from '@chakra-ui/react';
+import { Bleed, Box, Spinner } from '@chakra-ui/react';
 import type { Monaco, EditorProps } from '@monaco-editor/react';
 import MonacoEditor from '@monaco-editor/react';
 import type { FunctionComponent } from 'react';
@@ -31,44 +31,46 @@ export const Editor: FunctionComponent<EditorProps> = ({
   };
 
   return (
-    <Box
-      data-testid="editor"
-      css={{
-        '& .monaco-editor': {
-          position: 'absolute',
-        },
-      }}
-    >
-      <MonacoEditor
-        height="40rem"
-        language="json"
-        beforeMount={handleMount}
-        loading={<Spinner />}
-        options={{
-          automaticLayout: true,
-          contextmenu: false,
-          folding: false,
-          glyphMargin: false,
-          hideCursorInOverviewRuler: true,
-          lineNumbersMinChars: 3,
-          lineNumbers: 'on',
-          minimap: {
-            enabled: false,
+    <Bleed inlineStart="4">
+      <Box
+        data-testid="editor"
+        css={{
+          '& .monaco-editor': {
+            position: 'absolute',
           },
-          overviewRulerBorder: false,
-          overviewRulerLanes: 0,
-          scrollBeyondLastLine: false,
-          scrollbar: {
-            verticalScrollbarSize: 4,
-          },
-          renderLineHighlight: 'none',
-          tabSize: 2,
-          wordWrap: 'on',
-          wrappingIndent: 'indent',
-          ...options,
         }}
-        {...props}
-      />
-    </Box>
+      >
+        <MonacoEditor
+          height="40rem"
+          language="json"
+          beforeMount={handleMount}
+          loading={<Spinner />}
+          options={{
+            automaticLayout: true,
+            contextmenu: false,
+            folding: false,
+            glyphMargin: false,
+            hideCursorInOverviewRuler: true,
+            lineNumbersMinChars: 3,
+            lineNumbers: 'on',
+            minimap: {
+              enabled: false,
+            },
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
+            scrollBeyondLastLine: false,
+            scrollbar: {
+              verticalScrollbarSize: 4,
+            },
+            renderLineHighlight: 'none',
+            tabSize: 2,
+            wordWrap: 'on',
+            wrappingIndent: 'indent',
+            ...options,
+          }}
+          {...props}
+        />
+      </Box>
+    </Bleed>
   );
 };
