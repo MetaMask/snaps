@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.22.0]
+
 ### Uncategorized
 
 - fix: Update `name` and `symbol` to be optional in a fungible asset type ([#3300](https://github.com/MetaMask/snaps-skunkworks.git/pull/3300))
@@ -543,7 +545,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.21.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.22.0...HEAD
+[6.22.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.21.0...@metamask/snaps-sdk@6.22.0
 [6.21.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0
 [6.20.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
 [6.19.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0
