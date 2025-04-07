@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.0]
+
+### Added
+
+- Add support for market data to `onAssetsConversion` handler ([#3299](https://github.com/MetaMask/snaps/pull/3299))
+- Add support for `onAssetHistoricalPrice` handler ([#3282](https://github.com/MetaMask/snaps/pull/3282))
+
+### Changed
+
+- Debounce persistence of state updates ([#3258](https://github.com/MetaMask/snaps/pull/3258))
+
+### Fixed
+
+- Inject `context` into `onUserInput` request ([#3298](https://github.com/MetaMask/snaps/pull/3298))
+- Consider protocol Snaps when determining `isSupportedScope` ([#3284](https://github.com/MetaMask/snaps/pull/3284))
+- Validate origin in `handleRequest` ([#3292](https://github.com/MetaMask/snaps/pull/3292))
+- Update `name` and `symbol` to be optional in a fungible asset type ([#3300](https://github.com/MetaMask/snaps/pull/3300))
+- Stop refreshing phishing list when updating interfaces ([#3272](https://github.com/MetaMask/snaps/pull/3272))
+
 ## [11.1.0]
 
 ### Added
@@ -684,7 +703,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...HEAD
+[11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...@metamask/snaps-controllers@11.2.0
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.1...@metamask/snaps-controllers@11.1.0
 [11.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.0...@metamask/snaps-controllers@11.0.1
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@10.0.1...@metamask/snaps-controllers@11.0.0

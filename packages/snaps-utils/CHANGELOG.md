@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.2.0]
+
+### Added
+
+- Add ISO 8601 time structs ([#3287](https://github.com/MetaMask/snaps/pull/3287))
+- Add support for market data to `onAssetsConversion` handler ([#3299](https://github.com/MetaMask/snaps/pull/3299))
+- Add support for `onAssetHistoricalPrice` handler ([#3282](https://github.com/MetaMask/snaps/pull/3282))
+
 ## [9.1.0]
 
 ### Added
@@ -582,7 +590,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.0...HEAD
+[9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.1.0...@metamask/snaps-utils@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.0.1...@metamask/snaps-utils@9.1.0
 [9.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.0.0...@metamask/snaps-utils@9.0.1
 [9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@8.10.0...@metamask/snaps-utils@9.0.0

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.2.0]
+
+### Added
+
+- Add support for market data to `onAssetsConversion` handler ([#3299](https://github.com/MetaMask/snaps/pull/3299))
+- Add support for `onAssetHistoricalPrice` handler ([#3282](https://github.com/MetaMask/snaps/pull/3282))
+
 ## [7.1.0]
 
 ### Added
@@ -16,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/snaps from `20.0.0` to `21.0.0` ([#3247](https://github.com/MetaMask/snaps/pull/3247))
+- Bump `@metamask/snaps from `20.0.0`to`21.0.0` ([#3247](https://github.com/MetaMask/snaps/pull/3247))
 - Bump `nanoid` from `3.1.31` to `3.3.10` ([#3228](https://github.com/MetaMask/snaps/pull/3228), [#3255](https://github.com/MetaMask/snaps/pull/3255))
 
 ## [7.0.0]
@@ -451,7 +458,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.0...HEAD
+[7.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.1.0...@metamask/snaps-execution-environments@7.2.0
 [7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.0.0...@metamask/snaps-execution-environments@7.1.0
 [7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.14.0...@metamask/snaps-execution-environments@7.0.0
 [6.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@6.13.0...@metamask/snaps-execution-environments@6.14.0

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-simulation",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "A simulation framework for MetaMask Snaps, enabling headless testing of Snaps in a controlled environment",
   "keywords": [
     "MetaMask",

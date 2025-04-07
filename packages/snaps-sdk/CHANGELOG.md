@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.22.0]
+
+### Added
+
+- Add `nonEmptyRecord` struct ([#3288](https://github.com/MetaMask/snaps/pull/3288))
+- Add support for market data to `onAssetsConversion` handler ([#3299](https://github.com/MetaMask/snaps/pull/3299))
+- Add support for `onAssetHistoricalPrice` handler ([#3282](https://github.com/MetaMask/snaps/pull/3282))
+
+### Fixed
+
+- Improve error messages for `AddressStruct` ([#3270](https://github.com/MetaMask/snaps/pull/3270))
+- Improve performance of `typedUnion` ([#3275](https://github.com/MetaMask/snaps/pull/3275))
+- Update `name` and `symbol` to be optional in fungible asset types ([#3300](https://github.com/MetaMask/snaps/pull/3300))
+
 ## [6.21.0]
 
 ### Added
@@ -531,7 +545,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.0...HEAD
+[6.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...@metamask/snaps-sdk@6.22.0
 [6.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0
 [6.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
 [6.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.18.0...@metamask/snaps-sdk@6.19.0

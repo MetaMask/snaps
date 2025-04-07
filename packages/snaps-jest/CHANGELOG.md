@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.14.1]
+
+### Fixed
+
+- Pass proper origin to handlers ([#3292](https://github.com/MetaMask/snaps/pull/3292))
+
 ## [8.14.0]
 
 ### Added
@@ -357,7 +363,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.1...HEAD
+[8.14.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.0...@metamask/snaps-jest@8.14.1
 [8.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.13.0...@metamask/snaps-jest@8.14.0
 [8.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.12.0...@metamask/snaps-jest@8.13.0
 [8.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.11.0...@metamask/snaps-jest@8.12.0
