@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import type { FunctionComponent } from 'react';
 
 import { History } from './History';
@@ -11,14 +11,15 @@ import { Logo } from './Logo';
  */
 export const Sidebar: FunctionComponent = () => {
   return (
-    <Box
+    <Stack
       width="20.813rem"
       height="100vh"
       backgroundColor="background.muted"
       padding="6"
+      gap="6"
     >
       <Logo />
       <History />
-    </Box>
+    </Stack>
   );
 };

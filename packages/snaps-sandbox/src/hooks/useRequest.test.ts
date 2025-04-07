@@ -69,8 +69,9 @@ describe('useRequest', () => {
 
     await waitFor(() => expect(window.ethereum.request).toHaveBeenCalled());
 
-    expect(store.get(historyAtom)).toEqual([
+    expect(store.get(historyAtom)).toStrictEqual([
       {
+        id: expect.any(String),
         title: 'foo',
         request: JSON.stringify(
           {
@@ -94,6 +95,7 @@ describe('useRequest', () => {
     store.set(providerAtom, Promise.resolve(window.ethereum));
     store.set(historyAtom, [
       {
+        id: '1',
         title: 'foo',
         request: JSON.stringify(
           {
@@ -126,8 +128,9 @@ describe('useRequest', () => {
 
     await waitFor(() => expect(window.ethereum.request).toHaveBeenCalled());
 
-    expect(store.get(historyAtom)).toEqual([
+    expect(store.get(historyAtom)).toStrictEqual([
       {
+        id: expect.any(String),
         title: 'foo',
         request: JSON.stringify(
           {

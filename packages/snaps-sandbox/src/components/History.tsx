@@ -1,8 +1,10 @@
 import { Bleed, Heading, List, Stack } from '@chakra-ui/react';
 import { useAtom } from 'jotai';
 import type { FunctionComponent } from 'react';
+import { useMemo } from 'react';
 
 import { HistoryItem } from './HistoryItem';
+import type { HistoryEntry } from '../state';
 import { historyAtom } from '../state';
 
 /**
@@ -13,19 +15,58 @@ import { historyAtom } from '../state';
 export const History: FunctionComponent = () => {
   const [history] = useAtom(historyAtom);
 
-  return (
-    <Stack gap="2">
-      <Heading as="h2" size="sm">
-        Previous requests
-      </Heading>
+  const [favorite, regular] = useMemo(
+    () =>
+      history
+        .toSorted((a, b) => b.timestamp - a.timestamp)
+        .reduce<[favorite: HistoryEntry[], regular: HistoryEntry[]]>(
+          (array, entry) => {
+            if (entry.favorite) {
+              array[0].push(entry);
+              return array;
+            }
 
-      <Bleed inline="2">
-        <List.Root variant="plain">
-          {history.map((entry) => (
-            <HistoryItem entry={entry} key={entry.timestamp} />
-          ))}
-        </List.Root>
-      </Bleed>
+            array[1].push(entry);
+            return array;
+          },
+          [[], []],
+        ),
+    [history],
+  );
+
+  return (
+    <Stack gap="4">
+      {favorite.length > 0 && (
+        <Stack gap="1">
+          <Heading as="h2" size="sm">
+            Favorite requests
+          </Heading>
+
+          <Bleed inline="2">
+            <List.Root variant="plain">
+              {favorite.map((entry) => (
+                <HistoryItem entry={entry} key={entry.timestamp} />
+              ))}
+            </List.Root>
+          </Bleed>
+        </Stack>
+      )}
+
+      {regular.length > 0 && (
+        <Stack gap="1">
+          <Heading as="h2" size="sm">
+            Previous requests
+          </Heading>
+
+          <Bleed inline="2">
+            <List.Root variant="plain">
+              {regular.map((entry) => (
+                <HistoryItem entry={entry} key={entry.timestamp} />
+              ))}
+            </List.Root>
+          </Bleed>
+        </Stack>
+      )}
     </Stack>
   );
 };

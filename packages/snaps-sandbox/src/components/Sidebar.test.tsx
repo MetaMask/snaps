@@ -8,6 +8,5 @@ describe('Sidebar', () => {
     const { getByText } = render(<Sidebar />);
 
     expect(getByText('Snaps Sandbox')).toBeInTheDocument();
-    expect(getByText('Previous requests')).toBeInTheDocument();
   });
 });

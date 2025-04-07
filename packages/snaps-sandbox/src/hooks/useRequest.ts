@@ -1,6 +1,7 @@
 import type { JsonRpcRequest } from '@metamask/utils';
 import { useMutation } from '@tanstack/react-query';
 import { useAtomValue, useAtom } from 'jotai';
+import { nanoid } from 'nanoid';
 
 import { LOCAL_SNAP_ID } from '../constants';
 import { historyAtom, providerAtom } from '../state';
@@ -12,7 +13,7 @@ import { historyAtom, providerAtom } from '../state';
  */
 export function useRequest() {
   const provider = useAtomValue(providerAtom);
-  const [history, setHistory] = useAtom(historyAtom);
+  const [history, dispatch] = useAtom(historyAtom);
 
   const { mutate, isPending, data, error } = useMutation({
     mutationKey: ['request'],
@@ -40,15 +41,14 @@ export function useRequest() {
         return;
       }
 
-      setHistory((previous) => {
-        return [
-          {
-            title: request.method,
-            request: JSON.stringify(request, null, 2),
-            timestamp: Date.now(),
-          },
-          ...previous,
-        ];
+      dispatch({
+        type: 'add',
+        payload: {
+          id: nanoid(),
+          title: request.method,
+          request: JSON.stringify(request, null, 2),
+          timestamp: Date.now(),
+        },
       });
     },
   });
