@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add disabled state ([#3293](https://github.com/MetaMask/snaps/pull/3293))
 
-
 ## [2.3.0]
 
 ### Added

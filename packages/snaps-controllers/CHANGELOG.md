@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Debounce persistence of state updates ([#3258](https://github.com/MetaMask/snaps/pull/3258))
 - Add support for market data to `onAssetsConversion` handler ([#3299](https://github.com/MetaMask/snaps/pull/3299))
 - Add support for `onAssetHistoricalPrice` handler ([#3282](https://github.com/MetaMask/snaps/pull/3282))
+
+### Changed
+
+- Debounce persistence of state updates ([#3258](https://github.com/MetaMask/snaps/pull/3258))
 
 ### Fixed
 
