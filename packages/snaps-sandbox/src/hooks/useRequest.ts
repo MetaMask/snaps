@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useAtomValue, useAtom } from 'jotai';
 import { nanoid } from 'nanoid';
 
-import { LOCAL_SNAP_ID } from '../constants';
+import { useSnapId } from './useSnapId';
 import { historyAtom, providerAtom } from '../state';
 
 /**
@@ -14,6 +14,7 @@ import { historyAtom, providerAtom } from '../state';
 export function useRequest() {
   const provider = useAtomValue(providerAtom);
   const [history, dispatch] = useAtom(historyAtom);
+  const snapId = useSnapId();
 
   const { mutate, isPending, data, error } = useMutation({
     mutationKey: ['request'],
@@ -21,7 +22,7 @@ export function useRequest() {
       const response = await provider?.request({
         method: 'wallet_invokeSnap',
         params: {
-          snapId: LOCAL_SNAP_ID,
+          snapId,
           request,
         },
       });

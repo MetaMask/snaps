@@ -2,8 +2,8 @@ import { createStore } from 'jotai';
 import { describe, it, expect } from 'vitest';
 
 import { History } from './History';
-import { historyAtom } from '../state';
-import { render } from '../test-utils';
+import { historyAtom } from '../../../state';
+import { render } from '../../../test-utils';
 
 describe('History', () => {
   it('renders the history component', () => {

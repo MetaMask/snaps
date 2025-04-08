@@ -4,8 +4,8 @@ import { createStore } from 'jotai';
 import { describe, it, expect } from 'vitest';
 
 import { HistoryItemMenu } from './HistoryItemMenu';
-import { historyAtom, persistedHistoryAtom } from '../state';
-import { render } from '../test-utils';
+import { historyAtom, persistedHistoryAtom } from '../../../state';
+import { render } from '../../../test-utils';
 
 describe('HistoryItemMenu', () => {
   it('renders a menu with options', async () => {

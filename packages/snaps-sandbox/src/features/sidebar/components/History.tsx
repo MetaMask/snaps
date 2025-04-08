@@ -4,8 +4,8 @@ import type { FunctionComponent } from 'react';
 import { useMemo } from 'react';
 
 import { HistoryItem } from './HistoryItem';
-import type { HistoryEntry } from '../state';
-import { historyAtom } from '../state';
+import type { HistoryEntry } from '../../../state';
+import { historyAtom } from '../../../state';
 
 /**
  * A component that displays the previous requests made to the Snap.
@@ -35,7 +35,7 @@ export const History: FunctionComponent = () => {
   );
 
   return (
-    <Stack gap="4">
+    <Stack gap="4" flex="1">
       {favorite.length > 0 && (
         <Stack gap="1">
           <Heading as="h2" size="sm">

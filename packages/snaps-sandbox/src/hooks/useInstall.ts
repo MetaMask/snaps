@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAtomValue } from 'jotai';
 
-import { LOCAL_SNAP_ID } from '../constants';
+import { useSnapId } from './useSnapId';
 import { providerAtom } from '../state';
 
 /**
@@ -11,6 +11,7 @@ import { providerAtom } from '../state';
  */
 export function useInstall() {
   const provider = useAtomValue(providerAtom);
+  const snapId = useSnapId();
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
@@ -18,7 +19,7 @@ export function useInstall() {
       return await provider?.request({
         method: 'wallet_requestSnaps',
         params: {
-          [LOCAL_SNAP_ID]: {},
+          [snapId]: {},
         },
       });
     },

@@ -31,8 +31,9 @@ export const Editor: FunctionComponent<EditorProps> = ({
   };
 
   return (
-    <Bleed inlineStart="4">
+    <Bleed inlineStart="4" asChild={true}>
       <Box
+        flex="1"
         data-testid="editor"
         css={{
           '& .monaco-editor': {

@@ -3,7 +3,6 @@ import { useAtom } from 'jotai';
 import type { FunctionComponent } from 'react';
 
 import { Editor } from './Editor';
-import { RequestButton } from './RequestButton';
 import { requestAtom } from '../state';
 
 /**
@@ -21,11 +20,8 @@ export const Request: FunctionComponent = () => {
   };
 
   return (
-    <Flex direction="column" gap="2" padding="2">
-      <Editor height="40rem" value={value} onChange={handleChange} />
-      <Flex justifyContent="end">
-        <RequestButton />
-      </Flex>
+    <Flex height="100%" direction="column" gap="2" padding="2">
+      <Editor height="100%" value={value} onChange={handleChange} />
     </Flex>
   );
 };

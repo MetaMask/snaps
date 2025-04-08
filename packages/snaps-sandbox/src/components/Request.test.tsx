@@ -44,11 +44,10 @@ vi.mock('@monaco-editor/react', () => ({
 }));
 
 describe('Request', () => {
-  it('renders the editor and button', async () => {
-    const { getByText, getByTestId } = await act(() => render(<Request />));
+  it('renders the editor', async () => {
+    const { getByTestId } = await act(() => render(<Request />));
 
     await waitFor(() => expect(getByTestId('editor')).toBeInTheDocument());
-    expect(getByText('Install MetaMask Flask')).toBeInTheDocument();
   });
 
   it('stores the request in the global state', async () => {

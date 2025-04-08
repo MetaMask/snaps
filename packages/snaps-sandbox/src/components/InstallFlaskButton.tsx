@@ -10,13 +10,13 @@ import { Fox } from './Fox';
  */
 export const InstallFlaskButton: FunctionComponent = () => {
   return (
-    <Button asChild={true}>
+    <Button colorScheme="info" asChild={true}>
       <Link
         href="https://docs.metamask.io/snaps/get-started/install-flask/"
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Fox boxSize="1.5rem" /> Install MetaMask Flask
+        <Fox boxSize="1.25rem" /> Install MetaMask Flask
       </Link>
     </Button>
   );

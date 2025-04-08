@@ -8,11 +8,8 @@ describe('index', () => {
       [
         "Editor",
         "Fox",
-        "History",
-        "HistoryItem",
         "InstallButton",
         "InstallFlaskButton",
-        "Logo",
         "defaultQueryClient",
         "Providers",
         "RelativeTime",
@@ -20,7 +17,6 @@ describe('index', () => {
         "RequestButton",
         "Response",
         "Sandbox",
-        "Sidebar",
       ]
     `);
   });

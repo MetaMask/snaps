@@ -4,8 +4,8 @@ import { useSetAtom } from 'jotai';
 import type { FunctionComponent } from 'react';
 import { FiMoreHorizontal, FiStar, FiTrash } from 'react-icons/fi';
 
-import type { HistoryEntry } from '../state';
-import { historyAtom } from '../state';
+import type { HistoryEntry } from '../../../state';
+import { historyAtom } from '../../../state';
 
 export type HistoryItemMenuProps = Omit<MenuTriggerProps, 'asChild'> & {
   /**

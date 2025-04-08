@@ -3,9 +3,9 @@ import { useSetAtom } from 'jotai';
 import type { FunctionComponent, MouseEvent } from 'react';
 
 import { HistoryItemMenu } from './HistoryItemMenu';
-import { RelativeTime } from './RelativeTime';
-import type { HistoryEntry } from '../state';
-import { historyAtom, requestAtom } from '../state';
+import { RelativeTime } from '../../../components/RelativeTime';
+import type { HistoryEntry } from '../../../state';
+import { historyAtom, requestAtom } from '../../../state';
 
 /**
  * The props for the {@link HistoryItem} component.

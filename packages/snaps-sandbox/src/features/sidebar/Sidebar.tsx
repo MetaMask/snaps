@@ -1,8 +1,8 @@
 import { Stack } from '@chakra-ui/react';
 import type { FunctionComponent } from 'react';
 
-import { History } from './History';
-import { Logo } from './Logo';
+import { History, Logo, Settings } from './components';
+import { Documentation } from './components/Documentation';
 
 /**
  * The sidebar component of the Snaps Sandbox.
@@ -12,7 +12,7 @@ import { Logo } from './Logo';
 export const Sidebar: FunctionComponent = () => {
   return (
     <Stack
-      width="20.813rem"
+      width="22.375rem"
       height="100vh"
       backgroundColor="background.muted"
       padding="6"
@@ -20,6 +20,10 @@ export const Sidebar: FunctionComponent = () => {
     >
       <Logo />
       <History />
+      <Stack gap="4">
+        <Documentation />
+        <Settings />
+      </Stack>
     </Stack>
   );
 };
