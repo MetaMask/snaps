@@ -13,6 +13,7 @@ export const Response: FunctionComponent = () => {
 
   return (
     <Editor
+      height="100%"
       value={JSON.stringify(response, null, '\t')}
       options={{
         domReadOnly: true,

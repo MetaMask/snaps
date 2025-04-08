@@ -5,8 +5,8 @@ import { createStore } from 'jotai';
 import { describe, it, expect } from 'vitest';
 
 import { HistoryItem } from './HistoryItem';
-import { historyAtom, persistedHistoryAtom, requestAtom } from '../state';
-import { render } from '../test-utils';
+import { historyAtom, persistedHistoryAtom, requestAtom } from '../../../state';
+import { render } from '../../../test-utils';
 
 describe('HistoryItem', () => {
   it('renders a history item', () => {

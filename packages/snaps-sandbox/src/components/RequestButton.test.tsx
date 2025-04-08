@@ -151,7 +151,7 @@ describe('RequestButton', () => {
 
     const { getByText } = render(<RequestButton />, { store });
 
-    const button = getByText('Execute request');
+    const button = getByText('Execute request').parentElement;
     expect(button).toBeDisabled();
   });
 });

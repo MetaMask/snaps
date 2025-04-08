@@ -1,7 +1,7 @@
 import { Heading, HStack, Image } from '@chakra-ui/react';
 import type { FunctionComponent } from 'react';
 
-import fox from '../assets/fox.svg';
+import fox from '../../../assets/fox.svg';
 
 /**
  * The MetaMask logo and title.

@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, HStack } from '@chakra-ui/react';
 import { isJsonRpcRequest } from '@metamask/utils';
 import { useAtomValue } from 'jotai';
 import type { FunctionComponent } from 'react';
@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import { Fox } from './Fox';
 import { InstallButton } from './InstallButton';
 import { InstallFlaskButton } from './InstallFlaskButton';
-import { LOCAL_SNAP_ID } from '../constants';
 import { useSnaps, useRequest } from '../hooks';
+import { useSnapId } from '../hooks/useSnapId';
 import { providerAtom, requestAtom } from '../state';
 import { getJsonRpcRequestWithDefaults, parseJson } from '../utils';
 
@@ -22,6 +22,7 @@ import { getJsonRpcRequestWithDefaults, parseJson } from '../utils';
 export const RequestButton: FunctionComponent = () => {
   const provider = useAtomValue(providerAtom);
   const request = useAtomValue(requestAtom);
+  const snapId = useSnapId();
 
   const [json, setJson] = useState<unknown>(parseJson(request));
   const [valid, setValid] = useState(false);
@@ -50,20 +51,29 @@ export const RequestButton: FunctionComponent = () => {
 
   if (loading) {
     return (
-      <Button loading={loading}>
-        <Fox boxSize="1.5rem" />
-        Install Snap
+      <Button colorScheme="info" loading={loading}>
+        <HStack>
+          <Fox boxSize="1.25rem" />
+          Install Snap
+        </HStack>
       </Button>
     );
   }
 
-  if (!snaps.includes(LOCAL_SNAP_ID)) {
+  if (!snaps.includes(snapId)) {
     return <InstallButton />;
   }
 
   return (
-    <Button onClick={handleClick} loading={requesting} disabled={!valid}>
-      <Fox boxSize="1.5rem" /> Execute request
+    <Button
+      onClick={handleClick}
+      loading={requesting}
+      disabled={!valid}
+      colorScheme="info"
+    >
+      <HStack>
+        <Fox boxSize="1.25rem" /> Execute request
+      </HStack>
     </Button>
   );
 };

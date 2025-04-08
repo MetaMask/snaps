@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { Sidebar } from './Sidebar';
-import { render } from '../test-utils';
+import { render } from '../../test-utils';
 
 describe('Sidebar', () => {
   it('renders the sidebar component', () => {

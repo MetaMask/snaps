@@ -5,6 +5,31 @@ import { SAMPLE_JSON_RPC_REQUEST } from './constants.js';
 import { getSnapsProvider } from './utils.js';
 
 /**
+ * The settings for the sandbox.
+ */
+export type Settings = {
+  /**
+   * The Snap ID of the Snap to be invoked.
+   */
+  snapId?: string | null;
+
+  /**
+   * Whether the current Snap ID should be used. If this is set to `true`, the
+   * `snapId` property will be ignored.
+   */
+  useCurrentSnapId?: boolean;
+};
+
+/**
+ * The settings atom is a Jotai atom that stores the settings for the sandbox in
+ * local storage.
+ */
+export const settingsAtom = atomWithStorage<Settings>('settings', {
+  snapId: null,
+  useCurrentSnapId: true,
+});
+
+/**
  * The MetaMask JSON-RPC provider.
  */
 export const providerAtom = atom(getSnapsProvider());

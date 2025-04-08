@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { Logo } from './Logo';
-import { render } from '../test-utils';
+import { render } from '../../../test-utils';
 
 describe('Logo', () => {
   it('renders the logo', () => {
