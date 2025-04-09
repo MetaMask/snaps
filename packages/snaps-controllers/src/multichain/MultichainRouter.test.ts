@@ -269,7 +269,7 @@ describe('MultichainRouter', () => {
       ).rejects.toThrow('No available account found for request.');
     });
 
-    it('throws if address resolution returns a lower case address that isnt available', async () => {
+    it(`throws if address resolution returns a lower case address that isn't available`, async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring({
