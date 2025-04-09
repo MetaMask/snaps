@@ -222,16 +222,6 @@ describe('SnapInterfaceController', () => {
             <Field label="Bar">
               <Input name="bar" type="text" />
             </Field>
-            <Field label="baz">
-              <AccountSelector
-                name="baz"
-                switchGlobalAccount
-                value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv"
-              />
-            </Field>
-            <Field label="foobar">
-              <AccountSelector name="foobar" />
-            </Field>
           </Form>
         </Box>
       );
@@ -254,37 +244,217 @@ describe('SnapInterfaceController', () => {
         'https://foo.bar/',
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        4,
-        'AccountsController:getAccountByAddress',
-        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      expect(content).toStrictEqual(element);
+      expect(state).toStrictEqual({
+        foo: {
+          bar: null,
+        },
+      });
+    });
+
+    it('can retrieve the selected account from the client', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AccountSelector name="foo" />
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
       );
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        5,
-        'AccountsController:setSelectedAccount',
-        MOCK_ACCOUNT_ID,
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        6,
+        2,
         'AccountsController:getSelectedMultichainAccount',
       );
 
       expect(content).toStrictEqual(element);
       expect(state).toStrictEqual({
         foo: {
-          bar: null,
-          baz: {
-            accountId: MOCK_ACCOUNT_ID,
-            addresses: [
-              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-            ],
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        },
+      });
+    });
+
+    it('can switch the currently selected account in the client', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        // @ts-expect-error partial mock
+        () => ({
+          id: MOCK_ACCOUNT_ID,
+          address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:setSelectedAccount',
+        () => {
+          // no-op
+        },
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AccountSelector
+            name="foo"
+            switchGlobalAccount
+            value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv"
+          />
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'AccountsController:getAccountByAddress',
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'AccountsController:setSelectedAccount',
+        MOCK_ACCOUNT_ID,
+      );
+
+      expect(content).toStrictEqual(element);
+      expect(state).toStrictEqual({
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ],
+        },
+      });
+    });
+
+    it('can get accounts of a specific chain ID from the client', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getSelectedMultichainAccount',
+        // @ts-expect-error partial mock
+        () => ({
+          id: MOCK_ACCOUNT_ID,
+          address: '0x1234567890123456789012345678901234567890',
+          scopes: ['eip155:0'],
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:listMultichainAccounts',
+        () => [
+          // @ts-expect-error partial mock
+          {
+            id: MOCK_ACCOUNT_ID,
+            address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
           },
-          foobar: {
-            accountId: MOCK_ACCOUNT_ID,
-            addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
-          },
+        ],
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:setSelectedAccount',
+        () => {
+          // no-op
+        },
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AccountSelector
+            name="foo"
+            switchGlobalAccount
+            chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+          />
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        2,
+        'AccountsController:getSelectedMultichainAccount',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        3,
+        'AccountsController:listMultichainAccounts',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        4,
+        'AccountsController:setSelectedAccount',
+        MOCK_ACCOUNT_ID,
+      );
+
+      expect(content).toStrictEqual(element);
+      expect(state).toStrictEqual({
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ],
         },
       });
     });

@@ -24,7 +24,6 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { text } from '@metamask/snaps-sdk';
-import type { InternalAccount } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
@@ -798,6 +797,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'SnapController:get',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:setSelectedAccount',
+      'AccountsController:listMultichainAccounts',
     ],
     allowedEvents: [
       'NotificationServicesController:notificationsListUpdated',
@@ -852,6 +852,18 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       (_id: string) => {
         // no-op
       },
+    );
+
+    messenger.registerActionHandler(
+      'AccountsController:listMultichainAccounts',
+      () => [
+        // @ts-expect-error partial mock
+        {
+          id: MOCK_ACCOUNT_ID,
+          address: '0x1234567890123456789012345678901234567890',
+          scopes: ['eip155:0'],
+        },
+      ],
     );
 
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {

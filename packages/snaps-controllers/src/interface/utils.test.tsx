@@ -32,6 +32,7 @@ import {
   getDefaultAsset,
   getJsxInterface,
   isStatefulComponent,
+  matchingChainId,
 } from './utils';
 import { MOCK_ACCOUNT_ID } from '../test-utils';
 
@@ -85,6 +86,7 @@ describe('constructState', () => {
     getAccountByAddress: jest.fn(),
     getSelectedAccount: jest.fn(),
     setSelectedAccount: jest.fn(),
+    listAccounts: jest.fn(),
   };
 
   it('can construct a new component state', () => {
@@ -1384,6 +1386,7 @@ describe('getDefaultAsset', () => {
           getAccountByAddress,
           getSelectedAccount: jest.fn(),
           setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
         },
       ),
     ).toStrictEqual({
@@ -1424,6 +1427,7 @@ describe('getDefaultAsset', () => {
           getAccountByAddress,
           getSelectedAccount: jest.fn(),
           setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
         },
       ),
     ).toStrictEqual({
@@ -1457,6 +1461,7 @@ describe('getDefaultAsset', () => {
           getAccountByAddress,
           getSelectedAccount: jest.fn(),
           setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
         },
       ),
     ).toBeNull();
@@ -1498,6 +1503,7 @@ describe('getDefaultAsset', () => {
           getAccountByAddress,
           getSelectedAccount: jest.fn(),
           setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
         },
       ),
     ).toStrictEqual({
@@ -1528,6 +1534,7 @@ describe('getDefaultAsset', () => {
           getAccountByAddress,
           getSelectedAccount: jest.fn(),
           setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
         },
       ),
     ).toThrow(
@@ -1578,6 +1585,30 @@ describe('isStatefulComponent', () => {
   });
 });
 
+describe('matchingChainId', () => {
+  it('returns true if one of the chain IDs match the scope', () => {
+    expect(
+      matchingChainId('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ]),
+    ).toBe(true);
+  });
+
+  it('returns false if none of the chain IDs match the scope', () => {
+    expect(
+      matchingChainId('bip122:000000000019d6689c085ae165831e93', [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ]),
+    ).toBe(false);
+  });
+
+  it('returns true if one of the chain ID has the `eip-155` namespace and the scope is `eip-155:0`', () => {
+    expect(matchingChainId('eip155:0', ['eip155:1'])).toBe(true);
+  });
+});
+
 describe('formatAccountSelectorStateValue', () => {
   it('formats the account selector state value', () => {
     expect(
@@ -1599,27 +1630,162 @@ describe('formatAccountSelectorStateValue', () => {
 });
 
 describe('getAccountSelectorDefaultStateValue', () => {
-  it('returns the account selector default state value', () => {
+  it('returns the currently selected account in the client if no chain Is are defined', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+    expect(
+      getAccountSelectorDefaultStateValue(<AccountSelector name="foo" />, {
+        getSelectedAccount,
+        getAccountByAddress: jest.fn(),
+        getAssetsState: jest.fn(),
+        setSelectedAccount: jest.fn(),
+        listAccounts: jest.fn(),
+      }),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+    });
+  });
+
+  it('returns the currently selected account in the client if chain IDs match', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector name="foo" chainIds={['eip155:1']} />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          setSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: ['eip155:1:0x1234567890123456789012345678901234567890'],
+    });
+  });
+
+  it('returns the first account of the account that matches the chain Ids if the selected account is not on the same chain ID', () => {
     const getSelectedAccount = jest.fn().mockReturnValue({
       id: MOCK_ACCOUNT_ID,
       address: '0x1234567890123456789012345678901234567890',
       scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
     });
+
+    const listAccounts = jest.fn().mockReturnValue([
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    ]);
+
     expect(
-      getAccountSelectorDefaultStateValue({
-        getSelectedAccount,
-        getAccountByAddress: jest.fn(),
-        getAssetsState: jest.fn(),
-        setSelectedAccount: jest.fn(),
-      }),
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          setSelectedAccount: jest.fn(),
+          listAccounts,
+        },
+      ),
     ).toStrictEqual({
       accountId: MOCK_ACCOUNT_ID,
       addresses: [
-        'eip155:1:0x1234567890123456789012345678901234567890',
-        'eip155:2:0x1234567890123456789012345678901234567890',
-        'eip155:3:0x1234567890123456789012345678901234567890',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       ],
     });
+  });
+
+  it('throws if no account is found for the given chain IDs', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([]);
+
+    expect(() =>
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          chainIds={['bip122:000000000019d6689c085ae165831e93']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          setSelectedAccount: jest.fn(),
+          listAccounts,
+        },
+      ),
+    ).toThrow('No accounts found for the provided chain IDs.');
+  });
+
+  it('switches the selected account in the client if "switchGlobalAccount" is true', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    ]);
+
+    const setSelectedAccount = jest.fn();
+
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          switchGlobalAccount={true}
+          chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          setSelectedAccount,
+          listAccounts,
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ],
+    });
+
+    expect(setSelectedAccount).toHaveBeenCalledWith(MOCK_ACCOUNT_ID);
   });
 });
 
