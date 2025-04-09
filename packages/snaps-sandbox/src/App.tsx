@@ -5,11 +5,11 @@ import { Sandbox } from './components';
 import { Sidebar } from './features/sidebar';
 
 export const App: FunctionComponent = () => (
-  <HStack>
+  <HStack gap="0">
     <Sidebar />
     <Flex
       justify="center"
-      width="9/12"
+      flexGrow="1"
       maxWidth="100%"
       minHeight="100vh"
       paddingY="24"
