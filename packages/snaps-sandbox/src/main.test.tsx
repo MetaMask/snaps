@@ -19,7 +19,7 @@ describe('main', () => {
       unmount: vi.fn(),
     });
 
-    await import('./main.js');
+    await import('./main');
 
     expect(spy).toHaveBeenCalled();
     expect(spy.mock.calls[0][0]).toBe(element);
@@ -29,7 +29,7 @@ describe('main', () => {
   });
 
   it('throws an error if the root element is not found', async () => {
-    await expect(async () => import('./main.js')).rejects.toThrow(
+    await expect(async () => import('./main')).rejects.toThrow(
       'No root element found.',
     );
   });

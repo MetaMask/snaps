@@ -6,7 +6,7 @@ import type { ChangeEvent } from 'react';
 import { useEffect } from 'react';
 import { describe, it, expect, vi } from 'vitest';
 
-import { Request } from './Request.js';
+import { Request } from './Request';
 import { requestAtom } from '../state';
 import { render } from '../test-utils';
 
