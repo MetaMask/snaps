@@ -2,7 +2,7 @@ import { act } from '@testing-library/react';
 import { createStore } from 'jotai';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { Status } from './Status.js';
+import { Status } from './Status';
 import { LOCAL_SNAP_ID } from '../constants';
 import { useSnaps } from '../hooks';
 import { settingsAtom } from '../state';

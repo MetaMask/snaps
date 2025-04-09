@@ -5,7 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { useRequest } from './useRequest';
 import { LOCAL_SNAP_ID } from '../constants';
-import { historyAtom, persistedHistoryAtom, providerAtom } from '../state.js';
+import { historyAtom, persistedHistoryAtom, providerAtom } from '../state';
 import { renderHook } from '../test-utils';
 
 vi.stubGlobal('ethereum', {

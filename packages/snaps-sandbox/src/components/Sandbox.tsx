@@ -4,7 +4,7 @@ import type { FunctionComponent } from 'react';
 import { Request } from './Request';
 import { RequestButton } from './RequestButton';
 import { Response } from './Response';
-import { Status } from './Status.js';
+import { Status } from './Status';
 
 /**
  * The main component of the Snaps Sandbox.

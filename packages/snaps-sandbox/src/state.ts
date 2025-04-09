@@ -3,8 +3,8 @@ import deepEqual from 'fast-deep-equal';
 import { atom, createStore } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
-import { SAMPLE_JSON_RPC_REQUEST } from './constants.js';
-import { getSnapsProvider } from './utils.js';
+import { SAMPLE_JSON_RPC_REQUEST } from './constants';
+import { getSnapsProvider } from './utils';
 
 /**
  * The settings for the sandbox.

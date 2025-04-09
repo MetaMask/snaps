@@ -5,7 +5,7 @@ import { App } from './App';
 import { Providers } from './components';
 
 // eslint-disable-next-line import-x/no-unassigned-import
-import './editor.js';
+import './editor';
 
 // eslint-disable-next-line import-x/no-unassigned-import
 import './assets/fonts/fonts.css';
