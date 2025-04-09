@@ -492,6 +492,12 @@ export class SnapInterfaceController extends BaseController<
     );
   }
 
+  /**
+   * Get a list of accounts for the given chain IDs.
+   *
+   * @param chainIds - The chain IDs to get the accounts for.
+   * @returns The list of accounts.
+   */
   #listAccounts(chainIds: CaipChainId[]) {
     const accounts = chainIds.reduce<InternalAccount[]>((acc, chainId) => {
       const result = this.messagingSystem.call(
