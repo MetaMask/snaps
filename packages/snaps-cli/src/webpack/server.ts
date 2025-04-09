@@ -166,26 +166,27 @@ export function getServer(
       server: Server;
       close: () => Promise<void>;
     }>((resolve, reject) => {
-      try {
-        const server = app.listen(port, () => {
-          const close = async () => {
-            await new Promise<void>((resolveClose, rejectClose) => {
-              server.close((closeError) => {
-                if (closeError) {
-                  return rejectClose(closeError);
-                }
+      // eslint-disable-next-line consistent-return
+      const server = app.listen(port, (error) => {
+        if (error) {
+          return reject(error);
+        }
 
-                return resolveClose();
-              });
+        const close = async () => {
+          await new Promise<void>((resolveClose, rejectClose) => {
+            server.close((closeError) => {
+              if (closeError) {
+                return rejectClose(closeError);
+              }
+
+              return resolveClose();
             });
-          };
+          });
+        };
 
-          const address = server.address() as AddressInfo;
-          resolve({ port: address.port, server, close });
-        });
-      } catch (listenError) {
-        reject(listenError);
-      }
+        const address = server.address() as AddressInfo;
+        resolve({ port: address.port, server, close });
+      });
     });
   };
 
