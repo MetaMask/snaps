@@ -39,7 +39,7 @@ describe('historyAtom', () => {
       const request = {
         id: '2',
         title: 'Test 2',
-        request: JSON.stringify({ method: 'test' }),
+        request: JSON.stringify({ method: 'test-2' }),
         timestamp: Date.now(),
       };
 
@@ -52,6 +52,25 @@ describe('historyAtom', () => {
         request,
         expect.any(Object),
       ]);
+    });
+
+    it('updates an existing entry if the request is the same', () => {
+      const store = createStore();
+      const request = {
+        id: '1',
+        title: 'Test',
+        request: JSON.stringify({ method: 'test' }),
+        timestamp: Date.now(),
+      };
+
+      store.set(persistedHistoryAtom, [request]);
+
+      store.set(historyAtom, {
+        type: 'add',
+        payload: request,
+      });
+
+      expect(store.get(historyAtom)).toStrictEqual([request]);
     });
   });
 
@@ -110,5 +129,24 @@ describe('historyAtom', () => {
         updatedRequest,
       ]);
     });
+  });
+
+  it('throws an error if the action is not supported', () => {
+    const store = createStore();
+
+    expect(() => {
+      store.set(historyAtom, {
+        // @ts-expect-error: Unsupported action.
+        type: 'unknown',
+        payload: {
+          id: '1',
+          title: 'Test',
+          request: JSON.stringify({ method: 'test' }),
+          timestamp: Date.now(),
+        },
+      });
+    }).toThrowError(
+      'Invalid branch reached. Should be detected during compilation.',
+    );
   });
 });

@@ -1,3 +1,5 @@
+import { assertExhaustive } from '@metamask/utils';
+import deepEqual from 'fast-deep-equal';
 import { atom, createStore } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
 
@@ -98,6 +100,51 @@ export const persistedHistoryAtom = atomWithStorage<HistoryEntry[]>(
 );
 
 /**
+ * A reducer function that handles actions for the history atom. It takes the
+ * current history and an action, and returns the new history.
+ *
+ * @param history - The current history.
+ * @param action - The action to perform on the history.
+ * @returns The new history.
+ */
+function reduce(history: HistoryEntry[], action: HistoryAction) {
+  switch (action.type) {
+    case 'add': {
+      const parsedRequest = JSON.parse(action.payload.request);
+      const existingEntry = history.find((entry) => {
+        const json = JSON.parse(entry.request);
+        return deepEqual(json, parsedRequest);
+      });
+
+      // If an existing entry is found, update the timestamp instead of adding
+      // a new entry.
+      if (existingEntry) {
+        return reduce(history, {
+          type: 'update',
+          payload: {
+            ...existingEntry,
+            timestamp: action.payload.timestamp,
+          },
+        });
+      }
+
+      return [action.payload, ...history];
+    }
+
+    case 'remove':
+      return history.filter((entry) => entry.id !== action.payload.id);
+
+    case 'update':
+      return history.map((entry) =>
+        entry.id === action.payload.id ? action.payload : entry,
+      );
+
+    default:
+      return assertExhaustive(action.type);
+  }
+}
+
+/**
  * The `historyAtom` is a Jotai atom that stores the history of JSON-RPC
  * requests made by the user.
  */
@@ -105,31 +152,9 @@ export const historyAtom = atom(
   (get) => get(persistedHistoryAtom),
   (get, set, action: HistoryAction) => {
     const history = get(persistedHistoryAtom);
+    const newHistory = reduce(history, action);
 
-    switch (action.type) {
-      case 'add':
-        set(persistedHistoryAtom, [action.payload, ...history]);
-        break;
-
-      case 'remove':
-        set(
-          persistedHistoryAtom,
-          history.filter((entry) => entry.id !== action.payload.id),
-        );
-        break;
-
-      case 'update':
-        set(
-          persistedHistoryAtom,
-          history.map((entry) =>
-            entry.id === action.payload.id ? action.payload : entry,
-          ),
-        );
-        break;
-
-      default:
-        break;
-    }
+    set(persistedHistoryAtom, newHistory);
   },
 );
 
