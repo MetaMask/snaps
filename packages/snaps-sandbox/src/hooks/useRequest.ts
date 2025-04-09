@@ -1,6 +1,6 @@
 import type { JsonRpcRequest } from '@metamask/utils';
 import { useMutation } from '@tanstack/react-query';
-import { useAtomValue, useAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { nanoid } from 'nanoid';
 
 import { useSnapId } from './useSnapId';
@@ -13,7 +13,7 @@ import { historyAtom, providerAtom } from '../state';
  */
 export function useRequest() {
   const provider = useAtomValue(providerAtom);
-  const [history, dispatch] = useAtom(historyAtom);
+  const dispatch = useSetAtom(historyAtom);
   const snapId = useSnapId();
 
   const { mutate, isPending, data, error } = useMutation({
@@ -31,17 +31,6 @@ export function useRequest() {
     },
 
     onSettled: (_data, _error, request) => {
-      const previousRequest = history[0];
-
-      // If the current request is the same as the previous one, do not add it
-      // to the history
-      if (
-        previousRequest &&
-        previousRequest.request === JSON.stringify(request, null, 2)
-      ) {
-        return;
-      }
-
       dispatch({
         type: 'add',
         payload: {

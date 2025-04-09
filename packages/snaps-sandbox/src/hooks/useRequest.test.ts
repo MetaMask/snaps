@@ -5,7 +5,7 @@ import { describe, it, expect, vi } from 'vitest';
 
 import { useRequest } from './useRequest';
 import { LOCAL_SNAP_ID } from '../constants';
-import { historyAtom, providerAtom } from '../state.js';
+import { historyAtom, persistedHistoryAtom, providerAtom } from '../state.js';
 import { renderHook } from '../test-utils';
 
 vi.stubGlobal('ethereum', {
@@ -52,66 +52,7 @@ describe('useRequest', () => {
   it('adds the request to the history', async () => {
     const store = createStore();
     store.set(providerAtom, Promise.resolve(window.ethereum));
-    store.set(historyAtom, []);
-
-    const { result } = await act(() =>
-      renderHook(() => useRequest(), { store }),
-    );
-
-    result.current.request({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'foo',
-      params: {
-        bar: 'baz',
-      },
-    });
-
-    await waitFor(() => expect(window.ethereum.request).toHaveBeenCalled());
-
-    expect(store.get(historyAtom)).toStrictEqual([
-      {
-        id: expect.any(String),
-        title: 'foo',
-        request: JSON.stringify(
-          {
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'foo',
-            params: {
-              bar: 'baz',
-            },
-          },
-          null,
-          2,
-        ),
-        timestamp: expect.any(Number),
-      },
-    ]);
-  });
-
-  it('does not add the request to the history if it is the same as the previous one', async () => {
-    const store = createStore();
-    store.set(providerAtom, Promise.resolve(window.ethereum));
-    store.set(historyAtom, [
-      {
-        id: '1',
-        title: 'foo',
-        request: JSON.stringify(
-          {
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'foo',
-            params: {
-              bar: 'baz',
-            },
-          },
-          null,
-          2,
-        ),
-        timestamp: Date.now(),
-      },
-    ]);
+    store.set(persistedHistoryAtom, []);
 
     const { result } = await act(() =>
       renderHook(() => useRequest(), { store }),
