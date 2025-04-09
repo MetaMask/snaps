@@ -12,7 +12,7 @@ import { Response } from './Response';
  */
 export const Sandbox: FunctionComponent = () => {
   return (
-    <Container width="10/12">
+    <Container width={['100%', null, null, '10/12']}>
       <Grid
         templateColumns="1fr 1fr"
         templateRows="auto 1fr"
