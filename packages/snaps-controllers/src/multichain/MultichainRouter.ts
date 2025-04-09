@@ -218,7 +218,7 @@ export class MultichainRouter {
     const selectedAccount = accounts.find(
       (account) =>
         parsedConnectedAddresses.includes(account.address) &&
-        (!address || account.address.toLowerCase() === address.toLowerCase()),
+        (!address || account.address === address),
     );
 
     if (!selectedAccount) {
