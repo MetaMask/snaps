@@ -3,11 +3,11 @@ import type {
   OnHomePageHandler,
   OnUserInputHandler,
   OnRpcRequestHandler,
+  AssetSelectorState,
 } from '@metamask/snaps-sdk';
 import { UserInputEventType } from '@metamask/snaps-sdk';
 
 import { SendFlow } from './components';
-import { accountsArray, accounts } from './data';
 import type { SendFormState, SendFlowContext } from './types';
 import { formValidation, generateSendFlow, isCaipHexAddress } from './utils';
 
@@ -26,8 +26,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'display': {
       const interfaceId = await generateSendFlow({
-        accountsArray,
-        accounts,
         fees: { amount: 1.0001, fiat: 1.23 },
       });
 
@@ -56,8 +54,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
  */
 export const onHomePage: OnHomePageHandler = async () => {
   const interfaceId = await generateSendFlow({
-    accountsArray,
-    accounts,
     fees: { amount: 1.0001, fiat: 1.23 },
   });
 
@@ -79,7 +75,7 @@ export const onUserInput: OnUserInputHandler = async ({
   id,
   context,
 }) => {
-  const { selectedCurrency, fees } = context as SendFlowContext;
+  const { useFiat, fees } = context as SendFlowContext;
 
   const state = await snap.request({
     method: 'snap_getInterfaceState',
@@ -88,7 +84,7 @@ export const onUserInput: OnUserInputHandler = async ({
 
   const sendForm = state.sendForm as SendFormState;
 
-  const formErrors = formValidation(sendForm, context as SendFlowContext);
+  const formErrors = formValidation(sendForm);
 
   const total = {
     amount: Number(sendForm.amount ?? 0) + fees.amount,
@@ -98,50 +94,30 @@ export const onUserInput: OnUserInputHandler = async ({
   if (event.type === UserInputEventType.InputChangeEvent) {
     switch (event.name) {
       case 'amount':
-      case 'to': {
+      case 'to':
+      case 'account':
+      case 'asset': {
         await snap.request({
           method: 'snap_updateInterface',
           params: {
             id,
             ui: (
               <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
+                asset={state.asset as AssetSelectorState}
+                account={sendForm.account}
+                useFiat={useFiat}
                 total={total}
                 fees={fees}
                 errors={formErrors}
                 // For testing purposes, we display the avatar if the address is
                 // a valid hex checksum address.
-                displayAvatar={isCaipHexAddress(event.value)}
+                displayAvatar={isCaipHexAddress(state.to)}
               />
             ),
           },
         });
         break;
       }
-
-      case 'accountSelector': {
-        await snap.request({
-          method: 'snap_updateInterface',
-          params: {
-            id,
-            ui: (
-              <SendFlow
-                accounts={accountsArray}
-                selectedAccount={sendForm.accountSelector}
-                selectedCurrency={selectedCurrency}
-                total={total}
-                fees={fees}
-                errors={formErrors}
-              />
-            ),
-          },
-        });
-
-        break;
-      }
-
       default:
         break;
     }
