@@ -28,6 +28,7 @@ import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import {
   createAccountList,
+  createChainIdList,
   getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,
@@ -40,6 +41,7 @@ import {
   parseCaipAssetType,
   toCaipAccountId,
   parseCaipChainId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
 /**
@@ -167,16 +169,45 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
 }
 
 /**
+ * Check if the chain ID matches the scope.
+ * This function handles the case where a scope represents all EVM compatible chains.
+ * In this case, it returns true if the chain ID is an EIP-155 chain ID.
+ *
+ * @param scope - The scope to check.
+ * @param chainIds - The chain IDs to check against.
+ * @returns Whether one of the chain ID matches the scope.
+ */
+export function matchingChainId(scope: CaipChainId, chainIds: CaipChainId[]) {
+  // if the scope represents all EVM compatible chains, return true if the namespace is EIP-155.
+  if (scope === 'eip155:0') {
+    const namespaces = chainIds.map((chainId) => {
+      const { namespace } = parseCaipChainId(chainId);
+      return namespace;
+    });
+
+    return namespaces.includes(KnownCaipNamespace.Eip155);
+  }
+
+  // Otherwise, check if the scope is in the chain IDs.
+  return chainIds.includes(scope);
+}
+
+/**
  * Format the state value for an account selector.
  *
  * @param account - The account to format.
+ * @param requestedChainIds - The requested chain IDs.
  *
  * @returns The state value for the account selector.
  */
-export function formatAccountSelectorStateValue(account: InternalAccount) {
+export function formatAccountSelectorStateValue(
+  account: InternalAccount,
+  requestedChainIds?: CaipChainId[],
+) {
   const { id, address, scopes } = account;
 
-  const addresses = createAccountList(address, scopes);
+  const chainIds = createChainIdList(scopes, requestedChainIds);
+  const addresses = createAccountList(address, chainIds);
 
   return { accountId: id, addresses };
 }
@@ -249,7 +280,7 @@ export function getDefaultAsset(
 /**
  * Get the default state value for an account selector.
  *
- * @param chainIds - The chain IDs to filter the accounts.
+ * @param element - The account selector element.
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
  * @param elementDataGetters.listAccounts - A function to list accounts for the provided chain IDs.
@@ -257,26 +288,30 @@ export function getDefaultAsset(
  * @returns The default state for the account selector.
  */
 export function getAccountSelectorDefaultStateValue(
-  chainIds: CaipChainId[] | undefined,
+  element: AccountSelectorElement,
   { getSelectedAccount, listAccounts, setSelectedAccount }: ElementDataGetters,
 ) {
+  const { chainIds, switchGlobalAccount } = element.props;
+
   const account = getSelectedAccount();
 
   if (!chainIds || chainIds.length === 0) {
-    return formatAccountSelectorStateValue(account);
+    return formatAccountSelectorStateValue(account, chainIds);
   }
 
-  if (account.scopes.some((scope) => chainIds.includes(scope))) {
-    return formatAccountSelectorStateValue(account);
+  if (account.scopes.some((scope) => matchingChainId(scope, chainIds))) {
+    return formatAccountSelectorStateValue(account, chainIds);
   }
 
   const accounts = listAccounts(chainIds);
 
   assert(accounts.length > 0, 'No accounts found for the provided chain IDs.');
 
-  setSelectedAccount(accounts[0].id);
+  if (switchGlobalAccount) {
+    setSelectedAccount(accounts[0].id);
+  }
 
-  return formatAccountSelectorStateValue(accounts[0]);
+  return formatAccountSelectorStateValue(accounts[0], chainIds);
 }
 
 /**
@@ -319,10 +354,7 @@ function constructComponentSpecificDefaultState(
     }
 
     case 'AccountSelector':
-      return getAccountSelectorDefaultStateValue(
-        element.props.chainIds,
-        elementDataGetters,
-      );
+      return getAccountSelectorDefaultStateValue(element, elementDataGetters);
 
     case 'Checkbox':
       return false;
@@ -395,7 +427,7 @@ export function getAccountSelectorStateValue(
     setSelectedAccount(account.id);
   }
 
-  return formatAccountSelectorStateValue(account);
+  return formatAccountSelectorStateValue(account, element.props.chainIds);
 }
 
 /**
