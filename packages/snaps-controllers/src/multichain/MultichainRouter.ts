@@ -218,7 +218,7 @@ export class MultichainRouter {
     const selectedAccount = accounts.find(
       (account) =>
         parsedConnectedAddresses.includes(account.address) &&
-        (!address || account.address.toLowerCase() === address.toLowerCase()),
+        (!address || account.address === address),
     );
 
     if (!selectedAccount) {
@@ -267,6 +267,9 @@ export class MultichainRouter {
   /**
    * Handle an incoming JSON-RPC request tied to a specific scope by routing
    * to either a procotol Snap or an account Snap.
+   *
+   * Note: Addresses are considered case sensitive by the MultichainRouter as
+   * not all non-EVM chains are case insensitive.
    *
    * @param options - An options bag.
    * @param options.connectedAddresses - Addresses currently connected to the origin.
