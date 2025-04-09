@@ -804,7 +804,6 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
 
 type TrackingEventPayload = {
   event: string;
-  category: string;
   properties: Record<string, Json>;
 };
 
@@ -1057,7 +1056,6 @@ export class SnapController extends BaseController<
         const snapMetadata = await this.getRegistryMetadata(snapId);
         this.#trackEvent({
           event: 'SnapExportUsed',
-          category: 'Snaps',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: snapId,

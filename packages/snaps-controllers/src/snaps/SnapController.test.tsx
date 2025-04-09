@@ -11098,7 +11098,6 @@ describe('SnapController', () => {
 
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: 'Snaps',
         event: 'SnapExportUsed',
         properties: {
           export: 'onRpcRequest',
