@@ -268,6 +268,46 @@ describe('MultichainRouter', () => {
         }),
       ).rejects.toThrow('No available account found for request.');
     });
+
+    it('throws if address resolution returns a lower case address that isnt available', async () => {
+      const rootMessenger = getRootMultichainRouterMessenger();
+      const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
+      const withSnapKeyring = getMockWithSnapKeyring({
+        // Simulate the Snap returning an unconnected address
+        resolveAccountAddress: jest.fn().mockResolvedValue({
+          address: `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:${MOCK_SOLANA_ACCOUNTS[0].address.toLowerCase()}`,
+        }),
+      });
+
+      /* eslint-disable-next-line no-new */
+      new MultichainRouter({
+        messenger,
+        withSnapKeyring,
+      });
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:listMultichainAccounts',
+        () => MOCK_SOLANA_ACCOUNTS,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => MOCK_SOLANA_SNAP_PERMISSIONS,
+      );
+
+      await expect(
+        messenger.call('MultichainRouter:handleRequest', {
+          connectedAddresses: SOLANA_CONNECTED_ACCOUNTS,
+          scope: SOLANA_CAIP2,
+          request: {
+            method: 'signAndSendTransaction',
+            params: {
+              message: 'foo',
+            },
+          },
+        }),
+      ).rejects.toThrow('No available account found for request.');
+    });
   });
 
   describe('getSupportedMethods', () => {
