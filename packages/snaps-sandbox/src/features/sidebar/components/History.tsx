@@ -18,7 +18,8 @@ export const History: FunctionComponent = () => {
   const [favorite, regular] = useMemo(
     () =>
       history
-        .toSorted((a, b) => b.timestamp - a.timestamp)
+        // TODO: Use `toSorted` when dropping support for Node 18.
+        .sort((a, b) => b.timestamp - a.timestamp)
         .reduce<[favorite: HistoryEntry[], regular: HistoryEntry[]]>(
           (array, entry) => {
             if (entry.favorite) {
