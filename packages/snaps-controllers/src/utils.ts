@@ -408,24 +408,24 @@ export function throttleTracking(
     handler: TrackableHandler,
     success: boolean,
     origin: string,
-  ) => Promise<void>,
+  ) => void,
   timeout = 60000,
 ) {
   const previousCalls = new Map<string, number>();
 
-  return async (
+  return (
     snapId: SnapId,
     handler: TrackableHandler,
     success: boolean,
     origin: string,
-  ): Promise<void> => {
+  ): void => {
     const key = `${snapId}${handler}${origin}`;
     const now = Date.now();
     const lastCall = previousCalls.get(key) ?? 0;
 
     if (now - lastCall >= timeout) {
       previousCalls.set(key, now);
-      await fn(snapId, handler, success, origin);
+      fn(snapId, handler, success, origin);
     }
   };
 }

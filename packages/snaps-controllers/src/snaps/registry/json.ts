@@ -166,7 +166,7 @@ export class JsonSnapsRegistry extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       'SnapsRegistry:getMetadata',
-      async (...args) => this.#getMetadata(...args),
+      (...args) => this.#getMetadata(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -346,15 +346,14 @@ export class JsonSnapsRegistry extends BaseController<
   }
 
   /**
-   * Get metadata for the given snap ID.
+   * Get metadata for the given snap ID, if available, without updating registry.
    *
    * @param snapId - The ID of the snap to get metadata for.
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  async #getMetadata(snapId: string): Promise<SnapsRegistryMetadata | null> {
-    const database = await this.#getDatabase();
-    return database?.verifiedSnaps[snapId]?.metadata ?? null;
+  #getMetadata(snapId: string): SnapsRegistryMetadata | null {
+    return this.state?.database?.verifiedSnaps[snapId]?.metadata ?? null;
   }
 
   /**

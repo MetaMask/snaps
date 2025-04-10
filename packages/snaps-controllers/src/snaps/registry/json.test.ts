@@ -470,10 +470,8 @@ describe('JsonSnapsRegistry', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      const result = await messenger.call(
-        'SnapsRegistry:getMetadata',
-        MOCK_SNAP_ID,
-      );
+      await messenger.call('SnapsRegistry:update');
+      const result = messenger.call('SnapsRegistry:getMetadata', MOCK_SNAP_ID);
 
       expect(result).toStrictEqual({
         name: 'Mock Snap',
@@ -486,7 +484,8 @@ describe('JsonSnapsRegistry', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      const result = await messenger.call('SnapsRegistry:getMetadata', 'foo');
+      await messenger.call('SnapsRegistry:update');
+      const result = messenger.call('SnapsRegistry:getMetadata', 'foo');
 
       expect(result).toBeNull();
     });

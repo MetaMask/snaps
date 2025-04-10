@@ -9271,9 +9271,7 @@ describe('SnapController', () => {
         }),
       );
 
-      expect(
-        await snapController.getRegistryMetadata(MOCK_SNAP_ID),
-      ).toStrictEqual({
+      expect(snapController.getRegistryMetadata(MOCK_SNAP_ID)).toStrictEqual({
         name: 'Mock Snap',
       });
 
@@ -9290,7 +9288,7 @@ describe('SnapController', () => {
         }),
       );
 
-      expect(await snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
+      expect(snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
 
       snapController.destroy();
     });
@@ -10447,10 +10445,7 @@ describe('SnapController', () => {
       );
 
       expect(
-        await messenger.call(
-          'SnapController:getRegistryMetadata',
-          MOCK_SNAP_ID,
-        ),
+        messenger.call('SnapController:getRegistryMetadata', MOCK_SNAP_ID),
       ).toStrictEqual({
         name: 'Mock Snap',
       });
@@ -11099,6 +11094,7 @@ describe('SnapController', () => {
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: 'SnapExportUsed',
+        category: 'Snaps',
         properties: {
           export: 'onRpcRequest',
           origin: 'https://example.com',

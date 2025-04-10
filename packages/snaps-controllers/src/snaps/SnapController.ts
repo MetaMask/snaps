@@ -804,6 +804,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
 
 type TrackingEventPayload = {
   event: string;
+  category: string;
   properties: Record<string, Json>;
 };
 
@@ -1047,15 +1048,11 @@ export class SnapController extends BaseController<
     );
 
     this.#trackSnapExport = throttleTracking(
-      async (
-        snapId: SnapId,
-        handler: string,
-        success: boolean,
-        origin: string,
-      ) => {
-        const snapMetadata = await this.getRegistryMetadata(snapId);
+      (snapId: SnapId, handler: string, success: boolean, origin: string) => {
+        const snapMetadata = this.getRegistryMetadata(snapId);
         this.#trackEvent({
           event: 'SnapExportUsed',
+          category: 'Snaps',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: snapId,
@@ -1225,7 +1222,7 @@ export class SnapController extends BaseController<
 
     this.messagingSystem.registerActionHandler(
       `${controllerName}:getRegistryMetadata`,
-      async (...args) => this.getRegistryMetadata(...args),
+      (...args) => this.getRegistryMetadata(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2999,11 +2996,9 @@ export class SnapController extends BaseController<
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  async getRegistryMetadata(
-    snapId: SnapId,
-  ): Promise<SnapsRegistryMetadata | null> {
+  getRegistryMetadata(snapId: SnapId): SnapsRegistryMetadata | null {
     this.#assertCanUsePlatform();
-    return await this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
+    return this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
   }
 
   /**
@@ -3628,7 +3623,7 @@ export class SnapController extends BaseController<
         this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
 
         if (isTrackableHandler(handlerType)) {
-          await this.#trackSnapExport(snapId, handlerType, true, origin);
+          this.#trackSnapExport(snapId, handlerType, true, origin);
         }
 
         return transformedResult;
@@ -3637,7 +3632,7 @@ export class SnapController extends BaseController<
         this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
 
         if (isTrackableHandler(handlerType)) {
-          await this.#trackSnapExport(snapId, handlerType, false, origin);
+          this.#trackSnapExport(snapId, handlerType, false, origin);
         }
 
         const [jsonRpcError, handled] = unwrapError(error);

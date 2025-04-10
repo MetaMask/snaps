@@ -18,7 +18,7 @@ export class MockSnapsRegistry implements SnapsRegistry {
     throw new Error('The snap is not on the allowlist.');
   });
 
-  getMetadata = jest.fn().mockResolvedValue(null);
+  getMetadata = jest.fn().mockReturnValue(null);
 
   update = jest.fn();
 }
