@@ -4,12 +4,10 @@ import {
   indent,
   isFile,
   SnapsStructError,
-  named,
 } from '@metamask/snaps-utils/node';
 import {
   array,
   boolean,
-  create,
   defaulted,
   define,
   func,
@@ -18,21 +16,17 @@ import {
   optional,
   record,
   string,
-  type,
   unknown,
-  empty,
 } from '@metamask/superstruct';
 import type { Infer } from '@metamask/superstruct';
 import { hasProperty } from '@metamask/utils';
 import { transform } from '@swc/core';
-import type { BrowserifyObject } from 'browserify';
 import { dim } from 'chalk';
 import { readFile } from 'fs/promises';
 import Module from 'module';
-import { basename, dirname, resolve } from 'path';
+import { dirname, resolve } from 'path';
 import type { Configuration as WebpackConfiguration } from 'webpack';
 
-import { TranspilationModes } from './builders';
 import { ConfigError } from './errors';
 import { file } from './structs';
 import type { YargsArgs } from './types/yargs';
@@ -43,171 +37,8 @@ const CONFIG_FILES = [CONFIG_FILE, TS_CONFIG_FILE];
 /**
  * The configuration for the Snaps CLI, stored as `snap.config.js` or
  * `snap.config.ts` in the root of the project.
- *
- * @deprecated The Browserify bundler is deprecated and will be removed in a
- * future release. Use the Webpack bundler instead.
  */
-export type SnapBrowserifyConfig = {
-  /**
-   * The bundler to use to build the snap. For backwards compatibility, if not
-   * specified, Browserify will be used. However, the Browserify bundler is
-   * deprecated and will be removed in a future release, so it's recommended to
-   * use the Webpack bundler instead.
-   */
-  bundler: 'browserify';
-
-  /**
-   * The options for the Snaps CLI. These are merged with the options passed to
-   * the CLI, with the CLI options taking precedence.
-   *
-   * @deprecated The Browserify bundler is deprecated and will be removed in a
-   * future release. Use the Webpack bundler instead.
-   */
-  cliOptions?: {
-    /**
-     * The path to the snap bundle file.
-     *
-     * @default 'dist/bundle.js'
-     */
-    bundle?: string;
-
-    /**
-     * The directory to output the snap to. This is only used if `bundle` is
-     * not specified.
-     *
-     * @default 'dist'
-     */
-    dist?: string;
-
-    /**
-     * Whether to attempt to evaluate the snap in SES. This can catch some errors
-     * that would otherwise only be caught at runtime.
-     *
-     * @default true
-     */
-    eval?: boolean;
-
-    /**
-     * Whether to validate the snap manifest.
-     *
-     * @default true
-     */
-    manifest?: boolean;
-
-    /**
-     * The name of the bundle file. This is only used if `bundle` is not
-     * specified.
-     *
-     * @default 'bundle.js'
-     */
-    outfileName?: string;
-
-    /**
-     * The port to run the server on.
-     *
-     * @default 8081
-     */
-    port?: number;
-
-    /**
-     * The root directory to serve the snap from.
-     *
-     * @default `process.cwd()`
-     */
-    root?: string;
-
-    /**
-     * Whether to generate source maps for the snap bundle.
-     *
-     * @default false
-     */
-    sourceMaps?: boolean;
-
-    /**
-     * The path to the snap entry point.
-     *
-     * @default 'src/index.js'
-     */
-    src?: string;
-
-    /**
-     * Whether to remove comments from the bundle.
-     *
-     * @default true
-     */
-    stripComments?: boolean;
-
-    /**
-     * Whether to suppress warnings.
-     *
-     * @default false
-     */
-    suppressWarnings?: boolean;
-
-    /**
-     * The transpilation mode to use, which determines which files are
-     * transpiled.
-     *
-     * - `'localAndDeps'`: Transpile the snap entry point and all dependencies.
-     * - `'localOnly'`: Transpile only the snap entry point.
-     * - `'none'`: Don't transpile any files.
-     *
-     * @default 'localOnly'
-     */
-    transpilationMode?: 'localAndDeps' | 'localOnly' | 'none';
-
-    /**
-     * The dependencies to transpile when `transpilationMode` is set to
-     * `'localAndDeps'`. If not specified, all dependencies will be transpiled.
-     */
-    depsToTranspile?: string[];
-
-    /**
-     * Whether to show original errors.
-     *
-     * @default true
-     */
-    verboseErrors?: boolean;
-
-    /**
-     * Whether to write the updated manifest to disk.
-     *
-     * @default true
-     */
-    writeManifest?: boolean;
-
-    /**
-     * Whether to serve the snap locally.
-     *
-     * @default true
-     */
-    serve?: boolean;
-  };
-
-  /**
-   * A function that can be used to customize the Browserify instance used to
-   * build the snap.
-   *
-   * @param bundler - The Browserify instance.
-   * @deprecated The Browserify bundler is deprecated and will be removed in a
-   * future release. Use the Webpack bundler instead.
-   */
-  bundlerCustomizer?: (bundler: BrowserifyObject) => void;
-};
-
-/**
- * The configuration for the Snaps CLI, stored as `snap.config.js` or
- * `snap.config.ts` in the root of the project.
- */
-export type SnapWebpackConfig = {
-  /**
-   * The bundler to use to build the snap. For backwards compatibility, if not
-   * specified, Browserify will be used. However, the Browserify bundler is
-   * deprecated and will be removed in a future release, so it's recommended to
-   * use the Webpack bundler instead.
-   */
-  bundler?: 'webpack';
-
+export type SnapConfig = {
   /**
    * The path to the snap entry point. This should be a JavaScript or TypeScript
    * file.
@@ -513,54 +344,6 @@ export type SnapWebpackConfig = {
   };
 };
 
-/**
- * The configuration for the Snaps CLI, stored as `snap.config.js` or
- * `snap.config.ts` in the root of the project.
- */
-export type SnapConfig = SnapBrowserifyConfig | SnapWebpackConfig;
-
-type SnapsBrowserifyBundlerCustomizerFunction = (
-  bundler: BrowserifyObject,
-) => void;
-
-// This struct is essentially the same as the `func` struct, but it's defined
-// separately so that we include the function type in the inferred TypeScript
-// type definitions.
-const SnapsBrowserifyBundlerCustomizerFunctionStruct =
-  define<SnapsBrowserifyBundlerCustomizerFunction>(
-    'function',
-    func().validator,
-  );
-
-export const SnapsBrowserifyConfigStruct = object({
-  bundler: literal('browserify'),
-  cliOptions: defaulted(
-    object({
-      bundle: optional(file()),
-      dist: defaulted(file(), 'dist'),
-      eval: defaulted(boolean(), true),
-      manifest: defaulted(boolean(), true),
-      port: defaulted(number(), 8081),
-      outfileName: defaulted(string(), 'bundle.js'),
-      root: defaulted(file(), process.cwd()),
-      sourceMaps: defaulted(boolean(), false),
-      src: defaulted(file(), 'src/index.js'),
-      stripComments: defaulted(boolean(), true),
-      suppressWarnings: defaulted(boolean(), false),
-      transpilationMode: defaulted(
-        union([literal('localAndDeps'), literal('localOnly'), literal('none')]),
-        'localOnly',
-      ),
-      depsToTranspile: defaulted(array(string()), []),
-      verboseErrors: defaulted(boolean(), true),
-      writeManifest: defaulted(boolean(), true),
-      serve: defaulted(boolean(), true),
-    }),
-    {},
-  ),
-  bundlerCustomizer: optional(SnapsBrowserifyBundlerCustomizerFunctionStruct),
-});
-
 type SnapsWebpackCustomizeWebpackConfigFunction = (
   config: WebpackConfiguration,
 ) => WebpackConfiguration;
@@ -574,8 +357,7 @@ const SnapsWebpackCustomizeWebpackConfigFunctionStruct =
     func().validator,
   );
 
-export const SnapsWebpackConfigStruct = object({
-  bundler: defaulted(literal('webpack'), 'webpack'),
+export const SnapsConfigStruct = object({
   input: defaulted(file(), resolve(process.cwd(), 'src/index.js')),
   sourceMap: defaulted(union([boolean(), literal('inline')]), false),
   evaluate: defaulted(boolean(), true),
@@ -690,90 +472,22 @@ export const SnapsWebpackConfigStruct = object({
   ),
 });
 
-export const SnapsConfigStruct = type({
-  bundler: defaulted(
-    union([literal('browserify'), literal('webpack')]),
-    'webpack',
-  ),
-});
-
-export const LegacyOptionsStruct = union([
-  named(
-    'object with `transpilationMode` set to `localAndDeps` and `depsToTranspile` set to an array of strings',
-    type({
-      depsToTranspile: array(string()),
-      transpilationMode: literal(TranspilationModes.LocalAndDeps),
-      writeManifest: boolean(),
-      bundlerCustomizer: optional(
-        SnapsBrowserifyBundlerCustomizerFunctionStruct,
-      ),
-    }),
-  ),
-  named(
-    'object without `depsToTranspile`',
-    type({
-      depsToTranspile: named('empty array', empty(array())),
-      transpilationMode: union([
-        literal(TranspilationModes.LocalOnly),
-        literal(TranspilationModes.None),
-      ]),
-      writeManifest: boolean(),
-      bundlerCustomizer: optional(
-        SnapsBrowserifyBundlerCustomizerFunctionStruct,
-      ),
-    }),
-  ),
-]);
-
-export type LegacyOptions = Infer<typeof LegacyOptionsStruct>;
-
-export type ProcessedBrowserifyConfig = Infer<
-  typeof SnapsBrowserifyConfigStruct
->;
-
-export type ProcessedWebpackConfig = Infer<typeof SnapsWebpackConfigStruct> & {
-  /**
-   * The legacy Browserify config, if the bundler is Browserify. This is used
-   * to support the legacy config format.
-   */
-  legacy?: LegacyOptions;
-};
-
-export type ProcessedConfig = ProcessedWebpackConfig;
+export type ProcessedConfig = Infer<typeof SnapsConfigStruct>;
 
 /**
  * Get a validated snap config. This validates the config and adds default
  * values for any missing properties.
  *
  * @param config - The config to validate.
- * @param argv - The CLI arguments.
  * @returns The validated config.
  */
-export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
+export function getConfig(config: unknown): ProcessedConfig {
   const prefix = 'The snap config file is invalid';
   const suffix = dim(
     'Refer to the documentation for more information: https://docs.metamask.io/snaps/reference/cli/options/',
   );
 
-  const { bundler } = createFromStruct(
-    config,
-    SnapsConfigStruct,
-    prefix,
-    suffix,
-  );
-
-  if (bundler === 'browserify') {
-    const legacyConfig = createFromStruct(
-      config,
-      SnapsBrowserifyConfigStruct,
-      prefix,
-      suffix,
-    );
-
-    return getWebpackConfig(mergeLegacyOptions(argv, legacyConfig));
-  }
-
-  return createFromStruct(config, SnapsWebpackConfigStruct, prefix, suffix);
+  return createFromStruct(config, SnapsConfigStruct, prefix, suffix);
 }
 
 /**
@@ -784,12 +498,11 @@ export function getConfig(config: unknown, argv: YargsArgs): ProcessedConfig {
  * `module.exports` or `export default`.
  *
  * @param path - The full path to the config file.
- * @param argv - The CLI arguments.
  * @returns The validated config.
  * @throws If the config file is invalid, or if the config file does not have a
  * default export.
  */
-export async function loadConfig(path: string, argv: YargsArgs) {
+export async function loadConfig(path: string) {
   try {
     const contents = await readFile(path, 'utf8');
     const source = await transform(contents, {
@@ -813,10 +526,10 @@ export async function loadConfig(path: string, argv: YargsArgs) {
     config._compile(source.code, path);
 
     if (!hasProperty(config.exports, 'default')) {
-      return getConfig(config.exports, argv);
+      return getConfig(config.exports);
     }
 
-    return getConfig(config.exports.default, argv);
+    return getConfig(config.exports.default);
   } catch (error) {
     if (error instanceof SnapsStructError) {
       throw new ConfigError(error.message);
@@ -836,15 +549,14 @@ export async function loadConfig(path: string, argv: YargsArgs) {
  *
  * @param path - The path to resolve the snap config from. Defaults to the
  * current working directory.
- * @param argv - The CLI arguments.
  * @returns The resolved and validated snap config.
  * @throws If a snap config could not be found.
  */
-export async function resolveConfig(path: string, argv: YargsArgs) {
+export async function resolveConfig(path: string) {
   for (const configFile of CONFIG_FILES) {
     const filePath = resolve(path, configFile);
     if (await isFile(filePath)) {
-      return await loadConfig(filePath, argv);
+      return await loadConfig(filePath);
     }
   }
 
@@ -873,118 +585,8 @@ export async function getConfigByArgv(
       );
     }
 
-    return await loadConfig(argv.config, argv);
+    return await loadConfig(argv.config);
   }
 
-  return await resolveConfig(cwd, argv);
-}
-
-/**
- * Merge legacy CLI options into the config. This is used to support the legacy
- * config format, where options can be specified both in the config file and
- * through CLI flags.
- *
- * @param argv - The CLI arguments.
- * @param config - The config to merge the CLI options into.
- * @returns The config with the CLI options merged in.
- * @deprecated This function is only used to support the legacy config format.
- */
-export function mergeLegacyOptions(
-  argv: YargsArgs,
-  config: ProcessedBrowserifyConfig,
-) {
-  const cliOptions = Object.keys(config.cliOptions).reduce<
-    ProcessedBrowserifyConfig['cliOptions']
-  >((accumulator, key) => {
-    if (argv[key] !== undefined) {
-      return {
-        ...accumulator,
-        [key]: argv[key],
-      };
-    }
-
-    return accumulator;
-  }, config.cliOptions);
-
-  return {
-    ...config,
-    cliOptions,
-  };
-}
-
-/**
- * Get a Webpack config from a legacy browserify config. This is used to
- * support the legacy config format, and convert it to the new format.
- *
- * @param legacyConfig - The legacy browserify config.
- * @returns The Webpack config.
- */
-export function getWebpackConfig(
-  legacyConfig: ProcessedBrowserifyConfig,
-): ProcessedWebpackConfig {
-  const defaultConfig = create(
-    { bundler: 'webpack' },
-    SnapsWebpackConfigStruct,
-  );
-
-  // The legacy config has two options for specifying the output path and
-  // filename: `bundle`, and `dist` + `outfileName`. If `bundle` is specified,
-  // we use that as the output path and filename. Otherwise, we use `dist` and
-  // `outfileName`.
-  const path = legacyConfig.cliOptions.bundle
-    ? dirname(legacyConfig.cliOptions.bundle)
-    : legacyConfig.cliOptions.dist;
-
-  const filename = legacyConfig.cliOptions.bundle
-    ? basename(legacyConfig.cliOptions.bundle)
-    : legacyConfig.cliOptions.outfileName;
-
-  return {
-    ...defaultConfig,
-    input: legacyConfig.cliOptions.src,
-    evaluate: legacyConfig.cliOptions.eval,
-    sourceMap: legacyConfig.cliOptions.sourceMaps,
-    output: {
-      path,
-      filename,
-
-      // The legacy config has an option to remove comments from the bundle, but
-      // the terser plugin does this by default, so we only enable the terser if
-      // the legacy config has `stripComments` set to `true`. This is not a
-      // perfect solution, but it's the best we can do without breaking the
-      // legacy config.
-      minimize: legacyConfig.cliOptions.stripComments,
-
-      // The legacy config does not have a `clean` option, so we default to
-      // `false` here.
-      clean: false,
-    },
-    manifest: {
-      // The legacy config does not have a `manifest` option, so we default to
-      // `process.cwd()/snap.manifest.json`.
-      path: resolve(process.cwd(), 'snap.manifest.json'),
-      update: legacyConfig.cliOptions.writeManifest,
-    },
-    server: {
-      enabled: legacyConfig.cliOptions.serve,
-      port: legacyConfig.cliOptions.port,
-      root: legacyConfig.cliOptions.root,
-    },
-    stats: {
-      verbose: false,
-
-      // These plugins are designed to be used with the modern config format, so
-      // we disable them for the legacy config format.
-      builtIns: false,
-      buffer: false,
-    },
-    legacy: createFromStruct(
-      {
-        ...legacyConfig.cliOptions,
-        bundlerCustomizer: legacyConfig.bundlerCustomizer,
-      },
-      LegacyOptionsStruct,
-      'Invalid Browserify CLI options',
-    ),
-  };
+  return await resolveConfig(cwd);
 }

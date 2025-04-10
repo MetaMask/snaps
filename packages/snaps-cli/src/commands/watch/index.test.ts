@@ -7,7 +7,7 @@ jest.mock('./watch');
 
 const getMockArgv = () => {
   return {
-    context: { config: getMockConfig('webpack') },
+    context: { config: getMockConfig() },
   } as unknown as YargsArgs;
 };
 

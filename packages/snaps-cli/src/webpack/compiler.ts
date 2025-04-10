@@ -2,7 +2,7 @@ import { webpack } from 'webpack';
 
 import type { WebpackOptions } from './config';
 import { getDefaultConfiguration } from './config';
-import type { ProcessedWebpackConfig } from '../config';
+import type { ProcessedConfig } from '../config';
 
 /**
  * Get a Webpack compiler for the given config.
@@ -12,7 +12,7 @@ import type { ProcessedWebpackConfig } from '../config';
  * @returns The Webpack compiler.
  */
 export async function getCompiler(
-  config: ProcessedWebpackConfig,
+  config: ProcessedConfig,
   options?: WebpackOptions,
 ) {
   const baseWebpackConfig = await getDefaultConfiguration(config, options);

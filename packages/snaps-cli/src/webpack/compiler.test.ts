@@ -14,7 +14,7 @@ jest.mock('serve-handler', () =>
 
 describe('getCompiler', () => {
   it('returns a Webpack compiler for the given config', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
     });
 
@@ -28,7 +28,7 @@ describe('getCompiler', () => {
   });
 
   it('modifies the Webpack config if a customizer is provided', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       customizeWebpackConfig: (webpackConfig: Configuration) =>
         merge(webpackConfig, {

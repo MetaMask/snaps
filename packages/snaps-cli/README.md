@@ -4,7 +4,7 @@ A CLI for developing MetaMask Snaps.
 
 ## Installation
 
-Use Node.js `16.0.0` or later.
+Use Node.js `18.16.0` or later.
 We recommend [nvm](https://github.com/nvm-sh/nvm) for managing Node.js versions.
 
 Install a dev dependency in your snap project using `yarn` or `npm`:
@@ -25,22 +25,20 @@ Commands:
   mm-snap watch     Build Snap on change                            [aliases: w]
 
 Options:
-      --version           Show version number                          [boolean]
-  -c, --config            Path to config file                           [string]
-      --verboseErrors     Display original errors         [deprecated] [boolean]
-      --suppressWarnings  Whether to suppress warnings    [deprecated] [boolean]
-  -h, --help              Show help                                    [boolean]
+      --version  Show version number                                   [boolean]
+  -c, --config   Path to config file                                    [string]
+  -h, --help     Show help                                             [boolean]
 
 Examples:
-  mm-snap build                             Build './src/index.js' as
-                                            './dist/bundle.js'
-  mm-snap build --config                    Build './src/index.js' as
-  ./snap.config.build.ts                    './dist/bundle.js' using the config
-                                            in './snap.config.build.ts'
+  mm-snap build                             Build './src/index.js' as './dist/bu
+                                            ndle.js'
+  mm-snap build --config ./snap.config.bui  Build './src/index.js' as './dist/bu
+  ld.ts                                     ndle.js' using the config in './snap
+                                            .config.build.ts'
   mm-snap manifest --fix                    Check the snap manifest, and fix any
-                                            errors
+                                             errors
   mm-snap watch --port 8000                 The snap input file for changes, and
-                                            serve it on port 8000
+                                             serve it on port 8000
   mm-snap serve --port 8000                 Serve the snap bundle on port 8000
 ```
 
@@ -134,7 +132,6 @@ The file should be placed in the project root directory.
 
 ```javascript
 module.exports = {
-  bundler: 'webpack', // default: 'browserify'
   input: 'src/index.js',
   output: {
     path: 'dist',
@@ -154,7 +151,6 @@ exports a `SnapConfig` type that can be used to type the configuration object.
 import type { SnapConfig } from '@metamask/snaps-cli';
 
 const config: SnapConfig = {
-  bundler: 'webpack', // default: 'browserify'
   input: 'src/index.js',
   output: {
     path: 'dist',
@@ -171,7 +167,6 @@ The configuration file should not be published.
 
 ### Options
 
-- [`bundler`](#bundler)
 - [`input`](#input)
 - [`output`](#output)
   - [`output.path`](#outputpath)
@@ -190,18 +185,6 @@ The configuration file should not be published.
 - [`customizeWebpackConfig`](#customizewebpackconfig)
 - [`experimental`](#experimental)
   - [`experimental.wasm`](#experimentalwasm)
-
-#### `bundler`
-
-- Type: `"browserify"` | `"webpack"`
-- Default: `"browserify"`
-
-The bundler to use. The MetaMask Snaps CLI supports both Browserify and
-Webpack. For backwards compatibility, Browserify is the default, but we
-recommend using Webpack. Browserify support will be removed in the future.
-
-This section describes the options for the Webpack bundler. For Browserify,
-refer to the [legacy options](#legacy-options) section.
 
 #### `input`
 
@@ -424,220 +407,4 @@ import program from './program.wasm';
 
 // Program is initialised synchronously.
 // ...
-```
-
-### Legacy Options
-
-> **Warning**: Using the Browserify-based build system is deprecated, and will
-> be removed in a future version. Please migrate to the Webpack-based build
-> system.
-
-- [`bundler`](#bundler)
-- [`cliOptions`](#clioptions)
-  - [`cliOptions.bundle`](#clioptionsbundle)
-  - [`cliOptions.dist`](#clioptionsdist)
-  - [`cliOptions.eval`](#clioptionseval)
-  - [`cliOptions.manifest`](#clioptionsmanifest)
-  - [`cliOptions.outfileName`](#clioptionsoutfilename)
-  - [`cliOptions.port`](#clioptionsport)
-  - [`cliOptions.root`](#clioptionsroot)
-  - [`cliOptions.sourceMaps`](#clioptionssourcemaps)
-  - [`cliOptions.src`](#clioptionssrc)
-  - [`cliOptions.stripComments`](#clioptionsstripcomments)
-  - [`cliOptions.transpilationMode`](#clioptionstranspilationmode)
-  - [`cliOptions.depsToTranspile`](#clioptionsdepstotranspile)
-  - [`cliOptions.writeManifest`](#clioptionswritemanifest)
-  - [`cliOptions.serve`](#clioptionsserve)
-  - [`cliOptions.verboseErrors`](#clioptionsverboseerrors)
-  - [`cliOptions.suppressWarnings`](#clioptionssuppresswarnings)
-- [`bundlerCustomizer`](#bundlercustomizer)
-
-#### `bundler`
-
-- Type: `"browserify"` | `"webpack"`
-- Default: `"browserify"`
-
-The bundler to use. The MetaMask Snaps CLI supports both Browserify and
-Webpack. For backwards compatibility, Browserify is the default, but we
-recommend using Webpack. Browserify support will be removed in the future.
-
-This section describes the options for the Browserify bundler. For Webpack,
-refer to the [options](#options) section.
-
-#### `cliOptions`
-
-- Type: `object`
-
-The CLI options. These can be specified using the CLI, but can also be
-specified in the configuration file. For example, the `--port` option can be
-specified in the configuration file as follows:
-
-```ts
-export default {
-  cliOptions: {
-    port: 8081,
-  },
-};
-```
-
-But can also be specified using the CLI:
-
-```bash
-$ mm-snap serve --port 8081
-```
-
-If the same option is specified in both the configuration file and the CLI,
-the CLI option takes precedence.
-
-##### `cliOptions.bundle`
-
-- Type: `string`
-- Default: `dist/bundle.js`
-
-The path to the bundle file. This is where the bundle will be written to.
-
-##### `cliOptions.dist`
-
-- Type: `string`
-- Default: `dist`
-
-The path to the distribution directory. This is where the bundle file will be
-written to, if the `bundle` option is not specified.
-
-##### `cliOptions.eval`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to evaluate the bundle. If `true`, the bundle will be evaluated in the
-MetaMask Snaps runtime, to check for any compatibility issues.
-
-##### `cliOptions.manifest`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to validate the snap manifest. If `true`, the snap manifest will be
-validated, and any errors or warnings will be shown.
-
-##### `cliOptions.outfileName`
-
-- Type: `string`
-- Default: `bundle.js`
-
-The name of the bundle file. This is used to generate the bundle file path,
-using the `dist` option. For example, if `dist` is `dist`, and `outfileName`
-is `bundle.js`, the bundle file path will be `dist/bundle.js`. This option is
-ignored if the `bundle` option is specified.
-
-##### `cliOptions.port`
-
-- Type: `number`
-- Default: `8081`
-
-The port to use for the development server.
-
-##### `cliOptions.root`
-
-- Type: `string`
-- Default: `.`
-
-The root directory. This should be the directory that contains the snap
-manifest, and the `dist` directory. This will be served by the development
-server.
-
-##### `cliOptions.sourceMaps`
-
-- Type: `boolean`
-- Default: `false`
-
-Whether to generate source maps. If `true`, source maps will be generated for
-the bundle.
-
-##### `cliOptions.src`
-
-- Type: `string`
-- Default: `src/index.js`
-
-The path to the entry file. This is the file that will be bundled.
-
-##### `cliOptions.stripComments`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to strip comments from the bundle. If `true`, comments will be stripped
-from the bundle, and the bundle will be minified.
-
-##### `cliOptions.transpilationMode`
-
-- Type: `'localAndDeps' | 'localOnly' | 'none'`
-- Default: `'localOnly'`
-
-The transpilation mode to use. This determines which files will be transpiled
-by Babel. The possible values are:
-
-- `'localAndDeps'`: Transpile all files, including dependencies.
-- `'localOnly'`: Transpile only local files.
-- `'none'`: Do not transpile any files.
-
-##### `cliOptions.depsToTranspile`
-
-- Type: `string[]`
-- Default: `[]`
-
-If `transpilationMode` is `'localAndDeps'`, this option can be used to specify
-which dependencies should be transpiled. This is useful if you want to transpile
-a limited set of dependencies, but not all of them.
-
-##### `cliOptions.writeManifest`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to write the snap manifest. If `true`, the snap manifest will be written
-with any changes made by the CLI, if the manifest is invalid.
-
-##### `cliOptions.serve`
-
-- Type: `boolean`
-- Default: `true`
-
-Whether to serve the snap. If `true`, the snap will be served by the development
-server, when running `mm-snap watch`.
-
-##### `cliOptions.suppressWarnings`
-
-- Type: `boolean`
-- Default: `false`
-
-This option exists for backwards compatibility, and is ignored.
-
-##### `cliOptions.verboseErrors`
-
-- Type: `boolean`
-- Default: `false`
-
-This option exists for backwards compatibility, and is ignored.
-
-#### `bundlerCustomizer`
-
-- Type: `(bundler: BrowserifyObject) => void`
-
-A function that customizes the bundler. This function is called after the
-bundler is created, but before the bundle is written to disk. This can be used
-to customize the bundler, for example to add plugins or transforms.
-
-```typescript
-import type { SnapConfig } from '@metamask/snaps-cli';
-import type { BrowserifyObject } from 'browserify';
-
-const config: SnapConfig = {
-  bundlerCustomizer: (bundler: BrowserifyObject) => {
-    // Add the BRFS transform to Browserify.
-    bundler.transform('brfs');
-  },
-};
-
-export default config;
 ```

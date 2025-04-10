@@ -1,9 +1,9 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import { watch } from './implementation';
 import { watchHandler } from './watch';
+import { getMockConfig } from '../../test-utils';
 import * as webpack from '../../webpack';
 
 jest.mock('fs');
@@ -14,7 +14,7 @@ describe('watchHandler', () => {
   it('builds the snap and watches for changes', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -45,7 +45,7 @@ describe('watchHandler', () => {
 
   it('checks if the input file exists', async () => {
     const log = jest.spyOn(console, 'error').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'fake-input-file.js',
     });
 
@@ -70,7 +70,7 @@ describe('watchHandler', () => {
         listen,
       }));
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -103,7 +103,7 @@ describe('watchHandler', () => {
         listen,
       }));
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
