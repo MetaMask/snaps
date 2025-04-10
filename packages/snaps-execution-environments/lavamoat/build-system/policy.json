@@ -768,7 +768,7 @@
         "util.inherits": true
       },
       "packages": {
-        "@babel/preset-env>@babel/plugin-transform-regenerator>regenerator-transform>@babel/runtime": true
+        "@testing-library/dom>@babel/runtime": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-reserved-words": {
