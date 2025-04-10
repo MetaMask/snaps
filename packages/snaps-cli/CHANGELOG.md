@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Remove deprecated Browserify configuration ([#3313](https://github.com/MetaMask/snaps/pull/3313))
+  - The Browserify bundler is no longer supported. Snaps using the Browserify
+    bundler will need to be migrated to the new configuration format based on
+    Webpack.
+  - The `bundler` option in the Snap configuration file was removed, and the CLI
+    will show an error if it's used in config.
+  - Several command line flags that were used to configure the Browserify
+    bundler were removed.
+    - Use the config file to provide these options instead.
+    - The removed options are:
+      - `--bundle`
+      - `--dist`
+      - `--eval`
+      - `--manifest`
+      - `--outfileName`
+      - `--root`
+      - `--sourceMaps`
+      - `--src`
+      - `--stripComments`
+      - `--suppressWarnings`
+      - `--transpilationMode`
+      - `--depsToTranspile`
+      - `--verboseErrors`
+      - `--writeManifest`
+      - `--serve`
+
 ## [6.7.0]
 
 ### Added

@@ -1,11 +1,5 @@
 import type { Options } from 'yargs';
 
-export enum TranspilationModes {
-  LocalAndDeps = 'localAndDeps',
-  LocalOnly = 'localOnly',
-  None = 'none',
-}
-
 const builders = {
   analyze: {
     describe: 'Analyze the Snap bundle',
