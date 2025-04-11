@@ -593,6 +593,7 @@ export const getSnapControllerOptions = (
       Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
+    trackEvent: jest.fn(),
     ...opts,
   } as SnapControllerConstructorParams;
 
@@ -626,6 +627,7 @@ export const getSnapControllerWithEESOptions = ({
       Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
     encryptor: getSnapControllerEncryptor(),
     fetchFunction: jest.fn(),
+    trackEvent: jest.fn(),
     ...options,
   } as SnapControllerConstructorParams & {
     rootMessenger: ReturnType<typeof getControllerMessenger>;
