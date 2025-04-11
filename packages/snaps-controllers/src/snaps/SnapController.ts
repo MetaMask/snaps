@@ -1049,7 +1049,10 @@ export class SnapController extends BaseController<
 
     this.#trackSnapExport = throttleTracking(
       (snapId: SnapId, handler: string, success: boolean, origin: string) => {
-        const snapMetadata = this.getRegistryMetadata(snapId);
+        const snapMetadata = this.messagingSystem.call(
+          'SnapsRegistry:getMetadata',
+          snapId,
+        );
         this.#trackEvent({
           event: 'SnapExportUsed',
           category: 'Snaps',
