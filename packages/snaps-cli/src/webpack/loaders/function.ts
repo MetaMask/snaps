@@ -29,6 +29,11 @@ const loader: LoaderDefinitionFunction<FunctionLoaderOptions> = function (
 
 export default loader;
 
+// By setting `raw` to `true`, we are telling Webpack to provide the source as a
+// `Uint8Array` instead of converting it to a string. This allows us to avoid
+// having to convert the source back to a `Uint8Array` in the loader.
+export const raw = true;
+
 /**
  * Get a loader that executes the given function. This is useful for executing
  * loaders without needing to pass a file to Webpack.
