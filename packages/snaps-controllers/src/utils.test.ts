@@ -296,11 +296,15 @@ describe('throttleTracking', () => {
 
     expect(fn).toHaveBeenCalledTimes(3);
 
-    jest.advanceTimersByTime(600);
+    jest.advanceTimersByTime(500);
 
     throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
     throttled(MOCK_SNAP_ID, HandlerType.OnRpcRequest, true, 'origin1');
     throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin2');
+
+    expect(fn).toHaveBeenCalledTimes(3);
+
+    jest.advanceTimersByTime(1000);
 
     expect(fn).toHaveBeenCalledTimes(6);
     expect(fn).toHaveBeenNthCalledWith(
@@ -324,6 +328,9 @@ describe('throttleTracking', () => {
       true,
       'origin2',
     );
+
+    jest.advanceTimersByTime(5000);
+    expect(fn).toHaveBeenCalledTimes(6);
   });
 
   it('uses default timeout of 60000ms when no timeout is specified', async () => {
@@ -333,12 +340,44 @@ describe('throttleTracking', () => {
     throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
     expect(fn).toHaveBeenCalledTimes(1);
 
-    jest.advanceTimersByTime(59999);
     throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
     expect(fn).toHaveBeenCalledTimes(1);
 
-    jest.advanceTimersByTime(2);
-    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    jest.advanceTimersByTime(60000);
     expect(fn).toHaveBeenCalledTimes(2);
+  });
+
+  it('should execute the last throttled call after timeout', () => {
+    const mockFn = jest.fn();
+    const throttled = throttleTracking(mockFn, 1000);
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    expect(mockFn).toHaveBeenCalledTimes(1);
+    expect(mockFn).toHaveBeenLastCalledWith(
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
+
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+    throttled(MOCK_SNAP_ID, HandlerType.OnHomePage, true, 'origin1');
+
+    expect(mockFn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(500);
+
+    expect(mockFn).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(500);
+
+    expect(mockFn).toHaveBeenCalledTimes(2);
+    expect(mockFn).toHaveBeenLastCalledWith(
+      MOCK_SNAP_ID,
+      HandlerType.OnHomePage,
+      true,
+      'origin1',
+    );
   });
 });

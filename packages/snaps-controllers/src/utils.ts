@@ -412,6 +412,13 @@ export function throttleTracking(
   timeout = 60000,
 ) {
   const previousCalls = new Map<string, number>();
+  const pendingCalls = new Map<
+    string,
+    {
+      args: [SnapId, TrackableHandler, boolean, string];
+      timer: ReturnType<typeof setTimeout> | null;
+    }
+  >();
 
   return (
     snapId: SnapId,
@@ -419,14 +426,36 @@ export function throttleTracking(
     success: boolean,
     origin: string,
   ): void => {
-    const key = `${snapId}${handler}${origin}`;
+    const key = `${snapId}${handler}${success}${origin}`;
     const now = Date.now();
     const lastCall = previousCalls.get(key) ?? 0;
+    const args: [SnapId, TrackableHandler, boolean, string] = [
+      snapId,
+      handler,
+      success,
+      origin,
+    ];
 
-    if (now - lastCall >= timeout) {
+    if (!previousCalls.has(key) || now - lastCall >= timeout) {
       previousCalls.set(key, now);
-      fn(snapId, handler, success, origin);
+      fn(...args);
+      return;
     }
+
+    const pending = pendingCalls.get(key);
+    if (pending?.timer) {
+      clearTimeout(pending.timer);
+    }
+
+    previousCalls.set(key, now);
+
+    pendingCalls.set(key, {
+      args,
+      timer: setTimeout(() => {
+        fn(...args);
+        pendingCalls.delete(key);
+      }, timeout),
+    });
   };
 }
 
