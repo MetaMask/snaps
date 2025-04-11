@@ -436,7 +436,7 @@ export function throttleTracking(
       origin,
     ];
 
-    if (!previousCalls.has(key) || now - lastCall >= timeout) {
+    if (now - lastCall >= timeout) {
       previousCalls.set(key, now);
       fn(...args);
       return;
