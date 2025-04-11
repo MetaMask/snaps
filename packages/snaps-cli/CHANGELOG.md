@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `sandbox` command to run sandbox tool ([#3306](https://github.com/MetaMask/snaps/pull/3306))
+  - This command allows you to run the Snaps sandbox tool, which is useful for
+    quickly testing and debugging Snaps.
+
 ## [7.0.0]
 
 ### Changed
