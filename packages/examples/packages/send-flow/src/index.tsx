@@ -113,7 +113,9 @@ export const onUserInput: OnUserInputHandler = async ({
                 errors={formErrors}
                 // For testing purposes, we display the avatar if the address is
                 // a valid hex checksum address.
-                displayAvatar={isCaipHexAddress(event.value)}
+                displayAvatar={isCaipHexAddress(
+                  event.name === 'to' ? event.value : sendForm.to,
+                )}
               />
             ),
           },
@@ -134,6 +136,7 @@ export const onUserInput: OnUserInputHandler = async ({
                 total={total}
                 fees={fees}
                 errors={formErrors}
+                displayAvatar={isCaipHexAddress(sendForm.to)}
               />
             ),
           },
