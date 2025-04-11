@@ -6,6 +6,12 @@ const builders = {
     type: 'boolean',
   },
 
+  build: {
+    describe: 'Build the Snap bundle',
+    type: 'boolean',
+    default: true,
+  },
+
   config: {
     alias: 'c',
     describe: 'Path to config file',

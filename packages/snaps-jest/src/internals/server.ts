@@ -8,7 +8,6 @@ import { createModuleLogger } from '@metamask/utils';
 import express, { static as expressStatic } from 'express';
 import { promises as fs } from 'fs';
 import type { Server } from 'http';
-import { createServer } from 'http';
 import { resolve as pathResolve } from 'path';
 
 import { rootLogger } from './logger';
@@ -79,15 +78,15 @@ export async function startServer(options: ServerOptions) {
 
   app.use(expressStatic(pathResolve(process.cwd(), options.root)));
 
-  const server = createServer(app);
   return await new Promise<Server>((resolve, reject) => {
-    server.listen(options.port, () => {
-      resolve(server);
-    });
+    const server = app.listen(options.port, (error) => {
+      if (error) {
+        log(error);
+        reject(error);
+        return;
+      }
 
-    server.on('error', (error) => {
-      log(error);
-      reject(error);
+      resolve(server);
     });
   });
 }

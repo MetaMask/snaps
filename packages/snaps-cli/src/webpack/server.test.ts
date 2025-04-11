@@ -1,8 +1,7 @@
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
-import http, { IncomingMessage, Server, ServerResponse } from 'http';
-import serveMiddleware from 'serve-handler';
+import { Server } from 'http';
 
 import { getAllowedPaths, getServer } from './server';
 import { getMockConfig } from '../test-utils';
@@ -201,32 +200,6 @@ describe('getServer', () => {
     await close();
   });
 
-  it('calls the serve middleware for allowed files', async () => {
-    const config = getMockConfig({
-      input: 'src/index.js',
-      server: {
-        root: '/foo',
-        port: 0,
-      },
-    });
-
-    const server = getServer(config);
-    const { port, close } = await server.listen();
-
-    const response = await fetch(`http://localhost:${port}/snap.manifest.json`);
-
-    expect(response.status).toBe(200);
-    expect(await response.text()).toBe('');
-
-    expect(serveMiddleware).toHaveBeenCalledWith(
-      expect.any(IncomingMessage),
-      expect.any(ServerResponse),
-      expect.objectContaining({ public: expect.stringContaining('foo') }),
-    );
-
-    await close();
-  });
-
   it('ignores query strings', async () => {
     const config = getMockConfig({
       input: 'src/index.js',
@@ -244,13 +217,7 @@ describe('getServer', () => {
     );
 
     expect(response.status).toBe(200);
-    expect(await response.text()).toBe('');
-
-    expect(serveMiddleware).toHaveBeenCalledWith(
-      expect.any(IncomingMessage),
-      expect.any(ServerResponse),
-      expect.objectContaining({ public: expect.stringContaining('foo') }),
-    );
+    expect(await response.text()).toBe(JSON.stringify(getSnapManifest()));
 
     await close();
   });
@@ -267,11 +234,10 @@ describe('getServer', () => {
     const server = getServer(config);
     const { port, close } = await server.listen();
 
-    const response = await fetch(`http://localhost:${port}/`);
+    const response = await fetch(`http://localhost:${port}/.env`);
 
     expect(response.status).toBe(404);
     expect(await response.text()).toBe('');
-    expect(serveMiddleware).not.toHaveBeenCalled();
 
     await close();
   });
@@ -281,21 +247,19 @@ describe('getServer', () => {
       input: 'src/index.js',
       server: {
         root: '/foo',
-        port: 0,
+        port: 13490,
       },
     });
 
-    const createServer = jest.spyOn(http, 'createServer');
-    const server = getServer(config);
-    const httpServer: Server = createServer.mock.results[0].value;
+    const firstServer = getServer(config);
+    const { close } = await firstServer.listen();
 
-    jest.spyOn(httpServer, 'listen').mockImplementationOnce(() => {
-      throw new Error('Address already in use.');
-    });
+    const secondServer = getServer(config);
+    await expect(secondServer.listen()).rejects.toThrow(
+      'listen EADDRINUSE: address already in use :::13490',
+    );
 
-    await expect(server.listen()).rejects.toThrow('Address already in use.');
-
-    httpServer.close();
+    await close();
   });
 
   it('throws if the server fails to close', async () => {
@@ -307,18 +271,15 @@ describe('getServer', () => {
       },
     });
 
-    const createServer = jest.spyOn(http, 'createServer');
     const server = getServer(config);
-    const httpServer: Server = createServer.mock.results[0].value;
 
+    const { server: httpServer, close } = await server.listen();
     // @ts-expect-error - Invalid mock.
     jest.spyOn(httpServer, 'close').mockImplementationOnce((callback) => {
       return callback?.(new Error('Failed to close server.'));
     });
 
-    const { close } = await server.listen();
     await expect(close()).rejects.toThrow('Failed to close server.');
-
     httpServer.close();
   });
 });

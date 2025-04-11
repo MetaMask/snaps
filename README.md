@@ -17,6 +17,7 @@ This repository contains the following packages [^fn1]:
 - [`@metamask/snaps-jest`](packages/snaps-jest)
 - [`@metamask/snaps-rollup-plugin`](packages/snaps-rollup-plugin)
 - [`@metamask/snaps-rpc-methods`](packages/snaps-rpc-methods)
+- [`@metamask/snaps-sandbox`](packages/snaps-sandbox)
 - [`@metamask/snaps-sdk`](packages/snaps-sdk)
 - [`@metamask/snaps-simulation`](packages/snaps-simulation)
 - [`@metamask/snaps-utils`](packages/snaps-utils)
@@ -40,12 +41,14 @@ linkStyle default opacity:0.5
   snaps_jest(["@metamask/snaps-jest"]);
   snaps_rollup_plugin(["@metamask/snaps-rollup-plugin"]);
   snaps_rpc_methods(["@metamask/snaps-rpc-methods"]);
+  snaps_sandbox(["@metamask/snaps-sandbox"]);
   snaps_sdk(["@metamask/snaps-sdk"]);
   snaps_simulation(["@metamask/snaps-simulation"]);
   snaps_utils(["@metamask/snaps-utils"]);
   snaps_webpack_plugin(["@metamask/snaps-webpack-plugin"]);
   create_snap --> snaps_utils;
   snaps_browserify_plugin --> snaps_utils;
+  snaps_cli --> snaps_sandbox;
   snaps_cli --> snaps_sdk;
   snaps_cli --> snaps_utils;
   snaps_cli --> snaps_webpack_plugin;

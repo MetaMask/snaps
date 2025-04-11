@@ -1,0 +1,4 @@
+{
+  "ignore-patterns": ["dist", "coverage"],
+  "ignores": ["@metamask/auto-changelog", "@vitest/coverage-v8", "typescript"]
+}
