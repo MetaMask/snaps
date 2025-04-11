@@ -9256,44 +9256,6 @@ describe('SnapController', () => {
     });
   });
 
-  describe('getRegistryMetadata', () => {
-    it('returns the metadata for a verified snap', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      registry.getMetadata.mockReturnValue({
-        name: 'Mock Snap',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(snapController.getRegistryMetadata(MOCK_SNAP_ID)).toStrictEqual({
-        name: 'Mock Snap',
-      });
-
-      snapController.destroy();
-    });
-
-    it('returns null for a non-verified snap', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
-
-      snapController.destroy();
-    });
-  });
-
   describe('clearState', () => {
     it('clears the state and terminates running snaps', async () => {
       const rootMessenger = getControllerMessenger();
@@ -10527,32 +10489,6 @@ describe('SnapController', () => {
       await messenger.call('SnapController:install', 'foo', snaps);
       expect(installSnapsSpy).toHaveBeenCalledTimes(1);
       expect(installSnapsSpy).toHaveBeenCalledWith('foo', snaps);
-
-      snapController.destroy();
-    });
-  });
-
-  describe('SnapController:getRegistryMetadata', () => {
-    it('calls SnapController.getRegistryMetadata()', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-
-      registry.getMetadata.mockReturnValue({
-        name: 'Mock Snap',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(
-        messenger.call('SnapController:getRegistryMetadata', MOCK_SNAP_ID),
-      ).toStrictEqual({
-        name: 'Mock Snap',
-      });
 
       snapController.destroy();
     });

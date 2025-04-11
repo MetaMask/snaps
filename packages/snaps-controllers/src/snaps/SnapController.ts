@@ -146,7 +146,6 @@ import type {
   GetResult,
   ResolveVersion,
   SnapsRegistryInfo,
-  SnapsRegistryMetadata,
   SnapsRegistryRequest,
   Update,
 } from './registry';
@@ -444,11 +443,6 @@ export type InstallSnaps = {
   handler: SnapController['installSnaps'];
 };
 
-export type GetRegistryMetadata = {
-  type: `${typeof controllerName}:getRegistryMetadata`;
-  handler: SnapController['getRegistryMetadata'];
-};
-
 export type DisconnectOrigin = {
   type: `${typeof controllerName}:disconnectOrigin`;
   handler: SnapController['removeSnapFromSubject'];
@@ -486,7 +480,6 @@ export type SnapControllerActions =
   | GetRunnableSnaps
   | IncrementActiveReferences
   | DecrementActiveReferences
-  | GetRegistryMetadata
   | DisconnectOrigin
   | RevokeDynamicPermissions
   | GetSnapFile
@@ -1221,11 +1214,6 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:decrementActiveReferences`,
       (...args) => this.decrementActiveReferences(...args),
-    );
-
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:getRegistryMetadata`,
-      (...args) => this.getRegistryMetadata(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -2990,18 +2978,6 @@ export class SnapController extends BaseController<
       snapId,
       versionRange,
     );
-  }
-
-  /**
-   * Get metadata for the given snap ID.
-   *
-   * @param snapId - The ID of the snap to get metadata for.
-   * @returns The metadata for the given snap ID, or `null` if the snap is not
-   * verified.
-   */
-  getRegistryMetadata(snapId: SnapId): SnapsRegistryMetadata | null {
-    this.#assertCanUsePlatform();
-    return this.messagingSystem.call('SnapsRegistry:getMetadata', snapId);
   }
 
   /**
