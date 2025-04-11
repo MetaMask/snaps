@@ -1,6 +1,6 @@
 import type { Compiler } from 'webpack';
 
-import type { ProcessedWebpackConfig } from '../../config';
+import type { ProcessedConfig } from '../../config';
 import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
 
@@ -12,7 +12,7 @@ import { getCompiler } from '../../webpack';
  * @returns A promise that resolves when the bundle is built.
  */
 export async function build(
-  config: ProcessedWebpackConfig,
+  config: ProcessedConfig,
   options?: WebpackOptions,
 ) {
   const compiler = await getCompiler(config, options);

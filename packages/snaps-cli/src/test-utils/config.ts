@@ -1,46 +1,39 @@
-import deepMerge from 'deepmerge';
-
-import type {
-  LegacyOptions,
-  ProcessedBrowserifyConfig,
-  ProcessedWebpackConfig,
-} from '../config';
+import type { ProcessedConfig } from '../config';
 import { getConfig } from '../config';
 
 const DEFAULT_OPTIONS = {
-  browserify: {},
-  webpack: {
-    input: 'src/index.ts',
-  },
+  input: 'src/index.ts',
 };
 
-type MockConfigResult<Bundler extends 'browserify' | 'webpack'> =
-  Bundler extends 'browserify'
-    ? Omit<ProcessedWebpackConfig, 'legacy'> & {
-        legacy: LegacyOptions;
-      }
-    : ProcessedWebpackConfig;
+/**
+ * Recursively make all properties of a type optional.
+ *
+ * @example
+ * type Foo = {
+ *   bar: {
+ *     baz: string;
+ *   }
+ * };
+ *
+ * type PartialFoo = DeepPartial<Foo>;
+ * // {
+ * //   bar?: {
+ * //     baz?: string;
+ * //   }
+ * // }
+ */
+type DeepPartial<Type> = {
+  [Property in keyof Type]?: DeepPartial<Type[Property]>;
+};
 
 /**
- * Get a mock config object. The mock config is generated from the given
- * bundler type.
+ * Get a mock config object.
  *
- * @param bundler - The bundler to use.
  * @param options - The options to use for the mock config.
- * @returns The mock config object for the given bundler.
+ * @returns The mock config object.
  */
-export function getMockConfig<
-  Bundler extends 'browserify' | 'webpack',
-  Result = Bundler extends 'browserify'
-    ? ProcessedBrowserifyConfig
-    : ProcessedWebpackConfig,
->(bundler: Bundler, options?: Partial<Result>): MockConfigResult<Bundler> {
-  return getConfig(
-    deepMerge(
-      { bundler },
-      options ?? (DEFAULT_OPTIONS[bundler] as Partial<Result>),
-    ),
-    // @ts-expect-error - Invalid `argv` type, but it's not used in tests.
-    {},
-  ) as MockConfigResult<Bundler>;
+export function getMockConfig(
+  options?: DeepPartial<ProcessedConfig>,
+): ProcessedConfig {
+  return getConfig(options ?? (DEFAULT_OPTIONS as Partial<ProcessedConfig>));
 }

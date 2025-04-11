@@ -21,7 +21,7 @@ describe('buildHandler', () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -47,7 +47,7 @@ describe('buildHandler', () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -94,7 +94,7 @@ describe('buildHandler', () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -112,7 +112,7 @@ describe('buildHandler', () => {
 
   it('checks if the input file exists', async () => {
     const log = jest.spyOn(console, 'error').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'fake-input-file.js',
     });
 

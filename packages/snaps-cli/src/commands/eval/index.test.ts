@@ -7,7 +7,7 @@ jest.mock('./eval');
 
 const getMockArgv = ({ bundle = 'dist/snap.js' } = {}) => {
   return {
-    context: { config: getMockConfig('webpack') },
+    context: { config: getMockConfig() },
     bundle,
   } as unknown as YargsArgs;
 };

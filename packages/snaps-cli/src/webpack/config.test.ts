@@ -42,7 +42,7 @@ describe('getDefaultConfiguration', () => {
   });
 
   it.each([
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -51,7 +51,7 @@ describe('getDefaultConfiguration', () => {
         path: 'snap.manifest.json',
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.ts',
       output: {
         path: 'dist',
@@ -63,7 +63,7 @@ describe('getDefaultConfiguration', () => {
         verbose: true,
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.ts',
       output: {
         path: 'dist',
@@ -76,7 +76,7 @@ describe('getDefaultConfiguration', () => {
       },
       sourceMap: 'inline',
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.ts',
       output: {
         path: 'dist',
@@ -93,7 +93,7 @@ describe('getDefaultConfiguration', () => {
       },
       sourceMap: true,
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -105,7 +105,7 @@ describe('getDefaultConfiguration', () => {
         wasm: true,
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -115,7 +115,7 @@ describe('getDefaultConfiguration', () => {
         path: 'snap.manifest.json',
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -126,7 +126,7 @@ describe('getDefaultConfiguration', () => {
       },
       polyfills: false,
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -137,7 +137,7 @@ describe('getDefaultConfiguration', () => {
       },
       polyfills: true,
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -150,7 +150,7 @@ describe('getDefaultConfiguration', () => {
         buffer: true,
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -163,7 +163,7 @@ describe('getDefaultConfiguration', () => {
         images: false,
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -175,7 +175,7 @@ describe('getDefaultConfiguration', () => {
         enabled: true,
       },
     }),
-    getMockConfig('webpack', {
+    getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -201,7 +201,7 @@ describe('getDefaultConfiguration', () => {
   );
 
   it('returns the default Webpack configuration when `analyze` is `true`', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: 'dist',
@@ -218,42 +218,6 @@ describe('getDefaultConfiguration', () => {
     // eslint-disable-next-line jest/no-restricted-matchers
     expect(normalizeConfig(output)).toMatchSnapshot();
   });
-
-  it.each([
-    getMockConfig('browserify', {
-      cliOptions: {
-        src: 'src/index.js',
-        dist: 'dist',
-        outfileName: 'bundle.js',
-        root: '/foo/bar',
-      },
-    }),
-    getMockConfig('browserify', {
-      cliOptions: {
-        src: 'src/index.ts',
-        dist: 'dist',
-        root: '/foo/bar',
-      },
-    }),
-    getMockConfig('browserify', {
-      cliOptions: {
-        src: 'src/index.ts',
-        dist: 'dist',
-        root: '/foo/bar',
-        stripComments: false,
-      },
-    }),
-  ])(
-    'returns the default Webpack configuration for the given legacy CLI config',
-    async (config) => {
-      jest.spyOn(process, 'cwd').mockReturnValue('/foo/bar');
-
-      const output = await getDefaultConfiguration(config);
-
-      // eslint-disable-next-line jest/no-restricted-matchers
-      expect(normalizeConfig(output)).toMatchSnapshot();
-    },
-  );
 
   it.each([
     {
@@ -280,7 +244,7 @@ describe('getDefaultConfiguration', () => {
   ])(
     'returns the default Webpack configuration for the given CLI config and options',
     async (options) => {
-      const config = getMockConfig('webpack', {
+      const config = getMockConfig({
         input: 'src/index.ts',
         output: {
           path: '/bar/baz',

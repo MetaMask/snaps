@@ -7,7 +7,7 @@ jest.mock('./build');
 
 describe('build command', () => {
   it('calls the `buildHandler` function', async () => {
-    const config = getMockConfig('webpack');
+    const config = getMockConfig();
 
     // @ts-expect-error - Partial `YargsArgs` is fine for testing.
     await command.handler({ analyze: false, context: { config } });

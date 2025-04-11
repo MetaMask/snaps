@@ -57,8 +57,6 @@ export async function cli(argv: string[], commands: any) {
     .command(commands)
 
     .option('config', builders.config)
-    .option('verboseErrors', builders.verboseErrors)
-    .option('suppressWarnings', builders.suppressWarnings)
 
     .strict()
 

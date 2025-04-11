@@ -1141,22 +1141,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-runtime@npm:^7.13.2":
-  version: 7.23.2
-  resolution: "@babel/plugin-transform-runtime@npm:7.23.2"
-  dependencies:
-    "@babel/helper-module-imports": "npm:^7.22.15"
-    "@babel/helper-plugin-utils": "npm:^7.22.5"
-    babel-plugin-polyfill-corejs2: "npm:^0.4.6"
-    babel-plugin-polyfill-corejs3: "npm:^0.8.5"
-    babel-plugin-polyfill-regenerator: "npm:^0.5.3"
-    semver: "npm:^6.3.1"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 10/536c444c494a43c1de4eec8297242199a7e778a82f64a8203a15bec46af17757ad59b520ee1fb414a03100ae743b8a2ca8527b6c0e4cc3e05be9ac1361260a44
-  languageName: node
-  linkType: hard
-
 "@babel/plugin-transform-shorthand-properties@npm:^7.22.5":
   version: 7.22.5
   resolution: "@babel/plugin-transform-shorthand-properties@npm:7.22.5"
@@ -2772,31 +2756,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browserify-example-snap@workspace:packages/examples/packages/browserify":
-  version: 0.0.0-use.local
-  resolution: "@metamask/browserify-example-snap@workspace:packages/examples/packages/browserify"
-  dependencies:
-    "@jest/globals": "npm:^29.5.0"
-    "@lavamoat/allow-scripts": "npm:^3.0.4"
-    "@metamask/auto-changelog": "npm:^5.0.1"
-    "@metamask/snaps-cli": "workspace:^"
-    "@metamask/snaps-jest": "workspace:^"
-    "@metamask/snaps-sdk": "workspace:^"
-    "@swc/core": "npm:1.3.78"
-    "@swc/jest": "npm:^0.2.26"
-    "@types/node": "npm:18.14.2"
-    deepmerge: "npm:^4.2.2"
-    depcheck: "npm:^1.4.7"
-    eslint: "npm:^9.11.0"
-    jest: "npm:^29.0.2"
-    jest-silent-reporter: "npm:^0.6.0"
-    prettier: "npm:^3.3.3"
-    rimraf: "npm:^4.1.2"
-    ts-node: "npm:^10.9.1"
-    typescript: "npm:~5.3.3"
-  languageName: unknown
-  linkType: soft
-
 "@metamask/browserify-plugin-example-snap@workspace:packages/examples/packages/browserify-plugin":
   version: 0.0.0-use.local
   resolution: "@metamask/browserify-plugin-example-snap@workspace:packages/examples/packages/browserify-plugin"
@@ -4017,14 +3976,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
   dependencies:
-    "@babel/core": "npm:^7.23.2"
-    "@babel/plugin-transform-class-properties": "npm:^7.22.5"
-    "@babel/plugin-transform-class-static-block": "npm:^7.22.11"
-    "@babel/plugin-transform-private-methods": "npm:^7.22.5"
-    "@babel/plugin-transform-private-property-in-object": "npm:^7.22.11"
-    "@babel/plugin-transform-runtime": "npm:^7.13.2"
-    "@babel/preset-env": "npm:^7.23.2"
-    "@babel/preset-typescript": "npm:^7.23.2"
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^5.0.1"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4035,14 +3986,11 @@ __metadata:
     "@swc/core": "npm:1.3.78"
     "@swc/jest": "npm:^0.2.26"
     "@ts-bridge/cli": "npm:^0.6.1"
-    "@types/browserify": "npm:^12.0.37"
     "@types/jest": "npm:^27.5.1"
     "@types/node": "npm:18.14.2"
     "@types/serve-handler": "npm:^6.1.0"
     "@types/yargs": "npm:^17.0.24"
     assert: "npm:^2.0.0"
-    babelify: "npm:^10.0.0"
-    browserify: "npm:^17.0.0"
     browserify-zlib: "npm:^0.2.0"
     buffer: "npm:^6.0.3"
     chalk: "npm:^4.1.2"
@@ -4091,7 +4039,7 @@ __metadata:
     webpack-merge: "npm:^5.9.0"
     yargs: "npm:^17.7.1"
   bin:
-    mm-snap: ./dist/main.cjs
+    mm-snap: ./dist/main.mjs
   languageName: unknown
   linkType: soft
 

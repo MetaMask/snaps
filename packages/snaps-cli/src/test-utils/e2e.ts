@@ -6,11 +6,6 @@ import { join } from 'path';
 
 export const SNAP_DIR = join(__dirname, '../../../examples/packages/json-rpc');
 
-export const SNAP_BROWSERIFY_DIR = join(
-  __dirname,
-  '../../../examples/packages/browserify',
-);
-
 /**
  * A test runner for running CLI commands.
  */

@@ -1,4 +1,3 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import fetch from 'cross-fetch';
 import { promises as fs } from 'fs';
@@ -6,6 +5,7 @@ import http, { IncomingMessage, Server, ServerResponse } from 'http';
 import serveMiddleware from 'serve-handler';
 
 import { getAllowedPaths, getServer } from './server';
+import { getMockConfig } from '../test-utils';
 
 jest.mock('fs');
 jest.mock('serve-handler', () =>
@@ -16,7 +16,7 @@ jest.mock('serve-handler', () =>
 
 describe('getAllowedPaths', () => {
   it('returns the allowed paths for a given config', () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: '/foo/dist',
@@ -38,7 +38,7 @@ describe('getAllowedPaths', () => {
   });
 
   it('returns the allowed paths for a given config with auxiliary files', () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: '/foo/dist',
@@ -64,7 +64,7 @@ describe('getAllowedPaths', () => {
   });
 
   it('returns the allowed paths for a given config with localization files', () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: '/foo/dist',
@@ -90,7 +90,7 @@ describe('getAllowedPaths', () => {
   });
 
   it('returns the allowed paths for a given config with auxiliary files and localization files', () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: '/foo/dist',
@@ -119,7 +119,7 @@ describe('getAllowedPaths', () => {
   });
 
   it('returns the allowed paths for a given config without an icon', () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       output: {
         path: '/foo/dist',
@@ -148,7 +148,7 @@ describe('getServer', () => {
   });
 
   it('creates a static server', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -168,7 +168,7 @@ describe('getServer', () => {
   });
 
   it('listens to a specific port', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -185,7 +185,7 @@ describe('getServer', () => {
   });
 
   it('listens to the port specified in the listen function', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -202,7 +202,7 @@ describe('getServer', () => {
   });
 
   it('calls the serve middleware for allowed files', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -228,7 +228,7 @@ describe('getServer', () => {
   });
 
   it('ignores query strings', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -256,7 +256,7 @@ describe('getServer', () => {
   });
 
   it('responds with 404 for non-allowed files', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -277,7 +277,7 @@ describe('getServer', () => {
   });
 
   it('throws if the port is already in use', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',
@@ -299,7 +299,7 @@ describe('getServer', () => {
   });
 
   it('throws if the server fails to close', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: 'src/index.js',
       server: {
         root: '/foo',

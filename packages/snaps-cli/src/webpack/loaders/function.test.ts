@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import loader, { getFunctionLoader } from './function';
+import loader, { getFunctionLoader, raw } from './function';
 
 describe('getFunctionLoader', () => {
   it('returns a loader definition', () => {
@@ -34,5 +34,11 @@ describe('loader', () => {
     );
 
     expect(fn).toHaveBeenCalledWith('test');
+  });
+
+  describe('raw', () => {
+    it('is `true`', () => {
+      expect(raw).toBe(true);
+    });
   });
 });

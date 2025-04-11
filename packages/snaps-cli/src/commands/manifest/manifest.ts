@@ -29,8 +29,8 @@ const steps: Steps<ManifestContext> = [
   },
   {
     name: 'Validating the snap manifest.',
-    task: async ({ input, config, options, spinner }) => {
-      const write = getWriteManifest(config, options);
+    task: async ({ input, options, spinner }) => {
+      const write = getWriteManifest(options);
       const valid = await manifest(input, write, spinner);
 
       if (valid) {
@@ -43,16 +43,15 @@ const steps: Steps<ManifestContext> = [
 /**
  * Get whether to write the manifest to disk.
  *
- * @param config - The config object.
  * @param options - The options object.
  * @returns Whether to write the manifest to disk.
  */
-function getWriteManifest(config: ProcessedConfig, options: ManifestOptions) {
+function getWriteManifest(options: ManifestOptions) {
   if (typeof options.fix === 'boolean') {
     return options.fix;
   }
 
-  return config.legacy?.writeManifest ?? false;
+  return false;
 }
 
 /**

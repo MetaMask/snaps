@@ -1,10 +1,10 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
 
 import { evaluateHandler } from './eval';
 import { evaluate } from './implementation';
+import { getMockConfig } from '../../test-utils';
 
 jest.mock('fs');
 jest.mock('./implementation');
@@ -19,7 +19,7 @@ describe('evaluateHandler', () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/');
     jest.spyOn(console, 'log').mockImplementation();
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -40,34 +40,11 @@ describe('evaluateHandler', () => {
     );
   });
 
-  it('evaluates the bundle using Browserify', async () => {
-    jest.spyOn(process, 'cwd').mockReturnValue('/');
-    jest.spyOn(console, 'log').mockImplementation();
-
-    await evaluateHandler(
-      getMockConfig('browserify', {
-        cliOptions: {
-          bundle: '/foo/output.js',
-        },
-      }),
-    );
-
-    expect(evaluate).toHaveBeenCalledWith(
-      expect.stringMatching(/.*output\.js.*/u),
-    );
-
-    const { mock } = ora as jest.MockedFunction<typeof ora>;
-    const spinner = mock.results[0].value;
-    expect(spinner.succeed).toHaveBeenCalledWith(
-      'Snap bundle evaluated successfully.',
-    );
-  });
-
   it('evaluates the bundle using the --input flag', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/');
     jest.spyOn(console, 'log').mockImplementation();
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -92,7 +69,7 @@ describe('evaluateHandler', () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/');
     const log = jest.spyOn(console, 'error').mockImplementation();
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -116,7 +93,7 @@ describe('evaluateHandler', () => {
     const mock = evaluate as jest.MockedFunction<typeof evaluate>;
     mock.mockRejectedValueOnce(new Error('Eval error.'));
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
