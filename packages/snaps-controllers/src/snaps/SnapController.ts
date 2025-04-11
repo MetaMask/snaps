@@ -3599,20 +3599,24 @@ export class SnapController extends BaseController<
           result,
         );
 
-        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
-
-        if (isTrackableHandler(handlerType)) {
-          this.#trackSnapExport(snapId, handlerType, true, origin);
-        }
+        this.#recordSnapRpcRequestFinish(
+          snapId,
+          transformedRequest.id,
+          handlerType,
+          origin,
+          true,
+        );
 
         return transformedResult;
       } catch (error) {
         // We flag the RPC request as finished early since termination may affect pending requests
-        this.#recordSnapRpcRequestFinish(snapId, transformedRequest.id);
-
-        if (isTrackableHandler(handlerType)) {
-          this.#trackSnapExport(snapId, handlerType, false, origin);
-        }
+        this.#recordSnapRpcRequestFinish(
+          snapId,
+          transformedRequest.id,
+          handlerType,
+          origin,
+          false,
+        );
 
         const [jsonRpcError, handled] = unwrapError(error);
 
@@ -3904,7 +3908,13 @@ export class SnapController extends BaseController<
     runtime.lastRequest = null;
   }
 
-  #recordSnapRpcRequestFinish(snapId: SnapId, requestId: unknown) {
+  #recordSnapRpcRequestFinish(
+    snapId: SnapId,
+    requestId: unknown,
+    handlerType: HandlerType,
+    origin: string,
+    success: boolean,
+  ) {
     const runtime = this.#getRuntimeExpect(snapId);
     runtime.pendingInboundRequests = runtime.pendingInboundRequests.filter(
       (request) => request.requestId !== requestId,
@@ -3912,6 +3922,10 @@ export class SnapController extends BaseController<
 
     if (runtime.pendingInboundRequests.length === 0) {
       runtime.lastRequest = Date.now();
+    }
+
+    if (isTrackableHandler(handlerType)) {
+      this.#trackSnapExport(snapId, handlerType, success, origin);
     }
   }
 
