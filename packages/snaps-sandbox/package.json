@@ -43,7 +43,6 @@
     "test:watch": "vitest --watch"
   },
   "devDependencies": {
-    "@chakra-ui/cli": "^3.15.1",
     "@chakra-ui/react": "^3.15.0",
     "@emotion/react": "^11.14.0",
     "@metamask/auto-changelog": "^5.0.1",
