@@ -964,7 +964,7 @@ describe('typeInField', () => {
         'baz',
       ),
     ).rejects.toThrow(
-      'Expected an element of type "Input", but found "Button".',
+      'Expected an element of type "Input" or "AddressInput", but found "Button".',
     );
   });
 });
