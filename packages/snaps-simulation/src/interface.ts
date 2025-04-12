@@ -520,9 +520,16 @@ export async function typeInField(
   );
 
   assert(
-    result.element.type === 'Input',
-    `Expected an element of type "Input", but found "${result.element.type}".`,
+    result.element.type === 'Input' || result.element.type === 'AddressInput',
+    `Expected an element of type "Input" or "AddressInput", but found "${result.element.type}".`,
   );
+
+  let newValue = value;
+
+  if (result.element.type === 'AddressInput') {
+    const { chainId } = result.element.props;
+    newValue = `${chainId}:${newValue}`;
+  }
 
   const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
@@ -530,7 +537,7 @@ export async function typeInField(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(state, name, newValue, result.form);
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
@@ -548,7 +555,7 @@ export async function typeInField(
         event: {
           type: UserInputEventType.InputChangeEvent,
           name: result.element.props.name,
-          value,
+          value: newValue,
         },
         id,
         context,
