@@ -18,6 +18,7 @@ import {
   RadioGroup,
   Radio,
   Box,
+  AddressInput,
   Input,
   FileInput,
   Checkbox,
@@ -916,6 +917,55 @@ describe('typeInField', () => {
             type: UserInputEventType.InputChangeEvent,
             name: 'bar',
             value: 'baz',
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('updates the interface state and sends an InputChangeEvent for an AddressInput', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+    const content = (
+      <AddressInput
+        name="addressInput"
+        chainId="eip155:0"
+        placeholder="Enter an address"
+      />
+    );
+
+    const interfaceId = await interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await typeInField(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'addressInput',
+      '0x1234567890123456789012345678901234567890',
+    );
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:updateInterfaceState',
+      interfaceId,
+      { addressInput: 'eip155:0:0x1234567890123456789012345678901234567890' },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: 'metamask',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'addressInput',
+            value: 'eip155:0:0x1234567890123456789012345678901234567890',
           },
           id: interfaceId,
           context: null,
