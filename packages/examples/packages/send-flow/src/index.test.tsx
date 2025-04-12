@@ -88,10 +88,10 @@ describe('onUserInput', () => {
         accounts={accountsArray}
         selectedAccount={accountsArray[1].address}
         selectedCurrency="BTC"
-        total={{ amount: 0, fiat: 0 }}
+        total={{ amount: 1.0001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
-        displayAvatar={true}
+        displayAvatar={false}
       />,
     );
   });
@@ -133,7 +133,7 @@ describe('onUserInput', () => {
 
     await sendFlowInterface.typeInField(
       'to',
-      '0x1234567890123456789012345678901234567890',
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     );
 
     const updatedInterface = await response.getInterface();
@@ -143,7 +143,7 @@ describe('onUserInput', () => {
         accounts={accountsArray}
         selectedAccount={accountsArray[0].address}
         selectedCurrency="BTC"
-        total={{ amount: 0, fiat: 251.23 }}
+        total={{ amount: 1.0001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
         displayAvatar={true}
@@ -169,7 +169,7 @@ describe('onUserInput', () => {
         accounts={accountsArray}
         selectedAccount={accountsArray[0].address}
         selectedCurrency="BTC"
-        total={{ amount: 3.0001, fiat: 251.23 }}
+        total={{ amount: 3.0000999999999998, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{ amount: 'Insufficient funds' }}
         displayAvatar={false}
@@ -209,7 +209,7 @@ describe('onUserInput', () => {
 
     await sendFlowInterface.typeInField(
       'to',
-      '0x1234567890123456789012345678901234567890',
+      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
     );
 
     const updatedInterface2 = await response.getInterface();
