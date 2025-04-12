@@ -6,10 +6,12 @@ module.exports = {
    * Process an SVG file for Jest tests.
    *
    * @param {string} sourceText - The content of the SVG file.
-   * @returns {string} The transformed code.
+   * @returns {object} The transformed code.
    */
   process(sourceText) {
-    return `module.exports = ${sourceText}`;
+    return {
+      code: `module.exports = ${JSON.stringify(sourceText)};`,
+    };
   },
 
   /**
