@@ -33,4 +33,10 @@ module.exports = deepmerge(baseConfig, {
       '<rootDir>/node_modules/@metamask/$1',
     ],
   },
+
+  // Transform SVG files using our custom transformer
+  transform: {
+    ...baseConfig.transform,
+    '\\.svg$': '<rootDir>/test/transformers/svgTransformer.js',
+  },
 });
