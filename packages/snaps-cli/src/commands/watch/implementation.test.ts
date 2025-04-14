@@ -64,7 +64,7 @@ describe('watch', () => {
     }));
 
     await watch(
-      getMockConfig('webpack', {
+      getMockConfig({
         input: '/snap/input.js',
       }),
     );
@@ -87,7 +87,7 @@ describe('watch', () => {
 
     await expect(
       watch(
-        getMockConfig('webpack', {
+        getMockConfig({
           input: '/snap/input.js',
         }),
       ),

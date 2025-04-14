@@ -113,11 +113,7 @@ module.exports = defineConfig({
         }
 
         // All non-root, non-example packages must have the same "build" script.
-        if (
-          !isExample &&
-          workspace.cwd !== 'packages/test-snaps' &&
-          workspace.cwd !== 'packages/snaps-simulator'
-        ) {
+        if (!isExample && workspace.cwd !== 'packages/test-snaps') {
           expectWorkspaceField(
             workspace,
             'scripts.build',

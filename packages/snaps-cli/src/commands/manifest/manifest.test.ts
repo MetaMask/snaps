@@ -1,4 +1,3 @@
-import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
@@ -6,6 +5,7 @@ import ora from 'ora';
 import { manifest } from './implementation';
 import * as implementation from './implementation';
 import { manifestHandler } from './manifest';
+import { getMockConfig } from '../../test-utils';
 
 jest.mock('fs');
 jest.mock('./implementation');
@@ -22,7 +22,7 @@ describe('manifestHandler', () => {
     jest.spyOn(console, 'log').mockImplementation();
     jest.spyOn(implementation, 'manifest').mockResolvedValue(true);
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       manifest: {
         path: '/snap.manifest.json',
@@ -45,11 +45,11 @@ describe('manifestHandler', () => {
     );
   });
 
-  it('fixes the manifest file when using Webpack', async () => {
+  it('fixes the manifest file', async () => {
     jest.spyOn(console, 'log').mockImplementation();
     jest.spyOn(implementation, 'manifest').mockResolvedValue(true);
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       manifest: {
         path: '/snap.manifest.json',
@@ -74,37 +74,10 @@ describe('manifestHandler', () => {
     );
   });
 
-  it('fixes the manifest file when using Browserify', async () => {
-    jest.spyOn(process, 'cwd').mockReturnValue('/');
-    jest.spyOn(console, 'log').mockImplementation();
-    jest.spyOn(implementation, 'manifest').mockResolvedValue(true);
-
-    const config = getMockConfig('browserify', {
-      cliOptions: {
-        writeManifest: true,
-      },
-    });
-
-    await manifestHandler(config, {});
-
-    const { mock } = ora as jest.MockedFunction<typeof ora>;
-    const spinner = mock.results[0].value;
-
-    expect(manifest).toHaveBeenCalledWith(
-      expect.stringMatching(/.*snap\.manifest\.json.*/u),
-      true,
-      spinner,
-    );
-
-    expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
-    );
-  });
-
   it('logs a message if the manifest file does not exist', async () => {
     const log = jest.spyOn(console, 'error').mockImplementation();
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       manifest: {
         path: '/invalid.json',
@@ -125,7 +98,7 @@ describe('manifestHandler', () => {
     jest.spyOn(console, 'log').mockImplementation();
     jest.spyOn(implementation, 'manifest').mockResolvedValue(false);
 
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       manifest: {
         path: '/snap.manifest.json',

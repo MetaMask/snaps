@@ -4,7 +4,7 @@ import { resolve as pathResolve } from 'path';
 
 import { build } from './implementation';
 import { getBundleAnalyzerPort } from './utils';
-import type { ProcessedConfig, ProcessedWebpackConfig } from '../../config';
+import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
 import { success, executeSteps, info } from '../../utils';
@@ -12,7 +12,7 @@ import { evaluate } from '../eval';
 
 type BuildContext = {
   analyze: boolean;
-  config: ProcessedWebpackConfig;
+  config: ProcessedConfig;
   port?: number;
 };
 

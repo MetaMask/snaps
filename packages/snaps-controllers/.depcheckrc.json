@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@testing-library/dom",
     "@types/*",
     "@typescript-eslint/*",
     "@vitest/coverage-istanbul",

@@ -2,7 +2,7 @@ import { assert } from '@metamask/utils';
 import { basename } from 'path';
 import type { Watching } from 'webpack';
 
-import type { ProcessedWebpackConfig } from '../../config';
+import type { ProcessedConfig } from '../../config';
 import type { WebpackOptions } from '../../webpack';
 import { getCompiler } from '../../webpack';
 
@@ -16,10 +16,7 @@ import { getCompiler } from '../../webpack';
  * The promise resolves with a Webpack watching instance that can be used to
  * close the watcher.
  */
-export async function watch(
-  config: ProcessedWebpackConfig,
-  options?: WebpackOptions,
-) {
+export async function watch(config: ProcessedConfig, options?: WebpackOptions) {
   const compiler = await getCompiler(config, {
     evaluate: config.evaluate,
     watch: true,

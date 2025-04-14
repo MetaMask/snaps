@@ -1,6 +1,5 @@
 import { dim } from 'chalk';
 
-import { browserify } from './loaders';
 import {
   WEBPACK_FALLBACKS,
   getBrowserslistTargets,
@@ -13,23 +12,12 @@ import {
   formatText,
   getImageSVG,
 } from './utils';
-import type { ProcessedWebpackConfig } from '../config';
+import type { ProcessedConfig } from '../config';
 import { getMockConfig } from '../test-utils';
 
 describe('getDefaultLoader', () => {
-  it('returns the Browserify loader if `legacy` is set', async () => {
-    const config = getMockConfig('browserify');
-    expect(await getDefaultLoader(config)).toStrictEqual({
-      loader: expect.stringContaining('function'),
-      options: {
-        ...config.legacy,
-        fn: browserify,
-      },
-    });
-  });
-
-  it('returns the SWC loader if `legacy` is not set', async () => {
-    const config = getMockConfig('webpack');
+  it('returns the SWC loader', async () => {
+    const config = getMockConfig();
     expect(await getDefaultLoader(config)).toStrictEqual({
       loader: expect.stringContaining('swc-loader'),
       options: expect.any(Object),
@@ -120,7 +108,7 @@ describe('getFallbacks', () => {
     const config = {
       buffer: true,
       crypto: false,
-    } as ProcessedWebpackConfig['polyfills'];
+    } as ProcessedConfig['polyfills'];
 
     const fallbacks = getFallbacks(config);
 

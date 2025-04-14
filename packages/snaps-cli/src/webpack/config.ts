@@ -23,7 +23,7 @@ import {
   getImageSVG,
   getProgressHandler,
 } from './utils';
-import type { ProcessedWebpackConfig } from '../config';
+import type { ProcessedConfig } from '../config';
 
 export type WebpackOptions = {
   /**
@@ -67,7 +67,7 @@ export type WebpackOptions = {
  * @returns The default Webpack configuration.
  */
 export async function getDefaultConfiguration(
-  config: ProcessedWebpackConfig,
+  config: ProcessedConfig,
   options: WebpackOptions = {
     evaluate: config.evaluate,
   },

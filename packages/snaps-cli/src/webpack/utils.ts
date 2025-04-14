@@ -7,8 +7,7 @@ import { dirname, resolve } from 'path';
 import stripAnsi from 'strip-ansi';
 import type { Configuration } from 'webpack';
 
-import { browserify, getFunctionLoader } from './loaders';
-import type { ProcessedWebpackConfig } from '../config';
+import type { ProcessedConfig } from '../config';
 
 export const BROWSERSLIST_FILE = resolve(
   dirname(require.resolve('@metamask/snaps-cli/package.json')),
@@ -54,32 +53,15 @@ export const WEBPACK_FALLBACKS = {
  * Get the default loader for JavaScript and TypeScript files, based on the
  * config object.
  *
- * - If the `legacy` option is set, we use the custom `browserify` loader. This
- * uses the legacy Browserify config to transpile the code.
- * - Otherwise, we use the `swc-loader`. This is a Webpack loader that uses the
- * `SWC` compiler, which is a much faster alternative to Babel and TypeScript's
- * own compiler.
+ * We use the `swc-loader`, which is a Webpack loader that uses the `SWC`
+ * compiler, a much faster alternative to Babel and TypeScript's own compiler.
  *
  * @param config - The processed snap Webpack config.
- * @param config.legacy - The legacy config object, if any.
  * @param config.sourceMap - Whether to generate source maps.
  * @see https://swc.rs/docs/usage/swc-loader
  * @returns The default loader.
  */
-export async function getDefaultLoader({
-  legacy,
-  sourceMap,
-}: ProcessedWebpackConfig) {
-  if (legacy) {
-    /**
-     * If the snap uses the legacy config, we use the custom `browserify`
-     * loader. This uses the legacy Browserify config to transpile the code.
-     * This is necessary for backwards compatibility with the
-     * `bundlerCustomizer` function.
-     */
-    return getFunctionLoader(browserify, legacy);
-  }
-
+export async function getDefaultLoader({ sourceMap }: ProcessedConfig) {
   const targets = await getBrowserslistTargets();
   return {
     /**
@@ -193,7 +175,7 @@ export async function getDefaultLoader({
  * @returns The Webpack devtool configuration.
  */
 export function getDevTool(
-  sourceMap: ProcessedWebpackConfig['sourceMap'],
+  sourceMap: ProcessedConfig['sourceMap'],
 ): Configuration['devtool'] {
   if (sourceMap === 'inline') {
     return 'inline-source-map';
@@ -275,7 +257,7 @@ export function pluralize(
  * @param polyfills - The polyfill object from the snap config.
  * @returns The webpack fallback config.
  */
-export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
+export function getFallbacks(polyfills: ProcessedConfig['polyfills']): {
   [index: string]: string | false;
 } {
   if (polyfills === true) {
@@ -294,7 +276,7 @@ export function getFallbacks(polyfills: ProcessedWebpackConfig['polyfills']): {
   return Object.fromEntries(
     builtinModules.map((name) => [
       name,
-      polyfills[name as keyof ProcessedWebpackConfig['polyfills']]
+      polyfills[name as keyof ProcessedConfig['polyfills']]
         ? WEBPACK_FALLBACKS[name as keyof typeof WEBPACK_FALLBACKS]
         : false,
     ]),

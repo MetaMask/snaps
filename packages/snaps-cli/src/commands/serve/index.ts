@@ -8,7 +8,7 @@ const command = {
   command: ['serve', 's'],
   desc: 'Locally serve Snap file(s) for testing',
   builder: (yarg: yargs.Argv) => {
-    yarg.option('root', builders.root).option('port', builders.port);
+    yarg.option('port', builders.port);
   },
   handler: async (argv: YargsArgs) =>
     serveHandler(argv.context.config, {

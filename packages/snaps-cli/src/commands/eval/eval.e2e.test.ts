@@ -1,6 +1,7 @@
-import type { TestRunner } from '@metamask/snaps-cli/test-utils';
-import { getCommandRunner } from '@metamask/snaps-cli/test-utils';
 import { resolve } from 'path';
+
+import type { TestRunner } from '../../test-utils';
+import { getCommandRunner } from '../../test-utils';
 
 describe('mm-snap eval', () => {
   let runner: TestRunner;
@@ -12,44 +13,31 @@ describe('mm-snap eval', () => {
   it.each([
     {
       command: 'eval',
-      bundler: 'webpack',
     },
     {
       command: 'e',
-      bundler: 'webpack',
     },
-    {
-      command: 'eval',
-      bundler: 'browserify',
-    },
-    {
-      command: 'e',
-      bundler: 'browserify',
-    },
-  ])(
-    'evaluates a $bundler snap using "mm-snap $command"',
-    async ({ command, bundler }) => {
-      runner = getCommandRunner(
-        command,
-        [],
-        resolve(__dirname, '__test__', bundler, 'good'),
-      );
+  ])('evaluates a snap using "mm-snap $command"', async ({ command }) => {
+    runner = getCommandRunner(
+      command,
+      [],
+      resolve(__dirname, '__test__', 'webpack', 'good'),
+    );
 
-      await runner.wait();
+    await runner.wait();
 
-      expect(runner.stderr).toStrictEqual([]);
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Checking the input file\./u),
-      );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
-      );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Snap bundle evaluated successfully\./u),
-      );
-      expect(runner.exitCode).toBe(0);
-    },
-  );
+    expect(runner.stderr).toStrictEqual([]);
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Checking the input file\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Evaluating the snap bundle\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Snap bundle evaluated successfully\./u),
+    );
+    expect(runner.exitCode).toBe(0);
+  });
 
   it.each(['eval', 'e'])(
     'evaluates a snap using "mm-snap %s --input eval.js"',

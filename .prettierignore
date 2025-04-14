@@ -77,4 +77,3 @@ typings/
 packages/examples/examples/webpack/index.html
 packages/snaps-execution-environments/lavamoat/**/*.json
 packages/snaps-jest/public
-packages/snaps-simulator/vendor

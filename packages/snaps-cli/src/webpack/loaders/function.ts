@@ -29,6 +29,11 @@ const loader: LoaderDefinitionFunction<FunctionLoaderOptions> = function (
 
 export default loader;
 
+// By setting `raw` to `true`, we are telling Webpack to provide the source as a
+// `Uint8Array` instead of converting it to a string. This allows us to avoid
+// having to convert the source back to a `Uint8Array` in the loader.
+export const raw = true;
+
 /**
  * Get a loader that executes the given function. This is useful for executing
  * loaders without needing to pass a file to Webpack.
@@ -50,13 +55,4 @@ export function getFunctionLoader<Options>(
       ...options,
     },
   };
-}
-
-// When running as CJS, we need to export the loader as a default export, since
-// `tsup` exports it as `loader_default`.
-// istanbul ignore next 3
-if (typeof module !== 'undefined' && process?.env?.NODE_ENV !== 'test') {
-  module.exports = loader;
-  module.exports.getFunctionLoader = getFunctionLoader;
-  module.exports.raw = true;
 }
