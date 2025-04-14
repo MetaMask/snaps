@@ -31,13 +31,14 @@ import type { RootControllerMessenger } from './controllers';
 import { getFileSize, getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
+import { TypeableInputs } from './test-utils/constants';
+import { formatTypeErrorMessage } from './test-utils/errors';
 import type {
   FileOptions,
   SnapHandlerInterface,
   SnapInterface,
   SnapInterfaceActions,
 } from './types';
-
 /**
  * The maximum file size that can be uploaded.
  */
@@ -495,6 +496,22 @@ export function mergeValue(
 }
 
 /**
+ * Process the input value for an input element based on the element type.
+ *
+ * @param value - The original input value.
+ * @param element - The interface element.
+ * @returns The processed value.
+ */
+function processInputValue(value: string, element: NamedJSXElement): string {
+  if (element.type === 'AddressInput') {
+    const { chainId } = element.props;
+    return `${chainId}:${value}`;
+  }
+
+  return value;
+}
+
+/**
  * Type a value in an interface element.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
@@ -520,16 +537,11 @@ export async function typeInField(
   );
 
   assert(
-    result.element.type === 'Input' || result.element.type === 'AddressInput',
-    `Expected an element of type "Input" or "AddressInput", but found "${result.element.type}".`,
+    TypeableInputs.includes(result.element.type),
+    `Expected an element of type ${formatTypeErrorMessage(TypeableInputs)}, but found "${result.element.type}".`,
   );
 
-  let newValue = value;
-
-  if (result.element.type === 'AddressInput') {
-    const { chainId } = result.element.props;
-    newValue = `${chainId}:${newValue}`;
-  }
+  const newValue = processInputValue(value, result.element);
 
   const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
