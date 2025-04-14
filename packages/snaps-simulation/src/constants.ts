@@ -26,3 +26,8 @@ export const DEFAULT_CURRENCY = 'usd';
  * The default JSON-RPC endpoint for Ethereum requests.
  */
 export const DEFAULT_JSON_RPC_ENDPOINT = 'https://cloudflare-eth.com/';
+
+/**
+ * The types of inputs that can be used in the `typeInField` interface action.
+ */
+export const TypeableInputs = ['Input', 'AddressInput'];
