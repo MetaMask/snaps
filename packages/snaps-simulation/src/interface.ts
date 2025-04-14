@@ -27,7 +27,7 @@ import deepEqual from 'fast-deep-equal';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
-import { TypeableInputs } from './constants';
+import { TYPEABLE_INPUTS } from './constants';
 import type { RootControllerMessenger } from './controllers';
 import { getFileSize, getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
@@ -537,8 +537,8 @@ export async function typeInField(
   );
 
   assert(
-    TypeableInputs.includes(result.element.type),
-    `Expected an element of type ${formatTypeErrorMessage(TypeableInputs)}, but found "${result.element.type}".`,
+    TYPEABLE_INPUTS.includes(result.element.type),
+    `Expected an element of type ${formatTypeErrorMessage(TYPEABLE_INPUTS)}, but found "${result.element.type}".`,
   );
 
   const newValue = processInputValue(value, result.element);
