@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump `vite` from `6.2.3` to `6.2.6` ([#3305](https://github.com/MetaMask/snaps/pull/3305)), ([#3321](https://github.com/MetaMask/snaps/pull/3321))
+
+### Removed
+
 - Remove `@metamask/snaps-simulator` ([#3311](https://github.com/MetaMask/snaps/pull/3311))
 
 ### Fixed
