@@ -74,8 +74,8 @@ export function getHandlerArguments(
     }
     case HandlerType.OnAssetsConversion: {
       assertIsOnAssetsConversionRequestArguments(request.params);
-      const { conversions } = request.params;
-      return { conversions };
+      const { conversions, includeMarketData } = request.params;
+      return { conversions, includeMarketData };
     }
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Add missing `includeMarketData` param to `onAssetsConversion` handler ([#3323](https://github.com/MetaMask/snaps/pull/3323))
+
 ## [7.2.0]
 
 ### Added

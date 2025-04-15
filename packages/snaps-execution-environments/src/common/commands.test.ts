@@ -41,6 +41,28 @@ describe('getHandlerArguments', () => {
     ).toThrow('Invalid request params');
   });
 
+  it('validates the request params for the OnAssetsConversion handler', () => {
+    expect(() =>
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetsConversion, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid request params');
+  });
+
+  it('validates the request params for the OnAssetsLookup handler', () => {
+    expect(() =>
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetsLookup, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid request params');
+  });
+
   it('validates the request params for the OnAssetHistoricalPrice handler', () => {
     expect(() =>
       getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetHistoricalPrice, {
