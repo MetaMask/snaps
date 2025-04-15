@@ -17,7 +17,7 @@ describe('sandboxHandler', () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',
@@ -41,7 +41,7 @@ describe('sandboxHandler', () => {
 
   it('does not build the Snap if the build option is `false`', async () => {
     jest.spyOn(console, 'log').mockImplementation();
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       input: '/input.js',
       output: {
         path: '/foo',

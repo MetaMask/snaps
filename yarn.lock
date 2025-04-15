@@ -4537,7 +4537,7 @@ __metadata:
     react-dom: "npm:^19.1.0"
     react-icons: "npm:^5.5.0"
     typescript: "npm:~5.3.3"
-    vite: "npm:^6.2.5"
+    vite: "npm:^6.2.6"
     vitest: "npm:^3.1.1"
   languageName: unknown
   linkType: soft

@@ -20,7 +20,7 @@ describe('startSandbox', () => {
   });
 
   it('starts the sandbox server', async () => {
-    const config = getMockConfig('webpack', {
+    const config = getMockConfig({
       server: {
         port: 8080,
       },
