@@ -2,9 +2,20 @@
   "resources": {
     "@metamask/json-rpc-engine": {
       "packages": {
-        "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/rpc-errors": true,
+        "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
+      "globals": {
+        "console.warn": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "readable-stream": true
       }
     },
     "@metamask/object-multiplex": {
@@ -14,11 +25,6 @@
       "packages": {
         "@metamask/object-multiplex>once": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/object-multiplex>once": {
-      "packages": {
-        "@metamask/object-multiplex>once>wrappy": true
       }
     },
     "@metamask/post-message-stream": {
@@ -40,8 +46,7 @@
       },
       "packages": {
         "@metamask/utils": true,
-        "readable-stream": true,
-        "worker_threads": true
+        "readable-stream": true
       }
     },
     "@metamask/providers": {
@@ -51,48 +56,29 @@
       "packages": {
         "@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
-        "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/providers>is-stream": true,
         "@metamask/rpc-errors": true,
-        "eslint>fast-deep-equal": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/providers>@metamask/json-rpc-middleware-stream": {
-      "globals": {
-        "console.warn": true,
-        "setTimeout": true
-      },
-      "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
+        "eslint>fast-deep-equal": true,
+        "@metamask/providers>is-stream": true,
         "readable-stream": true
-      }
-    },
-    "@metamask/providers>@metamask/safe-event-emitter": {
-      "builtin": {
-        "events.EventEmitter": true
-      },
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "events": true
       }
     },
     "@metamask/rpc-errors": {
       "packages": {
-        "@metamask/rpc-errors>fast-safe-stringify": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/providers>@metamask/safe-event-emitter": {
+      "builtin": {
+        "events": true
+      },
+      "globals": {
+        "setTimeout": true
       }
     },
     "@metamask/snaps-sdk": {
-      "globals": {
-        "URL": true,
-        "fetch": true
-      },
       "packages": {
-        "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
@@ -102,9 +88,7 @@
         "URL": true,
         "console.error": true,
         "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true
+        "console.warn": true
       },
       "packages": {
         "@metamask/rpc-errors": true,
@@ -114,10 +98,8 @@
       }
     },
     "@metamask/utils": {
-      "builtin": {
-        "buffer.Buffer": true
-      },
       "globals": {
+        "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true
       },
@@ -125,49 +107,23 @@
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
+        "eslint>debug": true,
         "@metamask/utils>pony-cause": true,
-        "buffer": true,
-        "depcheck>semver": true,
-        "eslint>debug": true
+        "depcheck>semver": true
       }
     },
     "@metamask/utils>@noble/hashes": {
+      "builtin": {
+        "node:crypto": true
+      },
       "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "TextEncoder": true
       }
     },
     "@metamask/utils>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
-      }
-    },
-    "browserify>browser-pack>safe-buffer": {
-      "builtin": {
-        "buffer": true
-      },
-      "packages": {
-        "buffer": true
-      }
-    },
-    "browserify>inherits": {
-      "builtin": {
-        "util.inherits": true
-      },
-      "packages": {
-        "util": true
-      }
-    },
-    "browserify>string_decoder": {
-      "packages": {
-        "browserify>browser-pack>safe-buffer": true
-      }
-    },
-    "depcheck>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
       }
     },
     "eslint>debug": {
@@ -186,29 +142,32 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "istanbul-lib-report>supports-color": true,
-        "tty": true,
-        "util": true
+        "@lavamoat/lavapack>readable-stream>process": true,
+        "chalk>supports-color": true
       }
     },
-    "istanbul-lib-report>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true,
-        "os": true,
-        "tty": true
-      }
-    },
-    "istanbul-lib-report>supports-color>has-flag": {
+    "chalk>supports-color>has-flag": {
       "globals": {
         "process.argv": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>readable-stream>process": true
+      }
+    },
+    "readable-stream>inherits": {
+      "builtin": {
+        "util.inherits": true
+      }
+    },
+    "@metamask/object-multiplex>once": {
+      "packages": {
+        "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "@lavamoat/lavapack>readable-stream>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
       }
     },
     "readable-stream": {
@@ -225,21 +184,48 @@
         "process.stdout": true
       },
       "packages": {
-        "browserify>inherits": true,
-        "browserify>string_decoder": true,
-        "buffer": true,
-        "events": true,
-        "readable-stream>util-deprecate": true,
-        "stream": true,
-        "util": true
+        "readable-stream>inherits": true,
+        "@lavamoat/lavapack>readable-stream>process": true,
+        "readable-stream>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>string_decoder>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "depcheck>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>readable-stream>process": true
+      }
+    },
+    "readable-stream>string_decoder": {
+      "packages": {
+        "readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "chalk>supports-color>has-flag": true,
+        "@lavamoat/lavapack>readable-stream>process": true
       }
     },
     "readable-stream>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      },
-      "packages": {
-        "util": true
       }
     }
   }

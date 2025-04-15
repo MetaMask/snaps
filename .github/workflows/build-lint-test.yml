@@ -35,7 +35,7 @@ jobs:
           retention-days: 1
           path: |
             .nvmrc
-            packages/snaps-execution-environments/dist/browserify
+            packages/snaps-execution-environments/dist/webpack
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |

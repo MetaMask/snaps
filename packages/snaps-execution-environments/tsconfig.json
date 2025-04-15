@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
     "allowJs": true
   },
   "include": [
@@ -11,7 +10,8 @@
     "scripts",
     "package.json",
     "vitest.config.mts",
-    "vitest.config.firefox.mts"
+    "vitest.config.firefox.mts",
+    "webpack.config.ts"
   ],
   "references": [
     {

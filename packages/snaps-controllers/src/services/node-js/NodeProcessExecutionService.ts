@@ -12,9 +12,7 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
     stream: BasePostMessageStream;
   }> {
     const worker = fork(
-      require.resolve(
-        '@metamask/snaps-execution-environments/dist/browserify/node-process/bundle.js',
-      ),
+      require.resolve('@metamask/snaps-execution-environments/node-process'),
       {
         stdio: 'pipe',
       },

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+
+  <title>MetaMask Snaps execution environment</title>
+  <script><%= lockdownScript %></script>
+</head>
+<body>
+<% if (typeof inlineSource !== 'undefined') { %>
+<script>
+  <%= inlineSource %>
+</script>
+<% } %>
+</body>
+</html>

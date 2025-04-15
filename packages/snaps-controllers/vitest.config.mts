@@ -6,7 +6,7 @@ import { defineConfig } from 'vitest/config';
 
 const IFRAME_PATH = join(
   import.meta.dirname,
-  '../snaps-execution-environments/dist/browserify/iframe',
+  '../snaps-execution-environments/dist/webpack/iframe',
 );
 
 const IFRAME_TEST_PATH = join(
@@ -16,12 +16,12 @@ const IFRAME_TEST_PATH = join(
 
 const WORKER_EXECUTOR_PATH = join(
   import.meta.dirname,
-  '../snaps-execution-environments/dist/browserify/worker-executor',
+  '../snaps-execution-environments/dist/webpack/worker-executor',
 );
 
 const WORKER_POOL_PATH = join(
   import.meta.dirname,
-  '../snaps-execution-environments/dist/browserify/worker-pool',
+  '../snaps-execution-environments/dist/webpack/worker-pool',
 );
 
 export default defineConfig({
@@ -54,9 +54,9 @@ export default defineConfig({
       strict: true,
       allow: [
         './src/services/iframe/test',
-        '../snaps-execution-environments/dist/browserify/iframe',
-        '../snaps-execution-environments/dist/browserify/worker-executor',
-        '../snaps-execution-environments/dist/browserify/worker-pool',
+        '../snaps-execution-environments/dist/webpack/iframe',
+        '../snaps-execution-environments/dist/webpack/worker-executor',
+        '../snaps-execution-environments/dist/webpack/worker-pool',
       ],
     },
   },
@@ -71,7 +71,7 @@ export default defineConfig({
 
     browser: {
       enabled: true,
-      headless: true,
+      headless: false,
       provider: 'playwright',
       instances: [{ browser: 'chromium' }],
     },

@@ -11,9 +11,7 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
     stream: BasePostMessageStream;
   }> {
     const worker = new Worker(
-      require.resolve(
-        '@metamask/snaps-execution-environments/dist/browserify/node-thread/bundle.js',
-      ),
+      require.resolve('@metamask/snaps-execution-environments/node-thread'),
       {
         stdout: true,
         stderr: true,
