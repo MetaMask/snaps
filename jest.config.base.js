@@ -96,6 +96,12 @@ module.exports = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   moduleNameMapper: {
+    '^@metamask/snaps-execution-environments/node-thread': [
+      '<rootDir>/../snaps-execution-environments/dist/webpack/node-thread/bundle.js',
+    ],
+    '^@metamask/snaps-execution-environments/node-process': [
+      '<rootDir>/../snaps-execution-environments/dist/webpack/node-process/bundle.js',
+    ],
     '^@metamask/(.+)/production/jsx-runtime': [
       '<rootDir>/../$1/src/jsx/production',
     ],
