@@ -120,9 +120,9 @@
     "vite": "^6.2.7",
     "vite-tsconfig-paths": "^4.0.5",
     "vitest": "^3.1.1",
-    "webpack": "^5.99.5",
+    "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",
-    "webpack-merge": "^6.0.1",
+    "webpack-merge": "^5.9.0",
     "yargs": "^17.7.1"
   },
   "engines": {
