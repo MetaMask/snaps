@@ -71,7 +71,7 @@ export default defineConfig({
 
     browser: {
       enabled: true,
-      headless: false,
+      headless: true,
       provider: 'playwright',
       instances: [{ browser: 'chromium' }],
     },
