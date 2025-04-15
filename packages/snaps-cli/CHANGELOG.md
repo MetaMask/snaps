@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Remove deprecated Browserify configuration ([#3313](https://github.com/MetaMask/snaps/pull/3313))
+- **BREAKING** Remove deprecated Browserify configuration ([#3313](https://github.com/MetaMask/snaps/pull/3313))
   - The Browserify bundler is no longer supported. Snaps using the Browserify
     bundler will need to be migrated to the new configuration format based on
     Webpack.
