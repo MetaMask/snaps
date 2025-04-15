@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix(send-flow-snap): add missing `displayAvatar` props, add tests, update `snaps-simulation` ([#3312](https://github.com/MetaMask/snaps/pull/3312))
+- Release 99.0.0 ([#3309](https://github.com/MetaMask/snaps/pull/3309))
+- chore(deps): bump @metamask/superstruct from 3.1.0 to 3.2.1 ([#3297](https://github.com/MetaMask/snaps/pull/3297))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps/pull/3283))
+- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps/pull/3277))
+
 ## [1.1.1]
 
 ### Changed

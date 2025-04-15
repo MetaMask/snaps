@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- Remove `@metamask/snaps-simulator` ([#3311](https://github.com/MetaMask/snaps/pull/3311))
+
 ## [2.21.0]
 
 ### Removed

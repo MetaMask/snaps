@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix(send-flow-snap): add missing `displayAvatar` props, add tests, update `snaps-simulation` ([#3312](https://github.com/MetaMask/snaps/pull/3312))
+
 ## [2.4.1]
 
 ### Fixed

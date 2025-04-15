@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(deps-dev): bump vite from 6.2.5 to 6.2.6 in the npm_and_yarn group across 1 directory ([#3321](https://github.com/MetaMask/snaps/pull/3321))
+- chore(deps-dev): bump `vite` from `6.2.3` to `6.2.5` ([#3305](https://github.com/MetaMask/snaps/pull/3305))
+- Remove `@metamask/snaps-simulator` ([#3311](https://github.com/MetaMask/snaps/pull/3311))
+
 ### Fixed
 
 - Add missing `includeMarketData` param to `onAssetsConversion` handler ([#3323](https://github.com/MetaMask/snaps/pull/3323))
