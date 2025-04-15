@@ -53,13 +53,13 @@
         "TextEncoder": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>buffer": {
+    "@metamask/providers>extension-port-stream>readable-stream>buffer": {
       "globals": {
         "console": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>buffer>base64-js": true,
-        "@lavamoat/lavapack>readable-stream>buffer>ieee754": true
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>base64-js": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>ieee754": true
       }
     },
     "eslint>debug": {
@@ -72,7 +72,7 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "@lavamoat/lavapack>readable-stream>process": true
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },
     "webpack>events": {
@@ -80,7 +80,7 @@
         "console": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>process": {
+    "@metamask/providers>extension-port-stream>readable-stream>process": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -93,17 +93,17 @@
         "process.stdout": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>buffer": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
         "webpack>events": true,
         "readable-stream>inherits": true,
-        "@lavamoat/lavapack>readable-stream>process": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
         "readable-stream>string_decoder": true,
         "readable-stream>util-deprecate": true
       }
     },
     "readable-stream>string_decoder>safe-buffer": {
       "packages": {
-        "@lavamoat/lavapack>readable-stream>buffer": true
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
       }
     },
     "depcheck>semver": {
@@ -112,7 +112,7 @@
         "process": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>process": true
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },
     "readable-stream>string_decoder": {

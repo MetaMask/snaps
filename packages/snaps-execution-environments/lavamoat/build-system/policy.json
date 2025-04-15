@@ -8,7 +8,7 @@
       "packages": {
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>@babel/highlight>js-tokens": true,
-        "webpack-bundle-analyzer>picocolors": true
+        "vite>postcss>picocolors": true
       }
     },
     "depcheck>@babel/traverse>@babel/generator": {
@@ -864,7 +864,7 @@
         "process.platform": true
       }
     },
-    "webpack-bundle-analyzer>picocolors": {
+    "vite>postcss>picocolors": {
       "globals": {
         "process": true
       }
