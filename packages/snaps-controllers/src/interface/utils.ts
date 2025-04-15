@@ -119,7 +119,12 @@ type GetSelectedAccount = () => InternalAccount;
 /**
  * A function to get accounts for the provided chain IDs.
  */
-type ListAccounts = (chainIds: CaipChainId[]) => InternalAccount[];
+type ListAccounts = (chainIds?: CaipChainId[]) => InternalAccount[];
+
+/**
+ * A function to check if the snap owns the account.
+ */
+type SnapOwnsAccount = (account: InternalAccount) => boolean;
 
 /**
  * Data getters for elements.
@@ -130,6 +135,7 @@ type ListAccounts = (chainIds: CaipChainId[]) => InternalAccount[];
  * @param setSelectedAccount - A function to set the selected account in the client.
  * @param getSelectedAccount - A function to get the selected account in the client.
  * @param listAccounts - A function to list accounts for the provided chain IDs.
+ * @param snapOwnsAccount - A function to check if the snap owns the account.
  */
 type ElementDataGetters = {
   getAssetsState: GetAssetsState;
@@ -137,6 +143,7 @@ type ElementDataGetters = {
   getSelectedAccount: GetSelectedAccount;
   setSelectedAccount: SetSelectedAccount;
   listAccounts: ListAccounts;
+  snapOwnsAccount: SnapOwnsAccount;
 };
 
 /**
@@ -285,33 +292,50 @@ export function getDefaultAsset(
  * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
  * @param elementDataGetters.listAccounts - A function to list accounts for the provided chain IDs.
  * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
+ * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
  * @returns The default state for the account selector.
  */
 export function getAccountSelectorDefaultStateValue(
   element: AccountSelectorElement,
-  { getSelectedAccount, listAccounts, setSelectedAccount }: ElementDataGetters,
+  {
+    getSelectedAccount,
+    listAccounts,
+    setSelectedAccount,
+    snapOwnsAccount,
+  }: ElementDataGetters,
 ) {
-  const { chainIds, switchGlobalAccount } = element.props;
+  const { chainIds, switchGlobalAccount, hideExternalAccounts } = element.props;
 
-  const account = getSelectedAccount();
+  const selectedAccount = getSelectedAccount();
 
-  if (!chainIds || chainIds.length === 0) {
-    return formatAccountSelectorStateValue(account, chainIds);
-  }
-
-  if (account.scopes.some((scope) => matchingChainId(scope, chainIds))) {
-    return formatAccountSelectorStateValue(account, chainIds);
+  if (
+    (!chainIds ||
+      chainIds.length === 0 ||
+      selectedAccount.scopes.some((scope) =>
+        matchingChainId(scope, chainIds),
+      )) &&
+    (!hideExternalAccounts ||
+      (hideExternalAccounts && snapOwnsAccount(selectedAccount)))
+  ) {
+    return formatAccountSelectorStateValue(selectedAccount, chainIds);
   }
 
   const accounts = listAccounts(chainIds);
 
-  assert(accounts.length > 0, 'No accounts found for the provided chain IDs.');
+  const filteredAccounts = hideExternalAccounts
+    ? accounts.filter((account) => snapOwnsAccount(account))
+    : accounts;
+
+  assert(
+    filteredAccounts.length > 0,
+    'No accounts found for the provided chain IDs.',
+  );
 
   if (switchGlobalAccount) {
-    setSelectedAccount(accounts[0].id);
+    setSelectedAccount(filteredAccounts[0].id);
   }
 
-  return formatAccountSelectorStateValue(accounts[0], chainIds);
+  return formatAccountSelectorStateValue(filteredAccounts[0], chainIds);
 }
 
 /**
@@ -404,26 +428,37 @@ export function getAssetSelectorStateValue(
  * Get the state value for an account selector.
  *
  * @param element - The account selector element.
- * @param getAccountByAddress - A function to get an account by address.
- * @param setSelectedAccount - A function to set the selected account in the client.
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getAccountByAddress - A function to get an account by address.
+ * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
+ * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
  * @returns The state value for the account selector.
  */
 export function getAccountSelectorStateValue(
   element: AccountSelectorElement,
-  getAccountByAddress: GetAccountByAddress,
-  setSelectedAccount: SetSelectedAccount,
+  {
+    getAccountByAddress,
+    setSelectedAccount,
+    snapOwnsAccount,
+  }: ElementDataGetters,
 ) {
-  if (!element.props.value) {
+  const { value, switchGlobalAccount, hideExternalAccounts } = element.props;
+
+  if (!value) {
     return null;
   }
 
-  const account = getAccountByAddress(element.props.value);
+  const account = getAccountByAddress(value);
 
   if (!account) {
     return null;
   }
 
-  if (element.props.switchGlobalAccount) {
+  if (hideExternalAccounts && !snapOwnsAccount(account)) {
+    return null;
+  }
+
+  if (switchGlobalAccount) {
     setSelectedAccount(account.id);
   }
 
@@ -438,9 +473,6 @@ export function getAccountSelectorStateValue(
  *
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
- * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
- * @param elementDataGetters.getAccountByAddress - A function to get an account by its address.
- * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -454,18 +486,17 @@ function getComponentStateValue(
     | AssetSelectorElement
     | AddressInputElement
     | AccountSelectorElement,
-  {
-    getAssetsState,
-    getAccountByAddress,
-    setSelectedAccount,
-  }: ElementDataGetters,
+  elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
 
     case 'AssetSelector':
-      return getAssetSelectorStateValue(element.props.value, getAssetsState);
+      return getAssetSelectorStateValue(
+        element.props.value,
+        elementDataGetters.getAssetsState,
+      );
 
     case 'AddressInput': {
       if (!element.props.value) {
@@ -478,11 +509,7 @@ function getComponentStateValue(
     }
 
     case 'AccountSelector':
-      return getAccountSelectorStateValue(
-        element,
-        getAccountByAddress,
-        setSelectedAccount,
-      );
+      return getAccountSelectorStateValue(element, elementDataGetters);
 
     default:
       return element.props.value;

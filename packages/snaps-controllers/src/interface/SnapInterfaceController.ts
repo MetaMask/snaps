@@ -293,6 +293,7 @@ export class SnapInterfaceController extends BaseController<
       getSelectedAccount: this.#getSelectedAccount.bind(this),
       setSelectedAccount: this.#setSelectedAccount.bind(this),
       listAccounts: this.#listAccounts.bind(this),
+      snapOwnsAccount: this.#snapOwnsAccount.bind(this, snapId),
     });
 
     this.update((draftState) => {
@@ -349,6 +350,7 @@ export class SnapInterfaceController extends BaseController<
       getSelectedAccount: this.#getSelectedAccount.bind(this),
       setSelectedAccount: this.#setSelectedAccount.bind(this),
       listAccounts: this.#listAccounts.bind(this),
+      snapOwnsAccount: this.#snapOwnsAccount.bind(this, snapId),
     });
 
     this.update((draftState) => {
@@ -498,7 +500,13 @@ export class SnapInterfaceController extends BaseController<
    * @param chainIds - The chain IDs to get the accounts for.
    * @returns The list of accounts.
    */
-  #listAccounts(chainIds: CaipChainId[]) {
+  #listAccounts(chainIds?: CaipChainId[]) {
+    if (!chainIds || chainIds.length === 0) {
+      return this.messagingSystem.call(
+        'AccountsController:listMultichainAccounts',
+      );
+    }
+
     const accounts = chainIds.reduce<InternalAccount[]>((acc, chainId) => {
       const result = this.messagingSystem.call(
         'AccountsController:listMultichainAccounts',
@@ -544,6 +552,17 @@ export class SnapInterfaceController extends BaseController<
    */
   #getSnap(id: string) {
     return this.messagingSystem.call('SnapController:get', id);
+  }
+
+  /**
+   * Whether if the snap owns the account.
+   *
+   * @param snapId - The snap id.
+   * @param account - The account.
+   * @returns True if the snap owns the account, otherwise false.
+   */
+  #snapOwnsAccount(snapId: SnapId, account: InternalAccount) {
+    return account.metadata.snap?.id === snapId;
   }
 
   /**
