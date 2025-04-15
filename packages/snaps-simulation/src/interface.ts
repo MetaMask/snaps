@@ -27,6 +27,7 @@ import deepEqual from 'fast-deep-equal';
 import { type SagaIterator } from 'redux-saga';
 import { call, put, select, take } from 'redux-saga/effects';
 
+import { TYPEABLE_INPUTS } from './constants';
 import type { RootControllerMessenger } from './controllers';
 import { getFileSize, getFileToUpload } from './files';
 import type { Interface, RunSagaFunction } from './store';
@@ -37,7 +38,7 @@ import type {
   SnapInterface,
   SnapInterfaceActions,
 } from './types';
-
+import { formatTypeErrorMessage } from './utils/errors';
 /**
  * The maximum file size that can be uploaded.
  */
@@ -495,6 +496,22 @@ export function mergeValue(
 }
 
 /**
+ * Process the input value for an input element based on the element type.
+ *
+ * @param value - The original input value.
+ * @param element - The interface element.
+ * @returns The processed value.
+ */
+function processInputValue(value: string, element: NamedJSXElement): string {
+  if (element.type === 'AddressInput') {
+    const { chainId } = element.props;
+    return `${chainId}:${value}`;
+  }
+
+  return value;
+}
+
+/**
  * Type a value in an interface element.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
@@ -520,9 +537,11 @@ export async function typeInField(
   );
 
   assert(
-    result.element.type === 'Input',
-    `Expected an element of type "Input", but found "${result.element.type}".`,
+    TYPEABLE_INPUTS.includes(result.element.type),
+    `Expected an element of type ${formatTypeErrorMessage(TYPEABLE_INPUTS)}, but found "${result.element.type}".`,
   );
+
+  const newValue = processInputValue(value, result.element);
 
   const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
@@ -530,7 +549,7 @@ export async function typeInField(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(state, name, newValue, result.form);
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
@@ -548,7 +567,7 @@ export async function typeInField(
         event: {
           type: UserInputEventType.InputChangeEvent,
           name: result.element.props.name,
-          value,
+          value: newValue,
         },
         id,
         context,
