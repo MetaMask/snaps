@@ -7,12 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
+## [11.3.0]
 
-- chore(deps-dev): bump vite from 6.2.5 to 6.2.6 in the npm_and_yarn group across 1 directory ([#3321](https://github.com/MetaMask/snaps/pull/3321))
-- chore(deps-dev): bump `vite` from `6.2.3` to `6.2.5` ([#3305](https://github.com/MetaMask/snaps/pull/3305))
+### Changed
+
+- Bump `vite` from `6.2.3` to `6.2.6` ([#3305](https://github.com/MetaMask/snaps/pull/3305)), ([#3321](https://github.com/MetaMask/snaps/pull/3321))
 - Remove `@metamask/snaps-simulator` ([#3311](https://github.com/MetaMask/snaps/pull/3311))
-- fix: Make comparision case sensitive in MultichainRouter ([#3310](https://github.com/MetaMask/snaps/pull/3310))
+- Make comparision case sensitive in MultichainRouter ([#3310](https://github.com/MetaMask/snaps/pull/3310))
 
 ## [11.2.0]
 
@@ -710,7 +711,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.3.0...HEAD
+[11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...@metamask/snaps-controllers@11.3.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...@metamask/snaps-controllers@11.2.0
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.1...@metamask/snaps-controllers@11.1.0
 [11.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.0...@metamask/snaps-controllers@11.0.1

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.0]
+
+### Changed
+
 - Remove deprecated Browserify configuration ([#3313](https://github.com/MetaMask/snaps/pull/3313))
   - The Browserify bundler is no longer supported. Snaps using the Browserify
     bundler will need to be migrated to the new configuration format based on
@@ -346,7 +350,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.8.0...HEAD
+[6.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.7.0...@metamask/snaps-cli@6.8.0
 [6.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.6.1...@metamask/snaps-cli@6.7.0
 [6.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.6.0...@metamask/snaps-cli@6.6.1
 [6.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@6.5.4...@metamask/snaps-cli@6.6.0
