@@ -150,7 +150,8 @@
         "process.report": true
       },
       "packages": {
-        "@swc/core>@swc/core-darwin-arm64": true
+        "@swc/core>@swc/core-darwin-arm64": true,
+        "@swc/core>@swc/core-linux-x64-gnu": true
       }
     },
     "webpack>@webassemblyjs/ast": {
@@ -1351,7 +1352,6 @@
     "webpack-merge": {
       "packages": {
         "webpack-merge>clone-deep": true,
-        "webpack-merge>flat": true,
         "webpack-merge>wildcard": true
       }
     },
