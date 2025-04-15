@@ -240,7 +240,7 @@ const configs = ENTRY_POINTS.map(
           apply: (compiler) => {
             const PLUGIN_NAME = 'InlinePlugin';
 
-            compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
+            compiler.hooks.make.tap(PLUGIN_NAME, (compilation) => {
               compilation.hooks.processAssets.tap(
                 {
                   name: PLUGIN_NAME,

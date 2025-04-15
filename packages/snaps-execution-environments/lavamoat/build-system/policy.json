@@ -1,5 +1,10 @@
 {
   "resources": {
+    "$root$": {
+      "packages": {
+        "ts-loader": true
+      }
+    },
     "lavamoat>@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -553,7 +558,7 @@
     },
     "ts-loader>micromatch>braces>fill-range": {
       "builtin": {
-        "util": true
+        "util.inspect": true
       },
       "packages": {
         "ts-loader>micromatch>braces>fill-range>to-regex-range": true
@@ -823,7 +828,7 @@
     },
     "ts-loader>micromatch": {
       "builtin": {
-        "util": true
+        "util.inspect": true
       },
       "packages": {
         "ts-loader>micromatch>braces": true,
@@ -871,10 +876,12 @@
     },
     "ts-loader>micromatch>picomatch": {
       "builtin": {
-        "path": true
+        "path.basename": true,
+        "path.sep": true
       },
       "globals": {
-        "process": true
+        "process.platform": true,
+        "process.version.slice": true
       }
     },
     "html-webpack-plugin>pretty-error": {
@@ -1019,8 +1026,8 @@
     },
     "ts-loader>source-map": {
       "builtin": {
-        "fs": true,
-        "path": true
+        "fs.readFile": true,
+        "path.join": true
       },
       "globals": {
         "WebAssembly.instantiate": true,
@@ -1113,16 +1120,22 @@
     },
     "ts-loader": {
       "builtin": {
-        "console": true,
-        "crypto": true,
-        "fs": true,
-        "os": true,
-        "path": true
+        "console.Console": true,
+        "crypto.createHash": true,
+        "fs.readFileSync": true,
+        "os.EOL": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.normalize": true,
+        "path.relative": true,
+        "path.resolve": true
       },
       "globals": {
         "__dirname": true,
-        "console": true,
-        "process": true
+        "console.log.call": true,
+        "process.stderr": true,
+        "process.stdout": true
       },
       "packages": {
         "chalk": true,

@@ -1,5 +1,10 @@
 {
   "resources": {
+    "$root$": {
+      "packages": {
+        "ts-loader": true
+      }
+    },
     "@swc/core": {
       "packages": {
         "@swc/core>@swc/core-darwin-arm64": true,
@@ -12,99 +17,11 @@
       }
     },
     "ts-loader": {
-      "builtin": {
-        "console": true,
-        "crypto": true,
-        "fs": true,
-        "os": true,
-        "path": true
-      },
-      "globals": {
-        "console": true,
-        "process": true
-      },
       "packages": {
-        "chalk": true,
-        "depcheck>semver": true,
-        "ts-loader>micromatch": true,
-        "ts-loader>source-map": true,
-        "typescript": true,
-        "webpack": true
+        "typescript": true
       }
     },
-    "ts-loader>micromatch": {
-      "builtin": {
-        "util": true
-      },
-      "packages": {
-        "ts-loader>micromatch>picomatch": true,
-        "ts-loader>micromatch>braces": true
-      }
-    },
-    "ts-loader>micromatch>braces": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range": true
-      }
-    },
-    "ts-loader>micromatch>picomatch": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "process": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range": {
-      "builtin": {
-        "util": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range>to-regex-range": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range>is-number": true
-      }
-    },
-    "ts-loader>source-map": {
-      "builtin": {
-        "fs": true,
-        "path": true
-      }
-    },
-    "typescript": {
-      "builtin": {
-        "buffer.Buffer": true,
-        "crypto": true,
-        "fs": true,
-        "inspector": true,
-        "module.findPnpApi": true,
-        "os.EOL": true,
-        "os.platform": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true,
-        "perf_hooks.PerformanceObserver": true,
-        "perf_hooks.performance": true
-      },
-      "globals": {
-        "Intl.Collator": true,
-        "PerformanceObserver": true,
-        "__dirname": true,
-        "__filename": true,
-        "clearTimeout": true,
-        "console": true,
-        "gc": true,
-        "onProfilerEvent": true,
-        "performance": true,
-        "process": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-runner>source-map-support": true
-      }
-    },
+    "typescript": {},
     "webpack>loader-runner": {
       "packages": {
         "html-webpack-plugin": true,
