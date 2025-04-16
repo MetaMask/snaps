@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.5]
+
+### Fixed
+
+- Remove deprecated Browserify options ([#3313](https://github.com/MetaMask/snaps/pull/3313))
+
 ## [2.1.4]
 
 ### Fixed
@@ -71,7 +77,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.5...HEAD
+[2.1.5]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.4...@metamask/wasm-example-snap@2.1.5
 [2.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.3...@metamask/wasm-example-snap@2.1.4
 [2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.2...@metamask/wasm-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/wasm-example-snap@2.1.1...@metamask/wasm-example-snap@2.1.2
