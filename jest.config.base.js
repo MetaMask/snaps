@@ -106,6 +106,9 @@ module.exports = {
       '<rootDir>/../$1/src/jsx/production',
     ],
     '^@metamask/(.+)/test-utils$': ['<rootDir>/../$1/src/test-utils'],
+    '^@metamask/post-message-stream/node$': [
+      '@metamask/post-message-stream/node',
+    ],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
     '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
     '^@metamask/(.+)$': [
