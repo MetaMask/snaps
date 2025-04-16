@@ -1,5 +1,5 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
-import { ThreadParentMessageStream } from '@metamask/post-message-stream';
+import { ThreadParentMessageStream } from '@metamask/post-message-stream/node';
 import { Worker } from 'worker_threads';
 
 import type { TerminateJobArgs } from '..';

@@ -1,6 +1,8 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
-import { BasePostMessageStream } from '@metamask/post-message-stream';
-import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
+import {
+  BasePostMessageStream,
+  isValidStreamMessage,
+} from '@metamask/post-message-stream';
 import { assert, stringToBytes } from '@metamask/utils';
 
 export type WebViewInterface = {

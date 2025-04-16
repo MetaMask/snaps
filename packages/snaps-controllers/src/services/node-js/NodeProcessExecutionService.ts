@@ -1,5 +1,5 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
-import { ProcessParentMessageStream } from '@metamask/post-message-stream';
+import { ProcessParentMessageStream } from '@metamask/post-message-stream/node';
 import type { ChildProcess } from 'child_process';
 import { fork } from 'child_process';
 
