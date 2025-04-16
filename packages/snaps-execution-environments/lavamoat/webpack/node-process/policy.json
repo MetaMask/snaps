@@ -29,7 +29,7 @@
     },
     "@metamask/post-message-stream": {
       "builtin": {
-        "worker_threads.parentPort": true
+        "worker_threads": true
       },
       "globals": {
         "MessageEvent.prototype": true,
@@ -99,31 +99,14 @@
     },
     "@metamask/utils": {
       "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "TextEncoder": true
       },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
         "eslint>debug": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true
-      }
-    },
-    "@metamask/utils>@noble/hashes": {
-      "builtin": {
-        "node:crypto": true
-      },
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "eslint>debug": {
@@ -143,10 +126,10 @@
       "packages": {
         "eslint>debug>ms": true,
         "@metamask/providers>extension-port-stream>readable-stream>process": true,
-        "chalk>supports-color": true
+        "istanbul-lib-report>supports-color": true
       }
     },
-    "chalk>supports-color>has-flag": {
+    "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       },
@@ -209,7 +192,7 @@
         "readable-stream>string_decoder>safe-buffer": true
       }
     },
-    "chalk>supports-color": {
+    "istanbul-lib-report>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -219,7 +202,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true,
+        "istanbul-lib-report>supports-color>has-flag": true,
         "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },

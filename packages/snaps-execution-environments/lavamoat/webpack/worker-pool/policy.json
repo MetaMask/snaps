@@ -27,30 +27,9 @@
       }
     },
     "@metamask/utils": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true,
-        "eslint>debug": true,
-        "@metamask/utils>pony-cause": true,
-        "depcheck>semver": true
-      }
-    },
-    "@metamask/utils>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/utils>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "eslint>debug": true
       }
     },
     "@metamask/providers>extension-port-stream>readable-stream>buffer": {
@@ -104,15 +83,6 @@
     "readable-stream>string_decoder>safe-buffer": {
       "packages": {
         "@metamask/providers>extension-port-stream>readable-stream>buffer": true
-      }
-    },
-    "depcheck>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },
     "readable-stream>string_decoder": {

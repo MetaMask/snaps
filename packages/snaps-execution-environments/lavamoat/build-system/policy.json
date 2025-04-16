@@ -270,9 +270,9 @@
         "eslint>ajv>uri-js": true
       }
     },
-    "chalk>ansi-styles": {
+    "eslint>chalk>ansi-styles": {
       "packages": {
-        "chalk>ansi-styles>color-convert": true
+        "eslint>chalk>ansi-styles>color-convert": true
       }
     },
     "ts-loader>micromatch>braces": {
@@ -338,10 +338,10 @@
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length": true
       }
     },
-    "chalk": {
+    "eslint>chalk": {
       "packages": {
-        "chalk>ansi-styles": true,
-        "chalk>supports-color": true
+        "eslint>chalk>ansi-styles": true,
+        "istanbul-lib-report>supports-color": true
       }
     },
     "webpack>chrome-trace-event": {
@@ -398,9 +398,9 @@
         "webpack-merge>clone-deep>shallow-clone": true
       }
     },
-    "chalk>ansi-styles>color-convert": {
+    "eslint>chalk>ansi-styles>color-convert": {
       "packages": {
-        "chalk>ansi-styles>color-convert>color-name": true
+        "eslint>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select": {
@@ -427,7 +427,7 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "chalk>supports-color": true
+        "istanbul-lib-report>supports-color": true
       }
     },
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": {
@@ -611,7 +611,7 @@
         "setTimeout": true
       }
     },
-    "chalk>supports-color>has-flag": {
+    "istanbul-lib-report>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -1043,7 +1043,7 @@
         "@types/jest>pretty-format>ansi-regex": true
       }
     },
-    "chalk>supports-color": {
+    "istanbul-lib-report>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -1053,7 +1053,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
+        "istanbul-lib-report>supports-color>has-flag": true
       }
     },
     "webpack>terser-webpack-plugin>jest-worker>supports-color": {
@@ -1066,7 +1066,7 @@
         "process.platform": true
       },
       "packages": {
-        "chalk>supports-color>has-flag": true
+        "istanbul-lib-report>supports-color>has-flag": true
       }
     },
     "webpack>tapable": {
@@ -1138,7 +1138,7 @@
         "process.stdout": true
       },
       "packages": {
-        "chalk": true,
+        "eslint>chalk": true,
         "ts-loader>micromatch": true,
         "depcheck>semver": true,
         "ts-loader>source-map": true,
@@ -1157,7 +1157,7 @@
         "process.stdout": true
       },
       "packages": {
-        "chalk": true,
+        "eslint>chalk": true,
         "webpack>enhanced-resolve": true,
         "tsconfig-paths-webpack-plugin>tsconfig-paths": true
       }
