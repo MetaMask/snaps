@@ -61,9 +61,9 @@ jobs:
       IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
     steps:
       - id: is-release
-        uses: MetaMask/action-is-release@v1
+        uses: MetaMask/action-is-release@v2
         with:
-          commit-starts-with: 'Release [version]'
+          commit-starts-with: 'Release [version],Release `[version]`,release: [version],release: `[version]`'
 
   publish-release:
     name: Publish release
