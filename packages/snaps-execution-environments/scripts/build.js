@@ -29,22 +29,12 @@ webpack(config, (error, stats) => {
     return;
   }
 
-  if (stats.hasErrors()) {
-    console.error(
-      chalk.red(
-        'Webpack finished with errors. See the error(s) below for more details.',
-      ),
-    );
-
-    console.log(indent(chalk.red(stats.toString('errors-only')), 2));
-    return;
-  }
-
   console.log(
     stats.toString({
       all: false,
       assets: true,
       colors: true,
+      errors: true,
       assetsSort: 'name',
     }),
   );
