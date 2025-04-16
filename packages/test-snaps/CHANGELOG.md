@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.21.1]
 
-### Uncategorized
+### Changed
 
-- fix: Fix `test-snaps` changelog ([#3332](https://github.com/MetaMask/snaps/pull/3332))
-- chore: revert "release: `101.0.0`" ([#3331](https://github.com/MetaMask/snaps/pull/3331))
-- release: `101.0.0` ([#3330](https://github.com/MetaMask/snaps/pull/3330))
+- Use latest versions of example Snaps ([#3333](https://github.com/MetaMask/snaps/pull/3333))
 
 ## [2.21.0]
 
