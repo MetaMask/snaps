@@ -1,14 +1,15 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore - TypeScript complains about this being ESM in a CJS file, but
-// `ses/lockdown` has a CommonJS entry point.
 // eslint-disable-next-line import-x/no-unassigned-import
 import 'ses/lockdown';
 
+import { assert } from '@metamask/utils';
 import { readFileSync } from 'fs';
 
 import type { HandlerType } from './handlers';
 import { SNAP_EXPORT_NAMES } from './handlers';
 import { generateMockEndowments } from './mock';
+
+// eslint-disable-next-line @typescript-eslint/unbound-method
+assert(process.send, 'This script must be run as a child process.');
 
 declare let lockdown: any, Compartment: any;
 
@@ -34,12 +35,21 @@ const compartment = new Compartment({
   exports: snapModule.exports,
 });
 
-// Mirror BaseSnapExecutor
+// Add self referential properties for compatibility with 3rd party libraries.
+// This mirrors the implementation in the Snaps execution environment.
 compartment.globalThis.self = compartment.globalThis;
 compartment.globalThis.global = compartment.globalThis;
 compartment.globalThis.window = compartment.globalThis;
 
 compartment.evaluate(readFileSync(snapFilePath, 'utf8'));
+
+// Send the exports back to the parent process for analysis.
+process.send({
+  type: 'snap-exports',
+  data: {
+    exports: Object.keys(snapModule.exports),
+  },
+});
 
 const invalidExports = Object.keys(snapModule.exports).filter(
   (snapExport) => !SNAP_EXPORT_NAMES.includes(snapExport as HandlerType),
