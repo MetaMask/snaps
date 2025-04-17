@@ -71,6 +71,11 @@ export type InvokeKeyringHooks = {
  */
 async function invokeKeyringImplementation(
   req: JsonRpcRequest<InvokeKeyringParams>,
+  // `InvokeKeyringResult` is an alias for `Json` (which is the default type
+  // argument for `PendingJsonRpcResponse`), but that may not be the case in the
+  // future. We use `InvokeKeyringResult` here to make it clear that this is the
+  // expected type of the result.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   res: PendingJsonRpcResponse<InvokeKeyringResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

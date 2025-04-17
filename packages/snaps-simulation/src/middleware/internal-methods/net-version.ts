@@ -2,11 +2,7 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import type {
-  Json,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 /**
  * A mock handler for net_version that always returns a specific
@@ -22,7 +18,7 @@ import type {
  */
 export async function getNetworkVersionHandler(
   _request: JsonRpcRequest,
-  response: PendingJsonRpcResponse<Json>,
+  response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
 ) {

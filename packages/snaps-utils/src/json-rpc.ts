@@ -10,7 +10,6 @@ import {
 } from '@metamask/superstruct';
 import type {
   AssertionErrorConstructor,
-  Json,
   JsonRpcSuccess,
 } from '@metamask/utils';
 import {
@@ -184,7 +183,7 @@ export function isOriginAllowed(
  */
 export function assertIsJsonRpcSuccess(
   value: unknown,
-): asserts value is JsonRpcSuccess<Json> {
+): asserts value is JsonRpcSuccess {
   if (!isJsonRpcSuccess(value)) {
     if (isJsonRpcFailure(value)) {
       throw new Error(`JSON-RPC request failed: ${value.error.message}`);

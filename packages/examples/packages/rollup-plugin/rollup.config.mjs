@@ -1,4 +1,3 @@
-// eslint-disable-next-line
 import snaps from '@metamask/snaps-rollup-plugin';
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';

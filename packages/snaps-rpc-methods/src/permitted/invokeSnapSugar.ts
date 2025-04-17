@@ -43,6 +43,11 @@ export type InvokeSnapSugarHooks = {
  */
 export async function invokeSnapSugar(
   req: JsonRpcRequest<InvokeSnapParams>,
+  // `InvokeSnapResult` is an alias for `Json` (which is the default type
+  // argument for `PendingJsonRpcResponse`), but that may not be the case in the
+  // future. We use `InvokeSnapResult` here to make it clear that this is the
+  // expected type of the result.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   res: PendingJsonRpcResponse<InvokeSnapResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
