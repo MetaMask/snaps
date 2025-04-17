@@ -4,9 +4,17 @@ import { join } from 'path';
 
 import { validateFilePath } from './fs';
 
+export type EvalWorkerMessage = {
+  type: 'snap-exports';
+  data: {
+    exports: string[];
+  };
+};
+
 export type EvalOutput = {
   stdout: string;
   stderr: string;
+  exports: string[];
 };
 
 export class SnapEvalError extends Error {
@@ -39,9 +47,14 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
 
     let stdout = '';
     let stderr = '';
+    let exports: string[] = [];
 
     assert(worker.stdout, '`stdout` should be defined.');
     assert(worker.stderr, '`stderr` should be defined.');
+
+    worker.on('message', (message: EvalWorkerMessage) => {
+      exports = message.data.exports;
+    });
 
     worker.stdout.on('data', (data: Buffer) => {
       stdout += data.toString();
@@ -55,6 +68,7 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
       const output = {
         stdout,
         stderr,
+        exports,
       };
 
       if (exitCode === 0) {
