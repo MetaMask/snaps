@@ -24,7 +24,6 @@ import {
 } from '@metamask/superstruct';
 import type {
   CaipChainId,
-  Json,
   JsonRpcRequest,
   JsonRpcSuccess,
 } from '@metamask/utils';
@@ -372,7 +371,7 @@ type RequestParams<Params extends unknown[] | undefined> =
 
 type RequestFunction<
   Args extends RequestArguments,
-  ResponseType extends JsonRpcSuccess<Json>,
+  ResponseType extends JsonRpcSuccess,
 > = (...args: RequestParams<Args>) => Promise<ResponseType['result']>;
 
 export type Ping = RequestFunction<PingRequestArguments, OkResponse>;

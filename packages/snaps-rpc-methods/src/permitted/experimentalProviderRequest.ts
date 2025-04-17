@@ -143,6 +143,11 @@ export type ProviderRequestParameters = InferMatching<
  */
 async function providerRequestImplementation(
   req: JsonRpcRequest<ProviderRequestParams>,
+  // `ProviderRequestResult` is an alias for `Json` (which is the default type
+  // argument for `PendingJsonRpcResponse`), but that may not be the case in the
+  // future. We use `ProviderRequestResult` here to make it clear that this is
+  // the expected type of the result.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   res: PendingJsonRpcResponse<ProviderRequestResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

@@ -3,7 +3,7 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
+import type { InvokeSnapParams } from '@metamask/snaps-sdk';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { assertIsJsonRpcSuccess, jsonrpc2 } from '@metamask/utils';
 
@@ -17,11 +17,12 @@ describe('wallet_invokeSnap', () => {
       method: 'wallet_invokeSnap',
       params,
     });
+
     const getMockRpcResponse = () =>
       ({
         id: 'some-id',
         jsonrpc: jsonrpc2,
-      }) as PendingJsonRpcResponse<InvokeSnapResult>;
+      }) as PendingJsonRpcResponse;
 
     it('invokes snap using hook', async () => {
       const params = {

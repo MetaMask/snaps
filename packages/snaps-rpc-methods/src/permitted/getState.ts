@@ -91,6 +91,11 @@ export type GetStateParameters = InferMatching<
  */
 async function getStateImplementation(
   request: JsonRpcRequest<GetStateParameters>,
+  // `GetStateResult` is an alias for `Json` (which is the default type argument
+  // for `PendingJsonRpcResponse`), but that may not be the case in the future.
+  // We use `GetStateResult` here to make it clear that this is the expected
+  // type of the result.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-arguments
   response: PendingJsonRpcResponse<GetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

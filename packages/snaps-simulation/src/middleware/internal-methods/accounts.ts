@@ -3,11 +3,7 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { BIP44Node } from '@metamask/key-tree';
-import type {
-  Json,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 export type GetAccountsHandlerHooks = {
   getMnemonic: () => Promise<Uint8Array>;
@@ -28,7 +24,7 @@ export type GetAccountsHandlerHooks = {
  */
 export async function getAccountsHandler(
   _request: JsonRpcRequest,
-  response: PendingJsonRpcResponse<Json>,
+  response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: GetAccountsHandlerHooks,

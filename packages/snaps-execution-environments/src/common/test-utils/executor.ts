@@ -1,4 +1,4 @@
-import type { Json, JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
+import type { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
 import type { DuplexOptions, Readable } from 'readable-stream';
 import { Duplex } from 'readable-stream';
 
@@ -157,7 +157,7 @@ export class TestSnapExecutor extends BaseSnapExecutor {
 
   public async writeRpc(message: {
     name: string;
-    data: JsonRpcResponse<Json>;
+    data: JsonRpcResponse;
   }): Promise<void> {
     return new Promise((resolve, reject) =>
       this.#rpcLeft.write(message, (error) => {
