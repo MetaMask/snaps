@@ -3806,9 +3806,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/providers@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/providers@npm:21.0.0"
+"@metamask/providers@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/providers@npm:22.0.0"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
@@ -3823,7 +3823,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4bd649cf2541b6da9257583496b906c00eef316df64db38008a864b1d27beeb9f579ed9b8f5a1ba11c0403d88b32a93c674d622dc24dc2b026d68a49692a1b73
+  checksum: 10/b9bd381e5669e07ecee0a98f8748993fed4e02bc855e2ad342db9b9bb8b2d453a01c0e4c9f1e2c7b80929c5ce15d7aafa88c0a6a78651737efdb16f707a84017
   languageName: node
   linkType: hard
 
@@ -4136,7 +4136,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
-    "@metamask/providers": "npm:^21.0.0"
+    "@metamask/providers": "npm:^22.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4294,7 +4294,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^5.0.1"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/providers": "npm:^21.0.0"
+    "@metamask/providers": "npm:^22.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.0"
@@ -4492,7 +4492,7 @@ __metadata:
     "@metamask/preferences-example-snap": "workspace:^"
     "@metamask/preinstalled-example-snap": "workspace:^"
     "@metamask/protocol-example-snap": "workspace:^"
-    "@metamask/providers": "npm:^21.0.0"
+    "@metamask/providers": "npm:^22.0.0"
     "@metamask/send-flow-example-snap": "workspace:^"
     "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
