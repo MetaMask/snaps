@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Increase size of request queue when Snap is booting ([#3340](https://github.com/MetaMask/snaps/pull/3340))
+
 ## [11.2.1]
 
 ### Fixed
