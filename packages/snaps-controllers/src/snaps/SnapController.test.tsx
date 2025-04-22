@@ -4814,63 +4814,21 @@ describe('SnapController', () => {
       );
 
       // Fill up the request queue
-      const finishPromise = Promise.all([
-        snapController.handleRequest({
-          snapId,
-          origin: MOCK_ORIGIN,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            method: 'bar',
-            params: {},
-            id: 1,
-          },
-        }),
-        snapController.handleRequest({
-          snapId,
-          origin: MOCK_ORIGIN,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            method: 'bar',
-            params: {},
-            id: 2,
-          },
-        }),
-        snapController.handleRequest({
-          snapId,
-          origin: MOCK_ORIGIN,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            method: 'bar',
-            params: {},
-            id: 3,
-          },
-        }),
-        snapController.handleRequest({
-          snapId,
-          origin: MOCK_ORIGIN,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            method: 'bar',
-            params: {},
-            id: 4,
-          },
-        }),
-        snapController.handleRequest({
-          snapId,
-          origin: MOCK_ORIGIN,
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            jsonrpc: '2.0',
-            method: 'bar',
-            params: {},
-            id: 5,
-          },
-        }),
-      ]);
+      const finishPromise = Promise.all(
+        new Array(100).fill(1).map(async (_, id) =>
+          snapController.handleRequest({
+            snapId,
+            origin: MOCK_ORIGIN,
+            handler: HandlerType.OnRpcRequest,
+            request: {
+              jsonrpc: '2.0',
+              method: 'bar',
+              params: {},
+              id,
+            },
+          }),
+        ),
+      );
 
       await expect(
         snapController.handleRequest({
@@ -4881,7 +4839,7 @@ describe('SnapController', () => {
             jsonrpc: '2.0',
             method: 'bar',
             params: {},
-            id: 6,
+            id: 100,
           },
         }),
       ).rejects.toThrow(

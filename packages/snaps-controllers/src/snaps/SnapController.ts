@@ -3504,7 +3504,7 @@ export class SnapController extends BaseController<
       return existingHandler;
     }
 
-    const requestQueue = new RequestQueue(5);
+    const requestQueue = new RequestQueue(100);
     // We need to set up this promise map to map snapIds to their respective startPromises,
     // because otherwise we would lose context on the correct startPromise.
     const startPromises = new Map<string, Promise<void>>();
