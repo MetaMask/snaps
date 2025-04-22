@@ -2885,9 +2885,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^4.1.1":
-  version: 4.1.1
-  resolution: "@metamask/create-release-branch@npm:4.1.1"
+"@metamask/create-release-branch@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "@metamask/create-release-branch@npm:4.1.2"
   dependencies:
     "@metamask/action-utils": "npm:^1.0.0"
     "@metamask/auto-changelog": "npm:^4.0.0"
@@ -2906,7 +2906,7 @@ __metadata:
     prettier: ">=3.0.0"
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: 10/b0b3ee2cd6f8cbb2b39df8e9e68e8cee50e32ff7a754f65a76deeaa637737ca690ddd7fa300d860370e481ca881f2df39e4efb4b96d1892db39bba61e2c75416
+  checksum: 10/00277dff438c639d5bd29b5251237ccb4e1792ff8ff1e148ee2a68982fa2c08d3158b2d1b054ff0cd298364f399b9ae8e0d88f9fc85d922c17b9dfe6509b299e
   languageName: node
   linkType: hard
 
@@ -15933,7 +15933,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^5.0.1"
-    "@metamask/create-release-branch": "npm:^4.1.1"
+    "@metamask/create-release-branch": "npm:^4.1.2"
     "@metamask/eslint-config": "npm:^14.0.0"
     "@metamask/eslint-config-browser": "npm:^14.0.0"
     "@metamask/eslint-config-jest": "npm:^14.0.0"
