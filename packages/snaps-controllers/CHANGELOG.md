@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `snaps-sandbox` package and integrate into CLI ([#3306](https://github.com/MetaMask/snaps/pull/3306))
+- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
+
 ### Fixed
 
 - Increase size of request queue when Snap is booting ([#3340](https://github.com/MetaMask/snaps/pull/3340))

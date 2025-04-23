@@ -7,4 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `snaps-sandbox` package and integrate into CLI ([#3306](https://github.com/MetaMask/snaps/pull/3306))
+
 [Unreleased]: https://github.com/MetaMask/snaps/
