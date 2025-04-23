@@ -1,7 +1,7 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
-import { assert, stringToBytes } from '@metamask/utils';
+import { assert } from '@metamask/utils';
 
 export type WebViewInterface = {
   injectJavaScript(js: string): void;
@@ -56,11 +56,9 @@ export class WebViewMessageStream extends BasePostMessageStream {
       data,
     });
 
-    // To prevent XSS, we encode the message before injecting it.
-    // This adds significant performance overhead for larger messages.
-    const bytes = new Uint8Array(stringToBytes(json));
+    const encoded = JSON.stringify(json);
 
-    this.#webView.injectJavaScript(`window.postMessage([${bytes.toString()}])`);
+    this.#webView.injectJavaScript(`window.postMessage(${encoded})`);
   }
 
   // TODO: Either fix this lint violation or explain why it's necessary to
