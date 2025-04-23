@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.1.0]
 
-### Uncategorized
-
-- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
-
 ### Added
 
 - Add `sandbox` command to run sandbox tool ([#3306](https://github.com/MetaMask/snaps/pull/3306))
   - This command allows you to run the Snaps sandbox tool, which is useful for
     quickly testing and debugging Snaps.
+
+### Changed
+
+- Bump `@metamask/utils` from `11.2.0` to `11.4.0` ([#3232](https://github.com/MetaMask/snaps/pull/3232))
 
 ## [7.0.0]
 
