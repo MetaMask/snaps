@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-sandbox",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A sandbox tool for interacting with MetaMask Snaps",
   "keywords": [
     "MetaMask",

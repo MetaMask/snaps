@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.2]
+
 ### Fixed
 
-- Increase size of request queue when Snap is booting ([#3340](https://github.com/MetaMask/snaps/pull/3340))
+- Increase size of request queue when Snap is starting up ([#3340](https://github.com/MetaMask/snaps/pull/3340))
 
 ## [11.2.1]
 
 ### Fixed
 
-- Make comparision case sensitive in MultichainRouter ([#3310](https://github.com/MetaMask/snaps/pull/3310))
+- Make comparison case sensitive in MultichainRouter ([#3310](https://github.com/MetaMask/snaps/pull/3310))
 
 ## [11.2.0]
 
@@ -713,7 +715,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.2...HEAD
+[11.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.1...@metamask/snaps-controllers@11.2.2
 [11.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...@metamask/snaps-controllers@11.2.1
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...@metamask/snaps-controllers@11.2.0
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.0.1...@metamask/snaps-controllers@11.1.0
