@@ -34,7 +34,7 @@ export type TransactionMeta = {
  */
 export type TransactionParams = {
   /**
-   * Network ID as per EIP-155.
+   * Chain ID as per EIP-155.
    */
   chainId?: Hex;
 
@@ -74,7 +74,7 @@ export type TransactionParams = {
   gas?: string;
 
   /**
-   * Maxmimum number of units of gas to use for this transaction.
+   * Maximum number of units of gas to use for this transaction.
    */
   gasLimit?: string;
 
