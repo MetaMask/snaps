@@ -106,14 +106,22 @@ module.exports = defineConfig({
         // All non-root packages must not have side effects.
         expectWorkspaceField(workspace, 'sideEffects', false);
 
-        if (!isPrivate && !isExample) {
+        if (
+          !isPrivate &&
+          !isExample &&
+          workspace.cwd !== 'packages/snaps-sandbox'
+        ) {
           // All non-root, non-example packages must set up ESM- and
           // CommonJS-compatible exports correctly.
           expectCorrectWorkspaceExports(workspace);
         }
 
         // All non-root, non-example packages must have the same "build" script.
-        if (!isExample && workspace.cwd !== 'packages/test-snaps') {
+        if (
+          !isExample &&
+          workspace.cwd !== 'packages/test-snaps' &&
+          workspace.cwd !== 'packages/snaps-sandbox'
+        ) {
           expectWorkspaceField(
             workspace,
             'scripts.build',
@@ -162,7 +170,10 @@ module.exports = defineConfig({
           getRelativePath(workspace, 'scripts', 'since-latest-release.sh'),
         );
 
-        if (workspace.cwd !== 'packages/examples') {
+        if (
+          workspace.cwd !== 'packages/examples' &&
+          workspace.cwd !== 'packages/snaps-sandbox'
+        ) {
           // All non-root packages must have the same "test" script.
           if (workspace.manifest.scripts['test:browser']) {
             expectWorkspaceField(

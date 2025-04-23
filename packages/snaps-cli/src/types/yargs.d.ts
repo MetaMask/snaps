@@ -21,6 +21,7 @@ type YargsArgs = {
   };
 
   analyze?: boolean;
+  build?: boolean;
   fix?: boolean;
   input?: string;
 

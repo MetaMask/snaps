@@ -1,14 +1,10 @@
 import type { SnapManifest } from '@metamask/snaps-utils';
-import {
-  logError,
-  NpmSnapFileNames,
-  readJsonFile,
-} from '@metamask/snaps-utils/node';
-import type { IncomingMessage, Server, ServerResponse } from 'http';
-import { createServer } from 'http';
+import { NpmSnapFileNames, readJsonFile } from '@metamask/snaps-utils/node';
+import type { Express, Request } from 'express';
+import express, { static as expressStatic } from 'express';
+import type { Server } from 'http';
 import type { AddressInfo } from 'net';
 import { join, relative, resolve as resolvePath, sep, posix } from 'path';
-import serveMiddleware from 'serve-handler';
 
 import type { ProcessedConfig } from '../config';
 
@@ -86,6 +82,26 @@ export function getAllowedPaths(
 }
 
 /**
+ * Get whether the request path is allowed. This is used to check if the request
+ * path is in the list of allowed paths for the static server.
+ *
+ * @param request - The request object.
+ * @param config - The config object.
+ * @returns A promise that resolves to `true` if the path is allowed, or
+ * `false` if it is not.
+ */
+async function isAllowedPath(request: Request, config: ProcessedConfig) {
+  const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
+  const { result } = await readJsonFile<SnapManifest>(manifestPath);
+  const allowedPaths = getAllowedPaths(config, result);
+
+  const path = request.path.slice(1);
+  return allowedPaths.some((allowedPath) => path === allowedPath);
+}
+
+type Middleware = (app: Express) => void;
+
+/**
  * Get a static server for development purposes.
  *
  * Note: We're intentionally not using `webpack-dev-server` here because it
@@ -93,70 +109,47 @@ export function getAllowedPaths(
  * difficult to customize.
  *
  * @param config - The config object.
+ * @param middleware - An array of middleware functions to run before serving
+ * the static files.
  * @returns An object with a `listen` method that returns a promise that
  * resolves when the server is listening.
  */
-export function getServer(config: ProcessedConfig) {
-  /**
-   * Get the response for a request. This is extracted into a function so that
-   * we can easily catch errors and send a 500 response.
-   *
-   * @param request - The request.
-   * @param response - The response.
-   * @returns A promise that resolves when the response is sent.
-   */
-  async function getResponse(
-    request: IncomingMessage,
-    response: ServerResponse,
-  ) {
-    const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
-    const { result } = await readJsonFile<SnapManifest>(manifestPath);
-    const allowedPaths = getAllowedPaths(config, result);
+export function getServer(
+  config: ProcessedConfig,
+  middleware: Middleware[] = [],
+) {
+  const app = express();
 
-    const pathname =
-      request.url &&
-      request.headers.host &&
-      new URL(request.url, `http://${request.headers.host}`).pathname;
-    const path = pathname?.slice(1);
-    const allowed = allowedPaths.some((allowedPath) => path === allowedPath);
+  // Run "middleware" functions before serving the static files.
+  middleware.forEach((fn) => fn(app));
 
-    if (!allowed) {
-      response.statusCode = 404;
-      response.end();
-      return;
-    }
+  // Check for allowed paths in the request URL.
+  app.use((request, response, next) => {
+    isAllowedPath(request, config)
+      .then((allowed) => {
+        if (allowed) {
+          // eslint-disable-next-line promise/no-callback-in-promise
+          next();
+          return;
+        }
 
-    await serveMiddleware(request, response, {
-      public: config.server.root,
-      directoryListing: false,
-      headers: [
-        {
-          source: '**/*',
-          headers: [
-            {
-              key: 'Cache-Control',
-              value: 'no-cache',
-            },
-            {
-              key: 'Access-Control-Allow-Origin',
-              value: '*',
-            },
-          ],
-        },
-      ],
-    });
-  }
-
-  const server = createServer((request, response) => {
-    getResponse(request, response).catch(
-      /* istanbul ignore next */
-      (error) => {
-        logError(error);
-        response.statusCode = 500;
+        response.status(404);
         response.end();
-      },
-    );
+      })
+      // eslint-disable-next-line promise/no-callback-in-promise
+      .catch(next);
   });
+
+  // Serve the static files.
+  app.use(
+    expressStatic(config.server.root, {
+      dotfiles: 'deny',
+      setHeaders: (res) => {
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+      },
+    }),
+  );
 
   /**
    * Start the server on the port specified in the config.
@@ -173,26 +166,27 @@ export function getServer(config: ProcessedConfig) {
       server: Server;
       close: () => Promise<void>;
     }>((resolve, reject) => {
-      try {
-        server.listen(port, () => {
-          const close = async () => {
-            await new Promise<void>((resolveClose, rejectClose) => {
-              server.close((closeError) => {
-                if (closeError) {
-                  return rejectClose(closeError);
-                }
+      // eslint-disable-next-line consistent-return
+      const server = app.listen(port, (error) => {
+        if (error) {
+          return reject(error);
+        }
 
-                return resolveClose();
-              });
+        const close = async () => {
+          await new Promise<void>((resolveClose, rejectClose) => {
+            server.close((closeError) => {
+              if (closeError) {
+                return rejectClose(closeError);
+              }
+
+              return resolveClose();
             });
-          };
+          });
+        };
 
-          const address = server.address() as AddressInfo;
-          resolve({ port: address.port, server, close });
-        });
-      } catch (listenError) {
-        reject(listenError);
-      }
+        const address = server.address() as AddressInfo;
+        resolve({ port: address.port, server, close });
+      });
     });
   };
 

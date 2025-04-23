@@ -15,9 +15,11 @@
   "scripts": {
     "build": "ts-bridge --project tsconfig.build.json --verbose",
     "build:ci": "ts-bridge --project tsconfig.build.json --verbose",
+    "build:ci:post": "yarn build:sandbox",
     "build:examples": "yarn workspace @metamask/example-snaps build",
     "build:execution-environments": "yarn workspace @metamask/snaps-execution-environments build:lavamoat",
-    "build:post": "yarn build:examples && yarn build:execution-environments",
+    "build:post": "yarn build:examples && yarn build:execution-environments && yarn build:sandbox",
+    "build:sandbox": "yarn workspace @metamask/snaps-sandbox build",
     "changelog:update": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:update",
     "changelog:validate": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:validate",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
