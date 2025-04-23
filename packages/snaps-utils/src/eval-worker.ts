@@ -13,11 +13,10 @@ import { generateMockEndowments } from './mock';
 declare let lockdown: any, Compartment: any;
 
 lockdown({
-  consoleTaming: 'unsafe',
   errorTaming: 'unsafe',
-  mathTaming: 'unsafe',
-  dateTaming: 'unsafe',
+  stackFiltering: 'verbose',
   overrideTaming: 'severe',
+  localeTaming: 'unsafe',
 
   // We disable domain taming, because it does not work in certain cases when
   // running tests. This is unlikely to be a problem in production, because
