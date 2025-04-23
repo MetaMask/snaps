@@ -13,7 +13,7 @@ jobs:
   validate-pull-request-title:
     name: Validate title
     runs-on: ubuntu-latest
-    if: !startsWith(github.head_ref , 'release/')
+    if: ${{ !startsWith(github.head_ref , 'release/') }}
     steps:
       - name: Validate title
         # `amannn/action-semantic-pull-request@v5.4.0`
