@@ -4007,9 +4007,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/providers@npm:^22.0.0":
-  version: 22.0.0
-  resolution: "@metamask/providers@npm:22.0.0"
+"@metamask/providers@npm:^22.0.1":
+  version: 22.0.1
+  resolution: "@metamask/providers@npm:22.0.1"
   dependencies:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.6"
@@ -4024,7 +4024,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
   peerDependencies:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/b9bd381e5669e07ecee0a98f8748993fed4e02bc855e2ad342db9b9bb8b2d453a01c0e4c9f1e2c7b80929c5ce15d7aafa88c0a6a78651737efdb16f707a84017
+  checksum: 10/c4966023b69ba603ff1e62e57adf9968ebfd548f8e018b4e4181810131a554d71168fbd0056127a425b204e76ebb426620db0e192895bd4379a970b41ab1b9d0
   languageName: node
   linkType: hard
 
@@ -4338,7 +4338,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^9.0.0"
-    "@metamask/providers": "npm:^22.0.0"
+    "@metamask/providers": "npm:^22.0.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4495,7 +4495,7 @@ __metadata:
     "@chakra-ui/react": "npm:^3.15.0"
     "@emotion/react": "npm:^11.14.0"
     "@metamask/auto-changelog": "npm:^5.0.1"
-    "@metamask/providers": "npm:^22.0.0"
+    "@metamask/providers": "npm:^22.0.1"
     "@metamask/utils": "npm:^11.4.0"
     "@monaco-editor/react": "npm:^4.7.0"
     "@tanstack/react-query": "npm:^5.71.5"
@@ -4528,7 +4528,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.0.4"
     "@metamask/auto-changelog": "npm:^5.0.1"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/providers": "npm:^22.0.0"
+    "@metamask/providers": "npm:^22.0.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.4.0"
@@ -4726,7 +4726,7 @@ __metadata:
     "@metamask/preferences-example-snap": "workspace:^"
     "@metamask/preinstalled-example-snap": "workspace:^"
     "@metamask/protocol-example-snap": "workspace:^"
-    "@metamask/providers": "npm:^22.0.0"
+    "@metamask/providers": "npm:^22.0.1"
     "@metamask/send-flow-example-snap": "workspace:^"
     "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
