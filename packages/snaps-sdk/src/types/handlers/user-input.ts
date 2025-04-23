@@ -2,7 +2,6 @@ import type { Infer } from '@metamask/superstruct';
 import {
   number,
   assign,
-  literal,
   nullable,
   object,
   optional,
@@ -13,6 +12,7 @@ import {
 } from '@metamask/superstruct';
 import { CaipAssetTypeStruct } from '@metamask/utils';
 
+import { typedUnion, literal } from '../../internals';
 import type { InterfaceContext } from '../interface';
 
 /**
@@ -156,7 +156,7 @@ export const FileUploadEventStruct = assign(
  */
 export type FileUploadEvent = Infer<typeof FileUploadEventStruct>;
 
-export const UserInputEventStruct = union([
+export const UserInputEventStruct = typedUnion([
   ButtonClickEventStruct,
   FormSubmitEventStruct,
   InputChangeEventStruct,
