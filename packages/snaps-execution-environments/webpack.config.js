@@ -46,6 +46,7 @@ const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
  * @property {string} entry - The entry point file.
  * @property {boolean} [inline] - Whether to inline the lockdown script.
  * @property {boolean} [inlineBundle] - Whether to inline the bundle.
+ * @property {boolean} [scuttleGlobalThis] - Whether to enable scuttling.
  * @property {import('webpack').Configuration} [config] - Additional webpack
  * configuration for this entry point. This is merged with the base
  * configuration.
@@ -79,6 +80,7 @@ const ENTRY_POINTS = [
   {
     name: 'iframe',
     entry: './src/iframe/index.ts',
+    scuttleGlobalThis: true,
 
     config: DEFAULT_WEB_CONFIG,
   },
@@ -108,6 +110,7 @@ const ENTRY_POINTS = [
     target: 'web',
     entry: './src/webview/index.ts',
     inlineBundle: true,
+    scuttleGlobalThis: true,
 
     config: {
       plugins: [
@@ -140,6 +143,7 @@ const ENTRY_POINTS = [
   {
     name: 'worker-pool',
     entry: './src/webworker/pool/index.ts',
+    scuttleGlobalThis: true,
 
     config: DEFAULT_WEB_CONFIG,
   },
@@ -231,6 +235,17 @@ const configs = ENTRY_POINTS.map(
           generatePolicy: UPDATE_POLICY,
           policyLocation: resolve(__dirname, 'lavamoat', 'webpack', name),
           inlineLockdown: inline ? /bundle\.js/u : undefined,
+          scuttleGlobalThis: {
+            enabled: true,
+            exceptions: [
+              'postMessage',
+              'removeEventListener',
+              'isSecureContext',
+              'ReactNativeWebView',
+              'JSON',
+              'String',
+            ],
+          },
         }),
 
         {
