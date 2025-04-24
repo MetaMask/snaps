@@ -184,14 +184,14 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        let result = await this.executeInSnapContext(target, async () =>
+        const result = await this.executeInSnapContext(target, async () =>
           // TODO: fix handler args type cast
           handler(args as any),
         );
 
         // The handler might not return anything, but undefined is not valid JSON.
-        if (result === undefined) {
-          result = null;
+        if (result === undefined || result === null) {
+          return null;
         }
 
         // /!\ Always return only sanitized JSON to prevent security flaws. /!\
