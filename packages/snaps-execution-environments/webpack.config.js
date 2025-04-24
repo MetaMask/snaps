@@ -57,6 +57,7 @@ const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
  * @type {Configuration}
  */
 const DEFAULT_WEB_CONFIG = {
+  target: `browserslist:${resolve(__dirname, '.browserslistrc')}`,
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.ejs',
@@ -104,6 +105,7 @@ const ENTRY_POINTS = [
 
   {
     name: 'webview',
+    target: 'web',
     entry: './src/webview/index.ts',
     inlineBundle: true,
 
