@@ -1,6 +1,8 @@
 import type { RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { assert, getJsonSize, getSafeJson, isObject } from '@metamask/utils';
+import { getJsonSizeByteAccurateUnsafe } from '@metamask/snaps-utils';
+import type { Json } from '@metamask/utils';
+import { assert, getSafeJson, isObject } from '@metamask/utils';
 
 import { log } from '../logging';
 
@@ -128,14 +130,13 @@ export function sanitizeRequestArguments(value: unknown): RequestArguments {
  * @param response - The response.
  * @returns True if the response is valid, otherwise false.
  */
-export function isValidResponse(response: Record<string, unknown>) {
+export function isValidResponse(response: Record<string, Json>) {
   if (!isObject(response)) {
     return false;
   }
 
   try {
-    // If the JSON is invalid this will throw and we should return false.
-    const size = getJsonSize(response);
+    const size = getJsonSizeByteAccurateUnsafe(response);
     return size < MAX_RESPONSE_JSON_SIZE;
   } catch {
     return false;

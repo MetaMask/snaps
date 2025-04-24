@@ -34,3 +34,16 @@ export function getJsonSizeUnsafe(value: Json): number {
   // We intentionally don't use `TextEncoder` because of bad performance on React Native.
   return json.length;
 }
+
+/**
+ * Get the size of a JSON blob without validating that is valid JSON.
+ *
+ * This may sometimes be preferred over `getJsonSize` for performance reasons.
+ *
+ * @param value - The JSON value to get the size of.
+ * @returns The size of the JSON value in bytes.
+ */
+export function getJsonSizeByteAccurateUnsafe(value: Json): number {
+  const json = JSON.stringify(value);
+  return new TextEncoder().encode(json).byteLength;
+}
