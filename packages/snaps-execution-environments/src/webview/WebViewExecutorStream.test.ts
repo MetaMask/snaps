@@ -1,5 +1,4 @@
 import { sleep } from '@metamask/snaps-utils/test-utils';
-import { stringToBytes } from '@metamask/utils';
 
 import { WebViewExecutorStream } from './WebViewExecutorStream';
 
@@ -7,9 +6,8 @@ describe('WebViewExecutorStream', () => {
   beforeEach(() => {
     const addEventListener = jest.fn();
     const postMessage = jest.fn().mockImplementation((message) => {
-      const bytes = stringToBytes(message);
       addEventListener.mock.calls.forEach(([_type, listener]) => {
-        setTimeout(() => listener({ data: Array.from(bytes) }));
+        setTimeout(() => listener({ data: message }));
       });
     });
     const mockWindow = {

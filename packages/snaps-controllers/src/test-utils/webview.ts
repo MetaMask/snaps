@@ -1,5 +1,3 @@
-import { bytesToString } from '@metamask/utils';
-
 import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
 
 /**
@@ -9,9 +7,7 @@ import { WebViewMessageStream } from '../services/webview/WebViewMessageStream';
  * @returns The decoded JSON as a string.
  */
 export function parseInjectedJS(js: string) {
-  const byteString = js.slice(19, -1);
-  const bytes = new Uint8Array(JSON.parse(byteString));
-  return bytesToString(bytes);
+  return JSON.parse(js.slice(19, -1));
 }
 
 /**

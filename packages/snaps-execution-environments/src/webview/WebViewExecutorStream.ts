@@ -1,7 +1,6 @@
 import type { PostMessageEvent } from '@metamask/post-message-stream';
 import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { isValidStreamMessage } from '@metamask/post-message-stream/dist/utils';
-import { bytesToString } from '@metamask/utils';
 
 type WebViewExecutorStreamArgs = {
   name: string;
@@ -65,12 +64,11 @@ export class WebViewExecutorStream extends BasePostMessageStream {
   //  ignore.
   // eslint-disable-next-line no-restricted-syntax
   private _onMessage(event: PostMessageEvent): void {
-    if (!Array.isArray(event.data)) {
+    if (typeof event.data !== 'string') {
       return;
     }
 
-    const json = bytesToString(new Uint8Array(event.data as number[]));
-    const message = JSON.parse(json);
+    const message = JSON.parse(event.data);
 
     // Notice that we don't check targetWindow or targetOrigin here.
     // This doesn't seem possible to do in RN.
