@@ -310,8 +310,10 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
 
-    rpcStream.on('data', () => {
-      this.#messenger.publish('ExecutionService:outboundRequest', snapId);
+    rpcStream.on('data', (chunk) => {
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundRequest', snapId);
+      }
     });
 
     const originalWrite = rpcStream.write.bind(rpcStream);
@@ -323,7 +325,9 @@ export abstract class AbstractExecutionService<WorkerType>
         return;
       }
 
-      this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+      }
 
       originalWrite(chunk, encoding, callback);
     };
