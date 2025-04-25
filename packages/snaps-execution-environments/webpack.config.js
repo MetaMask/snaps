@@ -238,8 +238,16 @@ const configs = ENTRY_POINTS.map(
           scuttleGlobalThis: {
             enabled: true,
             exceptions: [
+              'Array',
+              'Boolean',
+              'Number',
+              'Object',
               'postMessage',
+              'Promise',
+              'Reflect',
+              'Set',
               'removeEventListener',
+              'isNaN',
               'isSecureContext',
               'ReactNativeWebView',
               'JSON',
