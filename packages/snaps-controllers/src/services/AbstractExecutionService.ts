@@ -307,7 +307,26 @@ export abstract class AbstractExecutionService<WorkerType>
     };
 
     commandStream.on('data', notificationHandler);
+
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
+
+    rpcStream.on('data', () => {
+      this.#messenger.publish('ExecutionService:outboundRequest', snapId);
+    });
+
+    const originalWrite = rpcStream.write.bind(rpcStream);
+
+    // @ts-expect-error Hack to inspect the messages being written to the stream.
+    rpcStream.write = (chunk, encoding, callback) => {
+      // Ignore chain switching notifications as it doesn't matter for the SnapProvider.
+      if (chunk?.data?.method === 'metamask_chainChanged') {
+        return;
+      }
+
+      this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+
+      originalWrite(chunk, encoding, callback);
+    };
 
     // Typecast: stream type mismatch
     return {

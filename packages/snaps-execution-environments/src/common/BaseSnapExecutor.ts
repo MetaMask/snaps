@@ -529,26 +529,7 @@ export class BaseSnapExecutor {
       // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
-      return await withTeardown(
-        (async () => {
-          try {
-            const promise = originalRequest(sanitizedArgs);
-
-            await this.#notify({
-              method: 'OutboundRequest',
-              params: { source: 'snap.request' },
-            });
-
-            return await promise;
-          } finally {
-            await this.#notify({
-              method: 'OutboundResponse',
-              params: { source: 'snap.request' },
-            });
-          }
-        })(),
-        this as any,
-      );
+      return await withTeardown(originalRequest(sanitizedArgs), this as any);
     };
 
     const snapsProvider = { request } as SnapsProvider;
@@ -574,26 +555,7 @@ export class BaseSnapExecutor {
       // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      return await withTeardown(
-        (async () => {
-          try {
-            const promise = originalRequest(sanitizedArgs);
-
-            await this.#notify({
-              method: 'OutboundRequest',
-              params: { source: 'ethereum.request' },
-            });
-
-            return await promise;
-          } finally {
-            await this.#notify({
-              method: 'OutboundResponse',
-              params: { source: 'ethereum.request' },
-            });
-          }
-        })(),
-        this as any,
-      );
+      return await withTeardown(originalRequest(sanitizedArgs), this as any);
     };
 
     const ethereumProvider = { request };
