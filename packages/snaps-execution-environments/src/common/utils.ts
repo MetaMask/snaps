@@ -1,6 +1,6 @@
 import type { RequestArguments } from '@metamask/providers';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { getJsonSizeByteAccurateUnsafe } from '@metamask/snaps-utils';
+import { getJsonSizeUnsafe } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 import { assert, getSafeJson, isObject } from '@metamask/utils';
 
@@ -135,10 +135,8 @@ export function isValidResponse(response: Record<string, Json>) {
     return false;
   }
 
-  try {
-    const size = getJsonSizeByteAccurateUnsafe(response);
-    return size < MAX_RESPONSE_JSON_SIZE;
-  } catch {
-    return false;
-  }
+  // We know that the response is valid JSON already and we don't
+  // need the size to be exact.
+  const size = getJsonSizeUnsafe(response);
+  return size < MAX_RESPONSE_JSON_SIZE;
 }
