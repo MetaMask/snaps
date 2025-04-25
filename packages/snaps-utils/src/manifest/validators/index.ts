@@ -1,5 +1,6 @@
 export * from './checksum';
 export * from './expected-files';
+export * from './unused-exports';
 export * from './icon-dimensions';
 export * from './is-localization-file';
 export * from './is-package-json';
