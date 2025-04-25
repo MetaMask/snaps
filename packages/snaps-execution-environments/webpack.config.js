@@ -238,19 +238,16 @@ const configs = ENTRY_POINTS.map(
           scuttleGlobalThis: {
             enabled: true,
             exceptions: [
-              'Array',
-              'Boolean',
-              'Number',
+              // Needed for all builds.
               'Object',
-              'postMessage',
-              'Promise',
-              'Reflect',
               'Set',
-              'removeEventListener',
-              'isNaN',
-              'isSecureContext',
-              'ReactNativeWebView',
+              'postMessage',
+              'Reflect',
+
+              // Only needed for the React Native WebView build.
+              // TODO: Only enable this for the React Native WebView build.
               'JSON',
+              'ReactNativeWebView',
               'String',
             ],
           },
