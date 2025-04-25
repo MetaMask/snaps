@@ -8,7 +8,6 @@ const config = createConfig([
   {
     ignores: [
       '**/assembly',
-      '**/build',
       '**/coverage',
       '**/dist',
       '**/docs',

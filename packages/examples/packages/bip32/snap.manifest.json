@@ -17,10 +17,7 @@
     }
   },
   "initialPermissions": {
-    "endowment:rpc": {
-      "dapps": true,
-      "snaps": true
-    },
+    "endowment:page-home": {},
     "snap_dialog": {},
     "snap_getBip32Entropy": [
       {

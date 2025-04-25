@@ -305,8 +305,7 @@ export async function getDefaultConfiguration(
        * required, it's highly recommended to use this plugin.
        */
       new SnapsWebpackPlugin({
-        manifestPath: config.manifest.path,
-        writeManifest: config.manifest.update,
+        manifestPath: undefined,
         eval: !options.watch && options.evaluate,
       }),
 

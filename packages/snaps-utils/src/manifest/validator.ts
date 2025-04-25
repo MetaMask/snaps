@@ -2,6 +2,7 @@ import { assert } from '@metamask/utils';
 
 import type {
   ValidatorContext,
+  ValidatorContextOptions,
   ValidatorFix,
   ValidatorMeta,
   ValidatorReport,
@@ -18,7 +19,19 @@ export type ValidatorResults = {
 class Context implements ValidatorContext {
   reports: ValidatorReport[] = [];
 
+  readonly #options: ValidatorContextOptions = {};
+
   #nextSeverity?: ValidatorSeverity = undefined;
+
+  /**
+   * Construct a new validator context.
+   *
+   * @param options - The options for the validator context.
+   * @param options.exports - Exports detected by evaluating the bundle.
+   */
+  constructor(options: ValidatorContextOptions) {
+    this.#options = options;
+  }
 
   report(message: string, fix?: ValidatorFix): void {
     assert(this.#nextSeverity !== undefined);
@@ -36,6 +49,10 @@ class Context implements ValidatorContext {
   get hasErrors() {
     return this.reports.some((report) => report.severity === 'error');
   }
+
+  get options() {
+    return this.#options;
+  }
 }
 
 /**
@@ -45,6 +62,8 @@ class Context implements ValidatorContext {
  *
  * @param files - All files required to run a snap.
  * @param rules - Validators to run.
+ * @param options - Options for the validation.
+ * @param options.exports - Exports detected by evaluating the bundle.
  * @returns The validation results.
  */
 // TODO(ritave): snap.manifest.json and package.json should check
@@ -53,8 +72,9 @@ class Context implements ValidatorContext {
 export async function runValidators(
   files: UnvalidatedSnapFiles,
   rules: ValidatorMeta[] = Object.values(defaultValidators),
+  options: ValidatorContextOptions = {},
 ): Promise<ValidatorResults> {
-  const context = new Context();
+  const context = new Context(options);
 
   for (const rule of rules) {
     context.prepareForValidator({
@@ -62,6 +82,7 @@ export async function runValidators(
     });
     await rule.structureCheck?.(files, context);
   }
+
   if (context.hasErrors) {
     return {
       reports: context.reports,
@@ -74,6 +95,7 @@ export async function runValidators(
     });
     await rule.semanticCheck?.(files as SnapFiles, context);
   }
+
   return {
     files: files as SnapFiles,
     reports: context.reports,

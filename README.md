@@ -45,6 +45,7 @@ linkStyle default opacity:0.5
   snaps_utils(["@metamask/snaps-utils"]);
   snaps_webpack_plugin(["@metamask/snaps-webpack-plugin"]);
   create_snap --> snaps_utils;
+  snaps_cli --> snaps_rpc_methods;
   snaps_cli --> snaps_sandbox;
   snaps_cli --> snaps_sdk;
   snaps_cli --> snaps_utils;

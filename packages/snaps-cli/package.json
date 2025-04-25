@@ -64,6 +64,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sandbox": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",

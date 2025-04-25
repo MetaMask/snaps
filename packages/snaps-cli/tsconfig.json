@@ -6,6 +6,7 @@
   },
   "include": ["./src", "./src/**/*.json", "jest.setup.ts", "package.json"],
   "references": [
+    { "path": "../snaps-rpc-methods" },
     { "path": "../snaps-utils" },
     { "path": "../snaps-webpack-plugin" }
   ]
