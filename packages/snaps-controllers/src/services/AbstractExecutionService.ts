@@ -13,9 +13,9 @@ import type {
 import {
   Duration,
   assertIsJsonRpcRequest,
+  hasProperty,
   inMilliseconds,
   isJsonRpcFailure,
-  isJsonRpcNotification,
   isObject,
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -278,7 +278,7 @@ export abstract class AbstractExecutionService<WorkerType>
         | JsonRpcRequest
         | JsonRpcNotification<Json[] | Record<string, Json>>,
     ) => {
-      if (!isJsonRpcNotification(message)) {
+      if (hasProperty(message, 'id')) {
         return;
       }
 
