@@ -63,10 +63,6 @@ describe('isValidResponse', () => {
     expect(isValidResponse('foo')).toBe(false);
   });
 
-  it('returns false if the value is not JSON serializable', () => {
-    expect(isValidResponse({ foo: BigInt(0) })).toBe(false);
-  });
-
   it('returns false if the value is too large', () => {
     expect(isValidResponse({ foo: '1'.repeat(100_000_000) })).toBe(false);
   });

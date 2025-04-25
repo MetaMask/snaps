@@ -346,7 +346,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  async #respond(id: JsonRpcId, response: Record<string, unknown>) {
+  async #respond(id: JsonRpcId, response: Record<string, Json>) {
     if (!isValidResponse(response)) {
       // Instead of throwing, we directly respond with an error.
       // This prevents an issue where we wouldn't respond when errors were non-serializable
