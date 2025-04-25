@@ -6,7 +6,6 @@ describe('browser entrypoint', () => {
     'setupMultiplex',
     'IframeExecutionService',
     'OffscreenExecutionService',
-    'WebWorkerExecutionService',
     'ProxyPostMessageStream',
     'WebViewExecutionService',
     'WebViewMessageStream',
