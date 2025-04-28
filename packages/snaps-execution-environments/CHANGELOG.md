@@ -9,17 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.2.2]
 
-### Uncategorized
+### Fixed
 
-- chore!: Remove web worker execution service and environment ([#3357](https://github.com/MetaMask/snaps/pull/3357))
-- perf: Reduce unnecessary validation on responses ([#3350](https://github.com/MetaMask/snaps/pull/3350))
-- perf: Simplify executor return ([#3349](https://github.com/MetaMask/snaps/pull/3349))
-- perf: Stop encoding messages in mobile ([#3347](https://github.com/MetaMask/snaps/pull/3347))
-- chore(deps): bump ses from 1.1.0 to 1.12.0 in the npm_and_yarn group across 1 directory ([#3337](https://github.com/MetaMask/snaps/pull/3337))
-- chore(deps): bump @metamask/providers from 22.0.0 to 22.0.1 ([#3343](https://github.com/MetaMask/snaps/pull/3343))
-- feat: Add `snaps-sandbox` package and integrate into CLI ([#3306](https://github.com/MetaMask/snaps/pull/3306))
-- chore(deps): bump @metamask/providers from 21.0.0 to 22.0.0 ([#3336](https://github.com/MetaMask/snaps/pull/3336))
-- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
+- Reduce unnecessary validation on responses ([#3350](https://github.com/MetaMask/snaps/pull/3350))
+- Return early from executor if possible to avoid unnecessary checks ([#3349](https://github.com/MetaMask/snaps/pull/3349))
+- Stop unnecessarily encoding messages in web view executor ([#3347](https://github.com/MetaMask/snaps/pull/3347))
 
 ## [7.2.1]
 

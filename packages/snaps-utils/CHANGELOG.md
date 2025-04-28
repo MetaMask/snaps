@@ -9,16 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.2.1]
 
-### Uncategorized
+### Fixed
 
-- perf: Reduce unnecessary validation on responses ([#3350](https://github.com/MetaMask/snaps/pull/3350))
-- perf: Speed up JSON size calculation ([#3348](https://github.com/MetaMask/snaps/pull/3348))
-- chore(deps): bump ses from 1.1.0 to 1.12.0 in the npm_and_yarn group across 1 directory ([#3337](https://github.com/MetaMask/snaps/pull/3337))
-- feat: Add `snaps-sandbox` package and integrate into CLI ([#3306](https://github.com/MetaMask/snaps/pull/3306))
-- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
-- chore(deps-dev): bump vite from 6.2.5 to 6.2.6 in the npm_and_yarn group across 1 directory ([#3321](https://github.com/MetaMask/snaps/pull/3321))
-- chore(deps-dev): bump `vite` from `6.2.3` to `6.2.5` ([#3305](https://github.com/MetaMask/snaps/pull/3305))
-- Remove `@metamask/snaps-simulator` ([#3311](https://github.com/MetaMask/snaps/pull/3311))
+- Reduce unnecessary validation on responses ([#3350](https://github.com/MetaMask/snaps/pull/3350))
+- Speed up JSON size calculation ([#3348](https://github.com/MetaMask/snaps/pull/3348))
 
 ## [9.2.0]
 
