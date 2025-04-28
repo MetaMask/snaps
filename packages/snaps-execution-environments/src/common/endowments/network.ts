@@ -230,10 +230,6 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
             ...init,
             signal: abortController.signal,
           });
-          await notify({
-            method: 'OutboundRequest',
-            params: { source: 'fetch' },
-          });
 
           await notify({
             method: 'OutboundRequest',
