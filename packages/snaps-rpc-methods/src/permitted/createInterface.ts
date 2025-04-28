@@ -32,7 +32,7 @@ export type CreateInterfaceMethodHooks = {
     ui: ComponentOrElement,
     context?: InterfaceContext,
     contentType?: ContentType,
-  ) => Promise<string>;
+  ) => string;
 };
 
 export const createInterfaceHandler: PermittedHandlerExport<
@@ -67,13 +67,13 @@ export type CreateInterfaceParameters = InferMatching<
  * @param hooks.createInterface - The function to create the interface.
  * @returns Nothing.
  */
-async function getCreateInterfaceImplementation(
+function getCreateInterfaceImplementation(
   req: JsonRpcRequest<CreateInterfaceParameters>,
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { createInterface }: CreateInterfaceMethodHooks,
-): Promise<void> {
+): void {
   const { params } = req;
 
   try {
@@ -81,7 +81,7 @@ async function getCreateInterfaceImplementation(
 
     const { ui, context } = validatedParams;
 
-    res.result = await createInterface(ui, context);
+    res.result = createInterface(ui, context);
   } catch (error) {
     return end(error);
   }
