@@ -243,6 +243,7 @@ const configs = ENTRY_POINTS.map(
               'Set',
               'postMessage',
               'Reflect',
+              'WebAssembly',
 
               // Only needed for the React Native WebView build.
               // TODO: Only enable this for the React Native WebView build.
