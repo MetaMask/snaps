@@ -23,6 +23,14 @@ const ENTRY_POINTS = {
     entryPoint: './src/node-process/index.ts',
     node: true,
   },
+  'worker-executor': {
+    entryPoint: './src/webworker/executor/index.ts',
+    worker: true,
+  },
+  'worker-pool': {
+    entryPoint: './src/webworker/pool/index.ts',
+    html: true,
+  },
   webview: {
     entryPoint: './src/webview/index.ts',
     html: true,
