@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Remove web worker execution service and environment ([#3357](https://github.com/MetaMask/snaps/pull/3357))
+- perf: Use cheaper guard to determine if message is a notification ([#3352](https://github.com/MetaMask/snaps/pull/3352))
+- perf: Stop encoding messages in mobile ([#3347](https://github.com/MetaMask/snaps/pull/3347))
+- Fix typo in documentation in `TransactionParams` ([#3237](https://github.com/MetaMask/snaps/pull/3237))
+- chore(deps): bump @metamask/phishing-controller from 12.4.1 to 12.5.0 ([#3342](https://github.com/MetaMask/snaps/pull/3342))
+
 ## [11.2.2]
 
 ### Fixed
