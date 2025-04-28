@@ -265,12 +265,6 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
       id: 2,
       jsonrpc: '2.0',
       result: [],
@@ -407,12 +401,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'snap.request' },
-    });
-
     const getSnapsRequest = await executor.readRpc();
     expect(getSnapsRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -439,12 +427,6 @@ describe('BaseSnapExecutor', () => {
         id: getSnapsRequest.data.id!,
         result: mockSnapsResult,
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -778,12 +760,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'snap.request' },
-    });
-
     const request = await executor.readRpc();
     expect(request).toStrictEqual({
       name: 'metamask-provider',
@@ -809,12 +785,6 @@ describe('BaseSnapExecutor', () => {
         id: request.data.id!,
         result,
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
