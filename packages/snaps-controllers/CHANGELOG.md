@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.3]
+
 ### Uncategorized
 
 - chore!: Remove web worker execution service and environment ([#3357](https://github.com/MetaMask/snaps/pull/3357))
@@ -723,7 +725,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.3...HEAD
+[11.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.2...@metamask/snaps-controllers@11.2.3
 [11.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.1...@metamask/snaps-controllers@11.2.2
 [11.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...@metamask/snaps-controllers@11.2.1
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.1.0...@metamask/snaps-controllers@11.2.0

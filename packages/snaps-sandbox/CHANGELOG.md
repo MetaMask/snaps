@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore(deps): bump @metamask/providers from 22.0.0 to 22.0.1 ([#3343](https://github.com/MetaMask/snaps/pull/3343))
-
 ## [1.0.0]
 
 ### Added

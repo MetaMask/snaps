@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- perf: Use `typedUnion` for `UserInputEventStruct` ([#3344](https://github.com/MetaMask/snaps/pull/3344))
-- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
-
 ## [1.1.2]
 
 ### Fixed

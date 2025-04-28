@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- Use Vitest for browser tests ([#3236](https://github.com/MetaMask/snaps/pull/3236))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps/pull/3283))
-- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps/pull/3277))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
-
 ## [4.2.0]
 
 ### Added
