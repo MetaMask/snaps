@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.22.1]
+
+### Fixed
+
+- Use `typedUnion` for `UserInputEventStruct` ([#3344](https://github.com/MetaMask/snaps/pull/3344))
+  - This improves the performance of the `UserInputEventStruct` type, and allows
+    for better error messages when using it.
+
 ## [6.22.0]
 
 ### Added
@@ -545,7 +553,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.1...HEAD
+[6.22.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.0...@metamask/snaps-sdk@6.22.1
 [6.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...@metamask/snaps-sdk@6.22.0
 [6.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0
 [6.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.19.0...@metamask/snaps-sdk@6.20.0
