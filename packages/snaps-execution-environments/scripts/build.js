@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const webpack = require('webpack');
 
 const config = require('../webpack.config');
@@ -20,12 +19,10 @@ function indent(message, spaces = 2) {
 webpack(config, (error, stats) => {
   if (error) {
     console.error(
-      chalk.red(
-        'Webpack failed to build. See the error(s) below for more details.',
-      ),
+      'Webpack failed to build. See the error(s) below for more details.',
     );
 
-    console.log(indent(chalk.red(error.message), 2));
+    console.log(indent(error.message, 2));
     return;
   }
 
