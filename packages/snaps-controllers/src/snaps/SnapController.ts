@@ -1599,9 +1599,14 @@ export class SnapController extends BaseController<
    */
   async preloadSnap(snapId: SnapId): Promise<void> {
     this.#assertCanUsePlatform();
-    const runtime = this.#getRuntimeExpect(snapId);
 
-    if (runtime.state !== undefined) {
+    const runtime = this.#getRuntimeExpect(snapId);
+    const snap = this.state.snaps[snapId];
+
+    if (
+      !snap.manifest.initialPermissions.snap_manageState ||
+      runtime.state !== undefined
+    ) {
       return;
     }
 
