@@ -47,6 +47,8 @@ const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
  * @property {boolean} [inline] - Whether to inline the lockdown script.
  * @property {boolean} [inlineBundle] - Whether to inline the bundle.
  * @property {boolean} [scuttleGlobalThis] - Whether to enable scuttling.
+ * @property {string[]} [scuttleGlobalThisExceptions] - Exceptions to scuttling,
+ * in addition to the default ones.
  * @property {import('webpack').Configuration} [config] - Additional webpack
  * configuration for this entry point. This is merged with the base
  * configuration.
@@ -110,7 +112,9 @@ const ENTRY_POINTS = [
     target: 'web',
     entry: './src/webview/index.ts',
     inlineBundle: true,
+
     scuttleGlobalThis: true,
+    scuttleGlobalThisExceptions: ['JSON', 'ReactNativeWebView', 'String'],
 
     config: {
       plugins: [
@@ -220,7 +224,15 @@ const baseConfig = {
  * @type {Configuration[]}
  */
 const configs = ENTRY_POINTS.map(
-  ({ name, entry, inline, inlineBundle, config = {} }) =>
+  ({
+    name,
+    entry,
+    inline,
+    inlineBundle,
+    scuttleGlobalThis,
+    scuttleGlobalThisExceptions = [],
+    config = {},
+  }) =>
     merge(baseConfig, config, {
       name,
       entry,
@@ -236,20 +248,13 @@ const configs = ENTRY_POINTS.map(
           policyLocation: resolve(__dirname, 'lavamoat', 'webpack', name),
           inlineLockdown: inline ? /bundle\.js/u : undefined,
           scuttleGlobalThis: {
-            enabled: true,
+            enabled: scuttleGlobalThis,
             exceptions: [
-              // Needed for all builds.
               'Object',
-              'Set',
               'postMessage',
               'Reflect',
-              'WebAssembly',
-
-              // Only needed for the React Native WebView build.
-              // TODO: Only enable this for the React Native WebView build.
-              'JSON',
-              'ReactNativeWebView',
-              'String',
+              'Set',
+              ...scuttleGlobalThisExceptions,
             ],
           },
         }),
