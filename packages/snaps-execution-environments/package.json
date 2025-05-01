@@ -86,7 +86,7 @@
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/lavapack": "^6.1.1",
     "@lavamoat/lavatube": "^1.0.0",
-    "@metamask/auto-changelog": "^5.0.1",
+    "@metamask/auto-changelog": "^5.0.2",
     "@swc/core": "1.3.78",
     "@swc/jest": "^0.2.26",
     "@testing-library/dom": "^10.4.0",
