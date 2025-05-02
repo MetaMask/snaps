@@ -28,7 +28,7 @@ export type ValidatorSeverity = 'error' | 'warning';
 
 export type ValidatorContext = {
   readonly report: (message: string, fix?: ValidatorFix) => void;
-  readonly options: ValidatorContextOptions;
+  readonly options?: ValidatorContextOptions;
 };
 
 export type ValidatorReport = {

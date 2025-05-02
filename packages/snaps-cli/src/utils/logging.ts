@@ -61,3 +61,18 @@ export function error(message: string, spinner?: Ora) {
 
   logError(`${red('✖')} ${message}`);
 }
+
+/**
+ * Log a message.
+ *
+ * @param message - The message to log.
+ * @param spinner - The spinner to clear.
+ */
+export function log(message: string, spinner?: Ora) {
+  if (spinner) {
+    spinner.clear();
+    spinner.frame();
+  }
+
+  logInfo(message);
+}

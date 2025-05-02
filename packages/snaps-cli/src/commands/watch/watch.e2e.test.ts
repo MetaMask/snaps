@@ -25,15 +25,11 @@ describe('mm-snap watch', () => {
     'builds and watches for changes using "mm-snap %s"',
     async (command) => {
       runner = getCommandRunner(command, ['--port', '0']);
-      await runner.waitForStderr(
-        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
-      );
+      await runner.waitForStdout(/Compiled \d+ files? in \d+ms?\./u);
 
       await fs.writeFile(SNAP_FILE, originalFile);
       await runner.waitForStdout(/Changes detected in .+, recompiling\./u);
-      await runner.waitForStderr(
-        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
-      );
+      await runner.waitForStdout(/Compiled \d+ files? in \d+ms\./u);
 
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Checking the input file\./u),
@@ -47,17 +43,10 @@ describe('mm-snap watch', () => {
         ),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Building the snap bundle\./u),
+        expect.stringMatching(/Building the Snap bundle\./u),
       );
-      expect(runner.stderr).toContainEqual(
-        expect.stringMatching(
-          /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
-        ),
-      );
-      expect(runner.stderr).toContainEqual(
-        expect.stringContaining(
-          'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
-        ),
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
       );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Changes detected in .+, recompiling\./u),
