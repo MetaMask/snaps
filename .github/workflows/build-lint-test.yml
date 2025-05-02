@@ -26,7 +26,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache-node-modules: ${{ matrix.node-version == '20.x' }}
       - name: Prepare "@metamask/snaps-execution-environments" build
-        run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat
+        run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat:test
       - name: Save "@metamask/snaps-execution-environments" build
         id: cache-snaps-execution-environments-build
         uses: actions/upload-artifact@v4
@@ -35,7 +35,7 @@ jobs:
           retention-days: 1
           path: |
             .nvmrc
-            packages/snaps-execution-environments/dist/browserify
+            packages/snaps-execution-environments/dist/webpack
       - name: Fetch workspace package names
         id: workspace-package-names
         run: |
@@ -95,12 +95,16 @@ jobs:
   policy:
     name: Generate LavaMoat policy
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: build
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+      - name: Restore build files
+        uses: actions/download-artifact@v4
+        with:
+          name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Generate LavaMoat policy
         run: yarn workspace @metamask/snaps-execution-environments build:lavamoat:policy
       - name: Require clean working directory

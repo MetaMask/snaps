@@ -3,7 +3,7 @@ const path = require('path');
 const serveHandler = require('serve-handler');
 
 const ROOT = path.resolve(__dirname, '..');
-const PUBLIC = path.join(ROOT, '/dist/browserify/iframe');
+const PUBLIC = path.join(ROOT, '/dist/webpack/iframe');
 
 start();
 

@@ -60,7 +60,6 @@
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#./.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@esbuild-plugins/node-modules-polyfill@^0.2.2": "patch:@esbuild-plugins/node-modules-polyfill@npm%3A0.2.2#./.yarn/patches/@esbuild-plugins-node-modules-polyfill-npm-0.2.2-f612681798.patch",
-    "@lavamoat/lavapack@^6.1.1": "patch:@lavamoat/lavapack@npm%3A6.1.1#./.yarn/patches/@lavamoat-lavapack-npm-6.1.1-b81af21193.patch",
     "@puppeteer/browsers@1.4.6": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@puppeteer/browsers@^1.6.0": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
@@ -72,7 +71,6 @@
     "jest-fetch-mock@^3.0.3": "patch:jest-fetch-mock@npm:3.0.3#.yarn/patches/jest-fetch-mock-npm-3.0.3-ac072ca8af.patch",
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
-    "lavamoat-browserify@^17.0.5": "patch:lavamoat-browserify@npm%3A17.0.5#./.yarn/patches/lavamoat-browserify-npm-17.0.5-16c00e9ef9.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch",
     "tsconfig-paths@^3.11.0": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
     "tsconfig-paths@^3.14.1": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",

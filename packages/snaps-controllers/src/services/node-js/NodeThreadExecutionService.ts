@@ -1,5 +1,5 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
-import { ThreadParentMessageStream } from '@metamask/post-message-stream';
+import { ThreadParentMessageStream } from '@metamask/post-message-stream/node';
 import { Worker } from 'worker_threads';
 
 import type { TerminateJobArgs } from '..';
@@ -11,9 +11,7 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
     stream: BasePostMessageStream;
   }> {
     const worker = new Worker(
-      require.resolve(
-        '@metamask/snaps-execution-environments/dist/browserify/node-thread/bundle.js',
-      ),
+      require.resolve('@metamask/snaps-execution-environments/node-thread'),
       {
         stdout: true,
         stderr: true,

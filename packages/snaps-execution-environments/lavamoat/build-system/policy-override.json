@@ -1,8 +1,31 @@
 {
   "resources": {
-    "lavamoat-browserify": {
+    "$root$": {
+      "packages": {
+        "ts-loader": true
+      }
+    },
+    "@swc/core": false,
+    "html-webpack-plugin": {
       "builtin": {
-        "node:module": true
+        "url": true
+      }
+    },
+    "ts-loader": {
+      "packages": {
+        "typescript": true
+      }
+    },
+    "typescript": {},
+    "webpack>loader-runner": {
+      "packages": {
+        "html-webpack-plugin": true,
+        "ts-loader": true
+      }
+    },
+    "webpack>terser-webpack-plugin>jest-worker": {
+      "packages": {
+        "webpack>terser-webpack-plugin": true
       }
     }
   }

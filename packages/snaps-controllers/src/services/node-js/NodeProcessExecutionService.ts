@@ -1,5 +1,5 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
-import { ProcessParentMessageStream } from '@metamask/post-message-stream';
+import { ProcessParentMessageStream } from '@metamask/post-message-stream/node';
 import type { ChildProcess } from 'child_process';
 import { fork } from 'child_process';
 
@@ -12,9 +12,7 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
     stream: BasePostMessageStream;
   }> {
     const worker = fork(
-      require.resolve(
-        '@metamask/snaps-execution-environments/dist/browserify/node-process/bundle.js',
-      ),
+      require.resolve('@metamask/snaps-execution-environments/node-process'),
       {
         stdio: 'pipe',
       },

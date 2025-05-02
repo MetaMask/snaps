@@ -5,16 +5,16 @@ import { join } from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
-const IFRAME_PATH = join(import.meta.dirname, './dist/browserify/iframe');
+const IFRAME_PATH = join(import.meta.dirname, './dist/webpack/iframe');
 
 const WORKER_EXECUTOR_PATH = join(
   import.meta.dirname,
-  './dist/browserify/worker-executor',
+  './dist/webpack/worker-executor',
 );
 
 const WORKER_POOL_PATH = join(
   import.meta.dirname,
-  './dist/browserify/worker-pool',
+  './dist/webpack/worker-pool',
 );
 
 export default defineConfig({
@@ -57,9 +57,9 @@ export default defineConfig({
     fs: {
       strict: true,
       allow: [
-        './dist/browserify/iframe',
-        './dist/browserify/worker-executor',
-        './dist/browserify/worker-pool',
+        './dist/webpack/iframe',
+        './dist/webpack/worker-executor',
+        './dist/webpack/worker-pool',
       ],
     },
   },

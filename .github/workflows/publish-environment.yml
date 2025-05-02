@@ -32,5 +32,5 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
       - name: Deploy to `${{ inputs.destination_dir }}` directory of remote storage
         run: |
-          aws s3 cp ./packages/snaps-execution-environments/dist/browserify/iframe s3://${{ vars.AWS_BUCKET_NAME }}/iframe/${{ inputs.destination_dir }} --recursive --acl private
-          aws s3 cp ./packages/snaps-execution-environments/dist/browserify/webview s3://${{ vars.AWS_BUCKET_NAME }}/webview/${{ inputs.destination_dir }} --recursive --acl private
+          aws s3 cp ./packages/snaps-execution-environments/dist/webpack/iframe s3://${{ vars.AWS_BUCKET_NAME }}/iframe/${{ inputs.destination_dir }} --recursive --acl private
+          aws s3 cp ./packages/snaps-execution-environments/dist/webpack/webview s3://${{ vars.AWS_BUCKET_NAME }}/webview/${{ inputs.destination_dir }} --recursive --acl private

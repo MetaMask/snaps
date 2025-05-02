@@ -1,0 +1,101 @@
+{
+  "resources": {
+    "@metamask/post-message-stream": {
+      "globals": {
+        "MessageEvent.prototype": true,
+        "WorkerGlobalScope": true,
+        "addEventListener": true,
+        "browser": true,
+        "chrome": true,
+        "location.origin": true,
+        "postMessage": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "readable-stream": true
+      }
+    },
+    "@metamask/snaps-utils": {
+      "globals": {
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/utils": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "eslint>debug": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>base64-js": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer>ieee754": true
+      }
+    },
+    "eslint>debug": {
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "eslint>debug>ms": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
+      }
+    },
+    "webpack>events": {
+      "globals": {
+        "console": true
+      }
+    },
+    "@metamask/providers>extension-port-stream>readable-stream>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
+    "readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
+        "webpack>events": true,
+        "readable-stream>inherits": true,
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
+        "readable-stream>string_decoder": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "readable-stream>string_decoder>safe-buffer": {
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
+      }
+    },
+    "readable-stream>string_decoder": {
+      "packages": {
+        "readable-stream>string_decoder>safe-buffer": true
+      }
+    },
+    "readable-stream>util-deprecate": {
+      "globals": {
+        "console.trace": true,
+        "console.warn": true,
+        "localStorage": true
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
-import { ThreadMessageStream } from '@metamask/post-message-stream';
+import { ThreadMessageStream } from '@metamask/post-message-stream/node';
 import { logError, SNAP_STREAM_NAMES } from '@metamask/snaps-utils';
 import { pipeline } from 'readable-stream';
 
