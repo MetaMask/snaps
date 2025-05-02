@@ -8,7 +8,7 @@ import type { ValidatorMeta } from '../validator-types';
 export const unusedExports: ValidatorMeta = {
   severity: 'warning',
   semanticCheck(files, context) {
-    const { handlerEndowments, exports } = context.options;
+    const { handlerEndowments, exports } = context.options ?? {};
 
     // The handler endowments or exports must be provided for this check to be
     // performed.
@@ -31,8 +31,8 @@ export const unusedExports: ValidatorMeta = {
       })
       .map(([handler, endowment]) => `${handler} (${endowment})`);
 
-    const endowments = Object.entries(handlerEndowments)
-      .filter(([handler, endowment]) => {
+    const endowments = Object.entries(handlerEndowments).filter(
+      ([handler, endowment]) => {
         if (endowment === null) {
           return false;
         }
@@ -42,8 +42,8 @@ export const unusedExports: ValidatorMeta = {
             endowment as keyof InitialPermissions
           ] && !exports.includes(handler)
         );
-      })
-      .map(([handler, endowment]) => `${handler} (${endowment})`);
+      },
+    );
 
     if (handlers.length > 0) {
       // We don't specify a fix function here, because:
@@ -59,10 +59,12 @@ export const unusedExports: ValidatorMeta = {
     }
 
     if (endowments.length > 0) {
+      const formattedEndowments = endowments
+        .map(([handler, endowment]) => `${handler} (${endowment})`)
+        .join(', ');
+
       context.report(
-        `The Snap requests permission for the following handlers, but does not export them: ${endowments.join(
-          ', ',
-        )}.`,
+        `The Snap requests permission for the following handlers, but does not export them: ${formattedEndowments}.`,
         ({ manifest }) => {
           endowments.forEach(([, endowment]) => {
             delete manifest.initialPermissions[

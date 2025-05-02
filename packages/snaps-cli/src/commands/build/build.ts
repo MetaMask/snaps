@@ -1,26 +1,23 @@
-import { handlerEndowments } from '@metamask/snaps-rpc-methods';
-import { checkManifest, isFile } from '@metamask/snaps-utils/node';
-import { writeManifest } from '@metamask/snaps-webpack-plugin';
+import { isFile } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
-import { red, reset, yellow } from 'chalk';
-import { readFile } from 'fs/promises';
-import { dirname, resolve as pathResolve } from 'path';
+import { resolve } from 'path';
 
 import { build } from './implementation';
 import { getBundleAnalyzerPort } from './utils';
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { error, success, executeSteps, info, warn } from '../../utils';
-import { formatError } from '../../webpack/utils';
+import { info, success, executeSteps } from '../../utils';
 import { evaluate } from '../eval';
+import { manifest } from '../manifest';
+import { showManifestMessage } from '../manifest/manifest';
 
 export type BuildContext = {
   analyze: boolean;
   build: boolean;
   config: ProcessedConfig;
-  port?: number;
   exports?: string[];
+  port?: number;
 };
 
 export const steps: Steps<BuildContext> = [
@@ -40,7 +37,9 @@ export const steps: Steps<BuildContext> = [
   {
     name: 'Building the Snap bundle.',
     condition: ({ build: enableBuild }) => enableBuild,
-    task: async ({ analyze, build: enableBuild, config, spinner }) => {
+    task: async (context) => {
+      const { analyze, config, spinner } = context;
+
       // We don't evaluate the bundle here, because it's done in a separate
       // step.
       const compiler = await build(config, {
@@ -51,10 +50,7 @@ export const steps: Steps<BuildContext> = [
 
       if (analyze) {
         return {
-          analyze,
-          build: enableBuild,
-          config,
-          spinner,
+          ...context,
           port: await getBundleAnalyzerPort(compiler),
         };
       }
@@ -68,7 +64,7 @@ export const steps: Steps<BuildContext> = [
       enableBuild && config.evaluate,
     task: async (context) => {
       const { config, spinner } = context;
-      const path = pathResolve(
+      const path = resolve(
         process.cwd(),
         config.output.path,
         config.output.filename,
@@ -84,65 +80,18 @@ export const steps: Steps<BuildContext> = [
       };
     },
   },
-
-  // TODO: Share this between the `build` and `manifest` commands.
   {
     name: 'Validating the Snap manifest.',
-    condition: ({ config }) => config.evaluate,
     task: async ({ config, exports, spinner }) => {
-      const bundlePath = pathResolve(
-        process.cwd(),
-        config.output.path,
-        config.output.filename,
+      const stats = await manifest(
+        config,
+        config.manifest.path,
+        config.manifest.update,
+        exports,
+        spinner,
       );
 
-      const { reports } = await checkManifest(dirname(config.manifest.path), {
-        updateAndWriteManifest: config.manifest.update,
-        sourceCode: await readFile(bundlePath, 'utf-8'),
-        exports,
-        handlerEndowments,
-        writeFileFn: async (path, data) => {
-          return writeManifest(path, data);
-        },
-      });
-
-      // TODO: Use `Object.groupBy` when available.
-      const errors = reports
-        .filter((report) => report.severity === 'error' && !report.wasFixed)
-        .map((report) => report.message);
-      const warnings = reports
-        .filter((report) => report.severity === 'warning' && !report.wasFixed)
-        .map((report) => report.message);
-      const fixed = reports
-        .filter((report) => report.wasFixed)
-        .map((report) => report.message);
-
-      if (errors.length > 0) {
-        error(
-          `The following errors were found in the manifest:\n\n${errors
-            .map((value) => formatError(value, '', red))
-            .join('\n\n')}\n`,
-          spinner,
-        );
-      }
-
-      if (warnings.length > 0) {
-        warn(
-          `The following warnings were found in the manifest:\n\n${warnings
-            .map((value) => formatError(value, '', yellow))
-            .join('\n\n')}\n`,
-          spinner,
-        );
-      }
-
-      if (fixed.length > 0) {
-        info(
-          `The following issues were fixed in the manifest:\n\n${reset(
-            fixed.map((value) => formatError(value, '', reset)).join('\n\n'),
-          )}\n`,
-          spinner,
-        );
-      }
+      showManifestMessage(stats, config.manifest.update, spinner);
     },
   },
   {

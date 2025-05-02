@@ -43,7 +43,7 @@ const steps: Steps<WatchContext> = [
     },
   },
   {
-    name: 'Building the snap bundle.',
+    name: 'Building the Snap bundle.',
     task: async ({ config, spinner }) => {
       await watch(config, { spinner });
     },

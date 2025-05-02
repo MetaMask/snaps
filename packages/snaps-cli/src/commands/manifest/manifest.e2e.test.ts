@@ -18,12 +18,14 @@ describe('mm-snap manifest', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Validating the snap manifest\./u),
+        expect.stringMatching(/Validating the Snap manifest\./u),
       );
-      expect(runner.stderr).toContainEqual(
-        expect.stringMatching(/The snap manifest file has warnings\./u),
+      expect(runner.stdout).toContainEqual(
+        expect.stringMatching(
+          /The Snap manifest file is valid, but contains 1 warning\./u,
+        ),
       );
-      expect(runner.stderr).toContainEqual(
+      expect(runner.stdout).toContainEqual(
         expect.stringContaining(
           'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
         ),
