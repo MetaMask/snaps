@@ -16,6 +16,8 @@ function indent(message, spaces = 2) {
     .join('\n');
 }
 
+console.log('Building Snaps execution environments...\n');
+
 webpack(config, (error, stats) => {
   if (error) {
     console.error(
