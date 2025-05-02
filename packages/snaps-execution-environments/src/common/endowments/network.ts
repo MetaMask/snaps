@@ -226,13 +226,13 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     return await withTeardown(
       (async () => {
         try {
-          await notify({
-            method: 'OutboundRequest',
-            params: { source: 'fetch' },
-          });
           const fetchPromise = fetch(input, {
             ...init,
             signal: abortController.signal,
+          });
+          await notify({
+            method: 'OutboundRequest',
+            params: { source: 'fetch' },
           });
 
           openFetchConnection = {
@@ -256,11 +256,12 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
         } finally {
           if (openFetchConnection !== undefined) {
             openConnections.delete(openFetchConnection);
+
+            await notify({
+              method: 'OutboundResponse',
+              params: { source: 'fetch' },
+            });
           }
-          await notify({
-            method: 'OutboundResponse',
-            params: { source: 'fetch' },
-          });
         }
 
         if (res.body !== null) {

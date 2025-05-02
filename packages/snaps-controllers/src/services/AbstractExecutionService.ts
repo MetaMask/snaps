@@ -209,16 +209,18 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Initiates a job for a snap.
    *
+   * @param snapId - The Snap ID.
    * @param jobId - The ID of the job to initiate.
    * @param timer - The timer to use for timeouts.
    * @returns Information regarding the created job.
    * @throws If the execution service returns an error or execution times out.
    */
-  protected async initJob(
+  async #initJob(
+    snapId: string,
     jobId: string,
     timer: Timer,
   ): Promise<Job<WorkerType>> {
-    const { streams, worker } = await this.initStreams(jobId, timer);
+    const { streams, worker } = await this.#initStreams(snapId, jobId, timer);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -250,12 +252,14 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Sets up the streams for an initiated job.
    *
+   * @param snapId - The Snap ID.
    * @param jobId - The id of the job.
    * @param timer - The timer to use for timeouts.
    * @returns The streams to communicate with the worker and the worker itself.
    * @throws If the execution service returns an error or execution times out.
    */
-  protected async initStreams(
+  async #initStreams(
+    snapId: string,
     jobId: string,
     timer: Timer,
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
@@ -282,8 +286,6 @@ export abstract class AbstractExecutionService<WorkerType>
         return;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const snapId = this.#jobToSnapMap.get(jobId)!;
       if (message.method === 'OutboundRequest') {
         this.#messenger.publish('ExecutionService:outboundRequest', snapId);
       } else if (message.method === 'OutboundResponse') {
@@ -313,7 +315,30 @@ export abstract class AbstractExecutionService<WorkerType>
     };
 
     commandStream.on('data', notificationHandler);
+
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
+
+    rpcStream.on('data', (chunk) => {
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundRequest', snapId);
+      }
+    });
+
+    const originalWrite = rpcStream.write.bind(rpcStream);
+
+    // @ts-expect-error Hack to inspect the messages being written to the stream.
+    rpcStream.write = (chunk, encoding, callback) => {
+      // Ignore chain switching notifications as it doesn't matter for the SnapProvider.
+      if (chunk?.data?.method === 'metamask_chainChanged') {
+        return;
+      }
+
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+      }
+
+      originalWrite(chunk, encoding, callback);
+    };
 
     // Typecast: stream type mismatch
     return {
@@ -394,7 +419,7 @@ export abstract class AbstractExecutionService<WorkerType>
     const timer = new Timer(this.#initTimeout);
 
     // This may resolve even if the environment has failed to start up fully
-    const job = await this.initJob(jobId, timer);
+    const job = await this.#initJob(snapId, jobId, timer);
 
     this.#mapSnapAndJob(snapId, job.id);
 

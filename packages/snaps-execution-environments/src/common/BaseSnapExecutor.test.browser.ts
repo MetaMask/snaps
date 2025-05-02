@@ -189,12 +189,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const blockNumRequest = await executor.readRpc();
     expect(blockNumRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -214,12 +208,6 @@ describe('BaseSnapExecutor', () => {
         id: blockNumRequest.data.id!,
         result: '0xa70e77',
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -255,12 +243,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'snap.request' },
-    });
-
     const walletRequest = await executor.readRpc();
     expect(walletRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -280,12 +262,6 @@ describe('BaseSnapExecutor', () => {
         id: walletRequest.data.id!,
         result: [],
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -369,12 +345,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const blockNumRequest = await executor.readRpc();
     expect(blockNumRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -394,12 +364,6 @@ describe('BaseSnapExecutor', () => {
         id: blockNumRequest.data.id!,
         result: '0xa70e77',
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -437,12 +401,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'snap.request' },
-    });
-
     const getSnapsRequest = await executor.readRpc();
     expect(getSnapsRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -469,12 +427,6 @@ describe('BaseSnapExecutor', () => {
         id: getSnapsRequest.data.id!,
         result: mockSnapsResult,
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -808,12 +760,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'snap.request' },
-    });
-
     const request = await executor.readRpc();
     expect(request).toStrictEqual({
       name: 'metamask-provider',
@@ -839,12 +785,6 @@ describe('BaseSnapExecutor', () => {
         id: request.data.id!,
         result,
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'snap.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -885,12 +825,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const request = await executor.readRpc();
     expect(request).toStrictEqual({
       name: 'metamask-provider',
@@ -918,12 +852,6 @@ describe('BaseSnapExecutor', () => {
         id: request.data.id!,
         result,
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1996,12 +1924,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const blockNumRequest = await executor.readRpc();
     expect(blockNumRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -2039,12 +1961,6 @@ describe('BaseSnapExecutor', () => {
         id: blockNumRequest.data.id!,
         result: '0xa70e77',
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2105,12 +2021,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const blockNumRequest = await executor.readRpc();
     expect(blockNumRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -2154,12 +2064,6 @@ describe('BaseSnapExecutor', () => {
     });
 
     expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
       id: 3,
       jsonrpc: '2.0',
       result: 'Timeout resolved for second call.',
@@ -2199,12 +2103,6 @@ describe('BaseSnapExecutor', () => {
       ],
     });
 
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundRequest',
-      params: { source: 'ethereum.request' },
-    });
-
     const blockNumRequest = await executor.readRpc();
     expect(blockNumRequest).toStrictEqual({
       name: 'metamask-provider',
@@ -2227,12 +2125,6 @@ describe('BaseSnapExecutor', () => {
           code: -1000,
         },
       },
-    });
-
-    expect(await executor.readCommand()).toStrictEqual({
-      jsonrpc: '2.0',
-      method: 'OutboundResponse',
-      params: { source: 'ethereum.request' },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
