@@ -5,7 +5,7 @@
         "ts-loader": true
       }
     },
-    "lavamoat>@babel/code-frame": {
+    "@testing-library/dom>@babel/code-frame": {
       "globals": {
         "console.warn": true,
         "process": true
@@ -30,23 +30,33 @@
     },
     "depcheck>@babel/traverse>@babel/template": {
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/parser": true,
         "@metamask/snaps-utils>@babel/types": true
       }
     },
-    "depcheck>@babel/traverse": {
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/traverse>@babel/generator": true,
-        "depcheck>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/template": true,
-        "@metamask/snaps-utils>@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "eslint>debug": true,
-        "depcheck>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "@metamask/snaps-utils>@babel/types": {
@@ -757,7 +767,7 @@
       },
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {

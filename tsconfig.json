@@ -1,7 +1,6 @@
 {
   "references": [
     { "path": "./packages/create-snap" },
-    { "path": "./packages/snaps-browserify-plugin" },
     { "path": "./packages/snaps-cli" },
     { "path": "./packages/snaps-controllers" },
     { "path": "./packages/snaps-jest" },

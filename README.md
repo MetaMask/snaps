@@ -10,7 +10,6 @@ This repository contains the following packages [^fn1]:
 <!-- start package list -->
 
 - [`@metamask/create-snap`](packages/create-snap)
-- [`@metamask/snaps-browserify-plugin`](packages/snaps-browserify-plugin)
 - [`@metamask/snaps-cli`](packages/snaps-cli)
 - [`@metamask/snaps-controllers`](packages/snaps-controllers)
 - [`@metamask/snaps-execution-environments`](packages/snaps-execution-environments)
