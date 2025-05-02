@@ -155,8 +155,7 @@
         "process.report": true
       },
       "packages": {
-        "@swc/core>@swc/core-darwin-arm64": true,
-        "@swc/core>@swc/core-linux-x64-gnu": true
+        "@swc/core>@swc/core-darwin-arm64": true
       }
     },
     "webpack>@webassemblyjs/ast": {
