@@ -75,8 +75,6 @@ The following is a list of the snaps in this directory.
 
 ### 3rd party integrations
 
-- [**`packages/browserify-plugin`**](./packages/browserify-plugin): This snap
-  demonstrates how to use Browserify to bundle a snap.
 - [**`packages/ethers-js`**](./packages/ethers-js): This snap demonstrates how
   to use Ethers.js in a snap.
 - [**`packages/rollup-plugin`**](./packages/rollup-plugin): This snap

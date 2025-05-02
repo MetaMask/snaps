@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "resolveJsonModule": true,
-    "baseUrl": "./",
-    "composite": false
-  },
-  "include": ["src", "scripts", "babel.config.json"]
-}
