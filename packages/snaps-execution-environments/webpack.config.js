@@ -133,24 +133,6 @@ const ENTRY_POINTS = [
       ],
     },
   },
-
-  {
-    name: 'worker-executor',
-    entry: './src/webworker/executor/index.ts',
-    inline: true,
-
-    config: {
-      target: 'webworker',
-    },
-  },
-
-  {
-    name: 'worker-pool',
-    entry: './src/webworker/pool/index.ts',
-    scuttleGlobalThis: true,
-
-    config: DEFAULT_WEB_CONFIG,
-  },
 ];
 
 /**

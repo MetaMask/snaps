@@ -4321,7 +4321,6 @@ __metadata:
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
     lavamoat: "npm:^9.0.8"
-    nanoid: "npm:^3.3.10"
     prettier: "npm:^3.3.3"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
