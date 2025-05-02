@@ -137,27 +137,7 @@
         "webpack": true
       }
     },
-    "@swc/core": {
-      "builtin": {
-        "assert": true,
-        "child_process.execSync": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "__dirname": true,
-        "console.warn": true,
-        "process.arch": true,
-        "process.env": true,
-        "process.platform": true,
-        "process.report": true
-      },
-      "packages": {
-        "@swc/core>@swc/core-darwin-arm64": true
-      }
-    },
+    "@swc/core": false,
     "webpack>@webassemblyjs/ast": {
       "globals": {
         "console.warn": true

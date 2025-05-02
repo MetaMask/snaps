@@ -5,6 +5,7 @@
         "ts-loader": true
       }
     },
+    "@swc/core": false,
     "html-webpack-plugin": {
       "builtin": {
         "url": true
