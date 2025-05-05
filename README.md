@@ -33,7 +33,6 @@ Or, in graph form [^fn1]:
 graph LR;
 linkStyle default opacity:0.5
   create_snap(["@metamask/create-snap"]);
-  snaps_browserify_plugin(["@metamask/snaps-browserify-plugin"]);
   snaps_cli(["@metamask/snaps-cli"]);
   snaps_controllers(["@metamask/snaps-controllers"]);
   snaps_execution_environments(["@metamask/snaps-execution-environments"]);
@@ -46,7 +45,6 @@ linkStyle default opacity:0.5
   snaps_utils(["@metamask/snaps-utils"]);
   snaps_webpack_plugin(["@metamask/snaps-webpack-plugin"]);
   create_snap --> snaps_utils;
-  snaps_browserify_plugin --> snaps_utils;
   snaps_cli --> snaps_sandbox;
   snaps_cli --> snaps_sdk;
   snaps_cli --> snaps_utils;
