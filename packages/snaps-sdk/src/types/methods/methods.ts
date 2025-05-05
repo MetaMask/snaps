@@ -79,6 +79,7 @@ import type {
   UpdateInterfaceResult,
 } from './update-interface';
 import type { Method } from '../../internals';
+import type { TrackEventParams, TrackEventResult } from '@metamask/snaps-sdk';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
@@ -123,6 +124,7 @@ export type SnapMethods = {
   ];
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   snap_setState: [SetStateParams, SetStateResult];
+  snap_trackEvent: [TrackEventParams, TrackEventResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
