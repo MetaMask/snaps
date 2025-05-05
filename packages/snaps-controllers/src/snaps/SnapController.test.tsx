@@ -4702,7 +4702,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(4);
+      expect(rootMessenger.call).toHaveBeenCalledTimes(5);
       expect(rootMessenger.call).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
@@ -9214,46 +9214,6 @@ describe('SnapController', () => {
     });
   });
 
-  describe('getRegistryMetadata', () => {
-    it('returns the metadata for a verified snap', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      registry.getMetadata.mockReturnValue({
-        name: 'Mock Snap',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(
-        await snapController.getRegistryMetadata(MOCK_SNAP_ID),
-      ).toStrictEqual({
-        name: 'Mock Snap',
-      });
-
-      snapController.destroy();
-    });
-
-    it('returns null for a non-verified snap', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(await snapController.getRegistryMetadata(MOCK_SNAP_ID)).toBeNull();
-
-      snapController.destroy();
-    });
-  });
-
   describe('clearState', () => {
     it('clears the state and terminates running snaps', async () => {
       const rootMessenger = getControllerMessenger();
@@ -9414,6 +9374,195 @@ describe('SnapController', () => {
         ).toBe(true);
         expect(handleRpcRequestSpy).toHaveBeenCalledTimes(1);
 
+        snapController.destroy();
+      });
+
+      it('should track event for allowed handler', async () => {
+        const mockTrackEvent = jest.fn();
+        const rootMessenger = getControllerMessenger();
+        const executionEnvironmentStub = new ExecutionEnvironmentStub(
+          getNodeEESMessenger(rootMessenger),
+        ) as unknown as NodeThreadExecutionService;
+
+        const [snapController] = getSnapControllerWithEES(
+          getSnapControllerWithEESOptions({
+            rootMessenger,
+            trackEvent: mockTrackEvent,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+          executionEnvironmentStub,
+        );
+
+        const snap = snapController.getExpect(MOCK_SNAP_ID);
+        await snapController.startSnap(snap.id);
+
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: {},
+            id: 1,
+          },
+        });
+
+        expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+        expect(mockTrackEvent).toHaveBeenCalledWith({
+          event: 'SnapExportUsed',
+          category: 'Snaps',
+          properties: {
+            export: 'onRpcRequest',
+            origin: 'https://example.com',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: null,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: 'npm:@metamask/example-snap',
+            success: true,
+          },
+        });
+        snapController.destroy();
+      });
+
+      it('should not track event for disallowed handler', async () => {
+        const mockTrackEvent = jest.fn();
+        const rootMessenger = getControllerMessenger();
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:getPermissions',
+          () => ({
+            [SnapEndowments.Cronjob]: {
+              caveats: [
+                { type: SnapCaveatType.SnapCronjob, value: '* * * * *' },
+              ],
+              date: 1664187844588,
+              id: 'izn0WGUO8cvq_jqvLQuQP',
+              invoker: MOCK_SNAP_ID,
+              parentCapability: SnapEndowments.Cronjob,
+            },
+          }),
+        );
+
+        const executionEnvironmentStub = new ExecutionEnvironmentStub(
+          getNodeEESMessenger(rootMessenger),
+        ) as unknown as NodeThreadExecutionService;
+
+        const [snapController] = getSnapControllerWithEES(
+          getSnapControllerWithEESOptions({
+            environmentEndowmentPermissions: ['endowment:cronjob'],
+            rootMessenger,
+            trackEvent: mockTrackEvent,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+          executionEnvironmentStub,
+        );
+
+        const snap = snapController.getExpect(MOCK_SNAP_ID);
+        await snapController.startSnap(snap.id);
+
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnCronjob,
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: {},
+            id: 1,
+          },
+        });
+
+        expect(mockTrackEvent).not.toHaveBeenCalled();
+        snapController.destroy();
+      });
+
+      it('should properly handle error when MetaMetrics hook throws an error', async () => {
+        const log = jest.spyOn(console, 'error').mockImplementation();
+        const error = new Error('MetaMetrics hook error');
+        const mockTrackEvent = jest.fn().mockImplementation(() => {
+          throw error;
+        });
+        const rootMessenger = getControllerMessenger();
+        const executionEnvironmentStub = new ExecutionEnvironmentStub(
+          getNodeEESMessenger(rootMessenger),
+        ) as unknown as NodeThreadExecutionService;
+
+        const [snapController] = getSnapControllerWithEES(
+          getSnapControllerWithEESOptions({
+            rootMessenger,
+            trackEvent: mockTrackEvent,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+          executionEnvironmentStub,
+        );
+
+        const snap = snapController.getExpect(MOCK_SNAP_ID);
+        await snapController.startSnap(snap.id);
+
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: {},
+            id: 1,
+          },
+        });
+
+        expect(mockTrackEvent).toHaveBeenCalled();
+        expect(log).toHaveBeenCalledWith(
+          expect.stringContaining(
+            'Error when calling MetaMetrics hook for snap',
+          ),
+        );
+        snapController.destroy();
+      });
+
+      it('should not track event for preinstalled snap', async () => {
+        const mockTrackEvent = jest.fn();
+        const rootMessenger = getControllerMessenger();
+        const executionEnvironmentStub = new ExecutionEnvironmentStub(
+          getNodeEESMessenger(rootMessenger),
+        ) as unknown as NodeThreadExecutionService;
+
+        const [snapController] = getSnapControllerWithEES(
+          getSnapControllerWithEESOptions({
+            rootMessenger,
+            trackEvent: mockTrackEvent,
+            state: {
+              snaps: getPersistedSnapsState(
+                getPersistedSnapObject({ preinstalled: true }),
+              ),
+            },
+          }),
+          executionEnvironmentStub,
+        );
+
+        const snap = snapController.getExpect(MOCK_SNAP_ID);
+        await snapController.startSnap(snap.id);
+
+        await snapController.handleRequest({
+          snapId: snap.id,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: {},
+            id: 1,
+          },
+        });
+
+        expect(mockTrackEvent).not.toHaveBeenCalled();
         snapController.destroy();
       });
     });
@@ -10383,35 +10532,6 @@ describe('SnapController', () => {
       await messenger.call('SnapController:install', 'foo', snaps);
       expect(installSnapsSpy).toHaveBeenCalledTimes(1);
       expect(installSnapsSpy).toHaveBeenCalledWith('foo', snaps);
-
-      snapController.destroy();
-    });
-  });
-
-  describe('SnapController:getRegistryMetadata', () => {
-    it('calls SnapController.getRegistryMetadata()', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
-      const messenger = getSnapControllerMessenger(rootMessenger);
-
-      registry.getMetadata.mockReturnValue({
-        name: 'Mock Snap',
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-        }),
-      );
-
-      expect(
-        await messenger.call(
-          'SnapController:getRegistryMetadata',
-          MOCK_SNAP_ID,
-        ),
-      ).toStrictEqual({
-        name: 'Mock Snap',
-      });
 
       snapController.destroy();
     });
