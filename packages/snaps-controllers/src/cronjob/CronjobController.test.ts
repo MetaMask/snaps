@@ -91,7 +91,7 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('executes cronjobs that were missed during daily check in', async () => {
+  it('executes cronjobs that were missed during daily check in', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
@@ -118,7 +118,7 @@ describe('CronjobController', () => {
       };
     });
 
-    await cronjobController.dailyCheckIn();
+    cronjobController.dailyCheckIn();
 
     jest.advanceTimersByTime(inMilliseconds(24, Duration.Hour));
 
@@ -197,6 +197,38 @@ describe('CronjobController', () => {
 
     cronjobController.destroy();
     cronjobController2.destroy();
+  });
+
+  it('catches errors during daily check in', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return { [SnapEndowments.Cronjob]: getCronjobPermission() };
+      },
+    );
+
+    const handleRequest = jest.fn().mockRejectedValue('Snap failed to boot.');
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      handleRequest,
+    );
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    cronjobController.dailyCheckIn();
+
+    jest.advanceTimersByTime(inMilliseconds(24, Duration.Hour));
+
+    expect(handleRequest).toHaveBeenCalledTimes(2);
+
+    cronjobController.destroy();
   });
 
   it('does not schedule cronjob that is too far in the future', () => {

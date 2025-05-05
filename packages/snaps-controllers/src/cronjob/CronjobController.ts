@@ -196,9 +196,7 @@ export class CronjobController extends BaseController<
       (...args) => this.getBackgroundEvents(...args),
     );
 
-    this.dailyCheckIn().catch((error) => {
-      logError(error);
-    });
+    this.dailyCheckIn();
 
     this.#rescheduleBackgroundEvents(Object.values(this.state.events));
   }
@@ -471,7 +469,7 @@ export class CronjobController extends BaseController<
    *
    * This is necessary for longer running jobs that execute with more than 24 hours between them.
    */
-  async dailyCheckIn() {
+  dailyCheckIn() {
     const jobs = this.#getAllJobs();
 
     for (const job of jobs) {
@@ -483,7 +481,9 @@ export class CronjobController extends BaseController<
         parsed.hasPrev() &&
         parsed.prev().getTime() > lastRun
       ) {
-        await this.#executeCronjob(job);
+        this.#executeCronjob(job).catch((error) => {
+          logError(error);
+        });
       }
 
       // Try scheduling, will fail if an existing scheduled job is found
@@ -492,10 +492,7 @@ export class CronjobController extends BaseController<
 
     this.#dailyTimer = new Timer(DAILY_TIMEOUT);
     this.#dailyTimer.start(() => {
-      this.dailyCheckIn().catch((error) => {
-        // TODO: Decide how to handle errors.
-        logError(error);
-      });
+      this.dailyCheckIn();
     });
   }
 
