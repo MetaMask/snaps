@@ -531,12 +531,15 @@ export class BaseSnapExecutor {
       assertSnapOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({
-            method: 'OutboundRequest',
-            params: { source: 'snap.request' },
-          });
           try {
-            return await originalRequest(sanitizedArgs);
+            const promise = originalRequest(sanitizedArgs);
+
+            await this.#notify({
+              method: 'OutboundRequest',
+              params: { source: 'snap.request' },
+            });
+
+            return await promise;
           } finally {
             await this.#notify({
               method: 'OutboundResponse',
@@ -573,12 +576,15 @@ export class BaseSnapExecutor {
       assertEthereumOutboundRequest(sanitizedArgs);
       return await withTeardown(
         (async () => {
-          await this.#notify({
-            method: 'OutboundRequest',
-            params: { source: 'ethereum.request' },
-          });
           try {
-            return await originalRequest(sanitizedArgs);
+            const promise = originalRequest(sanitizedArgs);
+
+            await this.#notify({
+              method: 'OutboundRequest',
+              params: { source: 'ethereum.request' },
+            });
+
+            return await promise;
           } finally {
             await this.#notify({
               method: 'OutboundResponse',

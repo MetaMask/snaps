@@ -1802,7 +1802,7 @@ describe('SnapController', () => {
     });
 
     const { rootMessenger } = options;
-    const [snapController, service] = getSnapControllerWithEES(options);
+    const [snapController] = getSnapControllerWithEES(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
@@ -1845,7 +1845,6 @@ describe('SnapController', () => {
     );
 
     snapController.destroy();
-    await service.terminateAllSnaps();
   });
 
   // This isn't stable in CI unfortunately
