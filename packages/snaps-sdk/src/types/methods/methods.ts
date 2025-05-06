@@ -74,12 +74,12 @@ import type {
   ScheduleBackgroundEventResult,
 } from './schedule-background-event';
 import type { SetStateParams, SetStateResult } from './set-state';
+import type { TrackEventParams, TrackEventResult } from './track-event';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
 import type { Method } from '../../internals';
-import type { TrackEventParams, TrackEventResult } from '@metamask/snaps-sdk';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
