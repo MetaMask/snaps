@@ -140,7 +140,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
-          is-high-risk-environment: ${{ { needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
+          is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
       - name: Save LavaMoat policies
@@ -173,7 +173,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
-          is-high-risk-environment: ${{ { needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
+          is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Build dependencies
         run: |
           yarn build:ci
