@@ -190,7 +190,7 @@ describe('snap_trackEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: All property keys must be in snake_case format. Found invalid key: "properties".',
+            'Invalid params: All property keys must be in snake_case format. The following key contains invalid properties: "properties".',
           stack: expect.any(String),
         },
         id: 1,
@@ -239,7 +239,7 @@ describe('snap_trackEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: All property keys must be in snake_case format. Found invalid key: "sensitiveProperties".',
+            'Invalid params: All property keys must be in snake_case format. The following key contains invalid properties: "sensitiveProperties".',
           stack: expect.any(String),
         },
         id: 1,

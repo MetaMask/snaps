@@ -144,7 +144,7 @@ function getValidatedParams(params: unknown): TrackEventParameters {
     if (error instanceof StructError) {
       if (error.refinement === 'snake_case_keys') {
         throw rpcErrors.invalidParams({
-          message: `Invalid params: All property keys must be in snake_case format. Found invalid key: "${error.key}".`,
+          message: `Invalid params: All property keys must be in snake_case format. The following key contains invalid properties: "${error.key}".`,
         });
       }
 
