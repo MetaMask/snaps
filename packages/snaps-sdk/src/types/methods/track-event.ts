@@ -10,19 +10,8 @@ import type { Json } from '@metamask/utils';
  */
 export type TrackEventParams = {
   event: {
-    /**
-     * The name of the event to track.
-     */
     event: string;
-
-    /**
-     * Custom values to track.
-     */
     properties?: Record<string, Json>;
-
-    /**
-     * Sensitive values to track.
-     */
     sensitiveProperties?: Record<string, Json>;
   };
 };
