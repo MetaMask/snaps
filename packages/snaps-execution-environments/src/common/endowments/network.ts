@@ -226,13 +226,14 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     return await withTeardown(
       (async () => {
         try {
-          await notify({
-            method: 'OutboundRequest',
-            params: { source: 'fetch' },
-          });
           const fetchPromise = fetch(input, {
             ...init,
             signal: abortController.signal,
+          });
+
+          await notify({
+            method: 'OutboundRequest',
+            params: { source: 'fetch' },
           });
 
           openFetchConnection = {
