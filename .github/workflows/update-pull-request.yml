@@ -92,6 +92,8 @@ jobs:
     name: Deduplicate yarn.lock
     runs-on: ubuntu-latest
     needs: prepare
+    outputs:
+      YARN_LOCK_CHANGED: ${{ steps.check-yarn-lock.outputs.YARN_LOCK_CHANGED }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -106,6 +108,10 @@ jobs:
           is-high-risk-environment: false
       - name: Deduplicate yarn.lock
         run: yarn dedupe
+      - name: Check if yarn.lock changed
+        id: check-yarn-lock
+        run: |
+          git diff --exit-code yarn.lock || echo "YARN_LOCK_CHANGED=true" >> "$GITHUB_OUTPUT"
       - name: Save yarn.lock
         uses: actions/upload-artifact@v4
         with:
@@ -133,7 +139,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
-          is-high-risk-environment: false
+          # If the Yarn lock changed we need to reinstall the dependencies.
+          is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
       - name: Save LavaMoat policies
@@ -165,7 +172,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
-          is-high-risk-environment: false
+          # If the Yarn lock changed we need to reinstall the dependencies.
+          is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Build dependencies
         run: |
           yarn build:ci
