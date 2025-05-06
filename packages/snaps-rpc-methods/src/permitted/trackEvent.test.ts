@@ -190,7 +190,7 @@ describe('snap_trackEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: All custom value keys must be in snake_case format in event.properties.',
+            'Invalid params: All property keys must be in snake_case format. Found invalid key: "properties".',
           stack: expect.any(String),
         },
         id: 1,
@@ -239,7 +239,7 @@ describe('snap_trackEvent', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: All custom value keys must be in snake_case format in event.sensitiveProperties.',
+            'Invalid params: All property keys must be in snake_case format. Found invalid key: "sensitiveProperties".',
           stack: expect.any(String),
         },
         id: 1,
@@ -329,9 +329,8 @@ describe('snap_trackEvent', () => {
 
       expect(response).toStrictEqual({
         error: {
-          code: 4100,
-          message:
-            'The requested account and/or method has not been authorized by the user.',
+          code: -32601,
+          message: 'The method does not exist / is not available.',
           stack: expect.any(String),
         },
         id: 1,

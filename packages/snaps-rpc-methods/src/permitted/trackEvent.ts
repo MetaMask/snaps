@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   TrackEventParams,
@@ -21,17 +21,18 @@ import { JsonStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
-const propertiesStruct = optional(record(string(), JsonStruct));
+const PropertiesStruct = optional(record(string(), JsonStruct));
 
-const snakeCasePropertiesStruct = refine(
-  propertiesStruct,
+const snakeCaseRegex = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/u;
+
+const SnakeCasePropertiesStruct = refine(
+  PropertiesStruct,
   'snake_case_keys',
   (value) => {
     if (!value) {
       return true;
     }
 
-    const snakeCaseRegex = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/u;
     return Object.keys(value).every((key) => snakeCaseRegex.test(key));
   },
 );
@@ -49,7 +50,7 @@ export type TrackEventMethodHooks = {
    */
   trackEvent: (event: TrackEventObject) => void;
   /**
-   * Get Snap state.
+   * Get Snap metadata.
    *
    * @param snapId - The ID of a Snap.
    */
@@ -65,8 +66,8 @@ export type TrackEventObject = {
 const TrackEventParametersStruct = object({
   event: object({
     event: string(),
-    properties: snakeCasePropertiesStruct,
-    sensitiveProperties: snakeCasePropertiesStruct,
+    properties: SnakeCasePropertiesStruct,
+    sensitiveProperties: SnakeCasePropertiesStruct,
   }),
 });
 
@@ -98,7 +99,7 @@ export const trackEventHandler: PermittedHandlerExport<
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.trackEvent - The function to track the event.
- * @param hooks.getSnap - The function to get Snap state.
+ * @param hooks.getSnap - The function to get Snap metadata.
  * @returns Nothing.
  */
 function getTrackEventImplementation(
@@ -113,7 +114,7 @@ function getTrackEventImplementation(
   );
 
   if (!snap?.preinstalled) {
-    return end(providerErrors.unauthorized());
+    return end(rpcErrors.methodNotFound());
   }
 
   const { params } = req;
@@ -143,7 +144,7 @@ function getValidatedParams(params: unknown): TrackEventParameters {
     if (error instanceof StructError) {
       if (error.refinement === 'snake_case_keys') {
         throw rpcErrors.invalidParams({
-          message: `Invalid params: All custom value keys must be in snake_case format in event.${error.key}.`,
+          message: `Invalid params: All property keys must be in snake_case format. Found invalid key: "${error.key}".`,
         });
       }
 
