@@ -8,11 +8,6 @@ import type { HandlerType } from './handlers';
 import { SNAP_EXPORT_NAMES } from './handlers';
 import { generateMockEndowments } from './mock';
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
-assert(process.send, 'This script must be run as a child process.');
-
-declare let lockdown: any, Compartment: any;
-
 lockdown({
   errorTaming: 'unsafe',
   stackFiltering: 'verbose',
@@ -43,23 +38,46 @@ compartment.globalThis.window = compartment.globalThis;
 
 compartment.evaluate(readFileSync(snapFilePath, 'utf8'));
 
-// Send the exports back to the parent process for analysis.
-process.send({
-  type: 'snap-exports',
-  data: {
-    exports: Object.keys(snapModule.exports),
-  },
-});
+/**
+ * Check the exports of the Snap module to ensure they are valid, and exit the
+ * worker process.
+ *
+ * @param exports - The exports of the Snap module.
+ */
+function checkExports(exports: any) {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  assert(process.send, 'This script must be run as a child process.');
 
-const invalidExports = Object.keys(snapModule.exports).filter(
-  (snapExport) => !SNAP_EXPORT_NAMES.includes(snapExport as HandlerType),
-);
+  process.send({
+    type: 'snap-exports',
+    data: {
+      exports: Object.keys(exports),
+    },
+  });
 
-if (invalidExports.length > 0) {
-  // eslint-disable-next-line no-console
-  console.warn(`Invalid snap exports detected:\n${invalidExports.join('\n')}`);
+  const invalidExports = Object.keys(snapModule.exports).filter(
+    (snapExport) => !SNAP_EXPORT_NAMES.includes(snapExport as HandlerType),
+  );
+
+  if (invalidExports.length > 0) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `Invalid snap exports detected:\n${invalidExports.join('\n')}`,
+    );
+  }
+
+  // To ensure the worker exits we explicitly call exit here. If we didn't, the
+  // worker would wait for timers set during `Compartment` eval.
+  process.exit(0);
 }
 
-// To ensure the worker exits we explicitly call exit here
-// If we didn't the eval would wait for timers set during Compartment eval
-process.exit(0);
+if (snapModule.exports instanceof Promise) {
+  // The Snap may use async logic (e.g., when loading WASM), so we need to
+  // handle that case.
+  snapModule.exports.then(checkExports).catch((error: Error) => {
+    // eslint-disable-next-line no-console
+    console.error('Error loading Snap module:', error);
+  });
+} else {
+  checkExports(snapModule.exports);
+}
