@@ -53,6 +53,11 @@ export async function evalBundle(bundlePath: string): Promise<EvalOutput> {
     assert(worker.stderr, '`stderr` should be defined.');
 
     worker.on('message', (message: EvalWorkerMessage) => {
+      assert(
+        message.type === 'snap-exports',
+        `Received unexpected message with type "${message.type}".`,
+      );
+
       exports = message.data.exports;
     });
 
