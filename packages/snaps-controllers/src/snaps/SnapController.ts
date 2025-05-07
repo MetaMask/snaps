@@ -2172,12 +2172,14 @@ export class SnapController extends BaseController<
     await this.messagingSystem.call('ExecutionService:terminateAllSnaps');
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
 
-    this.update((state: any) => {
+    this.update((state) => {
       state.snaps = {};
       state.snapStates = {};
+      state.unencryptedSnapStates = {};
     });
 
     this.#snapsRuntimeData.clear();
+    this.#rollbackSnapshots.clear();
 
     // We want to remove all snaps & permissions, except for preinstalled snaps
     if (this.#preinstalledSnaps) {

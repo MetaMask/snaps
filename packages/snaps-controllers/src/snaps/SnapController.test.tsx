@@ -9222,6 +9222,12 @@ describe('SnapController', () => {
           messenger,
           state: {
             snaps: getPersistedSnapsState(),
+            snapStates: {
+              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
+            },
+            unencryptedSnapStates: {
+              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
+            },
           },
         }),
       );
@@ -9242,6 +9248,12 @@ describe('SnapController', () => {
         'PermissionController:revokeAllPermissions',
         MOCK_SNAP_ID,
       );
+
+      expect(snapController.state).toStrictEqual({
+        snaps: {},
+        snapStates: {},
+        unencryptedSnapStates: {},
+      });
 
       snapController.destroy();
     });
