@@ -18,6 +18,7 @@ import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 import { setStateHandler } from './setState';
+import { trackEventHandler } from './trackEvent';
 import { updateInterfaceHandler } from './updateInterface';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -43,6 +44,7 @@ export const methodHandlers = {
   snap_cancelBackgroundEvent: cancelBackgroundEventHandler,
   snap_getBackgroundEvents: getBackgroundEventsHandler,
   snap_setState: setStateHandler,
+  snap_trackEvent: trackEventHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

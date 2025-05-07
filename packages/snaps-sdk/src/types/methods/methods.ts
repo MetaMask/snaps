@@ -74,6 +74,7 @@ import type {
   ScheduleBackgroundEventResult,
 } from './schedule-background-event';
 import type { SetStateParams, SetStateResult } from './set-state';
+import type { TrackEventParams, TrackEventResult } from './track-event';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
@@ -123,6 +124,7 @@ export type SnapMethods = {
   ];
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   snap_setState: [SetStateParams, SetStateResult];
+  snap_trackEvent: [TrackEventParams, TrackEventResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
