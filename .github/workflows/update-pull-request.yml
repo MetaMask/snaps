@@ -118,8 +118,8 @@ jobs:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: yarn.lock
 
-  regenerate-lavamoat-policies:
-    name: Regenerate LavaMoat policies
+  build:
+    name: Build packages
     runs-on: ubuntu-latest
     needs:
       - prepare
@@ -136,6 +136,44 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          # If the Yarn lock changed we need to reinstall the dependencies.
+          is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
+      - name: Build packages
+        run: yarn build:ci
+      - name: Save packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
+          path: |
+            .nvmrc
+            packages/*/dist
+
+  regenerate-lavamoat-policies:
+    name: Regenerate LavaMoat policies
+    runs-on: ubuntu-latest
+    needs:
+      - prepare
+      - dedupe-yarn-lock
+      - build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+      - name: Restore yarn.lock
+        uses: actions/download-artifact@v4
+        with:
+          name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Restore packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -157,6 +195,7 @@ jobs:
     needs:
       - prepare
       - dedupe-yarn-lock
+      - build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -169,14 +208,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+      - name: Restore packages
+        uses: actions/download-artifact@v4
+        with:
+          name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
-      - name: Build dependencies
-        run: |
-          yarn build:ci
       - name: Update examples
         run: yarn build:examples
       - name: Save examples
