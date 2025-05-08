@@ -23,11 +23,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
-      - name: Restore build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: publish-release-artifacts-${{ github.sha }}
-      - run: yarn build:lavamoat
+      - run: yarn build
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
         with:
