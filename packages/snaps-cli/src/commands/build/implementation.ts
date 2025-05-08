@@ -11,10 +11,7 @@ import { getCompiler } from '../../webpack';
  * @param options - The Webpack options.
  * @returns A promise that resolves when the bundle is built.
  */
-export async function build(
-  config: ProcessedConfig,
-  options?: WebpackOptions,
-) {
+export async function build(config: ProcessedConfig, options?: WebpackOptions) {
   const compiler = await getCompiler(config, options);
   return await new Promise<Compiler>((resolve, reject) => {
     compiler.run((runError) => {

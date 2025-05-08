@@ -8,7 +8,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 import type { Configuration } from 'webpack';
 
 import { build } from './implementation';
@@ -86,7 +86,7 @@ describe('build', () => {
 
   it('builds the snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const config = getMockConfig({
       input: '/snap/input.js',
@@ -107,8 +107,8 @@ describe('build', () => {
     await build(config);
 
     // Manifest checksum mismatch is the warning
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -119,7 +119,7 @@ describe('build', () => {
 
   it('builds an unminimized snap bundle using Webpack', async () => {
     jest.spyOn(process, 'cwd').mockReturnValue('/snap');
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const config = getMockConfig({
       input: '/snap/input.js',
@@ -141,8 +141,8 @@ describe('build', () => {
     await build(config);
 
     // Manifest checksum mismatch is the warning
-    expect(warn).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Compiled 1 file in \d+ms\./u),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');

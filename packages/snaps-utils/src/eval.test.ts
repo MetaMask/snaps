@@ -19,7 +19,13 @@ describe('evalBundle', () => {
     // system. Therefore, we need to create a temporary folder to store the
     // bundle.
     await fs.mkdir(TEMPORARY_FOLDER, { recursive: true });
-    await fs.writeFile(BUNDLE_PATH, `console.log('Hello, world!');`);
+    await fs.writeFile(
+      BUNDLE_PATH,
+      `
+        console.log('Hello, world!');
+        module.exports.onRpcRequest = () => undefined;
+      `,
+    );
 
     jest.spyOn(childProcess, 'fork').mockImplementation(() => {
       const actualFork = jest.requireActual('child_process').fork;
@@ -35,10 +41,11 @@ describe('evalBundle', () => {
     await fs.rm(TEMPORARY_FOLDER, { recursive: true });
   });
 
-  it('successfully executes a snap and captures the stdout', async () => {
+  it('successfully executes a snap and captures the stdout and exports', async () => {
     expect(await evalBundle(BUNDLE_PATH)).toStrictEqual({
       stdout: 'Hello, world!\n',
       stderr: '',
+      exports: ['onRpcRequest'],
     });
   });
 

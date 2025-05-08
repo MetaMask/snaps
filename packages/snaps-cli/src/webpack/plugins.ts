@@ -1,19 +1,18 @@
 import { assert, hasProperty, isObject } from '@metamask/utils';
-import { bold, dim, red, yellow } from 'chalk';
+import { bold, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import type { Ora } from 'ora';
 import type {
   Compiler,
   ProvidePlugin,
   Resolver,
-  StatsError,
   WebpackPluginInstance,
 } from 'webpack';
 import { WebpackError } from 'webpack';
 
-import { formatText, pluralize } from './utils';
+import { formatError, pluralize } from './utils';
 import { evaluate } from '../commands/eval';
-import { error, getErrorMessage, info, warn } from '../utils';
+import { error, info, warn } from '../utils';
 
 export type SnapsStatsPluginOptions = {
   /**
@@ -65,7 +64,9 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
 
       if (errors?.length) {
         const formattedErrors = errors
-          .map((statsError) => this.#getStatsErrorMessage(statsError))
+          .map((statsError) =>
+            formatError(statsError.message, statsError.details, red),
+          )
           .join('\n\n');
 
         error(
@@ -88,7 +89,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
       if (warnings?.length) {
         const formattedWarnings = warnings
           .map((statsWarning) =>
-            this.#getStatsErrorMessage(statsWarning, yellow),
+            formatError(statsWarning.message, statsWarning.details, yellow),
           )
           .join('\n\n');
 
@@ -118,29 +119,6 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
         this.#spinner?.succeed('Done!');
       }
     });
-  }
-
-  /**
-   * Get the error message for the given stats error.
-   *
-   * @param statsError - The stats error.
-   * @param color - The color to use for the error message.
-   * @returns The error message.
-   */
-  #getStatsErrorMessage(statsError: StatsError, color = red) {
-    const baseMessage = this.options.verbose
-      ? getErrorMessage(statsError)
-      : statsError.message;
-
-    const [first, ...rest] = baseMessage.split('\n');
-
-    return [
-      color(formatText(`• ${first}`, 4, 2)),
-      ...rest.map((message) => formatText(color(message), 4)),
-      statsError.details && `\n${formatText(dim(statsError.details), 6)}`,
-    ]
-      .filter(Boolean)
-      .join('\n');
   }
 }
 
