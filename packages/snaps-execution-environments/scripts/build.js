@@ -25,6 +25,23 @@ webpack(config, (error, stats) => {
     );
 
     console.log(indent(error.message, 2));
+    process.exitCode = 1;
+    return;
+  }
+
+  if (stats.hasErrors()) {
+    console.error(
+      'Webpack failed to build. See the error(s) below for more details.',
+    );
+
+    console.log(
+      stats.toString({
+        all: false,
+        colors: true,
+        errors: true,
+      }),
+    );
+    process.exitCode = 1;
     return;
   }
 
