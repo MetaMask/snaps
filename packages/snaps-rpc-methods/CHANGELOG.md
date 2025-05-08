@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.2.0]
+
+### Added
+
+- Add `snap_trackEvent` method ([#3375](https://github.com/MetaMask/snaps/pull/3375))
+
+### Changed
+
+- Bump `@metamask/utils` from `11.2.0` to `11.3.0` ([#3232](https://github.com/MetaMask/snaps/pull/3232))
+
 ## [12.1.0]
 
 ### Added
@@ -420,7 +430,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.2.0...HEAD
+[12.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.1.0...@metamask/snaps-rpc-methods@12.2.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.0.0...@metamask/snaps-rpc-methods@12.1.0
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.1...@metamask/snaps-rpc-methods@12.0.0
 [11.13.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@11.13.0...@metamask/snaps-rpc-methods@11.13.1

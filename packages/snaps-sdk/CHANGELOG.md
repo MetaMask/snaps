@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.23.0]
+
+### Added
+
+- Add `snap_trackEvent` method ([#3375](https://github.com/MetaMask/snaps/pull/3375))
+
+### Changed
+
+- Bump `@metamask/providers` from `22.0.1` to `22.1.0` ([#3363](https://github.com/MetaMask/snaps/pull/3363))
+
 ## [6.22.1]
 
 ### Fixed
@@ -553,7 +563,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.23.0...HEAD
+[6.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.1...@metamask/snaps-sdk@6.23.0
 [6.22.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.0...@metamask/snaps-sdk@6.22.1
 [6.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...@metamask/snaps-sdk@6.22.0
 [6.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.20.0...@metamask/snaps-sdk@6.21.0

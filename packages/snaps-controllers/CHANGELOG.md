@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.0]
+
+### Added
+
+- Add Snap export usage metrics ([#3281](https://github.com/MetaMask/snaps/pull/3281))
+
+### Changed
+
+- Bump `@metamask/post-message-stream` from `9.0.0` to `10.0.0` ([#3322](https://github.com/MetaMask/snaps/pull/3322))
+- Bump `@metamask/base-controller` from `8.0.0` to `8.0.1` ([#3365](https://github.com/MetaMask/snaps/pull/3365))
+
+### Removed
+
+- **BREAKING:** Remove web worker execution service ([#3371](https://github.com/MetaMask/snaps/pull/3371))
+
+### Fixed
+
+- Catch cronjob errors during initialization ([#3373](https://github.com/MetaMask/snaps/pull/3373))
+- Clear unencrypted Snap state when resetting the client ([#3382](https://github.com/MetaMask/snaps/pull/3382))
+
 ## [11.2.3]
 
 ### Fixed
@@ -722,7 +742,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.0...HEAD
+[12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.3...@metamask/snaps-controllers@12.0.0
 [11.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.2...@metamask/snaps-controllers@11.2.3
 [11.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.1...@metamask/snaps-controllers@11.2.2
 [11.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.0...@metamask/snaps-controllers@11.2.1

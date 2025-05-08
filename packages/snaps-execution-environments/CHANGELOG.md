@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+
+### Changed
+
+- **BREAKING:** Build Snaps execution environments with Webpack ([#3322](https://github.com/MetaMask/snaps/pull/3322))
+  - The execution environments are now in `dist/webpack` instead of
+    `dist/browserify`.
+  - The `node-process` and `node-thread` environments can now be imported as
+    `@metamask/snaps-execution-environments/node-process` and
+    `@metamask/snaps-execution-environments/node-thread` respectively.
+- Change request notification order ([#3381](https://github.com/MetaMask/snaps/pull/3381))
+- Bump `@metamask/post-message-stream` from `9.0.0` to `10.0.0` ([#3322](https://github.com/MetaMask/snaps/pull/3322))
+- Bump `@metamask/providers` from `22.0.1` to `22.1.0` ([#3363](https://github.com/MetaMask/snaps/pull/3363))
+
+### Removed
+
+- **BREAKING:** Remove web worker execution environment ([#3371](https://github.com/MetaMask/snaps/pull/3371))
+
 ## [7.2.2]
 
 ### Fixed
@@ -472,7 +490,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.2...@metamask/snaps-execution-environments@8.0.0
 [7.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.1...@metamask/snaps-execution-environments@7.2.2
 [7.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.0...@metamask/snaps-execution-environments@7.2.1
 [7.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.1.0...@metamask/snaps-execution-environments@7.2.0

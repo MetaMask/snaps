@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "DX3vG9Y5CB4xiXMqSPd09jaBUWc2N9C1SeAhV9DgjAs=",
+    "shasum": "XyDU1i39tjNjpW0h6cC89w2BmMjSnwSzBL/ZYEn8Ylw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -19,6 +19,6 @@
   "initialPermissions": {
     "endowment:transaction-insight": {}
   },
-  "platformVersion": "6.22.1",
+  "platformVersion": "6.23.0",
   "manifestVersion": "0.1"
 }
