@@ -23,7 +23,10 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
-      - run: yarn build:lavamoat
+      - name: Build dependencies
+        run: yarn build:ci
+      - name: Build execution environments
+        run: yarn build:lavamoat
       - name: configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e1e17a757e536f70e52b5a12b2e8d1d1c60e04ef
         with:
