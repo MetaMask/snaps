@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add Snap export handler usage tracking ([#3281](https://github.com/MetaMask/snaps/pull/3281))
+- Add Snap export usage metrics ([#3281](https://github.com/MetaMask/snaps/pull/3281))
 
 ### Changed
 
