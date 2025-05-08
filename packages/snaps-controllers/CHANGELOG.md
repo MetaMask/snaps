@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Catch cronjob errors during initialization ([#3373](https://github.com/MetaMask/snaps/pull/3373))
-- Clear unencrypted Snap state when locking the client ([#3382](https://github.com/MetaMask/snaps/pull/3382))
+- Clear unencrypted Snap state when resetting the client ([#3382](https://github.com/MetaMask/snaps/pull/3382))
 
 ## [11.2.3]
 
