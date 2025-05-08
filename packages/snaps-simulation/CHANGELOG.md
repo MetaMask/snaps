@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
+- chore(deps): bump @metamask/base-controller from 8.0.0 to 8.0.1 ([#3365](https://github.com/MetaMask/snaps/pull/3365))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
+- chore(deps): bump @metamask/phishing-controller from 12.4.1 to 12.5.0 ([#3342](https://github.com/MetaMask/snaps/pull/3342))
+- feat: Add `snaps-sandbox` package and integrate into CLI ([#3306](https://github.com/MetaMask/snaps/pull/3306))
+- chore(deps): bump @metamask/eth-json-rpc-middleware from 16.0.1 to 17.0.0 ([#3328](https://github.com/MetaMask/snaps/pull/3328))
+- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
+
 ## [2.5.0]
 
 ### Added

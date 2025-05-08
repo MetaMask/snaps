@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- build: Handle Webpack compilation errors when building execution environments ([#3385](https://github.com/MetaMask/snaps/pull/3385))
+
 ## [8.0.0]
 
 ### Changed
