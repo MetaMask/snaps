@@ -9,18 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.0.0]
 
-### Uncategorized
+### Added
 
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
-- fix: Clear unencrypted Snap state properly ([#3382](https://github.com/MetaMask/snaps/pull/3382))
-- perf: Change request notification order ([#3381](https://github.com/MetaMask/snaps/pull/3381))
-- feat: Add Snap export handler usage tracking ([#3281](https://github.com/MetaMask/snaps/pull/3281))
-- fix: Properly catch cronjob errors during initialization ([#3373](https://github.com/MetaMask/snaps/pull/3373))
-- chore!: Remove web worker execution service and environment ([#3371](https://github.com/MetaMask/snaps/pull/3371))
-- chore!: Build Snaps execution environments with Webpack ([#3322](https://github.com/MetaMask/snaps/pull/3322))
-- chore(deps): bump @metamask/base-controller from 8.0.0 to 8.0.1 ([#3365](https://github.com/MetaMask/snaps/pull/3365))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
-- chore(deps-dev): bump vite from 6.2.6 to 6.2.7 in the npm_and_yarn group across 1 directory ([#3368](https://github.com/MetaMask/snaps/pull/3368))
+- Add Snap export handler usage tracking ([#3281](https://github.com/MetaMask/snaps/pull/3281))
+
+### Changed
+
+- Change request notification order ([#3381](https://github.com/MetaMask/snaps/pull/3381))
+- Bump `@metamask/post-message-stream` from `9.0.0` to `10.0.0` ([#3322](https://github.com/MetaMask/snaps/pull/3322))
+- Bump `@metamask/base-controller` from `8.0.0` to `8.0.1` ([#3365](https://github.com/MetaMask/snaps/pull/3365))
+
+### Removed
+
+- **BREAKING:** Remove web worker execution service ([#3371](https://github.com/MetaMask/snaps/pull/3371))
+
+### Fixed
+
+- Catch cronjob errors during initialization ([#3373](https://github.com/MetaMask/snaps/pull/3373))
+- Clear unencrypted Snap state when locking the client ([#3382](https://github.com/MetaMask/snaps/pull/3382))
 
 ## [11.2.3]
 
