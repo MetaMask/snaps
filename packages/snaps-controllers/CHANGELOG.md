@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Change request notification order ([#3381](https://github.com/MetaMask/snaps/pull/3381))
 - Bump `@metamask/post-message-stream` from `9.0.0` to `10.0.0` ([#3322](https://github.com/MetaMask/snaps/pull/3322))
 - Bump `@metamask/base-controller` from `8.0.0` to `8.0.1` ([#3365](https://github.com/MetaMask/snaps/pull/3365))
 
