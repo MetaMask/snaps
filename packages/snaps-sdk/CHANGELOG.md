@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
+- feat: Add snap_trackEvent method ([#3375](https://github.com/MetaMask/snaps/pull/3375))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
+- chore(deps): bump @metamask/providers from 22.0.1 to 22.1.0 ([#3363](https://github.com/MetaMask/snaps/pull/3363))
+
 ## [6.22.1]
 
 ### Fixed

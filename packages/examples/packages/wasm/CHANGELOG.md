@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
+- chore!: Build Snaps execution environments with Webpack ([#3322](https://github.com/MetaMask/snaps/pull/3322))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
+- release: 103.0.0 ([#3360](https://github.com/MetaMask/snaps/pull/3360))
+
 ## [2.1.5]
 
 ### Fixed
