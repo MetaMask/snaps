@@ -108,7 +108,7 @@
     "yargs": "^17.7.1"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.0.4",
+    "@lavamoat/allow-scripts": "^3.3.3",
     "@metamask/auto-changelog": "^5.0.2",
     "@swc/jest": "^0.2.26",
     "@ts-bridge/cli": "^0.6.1",

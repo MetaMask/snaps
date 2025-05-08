@@ -98,7 +98,7 @@
     "@metamask/utils": "^11.4.0"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.0.4",
+    "@lavamoat/allow-scripts": "^3.3.3",
     "@metamask/auto-changelog": "^5.0.2",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
