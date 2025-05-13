@@ -1047,7 +1047,7 @@ export class SnapController extends BaseController<
           snapId,
         );
         this.#trackEvent({
-          event: 'SnapExportUsed',
+          event: 'Snap Export Used',
           category: 'Snaps',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention

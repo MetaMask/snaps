@@ -9423,7 +9423,7 @@ describe('SnapController', () => {
 
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
         expect(mockTrackEvent).toHaveBeenCalledWith({
-          event: 'SnapExportUsed',
+          event: 'Snap Export Used',
           category: 'Snaps',
           properties: {
             export: 'onRpcRequest',
