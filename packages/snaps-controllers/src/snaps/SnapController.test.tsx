@@ -9423,13 +9423,13 @@ describe('SnapController', () => {
 
         expect(mockTrackEvent).toHaveBeenCalledTimes(1);
         expect(mockTrackEvent).toHaveBeenCalledWith({
-          event: 'SnapExportUsed',
+          event: 'Snap Export Used',
           category: 'Snaps',
           properties: {
             export: 'onRpcRequest',
             origin: 'https://example.com',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            snap_category: null,
+            snap_category: undefined,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: 'npm:@metamask/example-snap',
             success: true,

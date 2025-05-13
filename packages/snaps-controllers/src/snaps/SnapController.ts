@@ -798,7 +798,7 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
 type TrackingEventPayload = {
   event: string;
   category: string;
-  properties: Record<string, Json>;
+  properties: Record<string, Json | undefined>;
 };
 
 type TrackEventHook = (event: TrackingEventPayload) => void;
@@ -1047,14 +1047,14 @@ export class SnapController extends BaseController<
           snapId,
         );
         this.#trackEvent({
-          event: 'SnapExportUsed',
+          event: 'Snap Export Used',
           category: 'Snaps',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: snapId,
             export: handler,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            snap_category: snapMetadata?.category ?? null,
+            snap_category: snapMetadata?.category,
             success,
             origin,
           },
