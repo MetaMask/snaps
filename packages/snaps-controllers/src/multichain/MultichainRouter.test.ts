@@ -1,5 +1,8 @@
 import { HandlerType } from '@metamask/snaps-utils';
-import { getTruncatedSnap } from '@metamask/snaps-utils/test-utils';
+import {
+  getTruncatedSnap,
+  MOCK_SNAP_ID,
+} from '@metamask/snaps-utils/test-utils';
 
 import { MultichainRouter } from './MultichainRouter';
 import {
@@ -148,6 +151,7 @@ describe('MultichainRouter', () => {
       const result = await messenger.call('MultichainRouter:handleRequest', {
         connectedAddresses: [],
         scope: SOLANA_CAIP2,
+        origin: 'metamask',
         request: {
           method: 'getVersion',
         },
@@ -157,6 +161,27 @@ describe('MultichainRouter', () => {
         'feature-set': 2891131721,
         'solana-core': '1.16.7',
       });
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        5,
+        'SnapController:handleRequest',
+        {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnProtocolRequest,
+          origin: 'metamask',
+          request: {
+            method: '',
+            params: {
+              request: {
+                id: expect.any(String),
+                jsonrpc: '2.0',
+                method: 'getVersion',
+              },
+              scope: SOLANA_CAIP2,
+            },
+          },
+        },
+      );
     });
 
     it('throws if no suitable Snaps are found', async () => {
