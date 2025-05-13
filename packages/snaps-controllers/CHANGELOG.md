@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.1]
+
+### Fixed
+
+- Fix wrong event name for `Snap Export Used` ([#3389](https://github.com/MetaMask/snaps/pull/3389))
+- Remove undefined parameters in `MultichainRouter` ([#3388](https://github.com/MetaMask/snaps/pull/3388))
+
 ## [12.0.0]
 
 ### Added
@@ -742,7 +749,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.1...HEAD
+[12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.0...@metamask/snaps-controllers@12.0.1
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.3...@metamask/snaps-controllers@12.0.0
 [11.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.2...@metamask/snaps-controllers@11.2.3
 [11.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.1...@metamask/snaps-controllers@11.2.2
