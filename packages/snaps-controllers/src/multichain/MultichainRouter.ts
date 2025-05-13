@@ -301,7 +301,7 @@ export class MultichainRouter {
       jsonrpc: '2.0' as const,
       id: rawRequest.id ?? nanoid(),
       method: rawRequest.method,
-      params: rawRequest.params,
+      ...(rawRequest.params ? { params: rawRequest.params } : {}),
     };
 
     const { method, params } = request;
