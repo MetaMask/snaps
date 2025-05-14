@@ -7,9 +7,11 @@ import { buildHandler } from './build';
 import { build } from './implementation';
 import { getMockConfig } from '../../test-utils';
 import { evaluate } from '../eval';
+import { manifest } from '../manifest';
 
 jest.mock('fs');
 jest.mock('../eval');
+jest.mock('../manifest');
 jest.mock('./implementation');
 
 jest.mock('webpack-bundle-analyzer', () => ({
@@ -17,7 +19,22 @@ jest.mock('webpack-bundle-analyzer', () => ({
 }));
 
 describe('buildHandler', () => {
-  it('builds a snap', async () => {
+  beforeEach(() => {
+    jest.mocked(evaluate).mockResolvedValue({
+      exports: [],
+      stdout: '',
+      stderr: '',
+    });
+
+    jest.mocked(manifest).mockResolvedValue({
+      valid: true,
+      errors: 0,
+      warnings: 0,
+      fixed: 0,
+    });
+  });
+
+  it('builds a Snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
@@ -43,7 +60,7 @@ describe('buildHandler', () => {
     );
   });
 
-  it('analyzes a snap bundle', async () => {
+  it('analyzes a Snap bundle', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
@@ -121,7 +138,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".+"\. Make sure that the "input" field in your snap config is correct\./u,
+        /Input file not found: ".+"\. Make sure that the "input" field in your Snap config is correct\./u,
       ),
     );
   });

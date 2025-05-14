@@ -8,8 +8,7 @@ const command = {
   command: ['build', 'b'],
   desc: 'Build snap from source',
   builder: (yarg: yargs.Argv) => {
-    yarg
-      .option('analyze', builders.analyze)
+    yarg.option('analyze', builders.analyze);
   },
   handler: async (argv: YargsArgs) =>
     buildHandler(argv.context.config, argv.analyze),

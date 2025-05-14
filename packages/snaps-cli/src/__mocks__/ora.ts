@@ -9,7 +9,9 @@ class MockSpinner {
 
   fail = jest.fn();
 
-  stop = jest.fn();
+  stop = jest.fn().mockImplementation(() => {
+    this.isSpinning = false;
+  });
 
   clear = jest.fn();
 

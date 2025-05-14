@@ -10,6 +10,7 @@ import normalFs from 'fs';
 import ora from 'ora';
 
 import { manifest } from './implementation';
+import { getMockConfig } from '../../test-utils';
 import type * as webpack from '../../webpack';
 
 const { promises: fs } = normalFs;
@@ -67,14 +68,38 @@ describe('manifest', () => {
     await fs.rm('/snap', { force: true, recursive: true });
   });
 
-  it('validates a snap manifest', async () => {
+  it('validates a Snap manifest', async () => {
     const error = jest.spyOn(console, 'error');
     const warn = jest.spyOn(console, 'warn').mockImplementation();
     const log = jest.spyOn(console, 'log');
 
+    const config = getMockConfig({
+      input: '/input.js',
+      evaluate: false,
+      output: {
+        path: '/snap/dist',
+        filename: 'bundle.js',
+      },
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+    });
+
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', false, spinner);
-    expect(result).toBe(true);
+    const result = await manifest(
+      config,
+      '/snap/snap.manifest.json',
+      false,
+      ['onRpcRequest'],
+      spinner,
+    );
+
+    expect(result).toStrictEqual({
+      valid: true,
+      errors: 0,
+      warnings: 0,
+      fixed: 0,
+    });
 
     expect(error).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();
@@ -82,28 +107,48 @@ describe('manifest', () => {
   });
 
   it('validates a snap manifest with errors', async () => {
-    const error = jest.spyOn(console, 'error').mockImplementation();
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
 
     const packageJson = getPackageJson();
     delete packageJson.repository;
 
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
-    const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', false, spinner);
-    expect(result).toBe(false);
+    const config = getMockConfig({
+      input: '/input.js',
+      evaluate: false,
+      output: {
+        path: '/snap/dist',
+        filename: 'bundle.js',
+      },
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+    });
 
-    expect(warn).toHaveBeenCalledWith(
+    const spinner = ora();
+    const result = await manifest(
+      config,
+      '/snap/snap.manifest.json',
+      false,
+      [],
+      spinner,
+    );
+
+    expect(result).toStrictEqual({
+      valid: false,
+      errors: 1,
+      warnings: 2,
+      fixed: 0,
+    });
+
+    expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
         '• Missing recommended package.json property: "repository"',
       ),
     );
-    expect(spinner.stop).toHaveBeenCalled();
-    expect(error).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file is invalid.'),
-    );
-    expect(error).toHaveBeenCalledWith(
+
+    expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
         '• "snap.manifest.json" "repository" field does not match the "package.json" "repository" field.',
       ),
@@ -112,7 +157,6 @@ describe('manifest', () => {
 
   it('validates a snap manifest with warnings', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
-    const warn = jest.spyOn(console, 'warn').mockImplementation();
     const log = jest.spyOn(console, 'log').mockImplementation();
 
     const packageJson = getPackageJson();
@@ -120,24 +164,54 @@ describe('manifest', () => {
 
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
+    const config = getMockConfig({
+      input: '/input.js',
+      evaluate: false,
+      output: {
+        path: '/snap/dist',
+        filename: 'bundle.js',
+      },
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+    });
+
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', true, spinner);
-    expect(result).toBe(true);
+    const result = await manifest(
+      config,
+      '/snap/snap.manifest.json',
+      true,
+      [],
+      spinner,
+    );
+
+    expect(result).toStrictEqual({
+      valid: true,
+      errors: 0,
+      warnings: 1,
+      fixed: 2,
+    });
 
     expect(error).not.toHaveBeenCalled();
-    expect(warn).toHaveBeenCalledWith(
+    expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
         '• Missing recommended package.json property: "repository"',
       ),
     );
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file has been updated.'),
-    );
   });
 
   it('formats a snap manifest with Prettier', async () => {
-    const error = jest.spyOn(console, 'error').mockImplementation();
-    const log = jest.spyOn(console, 'log').mockImplementation();
+    const config = getMockConfig({
+      input: '/input.js',
+      evaluate: false,
+      output: {
+        path: '/snap/dist',
+        filename: 'bundle.js',
+      },
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+    });
 
     await fs.writeFile(
       '/snap/snap.manifest.json',
@@ -154,12 +228,12 @@ describe('manifest', () => {
     );
 
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', true, spinner);
-    expect(result).toBe(true);
-
-    expect(error).not.toHaveBeenCalled();
-    expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file has been updated.'),
+    await manifest(
+      config,
+      '/snap/snap.manifest.json',
+      true,
+      ['onNameLookup'],
+      spinner,
     );
 
     expect(await fs.readFile('/snap/snap.manifest.json', 'utf8'))
