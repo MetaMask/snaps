@@ -15,7 +15,7 @@ type SnapState = {
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles a single method:
+ * `wallet_invokeSnap` method. This handler handles two methods:
  *
  * - `showDialog` - Opens a dialog.
  * - `getSettings`: Get the settings state from the snap state.
