@@ -130,6 +130,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnAssetsLookup]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnAssetsConversion]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,
+  [HandlerType.OnClientRequest]: null,
 };
 
 export * from './enum';

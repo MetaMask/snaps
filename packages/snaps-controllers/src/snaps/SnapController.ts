@@ -3455,6 +3455,8 @@ export class SnapController extends BaseController<
         ]
       : undefined;
 
+    // TODO: Enforce only metamask origin for onClientRequest.
+
     if (
       permissionName === SnapEndowments.Rpc ||
       permissionName === SnapEndowments.Keyring

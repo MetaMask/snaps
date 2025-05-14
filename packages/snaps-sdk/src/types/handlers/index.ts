@@ -1,6 +1,7 @@
 export type * from './asset-historical-price';
 export type * from './assets-conversion';
 export * from './assets-lookup';
+export type * from './client-request';
 export type * from './cronjob';
 export type * from './home-page';
 export type * from './keyring';

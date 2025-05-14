@@ -107,6 +107,7 @@ export function getHandlerArguments(
     case HandlerType.OnKeyringRequest:
       return { origin, request };
 
+    case HandlerType.OnClientRequest:
     case HandlerType.OnCronjob:
       return { request };
 
