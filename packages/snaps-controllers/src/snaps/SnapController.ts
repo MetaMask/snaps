@@ -136,6 +136,7 @@ import { gt } from 'semver';
 
 import {
   ALLOWED_PERMISSIONS,
+  CLIENT_ONLY_HANDLERS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
@@ -3455,8 +3456,6 @@ export class SnapController extends BaseController<
         ]
       : undefined;
 
-    // TODO: Enforce only metamask origin for onClientRequest.
-
     if (
       permissionName === SnapEndowments.Rpc ||
       permissionName === SnapEndowments.Keyring
@@ -3485,6 +3484,10 @@ export class SnapController extends BaseController<
           `Snap "${snapId}" is not permitted to handle requests from "${origin}".`,
         );
       }
+    }
+
+    if (origin !== 'metamask' && CLIENT_ONLY_HANDLERS.includes(handlerType)) {
+      throw new Error(`"${handlerType}" can only be invoked by MetaMask.`);
     }
 
     const handler = this.#getRpcRequestHandler(snapId);

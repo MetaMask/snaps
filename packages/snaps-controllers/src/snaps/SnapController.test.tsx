@@ -4671,6 +4671,94 @@ describe('SnapController', () => {
     });
   });
 
+  describe('onClientRequest', () => {
+    it('returns the value when `onClientRequest` returns a valid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            foo: 'bar',
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: 'metamask',
+          handler: HandlerType.OnClientRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        foo: 'bar',
+      });
+
+      snapController.destroy();
+    });
+
+    it('throws if the origin is not metamask', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            foo: 'bar',
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnClientRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'foo',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow('"onClientRequest" can only be invoked by MetaMask.');
+
+      snapController.destroy();
+    });
+  });
+
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();

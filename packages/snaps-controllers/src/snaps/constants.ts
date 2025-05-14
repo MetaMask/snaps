@@ -1,4 +1,5 @@
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
+import { HandlerType } from '@metamask/snaps-utils';
 
 // These permissions are allowed without being on the allowlist.
 export const ALLOWED_PERMISSIONS = Object.freeze([
@@ -25,3 +26,8 @@ export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
  * The timeout for debouncing state updates.
  */
 export const STATE_DEBOUNCE_TIMEOUT = 500;
+
+// These handlers are only allowed to be invoked by the client.
+export const CLIENT_ONLY_HANDLERS = Object.freeze([
+  HandlerType.OnClientRequest,
+]);
