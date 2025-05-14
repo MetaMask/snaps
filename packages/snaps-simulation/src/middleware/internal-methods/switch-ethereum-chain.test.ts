@@ -1,11 +1,11 @@
-import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
 
 describe('getSwitchEthereumChainHandler', () => {
   it('returns `null`', async () => {
     const end = jest.fn();
-    const result: PendingJsonRpcResponse<Json> = {
+    const result: PendingJsonRpcResponse = {
       jsonrpc: '2.0' as const,
       id: 1,
     };
