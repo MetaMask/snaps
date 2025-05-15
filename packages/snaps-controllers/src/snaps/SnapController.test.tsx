@@ -4692,10 +4692,9 @@ describe('SnapController', () => {
 
       rootMessenger.registerActionHandler(
         'ExecutionService:handleRpcRequest',
-        async () =>
-          Promise.resolve({
+        async () => ({
             foo: 'bar',
-          }),
+        }),
       );
 
       expect(
@@ -4717,7 +4716,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('throws if the origin is not metamask', async () => {
+    it('throws if the origin is not "metamask"', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
