@@ -27,14 +27,15 @@ export const LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS = {
  */
 export const STATE_DEBOUNCE_TIMEOUT = 500;
 
+// The origin used to indicate requests coming from the client.
+export const METAMASK_ORIGIN = 'metamask';
+
 // These handlers are only allowed to be invoked by the client.
 export const CLIENT_ONLY_HANDLERS = Object.freeze([
   HandlerType.OnClientRequest,
   HandlerType.OnSignature,
   HandlerType.OnTransaction,
   HandlerType.OnCronjob,
-  HandlerType.OnInstall,
-  HandlerType.OnUpdate,
   HandlerType.OnNameLookup,
   HandlerType.OnHomePage,
   HandlerType.OnSettingsPage,
