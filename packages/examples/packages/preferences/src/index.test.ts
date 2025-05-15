@@ -39,6 +39,7 @@ describe('onRpcRequest', () => {
         displayNftMedia: true,
         useNftDetection: true,
         useExternalPricingData: true,
+        showTestnets: true,
       });
     });
 
@@ -67,6 +68,7 @@ describe('onRpcRequest', () => {
         displayNftMedia: true,
         useNftDetection: false,
         useExternalPricingData: false,
+        showTestnets: true,
       });
     });
   });
