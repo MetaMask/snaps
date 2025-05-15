@@ -4693,7 +4693,7 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'ExecutionService:handleRpcRequest',
         async () => ({
-            foo: 'bar',
+          foo: 'bar',
         }),
       );
 
