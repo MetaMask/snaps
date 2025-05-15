@@ -44,6 +44,7 @@ export enum HandlerType {
   OnAssetsConversion = 'onAssetsConversion',
   OnAssetHistoricalPrice = 'onAssetHistoricalPrice',
   OnProtocolRequest = 'onProtocolRequest',
+  OnClientRequest = 'onClientRequest',
 }
 
 export type SnapHandler = {
