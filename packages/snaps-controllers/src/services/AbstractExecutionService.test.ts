@@ -92,9 +92,8 @@ describe('AbstractExecutionService', () => {
 
   it('throws an error if RPC request handler is unavailable', async () => {
     const { service } = createService(MockExecutionService);
-    const snapId = 'TestSnap';
     await expect(
-      service.handleRpcRequest(snapId, {
+      service.handleRpcRequest(MOCK_SNAP_ID, {
         origin: 'foo.com',
         handler: HandlerType.OnRpcRequest,
         request: {
@@ -102,9 +101,7 @@ describe('AbstractExecutionService', () => {
           method: 'bar',
         },
       }),
-    ).rejects.toThrow(
-      `Snap execution service returned no RPC handler for running snap "${snapId}".`,
-    );
+    ).rejects.toThrow(`Snap "${MOCK_SNAP_ID}" is not currently running.`);
   });
 
   it('throws an error if execution environment fails to respond to ping', async () => {
