@@ -30,4 +30,16 @@ export const STATE_DEBOUNCE_TIMEOUT = 500;
 // These handlers are only allowed to be invoked by the client.
 export const CLIENT_ONLY_HANDLERS = Object.freeze([
   HandlerType.OnClientRequest,
+  HandlerType.OnSignature,
+  HandlerType.OnTransaction,
+  HandlerType.OnCronjob,
+  HandlerType.OnInstall,
+  HandlerType.OnUpdate,
+  HandlerType.OnNameLookup,
+  HandlerType.OnHomePage,
+  HandlerType.OnSettingsPage,
+  HandlerType.OnUserInput,
+  HandlerType.OnAssetsLookup,
+  HandlerType.OnAssetsConversion,
+  HandlerType.OnAssetHistoricalPrice,
 ]);
