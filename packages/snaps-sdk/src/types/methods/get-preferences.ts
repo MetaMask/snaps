@@ -20,6 +20,7 @@ export type GetPreferencesParams = never;
  * @property displayNftMedia - Whether to display NFT media.
  * @property useNftDetection - Whether to auto-detect NFTs.
  * @property useExternalPricingData - Whether to get token price data from an external source.
+ * @property showTestnets - Whether to show testnets.
  */
 export type GetPreferencesResult = {
   locale: string;
@@ -32,4 +33,5 @@ export type GetPreferencesResult = {
   displayNftMedia: boolean;
   useNftDetection: boolean;
   useExternalPricingData: boolean;
+  showTestnets: boolean;
 };

@@ -14,6 +14,7 @@ import type { SimulationOptions } from '../../options';
  * @param options.displayNftMedia - Whether to display NFT media.
  * @param options.useNftDetection - Whether to auto-detect NFTs.
  * @param options.useExternalPricingData - Whether to get token price data from an external source.
+ * @param options.showTestnets - Whether to show testnets.
  * @returns The implementation of the `getPreferences` hook.
  */
 export function getGetPreferencesMethodImplementation({
@@ -27,6 +28,7 @@ export function getGetPreferencesMethodImplementation({
   displayNftMedia,
   useNftDetection,
   useExternalPricingData,
+  showTestnets,
 }: SimulationOptions) {
   return () => {
     return {
@@ -40,6 +42,7 @@ export function getGetPreferencesMethodImplementation({
       displayNftMedia,
       useNftDetection,
       useExternalPricingData,
+      showTestnets,
     };
   };
 }
