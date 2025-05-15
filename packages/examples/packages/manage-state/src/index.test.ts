@@ -133,12 +133,9 @@ describe('onRpcRequest', () => {
     });
 
     it('returns the state', async () => {
-      const { request } = await installSnap();
-
-      await request({
-        method: 'setState',
-        params: {
-          value: {
+      const { request } = await installSnap({
+        options: {
+          state: {
             items: ['foo'],
           },
         },
@@ -154,12 +151,9 @@ describe('onRpcRequest', () => {
     });
 
     it('returns the state at a specific key', async () => {
-      const { request } = await installSnap();
-
-      await request({
-        method: 'setState',
-        params: {
-          value: {
+      const { request } = await installSnap({
+        options: {
+          state: {
             nested: {
               key: 'foo',
             },
@@ -178,15 +172,11 @@ describe('onRpcRequest', () => {
     });
 
     it('returns the unencrypted state', async () => {
-      const { request } = await installSnap();
-
-      await request({
-        method: 'setState',
-        params: {
-          value: {
+      const { request } = await installSnap({
+        options: {
+          unencryptedState: {
             items: ['foo'],
           },
-          encrypted: false,
         },
       });
 
