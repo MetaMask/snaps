@@ -155,7 +155,6 @@ import type {
   Update,
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
-import { RequestQueue } from './RequestQueue';
 import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
 import { forceStrict, validateMachine } from '../fsm';
@@ -219,10 +218,6 @@ export type PreinstalledSnap = {
   hideSnapBranding?: boolean;
 };
 
-type SnapRpcHandler = (
-  options: SnapRpcHookArgs & { timeout: number; request: JsonRpcRequest },
-) => Promise<unknown>;
-
 /**
  * A wrapper type for any data stored during runtime of Snaps.
  * It is not persisted in state as it contains non-serializable data and is only relevant for the
@@ -233,6 +228,11 @@ export type SnapRuntimeData = {
    * A promise that resolves when the Snap has finished installing
    */
   installPromise: null | Promise<PersistedSnap>;
+
+  /**
+   * A promise that resolves when the Snap has finished booting
+   */
+  startPromise: null | Promise<void>;
 
   /**
    * A Unix timestamp for the last time the Snap received an RPC request
@@ -254,11 +254,6 @@ export type SnapRuntimeData = {
    * extension.
    */
   pendingOutboundRequests: number;
-
-  /**
-   * RPC handler designated for the Snap
-   */
-  rpcHandler: null | SnapRpcHandler;
 
   /**
    * The finite state machine interpreter for possible states that the Snap can be in such as
@@ -3545,16 +3540,90 @@ export class SnapController extends BaseController<
       throw new Error(`"${handlerType}" can only be invoked by MetaMask.`);
     }
 
-    const handler = this.#getRpcRequestHandler(snapId);
-    if (!handler) {
+    if (!this.state.snaps[snapId].enabled) {
+      throw new Error(`Snap "${snapId}" is disabled.`);
+    }
+
+    if (this.state.snaps[snapId].status === SnapStatus.Installing) {
       throw new Error(
-        `Snap RPC message handler not found for snap "${snapId}".`,
+        `Snap "${snapId}" is currently being installed. Please try again later.`,
       );
     }
 
     const timeout = this.#getExecutionTimeout(handlerPermissions);
 
-    return handler({ origin, handler: handlerType, request, timeout });
+    if (!this.isRunning(snapId)) {
+      const runtime = this.#getRuntimeExpect(snapId);
+      if (!runtime.startPromise) {
+        runtime.startPromise = this.startSnap(snapId);
+      }
+
+      try {
+        await runtime.startPromise;
+      } finally {
+        runtime.startPromise = null;
+      }
+    }
+
+    const transformedRequest = this.#transformSnapRpcRequest(
+      snapId,
+      handlerType,
+      request,
+    );
+
+    const timer = new Timer(timeout);
+    this.#recordSnapRpcRequestStart(snapId, transformedRequest.id, timer);
+
+    const handleRpcRequestPromise = this.messagingSystem.call(
+      'ExecutionService:handleRpcRequest',
+      snapId,
+      { origin, handler: handlerType, request: transformedRequest },
+    );
+
+    // This will either get the result or reject due to the timeout.
+    try {
+      const result = await withTimeout(handleRpcRequestPromise, timer);
+
+      if (result === hasTimedOut) {
+        throw new Error(`${snapId} failed to respond to the request in time.`);
+      }
+
+      await this.#assertSnapRpcResponse(snapId, handlerType, result);
+
+      const transformedResult = await this.#transformSnapRpcResponse(
+        snapId,
+        handlerType,
+        transformedRequest,
+        result,
+      );
+
+      this.#recordSnapRpcRequestFinish(
+        snapId,
+        transformedRequest.id,
+        handlerType,
+        origin,
+        true,
+      );
+
+      return transformedResult;
+    } catch (error) {
+      // We flag the RPC request as finished early since termination may affect pending requests
+      this.#recordSnapRpcRequestFinish(
+        snapId,
+        transformedRequest.id,
+        handlerType,
+        origin,
+        false,
+      );
+
+      const [jsonRpcError, handled] = unwrapError(error);
+
+      if (!handled) {
+        await this.stopSnap(snapId, SnapStatusEvents.Crash);
+      }
+
+      throw jsonRpcError;
+    }
   }
 
   /**
@@ -3568,130 +3637,6 @@ export class SnapController extends BaseController<
    */
   #getExecutionTimeout(permission?: PermissionConstraint): number {
     return getMaxRequestTimeCaveat(permission) ?? this.maxRequestTime;
-  }
-
-  /**
-   * Gets the RPC message handler for the given snap.
-   *
-   * @param snapId - The id of the Snap whose message handler to get.
-   * @returns The RPC handler for the given snap.
-   */
-  #getRpcRequestHandler(snapId: SnapId): SnapRpcHandler {
-    const runtime = this.#getRuntimeExpect(snapId);
-    const existingHandler = runtime.rpcHandler;
-    if (existingHandler) {
-      return existingHandler;
-    }
-
-    const requestQueue = new RequestQueue(100);
-    // We need to set up this promise map to map snapIds to their respective startPromises,
-    // because otherwise we would lose context on the correct startPromise.
-    const startPromises = new Map<string, Promise<void>>();
-
-    const rpcHandler = async ({
-      origin,
-      handler: handlerType,
-      request,
-      timeout,
-    }: SnapRpcHookArgs & { timeout: number; request: JsonRpcRequest }) => {
-      if (!this.state.snaps[snapId].enabled) {
-        throw new Error(`Snap "${snapId}" is disabled.`);
-      }
-
-      if (this.state.snaps[snapId].status === SnapStatus.Installing) {
-        throw new Error(
-          `Snap "${snapId}" is currently being installed. Please try again later.`,
-        );
-      }
-
-      if (!this.isRunning(snapId)) {
-        let localStartPromise = startPromises.get(snapId);
-        if (!localStartPromise) {
-          localStartPromise = this.startSnap(snapId);
-          startPromises.set(snapId, localStartPromise);
-        } else if (requestQueue.get(origin) >= requestQueue.maxQueueSize) {
-          throw new Error(
-            'Exceeds maximum number of requests waiting to be resolved, please try again.',
-          );
-        }
-
-        requestQueue.increment(origin);
-        try {
-          await localStartPromise;
-        } finally {
-          requestQueue.decrement(origin);
-          // Only delete startPromise for a snap if its value hasn't changed
-          if (startPromises.get(snapId) === localStartPromise) {
-            startPromises.delete(snapId);
-          }
-        }
-      }
-
-      const transformedRequest = this.#transformSnapRpcRequest(
-        snapId,
-        handlerType,
-        request,
-      );
-
-      const timer = new Timer(timeout);
-      this.#recordSnapRpcRequestStart(snapId, transformedRequest.id, timer);
-
-      const handleRpcRequestPromise = this.messagingSystem.call(
-        'ExecutionService:handleRpcRequest',
-        snapId,
-        { origin, handler: handlerType, request: transformedRequest },
-      );
-
-      // This will either get the result or reject due to the timeout.
-      try {
-        const result = await withTimeout(handleRpcRequestPromise, timer);
-
-        if (result === hasTimedOut) {
-          throw new Error(
-            `${snapId} failed to respond to the request in time.`,
-          );
-        }
-
-        await this.#assertSnapRpcResponse(snapId, handlerType, result);
-
-        const transformedResult = await this.#transformSnapRpcResponse(
-          snapId,
-          handlerType,
-          transformedRequest,
-          result,
-        );
-
-        this.#recordSnapRpcRequestFinish(
-          snapId,
-          transformedRequest.id,
-          handlerType,
-          origin,
-          true,
-        );
-
-        return transformedResult;
-      } catch (error) {
-        // We flag the RPC request as finished early since termination may affect pending requests
-        this.#recordSnapRpcRequestFinish(
-          snapId,
-          transformedRequest.id,
-          handlerType,
-          origin,
-          false,
-        );
-
-        const [jsonRpcError, handled] = unwrapError(error);
-
-        if (!handled) {
-          await this.stopSnap(snapId, SnapStatusEvents.Crash);
-        }
-
-        throw jsonRpcError;
-      }
-    };
-
-    runtime.rpcHandler = rpcHandler;
-    return rpcHandler;
   }
 
   /**
@@ -4138,7 +4083,7 @@ export class SnapController extends BaseController<
 
     this.#snapsRuntimeData.set(snapId, {
       lastRequest: null,
-      rpcHandler: null,
+      startPromise: null,
       installPromise: null,
       encryptionKey: null,
       encryptionSalt: null,
