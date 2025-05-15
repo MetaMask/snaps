@@ -71,9 +71,7 @@ export abstract class AbstractExecutionService<WorkerType>
   // Cannot be hash private yet because of tests.
   protected jobs: Map<string, Job<WorkerType>>;
 
-  // Cannot be hash private yet because of tests.
-  // eslint-disable-next-line no-restricted-syntax
-  private readonly setupSnapProvider: SetupSnapProvider;
+  readonly #setupSnapProvider: SetupSnapProvider;
 
   readonly #messenger: ExecutionServiceMessenger;
 
@@ -94,24 +92,21 @@ export abstract class AbstractExecutionService<WorkerType>
     usePing = true,
   }: ExecutionServiceArgs) {
     this.jobs = new Map();
-    this.setupSnapProvider = setupSnapProvider;
+    this.#setupSnapProvider = setupSnapProvider;
     this.#messenger = messenger;
     this.#initTimeout = initTimeout;
     this.#pingTimeout = pingTimeout;
     this.#terminationTimeout = terminationTimeout;
     this.#usePing = usePing;
 
-    this.registerMessageHandlers();
+    this.#registerMessageHandlers();
   }
 
   /**
    * Constructor helper for registering the controller's messaging system
    * actions.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private registerMessageHandlers(): void {
+  #registerMessageHandlers(): void {
     this.#messenger.registerActionHandler(
       `${controllerName}:handleRpcRequest`,
       async (snapId: string, options: SnapRpcHookArgs) =>
@@ -144,23 +139,23 @@ export abstract class AbstractExecutionService<WorkerType>
   protected abstract terminateJob(job: TerminateJobArgs<WorkerType>): void;
 
   /**
-   * Terminates the job with the specified ID and deletes all its associated
-   * data. Any subsequent messages targeting the job will fail with an error.
-   * Throws an error if the specified job does not exist, or if termination
+   * Terminates the Snap with the specified ID and deletes all its associated
+   * data. Any subsequent messages targeting the Snap will fail with an error.
+   * Throws an error if the specified Snap does not exist, or if termination
    * fails unexpectedly.
    *
-   * @param jobId - The id of the job to be terminated.
+   * @param snapId - The id of the Snap to be terminated.
    */
-  public async terminate(jobId: string): Promise<void> {
-    const jobWrapper = this.jobs.get(jobId);
+  public async terminate(snapId: string): Promise<void> {
+    const jobWrapper = this.jobs.get(snapId);
     if (!jobWrapper) {
-      throw new Error(`Job with id "${jobId}" not found.`);
+      throw new Error(`"${snapId}" is not currently running.`);
     }
 
     try {
       // Ping worker and tell it to run teardown, continue with termination if it takes too long
       const result = await withTimeout(
-        this.command(jobId, {
+        this.#command(snapId, {
           jsonrpc: '2.0',
           method: 'terminate',
           params: [],
@@ -175,7 +170,7 @@ export abstract class AbstractExecutionService<WorkerType>
         // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
         //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
         //               JS process.
-        logError(`Job "${jobId}" failed to terminate gracefully.`, result);
+        logError(`Snap "${snapId}" failed to terminate gracefully.`, result);
       }
     } catch {
       // Ignore
@@ -192,23 +187,20 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.terminateJob(jobWrapper);
 
-    this.jobs.delete(jobId);
-    log(`Job "${jobId}" terminated.`);
+    this.jobs.delete(snapId);
+    log(`Snap "${snapId}" terminated.`);
   }
 
   /**
-   * Initiates a job for a snap.
+   * Initiates a job for a Snap.
    *
    * @param snapId - The ID of the Snap to initiate a job for.
    * @param timer - The timer to use for timeouts.
    * @returns Information regarding the created job.
    * @throws If the execution service returns an error or execution times out.
    */
-  protected async initJob(
-    snapId: string,
-    timer: Timer,
-  ): Promise<Job<WorkerType>> {
-    const { streams, worker } = await this.initStreams(snapId, timer);
+  async #initJob(snapId: string, timer: Timer): Promise<Job<WorkerType>> {
+    const { streams, worker } = await this.#initStreams(snapId, timer);
     const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
@@ -245,7 +237,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @returns The streams to communicate with the worker and the worker itself.
    * @throws If the execution service returns an error or execution times out.
    */
-  protected async initStreams(
+  async #initStreams(
     snapId: string,
     timer: Timer,
   ): Promise<{ streams: JobStreams; worker: WorkerType }> {
@@ -258,10 +250,10 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     const { worker, stream: envStream } = result;
-    const mux = setupMultiplex(envStream, `Job: "${snapId}"`);
+    const mux = setupMultiplex(envStream, `Snap: "${snapId}"`);
     const commandStream = mux.createStream(SNAP_STREAM_NAMES.COMMAND);
 
-    // Handle out-of-band errors, i.e. errors thrown from the snap outside of the req/res cycle.
+    // Handle out-of-band errors, i.e. errors thrown from the Snap outside of the req/res cycle.
     // Also keep track of outbound request/responses
     const notificationHandler = (
       message:
@@ -327,10 +319,10 @@ export abstract class AbstractExecutionService<WorkerType>
 
   /**
    * Terminates the Snap with the specified ID. May throw an error if
-   * termination unexpectedly fails, but will not fail if no job for the snap
+   * termination unexpectedly fails, but will not fail if no job for the Snap
    * with the specified ID is found.
    *
-   * @param snapId - The ID of the snap to terminate.
+   * @param snapId - The ID of the Snap to terminate.
    */
   async terminateSnap(snapId: string) {
     await this.terminate(snapId);
@@ -338,12 +330,12 @@ export abstract class AbstractExecutionService<WorkerType>
 
   async terminateAllSnaps() {
     await Promise.all(
-      [...this.jobs.keys()].map(async (jobId) => this.terminate(jobId)),
+      [...this.jobs.keys()].map(async (snapId) => this.terminate(snapId)),
     );
   }
 
   /**
-   * Initializes and executes a snap, setting up the communication channels to the snap etc.
+   * Initializes and executes a Snap, setting up the communication channels to the Snap etc.
    *
    * @param snapData - Data needed for Snap execution.
    * @param snapData.snapId - The ID of the Snap to execute.
@@ -364,13 +356,13 @@ export abstract class AbstractExecutionService<WorkerType>
     const timer = new Timer(this.#initTimeout);
 
     // This may resolve even if the environment has failed to start up fully
-    const job = await this.initJob(snapId, timer);
+    const job = await this.#initJob(snapId, timer);
 
     // Certain environments use ping as part of their initialization and thus can skip it here
     if (this.#usePing) {
       // Ping the worker to ensure that it started up
       const pingResult = await withTimeout(
-        this.command(job.id, {
+        this.#command(job.id, {
           jsonrpc: '2.0',
           method: 'ping',
           id: nanoid(),
@@ -385,7 +377,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     const rpcStream = job.streams.rpc;
 
-    this.setupSnapProvider(snapId, rpcStream);
+    this.#setupSnapProvider(snapId, rpcStream);
 
     const remainingTime = timer.remaining;
 
@@ -399,7 +391,7 @@ export abstract class AbstractExecutionService<WorkerType>
     assertIsJsonRpcRequest(request);
 
     const result = await withTimeout(
-      this.command(job.id, request),
+      this.#command(job.id, request),
       remainingTime,
     );
 
@@ -410,15 +402,13 @@ export abstract class AbstractExecutionService<WorkerType>
     return result as string;
   }
 
-  // Cannot be hash private yet because of tests.
-  // eslint-disable-next-line no-restricted-syntax
-  private async command(
+  async #command(
     snapId: string,
     message: JsonRpcRequest,
   ): Promise<Json | undefined> {
     const job = this.jobs.get(snapId);
     if (!job) {
-      throw new Error(`Snap "${snapId}" is not currently running.`);
+      throw new Error(`"${snapId}" is not currently running.`);
     }
 
     log('Parent: Sending Command', message);
@@ -438,7 +428,7 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Handle RPC request.
    *
-   * @param snapId - The ID of the recipient snap.
+   * @param snapId - The ID of the recipient Snap.
    * @param options - Bag of options to pass to the RPC handler.
    * @returns Promise that can handle the request.
    */
@@ -448,7 +438,7 @@ export abstract class AbstractExecutionService<WorkerType>
   ): Promise<unknown> {
     const { handler, request, origin } = options;
 
-    return await this.command(snapId, {
+    return await this.#command(snapId, {
       id: nanoid(),
       jsonrpc: '2.0',
       method: 'snapRpc',

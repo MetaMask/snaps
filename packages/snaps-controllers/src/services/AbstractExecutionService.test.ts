@@ -101,7 +101,7 @@ describe('AbstractExecutionService', () => {
           method: 'bar',
         },
       }),
-    ).rejects.toThrow(`Snap "${MOCK_SNAP_ID}" is not currently running.`);
+    ).rejects.toThrow(`"${MOCK_SNAP_ID}" is not currently running.`);
   });
 
   it('throws an error if execution environment fails to respond to ping', async () => {
