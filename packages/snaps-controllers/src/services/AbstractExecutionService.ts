@@ -144,7 +144,7 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @param snapId - The id of the Snap to be terminated.
    */
-  public async terminate(snapId: string): Promise<void> {
+  public async terminateSnap(snapId: string): Promise<void> {
     const job = this.#jobs.get(snapId);
     if (!job) {
       throw new Error(`"${snapId}" is not currently running.`);
@@ -307,20 +307,9 @@ export abstract class AbstractExecutionService<WorkerType>
     stream: BasePostMessageStream;
   }>;
 
-  /**
-   * Terminates the Snap with the specified ID. May throw an error if
-   * termination unexpectedly fails, but will not fail if no job for the Snap
-   * with the specified ID is found.
-   *
-   * @param snapId - The ID of the Snap to terminate.
-   */
-  async terminateSnap(snapId: string) {
-    await this.terminate(snapId);
-  }
-
   async terminateAllSnaps() {
     await Promise.all(
-      [...this.#jobs.keys()].map(async (snapId) => this.terminate(snapId)),
+      [...this.#jobs.keys()].map(async (snapId) => this.terminateSnap(snapId)),
     );
   }
 
