@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "baseUrl": "./",
+    "jsx": "react-jsxdev"
+  },
+  "include": ["src", "snap.config.ts"]
+}

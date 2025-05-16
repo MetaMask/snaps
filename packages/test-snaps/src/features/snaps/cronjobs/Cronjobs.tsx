@@ -1,11 +1,6 @@
 import type { FunctionComponent } from 'react';
 
 import {
-  CancelBackgroundEvent,
-  ScheduleBackgroundEvent,
-  GetBackgroundEvents,
-} from './components';
-import {
   CRONJOBS_SNAP_ID,
   CRONJOBS_SNAP_PORT,
   CRONJOBS_VERSION,
@@ -20,10 +15,6 @@ export const Cronjobs: FunctionComponent = () => {
       port={CRONJOBS_SNAP_PORT}
       version={CRONJOBS_VERSION}
       testId="cronjobs"
-    >
-      <GetBackgroundEvents />
-      <ScheduleBackgroundEvent />
-      <CancelBackgroundEvent />
-    </Snap>
+    />
   );
 };
