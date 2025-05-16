@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+- feat: Add `showTestnets` to `snap_getPreferences` ([#3395](https://github.com/MetaMask/snaps/pull/3395))
+
 ## [6.23.0]
 
 ### Added

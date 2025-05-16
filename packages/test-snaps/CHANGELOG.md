@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Unblock `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+
 ## [2.21.1]
 
 ### Changed

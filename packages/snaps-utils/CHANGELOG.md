@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+
 ## [9.2.2]
 
 ### Changed

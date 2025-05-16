@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Unblock `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+- feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+
 ## [12.0.1]
 
 ### Fixed
