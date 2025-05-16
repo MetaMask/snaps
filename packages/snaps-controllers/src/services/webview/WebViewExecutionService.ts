@@ -33,14 +33,14 @@ export class WebViewExecutionService extends AbstractExecutionService<WebViewInt
   }
 
   /**
-   * Create a new stream for the specified job. This wraps the runtime stream
-   * in a stream specific to the job.
+   * Create a new stream for the specified Snap. This wraps the runtime stream
+   * in a stream specific to the Snap.
    *
-   * @param jobId - The job ID.
-   * @returns An object with the worker ID and stream.
+   * @param snapId - The Snap ID.
+   * @returns An object with the webview and stream.
    */
-  protected async initEnvStream(jobId: string) {
-    const webView = await this.#createWebView(jobId);
+  protected async initEnvStream(snapId: string) {
+    const webView = await this.#createWebView(snapId);
 
     const stream = new WebViewMessageStream({
       name: 'parent',

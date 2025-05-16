@@ -94,4 +94,30 @@ describe('AbstractExecutionService', () => {
       }),
     ).rejects.toThrow(`${MOCK_SNAP_ID} failed to start.`);
   });
+
+  it('throws an error if the Snap is already running when trying to execute', async () => {
+    const { service } = createService(MockExecutionService);
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: `module.exports.onRpcRequest = () => {};`,
+      endowments: [],
+    });
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `module.exports.onRpcRequest = () => {};`,
+        endowments: [],
+      }),
+    ).rejects.toThrow(`"${MOCK_SNAP_ID}" is already running.`);
+  });
+
+  it('throws an error if the Snap is not running when attempted to be terminated', async () => {
+    const { service } = createService(MockExecutionService);
+
+    await expect(service.terminateSnap(MOCK_SNAP_ID)).rejects.toThrow(
+      `"${MOCK_SNAP_ID}" is not currently running.`,
+    );
+  });
 });

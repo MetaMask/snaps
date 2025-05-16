@@ -340,7 +340,7 @@ export abstract class AbstractExecutionService<WorkerType>
     endowments,
   }: SnapExecutionData): Promise<string> {
     if (this.#jobs.has(snapId)) {
-      throw new Error(`Snap "${snapId}" is already being executed.`);
+      throw new Error(`"${snapId}" is already running.`);
     }
 
     const timer = new Timer(this.#initTimeout);
@@ -456,9 +456,7 @@ export function setupMultiplex(
   const mux = new ObjectMultiplex();
   pipeline(connectionStream, mux, connectionStream, (error) => {
     if (error) {
-      streamName
-        ? logError(`"${streamName}" stream failure.`, error)
-        : logError(error);
+      logError(`"${streamName}" stream failure.`, error);
     }
   });
   return mux;
