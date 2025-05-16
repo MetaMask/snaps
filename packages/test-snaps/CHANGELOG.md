@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.22.0]
 
-### Uncategorized
+### Changed
 
-- feat: Unblock `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+- Use latest versions of example Snaps ([#3400](https://github.com/MetaMask/snaps/pull/3400))
 
 ## [2.21.1]
 

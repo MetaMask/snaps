@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.3.0]
 
-### Uncategorized
+### Added
 
-- feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+- Add support for SIP-31 `onClientRequest` handler ([#3394](https://github.com/MetaMask/snaps/pull/3394))
 
 ## [9.2.2]
 

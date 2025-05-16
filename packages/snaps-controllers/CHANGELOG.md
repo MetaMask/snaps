@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Unblock `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
-- feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+- Add support for `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+- Add support for SIP-31 `onClientRequest` handler ([#3394](https://github.com/MetaMask/snaps/pull/3394))
 
 ## [12.0.1]
 
