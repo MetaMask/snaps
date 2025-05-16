@@ -64,16 +64,16 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
   }
 
   /**
-   * Create a new stream for the specified job. This wraps the root stream
-   * in a stream specific to the job.
+   * Create a new stream for the specified Snap. This wraps the root stream
+   * in a stream specific to the Snap.
    *
-   * @param jobId - The job ID.
+   * @param snapId - The Snap ID.
    * @returns An object with the worker ID and stream.
    */
-  protected async initEnvStream(jobId: string) {
+  protected async initEnvStream(snapId: string) {
     const stream = new ProxyPostMessageStream({
       stream: this.#stream,
-      jobId,
+      jobId: snapId,
     });
 
     // Send a request and await any response before continuing
@@ -88,6 +88,6 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
       });
     });
 
-    return { worker: jobId, stream };
+    return { worker: snapId, stream };
   }
 }

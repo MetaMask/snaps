@@ -94,6 +94,7 @@ import {
   DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   ExecutionEnvironmentStub,
   getControllerMessenger,
+  getNodeEES,
   getNodeEESMessenger,
   getPersistedSnapsState,
   getSnapController,
@@ -474,8 +475,10 @@ describe('SnapController', () => {
     // @ts-expect-error `maxRequestTime` is a private property.
     snapController.maxRequestTime = 50;
 
-    // @ts-expect-error `command` is a private property.
-    service.command = async () => sleep(100);
+    rootMessenger.registerActionHandler(
+      'ExecutionService:handleRpcRequest',
+      async () => sleep(100),
+    );
 
     await expect(
       snapController.handleRequest({
@@ -1653,30 +1656,31 @@ describe('SnapController', () => {
       },
     });
 
-    const [snapController, service] = getSnapControllerWithEES(options);
-    const snap = snapController.getExpect(MOCK_SNAP_ID);
-
-    jest
-      // Cast because we are mocking a private property
-      .spyOn(service, 'setupSnapProvider' as any)
-      .mockImplementation((_snapId, rpcStream) => {
-        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
-        const stream = mux.createStream('metamask-provider');
-        const engine = new JsonRpcEngine();
-        const middleware = createAsyncMiddleware(async (req, res, _next) => {
-          if (req.method === 'eth_blockNumber') {
-            await sleep(100);
-            res.result = MOCK_BLOCK_NUMBER;
-          }
-        });
-        engine.push(middleware);
-        const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream, (error) => {
-          if (error) {
-            logError(`Provider stream failure.`, error);
-          }
-        });
+    const setupSnapProvider = (_snapId: string, rpcStream: Duplex) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      const middleware = createAsyncMiddleware(async (req, res, _next) => {
+        if (req.method === 'eth_blockNumber') {
+          await sleep(100);
+          res.result = MOCK_BLOCK_NUMBER;
+        }
       });
+      engine.push(middleware);
+      const providerStream = createEngineStream({ engine });
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
+    };
+
+    const service = getNodeEES(
+      getNodeEESMessenger(options.rootMessenger),
+      setupSnapProvider,
+    );
+    const [snapController] = getSnapControllerWithEES(options, service);
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
@@ -1726,35 +1730,37 @@ describe('SnapController', () => {
     });
 
     const { rootMessenger } = options;
-    const [snapController, service] = getSnapControllerWithEES(options);
+
+    const setupSnapProvider = (_snapId: string, rpcStream: Duplex) => {
+      const mux = setupMultiplex(rpcStream, 'foo');
+      const stream = mux.createStream('metamask-provider');
+      const engine = new JsonRpcEngine();
+      const middleware = createAsyncMiddleware(async (req, res, _next) => {
+        if (req.method === 'eth_blockNumber') {
+          await sleep(100);
+          res.result = MOCK_BLOCK_NUMBER;
+        }
+      });
+      engine.push(middleware);
+      const providerStream = createEngineStream({ engine });
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error) {
+          logError(`Provider stream failure.`, error);
+        }
+      });
+    };
+
+    const service = getNodeEES(
+      getNodeEESMessenger(rootMessenger),
+      setupSnapProvider,
+    );
+    const [snapController] = getSnapControllerWithEES(options, service);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
     rootMessenger.registerActionHandler(
       'PermissionController:hasPermission',
       () => true,
     );
-
-    jest
-      // Cast because we are mocking a private property
-      .spyOn(service, 'setupSnapProvider' as any)
-      .mockImplementation((_snapId, rpcStream) => {
-        const mux = setupMultiplex(rpcStream as Duplex, 'foo');
-        const stream = mux.createStream('metamask-provider');
-        const engine = new JsonRpcEngine();
-        const middleware = createAsyncMiddleware(async (req, res, _next) => {
-          if (req.method === 'eth_blockNumber') {
-            await sleep(100);
-            res.result = MOCK_BLOCK_NUMBER;
-          }
-        });
-        engine.push(middleware);
-        const providerStream = createEngineStream({ engine });
-        pipeline(stream, providerStream, stream, (error) => {
-          if (error) {
-            logError(`Provider stream failure.`, error);
-          }
-        });
-      });
 
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
@@ -9646,22 +9652,20 @@ describe('SnapController', () => {
 
   describe('clearState', () => {
     it('clears the state and terminates running snaps', async () => {
-      const rootMessenger = getControllerMessenger();
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(),
-            snapStates: {
-              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
-            },
-            unencryptedSnapStates: {
-              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
-            },
+      const options = getSnapControllerWithEESOptions({
+        state: {
+          snaps: getPersistedSnapsState(),
+          snapStates: {
+            [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
           },
-        }),
-      );
+          unencryptedSnapStates: {
+            [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
+          },
+        },
+      });
+      const [snapController] = getSnapControllerWithEES(options);
+
+      const { messenger } = options;
 
       const callActionSpy = jest.spyOn(messenger, 'call');
 

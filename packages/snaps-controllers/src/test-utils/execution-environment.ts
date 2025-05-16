@@ -9,6 +9,7 @@ import type {
   ExecutionService,
   ExecutionServiceActions,
   ExecutionServiceEvents,
+  SetupSnapProvider,
   SnapExecutionData,
 } from '../services';
 import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
@@ -34,27 +35,32 @@ export const getNodeEESMessenger = (
     ],
   });
 
-export const getNodeEES = (messenger: ReturnType<typeof getNodeEESMessenger>) =>
+export const getNodeEES = (
+  messenger: ReturnType<typeof getNodeEESMessenger>,
+  setupSnapProvider?: SetupSnapProvider,
+) =>
   new NodeThreadExecutionService({
     messenger,
-    setupSnapProvider: jest.fn().mockImplementation((_snapId, rpcStream) => {
-      const mux = setupMultiplex(rpcStream, 'foo');
-      const stream = mux.createStream('metamask-provider');
-      const engine = new JsonRpcEngine();
-      engine.push((req, res, next, end) => {
-        if (req.method === 'eth_blockNumber') {
-          res.result = MOCK_BLOCK_NUMBER;
-          return end();
-        }
-        return next();
-      });
-      const providerStream = createEngineStream({ engine });
-      pipeline(stream, providerStream, stream, (error) => {
-        if (error) {
-          logError(`Provider stream failure.`, error);
-        }
-      });
-    }),
+    setupSnapProvider:
+      setupSnapProvider ??
+      jest.fn().mockImplementation((_snapId, rpcStream) => {
+        const mux = setupMultiplex(rpcStream, 'foo');
+        const stream = mux.createStream('metamask-provider');
+        const engine = new JsonRpcEngine();
+        engine.push((req, res, next, end) => {
+          if (req.method === 'eth_blockNumber') {
+            res.result = MOCK_BLOCK_NUMBER;
+            return end();
+          }
+          return next();
+        });
+        const providerStream = createEngineStream({ engine });
+        pipeline(stream, providerStream, stream, (error) => {
+          if (error) {
+            logError(`Provider stream failure.`, error);
+          }
+        });
+      }),
   });
 
 export class ExecutionEnvironmentStub implements ExecutionService {
