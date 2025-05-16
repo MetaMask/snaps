@@ -1,17 +1,17 @@
 {
-  "version": "3.0.0",
-  "description": "MetaMask example snap demonstrating the use of cronjobs in snaps.",
-  "proposedName": "Cronjob Example Snap",
+  "version": "1.0.0",
+  "description": "MetaMask example snap demonstrating the use of background events in snaps.",
+  "proposedName": "Background Events Example Snap",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "+MkYHDg2IPtUO7khmqe8UrzbkxP2/AyG4xuiGvvJcz0=",
+    "shasum": "o1zxgvd04y7qLwg3bcBX7qufaC2HN9LRNK2q6fTrp3w=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
-        "packageName": "@metamask/cronjob-example-snap",
+        "packageName": "@metamask/background-events-example-snap",
         "registry": "https://registry.npmjs.org/"
       }
     }
@@ -22,14 +22,7 @@
       "snaps": false
     },
     "endowment:cronjob": {
-      "jobs": [
-        {
-          "expression": "*/10 * * * * *",
-          "request": {
-            "method": "execute"
-          }
-        }
-      ]
+      "jobs": []
     },
     "snap_dialog": {}
   },

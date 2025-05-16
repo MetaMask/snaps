@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING** Remove background events methods in favor of new background events snap
+  - When running e2e tests, the cronjobs interfere with background events so it becomes impossible to test.
+
 ## [3.0.0]
 
 ### Added
