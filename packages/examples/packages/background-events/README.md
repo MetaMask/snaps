@@ -39,6 +39,7 @@ A snap must specify the `endowment:cronjob` permission to use the background eve
     method: "fireDialog"
   }
 }
+```
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.tsx).
