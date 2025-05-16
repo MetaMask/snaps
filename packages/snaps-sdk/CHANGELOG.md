@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.24.0]
+
 ### Uncategorized
 
 - feat: Implement SIP-31 ([#3394](https://github.com/MetaMask/snaps/pull/3394))
@@ -568,7 +570,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.23.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.24.0...HEAD
+[6.24.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.23.0...@metamask/snaps-sdk@6.24.0
 [6.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.1...@metamask/snaps-sdk@6.23.0
 [6.22.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.22.0...@metamask/snaps-sdk@6.22.1
 [6.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.21.0...@metamask/snaps-sdk@6.22.0
