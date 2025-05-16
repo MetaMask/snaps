@@ -16,7 +16,6 @@ import {
   hasProperty,
   inMilliseconds,
   isJsonRpcFailure,
-  isObject,
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
@@ -68,8 +67,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
   state = null;
 
-  // Cannot be hash private yet because of tests.
-  protected jobs: Map<string, Job<WorkerType>>;
+  readonly #jobs: Map<string, Job<WorkerType>>;
 
   readonly #setupSnapProvider: SetupSnapProvider;
 
@@ -91,7 +89,7 @@ export abstract class AbstractExecutionService<WorkerType>
     terminationTimeout = inMilliseconds(1, Duration.Second),
     usePing = true,
   }: ExecutionServiceArgs) {
-    this.jobs = new Map();
+    this.#jobs = new Map();
     this.#setupSnapProvider = setupSnapProvider;
     this.#messenger = messenger;
     this.#initTimeout = initTimeout;
@@ -147,7 +145,7 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap to be terminated.
    */
   public async terminate(snapId: string): Promise<void> {
-    const jobWrapper = this.jobs.get(snapId);
+    const jobWrapper = this.#jobs.get(snapId);
     if (!jobWrapper) {
       throw new Error(`"${snapId}" is not currently running.`);
     }
@@ -187,7 +185,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.terminateJob(jobWrapper);
 
-    this.jobs.delete(snapId);
+    this.#jobs.delete(snapId);
     log(`Snap "${snapId}" terminated.`);
   }
 
@@ -224,7 +222,7 @@ export abstract class AbstractExecutionService<WorkerType>
       rpcEngine,
       worker,
     };
-    this.jobs.set(snapId, envMetadata);
+    this.#jobs.set(snapId, envMetadata);
 
     return envMetadata;
   }
@@ -269,20 +267,12 @@ export abstract class AbstractExecutionService<WorkerType>
       } else if (message.method === 'OutboundResponse') {
         this.#messenger.publish('ExecutionService:outboundResponse', snapId);
       } else if (message.method === 'UnhandledError') {
-        if (isObject(message.params) && message.params.error) {
-          this.#messenger.publish(
-            'ExecutionService:unhandledError',
-            snapId,
-            message.params.error as SnapErrorJson,
-          );
-          commandStream.removeListener('data', notificationHandler);
-        } else {
-          logError(
-            new Error(
-              `Received malformed "${message.method}" command stream notification.`,
-            ),
-          );
-        }
+        this.#messenger.publish(
+          'ExecutionService:unhandledError',
+          snapId,
+          (message.params as { error: SnapErrorJson }).error,
+        );
+        commandStream.removeListener('data', notificationHandler);
       } else {
         logError(
           new Error(
@@ -330,7 +320,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
   async terminateAllSnaps() {
     await Promise.all(
-      [...this.jobs.keys()].map(async (snapId) => this.terminate(snapId)),
+      [...this.#jobs.keys()].map(async (snapId) => this.terminate(snapId)),
     );
   }
 
@@ -349,7 +339,7 @@ export abstract class AbstractExecutionService<WorkerType>
     sourceCode,
     endowments,
   }: SnapExecutionData): Promise<string> {
-    if (this.jobs.has(snapId)) {
+    if (this.#jobs.has(snapId)) {
       throw new Error(`Snap "${snapId}" is already being executed.`);
     }
 
@@ -406,7 +396,7 @@ export abstract class AbstractExecutionService<WorkerType>
     snapId: string,
     message: JsonRpcRequest,
   ): Promise<Json | undefined> {
-    const job = this.jobs.get(snapId);
+    const job = this.#jobs.get(snapId);
     if (!job) {
       throw new Error(`"${snapId}" is not currently running.`);
     }
