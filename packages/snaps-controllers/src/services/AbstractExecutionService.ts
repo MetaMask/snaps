@@ -145,8 +145,8 @@ export abstract class AbstractExecutionService<WorkerType>
    * @param snapId - The id of the Snap to be terminated.
    */
   public async terminate(snapId: string): Promise<void> {
-    const jobWrapper = this.#jobs.get(snapId);
-    if (!jobWrapper) {
+    const job = this.#jobs.get(snapId);
+    if (!job) {
       throw new Error(`"${snapId}" is not currently running.`);
     }
 
@@ -174,7 +174,7 @@ export abstract class AbstractExecutionService<WorkerType>
       // Ignore
     }
 
-    Object.values(jobWrapper.streams).forEach((stream) => {
+    Object.values(job.streams).forEach((stream) => {
       try {
         !stream.destroyed && stream.destroy();
         stream.removeAllListeners();
@@ -183,7 +183,7 @@ export abstract class AbstractExecutionService<WorkerType>
       }
     });
 
-    this.terminateJob(jobWrapper);
+    this.terminateJob(job);
 
     this.#jobs.delete(snapId);
     log(`Snap "${snapId}" terminated.`);

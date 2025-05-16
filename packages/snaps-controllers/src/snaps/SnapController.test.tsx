@@ -9652,22 +9652,20 @@ describe('SnapController', () => {
 
   describe('clearState', () => {
     it('clears the state and terminates running snaps', async () => {
-      const rootMessenger = getControllerMessenger();
-      const messenger = getSnapControllerMessenger(rootMessenger);
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          state: {
-            snaps: getPersistedSnapsState(),
-            snapStates: {
-              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
-            },
-            unencryptedSnapStates: {
-              [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
-            },
+      const options = getSnapControllerWithEESOptions({
+        state: {
+          snaps: getPersistedSnapsState(),
+          snapStates: {
+            [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
           },
-        }),
-      );
+          unencryptedSnapStates: {
+            [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
+          },
+        },
+      });
+      const [snapController] = getSnapControllerWithEES(options);
+
+      const { messenger } = options;
 
       const callActionSpy = jest.spyOn(messenger, 'call');
 
