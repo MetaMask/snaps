@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0]
+
+### Changed
+
+- Use `initialConnections` ([#3391](https://github.com/MetaMask/snaps/pull/3391))
+
 ## [0.3.0]
 
 ### Added
@@ -25,7 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.4.0...HEAD
+[0.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...@metamask/preinstalled-example-snap@0.4.0
 [0.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
 [0.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
 [0.1.0]: https://github.com/MetaMask/snaps/releases/tag/@metamask/preinstalled-example-snap@0.1.0
