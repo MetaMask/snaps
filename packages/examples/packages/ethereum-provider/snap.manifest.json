@@ -1,5 +1,5 @@
 {
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "MetaMask example snap demonstrating the use of the Ethereum Provider API and `endowment:ethereum-provider` permission.",
   "proposedName": "Ethereum Provider Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "cKFOaKJv2NJ7UOWRzhpP1fIq40SPyjhd1sG42AceRBY=",
+    "shasum": "7i20r0cCFwMESzBcTMgRNOt82AjwHneiM6LtD7vXCGw=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -22,6 +22,6 @@
     },
     "endowment:ethereum-provider": {}
   },
-  "platformVersion": "6.23.0",
+  "platformVersion": "6.24.0",
   "manifestVersion": "0.1"
 }

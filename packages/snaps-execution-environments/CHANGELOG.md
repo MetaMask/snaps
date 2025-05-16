@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.0]
+
+### Added
+
+- Add support for `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+- Add support for SIP-31 `onClientRequest` handler ([#3394](https://github.com/MetaMask/snaps/pull/3394))
+
 ## [8.0.1]
 
 ### Fixed
@@ -496,7 +503,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.1.0...HEAD
+[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.1...@metamask/snaps-execution-environments@8.1.0
 [8.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.0...@metamask/snaps-execution-environments@8.0.1
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.2...@metamask/snaps-execution-environments@8.0.0
 [7.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.1...@metamask/snaps-execution-environments@7.2.2

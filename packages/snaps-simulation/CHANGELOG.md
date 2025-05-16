@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0]
+
+### Added
+
+- Add support for `wallet_switchEthereumChain` ([#2634](https://github.com/MetaMask/snaps/pull/2634))
+- Add `showTestnets` to `snap_getPreferences` ([#3395](https://github.com/MetaMask/snaps/pull/3395))
+
 ## [2.5.0]
 
 ### Added
@@ -153,7 +160,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.6.0...HEAD
+[2.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.5.0...@metamask/snaps-simulation@2.6.0
 [2.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.4.1...@metamask/snaps-simulation@2.5.0
 [2.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.4.0...@metamask/snaps-simulation@2.4.1
 [2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@2.3.0...@metamask/snaps-simulation@2.4.0
