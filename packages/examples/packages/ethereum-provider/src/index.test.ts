@@ -42,7 +42,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('getVersion', () => {
-    const MOCK_VERSION = '1'; // Ethereum Mainnet
+    const MOCK_VERSION = '0x01'; // Ethereum Mainnet
 
     it('returns the current network version', async () => {
       const { request } = await installSnap();
