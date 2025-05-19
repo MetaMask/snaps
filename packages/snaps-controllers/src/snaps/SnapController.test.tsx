@@ -11582,8 +11582,8 @@ describe('SnapController', () => {
     });
   });
 
-  describe('SnapController:isPlatformVersionSupported', () => {
-    it('returns true or false depending on whether the version is supported', async () => {
+  describe('SnapController:isMinimumPlatformVersion', () => {
+    it('returns true or false depending on whether the minimum version is supported', async () => {
       const messenger = getSnapControllerMessenger();
 
       const manifest = getSnapManifest({
@@ -11601,7 +11601,7 @@ describe('SnapController', () => {
 
       expect(
         messenger.call(
-          'SnapController:isPlatformVersionSupported',
+          'SnapController:isMinimumPlatformVersion',
           MOCK_SNAP_ID,
           '1.0.0' as SemVerVersion,
         ),
@@ -11609,7 +11609,7 @@ describe('SnapController', () => {
 
       expect(
         messenger.call(
-          'SnapController:isPlatformVersionSupported',
+          'SnapController:isMinimumPlatformVersion',
           MOCK_SNAP_ID,
           manifest.platformVersion as SemVerVersion,
         ),
@@ -11617,7 +11617,7 @@ describe('SnapController', () => {
 
       expect(
         messenger.call(
-          'SnapController:isPlatformVersionSupported',
+          'SnapController:isMinimumPlatformVersion',
           MOCK_SNAP_ID,
           '7.0.0' as SemVerVersion,
         ),
@@ -11643,7 +11643,7 @@ describe('SnapController', () => {
 
       expect(
         messenger.call(
-          'SnapController:isPlatformVersionSupported',
+          'SnapController:isMinimumPlatformVersion',
           MOCK_SNAP_ID,
           '999.0.0' as SemVerVersion,
         ),

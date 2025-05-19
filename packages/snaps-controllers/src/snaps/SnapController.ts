@@ -463,9 +463,9 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
-export type IsPlatformVersionSupported = {
-  type: `${typeof controllerName}:isPlatformVersionSupported`;
-  handler: SnapController['isPlatformVersionSupported'];
+export type IsMinimumPlatformVersion = {
+  type: `${typeof controllerName}:isMinimumPlatformVersion`;
+  handler: SnapController['isMinimumPlatformVersion'];
 };
 
 export type SnapControllerGetStateAction = ControllerGetStateAction<
@@ -495,7 +495,7 @@ export type SnapControllerActions =
   | GetSnapFile
   | SnapControllerGetStateAction
   | StopAllSnaps
-  | IsPlatformVersionSupported;
+  | IsMinimumPlatformVersion;
 
 // Controller Messenger Events
 
@@ -1265,8 +1265,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:isPlatformVersionSupported`,
-      (...args) => this.isPlatformVersionSupported(...args),
+      `${controllerName}:isMinimumPlatformVersion`,
+      (...args) => this.isMinimumPlatformVersion(...args),
     );
   }
 
@@ -2191,14 +2191,14 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Determine if a given Snap ID supports a given version of the Snaps platform
+   * Determine if a given Snap ID supports a given miniumum version of the Snaps platform
    * by inspecting the platformVersion in the Snap manifest.
    *
    * @param snapId - The Snap ID.
    * @param version - The version.
    * @returns True if the platform version is equal or greater to the passed version, false otherwise.
    */
-  isPlatformVersionSupported(snapId: SnapId, version: SemVerVersion): boolean {
+  isMinimumPlatformVersion(snapId: SnapId, version: SemVerVersion): boolean {
     const snap = this.getExpect(snapId);
 
     const { platformVersion } = snap.manifest;
