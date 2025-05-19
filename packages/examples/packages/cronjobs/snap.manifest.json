@@ -17,10 +17,6 @@
     }
   },
   "initialPermissions": {
-    "endowment:rpc": {
-      "dapps": true,
-      "snaps": false
-    },
     "endowment:cronjob": {
       "jobs": [
         {

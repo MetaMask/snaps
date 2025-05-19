@@ -30,3 +30,4 @@ export * from './updates';
 export * from './wasm';
 export * from './send-flow';
 export * from './state';
+export * from './background-events';

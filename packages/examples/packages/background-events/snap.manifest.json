@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "description": "MetaMask example snap demonstrating the use of background events in snaps.",
+  "version": "0.0.0",
+  "description": "MetaMask example Snap demonstrating the use of background events.",
   "proposedName": "Background Events Example Snap",
   "repository": {
     "type": "git",

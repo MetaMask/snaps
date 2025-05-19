@@ -25,6 +25,7 @@ export const GetBackgroundEvents: FunctionComponent = () => {
       <Button
         type="submit"
         id="getBackgroundEvents"
+        className="mb-3"
         disabled={isLoading}
         onClick={handleClick}
       >
