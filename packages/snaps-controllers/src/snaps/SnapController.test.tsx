@@ -11583,7 +11583,34 @@ describe('SnapController', () => {
   });
 
   describe('SnapController:isMinimumPlatformVersion', () => {
-    it('returns true or false depending on whether the minimum version is supported', async () => {
+    it('returns true if the platform version is equal to the specified version', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const manifest = getSnapManifest({
+        platformVersion: '6.0.0' as SemVerVersion,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
+
+      expect(
+        messenger.call(
+          'SnapController:isMinimumPlatformVersion',
+          MOCK_SNAP_ID,
+          manifest.platformVersion as SemVerVersion,
+        ),
+      ).toBe(true);
+
+      snapController.destroy();
+    });
+
+    it('returns true if the platform version is greater than the specified version', async () => {
       const messenger = getSnapControllerMessenger();
 
       const manifest = getSnapManifest({
@@ -11607,13 +11634,24 @@ describe('SnapController', () => {
         ),
       ).toBe(true);
 
-      expect(
-        messenger.call(
-          'SnapController:isMinimumPlatformVersion',
-          MOCK_SNAP_ID,
-          manifest.platformVersion as SemVerVersion,
-        ),
-      ).toBe(true);
+      snapController.destroy();
+    });
+
+    it('returns false if the platform version is lesser than the specified version', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const manifest = getSnapManifest({
+        platformVersion: '6.0.0' as SemVerVersion,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
 
       expect(
         messenger.call(

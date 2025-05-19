@@ -2191,7 +2191,7 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Determine if a given Snap ID supports a given miniumum version of the Snaps platform
+   * Determine if a given Snap ID supports a given minimum version of the Snaps platform
    * by inspecting the platformVersion in the Snap manifest.
    *
    * @param snapId - The Snap ID.
