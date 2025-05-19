@@ -12,8 +12,7 @@ import type {
 } from './types';
 
 /**
- * Handle background event execution requests from MetaMask. This handler handles one
- * method:
+ * Handle background event execution requests from MetaMask. This handler handles one method:
  *
  * - `fireDialog`: The JSON-RPC method that is called by MetaMask when the
  * background event is triggered. This method call is scheduled by the `scheduleNotification`
