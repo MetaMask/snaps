@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Use background events example snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+
+### Removed
+
+- Delete background events logic from cronjobs example snap section ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+
 ## [2.22.0]
 
 ### Changed

@@ -5,14 +5,17 @@ import { Button } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
-import { CRONJOBS_SNAP_PORT, CRONJOBS_SNAP_ID } from '../constants';
+import {
+  BACKGROUND_EVENTS_SNAP_PORT,
+  BACKGROUND_EVENTS_SNAP_ID,
+} from '../constants';
 
 export const GetBackgroundEvents: FunctionComponent = () => {
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
   const handleClick = () => {
     invokeSnap({
-      snapId: getSnapId(CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT),
+      snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
       method: 'getBackgroundEvents',
     }).catch(logError);
   };
@@ -22,6 +25,7 @@ export const GetBackgroundEvents: FunctionComponent = () => {
       <Button
         type="submit"
         id="getBackgroundEvents"
+        className="mb-3"
         disabled={isLoading}
         onClick={handleClick}
       >

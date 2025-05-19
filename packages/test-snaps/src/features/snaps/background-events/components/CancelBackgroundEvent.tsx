@@ -5,7 +5,10 @@ import { Button, Form } from 'react-bootstrap';
 
 import { useInvokeMutation } from '../../../../api';
 import { getSnapId } from '../../../../utils';
-import { CRONJOBS_SNAP_PORT, CRONJOBS_SNAP_ID } from '../constants';
+import {
+  BACKGROUND_EVENTS_SNAP_PORT,
+  BACKGROUND_EVENTS_SNAP_ID,
+} from '../constants';
 
 export const CancelBackgroundEvent: FunctionComponent = () => {
   const [id, setId] = useState('');
@@ -18,7 +21,7 @@ export const CancelBackgroundEvent: FunctionComponent = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     invokeSnap({
-      snapId: getSnapId(CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT),
+      snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
       method: 'cancelNotification',
       params: {
         id,

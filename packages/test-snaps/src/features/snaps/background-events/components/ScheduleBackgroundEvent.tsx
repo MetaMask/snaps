@@ -6,7 +6,10 @@ import { Button, Form } from 'react-bootstrap';
 import { useInvokeMutation } from '../../../../api';
 import { Result } from '../../../../components';
 import { getSnapId } from '../../../../utils';
-import { CRONJOBS_SNAP_PORT, CRONJOBS_SNAP_ID } from '../constants';
+import {
+  BACKGROUND_EVENTS_SNAP_PORT,
+  BACKGROUND_EVENTS_SNAP_ID,
+} from '../constants';
 
 export const ScheduleBackgroundEvent: FunctionComponent = () => {
   const [date, setDate] = useState('');
@@ -24,7 +27,7 @@ export const ScheduleBackgroundEvent: FunctionComponent = () => {
   const handleSubmitWithDate = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     invokeSnap({
-      snapId: getSnapId(CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT),
+      snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
       method: 'scheduleNotificationWithDate',
       params: {
         date,
@@ -35,7 +38,7 @@ export const ScheduleBackgroundEvent: FunctionComponent = () => {
   const handleSubmitWithDuration = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     invokeSnap({
-      snapId: getSnapId(CRONJOBS_SNAP_ID, CRONJOBS_SNAP_PORT),
+      snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
       method: 'scheduleNotificationWithDuration',
       params: {
         duration,
