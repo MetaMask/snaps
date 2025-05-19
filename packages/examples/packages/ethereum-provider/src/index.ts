@@ -72,7 +72,7 @@ async function getVersion() {
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
  *
- * @returns The current network version as a string.
+ * @returns The current chain ID as a string.
  * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
  */
 async function getChainId() {
