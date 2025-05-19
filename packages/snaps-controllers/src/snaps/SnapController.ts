@@ -462,6 +462,11 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
+export type PreloadSnap = {
+  type: `${typeof controllerName}:preloadSnap`;
+  handler: SnapController['preloadSnap'];
+};
+
 export type SnapControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapControllerState
@@ -488,7 +493,8 @@ export type SnapControllerActions =
   | RevokeDynamicPermissions
   | GetSnapFile
   | SnapControllerGetStateAction
-  | StopAllSnaps;
+  | StopAllSnaps
+  | PreloadSnap;
 
 // Controller Messenger Events
 
@@ -601,6 +607,11 @@ export type SnapControllerStateChangeEvent = ControllerStateChangeEvent<
   SnapControllerState
 >;
 
+type KeyringControllerUnlock = {
+  type: 'KeyringController:unlock';
+  payload: [];
+};
+
 type KeyringControllerLock = {
   type: 'KeyringController:lock';
   payload: [];
@@ -667,6 +678,7 @@ export type AllowedEvents =
   | ExecutionServiceEvents
   | SnapInstalled
   | SnapUpdated
+  | KeyringControllerUnlock
   | KeyringControllerLock;
 
 type SnapControllerMessenger = RestrictedMessenger<
@@ -1046,6 +1058,11 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.subscribe(
+      'KeyringController:unlock',
+      this.#handleUnlock.bind(this),
+    );
+
+    this.messagingSystem.subscribe(
       'KeyringController:lock',
       this.#handleLock.bind(this),
     );
@@ -1255,6 +1272,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:stopAllSnaps`,
       async (...args) => this.stopAllSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:preloadSnap`,
+      async (...args) => this.preloadSnap(...args),
     );
   }
 
@@ -1619,6 +1641,29 @@ export class SnapController extends BaseController<
     this.update((state: any) => {
       state.snaps[snapId].status = interpreter.state.value;
     });
+  }
+
+  /**
+   * Preload the state of the given Snap. This is a no-op if the Snap is already
+   * loaded.
+   *
+   * @param snapId - The id of the Snap to preload.
+   */
+  async preloadSnap(snapId: SnapId): Promise<void> {
+    this.#assertCanUsePlatform();
+
+    const runtime = this.#getRuntimeExpect(snapId);
+    const snap = this.state.snaps[snapId];
+
+    if (
+      !snap.manifest.initialPermissions.snap_manageState ||
+      runtime.state !== undefined
+    ) {
+      return;
+    }
+
+    // Calling `getSnapState` caches the state in the Snap runtime data.
+    await this.getSnapState(snapId, true);
   }
 
   /**
@@ -4383,6 +4428,40 @@ export class SnapController extends BaseController<
         method: handler,
       },
     });
+  }
+
+  /**
+   * Handle the `KeyringController:unlock` event.
+   *
+   * Currently this preloads all preinstalled Snaps.
+   */
+  #handleUnlock() {
+    if (this.#preinstalledSnaps) {
+      const promises = this.#preinstalledSnaps.map(async ({ snapId }) =>
+        this.preloadSnap(snapId)
+          .then(() => ({ snapId, status: 'fulfilled' }))
+          .catch((error) => ({ snapId, status: 'rejected', reason: error })),
+      );
+
+      Promise.all(promises)
+        .then((results) => {
+          const failedSnaps = results.filter(
+            (result) => result.status === 'rejected',
+          );
+
+          if (failedSnaps.length > 0) {
+            logWarning(
+              `Failed to preload ${failedSnaps.length} preinstalled Snap(s):`,
+              failedSnaps,
+            );
+          }
+        })
+        .catch((error) => {
+          // This should never happen since we catch all errors in the promises
+          // above, but just in case, we log it.
+          logError('An unknown error occurred while preloading Snaps.', error);
+        });
+    }
   }
 
   /**
