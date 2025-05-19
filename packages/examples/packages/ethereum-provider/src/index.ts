@@ -47,9 +47,9 @@ async function getGasPrice() {
 }
 
 /**
- * Get the current network version using the `ethereum` global. This is
- * essentially the same as the `window.ethereum` global, but does not have
- * access to all methods.
+ * Get the current chain ID using the `ethereum` global. This is essentially
+ * the same as the `window.ethereum` global, but does not have access to all
+ * methods.
  *
  * Note that using the `ethereum` global requires the
  * `endowment:ethereum-provider` permission.
@@ -58,8 +58,8 @@ async function getGasPrice() {
  * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
  */
 async function getVersion() {
-  const version = await ethereum.request<string>({ method: 'net_version' });
-  assert(version, 'Ethereum provider did not return a version.');
+  const version = await ethereum.request<string>({ method: 'eth_chainId' });
+  assert(version, 'Ethereum provider did not return a chain ID.');
 
   return version;
 }
