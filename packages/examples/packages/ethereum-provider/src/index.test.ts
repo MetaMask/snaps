@@ -42,7 +42,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('getVersion', () => {
-    const MOCK_VERSION = '0x01'; // Ethereum Mainnet
+    const MOCK_VERSION = '1'; // Ethereum Mainnet
 
     it('returns the current network version', async () => {
       const { request } = await installSnap();
@@ -52,6 +52,20 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(MOCK_VERSION);
+    });
+  });
+
+  describe('getChainId', () => {
+    const MOCK_CHAIN_ID = '0x01'; // Ethereum Mainnet
+
+    it('returns the current network version', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'getChainId',
+      });
+
+      expect(response).toRespondWith(MOCK_CHAIN_ID);
     });
   });
 

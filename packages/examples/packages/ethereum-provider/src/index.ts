@@ -47,6 +47,24 @@ async function getGasPrice() {
 }
 
 /**
+ * Get the current network version using the `ethereum` global. This is
+ * essentially the same as the `window.ethereum` global, but does not have
+ * access to all methods.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @returns The current network version as a string.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ */
+async function getVersion() {
+  const version = await ethereum.request<string>({ method: 'net_version' });
+  assert(version, 'Ethereum provider did not return a version.');
+
+  return version;
+}
+
+/**
  * Get the current chain ID using the `ethereum` global. This is essentially
  * the same as the `window.ethereum` global, but does not have access to all
  * methods.
@@ -57,11 +75,14 @@ async function getGasPrice() {
  * @returns The current network version as a string.
  * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
  */
-async function getVersion() {
-  const version = await ethereum.request<string>({ method: 'eth_chainId' });
-  assert(version, 'Ethereum provider did not return a chain ID.');
+async function getChainId() {
+  const chainId = await ethereum.request<string>({
+    method: 'eth_chainId',
+  });
 
-  return version;
+  assert(chainId, 'Ethereum provider did not return a chain ID.');
+
+  return chainId;
 }
 
 /**
@@ -208,10 +229,11 @@ async function signTypedData(message: string, from: string) {
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles five methods:
+ * `wallet_invokeSnap` method. This handler handles six methods:
  *
  * - `getGasPrice`: Get the current Ethereum gas price as a hexadecimal string.
  * - `getVersion`: Get the current Ethereum network version as a string.
+ * - `getChainId`: Get the current Ethereum chain ID as a string.
  * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
  * - `personalSign`: Sign a message using an Ethereum account.
  * - `signTypedData` Sign a struct using an Ethereum account.
@@ -232,6 +254,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
 
     case 'getVersion':
       return await getVersion();
+
+    case 'getChainId':
+      return await getChainId();
 
     case 'getAccounts':
       return await getAccounts();
