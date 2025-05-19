@@ -46,6 +46,7 @@ export type MultichainRouterIsSupportedScopeAction = {
 
 type SnapKeyring = {
   submitRequest: (request: {
+    origin: string;
     account: string;
     method: string;
     params?: Json[] | Record<string, Json>;
@@ -316,6 +317,7 @@ export class MultichainRouter {
     if (accountId) {
       return this.#withSnapKeyring(async ({ keyring }) =>
         keyring.submitRequest({
+          origin,
           account: accountId,
           scope,
           method,
