@@ -11581,4 +11581,75 @@ describe('SnapController', () => {
       snapController.destroy();
     });
   });
+
+  describe('SnapController:isPlatformVersionSupported', () => {
+    it('returns true or false depending on whether the version is supported', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const manifest = getSnapManifest({
+        platformVersion: '6.0.0' as SemVerVersion,
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
+
+      expect(
+        messenger.call(
+          'SnapController:isPlatformVersionSupported',
+          MOCK_SNAP_ID,
+          '1.0.0' as SemVerVersion,
+        ),
+      ).toBe(true);
+
+      expect(
+        messenger.call(
+          'SnapController:isPlatformVersionSupported',
+          MOCK_SNAP_ID,
+          manifest.platformVersion as SemVerVersion,
+        ),
+      ).toBe(true);
+
+      expect(
+        messenger.call(
+          'SnapController:isPlatformVersionSupported',
+          MOCK_SNAP_ID,
+          '7.0.0' as SemVerVersion,
+        ),
+      ).toBe(false);
+
+      snapController.destroy();
+    });
+
+    it('returns false if the platformVersion is undefined', async () => {
+      const messenger = getSnapControllerMessenger();
+
+      const manifest = getSnapManifest();
+      delete manifest.platformVersion;
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
+
+      expect(
+        messenger.call(
+          'SnapController:isPlatformVersionSupported',
+          MOCK_SNAP_ID,
+          '999.0.0' as SemVerVersion,
+        ),
+      ).toBe(false);
+
+      snapController.destroy();
+    });
+  });
 });

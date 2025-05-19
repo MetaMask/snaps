@@ -113,6 +113,7 @@ import type {
   CaipAssetType,
   JsonRpcRequest,
   Hex,
+  SemVerVersion,
 } from '@metamask/utils';
 import {
   hexToNumber,
@@ -134,7 +135,7 @@ import { createMachine, interpret } from '@xstate/fsm';
 import { Mutex } from 'async-mutex';
 import type { Patch } from 'immer';
 import { nanoid } from 'nanoid';
-import { gt } from 'semver';
+import { gt, gte } from 'semver';
 
 import {
   ALLOWED_PERMISSIONS,
@@ -462,6 +463,11 @@ export type GetSnapFile = {
   handler: SnapController['getSnapFile'];
 };
 
+export type IsPlatformVersionSupported = {
+  type: `${typeof controllerName}:isPlatformVersionSupported`;
+  handler: SnapController['isPlatformVersionSupported'];
+};
+
 export type SnapControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapControllerState
@@ -488,7 +494,8 @@ export type SnapControllerActions =
   | RevokeDynamicPermissions
   | GetSnapFile
   | SnapControllerGetStateAction
-  | StopAllSnaps;
+  | StopAllSnaps
+  | IsPlatformVersionSupported;
 
 // Controller Messenger Events
 
@@ -1255,6 +1262,11 @@ export class SnapController extends BaseController<
     this.messagingSystem.registerActionHandler(
       `${controllerName}:stopAllSnaps`,
       async (...args) => this.stopAllSnaps(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:isPlatformVersionSupported`,
+      (...args) => this.isPlatformVersionSupported(...args),
     );
   }
 
@@ -2176,6 +2188,26 @@ export class SnapController extends BaseController<
     );
 
     return encoded;
+  }
+
+  /**
+   * Determine if a given Snap ID supports a given version of the Snaps platform
+   * by inspecting the platformVersion in the Snap manifest.
+   *
+   * @param snapId - The Snap ID.
+   * @param version - The version.
+   * @returns True if the platform version is equal or greater to the passed version, false otherwise.
+   */
+  isPlatformVersionSupported(snapId: SnapId, version: SemVerVersion): boolean {
+    const snap = this.getExpect(snapId);
+
+    const { platformVersion } = snap.manifest;
+
+    if (!platformVersion) {
+      return false;
+    }
+
+    return gte(platformVersion, version);
   }
 
   /**
