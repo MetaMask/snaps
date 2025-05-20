@@ -7,4 +7,5 @@ export { SnapCaveatType } from '@metamask/snaps-utils';
 export { selectHooks } from './utils';
 export * from './endowments';
 export * from './permissions';
+export * from './preinstalled';
 export * from './restricted';
