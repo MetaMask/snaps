@@ -9,17 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.23.0]
 
-### Uncategorized
-
-- feat: Add `getChainId` method to Ethereum provider example ([#3407](https://github.com/MetaMask/snaps/pull/3407))
-
 ### Added
 
-- Use background events example snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+- Add background events Snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+
+### Changed
+
+- Show chain ID instead of network version in Ethereum provider Snap ([#3407](https://github.com/MetaMask/snaps/pull/3407))
+- Use latest versions of example Snaps ([#3409](https://github.com/MetaMask/snaps/pull/3409))
 
 ### Removed
 
-- Delete background events logic from cronjobs example snap section ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+- Remove background events logic from cronjob Snap ([#3404](https://github.com/MetaMask/snaps/pull/3404))
 
 ## [2.22.0]
 

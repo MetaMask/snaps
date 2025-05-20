@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.2.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `isMinimumPlatformVersion` action ([#3405](https://github.com/MetaMask/snaps/pull/3405))
-- feat: Pass origin to `SnapKeyring` via `MultichainRouter` ([#3403](https://github.com/MetaMask/snaps/pull/3403))
+- Add `isMinimumPlatformVersion` action ([#3405](https://github.com/MetaMask/snaps/pull/3405))
+
+### Changed
+
+- Pass origin to `SnapKeyring` via `MultichainRouter` ([#3403](https://github.com/MetaMask/snaps/pull/3403))
 
 ## [12.1.0]
 

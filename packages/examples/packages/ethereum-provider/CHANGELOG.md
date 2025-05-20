@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.4.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `getChainId` method to Ethereum provider example ([#3407](https://github.com/MetaMask/snaps/pull/3407))
+- Add `getChainId` method to get current chain ID ([#3407](https://github.com/MetaMask/snaps/pull/3407))
 
 ## [2.3.0]
 
