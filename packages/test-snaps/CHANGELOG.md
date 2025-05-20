@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use correct method names in click handlers for background events example Snap ([#3411](https://https://github.com/MetaMask/snaps/pull/3411))
+
 ## [2.23.0]
 
 ### Added
