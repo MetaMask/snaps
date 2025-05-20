@@ -1,6 +1,6 @@
 {
   "name": "@metamask/background-events-example-snap",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating the use of background events",
   "keywords": [
     "MetaMask",

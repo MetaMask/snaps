@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0]
+
 ### Uncategorized
 
 - feat: Add `getChainId` method to Ethereum provider example ([#3407](https://github.com/MetaMask/snaps/pull/3407))
@@ -102,7 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.4.0...HEAD
+[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.3.0...@metamask/ethereum-provider-example-snap@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.2.1...@metamask/ethereum-provider-example-snap@2.3.0
 [2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.2.0...@metamask/ethereum-provider-example-snap@2.2.1
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.1.3...@metamask/ethereum-provider-example-snap@2.2.0
