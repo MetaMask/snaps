@@ -28,7 +28,7 @@ export const ScheduleBackgroundEvent: FunctionComponent = () => {
     event.preventDefault();
     invokeSnap({
       snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
-      method: 'scheduleNotificationWithDate',
+      method: 'scheduleDialogWithDate',
       params: {
         date,
       },
@@ -39,7 +39,7 @@ export const ScheduleBackgroundEvent: FunctionComponent = () => {
     event.preventDefault();
     invokeSnap({
       snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
-      method: 'scheduleNotificationWithDuration',
+      method: 'scheduleDialogWithDuration',
       params: {
         duration,
       },

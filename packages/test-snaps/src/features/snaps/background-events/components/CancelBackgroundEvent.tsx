@@ -22,7 +22,7 @@ export const CancelBackgroundEvent: FunctionComponent = () => {
     event.preventDefault();
     invokeSnap({
       snapId: getSnapId(BACKGROUND_EVENTS_SNAP_ID, BACKGROUND_EVENTS_SNAP_PORT),
-      method: 'cancelNotification',
+      method: 'cancelDialog',
       params: {
         id,
       },
