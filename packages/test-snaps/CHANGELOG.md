@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `getChainId` method to Ethereum provider example ([#3407](https://github.com/MetaMask/snaps/pull/3407))
+
 ### Added
 
 - Use background events example snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))

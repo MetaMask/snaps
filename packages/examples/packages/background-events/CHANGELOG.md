@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Fix background events example changelog ([#3408](https://github.com/MetaMask/snaps/pull/3408))
+
 ### Added
 
 - Added background events example snap ([#3404](https://github.com/MetaMask/snaps/pull/3404))
