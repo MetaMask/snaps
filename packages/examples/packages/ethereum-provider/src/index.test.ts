@@ -55,6 +55,20 @@ describe('onRpcRequest', () => {
     });
   });
 
+  describe('getChainId', () => {
+    const MOCK_CHAIN_ID = '0x01'; // Ethereum Mainnet
+
+    it('returns the current network version', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'getChainId',
+      });
+
+      expect(response).toRespondWith(MOCK_CHAIN_ID);
+    });
+  });
+
   describe('getAccounts', () => {
     it('returns the addresses granted access to by the user', async () => {
       const { request } = await installSnap();

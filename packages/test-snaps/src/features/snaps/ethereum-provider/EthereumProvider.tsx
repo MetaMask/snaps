@@ -28,7 +28,7 @@ export const EthereumProvider: FunctionComponent = () => {
     }).catch(logError);
   };
 
-  const handleGetVersion = () => handleSubmit('getVersion');
+  const handleGetChainId = () => handleSubmit('getChainId');
   const handleGetAccounts = () => handleSubmit('getAccounts');
 
   return (
@@ -46,9 +46,9 @@ export const EthereumProvider: FunctionComponent = () => {
           id="sendEthprovider"
           className="mb-3"
           disabled={isLoading}
-          onClick={handleGetVersion}
+          onClick={handleGetChainId}
         >
-          Get Version
+          Get Chain ID
         </Button>
         <Button
           variant="primary"
