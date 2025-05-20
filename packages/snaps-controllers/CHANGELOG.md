@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.2.0]
+
+### Added
+
+- Add `isMinimumPlatformVersion` action ([#3405](https://github.com/MetaMask/snaps/pull/3405))
+
+### Changed
+
+- Pass origin to `SnapKeyring` via `MultichainRouter` ([#3403](https://github.com/MetaMask/snaps/pull/3403))
+
 ## [12.1.0]
 
 ### Added
@@ -756,7 +766,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.2.0...HEAD
+[12.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.1.0...@metamask/snaps-controllers@12.2.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.1...@metamask/snaps-controllers@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.0...@metamask/snaps-controllers@12.0.1
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@11.2.3...@metamask/snaps-controllers@12.0.0

@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "MetaMask example Snap demonstrating the use of background events",
   "proposedName": "Background Events Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "GQErgrmS3u8o7OH5qIy3LOgRi5Os5onPrITIHnJakTg=",
+    "shasum": "hErp73GYyo7PY+AZUPmuL94+EgeKfPJeUVq2UURgfQU=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",

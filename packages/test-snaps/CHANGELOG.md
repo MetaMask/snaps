@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.23.0]
+
 ### Added
 
-- Use background events example snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+- Add background events Snap for testing background events ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+
+### Changed
+
+- Show chain ID instead of network version in Ethereum provider Snap ([#3407](https://github.com/MetaMask/snaps/pull/3407))
+- Use latest versions of example Snaps ([#3409](https://github.com/MetaMask/snaps/pull/3409))
 
 ### Removed
 
-- Delete background events logic from cronjobs example snap section ([#3404](https://github.com/MetaMask/snaps/pull/3404))
+- Remove background events logic from cronjob Snap ([#3404](https://github.com/MetaMask/snaps/pull/3404))
 
 ## [2.22.0]
 
@@ -333,7 +340,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.0...HEAD
+[2.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.22.0...@metamask/test-snaps@2.23.0
 [2.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.21.1...@metamask/test-snaps@2.22.0
 [2.21.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.21.0...@metamask/test-snaps@2.21.1
 [2.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.3...@metamask/test-snaps@2.21.0
