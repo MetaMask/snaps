@@ -7,22 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps-skunkworks.git/pull/3378))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps-skunkworks.git/pull/3369))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps-skunkworks.git/pull/3283))
-- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps-skunkworks.git/pull/3277))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps-skunkworks.git/pull/3118))
-- chore: Bump ts-bridge ([#2917](https://github.com/MetaMask/snaps-skunkworks.git/pull/2917))
-- Bump `ts-bridge` to `0.6.0` ([#2882](https://github.com/MetaMask/snaps-skunkworks.git/pull/2882))
-- Update Yarn constraints to use JavaScript-based constraints ([#2740](https://github.com/MetaMask/snaps-skunkworks.git/pull/2740))
-- Update metadata for all packages ([#2748](https://github.com/MetaMask/snaps-skunkworks.git/pull/2748))
-- Add `since-latest-release` script to match `MetaMask/core` ([#2744](https://github.com/MetaMask/snaps-skunkworks.git/pull/2744))
-- Update test scripts to match `MetaMask/core` ([#2745](https://github.com/MetaMask/snaps-skunkworks.git/pull/2745))
-- Fix linting of `package.json` files ([#2742](https://github.com/MetaMask/snaps-skunkworks.git/pull/2742))
-- Update changelog validation scripts to match `MetaMask/core` ([#2741](https://github.com/MetaMask/snaps-skunkworks.git/pull/2741))
-
 ## [4.0.4]
 
 ### Fixed
@@ -121,19 +105,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@4.0.4...HEAD
-[4.0.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@4.0.3...@metamask/create-snap@4.0.4
-[4.0.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@4.0.2...@metamask/create-snap@4.0.3
-[4.0.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@4.0.1...@metamask/create-snap@4.0.2
-[4.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@4.0.0...@metamask/create-snap@4.0.1
-[4.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.1.1...@metamask/create-snap@4.0.0
-[3.1.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.1.0...@metamask/create-snap@3.1.1
-[3.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
-[3.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
-[3.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@2.0.0
-[1.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@1.0.0...@metamask/create-snap@1.0.1
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.4-flask.1...@metamask/create-snap@1.0.0
-[0.37.4-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.3-flask.1...@metamask/create-snap@0.37.4-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/create-snap@0.37.2-flask.1...@metamask/create-snap@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/create-snap@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.4...HEAD
+[4.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.3...@metamask/create-snap@4.0.4
+[4.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.2...@metamask/create-snap@4.0.3
+[4.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.1...@metamask/create-snap@4.0.2
+[4.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@4.0.0...@metamask/create-snap@4.0.1
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.1...@metamask/create-snap@4.0.0
+[3.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.1.0...@metamask/create-snap@3.1.1
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.1...@metamask/create-snap@3.1.0
+[3.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@3.0.0...@metamask/create-snap@3.0.1
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@2.0.0...@metamask/create-snap@3.0.0
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.1...@metamask/create-snap@2.0.0
+[1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@1.0.0...@metamask/create-snap@1.0.1
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.4-flask.1...@metamask/create-snap@1.0.0
+[0.37.4-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.3-flask.1...@metamask/create-snap@0.37.4-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/create-snap@0.37.2-flask.1...@metamask/create-snap@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/create-snap@0.37.2-flask.1
