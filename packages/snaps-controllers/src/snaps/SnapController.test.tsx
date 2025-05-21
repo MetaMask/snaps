@@ -5696,7 +5696,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('grants the `endowment:caip25` permission to a Snap with `endowment:ethereum-provider` if the `useCaip25Permission` feature flag is enabled', async () => {
+    it('grants the `endowment:caip25` permission to a Snap with `endowment:ethereum-provider`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
@@ -5732,9 +5732,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           detectSnapLocation: loopbackDetect({ manifest }),
-          featureFlags: {
-            useCaip25Permission: true,
-          },
         }),
       );
 
@@ -5778,7 +5775,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('grants the `endowment:caip25` permission when updating a Snap with `endowment:ethereum-provider` if the `useCaip25Permission` feature flag is enabled', async () => {
+    it('grants the `endowment:caip25` permission when updating a Snap with `endowment:ethereum-provider`', async () => {
       const newVersion = '1.0.2';
       const newVersionRange = '>=1.0.1';
 
@@ -5838,9 +5835,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           detectSnapLocation: detectLocationMock,
-          featureFlags: {
-            useCaip25Permission: true,
-          },
         }),
       );
 
@@ -5911,71 +5905,6 @@ describe('SnapController', () => {
       controller.destroy();
     });
 
-    it('does not grant the `endowment:caip25` permission to a Snap with `endowment:ethereum-provider` if the `useCaip25Permission` feature flag is disabled', async () => {
-      const rootMessenger = getControllerMessenger();
-      const messenger = getSnapControllerMessenger(rootMessenger);
-
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({}),
-      );
-
-      rootMessenger.registerActionHandler(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        () => 'mainnet',
-      );
-
-      rootMessenger.registerActionHandler(
-        'NetworkController:getNetworkClientById',
-        () => ({
-          configuration: {
-            chainId: '0x1',
-          },
-        }),
-      );
-
-      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
-        manifest: getSnapManifest({
-          initialPermissions: {
-            'endowment:page-home': {},
-            'endowment:ethereum-provider': {},
-          },
-        }),
-      });
-
-      const snapController = getSnapController(
-        getSnapControllerOptions({
-          messenger,
-          detectSnapLocation: loopbackDetect({ manifest }),
-          featureFlags: {
-            useCaip25Permission: false,
-          },
-        }),
-      );
-
-      await snapController.installSnaps(MOCK_ORIGIN, {
-        [MOCK_SNAP_ID]: {},
-      });
-
-      const approvedPermissions = {
-        'endowment:page-home': {
-          caveats: null,
-        },
-        'endowment:ethereum-provider': {},
-      };
-
-      expect(messenger.call).toHaveBeenCalledWith(
-        'PermissionController:grantPermissions',
-        {
-          approvedPermissions,
-          subject: { origin: MOCK_SNAP_ID },
-          requestData: expect.any(Object),
-        },
-      );
-
-      snapController.destroy();
-    });
-
     it('does not grant the `endowment:caip25` permission if the Snap does not have the `endowment:ethereum-provider` permission', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
@@ -6011,9 +5940,6 @@ describe('SnapController', () => {
         getSnapControllerOptions({
           messenger,
           detectSnapLocation: loopbackDetect({ manifest }),
-          featureFlags: {
-            useCaip25Permission: true,
-          },
         }),
       );
 
