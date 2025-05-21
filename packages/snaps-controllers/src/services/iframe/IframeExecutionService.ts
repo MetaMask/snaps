@@ -33,13 +33,13 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     document.getElementById(jobWrapper.id)?.remove();
   }
 
-  protected async initEnvStream(jobId: string): Promise<{
+  protected async initEnvStream(snapId: string): Promise<{
     worker: Window;
     stream: BasePostMessageStream;
   }> {
     const iframeWindow = await createWindow({
       uri: this.iframeUrl.toString(),
-      id: jobId,
+      id: snapId,
     });
 
     const stream = new WindowPostMessageStream({

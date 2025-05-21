@@ -41,15 +41,15 @@ export class OffscreenExecutionService extends ProxyExecutionService {
   }
 
   /**
-   * Create a new stream for the given job ID. This will wait for the offscreen
+   * Create a new stream for the given Snap ID. This will wait for the offscreen
    * environment to be ready before creating the stream.
    *
-   * @param jobId - The job ID to create a stream for.
-   * @returns The stream for the given job ID.
+   * @param snapId - The Snap ID to create a stream for.
+   * @returns The stream for the given Snap ID.
    */
-  protected async initEnvStream(jobId: string) {
+  protected async initEnvStream(snapId: string) {
     await this.#offscreenPromise;
 
-    return await super.initEnvStream(jobId);
+    return await super.initEnvStream(snapId);
   }
 }

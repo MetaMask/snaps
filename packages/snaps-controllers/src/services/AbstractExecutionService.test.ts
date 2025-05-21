@@ -16,10 +16,6 @@ class MockExecutionService extends NodeThreadExecutionService {
       initTimeout: inMilliseconds(5, Duration.Second),
     });
   }
-
-  getJobs() {
-    return this.jobs;
-  }
 }
 
 describe('AbstractExecutionService', () => {
@@ -27,74 +23,10 @@ describe('AbstractExecutionService', () => {
     jest.restoreAllMocks();
   });
 
-  it('logs error for unrecognized notifications', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-    const { service } = createService(MockExecutionService);
-
-    await service.executeSnap({
-      snapId: 'TestSnap',
-      sourceCode: `
-        module.exports.onRpcRequest = () => null;
-      `,
-      endowments: [],
-    });
-
-    const { streams } = service.getJobs().values().next().value;
-    streams.command.emit('data', {
-      jsonrpc: '2.0',
-      method: 'foo',
-    });
-
-    await service.terminateAllSnaps();
-
-    expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      new Error(`Received unexpected command stream notification "foo".`),
-    );
-  });
-
-  it('logs error for malformed UnhandledError notification', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-
-    const { service } = createService(MockExecutionService);
-
-    await service.executeSnap({
-      snapId: 'TestSnap',
-      sourceCode: `
-      module.exports.onRpcRequest = () => null;
-      `,
-      endowments: [],
-    });
-
-    const { streams } = service.getJobs().values().next().value;
-    streams.command.emit('data', {
-      jsonrpc: '2.0',
-      method: 'UnhandledError',
-      params: [2],
-    });
-
-    streams.command.emit('data', {
-      jsonrpc: '2.0',
-      method: 'UnhandledError',
-      params: { error: null },
-    });
-
-    await service.terminateAllSnaps();
-
-    const expectedError = new Error(
-      `Received malformed "UnhandledError" command stream notification.`,
-    );
-    expect(consoleErrorSpy).toHaveBeenCalledTimes(2);
-    expect(consoleErrorSpy).toHaveBeenNthCalledWith(1, expectedError);
-    expect(consoleErrorSpy).toHaveBeenNthCalledWith(2, expectedError);
-  });
-
   it('throws an error if RPC request handler is unavailable', async () => {
     const { service } = createService(MockExecutionService);
-    const snapId = 'TestSnap';
     await expect(
-      service.handleRpcRequest(snapId, {
+      service.handleRpcRequest(MOCK_SNAP_ID, {
         origin: 'foo.com',
         handler: HandlerType.OnRpcRequest,
         request: {
@@ -102,9 +34,7 @@ describe('AbstractExecutionService', () => {
           method: 'bar',
         },
       }),
-    ).rejects.toThrow(
-      `Snap execution service returned no RPC handler for running snap "${snapId}".`,
-    );
+    ).rejects.toThrow(`"${MOCK_SNAP_ID}" is not currently running.`);
   });
 
   it('throws an error if execution environment fails to respond to ping', async () => {
@@ -163,5 +93,31 @@ describe('AbstractExecutionService', () => {
         endowments: ['console'],
       }),
     ).rejects.toThrow(`${MOCK_SNAP_ID} failed to start.`);
+  });
+
+  it('throws an error if the Snap is already running when trying to execute', async () => {
+    const { service } = createService(MockExecutionService);
+
+    await service.executeSnap({
+      snapId: MOCK_SNAP_ID,
+      sourceCode: `module.exports.onRpcRequest = () => {};`,
+      endowments: [],
+    });
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `module.exports.onRpcRequest = () => {};`,
+        endowments: [],
+      }),
+    ).rejects.toThrow(`"${MOCK_SNAP_ID}" is already running.`);
+  });
+
+  it('throws an error if the Snap is not running when attempted to be terminated', async () => {
+    const { service } = createService(MockExecutionService);
+
+    await expect(service.terminateSnap(MOCK_SNAP_ID)).rejects.toThrow(
+      `"${MOCK_SNAP_ID}" is not currently running.`,
+    );
   });
 });
