@@ -6,12 +6,8 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { buildHandler } from './build';
 import { build } from './implementation';
 import { getMockConfig } from '../../test-utils';
-import { evaluate } from '../eval';
-import { manifest } from '../manifest';
 
 jest.mock('fs');
-jest.mock('../eval');
-jest.mock('../manifest');
 jest.mock('./implementation');
 
 jest.mock('webpack-bundle-analyzer', () => ({
@@ -19,21 +15,6 @@ jest.mock('webpack-bundle-analyzer', () => ({
 }));
 
 describe('buildHandler', () => {
-  beforeEach(() => {
-    jest.mocked(evaluate).mockResolvedValue({
-      exports: [],
-      stdout: '',
-      stderr: '',
-    });
-
-    jest.mocked(manifest).mockResolvedValue({
-      valid: true,
-      errors: 0,
-      warnings: 0,
-      fixed: 0,
-    });
-  });
-
   it('builds a Snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
@@ -51,13 +32,9 @@ describe('buildHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
-
-    expect(evaluate).toHaveBeenCalledWith(
-      expect.stringMatching(/.*output\.js.*/u),
-    );
   });
 
   it('analyzes a Snap bundle', async () => {
@@ -96,7 +73,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: true,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
 
@@ -123,8 +100,11 @@ describe('buildHandler', () => {
     await buildHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(build).toHaveBeenCalled();
-    expect(evaluate).not.toHaveBeenCalled();
+    expect(build).toHaveBeenCalledWith(config, {
+      analyze: false,
+      evaluate: false,
+      spinner: expect.any(Object),
+    });
   });
 
   it('checks if the input file exists', async () => {

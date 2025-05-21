@@ -9,9 +9,13 @@ const command = {
   desc: 'Validate the snap.manifest.json file',
   builder: (yarg: yargs.Argv) => {
     yarg.option('fix', builders.fix);
+    yarg.option('eval', builders.eval);
   },
   handler: async (argv: YargsArgs) =>
-    manifestHandler(argv.context.config, { fix: argv.fix }),
+    manifestHandler(argv.context.config, {
+      fix: argv.fix,
+      eval: argv.eval ?? argv.context.config.evaluate,
+    }),
 };
 
 export * from './implementation';

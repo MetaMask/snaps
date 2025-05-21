@@ -1,3 +1,4 @@
+import { handlerEndowments } from '@metamask/snaps-rpc-methods';
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
   checkManifest,
@@ -138,11 +139,16 @@ export default class SnapsWebpackPlugin {
       assert(bundleFile);
 
       const bundleContent = bundleFile.toString();
+      let exports: string[] | undefined;
 
       if (this.options.eval) {
-        await useTemporaryFile('snaps-bundle.js', bundleContent, async (path) =>
-          evalBundle(path),
+        const output = await useTemporaryFile(
+          'snaps-bundle.js',
+          bundleContent,
+          async (path) => evalBundle(path),
         );
+
+        exports = output.exports;
       }
 
       if (this.options.manifestPath) {
@@ -151,6 +157,8 @@ export default class SnapsWebpackPlugin {
           {
             updateAndWriteManifest: this.options.writeManifest,
             sourceCode: bundleContent,
+            exports,
+            handlerEndowments,
             writeFileFn: async (path, data) => {
               assert(
                 compiler.outputFileSystem,

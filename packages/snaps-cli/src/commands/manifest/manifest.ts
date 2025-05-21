@@ -1,18 +1,16 @@
 import { isFile } from '@metamask/snaps-utils/node';
-import type { Ora } from 'ora';
-import { resolve as pathResolve } from 'path';
+import { resolve } from 'path';
 
-import type { ManifestStats } from './implementation';
 import { manifest } from './implementation';
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { error, success, info, executeSteps } from '../../utils';
-import { pluralize } from '../../webpack/utils';
+import { info, executeSteps } from '../../utils';
 import { evaluate } from '../eval';
 
 type ManifestOptions = {
   fix?: boolean;
+  eval: boolean;
 };
 
 type ManifestContext = {
@@ -21,61 +19,6 @@ type ManifestContext = {
   options: ManifestOptions;
   exports?: string[];
 };
-
-/**
- * Show the message to display for the manifest validation.
- *
- * @param stats - The stats object returned by the manifest function.
- * @param fix - Whether to attempt to fix the manifest.
- * @param spinner - The spinner to use for logging.
- * @returns The message to display.
- */
-export function showManifestMessage(
-  stats: ManifestStats,
-  fix: boolean,
-  spinner?: Ora,
-) {
-  const { valid, errors, warnings, fixed } = stats;
-
-  if (valid) {
-    const message = [];
-
-    message.push(
-      warnings > 0
-        ? `The Snap manifest file is valid, but contains ${warnings} ${pluralize(
-            warnings,
-            'warning',
-          )}.`
-        : 'The Snap manifest file is valid.',
-    );
-
-    if (fixed > 0) {
-      message.push(
-        `${fixed} ${pluralize(fixed, 'issue')} ${pluralize(fixed, 'was', 'were')} automatically fixed.`,
-      );
-    }
-
-    return success(message.join(' '), spinner);
-  }
-
-  const message = [
-    'The Snap manifest contains',
-    `${errors} ${pluralize(errors, 'error')}`,
-    `and ${warnings} ${pluralize(warnings, 'warning')}.`,
-  ];
-
-  if (!fix) {
-    message.push('Use the `--fix` option to attempt to fix the manifest.');
-  }
-
-  if (fixed > 0) {
-    message.push(
-      `${fixed} ${pluralize(fixed, 'issue')} ${pluralize(fixed, 'was', 'were')} automatically fixed.`,
-    );
-  }
-
-  return error(message.join(' '), spinner);
-}
 
 const steps: Steps<ManifestContext> = [
   {
@@ -90,10 +33,10 @@ const steps: Steps<ManifestContext> = [
   },
   {
     name: 'Evaluating the Snap bundle.',
-    condition: ({ config }) => config.evaluate,
+    condition: ({ options }) => options.eval,
     task: async (context) => {
       const { config, spinner } = context;
-      const path = pathResolve(
+      const path = resolve(
         process.cwd(),
         config.output.path,
         config.output.filename,
@@ -111,15 +54,12 @@ const steps: Steps<ManifestContext> = [
   },
   {
     name: 'Validating the Snap manifest.',
-    task: async ({ config, input, options, exports, spinner }) => {
+    task: async ({ input, options, exports, spinner }) => {
       const write = getWriteManifest(options);
-      const stats = await manifest(config, input, write, exports, spinner);
+      const valid = await manifest(input, write, exports, spinner);
 
-      showManifestMessage(stats, write, spinner);
-      spinner.stop();
-
-      if (!stats.valid) {
-        process.exitCode = 1;
+      if (valid) {
+        spinner.succeed('The Snap manifest file is valid.');
       }
     },
   },

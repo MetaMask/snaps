@@ -21,16 +21,15 @@ describe('mm-snap build', () => {
         expect.stringMatching(/Building the Snap bundle\./u),
       );
 
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Compiled \d+ files? in \d+ms\./u),
+      expect(runner.stderr).toContainEqual(
+        expect.stringMatching(
+          /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+        ),
       );
-      expect(runner.stdout).toContainEqual(
+      expect(runner.stderr).toContainEqual(
         expect.stringContaining(
           'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
         ),
-      );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the Snap bundle\./u),
       );
       expect(runner.exitCode).toBe(0);
     },

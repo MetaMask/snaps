@@ -1,16 +1,12 @@
 import { isFile } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
-import { resolve } from 'path';
 
 import { build } from './implementation';
 import { getBundleAnalyzerPort } from './utils';
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { info, success, executeSteps } from '../../utils';
-import { evaluate } from '../eval';
-import { manifest } from '../manifest';
-import { showManifestMessage } from '../manifest/manifest';
+import { success, executeSteps } from '../../utils';
 
 export type BuildContext = {
   analyze: boolean;
@@ -44,7 +40,7 @@ export const steps: Steps<BuildContext> = [
       // step.
       const compiler = await build(config, {
         analyze,
-        evaluate: false,
+        evaluate: config.evaluate,
         spinner,
       });
 
@@ -56,42 +52,6 @@ export const steps: Steps<BuildContext> = [
       }
 
       return undefined;
-    },
-  },
-  {
-    name: 'Evaluating the Snap bundle.',
-    condition: ({ build: enableBuild, config }) =>
-      enableBuild && config.evaluate,
-    task: async (context) => {
-      const { config, spinner } = context;
-      const path = resolve(
-        process.cwd(),
-        config.output.path,
-        config.output.filename,
-      );
-
-      const { exports } = await evaluate(path);
-
-      info(`Snap bundle evaluated successfully.`, spinner);
-
-      return {
-        ...context,
-        exports,
-      };
-    },
-  },
-  {
-    name: 'Validating the Snap manifest.',
-    task: async ({ config, exports, spinner }) => {
-      const stats = await manifest(
-        config,
-        config.manifest.path,
-        config.manifest.update,
-        exports,
-        spinner,
-      );
-
-      showManifestMessage(stats, config.manifest.update, spinner);
     },
   },
   {

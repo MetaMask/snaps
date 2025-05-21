@@ -1,36 +1,17 @@
+import { getMockConfig } from '@metamask/snaps-cli/test-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import fs from 'fs';
 
 import { sandboxHandler } from './sandbox';
-import { getMockConfig } from '../../test-utils';
 import { build } from '../build';
-import { evaluate } from '../eval';
-import { manifest } from '../manifest';
 
 jest.mock('fs');
 jest.mock('./server', () => ({
   startSandbox: jest.fn().mockResolvedValue({ port: 8080 }),
 }));
 jest.mock('../build/implementation');
-jest.mock('../eval');
-jest.mock('../manifest');
 
 describe('sandboxHandler', () => {
-  beforeEach(() => {
-    jest.mocked(evaluate).mockResolvedValue({
-      exports: [],
-      stdout: '',
-      stderr: '',
-    });
-
-    jest.mocked(manifest).mockResolvedValue({
-      valid: true,
-      errors: 0,
-      warnings: 0,
-      fixed: 0,
-    });
-  });
-
   it('builds the Snap if the build option is `true`', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
@@ -48,7 +29,7 @@ describe('sandboxHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
 

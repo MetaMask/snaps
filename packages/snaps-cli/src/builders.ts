@@ -19,6 +19,11 @@ const builders = {
     normalize: true,
   },
 
+  eval: {
+    describe: 'Evaluate the Snap bundle',
+    type: 'boolean',
+  },
+
   fix: {
     describe: 'Attempt to fix snap.manifest.json',
     type: 'boolean',

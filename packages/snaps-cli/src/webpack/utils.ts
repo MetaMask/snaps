@@ -1,5 +1,5 @@
 import { bytesToBase64 } from '@metamask/utils';
-import { dim, red } from 'chalk';
+import { dim } from 'chalk';
 import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import type { Ora } from 'ora';
@@ -389,28 +389,4 @@ export function formatText(
 export function getImageSVG(mimeType: string, bytes: Uint8Array) {
   const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
   return `<svg xmlns="http://www.w3.org/2000/svg"><image href="${dataUrl}" /></svg>`;
-}
-
-/**
- * Format an error message with the given details and colour.
- *
- * @param message - The error message.
- * @param details - The error details.
- * @param color - The colour to use for the error message.
- * @returns The formatted error message.
- */
-export function formatError(
-  message: string,
-  details?: string | undefined,
-  color = red,
-) {
-  const [first, ...rest] = message.split('\n');
-
-  return [
-    color(formatText(`• ${first}`, 4, 2)),
-    ...rest.map((restMessage) => formatText(color(restMessage), 4)),
-    details && `\n${formatText(dim(details), 6)}`,
-  ]
-    .filter(Boolean)
-    .join('\n');
 }

@@ -1,6 +1,7 @@
 // Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
+import { handlerEndowments } from '@metamask/snaps-rpc-methods';
 import {
   checkManifest,
   evalBundle,
@@ -187,7 +188,11 @@ describe('SnapsWebpackPlugin', () => {
 
   it('evals the bundle if configured', async () => {
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
-    mock.mockResolvedValue(null);
+    mock.mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exports: ['foo'],
+    });
 
     await bundle({
       options: {
@@ -219,6 +224,8 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith('/', {
+      exports: undefined,
+      handlerEndowments,
       updateAndWriteManifest: true,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
@@ -234,6 +241,38 @@ describe('SnapsWebpackPlugin', () => {
       'foo',
       expect.any(Function),
     );
+  });
+
+  it('evaluates the bundle and checks the manifest if configured', async () => {
+    const checkManifestMock = jest.mocked(checkManifest);
+    checkManifestMock.mockResolvedValue({
+      files: undefined,
+      updated: false,
+      reports: [],
+    });
+
+    const evalBundleMock = jest.mocked(evalBundle);
+    evalBundleMock.mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exports: ['foo'],
+    });
+
+    await bundle({
+      options: {
+        eval: true,
+        manifestPath: '/snap.manifest.json',
+      },
+    });
+
+    expect(checkManifestMock).toHaveBeenCalledTimes(1);
+    expect(checkManifestMock).toHaveBeenCalledWith('/', {
+      exports: ['foo'],
+      handlerEndowments,
+      updateAndWriteManifest: true,
+      sourceCode: expect.any(String),
+      writeFileFn: expect.any(Function),
+    });
   });
 
   it('does not fix the manifest if configured', async () => {
@@ -254,6 +293,8 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith('/', {
+      exports: undefined,
+      handlerEndowments,
       updateAndWriteManifest: false,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),

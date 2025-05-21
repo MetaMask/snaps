@@ -1,4 +1,4 @@
-import { dim, red } from 'chalk';
+import { dim } from 'chalk';
 
 import {
   WEBPACK_FALLBACKS,
@@ -11,7 +11,6 @@ import {
   getEnvironmentVariables,
   formatText,
   getImageSVG,
-  formatError,
 } from './utils';
 import type { ProcessedConfig } from '../config';
 import { getMockConfig } from '../test-utils';
@@ -232,30 +231,6 @@ describe('getImageSVG', () => {
     const image = getImageSVG('image/jpeg', new Uint8Array([1, 2, 3]));
     expect(image).toMatchInlineSnapshot(
       `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/jpeg;base64,AQID" /></svg>"`,
-    );
-  });
-});
-
-describe('formatError', () => {
-  it('formats the error message', () => {
-    const error = new Error('Test error');
-    const formattedError = formatError(error.message);
-    expect(formattedError).toBe(red('  • Test error'));
-  });
-
-  it('formats the error message with details', () => {
-    const error = new Error('Test error');
-    const formattedError = formatError(error.message, 'Test details');
-    expect(formattedError).toBe(
-      `${red('  • Test error')}\n\n      ${dim('Test details')}`,
-    );
-  });
-
-  it('formats an error message with multiple lines', () => {
-    const error = new Error('Test error with\nmultiple lines');
-    const formattedError = formatError(error.message, undefined);
-    expect(formattedError).toBe(
-      `${red('  • Test error with')}\n    ${red('multiple lines')}`,
     );
   });
 });

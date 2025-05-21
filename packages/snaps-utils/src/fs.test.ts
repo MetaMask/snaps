@@ -217,6 +217,14 @@ describe('useTemporaryFile', () => {
     });
   });
 
+  it('returns the result of the callback', async () => {
+    const result = await useTemporaryFile('foo', 'bar', async () => {
+      return 'baz';
+    });
+
+    expect(result).toBe('baz');
+  });
+
   it('always deletes the temporary file after usage', async () => {
     expect.assertions(4);
     let filePath: string;

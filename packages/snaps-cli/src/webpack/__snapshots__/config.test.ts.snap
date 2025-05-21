@@ -104,7 +104,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -276,7 +276,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -448,7 +448,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -620,7 +620,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -791,7 +791,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -963,7 +963,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -1135,7 +1135,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -1307,7 +1307,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -1487,7 +1487,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -1652,7 +1652,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -1832,7 +1832,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2012,7 +2012,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2184,7 +2184,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": false,
-        "manifestPath": undefined,
+        "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2365,7 +2365,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": false,
-        "manifestPath": undefined,
+        "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2537,7 +2537,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": true,
-        "manifestPath": undefined,
+        "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2709,7 +2709,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": false,
-        "manifestPath": undefined,
+        "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -2890,7 +2890,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     SnapsWebpackPlugin {
       "options": {
         "eval": false,
-        "manifestPath": undefined,
+        "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
@@ -3071,7 +3071,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration when 
     SnapsWebpackPlugin {
       "options": {
         "eval": undefined,
-        "manifestPath": undefined,
+        "manifestPath": "/foo/bar/snap.manifest.json",
         "writeManifest": true,
       },
     },
