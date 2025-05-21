@@ -68,6 +68,7 @@ linkStyle default opacity:0.5
   snaps_simulation --> snaps_sdk;
   snaps_simulation --> snaps_utils;
   snaps_utils --> snaps_sdk;
+  snaps_webpack_plugin --> snaps_rpc_methods;
   snaps_webpack_plugin --> snaps_sdk;
   snaps_webpack_plugin --> snaps_utils;
 ```
