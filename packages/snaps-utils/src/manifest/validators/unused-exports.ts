@@ -16,7 +16,7 @@ export const unusedExports: ValidatorMeta = {
       return;
     }
 
-    const handlers = Object.entries(handlerEndowments)
+    const unusedHandlers = Object.entries(handlerEndowments)
       .filter(([handler, endowment]) => {
         if (endowment === null) {
           return false;
@@ -31,7 +31,7 @@ export const unusedExports: ValidatorMeta = {
       })
       .map(([handler, endowment]) => `${handler} (${endowment})`);
 
-    const endowments = Object.entries(handlerEndowments).filter(
+    const unusedEndowments = Object.entries(handlerEndowments).filter(
       ([handler, endowment]) => {
         if (endowment === null) {
           return false;
@@ -45,28 +45,28 @@ export const unusedExports: ValidatorMeta = {
       },
     );
 
-    if (handlers.length > 0) {
+    if (unusedHandlers.length > 0) {
       // We don't specify a fix function here, because:
       // 1. Removing the export from the Snap bundle is complicated, as it
       //    requires AST manipulation.
       // 2. Adding the permission to the manifest is not always possible, as it
       //    may require additional configuration in the manifest.
       context.report(
-        `The Snap exports the following handlers, but does not request permission for them: ${handlers.join(
+        `The Snap exports the following handlers, but does not request permission for them: ${unusedHandlers.join(
           ', ',
         )}.`,
       );
     }
 
-    if (endowments.length > 0) {
-      const formattedEndowments = endowments
+    if (unusedEndowments.length > 0) {
+      const formattedEndowments = unusedEndowments
         .map(([handler, endowment]) => `${handler} (${endowment})`)
         .join(', ');
 
       context.report(
         `The Snap requests permission for the following handlers, but does not export them: ${formattedEndowments}.`,
         ({ manifest }) => {
-          endowments.forEach(([, endowment]) => {
+          unusedEndowments.forEach(([, endowment]) => {
             delete manifest.initialPermissions[
               endowment as keyof InitialPermissions
             ];
