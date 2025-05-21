@@ -103,13 +103,6 @@ type GetAccountByAddress = (
 ) => InternalAccount | undefined;
 
 /**
- * A function to set the selected account in the client.
- *
- * @param accountId - The account ID.
- */
-type SetSelectedAccount = (accountId: string) => void;
-
-/**
  * A function to get the selected account in the client.
  *
  * @returns The selected account.
@@ -132,7 +125,6 @@ type SnapOwnsAccount = (account: InternalAccount) => boolean;
  *
  * @param getAssetState - A function to get the MultichainAssetController state.
  * @param getAccountByAddress - A function to get an account by its address.
- * @param setSelectedAccount - A function to set the selected account in the client.
  * @param getSelectedAccount - A function to get the selected account in the client.
  * @param listAccounts - A function to list accounts for the provided chain IDs.
  * @param snapOwnsAccount - A function to check if the snap owns the account.
@@ -141,7 +133,6 @@ type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
   getSelectedAccount: GetSelectedAccount;
-  setSelectedAccount: SetSelectedAccount;
   listAccounts: ListAccounts;
   snapOwnsAccount: SnapOwnsAccount;
 };
@@ -291,20 +282,14 @@ export function getDefaultAsset(
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
  * @param elementDataGetters.listAccounts - A function to list accounts for the provided chain IDs.
- * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
  * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
  * @returns The default state for the account selector.
  */
 export function getAccountSelectorDefaultStateValue(
   element: AccountSelectorElement,
-  {
-    getSelectedAccount,
-    listAccounts,
-    setSelectedAccount,
-    snapOwnsAccount,
-  }: ElementDataGetters,
+  { getSelectedAccount, listAccounts, snapOwnsAccount }: ElementDataGetters,
 ) {
-  const { chainIds, switchGlobalAccount, hideExternalAccounts } = element.props;
+  const { chainIds, hideExternalAccounts } = element.props;
 
   const selectedAccount = getSelectedAccount();
 
@@ -330,10 +315,6 @@ export function getAccountSelectorDefaultStateValue(
     filteredAccounts.length > 0,
     'No accounts found for the provided chain IDs.',
   );
-
-  if (switchGlobalAccount) {
-    setSelectedAccount(filteredAccounts[0].id);
-  }
 
   return formatAccountSelectorStateValue(filteredAccounts[0], chainIds);
 }
@@ -430,19 +411,14 @@ export function getAssetSelectorStateValue(
  * @param element - The account selector element.
  * @param elementDataGetters - Data getters for the element.
  * @param elementDataGetters.getAccountByAddress - A function to get an account by address.
- * @param elementDataGetters.setSelectedAccount - A function to set the selected account in the client.
  * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
  * @returns The state value for the account selector.
  */
 export function getAccountSelectorStateValue(
   element: AccountSelectorElement,
-  {
-    getAccountByAddress,
-    setSelectedAccount,
-    snapOwnsAccount,
-  }: ElementDataGetters,
+  { getAccountByAddress, snapOwnsAccount }: ElementDataGetters,
 ) {
-  const { value, switchGlobalAccount, hideExternalAccounts } = element.props;
+  const { value, hideExternalAccounts } = element.props;
 
   if (!value) {
     return null;
@@ -456,10 +432,6 @@ export function getAccountSelectorStateValue(
 
   if (hideExternalAccounts && !snapOwnsAccount(account)) {
     return null;
-  }
-
-  if (switchGlobalAccount) {
-    setSelectedAccount(account.id);
   }
 
   return formatAccountSelectorStateValue(account, element.props.chainIds);
@@ -528,7 +500,6 @@ function getComponentStateValue(
 function constructInputState(
   oldState: InterfaceState,
   element:
-    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement

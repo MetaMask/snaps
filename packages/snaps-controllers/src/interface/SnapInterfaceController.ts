@@ -19,7 +19,11 @@ import type {
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
-import { getJsonSizeUnsafe, validateJsxElements } from '@metamask/snaps-utils';
+import {
+  getJsonSizeUnsafe,
+  snapOwnsAccount,
+  validateJsxElements,
+} from '@metamask/snaps-utils';
 import type {
   CaipAccountId,
   CaipAssetType,
@@ -81,11 +85,6 @@ type AccountsControllerGetSelectedMultichainAccountAction = {
   handler: () => InternalAccount;
 };
 
-type AccountsControllerSetSelectedAccountAction = {
-  type: `AccountsController:setSelectedAccount`;
-  handler: (accountId: string) => void;
-};
-
 type AccountsControllerListMultichainAccountsAction = {
   type: `AccountsController:listMultichainAccounts`;
   handler: (chainId?: CaipChainId) => InternalAccount[];
@@ -114,7 +113,6 @@ export type SnapInterfaceControllerAllowedActions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction;
 
 export type SnapInterfaceControllerActions =
@@ -291,9 +289,9 @@ export class SnapInterfaceController extends BaseController<
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
-      setSelectedAccount: this.#setSelectedAccount.bind(this),
       listAccounts: this.#listAccounts.bind(this),
-      snapOwnsAccount: this.#snapOwnsAccount.bind(this, snapId),
+      snapOwnsAccount: (account: InternalAccount) =>
+        snapOwnsAccount(snapId, account),
     });
 
     this.update((draftState) => {
@@ -348,9 +346,9 @@ export class SnapInterfaceController extends BaseController<
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
       getSelectedAccount: this.#getSelectedAccount.bind(this),
-      setSelectedAccount: this.#setSelectedAccount.bind(this),
       listAccounts: this.#listAccounts.bind(this),
-      snapOwnsAccount: this.#snapOwnsAccount.bind(this, snapId),
+      snapOwnsAccount: (account: InternalAccount) =>
+        snapOwnsAccount(snapId, account),
     });
 
     this.update((draftState) => {
@@ -483,18 +481,6 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Set the selected account in the client.
-   *
-   * @param accountId - The account id.
-   */
-  #setSelectedAccount(accountId: string) {
-    this.messagingSystem.call(
-      'AccountsController:setSelectedAccount',
-      accountId,
-    );
-  }
-
-  /**
    * Get a list of accounts for the given chain IDs.
    *
    * @param chainIds - The chain IDs to get the accounts for.
@@ -552,17 +538,6 @@ export class SnapInterfaceController extends BaseController<
    */
   #getSnap(id: string) {
     return this.messagingSystem.call('SnapController:get', id);
-  }
-
-  /**
-   * Whether if the snap owns the account.
-   *
-   * @param snapId - The snap id.
-   * @param account - The account.
-   * @returns True if the snap owns the account, otherwise false.
-   */
-  #snapOwnsAccount(snapId: SnapId, account: InternalAccount) {
-    return account.metadata.snap?.id === snapId;
   }
 
   /**

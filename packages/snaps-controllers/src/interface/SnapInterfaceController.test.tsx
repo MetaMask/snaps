@@ -311,13 +311,6 @@ describe('SnapInterfaceController', () => {
         }),
       );
 
-      rootMessenger.registerActionHandler(
-        'AccountsController:setSelectedAccount',
-        () => {
-          // no-op
-        },
-      );
-
       // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
@@ -349,12 +342,6 @@ describe('SnapInterfaceController', () => {
         2,
         'AccountsController:getAccountByAddress',
         '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
-        'AccountsController:setSelectedAccount',
-        MOCK_ACCOUNT_ID,
       );
 
       expect(content).toStrictEqual(element);
@@ -405,13 +392,6 @@ describe('SnapInterfaceController', () => {
             },
           },
         ],
-      );
-
-      rootMessenger.registerActionHandler(
-        'AccountsController:setSelectedAccount',
-        () => {
-          // no-op
-        },
       );
 
       // eslint-disable-next-line no-new
@@ -487,13 +467,6 @@ describe('SnapInterfaceController', () => {
         ],
       );
 
-      rootMessenger.registerActionHandler(
-        'AccountsController:setSelectedAccount',
-        () => {
-          // no-op
-        },
-      );
-
       // eslint-disable-next-line no-new
       new SnapInterfaceController({
         messenger: controllerMessenger,
@@ -530,12 +503,6 @@ describe('SnapInterfaceController', () => {
         3,
         'AccountsController:listMultichainAccounts',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        4,
-        'AccountsController:setSelectedAccount',
-        MOCK_ACCOUNT_ID,
       );
 
       expect(content).toStrictEqual(element);
@@ -1466,6 +1433,94 @@ describe('SnapInterfaceController', () => {
           newContent,
         ),
       ).rejects.toThrow('Interface not created by foo.');
+    });
+
+    it('can select an account owned by the snap', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+        rootMessenger,
+        false,
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getSelectedMultichainAccount',
+        () => ({
+          id: MOCK_ACCOUNT_ID,
+          address: '0x1234567890123456789012345678901234567890',
+          scopes: ['eip155:0'],
+          metadata: {
+            // @ts-expect-error partial mock
+            snap: {
+              id: 'npm:foo@1.0.0' as SnapId,
+            },
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:getAccountByAddress',
+        () => ({
+          id: MOCK_ACCOUNT_ID,
+          address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+          metadata: {
+            // @ts-expect-error partial mock
+            snap: {
+              id: MOCK_SNAP_ID,
+            },
+          },
+        }),
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <AccountSelector name="foo" />
+        </Box>
+      );
+
+      const newElement = (
+        <Box>
+          <AccountSelector
+            name="foo"
+            hideExternalAccounts
+            value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv"
+          />
+        </Box>
+      );
+
+      const id = await rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        element,
+      );
+
+      await rootMessenger.call(
+        'SnapInterfaceController:updateInterface',
+        MOCK_SNAP_ID,
+        id,
+        newElement,
+      );
+
+      const { content, state } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(content).toStrictEqual(newElement);
+      expect(state).toStrictEqual({
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ],
+        },
+      });
     });
   });
 

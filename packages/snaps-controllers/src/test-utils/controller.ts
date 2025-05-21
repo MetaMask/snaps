@@ -796,7 +796,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'AccountsController:getAccountByAddress',
       'SnapController:get',
       'AccountsController:getSelectedMultichainAccount',
-      'AccountsController:setSelectedAccount',
       'AccountsController:listMultichainAccounts',
     ],
     allowedEvents: [
@@ -845,13 +844,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
         id: MOCK_ACCOUNT_ID,
         scopes: ['eip155:0'],
       }),
-    );
-
-    messenger.registerActionHandler(
-      'AccountsController:setSelectedAccount',
-      (_id: string) => {
-        // no-op
-      },
     );
 
     messenger.registerActionHandler(
