@@ -307,7 +307,7 @@ export async function getDefaultConfiguration(
       new SnapsWebpackPlugin({
         manifestPath: config.manifest.path,
         writeManifest: config.manifest.update,
-        eval: !options.watch && options.evaluate,
+        eval: options.evaluate,
       }),
 
       /**
