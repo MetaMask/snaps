@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **BREAKING:** `KeyringRequest` will now include an `origin` property ([#3412](https://github.com/MetaMask/snaps/pull/3412))
-  - Using the latest version of `@metamask/keyring-api` will be required for this breaking change.
+  - Using version `18.0.0` of `@metamask/keyring-api` will be required for `platformVersion` `7.0.0` and onwards.
 
 ## [6.24.0]
 
