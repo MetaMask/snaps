@@ -77,6 +77,7 @@ if (snapModule.exports instanceof Promise) {
   snapModule.exports.then(checkExports).catch((error: Error) => {
     // eslint-disable-next-line no-console
     console.error('Error loading Snap module:', error);
+    process.exit(1);
   });
 } else {
   checkExports(snapModule.exports);
