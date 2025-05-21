@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Use correct method names in click handlers for background events example Snap ([#3411](https://https://github.com/MetaMask/snaps/pull/3411))
+- Use correct method names for background events example Snap ([#3411](https://https://github.com/MetaMask/snaps/pull/3411))
 
 ## [2.23.0]
 
@@ -346,52 +346,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.23.1...HEAD
-[2.23.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.23.0...@metamask/test-snaps@2.23.1
-[2.23.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.22.0...@metamask/test-snaps@2.23.0
-[2.22.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.21.1...@metamask/test-snaps@2.22.0
-[2.21.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.21.0...@metamask/test-snaps@2.21.1
-[2.21.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.20.3...@metamask/test-snaps@2.21.0
-[2.20.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.20.2...@metamask/test-snaps@2.20.3
-[2.20.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.20.1...@metamask/test-snaps@2.20.2
-[2.20.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.20.0...@metamask/test-snaps@2.20.1
-[2.20.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.19.0...@metamask/test-snaps@2.20.0
-[2.19.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.18.1...@metamask/test-snaps@2.19.0
-[2.18.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.18.0...@metamask/test-snaps@2.18.1
-[2.18.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.17.0...@metamask/test-snaps@2.18.0
-[2.17.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.16.0...@metamask/test-snaps@2.17.0
-[2.16.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.4...@metamask/test-snaps@2.16.0
-[2.15.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.3...@metamask/test-snaps@2.15.4
-[2.15.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.2...@metamask/test-snaps@2.15.3
-[2.15.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.15.1...@metamask/test-snaps@2.15.2
-[2.15.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.14.1...@metamask/test-snaps@2.15.1
-[2.14.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.14.0...@metamask/test-snaps@2.14.1
-[2.14.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.13.1...@metamask/test-snaps@2.14.0
-[2.13.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.13.0...@metamask/test-snaps@2.13.1
-[2.13.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.12.0...@metamask/test-snaps@2.13.0
-[2.12.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.11.0...@metamask/test-snaps@2.12.0
-[2.11.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.10.0...@metamask/test-snaps@2.11.0
-[2.10.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.9.0...@metamask/test-snaps@2.10.0
-[2.9.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.8.0...@metamask/test-snaps@2.9.0
-[2.8.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.7.0...@metamask/test-snaps@2.8.0
-[2.7.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.6.1...@metamask/test-snaps@2.7.0
-[2.6.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.6.0...@metamask/test-snaps@2.6.1
-[2.6.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.5.0...@metamask/test-snaps@2.6.0
-[2.5.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.4.0...@metamask/test-snaps@2.5.0
-[2.4.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.3.0...@metamask/test-snaps@2.4.0
-[2.3.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.2.4...@metamask/test-snaps@2.3.0
-[2.2.4]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.2.3...@metamask/test-snaps@2.2.4
-[2.2.3]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.2.2...@metamask/test-snaps@2.2.3
-[2.2.2]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.2.1...@metamask/test-snaps@2.2.2
-[2.2.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.2.0...@metamask/test-snaps@2.2.1
-[2.2.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.1.0...@metamask/test-snaps@2.2.0
-[2.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.0.1...@metamask/test-snaps@2.1.0
-[2.0.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@2.0.0...@metamask/test-snaps@2.0.1
-[2.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@1.1.0...@metamask/test-snaps@2.0.0
-[1.1.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@1.0.0...@metamask/test-snaps@1.1.0
-[1.0.0]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.39.1-flask.1...@metamask/test-snaps@1.0.0
-[0.39.1-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.39.0-flask.1...@metamask/test-snaps@0.39.1-flask.1
-[0.39.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.38.0-flask.1...@metamask/test-snaps@0.39.0-flask.1
-[0.38.0-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.37.3-flask.1...@metamask/test-snaps@0.38.0-flask.1
-[0.37.3-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/compare/@metamask/test-snaps@0.37.2-flask.1...@metamask/test-snaps@0.37.3-flask.1
-[0.37.2-flask.1]: https://github.com/MetaMask/snaps-skunkworks.git/releases/tag/@metamask/test-snaps@0.37.2-flask.1
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.1...HEAD
+[2.23.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.0...@metamask/test-snaps@2.23.1
+[2.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.22.0...@metamask/test-snaps@2.23.0
+[2.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.21.1...@metamask/test-snaps@2.22.0
+[2.21.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.21.0...@metamask/test-snaps@2.21.1
+[2.21.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.3...@metamask/test-snaps@2.21.0
+[2.20.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.2...@metamask/test-snaps@2.20.3
+[2.20.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.1...@metamask/test-snaps@2.20.2
+[2.20.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.20.0...@metamask/test-snaps@2.20.1
+[2.20.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.19.0...@metamask/test-snaps@2.20.0
+[2.19.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.1...@metamask/test-snaps@2.19.0
+[2.18.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.18.0...@metamask/test-snaps@2.18.1
+[2.18.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.17.0...@metamask/test-snaps@2.18.0
+[2.17.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.16.0...@metamask/test-snaps@2.17.0
+[2.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.4...@metamask/test-snaps@2.16.0
+[2.15.4]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.3...@metamask/test-snaps@2.15.4
+[2.15.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.2...@metamask/test-snaps@2.15.3
+[2.15.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.15.1...@metamask/test-snaps@2.15.2
+[2.15.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.14.1...@metamask/test-snaps@2.15.1
+[2.14.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.14.0...@metamask/test-snaps@2.14.1
+[2.14.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.1...@metamask/test-snaps@2.14.0
+[2.13.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.13.0...@metamask/test-snaps@2.13.1
+[2.13.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.12.0...@metamask/test-snaps@2.13.0
+[2.12.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.11.0...@metamask/test-snaps@2.12.0
+[2.11.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.10.0...@metamask/test-snaps@2.11.0
+[2.10.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.9.0...@metamask/test-snaps@2.10.0
+[2.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.8.0...@metamask/test-snaps@2.9.0
+[2.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.7.0...@metamask/test-snaps@2.8.0
+[2.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.1...@metamask/test-snaps@2.7.0
+[2.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.6.0...@metamask/test-snaps@2.6.1
+[2.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.5.0...@metamask/test-snaps@2.6.0
+[2.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.4.0...@metamask/test-snaps@2.5.0
+[2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.3.0...@metamask/test-snaps@2.4.0
+[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.4...@metamask/test-snaps@2.3.0
+[2.2.4]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.3...@metamask/test-snaps@2.2.4
+[2.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.2...@metamask/test-snaps@2.2.3
+[2.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.1...@metamask/test-snaps@2.2.2
+[2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.2.0...@metamask/test-snaps@2.2.1
+[2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.1.0...@metamask/test-snaps@2.2.0
+[2.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.0.1...@metamask/test-snaps@2.1.0
+[2.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.0.0...@metamask/test-snaps@2.0.1
+[2.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.1.0...@metamask/test-snaps@2.0.0
+[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@1.0.0...@metamask/test-snaps@1.1.0
+[1.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.39.1-flask.1...@metamask/test-snaps@1.0.0
+[0.39.1-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.39.0-flask.1...@metamask/test-snaps@0.39.1-flask.1
+[0.39.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.38.0-flask.1...@metamask/test-snaps@0.39.0-flask.1
+[0.38.0-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.3-flask.1...@metamask/test-snaps@0.38.0-flask.1
+[0.37.3-flask.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@0.37.2-flask.1...@metamask/test-snaps@0.37.3-flask.1
+[0.37.2-flask.1]: https://github.com/MetaMask/snaps/releases/tag/@metamask/test-snaps@0.37.2-flask.1
