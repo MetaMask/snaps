@@ -493,14 +493,12 @@ export class SnapInterfaceController extends BaseController<
       );
     }
 
-    const accounts = chainIds.reduce<InternalAccount[]>((acc, chainId) => {
-      const result = this.messagingSystem.call(
+    const accounts = chainIds.flatMap((chainId) =>
+      this.messagingSystem.call(
         'AccountsController:listMultichainAccounts',
         chainId,
-      );
-
-      return [...acc, ...result];
-    }, []);
+      ),
+    );
 
     // dedupe accounts that could have multiple scopes in common
     return Array.from(new Set(accounts));

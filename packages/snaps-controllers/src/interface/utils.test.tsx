@@ -32,7 +32,7 @@ import {
   getDefaultAsset,
   getJsxInterface,
   isStatefulComponent,
-  matchingChainId,
+  isMatchingChainId,
 } from './utils';
 import { MOCK_ACCOUNT_ID } from '../test-utils';
 
@@ -1557,10 +1557,10 @@ describe('isStatefulComponent', () => {
   });
 });
 
-describe('matchingChainId', () => {
+describe('isMatchingChainId', () => {
   it('returns true if one of the chain IDs match the scope', () => {
     expect(
-      matchingChainId('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', [
+      isMatchingChainId('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', [
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       ]),
@@ -1569,7 +1569,7 @@ describe('matchingChainId', () => {
 
   it('returns false if none of the chain IDs match the scope', () => {
     expect(
-      matchingChainId('bip122:000000000019d6689c085ae165831e93', [
+      isMatchingChainId('bip122:000000000019d6689c085ae165831e93', [
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       ]),
@@ -1577,7 +1577,7 @@ describe('matchingChainId', () => {
   });
 
   it('returns true if one of the chain ID has the `eip-155` namespace and the scope is `eip-155:0`', () => {
-    expect(matchingChainId('eip155:0', ['eip155:1'])).toBe(true);
+    expect(isMatchingChainId('eip155:0', ['eip155:1'])).toBe(true);
   });
 });
 

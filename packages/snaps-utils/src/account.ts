@@ -58,12 +58,12 @@ export function createChainIdList(
         return namespace === KnownCaipNamespace.Eip155;
       });
 
-      return [...acc, ...evmChainIds];
+      acc.push(...evmChainIds);
     }
 
     // If the scope is not in the requested chain IDs, skip it.
-    if (requestedChainIds.includes(scope)) {
-      return [...acc, scope];
+    else if (requestedChainIds.includes(scope)) {
+      acc.push(scope);
     }
 
     return acc;

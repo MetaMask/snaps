@@ -696,7 +696,7 @@ describe('AccountSelectorStruct', () => {
       <Image src="<svg />" alt="alt" />
     </Row>,
   ])('does not validate "%p"', (value) => {
-    expect(is(value, AddressStruct)).toBe(false);
+    expect(is(value, AccountSelectorStruct)).toBe(false);
   });
 });
 

@@ -175,7 +175,7 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
  * @param chainIds - The chain IDs to check against.
  * @returns Whether one of the chain ID matches the scope.
  */
-export function matchingChainId(scope: CaipChainId, chainIds: CaipChainId[]) {
+export function isMatchingChainId(scope: CaipChainId, chainIds: CaipChainId[]) {
   // if the scope represents all EVM compatible chains, return true if the namespace is EIP-155.
   if (scope === 'eip155:0') {
     const namespaces = chainIds.map((chainId) => {
@@ -297,7 +297,7 @@ export function getAccountSelectorDefaultStateValue(
     (!chainIds ||
       chainIds.length === 0 ||
       selectedAccount.scopes.some((scope) =>
-        matchingChainId(scope, chainIds),
+        isMatchingChainId(scope, chainIds),
       )) &&
     (!hideExternalAccounts ||
       (hideExternalAccounts && snapOwnsAccount(selectedAccount)))
