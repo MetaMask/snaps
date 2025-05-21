@@ -23,6 +23,17 @@ describe('snap_scheduleBackgroundEvent', () => {
   });
 
   describe('implementation', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+
+      // Specifically setting a Date that is in between two seconds.
+      jest.setSystemTime(1747833920500);
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     const createOriginMiddleware =
       (origin: string) =>
       (request: any, _response: unknown, next: () => void, _end: unknown) => {
@@ -151,7 +162,7 @@ describe('snap_scheduleBackgroundEvent', () => {
         id: 1,
         method: 'snap_scheduleBackgroundEvent',
         params: {
-          duration: 'PT30S',
+          duration: 'PT1S',
           request: {
             method: 'handleExport',
             params: ['p1'],
@@ -160,7 +171,55 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
 
       expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: expect.any(String),
+        date: '2025-05-21T13:25:21.500Z',
+        request: {
+          method: 'handleExport',
+          params: ['p1'],
+        },
+      });
+    });
+
+    it('schedules a background event using a minimum duration of 1 second', async () => {
+      const { implementation } = scheduleBackgroundEventHandler;
+
+      const scheduleBackgroundEvent = jest.fn();
+      const hasPermission = jest.fn().mockImplementation(() => true);
+
+      const hooks = {
+        scheduleBackgroundEvent,
+        hasPermission,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_scheduleBackgroundEvent',
+        params: {
+          duration: 'PT0.5S',
+          request: {
+            method: 'handleExport',
+            params: ['p1'],
+          },
+        },
+      });
+
+      expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
+        date: '2025-05-21T13:25:21.500Z',
         request: {
           method: 'handleExport',
           params: ['p1'],

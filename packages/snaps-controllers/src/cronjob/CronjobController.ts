@@ -20,7 +20,7 @@ import {
   logError,
   logWarning,
 } from '@metamask/snaps-utils';
-import { assert, Duration, inMilliseconds } from '@metamask/utils';
+import { assert, Duration, hasProperty, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { DateTime } from 'luxon';
 import { nanoid } from 'nanoid';
@@ -331,9 +331,6 @@ export class CronjobController extends BaseController<
     };
 
     this.#setUpBackgroundEvent(event);
-    this.update((state) => {
-      state.events[event.id] = castDraft(event);
-    });
 
     return event.id;
   }
@@ -379,6 +376,13 @@ export class CronjobController extends BaseController<
       throw new Error('Cannot schedule an event in the past.');
     }
 
+    // The event may already be in state when we get here.
+    if (!hasProperty(this.state.events, event.id)) {
+      this.update((state) => {
+        state.events[event.id] = castDraft(event);
+      });
+    }
+
     const timer = new Timer(ms);
     timer.start(() => {
       this.messagingSystem
@@ -410,9 +414,17 @@ export class CronjobController extends BaseController<
    * @returns An array of background events.
    */
   getBackgroundEvents(snapId: SnapId): BackgroundEvent[] {
-    return Object.values(this.state.events).filter(
-      (snapEvent) => snapEvent.snapId === snapId,
-    );
+    return Object.values(this.state.events)
+      .filter((snapEvent) => snapEvent.snapId === snapId)
+      .map((event) => ({
+        ...event,
+        // Truncate dates to remove milliseconds.
+        date: DateTime.fromISO(event.date, { setZone: true })
+          .startOf('second')
+          .toISO({
+            suppressMilliseconds: true,
+          }) as string,
+      }));
   }
 
   /**
