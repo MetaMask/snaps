@@ -40,8 +40,7 @@ export const ISO8601DateStruct = refine(string(), 'ISO 8601 date', (value) => {
 });
 
 /**
- * Parses an ISO 8601 date, removes millisecond precision and returns
- * an ISO 8601 date.
+ * Remove millisecond precision from an ISO 8601 string.
  *
  * @param value - A valid ISO 8601 date.
  * @returns A valid ISO 8601 date with millisecond precision removed.
