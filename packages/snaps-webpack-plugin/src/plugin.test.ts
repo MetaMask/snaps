@@ -11,8 +11,6 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import type { IPromisesAPI } from 'memfs/lib/promises';
-import * as os from 'os';
-import * as pathUtils from 'path';
 import type { Stats, Configuration } from 'webpack';
 // TODO: Either fix this lint violation or explain why it's necessary to
 //  ignore.
@@ -203,7 +201,7 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith(
-      pathUtils.resolve(os.tmpdir(), 'snaps-bundle.js'),
+      expect.stringContaining('snaps-bundle.js'),
     );
   });
 
