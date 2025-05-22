@@ -3,7 +3,8 @@ import type { InitialPermissions } from '@metamask/snaps-sdk';
 import type { ValidatorMeta } from '../validator-types';
 
 /**
- * Check if all the required files are included.
+ * Check if the Snap exports handlers that are not requested in the manifest, or
+ * if the Snap requests permissions for handlers that are not exported.
  */
 export const unusedExports: ValidatorMeta = {
   severity: 'warning',
