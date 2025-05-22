@@ -4606,7 +4606,6 @@ __metadata:
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
     memfs: "npm:^3.4.13"
-    ora: "npm:^5.4.1"
     prettier: "npm:^3.3.3"
     typescript: "npm:~5.3.3"
     webpack: "npm:^5.97.1"

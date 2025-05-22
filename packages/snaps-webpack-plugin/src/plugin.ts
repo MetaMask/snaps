@@ -11,7 +11,6 @@ import {
 import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
 import { blue, dim } from 'chalk';
-import type { Ora } from 'ora';
 import pathUtils from 'path';
 import { promisify } from 'util';
 import type { Compiler } from 'webpack';
@@ -31,10 +30,16 @@ type PluginOptions = {
 export type Options = PluginOptions &
   Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap'>;
 
+// Partial copy of `ora` types to avoid a dependency on `ora` in the plugin.
+type Spinner = {
+  clear(): void;
+  frame(): void;
+};
+
 export default class SnapsWebpackPlugin {
   public readonly options: Partial<Options>;
 
-  readonly #spinner: Ora | undefined;
+  readonly #spinner: Spinner | undefined;
 
   /**
    * Construct an instance of the plugin.
@@ -51,7 +56,7 @@ export default class SnapsWebpackPlugin {
    * Defaults to `true`.
    * @param spinner - The spinner to use for logging. For internal use only.
    */
-  constructor(options?: Partial<Options>, spinner?: Ora) {
+  constructor(options?: Partial<Options>, spinner?: Spinner) {
     this.options = {
       eval: true,
       manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
