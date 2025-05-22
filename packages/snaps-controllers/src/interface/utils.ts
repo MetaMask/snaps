@@ -178,12 +178,10 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
 export function isMatchingChainId(scope: CaipChainId, chainIds: CaipChainId[]) {
   // if the scope represents all EVM compatible chains, return true if the namespace is EIP-155.
   if (scope === 'eip155:0') {
-    const namespaces = chainIds.map((chainId) => {
+    return chainIds.some((chainId) => {
       const { namespace } = parseCaipChainId(chainId);
-      return namespace;
+      return namespace === KnownCaipNamespace.Eip155;
     });
-
-    return namespaces.includes(KnownCaipNamespace.Eip155);
   }
 
   // Otherwise, check if the scope is in the chain IDs.
