@@ -12,6 +12,7 @@ import {
   CronjobRpcRequestStruct,
   ISO8601DateStruct,
   ISO8601DurationStruct,
+  toCensoredISO8601String,
 } from '@metamask/snaps-utils';
 import { StructError, create, object } from '@metamask/superstruct';
 import {
@@ -93,12 +94,8 @@ function getStartDate(params: ScheduleBackgroundEventParams) {
     return DateTime.fromJSDate(new Date()).toUTC().plus(duration).toISO();
   }
 
-  const date = DateTime.fromISO(params.date, { setZone: true });
-
   // Make sure any millisecond precision is removed.
-  return date.startOf('second').toISO({
-    suppressMilliseconds: true,
-  });
+  return toCensoredISO8601String(params.date);
 }
 
 /**

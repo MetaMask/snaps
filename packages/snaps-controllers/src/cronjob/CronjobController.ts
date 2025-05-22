@@ -19,6 +19,7 @@ import {
   parseCronExpression,
   logError,
   logWarning,
+  toCensoredISO8601String,
 } from '@metamask/snaps-utils';
 import { assert, Duration, hasProperty, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
@@ -419,11 +420,7 @@ export class CronjobController extends BaseController<
       .map((event) => ({
         ...event,
         // Truncate dates to remove milliseconds.
-        date: DateTime.fromISO(event.date, { setZone: true })
-          .startOf('second')
-          .toISO({
-            suppressMilliseconds: true,
-          }) as string,
+        date: toCensoredISO8601String(event.date),
       }));
   }
 
