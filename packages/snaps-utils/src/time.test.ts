@@ -1,7 +1,11 @@
 import { create, is } from '@metamask/superstruct';
 import { DateTime } from 'luxon';
 
-import { ISO8601DateStruct, ISO8601DurationStruct } from './time';
+import {
+  ISO8601DateStruct,
+  ISO8601DurationStruct,
+  toCensoredISO8601String,
+} from './time';
 
 describe('ISO8601DateStruct', () => {
   it('should return true for a valid ISO 8601 date', () => {
@@ -49,6 +53,20 @@ describe('ISO8601DurationStruct', () => {
     const value = '1Millisecond';
     expect(() => create(value, ISO8601DurationStruct)).toThrow(
       'Not a valid ISO 8601 duration',
+    );
+  });
+});
+
+describe('toCensoredISO8601String', () => {
+  it('returns ISO dates as-is with no millisecond precision', () => {
+    expect(toCensoredISO8601String('2025-05-21T13:25:25Z')).toBe(
+      '2025-05-21T13:25:25Z',
+    );
+  });
+
+  it('removes millisecond precision', () => {
+    expect(toCensoredISO8601String('2025-05-21T13:25:21.500Z')).toBe(
+      '2025-05-21T13:25:21Z',
     );
   });
 });

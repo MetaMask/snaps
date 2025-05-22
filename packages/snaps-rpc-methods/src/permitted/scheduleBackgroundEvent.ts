@@ -12,6 +12,7 @@ import {
   CronjobRpcRequestStruct,
   ISO8601DateStruct,
   ISO8601DurationStruct,
+  toCensoredISO8601String,
 } from '@metamask/snaps-utils';
 import { StructError, create, object } from '@metamask/superstruct';
 import {
@@ -84,12 +85,17 @@ export type ScheduleBackgroundEventParameters = InferMatching<
  */
 function getStartDate(params: ScheduleBackgroundEventParams) {
   if ('duration' in params) {
-    return DateTime.fromJSDate(new Date())
-      .toUTC()
-      .plus(Duration.fromISO(params.duration));
+    const parsed = Duration.fromISO(params.duration);
+
+    // Disallow durations less than 1 second.
+    const duration =
+      parsed.as('seconds') >= 1 ? parsed : Duration.fromObject({ seconds: 1 });
+
+    return DateTime.fromJSDate(new Date()).toUTC().plus(duration).toISO();
   }
 
-  return DateTime.fromISO(params.date, { setZone: true });
+  // Make sure any millisecond precision is removed.
+  return toCensoredISO8601String(params.date);
 }
 
 /**
@@ -128,14 +134,9 @@ async function getScheduleBackgroundEventImplementation(
 
     const date = getStartDate(validatedParams);
 
-    // Make sure any millisecond precision is removed.
-    const truncatedDate = date.startOf('second').toISO({
-      suppressMilliseconds: true,
-    });
+    assert(date);
 
-    assert(truncatedDate);
-
-    const id = scheduleBackgroundEvent({ date: truncatedDate, request });
+    const id = scheduleBackgroundEvent({ date, request });
     res.result = id;
   } catch (error) {
     return end(error);
