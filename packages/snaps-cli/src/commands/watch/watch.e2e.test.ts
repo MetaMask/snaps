@@ -52,6 +52,11 @@ describe('mm-snap watch', () => {
       expect(runner.stderr).toContainEqual(
         expect.stringMatching(/Compiled \d+ files? in \d+ms with 1 warning\./u),
       );
+      expect(runner.stderr).toContainEqual(
+        expect.stringContaining(
+          'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+        ),
+      );
       expect(runner.stdout).toContainEqual(
         expect.stringMatching(/Changes detected in .+, recompiling\./u),
       );
