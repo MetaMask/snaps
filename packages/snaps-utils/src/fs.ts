@@ -1,5 +1,6 @@
 import type { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
+import { mkdtemp } from 'fs/promises';
 import os from 'os';
 import pathUtils from 'path';
 
@@ -165,7 +166,9 @@ export async function useTemporaryFile<Type = unknown>(
   fileContents: string,
   fn: (path: string) => Promise<Type>,
 ): Promise<Type> {
-  const filePath = pathUtils.join(os.tmpdir(), fileName);
+  const temporaryDirectory = await mkdtemp(os.tmpdir());
+  const filePath = pathUtils.join(temporaryDirectory, fileName);
+
   await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, fileContents);
   try {

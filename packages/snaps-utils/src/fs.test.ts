@@ -225,6 +225,20 @@ describe('useTemporaryFile', () => {
     expect(result).toBe('baz');
   });
 
+  it('creates a unique directory', async () => {
+    const first = await useTemporaryFile('foo', 'bar', async (filePath) => {
+      return filePath;
+    });
+
+    const second = await useTemporaryFile('foo', 'bar', async (filePath) => {
+      return filePath;
+    });
+
+    expect(first).toContain('foo');
+    expect(second).toContain('foo');
+    expect(first).not.toBe(second);
+  });
+
   it('always deletes the temporary file after usage', async () => {
     expect.assertions(4);
     let filePath: string;
