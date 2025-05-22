@@ -451,7 +451,6 @@ export function getAccountSelectorStateValue(
  */
 function getComponentStateValue(
   element:
-    | AccountSelectorElement
     | InputElement
     | DropdownElement
     | RadioGroupElement
