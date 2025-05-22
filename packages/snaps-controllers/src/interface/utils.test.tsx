@@ -1718,7 +1718,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
     });
   });
 
-  it('returns the first account of the accounts that matches the chain Ids and that is owned by the snap if the selected account is not on the same chain ID', () => {
+  it('returns the first account of the accounts that matches the chain IDs and that is owned by the snap if the selected account is not on the same chain ID', () => {
     const getSelectedAccount = jest.fn().mockReturnValue({
       id: MOCK_ACCOUNT_ID,
       address: '0x1234567890123456789012345678901234567890',
