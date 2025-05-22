@@ -265,7 +265,10 @@ export class CronjobController extends BaseController<
     const parsed = parseCronExpression(job.expression);
     const next = parsed.next();
     const now = new Date();
-    const ms = next.getTime() - now.getTime();
+
+    // If the time until the next run is less than 15 seconds, we increase it
+    // to 15 seconds to avoid running jobs too frequently.
+    const ms = Math.max(next.getTime() - now.getTime(), 15_000);
 
     // Don't schedule this job yet as it is too far in the future
     if (ms > DAILY_TIMEOUT) {
