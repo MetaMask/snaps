@@ -8,11 +8,13 @@ const config = createConfig([
   {
     ignores: [
       '**/assembly',
+      '**/build',
       '**/coverage',
       '**/dist',
       '**/docs',
       '**/public',
       '.yarn',
+      '!packages/snaps-cli/src/commands/build',
     ],
   },
 
