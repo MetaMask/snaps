@@ -186,6 +186,7 @@ describe('SnapsWebpackPlugin', () => {
   });
 
   it('evals the bundle if configured', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
     mock.mockResolvedValue({
       stdout: '',
@@ -203,6 +204,9 @@ describe('SnapsWebpackPlugin', () => {
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith(
       expect.stringContaining('snaps-bundle.js'),
+    );
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('Snap bundle evaluated successfully.'),
     );
   });
 

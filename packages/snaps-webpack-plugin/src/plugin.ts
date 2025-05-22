@@ -3,12 +3,15 @@ import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
   checkManifest,
   evalBundle,
+  logInfo,
   postProcessBundle,
   SnapEvalError,
   useTemporaryFile,
 } from '@metamask/snaps-utils/node';
 import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
+import { blue, dim } from 'chalk';
+import type { Ora } from 'ora';
 import pathUtils from 'path';
 import { promisify } from 'util';
 import type { Compiler } from 'webpack';
@@ -31,6 +34,8 @@ export type Options = PluginOptions &
 export default class SnapsWebpackPlugin {
   public readonly options: Partial<Options>;
 
+  readonly #spinner: Ora | undefined;
+
   /**
    * Construct an instance of the plugin.
    *
@@ -44,14 +49,17 @@ export default class SnapsWebpackPlugin {
    * `process.cwd() + '/snap.manifest.json'`.
    * @param options.writeManifest - Whether to fix the manifest.
    * Defaults to `true`.
+   * @param spinner - The spinner to use for logging. For internal use only.
    */
-  constructor(options?: Partial<Options>) {
+  constructor(options?: Partial<Options>, spinner?: Ora) {
     this.options = {
       eval: true,
       manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
       writeManifest: true,
       ...options,
     };
+
+    this.#spinner = spinner;
   }
 
   /**
@@ -148,6 +156,13 @@ export default class SnapsWebpackPlugin {
             'snaps-bundle.js',
             bundleContent,
             async (path) => evalBundle(path),
+          );
+
+          this.#spinner?.clear();
+          this.#spinner?.frame();
+
+          logInfo(
+            `${blue('ℹ')} ${dim('Snap bundle evaluated successfully.')}`,
           );
 
           exports = output.exports;
