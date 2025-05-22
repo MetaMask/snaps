@@ -1772,7 +1772,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
 
     const listAccounts = jest.fn().mockReturnValue([]);
 
-    expect(() =>
+    expect(
       getAccountSelectorDefaultStateValue(
         <AccountSelector
           name="foo"
@@ -1786,7 +1786,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
           snapOwnsAccount: jest.fn(),
         },
       ),
-    ).toThrow('No accounts found for the provided chain IDs.');
+    ).toBeNull();
   });
 
   it('throws if no account that the snap owns is found for the given chain IDs', () => {
@@ -1800,7 +1800,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
 
     const snapOwnsAccount = jest.fn().mockReturnValue(false);
 
-    expect(() =>
+    expect(
       getAccountSelectorDefaultStateValue(
         <AccountSelector
           name="foo"
@@ -1815,7 +1815,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
           snapOwnsAccount,
         },
       ),
-    ).toThrow('No accounts found for the provided chain IDs.');
+    ).toBeNull();
   });
 });
 

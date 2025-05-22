@@ -313,10 +313,11 @@ export function getAccountSelectorDefaultStateValue(
     ? accounts.filter((account) => snapOwnsAccount(account))
     : accounts;
 
-  assert(
-    filteredAccounts.length > 0,
-    'No accounts found for the provided chain IDs.',
-  );
+  // The AccountSelector component in the UI will be disabled if there is no account available for the networks provided.
+  // In this case, we return null to indicate that there is no default selected account.
+  if (filteredAccounts.length === 0) {
+    return null;
+  }
 
   return formatAccountSelectorStateValue(filteredAccounts[0], chainIds);
 }
