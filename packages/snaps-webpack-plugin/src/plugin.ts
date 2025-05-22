@@ -4,6 +4,7 @@ import {
   checkManifest,
   evalBundle,
   postProcessBundle,
+  SnapEvalError,
   useTemporaryFile,
 } from '@metamask/snaps-utils/node';
 import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils/node';
@@ -142,13 +143,27 @@ export default class SnapsWebpackPlugin {
       let exports: string[] | undefined;
 
       if (this.options.eval) {
-        const output = await useTemporaryFile(
-          'snaps-bundle.js',
-          bundleContent,
-          async (path) => evalBundle(path),
-        );
+        try {
+          const output = await useTemporaryFile(
+            'snaps-bundle.js',
+            bundleContent,
+            async (path) => evalBundle(path),
+          );
 
-        exports = output.exports;
+          exports = output.exports;
+        } catch (error) {
+          const webpackError = new WebpackError(
+            `Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap: ${getErrorMessage(error)}`,
+          );
+
+          if (error instanceof SnapEvalError) {
+            // The constructor for `WebpackError` doesn't accept the details
+            // property, so we need to set it manually.
+            webpackError.details = error.output.stderr;
+          }
+
+          compilation.errors.push(webpackError);
+        }
       }
 
       if (this.options.manifestPath) {

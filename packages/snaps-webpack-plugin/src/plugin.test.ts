@@ -6,6 +6,7 @@ import {
   checkManifest,
   evalBundle,
   PostProcessWarning,
+  SnapEvalError,
 } from '@metamask/snaps-utils/node';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { IFs } from 'memfs';
@@ -370,17 +371,38 @@ describe('SnapsWebpackPlugin', () => {
     expect(stats.toJson().warnings?.[1].message).toMatch('bar');
   });
 
-  it('forwards errors', async () => {
+  it('logs errors thrown when evaluating the bundle', async () => {
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
     mock.mockRejectedValue(new Error('foo'));
 
-    await expect(
-      bundle({
-        options: {
-          eval: true,
-          manifestPath: undefined,
-        },
+    const { stats } = await bundle({
+      options: {
+        eval: true,
+        manifestPath: undefined,
+      },
+    });
+
+    expect(stats.compilation.errors[0].message).toMatch('foo');
+  });
+
+  it('logs `SnapEvalError` thrown when evaluating the bundle', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockRejectedValue(
+      new SnapEvalError('foo', {
+        stdout: '',
+        stderr: 'bar',
+        exports: [],
       }),
-    ).rejects.toThrow('foo');
+    );
+
+    const { stats } = await bundle({
+      options: {
+        eval: true,
+        manifestPath: undefined,
+      },
+    });
+
+    expect(stats.compilation.errors[0].message).toMatch('foo');
+    expect(stats.compilation.errors[0].details).toMatch('bar');
   });
 });
