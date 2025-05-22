@@ -1602,7 +1602,7 @@ describe('formatAccountSelectorStateValue', () => {
 });
 
 describe('getAccountSelectorDefaultStateValue', () => {
-  it('returns the currently selected account in the client if no chain Is are defined', () => {
+  it('returns the currently selected account in the client if no chain IDs are defined', () => {
     const getSelectedAccount = jest.fn().mockReturnValue({
       id: MOCK_ACCOUNT_ID,
       address: '0x1234567890123456789012345678901234567890',
