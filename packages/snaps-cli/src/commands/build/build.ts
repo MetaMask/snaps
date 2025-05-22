@@ -36,8 +36,6 @@ export const steps: Steps<BuildContext> = [
     task: async (context) => {
       const { analyze, config, spinner } = context;
 
-      // We don't evaluate the bundle here, because it's done in a separate
-      // step.
       const compiler = await build(config, {
         analyze,
         evaluate: config.evaluate,
