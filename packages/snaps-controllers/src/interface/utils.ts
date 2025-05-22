@@ -22,10 +22,13 @@ import type {
   SelectorOptionElement,
   AssetSelectorElement,
   AddressInputElement,
+  AccountSelectorElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import {
+  createAccountList,
+  createChainIdList,
   getJsonSizeUnsafe,
   getJsxChildren,
   getJsxElementFromComponent,
@@ -38,6 +41,7 @@ import {
   parseCaipAssetType,
   toCaipAccountId,
   parseCaipChainId,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 
 /**
@@ -52,6 +56,7 @@ const STATEFUL_COMPONENT_TYPES = [
   'Selector',
   'AssetSelector',
   'AddressInput',
+  'AccountSelector',
 ] as const;
 
 /**
@@ -98,15 +103,38 @@ type GetAccountByAddress = (
 ) => InternalAccount | undefined;
 
 /**
+ * A function to get the selected account in the client.
+ *
+ * @returns The selected account.
+ */
+type GetSelectedAccount = () => InternalAccount;
+
+/**
+ * A function to get accounts for the provided chain IDs.
+ */
+type ListAccounts = (chainIds?: CaipChainId[]) => InternalAccount[];
+
+/**
+ * A function to check if the snap owns the account.
+ */
+type SnapOwnsAccount = (account: InternalAccount) => boolean;
+
+/**
  * Data getters for elements.
  * This is used to get data from elements that is not directly accessible from the element itself.
  *
  * @param getAssetState - A function to get the MultichainAssetController state.
  * @param getAccountByAddress - A function to get an account by its address.
+ * @param getSelectedAccount - A function to get the selected account in the client.
+ * @param listAccounts - A function to list accounts for the provided chain IDs.
+ * @param snapOwnsAccount - A function to check if the snap owns the account.
  */
 type ElementDataGetters = {
   getAssetsState: GetAssetsState;
   getAccountByAddress: GetAccountByAddress;
+  getSelectedAccount: GetSelectedAccount;
+  listAccounts: ListAccounts;
+  snapOwnsAccount: SnapOwnsAccount;
 };
 
 /**
@@ -136,6 +164,48 @@ export function assertNameIsUnique(state: InterfaceState, name: string) {
     state[name] === undefined,
     `Duplicate component names are not allowed, found multiple instances of: "${name}".`,
   );
+}
+
+/**
+ * Check if the chain ID matches the scope.
+ * This function handles the case where a scope represents all EVM compatible chains.
+ * In this case, it returns true if the chain ID is an EIP-155 chain ID.
+ *
+ * @param scope - The scope to check.
+ * @param chainIds - The chain IDs to check against.
+ * @returns Whether one of the chain ID matches the scope.
+ */
+export function isMatchingChainId(scope: CaipChainId, chainIds: CaipChainId[]) {
+  // if the scope represents all EVM compatible chains, return true if the namespace is EIP-155.
+  if (scope === 'eip155:0') {
+    return chainIds.some((chainId) => {
+      const { namespace } = parseCaipChainId(chainId);
+      return namespace === KnownCaipNamespace.Eip155;
+    });
+  }
+
+  // Otherwise, check if the scope is in the chain IDs.
+  return chainIds.includes(scope);
+}
+
+/**
+ * Format the state value for an account selector.
+ *
+ * @param account - The account to format.
+ * @param requestedChainIds - The requested chain IDs.
+ *
+ * @returns The state value for the account selector.
+ */
+export function formatAccountSelectorStateValue(
+  account: InternalAccount,
+  requestedChainIds?: CaipChainId[],
+) {
+  const { id, address, scopes } = account;
+
+  const chainIds = createChainIdList(scopes, requestedChainIds);
+  const addresses = createAccountList(address, chainIds);
+
+  return { accountId: id, addresses };
 }
 
 /**
@@ -204,6 +274,55 @@ export function getDefaultAsset(
 }
 
 /**
+ * Get the default state value for an account selector.
+ *
+ * @param element - The account selector element.
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getSelectedAccount - A function to get the selected account in the client.
+ * @param elementDataGetters.listAccounts - A function to list accounts for the provided chain IDs.
+ * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
+ * @returns The default state for the account selector.
+ */
+export function getAccountSelectorDefaultStateValue(
+  element: AccountSelectorElement,
+  { getSelectedAccount, listAccounts, snapOwnsAccount }: ElementDataGetters,
+) {
+  const { chainIds, hideExternalAccounts } = element.props;
+
+  const selectedAccount = getSelectedAccount();
+
+  // Use the selected account if it matches.
+  // The following conditions are checked:
+  // - If the selected account has any of the requested chain IDs in its scopes.
+  // - If the selected account is owned by the snap and hideExternalAccounts is true.
+  if (
+    (!chainIds ||
+      chainIds.length === 0 ||
+      selectedAccount.scopes.some((scope) =>
+        isMatchingChainId(scope, chainIds),
+      )) &&
+    (!hideExternalAccounts ||
+      (hideExternalAccounts && snapOwnsAccount(selectedAccount)))
+  ) {
+    return formatAccountSelectorStateValue(selectedAccount, chainIds);
+  }
+
+  const accounts = listAccounts(chainIds);
+
+  const filteredAccounts = hideExternalAccounts
+    ? accounts.filter((account) => snapOwnsAccount(account))
+    : accounts;
+
+  // The AccountSelector component in the UI will be disabled if there is no account available for the networks provided.
+  // In this case, we return null to indicate that there is no default selected account.
+  if (filteredAccounts.length === 0) {
+    return null;
+  }
+
+  return formatAccountSelectorStateValue(filteredAccounts[0], chainIds);
+}
+
+/**
  * Construct default state for a component.
  *
  * This function is meant to be used inside constructInputState to account
@@ -222,7 +341,8 @@ function constructComponentSpecificDefaultState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -240,6 +360,9 @@ function constructComponentSpecificDefaultState(
       const children = getJsxChildren(element) as SelectorOptionElement[];
       return children[0]?.props.value;
     }
+
+    case 'AccountSelector':
+      return getAccountSelectorDefaultStateValue(element, elementDataGetters);
 
     case 'Checkbox':
       return false;
@@ -286,6 +409,38 @@ export function getAssetSelectorStateValue(
 }
 
 /**
+ * Get the state value for an account selector.
+ *
+ * @param element - The account selector element.
+ * @param elementDataGetters - Data getters for the element.
+ * @param elementDataGetters.getAccountByAddress - A function to get an account by address.
+ * @param elementDataGetters.snapOwnsAccount - A function to check if the snap owns the account.
+ * @returns The state value for the account selector.
+ */
+export function getAccountSelectorStateValue(
+  element: AccountSelectorElement,
+  { getAccountByAddress, snapOwnsAccount }: ElementDataGetters,
+) {
+  const { value, hideExternalAccounts } = element.props;
+
+  if (!value) {
+    return null;
+  }
+
+  const account = getAccountByAddress(value);
+
+  if (!account) {
+    return null;
+  }
+
+  if (hideExternalAccounts && !snapOwnsAccount(account)) {
+    return null;
+  }
+
+  return formatAccountSelectorStateValue(account, element.props.chainIds);
+}
+
+/**
  * Get the state value for a stateful component.
  *
  * Most components store the state value as a `value` prop.
@@ -293,7 +448,6 @@ export function getAssetSelectorStateValue(
  *
  * @param element - The input element.
  * @param elementDataGetters - Data getters for the element.
- * @param elementDataGetters.getAssetsState - A function to get the MultichainAssetController state.
  * @returns The state value for a given component.
  */
 function getComponentStateValue(
@@ -304,15 +458,19 @@ function getComponentStateValue(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
-  { getAssetsState }: ElementDataGetters,
+    | AddressInputElement
+    | AccountSelectorElement,
+  elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
     case 'Checkbox':
       return element.props.checked;
 
     case 'AssetSelector':
-      return getAssetSelectorStateValue(element.props.value, getAssetsState);
+      return getAssetSelectorStateValue(
+        element.props.value,
+        elementDataGetters.getAssetsState,
+      );
 
     case 'AddressInput': {
       if (!element.props.value) {
@@ -323,6 +481,10 @@ function getComponentStateValue(
       const { namespace, reference } = parseCaipChainId(element.props.chainId);
       return toCaipAccountId(namespace, reference, element.props.value);
     }
+
+    case 'AccountSelector':
+      return getAccountSelectorStateValue(element, elementDataGetters);
+
     default:
       return element.props.value;
   }
@@ -347,7 +509,8 @@ function constructInputState(
     | CheckboxElement
     | SelectorElement
     | AssetSelectorElement
-    | AddressInputElement,
+    | AddressInputElement
+    | AccountSelectorElement,
   elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
