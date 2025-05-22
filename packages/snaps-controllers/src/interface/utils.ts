@@ -293,6 +293,10 @@ export function getAccountSelectorDefaultStateValue(
 
   const selectedAccount = getSelectedAccount();
 
+  // Use the selected account if it matches.
+  // The following conditions are checked:
+  // - If the selected account has any of the requested chain IDs in its scopes.
+  // - If the selected account is owned by the snap and hideExternalAccounts is true.
   if (
     (!chainIds ||
       chainIds.length === 0 ||

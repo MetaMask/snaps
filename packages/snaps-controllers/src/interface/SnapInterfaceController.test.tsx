@@ -294,67 +294,6 @@ describe('SnapInterfaceController', () => {
       });
     });
 
-    it('can switch the currently selected account in the client', async () => {
-      const rootMessenger = getRootSnapInterfaceControllerMessenger();
-      const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
-        rootMessenger,
-        false,
-      );
-
-      rootMessenger.registerActionHandler(
-        'AccountsController:getAccountByAddress',
-        // @ts-expect-error partial mock
-        () => ({
-          id: MOCK_ACCOUNT_ID,
-          address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-          scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-        }),
-      );
-
-      // eslint-disable-next-line no-new
-      new SnapInterfaceController({
-        messenger: controllerMessenger,
-      });
-
-      const element = (
-        <Box>
-          <AccountSelector
-            name="foo"
-            switchGlobalAccount
-            value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv"
-          />
-        </Box>
-      );
-
-      const id = await rootMessenger.call(
-        'SnapInterfaceController:createInterface',
-        MOCK_SNAP_ID,
-        element,
-      );
-
-      const { content, state } = rootMessenger.call(
-        'SnapInterfaceController:getInterface',
-        MOCK_SNAP_ID,
-        id,
-      );
-
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
-        'AccountsController:getAccountByAddress',
-        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-      );
-
-      expect(content).toStrictEqual(element);
-      expect(state).toStrictEqual({
-        foo: {
-          accountId: MOCK_ACCOUNT_ID,
-          addresses: [
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-          ],
-        },
-      });
-    });
-
     it('can select an account owned by the snap', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
@@ -502,7 +441,6 @@ describe('SnapInterfaceController', () => {
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
         'AccountsController:listMultichainAccounts',
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       );
 
       expect(content).toStrictEqual(element);

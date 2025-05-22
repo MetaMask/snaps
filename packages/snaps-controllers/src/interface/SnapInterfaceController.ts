@@ -37,6 +37,7 @@ import { nanoid } from 'nanoid';
 import {
   constructState,
   getJsxInterface,
+  isMatchingChainId,
   validateInterfaceContext,
 } from './utils';
 import type { GetSnap } from '../snaps';
@@ -487,21 +488,17 @@ export class SnapInterfaceController extends BaseController<
    * @returns The list of accounts.
    */
   #listAccounts(chainIds?: CaipChainId[]) {
-    if (!chainIds || chainIds.length === 0) {
-      return this.messagingSystem.call(
-        'AccountsController:listMultichainAccounts',
-      );
-    }
-
-    const accounts = chainIds.flatMap((chainId) =>
-      this.messagingSystem.call(
-        'AccountsController:listMultichainAccounts',
-        chainId,
-      ),
+    const accounts = this.messagingSystem.call(
+      'AccountsController:listMultichainAccounts',
     );
 
-    // dedupe accounts that could have multiple scopes in common
-    return Array.from(new Set(accounts));
+    if (!chainIds || chainIds.length === 0) {
+      return accounts;
+    }
+
+    return accounts.filter((account) =>
+      account.scopes.some((scope) => isMatchingChainId(scope, chainIds)),
+    );
   }
 
   /**
