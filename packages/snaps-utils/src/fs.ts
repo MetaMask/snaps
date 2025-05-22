@@ -166,7 +166,10 @@ export async function useTemporaryFile<Type = unknown>(
   fileContents: string,
   fn: (path: string) => Promise<Type>,
 ): Promise<Type> {
-  const temporaryDirectory = await mkdtemp(os.tmpdir());
+  const temporaryDirectory = await mkdtemp(
+    pathUtils.join(os.tmpdir(), 'snaps-'),
+  );
+
   const filePath = pathUtils.join(temporaryDirectory, fileName);
 
   await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
