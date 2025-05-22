@@ -19,8 +19,17 @@ import type {
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
-import { getJsonSizeUnsafe, validateJsxElements } from '@metamask/snaps-utils';
-import type { CaipAccountId, CaipAssetType, Json } from '@metamask/utils';
+import {
+  getJsonSizeUnsafe,
+  snapOwnsAccount,
+  validateJsxElements,
+} from '@metamask/snaps-utils';
+import type {
+  CaipAccountId,
+  CaipAssetType,
+  CaipChainId,
+  Json,
+} from '@metamask/utils';
 import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
@@ -28,6 +37,7 @@ import { nanoid } from 'nanoid';
 import {
   constructState,
   getJsxInterface,
+  isMatchingChainId,
   validateInterfaceContext,
 } from './utils';
 import type { GetSnap } from '../snaps';
@@ -71,6 +81,16 @@ type AccountsControllerGetAccountByAddressAction = {
   handler: (address: string) => InternalAccount | undefined;
 };
 
+type AccountsControllerGetSelectedMultichainAccountAction = {
+  type: `AccountsController:getSelectedMultichainAccount`;
+  handler: () => InternalAccount;
+};
+
+type AccountsControllerListMultichainAccountsAction = {
+  type: `AccountsController:listMultichainAccounts`;
+  handler: (chainId?: CaipChainId) => InternalAccount[];
+};
+
 export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapInterfaceControllerState
@@ -92,7 +112,9 @@ export type SnapInterfaceControllerAllowedActions =
   | AcceptRequest
   | GetSnap
   | MultichainAssetsControllerGetStateAction
-  | AccountsControllerGetAccountByAddressAction;
+  | AccountsControllerGetSelectedMultichainAccountAction
+  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerListMultichainAccountsAction;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -267,6 +289,10 @@ export class SnapInterfaceController extends BaseController<
     const componentState = constructState({}, element, {
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
+      getSelectedAccount: this.#getSelectedAccount.bind(this),
+      listAccounts: this.#listAccounts.bind(this),
+      snapOwnsAccount: (account: InternalAccount) =>
+        snapOwnsAccount(snapId, account),
     });
 
     this.update((draftState) => {
@@ -320,6 +346,10 @@ export class SnapInterfaceController extends BaseController<
     const newState = constructState(oldState, element, {
       getAssetsState: this.#getAssetsState.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
+      getSelectedAccount: this.#getSelectedAccount.bind(this),
+      listAccounts: this.#listAccounts.bind(this),
+      snapOwnsAccount: (account: InternalAccount) =>
+        snapOwnsAccount(snapId, account),
     });
 
     this.update((draftState) => {
@@ -437,6 +467,37 @@ export class SnapInterfaceController extends BaseController<
       'ApprovalController:acceptRequest',
       id,
       value,
+    );
+  }
+
+  /**
+   * Get the selected account in the client.
+   *
+   * @returns The selected account.
+   */
+  #getSelectedAccount() {
+    return this.messagingSystem.call(
+      'AccountsController:getSelectedMultichainAccount',
+    );
+  }
+
+  /**
+   * Get a list of accounts for the given chain IDs.
+   *
+   * @param chainIds - The chain IDs to get the accounts for.
+   * @returns The list of accounts.
+   */
+  #listAccounts(chainIds?: CaipChainId[]) {
+    const accounts = this.messagingSystem.call(
+      'AccountsController:listMultichainAccounts',
+    );
+
+    if (!chainIds || chainIds.length === 0) {
+      return accounts;
+    }
+
+    return accounts.filter((account) =>
+      account.scopes.some((scope) => isMatchingChainId(scope, chainIds)),
     );
   }
 

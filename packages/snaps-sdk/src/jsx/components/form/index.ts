@@ -1,3 +1,4 @@
+import type { AccountSelectorElement } from './AccountSelector';
 import type { AddressInputElement } from './AddressInput';
 import type { AssetSelectorElement } from './AssetSelector';
 import type { ButtonElement } from './Button';
@@ -13,6 +14,8 @@ import type { RadioGroupElement } from './RadioGroup';
 import type { SelectorElement } from './Selector';
 import type { SelectorOptionElement } from './SelectorOption';
 
+export * from './AccountSelector';
+export * from './AddressInput';
 export * from './AssetSelector';
 export * from './Button';
 export * from './Checkbox';
@@ -26,11 +29,11 @@ export * from './Form';
 export * from './Input';
 export * from './Selector';
 export * from './SelectorOption';
-export * from './AddressInput';
 
 export type StandardFormElement =
-  | AssetSelectorElement
+  | AccountSelectorElement
   | AddressInputElement
+  | AssetSelectorElement
   | ButtonElement
   | CheckboxElement
   | FormElement

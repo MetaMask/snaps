@@ -17,15 +17,22 @@ import {
   SelectorOption,
   AssetSelector,
   AddressInput,
+  AccountSelector,
 } from '@metamask/snaps-sdk/jsx';
+import type { CaipAccountId } from '@metamask/utils';
+import { parseCaipAccountId } from '@metamask/utils';
 
 import {
   assertNameIsUnique,
   constructState,
+  formatAccountSelectorStateValue,
+  getAccountSelectorDefaultStateValue,
+  getAccountSelectorStateValue,
   getAssetSelectorStateValue,
   getDefaultAsset,
   getJsxInterface,
   isStatefulComponent,
+  isMatchingChainId,
 } from './utils';
 import { MOCK_ACCOUNT_ID } from '../test-utils';
 
@@ -77,6 +84,10 @@ describe('constructState', () => {
   const elementDataGetters = {
     getAssetsState: jest.fn(),
     getAccountByAddress: jest.fn(),
+    getSelectedAccount: jest.fn(),
+
+    listAccounts: jest.fn(),
+    snapOwnsAccount: jest.fn(),
   };
 
   it('can construct a new component state', () => {
@@ -617,6 +628,184 @@ describe('constructState', () => {
     const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: 'option2' },
+    });
+  });
+
+  it('sets default value for root level AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
+    );
+
+    const element = (
+      <Box>
+        <AccountSelector name="foo" />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
+    });
+  });
+
+  it('supports root level AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
+    );
+
+    const element = (
+      <Box>
+        <AccountSelector
+          name="foo"
+          value="eip155:0:0x1234567890123456789012345678901234567890"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
+    });
+  });
+
+  it('sets default value for AccountSelector in form', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
+    );
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AccountSelector name="foo" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        },
+      },
+    });
+  });
+
+  it('supports AccountSelector in form', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockImplementation(
+      (caipAccountId: CaipAccountId) => {
+        const { address } = parseCaipAccountId(caipAccountId);
+        return {
+          id: MOCK_ACCOUNT_ID,
+          address,
+          scopes: ['eip155:0'],
+        };
+      },
+    );
+
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <AccountSelector
+              name="foo"
+              value="eip155:0:0x1234567890123456789012345678901234567890"
+            />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: {
+        foo: {
+          accountId: MOCK_ACCOUNT_ID,
+          addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+        },
+      },
+    });
+  });
+
+  it('sets the selected account to the currently selected account if the account does not exist for AccountSelector', () => {
+    elementDataGetters.getSelectedAccount.mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+
+    elementDataGetters.getAccountByAddress.mockReturnValue(undefined);
+
+    const element = (
+      <Box>
+        <AccountSelector
+          name="foo"
+          value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
+        />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+
+    expect(result).toStrictEqual({
+      foo: {
+        accountId: MOCK_ACCOUNT_ID,
+        addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+      },
     });
   });
 
@@ -1164,7 +1353,13 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1199,7 +1394,13 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset:
@@ -1227,7 +1428,13 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
       ),
     ).toBeNull();
   });
@@ -1263,7 +1470,13 @@ describe('getDefaultAsset', () => {
           'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
@@ -1288,7 +1501,13 @@ describe('getDefaultAsset', () => {
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
         ],
         undefined,
-        { getAssetsState, getAccountByAddress },
+        {
+          getAssetsState,
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
       ),
     ).toThrow(
       'Account not found for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv.',
@@ -1335,5 +1554,347 @@ describe('isStatefulComponent', () => {
         </Box>,
       ),
     ).toBe(false);
+  });
+});
+
+describe('isMatchingChainId', () => {
+  it('returns true if one of the chain IDs match the scope', () => {
+    expect(
+      isMatchingChainId('solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ]),
+    ).toBe(true);
+  });
+
+  it('returns false if none of the chain IDs match the scope', () => {
+    expect(
+      isMatchingChainId('bip122:000000000019d6689c085ae165831e93', [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      ]),
+    ).toBe(false);
+  });
+
+  it('returns true if one of the chain ID has the `eip-155` namespace and the scope is `eip-155:0`', () => {
+    expect(isMatchingChainId('eip155:0', ['eip155:1'])).toBe(true);
+  });
+});
+
+describe('formatAccountSelectorStateValue', () => {
+  it('formats the account selector state value', () => {
+    expect(
+      // @ts-expect-error partial mock
+      formatAccountSelectorStateValue({
+        id: MOCK_ACCOUNT_ID,
+        address: '0x1234567890123456789012345678901234567890',
+        scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+      }),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'eip155:1:0x1234567890123456789012345678901234567890',
+        'eip155:2:0x1234567890123456789012345678901234567890',
+        'eip155:3:0x1234567890123456789012345678901234567890',
+      ],
+    });
+  });
+});
+
+describe('getAccountSelectorDefaultStateValue', () => {
+  it('returns the currently selected account in the client if no chain IDs are defined', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+    expect(
+      getAccountSelectorDefaultStateValue(<AccountSelector name="foo" />, {
+        getSelectedAccount,
+        getAccountByAddress: jest.fn(),
+        getAssetsState: jest.fn(),
+        listAccounts: jest.fn(),
+        snapOwnsAccount: jest.fn(),
+      }),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: ['eip155:0:0x1234567890123456789012345678901234567890'],
+    });
+  });
+
+  it('returns the currently selected account in the client if chain IDs match', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:0'],
+    });
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector name="foo" chainIds={['eip155:1']} />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: ['eip155:1:0x1234567890123456789012345678901234567890'],
+    });
+  });
+
+  it('returns the first account of the accounts that matches the chain IDs if the selected account is not on the same chain ID', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    ]);
+
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts,
+          snapOwnsAccount: jest.fn(),
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ],
+    });
+  });
+
+  it('returns the currently selected account in the client if the snap owns the account', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+    });
+
+    const snapOwnsAccount = jest.fn().mockReturnValue(true);
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          hideExternalAccounts
+          chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount,
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ],
+    });
+  });
+
+  it('returns the first account of the accounts that matches the chain IDs and that is owned by the snap if the selected account is not on the same chain ID', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+      {
+        id: MOCK_ACCOUNT_ID,
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      },
+    ]);
+
+    const snapOwnsAccount = jest.fn().mockReturnValue(true);
+
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          hideExternalAccounts
+          chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts,
+          snapOwnsAccount,
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ],
+    });
+  });
+
+  it('returns null if no account is found for the given chain IDs', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([]);
+
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          chainIds={['bip122:000000000019d6689c085ae165831e93']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts,
+          snapOwnsAccount: jest.fn(),
+        },
+      ),
+    ).toBeNull();
+  });
+
+  it('returns null if no account that the snap owns is found for the given chain IDs', () => {
+    const getSelectedAccount = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const listAccounts = jest.fn().mockReturnValue([]);
+
+    const snapOwnsAccount = jest.fn().mockReturnValue(false);
+
+    expect(
+      getAccountSelectorDefaultStateValue(
+        <AccountSelector
+          name="foo"
+          hideExternalAccounts
+          chainIds={['bip122:000000000019d6689c085ae165831e93']}
+        />,
+        {
+          getSelectedAccount,
+          getAccountByAddress: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts,
+          snapOwnsAccount,
+        },
+      ),
+    ).toBeNull();
+  });
+});
+
+describe('getAccountSelectorStateValue', () => {
+  it('returns the account selector state value', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    expect(
+      getAccountSelectorStateValue(
+        <AccountSelector
+          name="foo"
+          value="eip155:1:0x1234567890123456789012345678901234567890"
+        />,
+        {
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
+      ),
+    ).toStrictEqual({
+      accountId: MOCK_ACCOUNT_ID,
+      addresses: [
+        'eip155:1:0x1234567890123456789012345678901234567890',
+        'eip155:2:0x1234567890123456789012345678901234567890',
+        'eip155:3:0x1234567890123456789012345678901234567890',
+      ],
+    });
+  });
+
+  it('returns null if the account is not owned by the snap', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue({
+      id: MOCK_ACCOUNT_ID,
+      address: '0x1234567890123456789012345678901234567890',
+      scopes: ['eip155:1', 'eip155:2', 'eip155:3'],
+    });
+
+    const snapOwnsAccount = jest.fn().mockReturnValue(false);
+
+    expect(
+      getAccountSelectorStateValue(
+        <AccountSelector
+          name="foo"
+          hideExternalAccounts
+          value="eip155:1:0x1234567890123456789012345678901234567890"
+        />,
+        {
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount,
+        },
+      ),
+    ).toBeNull();
+  });
+
+  it('returns null if the account is not found', () => {
+    const getAccountByAddress = jest.fn().mockReturnValue(undefined);
+
+    expect(
+      getAccountSelectorStateValue(
+        <AccountSelector
+          name="foo"
+          value="eip155:1:0x1234567890123456789012345678901234567890"
+        />,
+        {
+          getAccountByAddress,
+          getSelectedAccount: jest.fn(),
+          getAssetsState: jest.fn(),
+          listAccounts: jest.fn(),
+          snapOwnsAccount: jest.fn(),
+        },
+      ),
+    ).toBeNull();
   });
 });

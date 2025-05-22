@@ -9,8 +9,9 @@ import {
   string,
   union,
   boolean,
+  array,
 } from '@metamask/superstruct';
-import { CaipAssetTypeStruct } from '@metamask/utils';
+import { CaipAssetTypeStruct, CaipAccountIdStruct } from '@metamask/utils';
 
 import { typedUnion, literal } from '../../internals';
 import type { InterfaceContext } from '../interface';
@@ -54,6 +55,19 @@ export const ButtonClickEventStruct = assign(
  */
 export type ButtonClickEvent = Infer<typeof ButtonClickEventStruct>;
 
+export const AccountSelectorStateStruct = object({
+  accountId: string(),
+  addresses: array(CaipAccountIdStruct),
+});
+
+/**
+ * The state of an `AccountSelector` component.
+ *
+ * @property accountId - The account ID of the account.
+ * @property addresses - The addresses of the account as CAIP-10 account ID.
+ */
+export type AccountSelectorState = Infer<typeof AccountSelectorStateStruct>;
+
 export const FileStruct = object({
   name: string(),
   size: number(),
@@ -94,7 +108,13 @@ export const FormSubmitEventStruct = assign(
     value: record(
       string(),
       nullable(
-        union([string(), FileStruct, boolean(), AssetSelectorStateStruct]),
+        union([
+          string(),
+          FileStruct,
+          boolean(),
+          AccountSelectorStateStruct,
+          AssetSelectorStateStruct,
+        ]),
       ),
     ),
     name: string(),
@@ -121,7 +141,12 @@ export const InputChangeEventStruct = assign(
   object({
     type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
-    value: union([string(), boolean(), AssetSelectorStateStruct]),
+    value: union([
+      string(),
+      boolean(),
+      AccountSelectorStateStruct,
+      AssetSelectorStateStruct,
+    ]),
   }),
 );
 
