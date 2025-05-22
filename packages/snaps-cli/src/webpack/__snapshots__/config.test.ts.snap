@@ -2183,7 +2183,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
-        "eval": true,
+        "eval": false,
         "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
@@ -2889,7 +2889,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
-        "eval": true,
+        "eval": false,
         "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
