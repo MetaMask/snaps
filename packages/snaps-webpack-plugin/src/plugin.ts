@@ -1,12 +1,16 @@
+import { handlerEndowments } from '@metamask/snaps-rpc-methods';
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
   checkManifest,
   evalBundle,
+  logInfo,
   postProcessBundle,
+  SnapEvalError,
   useTemporaryFile,
 } from '@metamask/snaps-utils/node';
 import type { PostProcessOptions, SourceMap } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
+import { blue, dim } from 'chalk';
 import pathUtils from 'path';
 import { promisify } from 'util';
 import type { Compiler } from 'webpack';
@@ -26,8 +30,16 @@ type PluginOptions = {
 export type Options = PluginOptions &
   Omit<PostProcessOptions, 'sourceMap' | 'inputSourceMap'>;
 
+// Partial copy of `ora` types to avoid a dependency on `ora` in the plugin.
+type Spinner = {
+  clear(): void;
+  frame(): void;
+};
+
 export default class SnapsWebpackPlugin {
   public readonly options: Partial<Options>;
+
+  readonly #spinner: Spinner | undefined;
 
   /**
    * Construct an instance of the plugin.
@@ -42,14 +54,17 @@ export default class SnapsWebpackPlugin {
    * `process.cwd() + '/snap.manifest.json'`.
    * @param options.writeManifest - Whether to fix the manifest.
    * Defaults to `true`.
+   * @param spinner - The spinner to use for logging. For internal use only.
    */
-  constructor(options?: Partial<Options>) {
+  constructor(options?: Partial<Options>, spinner?: Spinner) {
     this.options = {
       eval: true,
       manifestPath: pathUtils.join(process.cwd(), 'snap.manifest.json'),
       writeManifest: true,
       ...options,
     };
+
+    this.#spinner = spinner;
   }
 
   /**
@@ -138,11 +153,37 @@ export default class SnapsWebpackPlugin {
       assert(bundleFile);
 
       const bundleContent = bundleFile.toString();
+      let exports: string[] | undefined;
 
       if (this.options.eval) {
-        await useTemporaryFile('snaps-bundle.js', bundleContent, async (path) =>
-          evalBundle(path),
-        );
+        try {
+          const output = await useTemporaryFile(
+            'snaps-bundle.js',
+            bundleContent,
+            async (path) => evalBundle(path),
+          );
+
+          this.#spinner?.clear();
+          this.#spinner?.frame();
+
+          logInfo(
+            `${blue('ℹ')} ${dim('Snap bundle evaluated successfully.')}`,
+          );
+
+          exports = output.exports;
+        } catch (error) {
+          const webpackError = new WebpackError(
+            `Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap: ${getErrorMessage(error)}`,
+          );
+
+          if (error instanceof SnapEvalError) {
+            // The constructor for `WebpackError` doesn't accept the details
+            // property, so we need to set it manually.
+            webpackError.details = error.output.stderr;
+          }
+
+          compilation.errors.push(webpackError);
+        }
       }
 
       if (this.options.manifestPath) {
@@ -151,6 +192,8 @@ export default class SnapsWebpackPlugin {
           {
             updateAndWriteManifest: this.options.writeManifest,
             sourceCode: bundleContent,
+            exports,
+            handlerEndowments,
             writeFileFn: async (path, data) => {
               assert(
                 compiler.outputFileSystem,

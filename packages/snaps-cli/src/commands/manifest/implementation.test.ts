@@ -67,13 +67,18 @@ describe('manifest', () => {
     await fs.rm('/snap', { force: true, recursive: true });
   });
 
-  it('validates a snap manifest', async () => {
+  it('validates a Snap manifest', async () => {
     const error = jest.spyOn(console, 'error');
     const warn = jest.spyOn(console, 'warn').mockImplementation();
     const log = jest.spyOn(console, 'log');
 
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', false, spinner);
+    const result = await manifest(
+      '/snap/snap.manifest.json',
+      false,
+      undefined,
+      spinner,
+    );
     expect(result).toBe(true);
 
     expect(error).not.toHaveBeenCalled();
@@ -81,7 +86,7 @@ describe('manifest', () => {
     expect(log).not.toHaveBeenCalled();
   });
 
-  it('validates a snap manifest with errors', async () => {
+  it('validates a Snap manifest with errors', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
     const warn = jest.spyOn(console, 'warn').mockImplementation();
 
@@ -91,7 +96,12 @@ describe('manifest', () => {
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', false, spinner);
+    const result = await manifest(
+      '/snap/snap.manifest.json',
+      false,
+      undefined,
+      spinner,
+    );
     expect(result).toBe(false);
 
     expect(warn).toHaveBeenCalledWith(
@@ -101,7 +111,7 @@ describe('manifest', () => {
     );
     expect(spinner.stop).toHaveBeenCalled();
     expect(error).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file is invalid.'),
+      expect.stringMatching('The Snap manifest file is invalid.'),
     );
     expect(error).toHaveBeenCalledWith(
       expect.stringMatching(
@@ -110,7 +120,7 @@ describe('manifest', () => {
     );
   });
 
-  it('validates a snap manifest with warnings', async () => {
+  it('validates a Snap manifest with warnings', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
     const warn = jest.spyOn(console, 'warn').mockImplementation();
     const log = jest.spyOn(console, 'log').mockImplementation();
@@ -121,7 +131,12 @@ describe('manifest', () => {
     await fs.writeFile('/snap/package.json', JSON.stringify(packageJson));
 
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', true, spinner);
+    const result = await manifest(
+      '/snap/snap.manifest.json',
+      true,
+      undefined,
+      spinner,
+    );
     expect(result).toBe(true);
 
     expect(error).not.toHaveBeenCalled();
@@ -131,11 +146,11 @@ describe('manifest', () => {
       ),
     );
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file has been updated.'),
+      expect.stringMatching('The Snap manifest file has been updated.'),
     );
   });
 
-  it('formats a snap manifest with Prettier', async () => {
+  it('formats a Snap manifest with Prettier', async () => {
     const error = jest.spyOn(console, 'error').mockImplementation();
     const log = jest.spyOn(console, 'log').mockImplementation();
 
@@ -154,12 +169,17 @@ describe('manifest', () => {
     );
 
     const spinner = ora();
-    const result = await manifest('/snap/snap.manifest.json', true, spinner);
+    const result = await manifest(
+      '/snap/snap.manifest.json',
+      true,
+      undefined,
+      spinner,
+    );
     expect(result).toBe(true);
 
     expect(error).not.toHaveBeenCalled();
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('The snap manifest file has been updated.'),
+      expect.stringMatching('The Snap manifest file has been updated.'),
     );
 
     expect(await fs.readFile('/snap/snap.manifest.json', 'utf8'))

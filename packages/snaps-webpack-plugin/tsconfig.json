@@ -6,6 +6,9 @@
   "include": ["./src", "package.json"],
   "references": [
     {
+      "path": "../snaps-rpc-methods"
+    },
+    {
       "path": "../snaps-sdk"
     },
     {

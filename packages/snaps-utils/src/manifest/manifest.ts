@@ -8,6 +8,7 @@ import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
 import { hasFixes, runValidators } from './validator';
 import type { ValidatorMeta, ValidatorReport } from './validator-types';
+import * as defaultValidators from './validators';
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
 import { parseJson } from '../json';
@@ -33,6 +34,40 @@ export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {
 };
 
 /**
+ * The options for the `checkManifest` function.
+ */
+export type CheckManifestOptions = {
+  /**
+   * Whether to auto-magically try to fix errors and then write the manifest to
+   * disk.
+   */
+  updateAndWriteManifest?: boolean;
+
+  /**
+   * The source code of the Snap.
+   */
+  sourceCode?: string;
+
+  /**
+   * The function to use to write the manifest to disk.
+   */
+  writeFileFn?: WriteFileFunction;
+
+  /**
+   * The exports detected by evaluating the bundle. This may be used by one or
+   * more validators to determine whether the Snap is valid.
+   */
+  exports?: string[];
+
+  /**
+   * An object containing the names of the handlers and their respective
+   * permission name. This must be provided to avoid circular dependencies
+   * between `@metamask/snaps-utils` and `@metamask/snaps-rpc-methods`.
+   */
+  handlerEndowments?: Record<string, string | null>;
+};
+
+/**
  * The result from the `checkManifest` function.
  *
  * @property manifest - The fixed manifest object.
@@ -54,8 +89,16 @@ export type WriteFileFunction = (path: string, data: string) => Promise<void>;
  * @param basePath - The path to the folder with the manifest files.
  * @param options - Additional options for the function.
  * @param options.sourceCode - The source code of the Snap.
- * @param options.writeFileFn - The function to use to write the manifest to disk.
- * @param options.updateAndWriteManifest - Whether to auto-magically try to fix errors and then write the manifest to disk.
+ * @param options.writeFileFn - The function to use to write the manifest to
+ * disk.
+ * @param options.updateAndWriteManifest - Whether to auto-magically try to fix
+ * errors and then write the manifest to disk.
+ * @param options.exports - The exports detected by evaluating the bundle. This
+ * may be used by one or more validators to determine whether the Snap is valid.
+ * @param options.handlerEndowments - An object containing the names of the
+ * handlers and their respective permission name. This must be provided to avoid
+ * circular dependencies between `@metamask/snaps-utils` and
+ * `@metamask/snaps-rpc-methods`.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
@@ -65,11 +108,9 @@ export async function checkManifest(
     updateAndWriteManifest = true,
     sourceCode,
     writeFileFn = fs.writeFile,
-  }: {
-    updateAndWriteManifest?: boolean;
-    sourceCode?: string;
-    writeFileFn?: WriteFileFunction;
-  } = {},
+    exports,
+    handlerEndowments,
+  }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
   const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
   const manifestFile = await readJsonFile(manifestPath);
@@ -116,7 +157,12 @@ export async function checkManifest(
     localizationFiles,
   };
 
-  const validatorResults = await runValidators(snapFiles);
+  const validatorResults = await runValidators(
+    snapFiles,
+    Object.values(defaultValidators),
+    { exports, handlerEndowments },
+  );
+
   let manifestResults: CheckManifestResult = {
     updated: false,
     files: validatorResults.files,

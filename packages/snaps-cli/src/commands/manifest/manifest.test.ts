@@ -1,3 +1,4 @@
+import { evalBundle } from '@metamask/snaps-utils/node';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { promises as fs } from 'fs';
 import ora from 'ora';
@@ -9,6 +10,10 @@ import { getMockConfig } from '../../test-utils';
 
 jest.mock('fs');
 jest.mock('./implementation');
+jest.mock('@metamask/snaps-utils/node', () => ({
+  ...jest.requireActual('@metamask/snaps-utils/node'),
+  evalBundle: jest.fn(),
+}));
 
 describe('manifestHandler', () => {
   beforeAll(async () => {
@@ -29,7 +34,9 @@ describe('manifestHandler', () => {
       },
     });
 
-    await manifestHandler(config, {});
+    await manifestHandler(config, {
+      eval: false,
+    });
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
@@ -37,11 +44,12 @@ describe('manifestHandler', () => {
     expect(manifest).toHaveBeenCalledWith(
       expect.stringMatching(/.*snap\.manifest\.json.*/u),
       false,
+      undefined,
       spinner,
     );
 
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 
@@ -58,6 +66,7 @@ describe('manifestHandler', () => {
 
     await manifestHandler(config, {
       fix: true,
+      eval: false,
     });
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
@@ -66,11 +75,12 @@ describe('manifestHandler', () => {
     expect(manifest).toHaveBeenCalledWith(
       expect.stringMatching(/.*snap\.manifest\.json.*/u),
       true,
+      undefined,
       spinner,
     );
 
     expect(spinner.succeed).toHaveBeenCalledWith(
-      'The snap manifest file is valid.',
+      'The Snap manifest file is valid.',
     );
   });
 
@@ -84,7 +94,9 @@ describe('manifestHandler', () => {
       },
     });
 
-    await manifestHandler(config, {});
+    await manifestHandler(config, {
+      eval: false,
+    });
 
     expect(manifest).not.toHaveBeenCalled();
     expect(log).toHaveBeenCalledWith(
@@ -105,7 +117,9 @@ describe('manifestHandler', () => {
       },
     });
 
-    await manifestHandler(config, {});
+    await manifestHandler(config, {
+      eval: false,
+    });
 
     const { mock } = ora as jest.MockedFunction<typeof ora>;
     const spinner = mock.results[0].value;
@@ -113,11 +127,45 @@ describe('manifestHandler', () => {
     expect(manifest).toHaveBeenCalledWith(
       expect.stringMatching(/.*snap\.manifest\.json.*/u),
       false,
+      undefined,
       spinner,
     );
 
     expect(spinner.succeed).not.toHaveBeenCalledWith(
       'The snap manifest file is valid.',
+    );
+  });
+
+  it('evaluates the bundle and checks the exports', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.mocked(evalBundle).mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exports: ['foo', 'bar'],
+    });
+
+    const config = getMockConfig({
+      input: '/input.js',
+      output: {
+        path: '/dist',
+      },
+      manifest: {
+        path: '/snap.manifest.json',
+      },
+    });
+
+    await manifestHandler(config, {
+      eval: true,
+    });
+
+    const { mock } = ora as jest.MockedFunction<typeof ora>;
+    const spinner = mock.results[0].value;
+
+    expect(manifest).toHaveBeenCalledWith(
+      expect.stringMatching(/.*snap\.manifest\.json.*/u),
+      false,
+      ['foo', 'bar'],
+      spinner,
     );
   });
 });

@@ -6,10 +6,8 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import { buildHandler } from './build';
 import { build } from './implementation';
 import { getMockConfig } from '../../test-utils';
-import { evaluate } from '../eval';
 
 jest.mock('fs');
-jest.mock('../eval');
 jest.mock('./implementation');
 
 jest.mock('webpack-bundle-analyzer', () => ({
@@ -17,7 +15,7 @@ jest.mock('webpack-bundle-analyzer', () => ({
 }));
 
 describe('buildHandler', () => {
-  it('builds a snap', async () => {
+  it('builds a Snap', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
@@ -34,16 +32,12 @@ describe('buildHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
-
-    expect(evaluate).toHaveBeenCalledWith(
-      expect.stringMatching(/.*output\.js.*/u),
-    );
   });
 
-  it('analyzes a snap bundle', async () => {
+  it('analyzes a Snap bundle', async () => {
     await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
 
     jest.spyOn(console, 'log').mockImplementation();
@@ -79,7 +73,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: true,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
 
@@ -106,8 +100,11 @@ describe('buildHandler', () => {
     await buildHandler(config);
 
     expect(process.exitCode).not.toBe(1);
-    expect(build).toHaveBeenCalled();
-    expect(evaluate).not.toHaveBeenCalled();
+    expect(build).toHaveBeenCalledWith(config, {
+      analyze: false,
+      evaluate: false,
+      spinner: expect.any(Object),
+    });
   });
 
   it('checks if the input file exists', async () => {
@@ -121,7 +118,7 @@ describe('buildHandler', () => {
     expect(process.exitCode).toBe(1);
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(
-        /Input file not found: ".+"\. Make sure that the "input" field in your snap config is correct\./u,
+        /Input file not found: ".+"\. Make sure that the "input" field in your Snap config is correct\./u,
       ),
     );
   });

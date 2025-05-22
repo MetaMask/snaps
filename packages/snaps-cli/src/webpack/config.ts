@@ -304,11 +304,14 @@ export async function getDefaultConfiguration(
        * the manifest file, and evaluates the bundle in SES. While not strictly
        * required, it's highly recommended to use this plugin.
        */
-      new SnapsWebpackPlugin({
-        manifestPath: config.manifest.path,
-        writeManifest: config.manifest.update,
-        eval: !options.watch && options.evaluate,
-      }),
+      new SnapsWebpackPlugin(
+        {
+          manifestPath: config.manifest.path,
+          writeManifest: config.manifest.update,
+          eval: !options.watch && options.evaluate,
+        },
+        options.spinner,
+      ),
 
       /**
        * The `SnapsStatsPlugin` is a Webpack plugin that handles the stats

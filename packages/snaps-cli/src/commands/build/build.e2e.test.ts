@@ -1,6 +1,3 @@
-import { promises as fs } from 'fs';
-import { join } from 'path';
-
 import type { TestRunner } from '../../test-utils';
 import { getCommandRunner } from '../../test-utils';
 
@@ -21,8 +18,9 @@ describe('mm-snap build', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Building the snap bundle\./u),
+        expect.stringMatching(/Building the Snap bundle\./u),
       );
+
       expect(runner.stderr).toContainEqual(
         expect.stringMatching(
           /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
@@ -32,9 +30,6 @@ describe('mm-snap build', () => {
         expect.stringContaining(
           'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
         ),
-      );
-      expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Evaluating the snap bundle\./u),
       );
       expect(runner.exitCode).toBe(0);
     },

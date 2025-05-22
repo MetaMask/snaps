@@ -18,10 +18,10 @@ describe('mm-snap manifest', () => {
         expect.stringMatching(/Checking the input file\./u),
       );
       expect(runner.stdout).toContainEqual(
-        expect.stringMatching(/Validating the snap manifest\./u),
+        expect.stringMatching(/Validating the Snap manifest\./u),
       );
       expect(runner.stderr).toContainEqual(
-        expect.stringMatching(/The snap manifest file has warnings\./u),
+        expect.stringMatching(/The Snap manifest file has warnings\./u),
       );
       expect(runner.stderr).toContainEqual(
         expect.stringContaining(

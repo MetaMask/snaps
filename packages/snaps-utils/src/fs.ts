@@ -1,5 +1,6 @@
 import type { Json } from '@metamask/utils';
 import { promises as fs } from 'fs';
+import { mkdtemp } from 'fs/promises';
 import os from 'os';
 import pathUtils from 'path';
 
@@ -150,23 +151,31 @@ export async function validateDirPath(
 }
 
 /**
- * Creates a temporary file with a given name and content, writes it to disk and calls the provided function.
- * This function handles deletion of the temporary file after usage.
+ * Create a temporary file with a given name and content, writes it to disk and
+ * calls the provided function. This function handles deletion of the temporary
+ * file after usage.
  *
  * @param fileName - The name of the temporary file.
  * @param fileContents - The content of the temporary file.
- * @param fn - The callback function to call when the temporary file has been created.
+ * @param fn - The callback function to call when the temporary file has been
+ * created.
+ * @returns The result of the callback function.
  */
-export async function useTemporaryFile(
+export async function useTemporaryFile<Type = unknown>(
   fileName: string,
   fileContents: string,
-  fn: (path: string) => Promise<unknown>,
-): Promise<void> {
-  const filePath = pathUtils.join(os.tmpdir(), fileName);
+  fn: (path: string) => Promise<Type>,
+): Promise<Type> {
+  const temporaryDirectory = await mkdtemp(
+    pathUtils.join(os.tmpdir(), 'snaps-'),
+  );
+
+  const filePath = pathUtils.join(temporaryDirectory, fileName);
+
   await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, fileContents);
   try {
-    await fn(filePath);
+    return await fn(filePath);
   } finally {
     if (await isFile(filePath)) {
       await fs.unlink(filePath);

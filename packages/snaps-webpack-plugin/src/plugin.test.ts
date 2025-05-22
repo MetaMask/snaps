@@ -1,17 +1,17 @@
 // Allow Jest snapshots because the test outputs are illegible.
 /* eslint-disable jest/no-restricted-matchers */
 
+import { handlerEndowments } from '@metamask/snaps-rpc-methods';
 import {
   checkManifest,
   evalBundle,
   PostProcessWarning,
+  SnapEvalError,
 } from '@metamask/snaps-utils/node';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import type { IPromisesAPI } from 'memfs/lib/promises';
-import * as os from 'os';
-import * as pathUtils from 'path';
 import type { Stats, Configuration } from 'webpack';
 // TODO: Either fix this lint violation or explain why it's necessary to
 //  ignore.
@@ -186,8 +186,13 @@ describe('SnapsWebpackPlugin', () => {
   });
 
   it('evals the bundle if configured', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation();
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
-    mock.mockResolvedValue(null);
+    mock.mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exports: ['foo'],
+    });
 
     await bundle({
       options: {
@@ -198,7 +203,10 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith(
-      pathUtils.resolve(os.tmpdir(), 'snaps-bundle.js'),
+      expect.stringContaining('snaps-bundle.js'),
+    );
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('Snap bundle evaluated successfully.'),
     );
   });
 
@@ -219,6 +227,8 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith('/', {
+      exports: undefined,
+      handlerEndowments,
       updateAndWriteManifest: true,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
@@ -234,6 +244,38 @@ describe('SnapsWebpackPlugin', () => {
       'foo',
       expect.any(Function),
     );
+  });
+
+  it('evaluates the bundle and checks the manifest if configured', async () => {
+    const checkManifestMock = jest.mocked(checkManifest);
+    checkManifestMock.mockResolvedValue({
+      files: undefined,
+      updated: false,
+      reports: [],
+    });
+
+    const evalBundleMock = jest.mocked(evalBundle);
+    evalBundleMock.mockResolvedValue({
+      stdout: '',
+      stderr: '',
+      exports: ['foo'],
+    });
+
+    await bundle({
+      options: {
+        eval: true,
+        manifestPath: '/snap.manifest.json',
+      },
+    });
+
+    expect(checkManifestMock).toHaveBeenCalledTimes(1);
+    expect(checkManifestMock).toHaveBeenCalledWith('/', {
+      exports: ['foo'],
+      handlerEndowments,
+      updateAndWriteManifest: true,
+      sourceCode: expect.any(String),
+      writeFileFn: expect.any(Function),
+    });
   });
 
   it('does not fix the manifest if configured', async () => {
@@ -254,6 +296,8 @@ describe('SnapsWebpackPlugin', () => {
 
     expect(mock).toHaveBeenCalledTimes(1);
     expect(mock).toHaveBeenCalledWith('/', {
+      exports: undefined,
+      handlerEndowments,
       updateAndWriteManifest: false,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
@@ -331,17 +375,38 @@ describe('SnapsWebpackPlugin', () => {
     expect(stats.toJson().warnings?.[1].message).toMatch('bar');
   });
 
-  it('forwards errors', async () => {
+  it('logs errors thrown when evaluating the bundle', async () => {
     const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
     mock.mockRejectedValue(new Error('foo'));
 
-    await expect(
-      bundle({
-        options: {
-          eval: true,
-          manifestPath: undefined,
-        },
+    const { stats } = await bundle({
+      options: {
+        eval: true,
+        manifestPath: undefined,
+      },
+    });
+
+    expect(stats.compilation.errors[0].message).toMatch('foo');
+  });
+
+  it('logs `SnapEvalError` thrown when evaluating the bundle', async () => {
+    const mock = evalBundle as jest.MockedFunction<typeof evalBundle>;
+    mock.mockRejectedValue(
+      new SnapEvalError('foo', {
+        stdout: '',
+        stderr: 'bar',
+        exports: [],
       }),
-    ).rejects.toThrow('foo');
+    );
+
+    const { stats } = await bundle({
+      options: {
+        eval: true,
+        manifestPath: undefined,
+      },
+    });
+
+    expect(stats.compilation.errors[0].message).toMatch('foo');
+    expect(stats.compilation.errors[0].details).toMatch('bar');
   });
 });

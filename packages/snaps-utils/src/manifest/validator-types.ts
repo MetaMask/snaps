@@ -2,16 +2,33 @@ import type { SnapManifest } from './validation';
 import type { Promisable } from '../promise';
 import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
 
-// Eslint uses patch based fixing, but it's too complex for our needs.
-// https://eslint.org/docs/latest/extend/custom-rules#applying-fixes
 export type ValidatorFix = (files: {
   manifest: SnapManifest;
 }) => Promisable<{ manifest: SnapManifest }>;
 
+/**
+ * The options for the validator context.
+ */
+export type ValidatorContextOptions = {
+  /**
+   * An object containing the names of the handlers and their respective
+   * permission name. This must be provided to avoid circular dependencies
+   * between `@metamask/snaps-utils` and `@metamask/snaps-rpc-methods`.
+   */
+  handlerEndowments?: Record<string, string | null>;
+
+  /**
+   * Exports detected by evaluating the bundle. This may be used by one or more
+   * validators to determine whether the snap is valid.
+   */
+  exports?: string[];
+};
+
 export type ValidatorSeverity = 'error' | 'warning';
 
 export type ValidatorContext = {
-  report: (message: string, fix?: ValidatorFix) => void;
+  readonly report: (message: string, fix?: ValidatorFix) => void;
+  readonly options?: ValidatorContextOptions;
 };
 
 export type ValidatorReport = {

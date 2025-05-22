@@ -1,19 +1,23 @@
 import { isFile } from '@metamask/snaps-utils/node';
+import { resolve } from 'path';
 
 import { manifest } from './implementation';
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { executeSteps } from '../../utils';
+import { info, executeSteps } from '../../utils';
+import { evaluate } from '../eval';
 
 type ManifestOptions = {
   fix?: boolean;
+  eval: boolean;
 };
 
 type ManifestContext = {
   input: string;
   config: ProcessedConfig;
   options: ManifestOptions;
+  exports?: string[];
 };
 
 const steps: Steps<ManifestContext> = [
@@ -28,13 +32,34 @@ const steps: Steps<ManifestContext> = [
     },
   },
   {
-    name: 'Validating the snap manifest.',
-    task: async ({ input, options, spinner }) => {
+    name: 'Evaluating the Snap bundle.',
+    condition: ({ options }) => options.eval,
+    task: async (context) => {
+      const { config, spinner } = context;
+      const path = resolve(
+        process.cwd(),
+        config.output.path,
+        config.output.filename,
+      );
+
+      const { exports } = await evaluate(path);
+
+      info(`Snap bundle evaluated successfully.`, spinner);
+
+      return {
+        ...context,
+        exports,
+      };
+    },
+  },
+  {
+    name: 'Validating the Snap manifest.',
+    task: async ({ input, options, exports, spinner }) => {
       const write = getWriteManifest(options);
-      const valid = await manifest(input, write, spinner);
+      const valid = await manifest(input, write, exports, spinner);
 
       if (valid) {
-        spinner.succeed('The snap manifest file is valid.');
+        spinner.succeed('The Snap manifest file is valid.');
       }
     },
   },

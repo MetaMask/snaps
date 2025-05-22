@@ -65,7 +65,7 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
 
       if (errors?.length) {
         const formattedErrors = errors
-          .map((statsError) => this.#getStatsErrorMessage(statsError))
+          .map((statsError) => this.#getStatsErrorMessage(statsError, red))
           .join('\n\n');
 
         error(
@@ -127,7 +127,10 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
    * @param color - The color to use for the error message.
    * @returns The error message.
    */
-  #getStatsErrorMessage(statsError: StatsError, color = red) {
+  #getStatsErrorMessage(
+    statsError: StatsError,
+    color: typeof red | typeof yellow,
+  ) {
     const baseMessage = this.options.verbose
       ? getErrorMessage(statsError)
       : statsError.message;

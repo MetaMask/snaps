@@ -1,3 +1,4 @@
+import { handlerEndowments } from '@metamask/snaps-rpc-methods';
 import { checkManifest, indent } from '@metamask/snaps-utils/node';
 import { writeManifest } from '@metamask/snaps-webpack-plugin';
 import { assert } from '@metamask/utils';
@@ -15,15 +16,19 @@ import { error, info, warn } from '../../utils';
  *
  * @param path - The path to the manifest file.
  * @param write - Whether to write the manifest to disk if it is invalid.
+ * @param exports - The exports to check in the manifest.
  * @param spinner - An optional spinner to use for logging.
  * @returns Whether the manifest is valid.
  */
 export async function manifest(
   path: string,
   write: boolean,
+  exports?: string[],
   spinner?: Ora,
 ): Promise<boolean> {
   const { reports, updated } = await checkManifest(dirname(path), {
+    exports,
+    handlerEndowments,
     updateAndWriteManifest: write,
     writeFileFn: writeManifest,
   });
@@ -45,7 +50,7 @@ export async function manifest(
 
   if (errors.length > 0) {
     const formattedErrors = errors.join('\n');
-    let message = `The snap manifest file is invalid.\n\n${formattedErrors}`;
+    let message = `The Snap manifest file is invalid.\n\n${formattedErrors}`;
     if (!write) {
       message +=
         '\n\nRun the command with the `--fix` flag to attempt to fix the manifest.';
@@ -57,7 +62,7 @@ export async function manifest(
   if (write && updated) {
     const formattedFixed = fixed.join('\n');
     info(
-      `The snap manifest file has been updated.\n\n${formattedFixed}`,
+      `The Snap manifest file has been updated.\n\n${formattedFixed}`,
       spinner,
     );
   }
@@ -66,7 +71,7 @@ export async function manifest(
     const formattedWarnings = warnings.join('\n');
 
     warn(
-      `The snap manifest file has warnings.\n\n${formattedWarnings}`,
+      `The Snap manifest file has warnings.\n\n${formattedWarnings}`,
       spinner,
     );
   }

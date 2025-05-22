@@ -1,74 +1,55 @@
 import { isFile } from '@metamask/snaps-utils/node';
 import { assert } from '@metamask/utils';
-import { resolve as pathResolve } from 'path';
 
 import { build } from './implementation';
 import { getBundleAnalyzerPort } from './utils';
 import type { ProcessedConfig } from '../../config';
 import { CommandError } from '../../errors';
 import type { Steps } from '../../utils';
-import { success, executeSteps, info } from '../../utils';
-import { evaluate } from '../eval';
+import { success, executeSteps } from '../../utils';
 
 export type BuildContext = {
   analyze: boolean;
   build: boolean;
   config: ProcessedConfig;
+  exports?: string[];
   port?: number;
 };
 
 export const steps: Steps<BuildContext> = [
   {
     name: 'Checking the input file.',
-    condition: ({ build }) => build,
+    condition: ({ build: enableBuild }) => enableBuild,
     task: async ({ config }) => {
       const { input } = config;
 
       if (!(await isFile(input))) {
         throw new CommandError(
-          `Input file not found: "${input}". Make sure that the "input" field in your snap config is correct.`,
+          `Input file not found: "${input}". Make sure that the "input" field in your Snap config is correct.`,
         );
       }
     },
   },
   {
-    name: 'Building the snap bundle.',
-    condition: ({ build }) => build,
-    task: async ({ analyze, build: enableBuild, config, spinner }) => {
-      // We don't evaluate the bundle here, because it's done in a separate
-      // step.
+    name: 'Building the Snap bundle.',
+    condition: ({ build: enableBuild }) => enableBuild,
+    task: async (context) => {
+      const { analyze, config, spinner } = context;
+
       const compiler = await build(config, {
         analyze,
-        evaluate: false,
+        evaluate: config.evaluate,
         spinner,
       });
 
       if (analyze) {
         return {
-          analyze,
-          build: enableBuild,
-          config,
-          spinner,
+          ...context,
           port: await getBundleAnalyzerPort(compiler),
         };
       }
 
       return undefined;
-    },
-  },
-  {
-    name: 'Evaluating the snap bundle.',
-    condition: ({ build, config }) => build && config.evaluate,
-    task: async ({ config, spinner }) => {
-      const path = pathResolve(
-        process.cwd(),
-        config.output.path,
-        config.output.filename,
-      );
-
-      await evaluate(path);
-
-      info(`Snap bundle evaluated successfully.`, spinner);
     },
   },
   {

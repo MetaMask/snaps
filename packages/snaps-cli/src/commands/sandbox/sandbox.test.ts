@@ -10,7 +10,6 @@ jest.mock('./server', () => ({
   startSandbox: jest.fn().mockResolvedValue({ port: 8080 }),
 }));
 jest.mock('../build/implementation');
-jest.mock('../eval');
 
 describe('sandboxHandler', () => {
   it('builds the Snap if the build option is `true`', async () => {
@@ -30,7 +29,7 @@ describe('sandboxHandler', () => {
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
-      evaluate: false,
+      evaluate: true,
       spinner: expect.any(Object),
     });
 

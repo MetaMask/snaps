@@ -8,7 +8,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 import type { Configuration } from 'webpack';
 
 import { build } from './implementation';
