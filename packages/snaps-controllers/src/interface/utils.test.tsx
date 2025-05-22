@@ -1763,7 +1763,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
     });
   });
 
-  it('throws if no account is found for the given chain IDs', () => {
+  it('returns null if no account is found for the given chain IDs', () => {
     const getSelectedAccount = jest.fn().mockReturnValue({
       id: MOCK_ACCOUNT_ID,
       address: '0x1234567890123456789012345678901234567890',
@@ -1789,7 +1789,7 @@ describe('getAccountSelectorDefaultStateValue', () => {
     ).toBeNull();
   });
 
-  it('throws if no account that the snap owns is found for the given chain IDs', () => {
+  it('returns null if no account that the snap owns is found for the given chain IDs', () => {
     const getSelectedAccount = jest.fn().mockReturnValue({
       id: MOCK_ACCOUNT_ID,
       address: '0x1234567890123456789012345678901234567890',
