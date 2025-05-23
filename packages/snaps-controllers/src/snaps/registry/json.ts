@@ -218,9 +218,11 @@ export class JsonSnapsRegistry extends BaseController<
     }
 
     try {
-      const database = await this.#safeFetch(this.#url.registry);
+      const [database, signature] = await Promise.all([
+        this.#safeFetch(this.#url.registry),
+        this.#safeFetch(this.#url.signature),
+      ]);
 
-      const signature = await this.#safeFetch(this.#url.signature);
       this.#verifySignature(database, signature);
 
       this.update((state) => {
