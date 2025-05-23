@@ -13,13 +13,17 @@ async function determineProductionVersion() {
     // TODO: Cache this check.
     const latestRelease = await fetch(
       'https://api.github.com/repos/metamask/metamask-extension/releases/latest',
-    ).then(async (response) => response.json());
+    );
 
-    const latestReleaseCommit = latestRelease.target_commitish;
+    const latestReleaseJson = await latestRelease.json();
 
-    const packageJson = await fetch(
+    const latestReleaseCommit = latestReleaseJson.target_commitish;
+
+    const packageJsonResponse = await fetch(
       `https://raw.githubusercontent.com/MetaMask/metamask-extension/${latestReleaseCommit}/package.json`,
-    ).then(async (response) => response.json());
+    );
+
+    const packageJson = await packageJsonResponse.json();
 
     const versionRange = packageJson.dependencies['@metamask/snaps-sdk'];
 

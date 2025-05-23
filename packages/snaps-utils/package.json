@@ -125,6 +125,7 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.1.5",
     "jest": "^29.0.2",
+    "jest-fetch-mock": "^3.0.3",
     "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
     "prettier": "^3.3.3",
