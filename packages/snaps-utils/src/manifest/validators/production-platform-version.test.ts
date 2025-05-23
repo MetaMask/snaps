@@ -5,6 +5,8 @@ import fetchMock from 'jest-fetch-mock';
 import { productionPlatformVersion } from './production-platform-version';
 import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
 
+jest.mock('fs');
+
 const MOCK_GITHUB_RESPONSE = JSON.stringify({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   target_commitish: '5fceb7ed2ef18a3984786db1161a76ca5c8e15b9',
