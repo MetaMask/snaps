@@ -19,4 +19,7 @@ module.exports = deepmerge(baseConfig, {
     // https://github.com/facebook/jest/issues/5274
     './src/eval-worker.ts',
   ],
+
+  // This is required for `jest-fetch-mock` to work.
+  resetMocks: false,
 });
