@@ -10,6 +10,7 @@ export * from './manifest-localization';
 export * from './package-json-recommended-fields';
 export * from './package-name-match';
 export * from './platform-version';
+export * from './production-platform-version';
 export * from './repository-match';
 export * from './version-match';
 export * from './icon-declared';
