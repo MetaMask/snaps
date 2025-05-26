@@ -182,3 +182,56 @@ export async function useTemporaryFile<Type = unknown>(
     }
   }
 }
+
+/**
+ * Use the file system to cache a return value with a given key and TTL.
+ *
+ * @param cacheKey - The key to use for the cache.
+ * @param ttl - The time-to-live in milliseconds.
+ * @param fn - The callback function to wrap.
+ * @returns The result from the callback.
+ */
+export function useFileSystemCache<Type = unknown>(
+  cacheKey: string,
+  ttl: number,
+  fn: () => Promise<Type>,
+) {
+  return async () => {
+    const filePath = pathUtils.join(
+      process.cwd(),
+      'node_modules/.cache/snaps',
+      `${cacheKey}.json`,
+    );
+
+    try {
+      const cacheContents = await fs.readFile(filePath, 'utf8');
+      const json = JSON.parse(cacheContents);
+
+      if (json.timestamp + ttl > Date.now()) {
+        return json.value;
+      }
+    } catch {
+      // No-op
+    }
+
+    const value = await fn();
+
+    // Null or undefined is not persisted.
+    if (value === null || value === undefined) {
+      return value;
+    }
+
+    try {
+      await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
+
+      const json = { timestamp: Date.now(), value };
+      await fs.writeFile(filePath, JSON.stringify(json), {
+        encoding: 'utf8',
+      });
+    } catch {
+      // No-op
+    }
+
+    return value;
+  };
+}

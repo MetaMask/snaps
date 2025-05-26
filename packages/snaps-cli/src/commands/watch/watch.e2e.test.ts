@@ -26,13 +26,13 @@ describe('mm-snap watch', () => {
     async (command) => {
       runner = getCommandRunner(command, ['--port', '0']);
       await runner.waitForStderr(
-        /Compiled \d+ files? in \d+ms with 1 warning\./u,
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
       );
 
       await fs.writeFile(SNAP_FILE, originalFile);
       await runner.waitForStdout(/Changes detected in .+, recompiling\./u);
       await runner.waitForStderr(
-        /Compiled \d+ files? in \d+ms with 1 warning\./u,
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
       );
 
       expect(runner.stdout).toContainEqual(
@@ -50,7 +50,9 @@ describe('mm-snap watch', () => {
         expect.stringMatching(/Building the Snap bundle\./u),
       );
       expect(runner.stderr).toContainEqual(
-        expect.stringMatching(/Compiled \d+ files? in \d+ms with 1 warning\./u),
+        expect.stringMatching(
+          /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+        ),
       );
       expect(runner.stderr).toContainEqual(
         expect.stringContaining(

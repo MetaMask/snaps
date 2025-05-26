@@ -1,12 +1,13 @@
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { join } from 'path';
+import { join, dirname } from 'path';
 
 import {
   getOutfilePath,
   isDirectory,
   isFile,
   readJsonFile,
+  useFileSystemCache,
   useTemporaryFile,
   validateDirPath,
   validateFilePath,
@@ -20,6 +21,7 @@ jest.mock('fs');
 
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
+const CACHE_PATH = join(process.cwd(), 'node_modules/.cache/snaps');
 
 /**
  * Clears out all the files in the in-memory file system, and writes the default
@@ -27,6 +29,7 @@ const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
  */
 async function resetFileSystem() {
   await fs.rm(BASE_PATH, { recursive: true, force: true });
+  await fs.rm(CACHE_PATH, { recursive: true, force: true });
 
   // Create `dist` folder.
   await fs.mkdir(join(BASE_PATH, 'dist'), { recursive: true });
@@ -260,5 +263,97 @@ describe('useTemporaryFile', () => {
 
     // @ts-expect-error Usage before defined
     expect(await isFile(filePath)).toBe(false);
+  });
+});
+
+describe('useFileSystemCache', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
+  const cachedFunction = useFileSystemCache('foo', 5000, async () => {
+    return 'foo';
+  });
+
+  const cachedFilePath = join(CACHE_PATH, 'foo.json');
+
+  it('writes cached value to the file system', async () => {
+    const spy = jest.spyOn(fs, 'writeFile');
+    expect(await cachedFunction()).toBe('foo');
+
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    const cacheValue = await fs.readFile(cachedFilePath, 'utf8');
+    const cacheJson = JSON.parse(cacheValue);
+
+    expect(cacheJson).toStrictEqual({
+      timestamp: expect.any(Number),
+      value: 'foo',
+    });
+  });
+
+  it('reads cached value from the file system', async () => {
+    const readSpy = jest.spyOn(fs, 'readFile');
+    const writeSpy = jest.spyOn(fs, 'writeFile');
+
+    expect(await cachedFunction()).toBe('foo');
+    expect(await cachedFunction()).toBe('foo');
+
+    expect(readSpy).toHaveBeenCalledTimes(2);
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+
+    const cacheValue = await fs.readFile(cachedFilePath, 'utf8');
+    const cacheJson = JSON.parse(cacheValue);
+
+    expect(cacheJson).toStrictEqual({
+      timestamp: expect.any(Number),
+      value: 'foo',
+    });
+  });
+
+  it('discards cached value if it is expired', async () => {
+    await fs.mkdir(dirname(cachedFilePath), { recursive: true });
+    await fs.writeFile(
+      cachedFilePath,
+      JSON.stringify({ timestamp: Date.now() - 6000, value: 'bar' }),
+    );
+
+    const readSpy = jest.spyOn(fs, 'readFile');
+    const writeSpy = jest.spyOn(fs, 'writeFile');
+
+    expect(await cachedFunction()).toBe('foo');
+
+    expect(readSpy).toHaveBeenCalledTimes(1);
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+
+    const cacheValue = await fs.readFile(cachedFilePath, 'utf8');
+    const cacheJson = JSON.parse(cacheValue);
+
+    expect(cacheJson).toStrictEqual({
+      timestamp: expect.any(Number),
+      value: 'foo',
+    });
+  });
+
+  it('skips persisting undefined', async () => {
+    const fn = useFileSystemCache('foo', 5000, async () => {
+      return undefined;
+    });
+
+    const spy = jest.spyOn(fs, 'writeFile');
+    expect(await fn()).toBeUndefined();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('skips persisting null', async () => {
+    const fn = useFileSystemCache('foo', 5000, async () => {
+      return null;
+    });
+
+    const spy = jest.spyOn(fs, 'writeFile');
+    expect(await fn()).toBeNull();
+
+    expect(spy).toHaveBeenCalledTimes(0);
   });
 });
