@@ -1,7 +1,31 @@
-import { getCurrentDate, getExecutionDate } from './utils';
+import {
+  getCronjobSpecificationSchedule,
+  getCurrentDate,
+  getExecutionDate,
+} from './utils';
 
 jest.useFakeTimers();
 jest.setSystemTime(1747994147000);
+
+describe('getCronjobSpecificationSchedule', () => {
+  it('returns the duration if specified', () => {
+    const specification = {
+      duration: 'PT1H',
+      request: { method: 'foo' },
+    };
+
+    expect(getCronjobSpecificationSchedule(specification)).toBe('PT1H');
+  });
+
+  it('returns the expression if no duration is specified', () => {
+    const specification = {
+      expression: '0 0 * * *',
+      request: { method: 'foo' },
+    };
+
+    expect(getCronjobSpecificationSchedule(specification)).toBe('0 0 * * *');
+  });
+});
 
 describe('getCurrentDate', () => {
   it('returns the current date in ISO 8601 format without milliseconds', () => {
