@@ -187,7 +187,7 @@ export async function useTemporaryFile<Type = unknown>(
  * Use the file system to cache a return value with a given key and TTL.
  *
  * @param cacheKey - The key to use for the cache.
- * @param ttl - The time-to-live.
+ * @param ttl - The time-to-live in milliseconds.
  * @param fn - The callback function to wrap.
  * @returns The result from the callback.
  */
@@ -199,7 +199,7 @@ export function useFileSystemCache<Type = unknown>(
   return async () => {
     const filePath = pathUtils.join(
       process.cwd(),
-      'node_modules/.cache',
+      'node_modules/.cache/snaps',
       `${cacheKey}.json`,
     );
 

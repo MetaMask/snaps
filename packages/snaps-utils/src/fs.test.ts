@@ -21,7 +21,7 @@ jest.mock('fs');
 
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
-const CACHE_PATH = join(process.cwd(), 'node_modules/.cache');
+const CACHE_PATH = join(process.cwd(), 'node_modules/.cache/snaps');
 
 /**
  * Clears out all the files in the in-memory file system, and writes the default

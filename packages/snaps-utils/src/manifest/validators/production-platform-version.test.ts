@@ -20,7 +20,7 @@ const MOCK_PACKAGE_JSON = JSON.stringify({
   },
 });
 
-const CACHE_PATH = join(process.cwd(), 'node_modules/.cache');
+const CACHE_PATH = join(process.cwd(), 'node_modules/.cache/snaps');
 
 describe('productionPlatformVersion', () => {
   beforeAll(() => {
