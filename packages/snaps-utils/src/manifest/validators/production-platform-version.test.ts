@@ -53,6 +53,11 @@ describe('productionPlatformVersion', () => {
     );
 
     expect(report).toHaveBeenCalledTimes(1);
+    expect(report).toHaveBeenCalledWith(
+      expect.stringContaining(
+        'The specified platform version "6.5.0" is not supported in the production version of MetaMask. The current maximum supported version is "6.1.0". To resolve this, downgrade `@metamask/snaps-sdk` to a compatible version.',
+      ),
+    );
   });
 
   it('does nothing if the version is less than the production version', async () => {
