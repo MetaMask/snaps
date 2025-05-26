@@ -84,7 +84,7 @@
     "@metamask/key-tree": "^10.1.1",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/rpc-errors": "^7.0.2",
-    "@metamask/slip44": "^4.1.0",
+    "@metamask/slip44": "^4.2.0",
     "@metamask/snaps-registry": "^3.2.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
