@@ -24,7 +24,8 @@ const determineProductionVersion = useFileSystemCache(
       const latestReleaseCommit = latestReleaseJson.target_commitish;
 
       const packageJsonResponse = await fetch(
-        `https://raw.githubusercontent.com/MetaMask/metamask-extension/${latestReleaseCommit}/package.json`,
+        `https://api.github.com/repos/metamask/metamask-extension/contents/package.json?ref=${latestReleaseCommit}`,
+        { headers: new Headers({ accept: 'application/vnd.github.raw+json' }) },
       );
 
       const packageJson = await packageJsonResponse.json();
