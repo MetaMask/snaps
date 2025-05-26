@@ -168,27 +168,27 @@ export class CronjobController extends BaseController<
 
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
-      this.#handleSnapInstalledEvent.bind(this),
+      this.#handleSnapInstalledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapUninstalled',
-      this.#handleSnapUninstalledEvent.bind(this),
+      this.#handleSnapUninstalledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapEnabled',
-      this.#handleSnapEnabledEvent.bind(this),
+      this.#handleSnapEnabledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapDisabled',
-      this.#handleSnapDisabledEvent.bind(this),
+      this.#handleSnapDisabledEvent,
     );
 
     this.messagingSystem.subscribe(
       'SnapController:snapUpdated',
-      this.#handleSnapUpdatedEvent.bind(this),
+      this.#handleSnapUpdatedEvent,
     );
 
     this.messagingSystem.registerActionHandler(
@@ -263,7 +263,7 @@ export class CronjobController extends BaseController<
    */
   get(snapId: SnapId): InternalBackgroundEvent[] {
     return Object.values(this.state.events).filter(
-      (snapEvent) => snapEvent.snapId === snapId, // && !snapEvent.recurring,
+      (snapEvent) => snapEvent.snapId === snapId && !snapEvent.recurring,
     );
   }
 
@@ -288,7 +288,6 @@ export class CronjobController extends BaseController<
   destroy() {
     super.destroy();
 
-    /* eslint-disable @typescript-eslint/unbound-method */
     this.messagingSystem.unsubscribe(
       'SnapController:snapInstalled',
       this.#handleSnapInstalledEvent,
@@ -313,7 +312,6 @@ export class CronjobController extends BaseController<
       'SnapController:snapUpdated',
       this.#handleSnapUpdatedEvent,
     );
-    /* eslint-enable @typescript-eslint/unbound-method */
 
     // Cancel all timers and clear the map.
     this.#timers.forEach((timer) => timer.cancel());
@@ -467,9 +465,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  #handleSnapInstalledEvent(snap: TruncatedSnap) {
+  readonly #handleSnapInstalledEvent = (snap: TruncatedSnap) => {
     this.#register(snap.id);
-  }
+  };
 
   /**
    * Handle the Snap enabled event. This checks if the Snap has any cronjobs or
@@ -477,11 +475,11 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  #handleSnapEnabledEvent(snap: TruncatedSnap) {
+  readonly #handleSnapEnabledEvent = (snap: TruncatedSnap) => {
     const events = this.get(snap.id);
     this.#reschedule(events);
     this.#register(snap.id);
-  }
+  };
 
   /**
    * Handle events that should cause cronjobs and background events to be
@@ -489,9 +487,9 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  #handleSnapUninstalledEvent(snap: TruncatedSnap) {
+  readonly #handleSnapUninstalledEvent = (snap: TruncatedSnap) => {
     this.unregister(snap.id);
-  }
+  };
 
   /**
    * Handle events that should cause cronjobs and background events to be
@@ -499,20 +497,20 @@ export class CronjobController extends BaseController<
    *
    * @param snap - Basic Snap information.
    */
-  #handleSnapDisabledEvent(snap: TruncatedSnap) {
+  readonly #handleSnapDisabledEvent = (snap: TruncatedSnap) => {
     // TODO: Check why `skipEvents` is set to `true` here.
     this.unregister(snap.id, true);
-  }
+  };
 
   /**
    * Handle cron jobs on 'snapUpdated' event.
    *
    * @param snap - Basic Snap information.
    */
-  #handleSnapUpdatedEvent(snap: TruncatedSnap) {
+  readonly #handleSnapUpdatedEvent = (snap: TruncatedSnap) => {
     this.unregister(snap.id);
     this.#register(snap.id);
-  }
+  };
 
   /**
    * Reschedule events that are yet to be executed. This should be called on
