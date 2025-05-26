@@ -1,8 +1,4 @@
-import {
-  getCronjobSpecificationSchedule,
-  getCurrentDate,
-  getExecutionDate,
-} from './utils';
+import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 
 jest.useFakeTimers();
 jest.setSystemTime(1747994147000);
@@ -27,12 +23,6 @@ describe('getCronjobSpecificationSchedule', () => {
   });
 });
 
-describe('getCurrentDate', () => {
-  it('returns the current date in ISO 8601 format without milliseconds', () => {
-    expect(getCurrentDate()).toBe('2025-05-23T09:55:47Z');
-  });
-});
-
 describe('getExecutionDate', () => {
   it('parses an ISO 8601 date', () => {
     expect(getExecutionDate('2025-05-23T09:55:47Z')).toBe(
@@ -47,16 +37,16 @@ describe('getExecutionDate', () => {
   });
 
   it('parses an ISO 8601 duration', () => {
-    expect(getExecutionDate('P1Y')).toBe('2026-05-23T09:55:47Z');
-    expect(getExecutionDate('PT1S')).toBe('2025-05-23T09:55:48Z');
-    expect(getExecutionDate('PT0S')).toBe('2025-05-23T09:55:48Z');
+    expect(getExecutionDate('P1Y')).toBe('2026-05-23T09:55:47.000Z');
+    expect(getExecutionDate('PT1S')).toBe('2025-05-23T09:55:48.000Z');
+    expect(getExecutionDate('PT0S')).toBe('2025-05-23T09:55:48.000Z');
   });
 
   it('parses a cron expression', () => {
-    expect(getExecutionDate('0 0 * * *')).toBe('2025-05-24T00:00:00Z');
-    expect(getExecutionDate('0 0 1 * *')).toBe('2025-06-01T00:00:00Z');
-    expect(getExecutionDate('0 0 1 1 *')).toBe('2026-01-01T00:00:00Z');
-    expect(getExecutionDate('0 0 1 1 mon')).toBe('2026-01-01T00:00:00Z');
+    expect(getExecutionDate('0 0 * * *')).toBe('2025-05-24T00:00:00.000Z');
+    expect(getExecutionDate('0 0 1 * *')).toBe('2025-06-01T00:00:00.000Z');
+    expect(getExecutionDate('0 0 1 1 *')).toBe('2026-01-01T00:00:00.000Z');
+    expect(getExecutionDate('0 0 1 1 mon')).toBe('2026-01-01T00:00:00.000Z');
   });
 
   it('throws an error for invalid input', () => {

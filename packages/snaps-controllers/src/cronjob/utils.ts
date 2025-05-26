@@ -40,20 +40,6 @@ function getDuration(duration: Duration): Duration<true> {
 }
 
 /**
- * Get the current date in ISO 8601 format with millisecond precision removed.
- *
- * @returns The current date in ISO 8601 format.
- */
-export function getCurrentDate() {
-  const date = DateTime.fromJSDate(new Date()).toUTC().startOf('second');
-  assert(date.isValid);
-
-  return date.toISO({
-    suppressMilliseconds: true,
-  });
-}
-
-/**
  * Get the next execution date from a schedule, which should be either:
  *
  * - An ISO 8601 date string, or
@@ -67,6 +53,7 @@ export function getExecutionDate(schedule: string) {
   try {
     const date = DateTime.fromISO(schedule);
     if (date.isValid) {
+      // We round to the nearest second to avoid milliseconds in the output.
       return date.toUTC().startOf('second').toISO({
         suppressMilliseconds: true,
       });
@@ -74,10 +61,9 @@ export function getExecutionDate(schedule: string) {
 
     const duration = Duration.fromISO(schedule);
     if (duration.isValid) {
+      // This ensures the duration is at least 1 second.
       const validatedDuration = getDuration(duration);
-      return DateTime.now().toUTC().plus(validatedDuration).toISO({
-        suppressMilliseconds: true,
-      });
+      return DateTime.now().toUTC().plus(validatedDuration).toISO();
     }
 
     const parsed = parseExpression(schedule, { utc: true });
@@ -85,9 +71,7 @@ export function getExecutionDate(schedule: string) {
     const nextDate = DateTime.fromJSDate(next.toDate());
     assert(nextDate.isValid);
 
-    return nextDate.toUTC().toISO({
-      suppressMilliseconds: true,
-    });
+    return nextDate.toUTC().toISO();
   } catch {
     throw new Error(
       `Unable to parse "${schedule}" as ISO 8601 date, ISO 8601 duration, or cron expression.`,

@@ -11,17 +11,17 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { BackgroundEvent, SnapId } from '@metamask/snaps-sdk';
 import type { TruncatedSnap } from '@metamask/snaps-utils';
-import { HandlerType, logError } from '@metamask/snaps-utils';
+import {
+  toCensoredISO8601String,
+  HandlerType,
+  logError,
+} from '@metamask/snaps-utils';
 import { assert, Duration, inMilliseconds } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { DateTime } from 'luxon';
 import { nanoid } from 'nanoid';
 
-import {
-  getCronjobSpecificationSchedule,
-  getCurrentDate,
-  getExecutionDate,
-} from './utils';
+import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 import type {
   GetAllSnaps,
   HandleSnapRequest,
@@ -212,26 +212,16 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Schedule an event.
+   * Schedule a non-recurring background event.
    *
    * @param event - The event to schedule.
    * @returns The ID of the scheduled event.
    */
-  schedule(event: SchedulableBackgroundEvent) {
-    const id = event.id ?? nanoid();
-    const internalEvent: InternalBackgroundEvent = {
+  schedule(event: Omit<SchedulableBackgroundEvent, 'recurring'>) {
+    return this.#add({
       ...event,
-      id,
-      date: getExecutionDate(event.schedule),
-      scheduledAt: getCurrentDate(),
-    };
-
-    this.update((state) => {
-      state.events[internalEvent.id] = castDraft(internalEvent);
+      recurring: false,
     });
-
-    this.#schedule(internalEvent);
-    return id;
   }
 
   /**
@@ -262,9 +252,26 @@ export class CronjobController extends BaseController<
    * @returns An array of background events.
    */
   get(snapId: SnapId): InternalBackgroundEvent[] {
-    return Object.values(this.state.events).filter(
-      (snapEvent) => snapEvent.snapId === snapId && !snapEvent.recurring,
-    );
+    return Object.values(this.state.events)
+      .filter(
+        (snapEvent) => snapEvent.snapId === snapId && !snapEvent.recurring,
+      )
+      .map((event) => ({
+        ...event,
+        date: toCensoredISO8601String(event.date),
+        scheduledAt: toCensoredISO8601String(event.scheduledAt),
+      }));
+  }
+
+  /**
+   * Register cronjobs for a given Snap by getting specification from the
+   * permission caveats. Once registered, each job will be scheduled.
+   *
+   * @param snapId - The snap ID to register jobs for.
+   */
+  register(snapId: SnapId) {
+    const jobs = this.#getSnapCronjobs(snapId);
+    jobs?.forEach((job) => this.#add(job));
   }
 
   /**
@@ -326,6 +333,30 @@ export class CronjobController extends BaseController<
   }
 
   /**
+   * Add a cronjob or background event to the controller state and schedule it
+   * for execution.
+   *
+   * @param event - The event to schedule.
+   * @returns The ID of the scheduled event.
+   */
+  #add(event: SchedulableBackgroundEvent) {
+    const id = event.id ?? nanoid();
+    const internalEvent: InternalBackgroundEvent = {
+      ...event,
+      id,
+      date: getExecutionDate(event.schedule),
+      scheduledAt: new Date().toISOString(),
+    };
+
+    this.update((state) => {
+      state.events[internalEvent.id] = castDraft(internalEvent);
+    });
+
+    this.#schedule(internalEvent);
+    return id;
+  }
+
+  /**
    * Get the next execution date for a given event and start a timer for it.
    *
    * @param event - The event to schedule.
@@ -349,7 +380,9 @@ export class CronjobController extends BaseController<
    * @throws If the event is scheduled in the past.
    */
   #startTimer(event: InternalBackgroundEvent) {
-    const ms = DateTime.fromISO(event.date).toMillis() - Date.now();
+    const ms =
+      DateTime.fromISO(event.date, { setZone: true }).toMillis() - Date.now();
+
     if (ms <= 0) {
       throw new Error('Cannot schedule an event in the past.');
     }
@@ -450,23 +483,12 @@ export class CronjobController extends BaseController<
   }
 
   /**
-   * Register cronjobs for a given Snap by getting specification from the
-   * permission caveats. Once registered, each job will be scheduled.
-   *
-   * @param snapId - The snap ID to register jobs for.
-   */
-  #register(snapId: SnapId) {
-    const jobs = this.#getSnapCronjobs(snapId);
-    jobs?.forEach((job) => this.schedule(job));
-  }
-
-  /**
    * Handle events that should cause cron jobs to be registered.
    *
    * @param snap - Basic Snap information.
    */
   readonly #handleSnapInstalledEvent = (snap: TruncatedSnap) => {
-    this.#register(snap.id);
+    this.register(snap.id);
   };
 
   /**
@@ -478,7 +500,7 @@ export class CronjobController extends BaseController<
   readonly #handleSnapEnabledEvent = (snap: TruncatedSnap) => {
     const events = this.get(snap.id);
     this.#reschedule(events);
-    this.#register(snap.id);
+    this.register(snap.id);
   };
 
   /**
@@ -509,7 +531,7 @@ export class CronjobController extends BaseController<
    */
   readonly #handleSnapUpdatedEvent = (snap: TruncatedSnap) => {
     this.unregister(snap.id);
-    this.#register(snap.id);
+    this.register(snap.id);
   };
 
   /**

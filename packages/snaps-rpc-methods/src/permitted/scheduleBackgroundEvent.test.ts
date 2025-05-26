@@ -83,7 +83,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
     });
 
-    it('schedules a background event with second precision', async () => {
+    it('schedules a background event', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
       const scheduleBackgroundEvent = jest.fn();
@@ -123,7 +123,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
 
       expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: '2022-01-01T01:00:35+02:00',
+        schedule: '2022-01-01T01:00:35.786+02:00',
         request: {
           method: 'handleExport',
           params: ['p1'],
@@ -131,7 +131,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
     });
 
-    it('schedules a background event using duration', async () => {
+    it('schedules a background event using a duration', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
       const scheduleBackgroundEvent = jest.fn();
@@ -171,55 +171,7 @@ describe('snap_scheduleBackgroundEvent', () => {
       });
 
       expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: '2025-05-21T13:25:21.500Z',
-        request: {
-          method: 'handleExport',
-          params: ['p1'],
-        },
-      });
-    });
-
-    it('schedules a background event using a minimum duration of 1 second', async () => {
-      const { implementation } = scheduleBackgroundEventHandler;
-
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
-
-      const engine = new JsonRpcEngine();
-
-      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
-      engine.push((request, response, next, end) => {
-        const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
-          response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
-          next,
-          end,
-          hooks,
-        );
-
-        result?.catch(end);
-      });
-
-      await engine.handle({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'snap_scheduleBackgroundEvent',
-        params: {
-          duration: 'PT0.5S',
-          request: {
-            method: 'handleExport',
-            params: ['p1'],
-          },
-        },
-      });
-
-      expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        date: '2025-05-21T13:25:21.500Z',
+        schedule: 'PT1S',
         request: {
           method: 'handleExport',
           params: ['p1'],
