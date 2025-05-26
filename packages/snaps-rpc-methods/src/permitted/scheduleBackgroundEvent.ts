@@ -27,7 +27,6 @@ const hookNames: MethodHooksObject<ScheduleBackgroundEventMethodHooks> = {
 };
 
 type ScheduleBackgroundEventHookParams = {
-  recurring: boolean;
   schedule: string;
   request: CronjobRpcRequest;
 };
@@ -122,7 +121,6 @@ async function getScheduleBackgroundEventImplementation(
     const schedule = getSchedule(validatedParams);
 
     const id = scheduleBackgroundEvent({
-      recurring: false,
       schedule,
       request,
     });
