@@ -3,10 +3,19 @@ import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 
 export type EmptyObject = Record<string, never>;
 
-export type Cronjob = {
-  expression: string;
+type CronjobRequest = {
   request: Omit<JsonRpcRequest, 'jsonrpc' | 'id'>;
 };
+
+type CronjobWithExpression = CronjobRequest & {
+  expression: string;
+};
+
+type CronjobWithDuration = CronjobRequest & {
+  duration: string;
+};
+
+export type Cronjob = CronjobWithExpression | CronjobWithDuration;
 
 export type NameLookupMatchers =
   | {
