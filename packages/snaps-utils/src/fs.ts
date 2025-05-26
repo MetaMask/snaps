@@ -216,6 +216,11 @@ export function useFileSystemCache<Type = unknown>(
 
     const value = await fn();
 
+    // Null or undefined is not persisted.
+    if (value === null || value === undefined) {
+      return value;
+    }
+
     try {
       await fs.mkdir(pathUtils.dirname(filePath), { recursive: true });
 

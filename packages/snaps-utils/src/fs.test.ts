@@ -334,4 +334,26 @@ describe('useFileSystemCache', () => {
       value: 'foo',
     });
   });
+
+  it('skips persisting undefined', async () => {
+    const fn = useFileSystemCache('foo', 5000, async () => {
+      return undefined;
+    });
+
+    const spy = jest.spyOn(fs, 'writeFile');
+    expect(await fn()).toBeUndefined();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('skips persisting null', async () => {
+    const fn = useFileSystemCache('foo', 5000, async () => {
+      return null;
+    });
+
+    const spy = jest.spyOn(fs, 'writeFile');
+    expect(await fn()).toBeNull();
+
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
 });

@@ -1,6 +1,8 @@
 import type { SemVerVersion } from '@metamask/utils';
 import assert from 'assert';
+import { promises as fs } from 'fs';
 import fetchMock from 'jest-fetch-mock';
+import { join } from 'path';
 
 import { productionPlatformVersion } from './production-platform-version';
 import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
@@ -18,9 +20,17 @@ const MOCK_PACKAGE_JSON = JSON.stringify({
   },
 });
 
+const CACHE_PATH = join(process.cwd(), 'node_modules/.cache');
+
 describe('productionPlatformVersion', () => {
   beforeAll(() => {
     fetchMock.enableMocks();
+  });
+
+  beforeEach(async () => {
+    fetchMock.resetMocks();
+
+    await fs.rm(CACHE_PATH, { recursive: true, force: true });
   });
 
   afterAll(() => {
@@ -98,7 +108,7 @@ describe('productionPlatformVersion', () => {
   });
 
   it('does nothing if the request to check the production version fails', async () => {
-    fetchMock.mockResponse('', { status: 404 });
+    fetchMock.mockResponse(async () => ({ status: 404, body: 'Not found' }));
 
     const report = jest.fn();
     assert(productionPlatformVersion.semanticCheck);
