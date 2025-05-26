@@ -12,7 +12,7 @@ import type { ValidatorMeta } from '../validator-types';
  */
 const determineProductionVersion = useFileSystemCache(
   'snaps-production-version',
-  inMilliseconds(7, Duration.Day),
+  inMilliseconds(3, Duration.Day),
   async () => {
     try {
       const latestRelease = await fetch(
