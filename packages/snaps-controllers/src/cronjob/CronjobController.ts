@@ -17,7 +17,11 @@ import { castDraft } from 'immer';
 import { DateTime } from 'luxon';
 import { nanoid } from 'nanoid';
 
-import { getCurrentDate, getExecutionDate } from './utils';
+import {
+  getCronjobSpecificationSchedule,
+  getCurrentDate,
+  getExecutionDate,
+} from './utils';
 import type {
   GetAllSnaps,
   HandleSnapRequest,
@@ -441,7 +445,7 @@ export class CronjobController extends BaseController<
         snapId,
         id: `cronjob-${snapId}-${idx}`,
         request: definition.request,
-        schedule: definition.expression,
+        schedule: getCronjobSpecificationSchedule(definition),
         recurring: true,
       };
     });

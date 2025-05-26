@@ -1,6 +1,28 @@
-import { assert } from '@metamask/utils';
+import type { CronjobSpecification } from '@metamask/snaps-utils';
+import { assert, hasProperty } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import { DateTime, Duration } from 'luxon';
+
+/**
+ * Get the schedule from a cronjob specification.
+ *
+ * This function assumes the cronjob specification is valid and contains
+ * either a `duration` or an `expression` property.
+ *
+ * @param specification - The cronjob specification to extract the schedule
+ * from.
+ * @returns The schedule of the cronjob, which can be either an ISO 8601
+ * duration or a cron expression.
+ */
+export function getCronjobSpecificationSchedule(
+  specification: CronjobSpecification,
+) {
+  if (hasProperty(specification, 'duration')) {
+    return specification.duration as string;
+  }
+
+  return specification.expression;
+}
 
 /**
  * Get a duration with a minimum of 1 second. This function assumes the provided
