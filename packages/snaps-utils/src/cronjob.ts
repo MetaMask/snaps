@@ -1,3 +1,4 @@
+import { union } from '@metamask/snaps-sdk';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
@@ -14,6 +15,8 @@ import {
 } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 
+import { ISO8601DurationStruct } from './time';
+
 export const CronjobRpcRequestStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),
   id: optional(JsonRpcIdStruct),
@@ -25,7 +28,7 @@ export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(
   string(),
-  'CronExpression',
+  'cronjob expression',
   (value) => {
     try {
       parseExpression(value);
@@ -50,9 +53,10 @@ export function parseCronExpression(expression: string | object) {
 }
 
 export const CronjobSpecificationStruct = object({
-  expression: CronExpressionStruct,
+  expression: union([CronExpressionStruct, ISO8601DurationStruct]),
   request: CronjobRpcRequestStruct,
 });
+
 export type CronjobSpecification = Infer<typeof CronjobSpecificationStruct>;
 
 /**
