@@ -4244,6 +4244,7 @@ __metadata:
     "@xstate/fsm": "npm:^2.0.0"
     async-mutex: "npm:^0.5.0"
     concat-stream: "npm:^2.0.0"
+    cron-parser: "npm:^4.5.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
