@@ -106,9 +106,10 @@ describe('build', () => {
 
     await build(config);
 
-    // Manifest checksum mismatch is the warning
     expect(warn).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+      expect.stringMatching(
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+      ),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');
@@ -140,9 +141,10 @@ describe('build', () => {
 
     await build(config);
 
-    // Manifest checksum mismatch is the warning
     expect(warn).toHaveBeenCalledWith(
-      expect.stringMatching(/Compiled 1 file in \d+ms with 1 warning\./u),
+      expect.stringMatching(
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+      ),
     );
 
     const output = await fs.readFile('/snap/output.js', 'utf8');

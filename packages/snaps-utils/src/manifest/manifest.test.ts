@@ -1,4 +1,5 @@
 import { promises as fs } from 'fs';
+import fetchMock from 'jest-fetch-mock';
 import { join } from 'path';
 
 import {
@@ -33,6 +34,17 @@ jest.mock('fs');
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
 const PACKAGE_JSON_PATH = join(BASE_PATH, NpmSnapFileNames.PackageJson);
+
+const MOCK_GITHUB_RESPONSE = JSON.stringify({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  target_commitish: '5fceb7ed2ef18a3984786db1161a76ca5c8e15b9',
+});
+
+const MOCK_PACKAGE_JSON = JSON.stringify({
+  dependencies: {
+    '@metamask/snaps-sdk': getPlatformVersion(),
+  },
+});
 
 /**
  * Get the default manifest for the current platform version.
@@ -73,7 +85,14 @@ async function resetFileSystem() {
 
 describe('checkManifest', () => {
   beforeEach(async () => {
+    fetchMock.enableMocks();
+    fetchMock.mockResponses(MOCK_GITHUB_RESPONSE, MOCK_PACKAGE_JSON);
+
     await resetFileSystem();
+  });
+
+  afterAll(() => {
+    fetchMock.disableMocks();
   });
 
   it('returns the status and warnings after processing', async () => {

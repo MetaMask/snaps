@@ -15,7 +15,6 @@ const determineProductionVersion = useFileSystemCache(
   inMilliseconds(7, Duration.Day),
   async () => {
     try {
-      // TODO: Cache this check.
       const latestRelease = await fetch(
         'https://api.github.com/repos/metamask/metamask-extension/releases/latest',
       );
