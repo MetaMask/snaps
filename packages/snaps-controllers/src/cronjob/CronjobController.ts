@@ -278,10 +278,8 @@ export class CronjobController extends BaseController<
    * Unregister all cronjobs and background events for a given Snap.
    *
    * @param snapId - ID of a snap.
-   * @param _skipEvents - Whether the unregistration process should skip
-   * scheduled background events.
    */
-  unregister(snapId: SnapId, _skipEvents = false) {
+  unregister(snapId: SnapId) {
     for (const [id, event] of Object.entries(this.state.events)) {
       if (event.snapId === snapId) {
         this.#cancel(id);
@@ -520,8 +518,7 @@ export class CronjobController extends BaseController<
    * @param snap - Basic Snap information.
    */
   readonly #handleSnapDisabledEvent = (snap: TruncatedSnap) => {
-    // TODO: Check why `skipEvents` is set to `true` here.
-    this.unregister(snap.id, true);
+    this.unregister(snap.id);
   };
 
   /**
