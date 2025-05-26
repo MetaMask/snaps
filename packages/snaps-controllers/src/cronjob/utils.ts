@@ -53,14 +53,19 @@ export function getExecutionDate(schedule: string) {
     const duration = Duration.fromISO(schedule);
     if (duration.isValid) {
       const validatedDuration = getDuration(duration);
-      return DateTime.now().toUTC().plus(validatedDuration).toISO();
+      return DateTime.now().toUTC().plus(validatedDuration).toISO({
+        suppressMilliseconds: true,
+      });
     }
 
     const parsed = parseExpression(schedule, { utc: true });
     const next = parsed.next();
     const nextDate = DateTime.fromJSDate(next.toDate());
     assert(nextDate.isValid);
-    return nextDate.toUTC().toISO();
+
+    return nextDate.toUTC().toISO({
+      suppressMilliseconds: true,
+    });
   } catch {
     throw new Error(
       `Unable to parse "${schedule}" as ISO 8601 date, ISO 8601 duration, or cron expression.`,
