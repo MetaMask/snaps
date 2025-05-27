@@ -1,7 +1,7 @@
 import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 
 jest.useFakeTimers();
-jest.setSystemTime(1747994147000);
+jest.setSystemTime(1747994147500);
 
 describe('getCronjobSpecificationSchedule', () => {
   it('returns the duration if specified', () => {
@@ -37,9 +37,9 @@ describe('getExecutionDate', () => {
   });
 
   it('parses an ISO 8601 duration', () => {
-    expect(getExecutionDate('P1Y')).toBe('2026-05-23T09:55:47.000Z');
-    expect(getExecutionDate('PT1S')).toBe('2025-05-23T09:55:48.000Z');
-    expect(getExecutionDate('PT0S')).toBe('2025-05-23T09:55:48.000Z');
+    expect(getExecutionDate('P1Y')).toBe('2026-05-23T09:55:47.500Z');
+    expect(getExecutionDate('PT1S')).toBe('2025-05-23T09:55:48.500Z');
+    expect(getExecutionDate('PT0S')).toBe('2025-05-23T09:55:48.500Z');
   });
 
   it('parses a cron expression', () => {
