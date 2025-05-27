@@ -545,10 +545,7 @@ export class CronjobController extends BaseController<
    * the controller state.
    */
   #reschedule(events = Object.values(this.state.events)) {
-    const now = DateTime.fromJSDate(new Date())
-      .toUTC()
-      .startOf('second')
-      .toSeconds();
+    const now = Date.now();
 
     for (const event of events) {
       if (this.#timers.has(event.id)) {
@@ -557,10 +554,11 @@ export class CronjobController extends BaseController<
         continue;
       }
 
-      const eventDate = DateTime.fromISO(event.date)
+      const eventDate = DateTime.fromISO(event.date, {
+        setZone: true,
+      })
         .toUTC()
-        .startOf('second')
-        .toSeconds();
+        .toMillis();
 
       // If the event is recurring and the date is in the past, execute it
       // immediately.
@@ -576,16 +574,14 @@ export class CronjobController extends BaseController<
    * Clear non-recurring events that are past their scheduled time.
    */
   #clear() {
-    const now = DateTime.fromJSDate(new Date())
-      .toUTC()
-      .startOf('second')
-      .toSeconds();
+    const now = Date.now();
 
     for (const event of Object.values(this.state.events)) {
-      const eventDate = DateTime.fromISO(event.date)
+      const eventDate = DateTime.fromISO(event.date, {
+        setZone: true,
+      })
         .toUTC()
-        .startOf('second')
-        .toSeconds();
+        .toMillis();
 
       if (!event.recurring && eventDate < now) {
         this.#cancel(event.id);
