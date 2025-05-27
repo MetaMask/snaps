@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `active` flag for `snap_getClientStatus` ([#3424](https://github.com/MetaMask/snaps/pull/3424))
+- feat: Add `onProtocolRequest` to `snaps-jest` ([#3422](https://github.com/MetaMask/snaps/pull/3422))
+
 ## [2.6.0]
 
 ### Added
