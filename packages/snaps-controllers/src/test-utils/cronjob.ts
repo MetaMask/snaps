@@ -41,7 +41,7 @@ type GetCronjobPermissionArgs =
  * @returns The permission object.
  */
 export function getCronjobPermission(
-  args: GetCronjobPermissionArgs = {},
+  args: GetCronjobPermissionArgs,
 ): PermissionConstraint {
   return {
     caveats: [
