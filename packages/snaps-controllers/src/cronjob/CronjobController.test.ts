@@ -153,13 +153,6 @@ describe('CronjobController', () => {
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
 
-    rootMessenger.registerActionHandler(
-      'PermissionController:getPermissions',
-      () => {
-        return { [SnapEndowments.Cronjob]: getCronjobPermission() };
-      },
-    );
-
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
@@ -289,6 +282,57 @@ describe('CronjobController', () => {
     );
 
     expect(rootMessenger.call).not.toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'exampleMethod',
+          params: ['p1'],
+        },
+      },
+    );
+
+    cronjobController.destroy();
+  });
+
+  it('schedules jobs that were not scheduled due to the daily timeout', () => {
+    const expression = '0 0 4 * *'; // At 12:00am on the 4th of every month.
+
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => {
+        return {
+          [SnapEndowments.Cronjob]: getCronjobPermission({ expression }),
+        };
+      },
+    );
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+    });
+
+    cronjobController.register(MOCK_SNAP_ID);
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
+    expect(rootMessenger.call).toHaveBeenCalledWith(
+      'PermissionController:getPermissions',
+      MOCK_SNAP_ID,
+    );
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
+
+    jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+    expect(rootMessenger.call).toHaveBeenCalledTimes(2);
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      2,
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,

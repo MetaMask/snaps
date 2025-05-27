@@ -147,7 +147,7 @@ export class CronjobController extends BaseController<
 > {
   readonly #timers: Map<string, Timer>;
 
-  readonly #dailyTimer: Timer = new Timer(DAILY_TIMEOUT);
+  #dailyTimer: Timer = new Timer(DAILY_TIMEOUT);
 
   constructor({ messenger, state }: CronjobControllerArgs) {
     super({
@@ -329,7 +329,11 @@ export class CronjobController extends BaseController<
    * Start the daily timer that will reschedule events every 24 hours.
    */
   #start() {
-    this.#dailyTimer.start(() => this.#reschedule());
+    this.#dailyTimer = new Timer(DAILY_TIMEOUT);
+    this.#dailyTimer.start(() => {
+      this.#reschedule();
+      this.#start();
+    });
   }
 
   /**
