@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.4.0]
+
+### Added
+
+- Add `active` flag for `snap_getClientStatus` ([#3424](https://github.com/MetaMask/snaps/pull/3424))
+
+### Fixed
+
+- Prevent scheduling background events less than 1 second in the future ([#3414](https://github.com/MetaMask/snaps/pull/3414))
+
 ## [12.3.0]
 
 ### Added
@@ -437,7 +447,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.4.0...HEAD
+[12.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.3.0...@metamask/snaps-rpc-methods@12.4.0
 [12.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.2.0...@metamask/snaps-rpc-methods@12.3.0
 [12.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.1.0...@metamask/snaps-rpc-methods@12.2.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.0.0...@metamask/snaps-rpc-methods@12.1.0

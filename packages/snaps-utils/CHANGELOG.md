@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.0]
+
+### Added
+
+- Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
+- Detect unused permissions in Snaps CLI ([#3335](https://github.com/MetaMask/snaps/pull/3335))
+- Add support for `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+- Add `toCensoredISO8601String` util function ([#3414](https://github.com/MetaMask/snaps/pull/3414))
+
+### Changed
+
+- Bump `@metamask/slip44` from `4.1.0` to `4.2.0` ([#3419](https://github.com/MetaMask/snaps/pull/3419))
+
 ## [9.3.0]
 
 ### Added
@@ -610,7 +623,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...HEAD
+[9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...@metamask/snaps-utils@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.2...@metamask/snaps-utils@9.3.0
 [9.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.1...@metamask/snaps-utils@9.2.2
 [9.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.0...@metamask/snaps-utils@9.2.1

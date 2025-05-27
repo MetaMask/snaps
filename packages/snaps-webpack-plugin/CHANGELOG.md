@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0]
+
+### Changed
+
+- Improve readability of eval errors ([#3335](https://github.com/MetaMask/snaps/pull/3335))
+- Bump `@metamask/utils` from `11.0.1` to `11.3.0` ([#3050](https://github.com/MetaMask/snaps/pull/3050), [#3091](https://github.com/MetaMask/snaps/pull/3091),[#3232](https://github.com/MetaMask/snaps/pull/3232))
+
 ## [4.2.1]
 
 ### Changed
@@ -121,7 +128,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.3.0...HEAD
+[4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.1...@metamask/snaps-webpack-plugin@4.3.0
 [4.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.0...@metamask/snaps-webpack-plugin@4.2.1
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.2...@metamask/snaps-webpack-plugin@4.2.0
 [4.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.1...@metamask/snaps-webpack-plugin@4.1.2

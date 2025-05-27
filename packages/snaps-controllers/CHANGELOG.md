@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.3.0]
+
+### Added
+
+- Add support for `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+
+### Changed
+
+- Fetch registry files in parallel ([#3416](https://github.com/MetaMask/snaps/pull/3416))
+
+### Fixed
+
+- Prevent scheduling background events less than 1 second in the future ([#3414](https://github.com/MetaMask/snaps/pull/3414))
+
 ## [12.2.0]
 
 ### Added
@@ -766,7 +780,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.0...HEAD
+[12.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.2.0...@metamask/snaps-controllers@12.3.0
 [12.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.1.0...@metamask/snaps-controllers@12.2.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.1...@metamask/snaps-controllers@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.0.0...@metamask/snaps-controllers@12.0.1
