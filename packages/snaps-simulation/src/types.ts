@@ -2,7 +2,12 @@ import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
-import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+import type {
+  CaipChainId,
+  Json,
+  JsonRpcId,
+  JsonRpcParams,
+} from '@metamask/utils';
 
 import type {
   NameLookupOptionsStruct,
@@ -494,6 +499,19 @@ export type Snap = {
    */
   onNameLookup(
     nameLookupRequest: NameLookupOptions,
+  ): Promise<SnapResponseWithoutInterface>;
+
+  /**
+   * Send a JSON-RPC protocol request to the Snap.
+   *
+   * @param scope - A CAIP-2 scope.
+   * @param request - The request. This is similar to a JSON-RPC request, but
+   * has an extra `origin` field.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  onProtocolRequest(
+    scope: CaipChainId,
+    request: RequestOptions,
   ): Promise<SnapResponseWithoutInterface>;
 
   /**

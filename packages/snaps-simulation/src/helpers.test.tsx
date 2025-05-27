@@ -701,6 +701,66 @@ describe('helpers', () => {
     });
   });
 
+  describe('onProtocolRequest', () => {
+    it('sends a onProtocolRequest request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onProtocolRequest = async () => {
+            return 1;
+          };
+         `,
+      });
+
+      const { onProtocolRequest, close } = await installSnap(snapId);
+      const response = await onProtocolRequest(
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        { method: 'getBlockHeight' },
+      );
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 1,
+          },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+
+    it('sends a onProtocolRequest request including parameters and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onProtocolRequest = async ({ request }) => {
+            return request.params;
+          };
+         `,
+      });
+
+      const { onProtocolRequest, close } = await installSnap(snapId);
+      const response = await onProtocolRequest(
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        { method: 'getBlockHeight', params: ['latest'] },
+      );
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: ['latest'],
+          },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();

@@ -3946,6 +3946,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/protocol-example-snap@workspace:packages/examples/packages/protocol"
   dependencies:
+    "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.3.3"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/snaps-cli": "workspace:^"

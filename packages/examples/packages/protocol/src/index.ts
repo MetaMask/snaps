@@ -33,7 +33,7 @@ async function rpcRequest(method: string) {
  * This handler handles two methods:
  *
  * - `getBlockHeight`: Returns the block height of the Solana devnet.
- * - `getBlockHeight`: Returns the genesis hash of the Solana devnet.
+ * - `getGenesisHash`: Returns the genesis hash of the Solana devnet.
  *
  * @param params - The request parameters.
  * @param params.scope - The CAIP-2 scope of the request.

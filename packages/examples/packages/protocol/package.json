@@ -47,6 +47,7 @@
     "@metamask/utils": "^11.4.0"
   },
   "devDependencies": {
+    "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^3.3.3",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-cli": "workspace:^",

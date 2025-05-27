@@ -1,5 +1,6 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { create } from '@metamask/superstruct';
+import type { CaipChainId } from '@metamask/utils';
 import { createModuleLogger } from '@metamask/utils';
 
 import { rootLogger } from './logger';
@@ -164,6 +165,19 @@ export type SnapHelpers = {
    */
   onNameLookup(
     request: NameLookupOptions,
+  ): Promise<SnapResponseWithoutInterface>;
+
+  /**
+   * Send a JSON-RPC protocol request to the Snap.
+   *
+   * @param scope - A CAIP-2 scope.
+   * @param request - The request. This is similar to a JSON-RPC request, but
+   * has an extra `origin` field.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  onProtocolRequest(
+    scope: CaipChainId,
+    request: RequestOptions,
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
@@ -440,6 +454,39 @@ export function getHelpers({
       });
 
       assertIsResponseWithInterface(response);
+
+      return response;
+    },
+
+    onProtocolRequest: async (
+      scope,
+      rawRequest,
+    ): Promise<SnapResponseWithoutInterface> => {
+      log('Sending protocol request.');
+
+      const request = {
+        jsonrpc: '2.0' as const,
+        id: rawRequest.id ?? 1,
+        method: rawRequest.method,
+        ...(rawRequest.params ? { params: rawRequest.params } : {}),
+      };
+
+      const response = await handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnProtocolRequest,
+        request: {
+          origin: rawRequest.origin,
+          method: '',
+          params: {
+            scope,
+            request,
+          },
+        },
+      });
 
       return response;
     },
