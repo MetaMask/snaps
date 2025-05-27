@@ -50,22 +50,27 @@ function getDuration(duration: Duration): Duration<true> {
  * @returns The parsed ISO 8601 date at which the event should be executed.
  */
 export function getExecutionDate(schedule: string) {
+  const date = DateTime.fromISO(schedule);
+  if (date.isValid) {
+    const now = Date.now();
+    if (date.toMillis() < now) {
+      throw new Error('Cannot schedule an event in the past.');
+    }
+
+    // We round to the nearest second to avoid milliseconds in the output.
+    return date.toUTC().startOf('second').toISO({
+      suppressMilliseconds: true,
+    });
+  }
+
+  const duration = Duration.fromISO(schedule);
+  if (duration.isValid) {
+    // This ensures the duration is at least 1 second.
+    const validatedDuration = getDuration(duration);
+    return DateTime.now().toUTC().plus(validatedDuration).toISO();
+  }
+
   try {
-    const date = DateTime.fromISO(schedule);
-    if (date.isValid) {
-      // We round to the nearest second to avoid milliseconds in the output.
-      return date.toUTC().startOf('second').toISO({
-        suppressMilliseconds: true,
-      });
-    }
-
-    const duration = Duration.fromISO(schedule);
-    if (duration.isValid) {
-      // This ensures the duration is at least 1 second.
-      const validatedDuration = getDuration(duration);
-      return DateTime.now().toUTC().plus(validatedDuration).toISO();
-    }
-
     const parsed = parseExpression(schedule, { utc: true });
     const next = parsed.next();
     const nextDate = DateTime.fromJSDate(next.toDate());

@@ -26,20 +26,23 @@ export const MOCK_CRONJOB_PERMISSION: PermissionConstraint = {
   parentCapability: SnapEndowments.Cronjob,
 };
 
-type GetCronjobPermissionArgs = {
-  expression?: string;
-};
+type GetCronjobPermissionArgs =
+  | {
+      expression?: string;
+    }
+  | {
+      duration?: string;
+    };
 
 /**
  * Get a cronjob permission object as {@link PermissionConstraint}.
  *
  * @param args - The arguments to use when creating the permission.
- * @param args.expression - The cron expression to use for the permission.
  * @returns The permission object.
  */
-export function getCronjobPermission({
-  expression = '59 6 * * *',
-}: GetCronjobPermissionArgs = {}): PermissionConstraint {
+export function getCronjobPermission(
+  args: GetCronjobPermissionArgs = {},
+): PermissionConstraint {
   return {
     caveats: [
       {
@@ -47,7 +50,7 @@ export function getCronjobPermission({
         value: {
           jobs: [
             {
-              expression,
+              ...args,
               request: {
                 method: 'exampleMethod',
                 params: ['p1'],

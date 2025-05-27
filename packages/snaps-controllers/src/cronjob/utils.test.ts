@@ -25,14 +25,14 @@ describe('getCronjobSpecificationSchedule', () => {
 
 describe('getExecutionDate', () => {
   it('parses an ISO 8601 date', () => {
-    expect(getExecutionDate('2025-05-23T09:55:47Z')).toBe(
-      '2025-05-23T09:55:47Z',
+    expect(getExecutionDate('2025-05-24T09:55:47Z')).toBe(
+      '2025-05-24T09:55:47Z',
     );
-    expect(getExecutionDate('2025-05-23T09:55:47+00:00')).toBe(
-      '2025-05-23T09:55:47Z',
+    expect(getExecutionDate('2025-05-24T09:55:47+00:00')).toBe(
+      '2025-05-24T09:55:47Z',
     );
-    expect(getExecutionDate('2025-05-23T09:55:47+01:00')).toBe(
-      '2025-05-23T08:55:47Z',
+    expect(getExecutionDate('2025-05-24T09:55:47+01:00')).toBe(
+      '2025-05-24T08:55:47Z',
     );
   });
 
@@ -61,6 +61,12 @@ describe('getExecutionDate', () => {
     );
     expect(() => getExecutionDate('100 * * * * *')).toThrow(
       'Unable to parse "100 * * * * *" as ISO 8601 date, ISO 8601 duration, or cron expression.',
+    );
+  });
+
+  it('throws an error for dates in the past', () => {
+    expect(() => getExecutionDate('2020-01-01T00:00:00Z')).toThrow(
+      'Cannot schedule an event in the past.',
     );
   });
 });
