@@ -68,5 +68,9 @@ describe('getExecutionDate', () => {
     expect(() => getExecutionDate('2020-01-01T00:00:00Z')).toThrow(
       'Cannot schedule an event in the past.',
     );
+
+    expect(() =>
+      getExecutionDate(new Date(Date.now() + 100).toISOString()),
+    ).toThrow('Cannot schedule an event in the past.');
   });
 });
