@@ -23,7 +23,6 @@ import { nanoid } from 'nanoid';
 
 import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 import type {
-  GetAllSnaps,
   HandleSnapRequest,
   SnapDisabled,
   SnapEnabled,
@@ -59,21 +58,20 @@ export type Get = {
 };
 
 export type CronjobControllerActions =
-  | GetAllSnaps
+  | CronjobControllerGetStateAction
   | HandleSnapRequest
   | GetPermissions
-  | CronjobControllerGetStateAction
   | Schedule
   | Cancel
   | Get;
 
 export type CronjobControllerEvents =
+  | CronjobControllerStateChangeEvent
   | SnapInstalled
   | SnapUninstalled
   | SnapUpdated
   | SnapEnabled
-  | SnapDisabled
-  | CronjobControllerStateChangeEvent;
+  | SnapDisabled;
 
 export type CronjobControllerMessenger = RestrictedMessenger<
   typeof controllerName,
