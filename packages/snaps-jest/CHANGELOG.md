@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.16.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `onProtocolRequest` to `snaps-jest` ([#3422](https://github.com/MetaMask/snaps/pull/3422))
+- Add support for `onProtocolRequest` ([#3422](https://github.com/MetaMask/snaps/pull/3422))
 
 ## [8.15.0]
 

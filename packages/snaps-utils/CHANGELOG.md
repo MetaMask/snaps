@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.4.0]
 
-### Uncategorized
+### Added
 
-- feat: Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
-- chore(deps): bump @metamask/slip44 from 4.1.0 to 4.2.0 ([#3419](https://github.com/MetaMask/snaps/pull/3419))
-- feat: Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
-- feat: Detect unused permissions in Snaps CLI ([#3335](https://github.com/MetaMask/snaps/pull/3335))
-- fix: Prevent scheduling background events less than 1 second in the future ([#3414](https://github.com/MetaMask/snaps/pull/3414))
+- Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
+- Detect unused permissions in Snaps CLI ([#3335](https://github.com/MetaMask/snaps/pull/3335))
+- Add support for `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+- Add `toCensoredISO8601String` util function ([#3414](https://github.com/MetaMask/snaps/pull/3414))
+
+### Changed
+
+- Bump `@metamask/slip44` from `4.1.0` to `4.2.0` ([#3419](https://github.com/MetaMask/snaps/pull/3419))
 
 ## [9.3.0]
 

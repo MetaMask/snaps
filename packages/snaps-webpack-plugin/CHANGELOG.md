@@ -9,17 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.3.0]
 
-### Uncategorized
+### Changed
 
-- feat: Detect unused permissions in Snaps CLI ([#3335](https://github.com/MetaMask/snaps/pull/3335))
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
-- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps/pull/3283))
-- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps/pull/3277))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
-- chore(deps): bump @metamask/utils from 11.1.0 to 11.2.0 ([#3091](https://github.com/MetaMask/snaps/pull/3091))
-- chore(deps): bump @metamask/utils from 11.0.1 to 11.1.0 ([#3050](https://github.com/MetaMask/snaps/pull/3050))
+- Improve readability of eval errors ([#3335](https://github.com/MetaMask/snaps/pull/3335))
+- Bump `@metamask/utils` from `11.0.1` to `11.3.0` ([#3050](https://github.com/MetaMask/snaps/pull/3050), [#3091](https://github.com/MetaMask/snaps/pull/3091),[#3232](https://github.com/MetaMask/snaps/pull/3232))
 
 ## [4.2.1]
 

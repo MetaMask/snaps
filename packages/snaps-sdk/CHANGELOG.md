@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `active` flag for `snap_getClientStatus` ([#3424](https://github.com/MetaMask/snaps/pull/3424))
-- feat: Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+- Add `active` flag for `snap_getClientStatus` ([#3424](https://github.com/MetaMask/snaps/pull/3424))
+- Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
 
 ## [7.0.0]
 

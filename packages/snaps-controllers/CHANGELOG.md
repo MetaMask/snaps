@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.3.0]
 
-### Uncategorized
+### Added
 
-- perf: Fetch registry files in parallel ([#3416](https://github.com/MetaMask/snaps/pull/3416))
-- feat: Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
-- refactor: Simplify RPC handling in SnapController ([#3397](https://github.com/MetaMask/snaps/pull/3397))
-- fix: Prevent scheduling background events less than 1 second in the future ([#3414](https://github.com/MetaMask/snaps/pull/3414))
-- refactor: Simplify AbstractExecutionService ([#3396](https://github.com/MetaMask/snaps/pull/3396))
+- Add support for `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+
+### Changed
+
+- Fetch registry files in parallel ([#3416](https://github.com/MetaMask/snaps/pull/3416))
+
+### Fixed
+
+- Prevent scheduling background events less than 1 second in the future ([#3414](https://github.com/MetaMask/snaps/pull/3414))
 
 ## [12.2.0]
 

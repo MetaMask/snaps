@@ -9,12 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.2.0]
 
-### Uncategorized
+### Added
 
-- feat: Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
-- feat: Detect unused permissions in Snaps CLI ([#3335](https://github.com/MetaMask/snaps/pull/3335))
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
+- Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
+- Detect unused permissions ([#3335](https://github.com/MetaMask/snaps/pull/3335))
 
 ## [7.1.0]
 
