@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.1.0]
-
-### Added
-
-- Add `active` flag for `snap_getClientStatus` ([#3424](https://github.com/MetaMask/snaps/pull/3424))
-
 ## [1.0.3]
 
 ### Fixed
@@ -37,8 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `snap_getClientStatus` example snap ([#2159](https://github.com/MetaMask/snaps/pull/2159))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.1.0...HEAD
-[1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.3...@metamask/client-status-example-snap@1.1.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.3...HEAD
 [1.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.2...@metamask/client-status-example-snap@1.0.3
 [1.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.1...@metamask/client-status-example-snap@1.0.2
 [1.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/client-status-example-snap@1.0.0...@metamask/client-status-example-snap@1.0.1
