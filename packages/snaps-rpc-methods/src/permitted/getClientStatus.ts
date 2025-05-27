@@ -11,6 +11,7 @@ import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<GetClientStatusHooks> = {
   getIsLocked: true,
+  getIsActive: true,
 };
 
 /**
@@ -31,6 +32,11 @@ export type GetClientStatusHooks = {
    * @returns Whether the client is locked or not.
    */
   getIsLocked: () => boolean;
+
+  /**
+   * @returns Whether the client is active or not.
+   */
+  getIsActive: () => boolean;
 };
 
 /**
@@ -44,6 +50,7 @@ export type GetClientStatusHooks = {
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.getIsLocked - A function that returns whether the client is locked or not.
+ * @param hooks.getIsActive - A function that returns whether the client is opened or not.
  * @returns Nothing.
  */
 async function getClientStatusImplementation(
@@ -51,8 +58,8 @@ async function getClientStatusImplementation(
   response: PendingJsonRpcResponse<GetClientStatusResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getIsLocked }: GetClientStatusHooks,
+  { getIsLocked, getIsActive }: GetClientStatusHooks,
 ): Promise<void> {
-  response.result = { locked: getIsLocked() };
+  response.result = { locked: getIsLocked(), active: getIsActive() };
   return end();
 }

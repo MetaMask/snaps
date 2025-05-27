@@ -165,6 +165,13 @@ export type PermittedMiddlewareHooks = {
   getIsLocked: () => boolean;
 
   /**
+   * A hook that returns whether the client is active or not.
+   *
+   * @returns A boolean flag signaling whether the client is opened.
+   */
+  getIsActive: () => boolean;
+
+  /**
    * A hook that returns the Snap's auxiliary file for the given path. This hook
    * is bound to the Snap ID.
    *
@@ -418,6 +425,7 @@ export function getPermittedHooks(
     hasPermission: () => true,
     getUnlockPromise: asyncResolve(),
     getIsLocked: () => false,
+    getIsActive: () => true,
 
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),

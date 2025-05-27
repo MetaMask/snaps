@@ -12,6 +12,7 @@ describe('snap_getClientStatus', () => {
         implementation: expect.any(Function),
         hookNames: {
           getIsLocked: true,
+          getIsActive: true,
         },
       });
     });
@@ -22,8 +23,10 @@ describe('snap_getClientStatus', () => {
       const { implementation } = getClientStatusHandler;
 
       const getIsLocked = jest.fn().mockReturnValue(true);
+      const getIsActive = jest.fn().mockReturnValue(false);
       const hooks = {
         getIsLocked,
+        getIsActive,
       };
 
       const engine = new JsonRpcEngine();
@@ -48,7 +51,7 @@ describe('snap_getClientStatus', () => {
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
-        result: { locked: true },
+        result: { locked: true, active: false },
       });
     });
   });

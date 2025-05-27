@@ -302,6 +302,29 @@ describe('getPermittedHooks', () => {
     await close();
   });
 
+  it('returns the `getIsActive` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getIsActive } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(getIsActive()).toBe(true);
+
+    await close();
+  });
+
   it('returns the `getSnapFile` hook', async () => {
     const value = JSON.stringify({ bar: 'baz' });
     const { snapId, close } = await getMockServer({
