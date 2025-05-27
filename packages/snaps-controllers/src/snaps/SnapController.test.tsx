@@ -6558,6 +6558,129 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('supports onInstall for preinstalled Snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+        }),
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest({
+            initialPermissions: {
+              'endowment:lifecycle-hooks': {},
+            },
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({ messenger, preinstalledSnaps }),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        6,
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          handler: HandlerType.OnInstall,
+          origin: METAMASK_ORIGIN,
+          request: {
+            jsonrpc: '2.0',
+            id: expect.any(String),
+            method: HandlerType.OnInstall,
+          },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('supports onUpdate for preinstalled Snaps', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+        }),
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest({
+            version: '2.0.0',
+            initialPermissions: {
+              'endowment:lifecycle-hooks': {},
+            },
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          preinstalledSnaps,
+          state: {
+            snaps: getPersistedSnapsState(
+              getPersistedSnapObject({ preinstalled: true }),
+            ),
+          },
+        }),
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        6,
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          handler: HandlerType.OnUpdate,
+          origin: METAMASK_ORIGIN,
+          request: {
+            jsonrpc: '2.0',
+            id: expect.any(String),
+            method: HandlerType.OnUpdate,
+          },
+        },
+      );
+
+      snapController.destroy();
+    });
+
     it('authorizes permissions needed for snaps', async () => {
       const manifest = getSnapManifest();
       const rootMessenger = getControllerMessenger();

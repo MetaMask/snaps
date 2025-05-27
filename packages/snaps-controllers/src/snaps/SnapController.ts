@@ -1055,13 +1055,13 @@ export class SnapController extends BaseController<
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
 
-    if (this.#preinstalledSnaps) {
-      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-    }
-
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
     );
+
+    if (this.#preinstalledSnaps) {
+      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+    }
 
     this.#trackSnapExport = throttleTracking(
       (snapId: SnapId, handler: string, success: boolean, origin: string) => {
@@ -1371,6 +1371,8 @@ export class SnapController extends BaseController<
       this.update((state) => {
         state.snaps[snapId].status = SnapStatus.Stopped;
       });
+
+      this.#setupRuntime(snapId);
 
       // Emit events
       if (isUpdate) {
@@ -2232,10 +2234,6 @@ export class SnapController extends BaseController<
     // We want to remove all snaps & permissions, except for preinstalled snaps
     if (this.#preinstalledSnaps) {
       this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-
-      Object.values(this.state?.snaps).forEach((snap) =>
-        this.#setupRuntime(snap.id),
-      );
     }
   }
 
