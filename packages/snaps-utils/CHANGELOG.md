@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.0]
+
 ### Uncategorized
 
 - feat: Validate platform version against production ([#3417](https://github.com/MetaMask/snaps/pull/3417))
@@ -618,7 +620,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...HEAD
+[9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...@metamask/snaps-utils@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.2...@metamask/snaps-utils@9.3.0
 [9.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.1...@metamask/snaps-utils@9.2.2
 [9.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.0...@metamask/snaps-utils@9.2.1

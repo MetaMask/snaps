@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
-- chore(deps-dev): bump vite from 6.2.6 to 6.2.7 in the npm_and_yarn group across 1 directory ([#3368](https://github.com/MetaMask/snaps/pull/3368))
-- chore(deps): bump @metamask/providers from 22.0.1 to 22.1.0 ([#3363](https://github.com/MetaMask/snaps/pull/3363))
-- chore(deps): bump @metamask/providers from 22.0.0 to 22.0.1 ([#3343](https://github.com/MetaMask/snaps/pull/3343))
-
 ## [1.0.0]
 
 ### Added
