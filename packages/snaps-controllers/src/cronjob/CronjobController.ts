@@ -383,11 +383,6 @@ export class CronjobController extends BaseController<
     const ms =
       DateTime.fromISO(event.date, { setZone: true }).toMillis() - Date.now();
 
-    // This should be validated by the `getExecutionDate` function, but we
-    // add an extra check here to ensure that we don't schedule events in the
-    // past.
-    assert(ms > 0, 'Cannot schedule an event in the past.');
-
     // We don't schedule this job yet as it is too far in the future.
     if (ms > DAILY_TIMEOUT) {
       return;
