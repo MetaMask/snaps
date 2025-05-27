@@ -30,6 +30,7 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith({
         locked: false,
+        active: true,
       });
     });
   });
