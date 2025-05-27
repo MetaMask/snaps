@@ -736,8 +736,8 @@ describe('helpers', () => {
 
       const { snapId, close: closeServer } = await getMockServer({
         sourceCode: `
-          module.exports.onProtocolRequest = async () => {
-            return 1;
+          module.exports.onProtocolRequest = async ({ request }) => {
+            return request.params;
           };
          `,
       });
@@ -751,7 +751,7 @@ describe('helpers', () => {
       expect(response).toStrictEqual(
         expect.objectContaining({
           response: {
-            result: 1,
+            result: ['latest'],
           },
         }),
       );
