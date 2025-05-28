@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- release: `110.0.0` ([#3425](https://github.com/MetaMask/snaps/pull/3425))
-- feat: Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
-- Release 109.0.0 ([#3412](https://github.com/MetaMask/snaps/pull/3412))
-
 ## [0.4.0]
 
 ### Changed
