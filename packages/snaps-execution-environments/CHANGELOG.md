@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.2.0]
+
+### Added
+
+- Add support for `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+
 ## [8.1.0]
 
 ### Added
@@ -503,7 +509,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.2.0...HEAD
+[8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.1.0...@metamask/snaps-execution-environments@8.2.0
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.1...@metamask/snaps-execution-environments@8.1.0
 [8.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@8.0.0...@metamask/snaps-execution-environments@8.0.1
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@7.2.2...@metamask/snaps-execution-environments@8.0.0
