@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.3.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Support lifecycle hooks for preinstalled Snaps ([#3426](https://github.com/MetaMask/snaps/pull/3426))
+- Support lifecycle hooks for preinstalled Snaps ([#3426](https://github.com/MetaMask/snaps/pull/3426))
 
 ## [12.3.0]
 
