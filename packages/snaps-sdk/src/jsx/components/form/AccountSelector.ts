@@ -10,6 +10,7 @@ import { createSnapComponent } from '../../component';
  * @property hideExternalAccounts - Whether to hide accounts that don't belong to the snap.
  * @property chainIds - The chain IDs to filter the accounts to show.
  * @property switchGlobalAccount - Whether to switch the selected account in the client.
+ * @property disabled - Whether the account selector is disabled.
  * @property value - The selected address.
  */
 export type AccountSelectorProps = {
@@ -18,6 +19,7 @@ export type AccountSelectorProps = {
   chainIds?: CaipChainId[] | undefined;
   switchGlobalAccount?: boolean | undefined;
   value?: CaipAccountId | undefined;
+  disabled?: boolean | undefined;
 };
 
 const TYPE = 'AccountSelector';
@@ -32,6 +34,7 @@ const TYPE = 'AccountSelector';
  * @param props.chainIds - The chain IDs to filter the accounts to show.
  * @param props.switchGlobalAccount - Whether to switch the selected account in the client.
  * @param props.value - The selected address.
+ * @param props.disabled - Whether the account selector is disabled.
  * @returns An account selector element.
  * @example
  * <AccountSelector name="account-selector" />

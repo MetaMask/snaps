@@ -1,3 +1,4 @@
+import { AccountSelector } from './AccountSelector';
 import { AddressInput } from './AddressInput';
 import { Button } from './Button';
 import { Dropdown } from './Dropdown';
@@ -342,6 +343,29 @@ describe('Field', () => {
           props: {
             name: 'address',
             chainId: 'eip155:1',
+          },
+        },
+      },
+    });
+  });
+
+  it('renders a field with an account selector', () => {
+    const result = (
+      <Field label="Select Account">
+        <AccountSelector name="account" />
+      </Field>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'Field',
+      key: null,
+      props: {
+        label: 'Select Account',
+        children: {
+          type: 'AccountSelector',
+          key: null,
+          props: {
+            name: 'account',
           },
         },
       },
