@@ -8,6 +8,9 @@ import type {
   SnapId,
   UserInputEvent,
   File,
+  AccountSelectorState,
+  AssetSelectorState,
+  CaipAssetType,
 } from '@metamask/snaps-sdk';
 import { DialogType, UserInputEventType, assert } from '@metamask/snaps-sdk';
 import type {
@@ -17,11 +20,17 @@ import type {
 } from '@metamask/snaps-sdk/jsx';
 import {
   HandlerType,
+  createAccountList,
+  createChainIdList,
   getJsxChildren,
   unwrapError,
   walkJsx,
 } from '@metamask/snaps-utils';
-import { assertExhaustive, hasProperty } from '@metamask/utils';
+import {
+  assertExhaustive,
+  hasProperty,
+  parseCaipAccountId,
+} from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import deepEqual from 'fast-deep-equal';
 import { type SagaIterator } from 'redux-saga';
@@ -30,6 +39,7 @@ import { call, put, select, take } from 'redux-saga/effects';
 import { TYPEABLE_INPUTS } from './constants';
 import type { RootControllerMessenger } from './controllers';
 import { getFileSize, getFileToUpload } from './files';
+import type { SimulationOptions } from './options';
 import type { Interface, RunSagaFunction } from './store';
 import { getCurrentInterface, resolveInterface, setInterface } from './store';
 import type {
@@ -479,7 +489,13 @@ export async function clickElement(
 export function mergeValue(
   state: InterfaceState,
   name: string,
-  value: string | File | boolean | null,
+  value:
+    | string
+    | File
+    | boolean
+    | AccountSelectorState
+    | AssetSelectorState
+    | null,
   form?: string,
 ): InterfaceState {
   if (form) {
@@ -799,9 +815,180 @@ export async function selectFromSelector(
 }
 
 /**
+ * Select an account in the AccountSelector interface element.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param options - The simulation options containing the available accounts.
+ * @param id - The interface ID.
+ * @param content - The interface Components.
+ * @param snapId - The Snap ID.
+ * @param name - The element name.
+ * @param accountId - The account ID to select.
+ */
+export async function selectFromAccountSelector(
+  controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
+  id: string,
+  content: JSXElement,
+  snapId: SnapId,
+  name: string,
+  accountId: string,
+) {
+  const result = getElement(content, name);
+
+  assert(
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'AccountSelector',
+    `Expected an element of type "AccountSelector", but found "${result.element.type}".`,
+  );
+
+  const { accounts } = options;
+
+  const selectedAccount = accounts.find((account) => account.id === accountId);
+
+  assert(
+    selectedAccount !== undefined,
+    `The AccountSelector with the name "${name}" does not contain an account with ID "${accountId}".`,
+  );
+
+  const value = {
+    accountId: selectedAccount.id,
+    addresses: createAccountList(
+      selectedAccount.address,
+      createChainIdList(selectedAccount.scopes, result.element.props.chainIds),
+    ),
+  };
+
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
+  const newState = mergeValue(state, name, value, result.form);
+
+  controllerMessenger.call(
+    'SnapInterfaceController:updateInterfaceState',
+    id,
+    newState,
+  );
+
+  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
+    origin: 'metamask',
+    handler: HandlerType.OnUserInput,
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: {
+        event: {
+          type: UserInputEventType.InputChangeEvent,
+          name: result.element.props.name,
+          value,
+        },
+        id,
+        context,
+      },
+    },
+  });
+}
+
+/**
+ * Select an asset in the AssetSelector interface element.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param options - The simulation options containing the available assets.
+ * @param id - The interface ID.
+ * @param content - The interface Components.
+ * @param snapId - The Snap ID.
+ * @param name - The element name.
+ * @param assetId - The asset ID to select.
+ */
+export async function selectFromAssetSelector(
+  controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
+  id: string,
+  content: JSXElement,
+  snapId: SnapId,
+  name: string,
+  assetId: CaipAssetType,
+) {
+  const result = getElement(content, name);
+
+  assert(
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'AssetSelector',
+    `Expected an element of type "AssetSelector", but found "${result.element.type}".`,
+  );
+
+  const { assets, accounts } = options;
+
+  const selectedAsset = assets[assetId];
+
+  const { address } = parseCaipAccountId(result.element.props.addresses[0]);
+
+  const account = accounts.find(
+    (simulationAccount) => simulationAccount.address === address,
+  );
+
+  const accountHasAsset = account?.assets?.some((asset) => asset === assetId);
+
+  assert(
+    selectedAsset !== undefined && accountHasAsset,
+    `The AssetSelector with the name "${name}" does not contain an asset with ID "${assetId}".`,
+  );
+
+  const value = {
+    asset: assetId,
+    name: selectedAsset.name,
+    symbol: selectedAsset.symbol,
+  };
+
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
+  const newState = mergeValue(state, name, value, result.form);
+
+  controllerMessenger.call(
+    'SnapInterfaceController:updateInterfaceState',
+    id,
+    newState,
+  );
+
+  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
+    origin: 'metamask',
+    handler: HandlerType.OnUserInput,
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: {
+        event: {
+          type: UserInputEventType.InputChangeEvent,
+          name: result.element.props.name,
+          value,
+        },
+        id,
+        context,
+      },
+    },
+  });
+}
+
+/**
  * Wait for an interface to be updated.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
+ * @param options - The simulation options.
  * @param snapId - The Snap ID.
  * @param id - The interface ID.
  * @param originalContent - The original interface content.
@@ -809,6 +996,7 @@ export async function selectFromSelector(
  */
 export async function waitForUpdate(
   controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
   snapId: SnapId,
   id: string,
   originalContent: JSXElement,
@@ -824,10 +1012,15 @@ export async function waitForUpdate(
           listener,
         );
 
-        const actions = getInterfaceActions(snapId, controllerMessenger, {
-          content: newContent,
-          id,
-        });
+        const actions = getInterfaceActions(
+          snapId,
+          controllerMessenger,
+          options,
+          {
+            content: newContent,
+            id,
+          },
+        );
 
         resolve({ ...actions, content: newContent });
       }
@@ -944,6 +1137,7 @@ export async function uploadFile(
  *
  * @param snapId - The Snap ID.
  * @param controllerMessenger - The controller messenger used to call actions.
+ * @param simulationOptions - The simulation options.
  * @param interface - The interface object.
  * @param interface.content - The interface content.
  * @param interface.id - The interface ID.
@@ -952,6 +1146,7 @@ export async function uploadFile(
 export function getInterfaceActions(
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
+  simulationOptions: SimulationOptions,
   { content, id }: Omit<Interface, 'type'> & { content: JSXElement },
 ): SnapInterfaceActions {
   return {
@@ -996,6 +1191,30 @@ export function getInterfaceActions(
       );
     },
 
+    selectFromAccountSelector: async (name: string, accountId: string) => {
+      await selectFromAccountSelector(
+        controllerMessenger,
+        simulationOptions,
+        id,
+        content,
+        snapId,
+        name,
+        accountId,
+      );
+    },
+
+    selectFromAssetSelector: async (name: string, assetId: CaipAssetType) => {
+      await selectFromAssetSelector(
+        controllerMessenger,
+        simulationOptions,
+        id,
+        content,
+        snapId,
+        name,
+        assetId,
+      );
+    },
+
     uploadFile: async (
       name: string,
       file: string | Uint8Array,
@@ -1013,7 +1232,13 @@ export function getInterfaceActions(
     },
 
     waitForUpdate: async () =>
-      waitForUpdate(controllerMessenger, snapId, id, content),
+      waitForUpdate(
+        controllerMessenger,
+        simulationOptions,
+        snapId,
+        id,
+        content,
+      ),
   };
 }
 
@@ -1023,6 +1248,7 @@ export function getInterfaceActions(
  * @param runSaga - A function to run a saga outside the usual Redux flow.
  * @param snapId - The Snap ID.
  * @param controllerMessenger - The controller messenger used to call actions.
+ * @param options - The simulation options.
  * @yields Takes the set interface action.
  * @returns The user interface object.
  */
@@ -1030,6 +1256,7 @@ export function* getInterface(
   runSaga: RunSagaFunction,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
 ): SagaIterator {
   const storedInterface = yield call(
     getStoredInterface,
@@ -1040,6 +1267,7 @@ export function* getInterface(
   const interfaceActions = getInterfaceActions(
     snapId,
     controllerMessenger,
+    options,
     storedInterface,
   );
 

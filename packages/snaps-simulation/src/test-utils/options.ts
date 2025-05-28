@@ -19,9 +19,13 @@ import type { SimulationOptions } from '../options';
  * @param options.useNftDetection - Whether to auto-detect NFTs.
  * @param options.useExternalPricingData - Whether to get token price data from an external source.
  * @param options.showTestnets - Whether to show testnets.
+ * @param options.accounts - The accounts to use in the simulation.
+ * @param options.assets - The assets to use in the simulation.
  * @returns The options for the simulation.
  */
 export function getMockOptions({
+  accounts = [],
+  assets = {},
   currency = 'usd',
   locale = 'en',
   hideBalances = false,
@@ -38,6 +42,8 @@ export function getMockOptions({
   showTestnets = true,
 }: Partial<SimulationOptions> = {}): SimulationOptions {
   return {
+    accounts,
+    assets,
     currency,
     locale,
     secretRecoveryPhrase,

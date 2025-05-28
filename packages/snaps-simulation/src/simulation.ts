@@ -14,17 +14,17 @@ import {
   setupMultiplex,
 } from '@metamask/snaps-controllers/node';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import type {
-  AuxiliaryFileEncoding,
-  Component,
-  InterfaceState,
-  InterfaceContext,
-  SnapId,
-  EntropySource,
+import {
+  type AuxiliaryFileEncoding,
+  type Component,
+  type InterfaceState,
+  type InterfaceContext,
+  type SnapId,
+  type EntropySource,
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
+import type { CaipAssetType, Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
@@ -303,7 +303,7 @@ export async function installSnap<
 
   const controllerMessenger = new Messenger<any, any>();
 
-  registerActions(controllerMessenger, runSaga);
+  registerActions(controllerMessenger, runSaga, options);
 
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options);
@@ -473,14 +473,54 @@ export function getPermittedHooks(
  *
  * @param controllerMessenger - The controller messenger.
  * @param runSaga - The run saga function.
+ * @param options - The simulation options.
  */
 export function registerActions(
   controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
+  options: SimulationOptions,
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: PhishingDetectorResultType.All }),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'AccountsController:getAccountByAddress',
+    (address) =>
+      // @ts-expect-error - This is a partial account with only the necessary
+      // data used by the interface controller.
+      options.accounts.find((account) => address === account.address),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'AccountsController:getSelectedMultichainAccount',
+    // @ts-expect-error - This is a partial account with only the necessary
+    // data used by the interface controller.
+    () => options.accounts.find((account) => account.selected),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'AccountsController:listMultichainAccounts',
+    // @ts-expect-error - These are partial accounts with only the necessary
+    // data used by the interface controller.
+    () => options.accounts,
+  );
+
+  controllerMessenger.registerActionHandler(
+    'MultichainAssetsController:getState',
+    () => ({
+      // @ts-expect-error - These are partial assets with only the
+      // necessary data used by the interface controller.
+      assetsMetadata: options.assets,
+      accountsAssets: options.accounts.reduce<Record<string, CaipAssetType[]>>(
+        (acc, account) => {
+          acc[account.id] = account.assets ?? [];
+          return acc;
+        },
+        {},
+      ),
+    }),
   );
 
   controllerMessenger.registerActionHandler(

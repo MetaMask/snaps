@@ -6,6 +6,8 @@ describe('getOptions', () => {
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "accounts": [],
+        "assets": {},
         "batchCheckBalances": true,
         "currency": "usd",
         "displayNftMedia": true,
@@ -32,6 +34,8 @@ describe('getOptions', () => {
 
     expect(options).toMatchInlineSnapshot(`
       {
+        "accounts": [],
+        "assets": {},
         "batchCheckBalances": true,
         "currency": "eur",
         "displayNftMedia": true,

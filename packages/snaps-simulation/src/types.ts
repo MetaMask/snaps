@@ -3,7 +3,11 @@ import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
 import type {
+<<<<<<< HEAD
   CaipChainId,
+=======
+  CaipAssetType,
+>>>>>>> 7654d378d ([WIP] Refactor send-flow-example-snap and add support in snaps-simulator for asset/account selector)
   Json,
   JsonRpcId,
   JsonRpcParams,
@@ -156,6 +160,22 @@ export type SnapInterfaceActions = {
    * @param value - The value to type.
    */
   selectFromSelector(name: string, value: string): Promise<void>;
+
+  /**
+   * Choose an account from an Account Selector component.
+   *
+   * @param name - The element name to type in.
+   * @param accountId - The account ID.
+   */
+  selectFromAccountSelector(name: string, accountId: string): Promise<void>;
+
+  /**
+   * Choose an asset from an Asset Selector component.
+   *
+   * @param name - The element name to type in.
+   * @param assetId - The asset ID.
+   */
+  selectFromAssetSelector(name: string, assetId: CaipAssetType): Promise<void>;
 
   /**
    * Upload a file.

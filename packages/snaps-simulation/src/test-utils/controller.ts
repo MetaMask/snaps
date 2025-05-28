@@ -53,6 +53,10 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:testOrigin',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:listMultichainAccounts',
+      'MultichainAssetsController:getState',
     ],
     allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
   });

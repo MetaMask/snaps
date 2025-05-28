@@ -18,6 +18,7 @@ import { nanoid } from '@reduxjs/toolkit';
 
 import type { RootControllerMessenger } from './controllers';
 import { getInterface, getInterfaceActions } from './interface';
+import type { SimulationOptions } from './options';
 import { clearNotifications, getNotifications } from './store';
 import type { RunSagaFunction, Store } from './store';
 import { SnapResponseStruct } from './structs';
@@ -33,6 +34,7 @@ export type HandleRequestOptions = {
   executionService: AbstractExecutionService<unknown>;
   handler: HandlerType;
   controllerMessenger: RootControllerMessenger;
+  simulationOptions: SimulationOptions;
   runSaga: RunSagaFunction;
   request: RequestOptions;
 };
@@ -48,6 +50,7 @@ export type HandleRequestOptions = {
  * request.
  * @param options.handler - The handler to use to send the request.
  * @param options.controllerMessenger - The controller messenger used to call actions.
+ * @param options.simulationOptions - The simulation options.
  * @param options.runSaga - A function to run a saga outside the usual Redux
  * flow.
  * @param options.request - The request to send.
@@ -63,6 +66,7 @@ export function handleRequest({
   executionService,
   handler,
   controllerMessenger,
+  simulationOptions,
   runSaga,
   request: { id = nanoid(), origin = 'https://metamask.io', ...options },
 }: HandleRequestOptions): SnapRequest {
@@ -92,6 +96,7 @@ export function handleRequest({
           result,
           snapId,
           controllerMessenger,
+          simulationOptions,
           interfaceId,
         );
 
@@ -134,6 +139,7 @@ export function handleRequest({
       runSaga,
       snapId,
       controllerMessenger,
+      simulationOptions,
     ).toPromise();
     const result = await Promise.race([promise, sagaPromise]);
 
@@ -198,6 +204,7 @@ export async function getInterfaceFromResult(
  * @param result - The handler result object.
  * @param snapId - The Snap ID.
  * @param controllerMessenger - The controller messenger.
+ * @param options - The simulation options.
  * @param contentId - The id of the interface if it exists outside of the result.
  * @returns The content components if any.
  */
@@ -205,6 +212,7 @@ export async function getInterfaceApi(
   result: unknown,
   snapId: SnapId,
   controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
   contentId?: string,
 ): Promise<(() => SnapHandlerInterface) | undefined> {
   const interfaceId = await getInterfaceFromResult(
@@ -223,10 +231,15 @@ export async function getInterfaceApi(
         id,
       );
 
-      const actions = getInterfaceActions(snapId, controllerMessenger, {
-        id,
-        content,
-      });
+      const actions = getInterfaceActions(
+        snapId,
+        controllerMessenger,
+        options,
+        {
+          id,
+          content,
+        },
+      );
 
       return {
         content,

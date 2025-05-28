@@ -1,14 +1,32 @@
+import type {
+  AccountSelectorState,
+  AssetSelectorState,
+} from '@metamask/snaps-sdk';
+
 /**
  * The state of the send form.
  *
+ * @property account - The selected account.
+ * @property asset - The selected asset.
  * @property to - The receiving address.
  * @property amount - The amount to send.
  * @property accountSelector - The selected account.
  */
 export type SendFormState = {
+  account: AccountSelectorState;
+  asset: AssetSelectorState;
   to: string;
   amount: string;
   accountSelector: string;
+};
+
+/**
+ * The state of the send flow interface.
+ *
+ * @property sendForm - The state of the send form.
+ */
+export type SendFlowState = {
+  sendForm: SendFormState;
 };
 
 /**
@@ -56,7 +74,7 @@ export type Currency = {
  * @property fees - The fees for the transaction.
  */
 export type SendFlowContext = {
-  accounts: Record<string, Account>;
-  selectedCurrency: 'BTC' | '$';
+  useFiat: boolean;
   fees: Currency;
+  fiatCurrency: string;
 };

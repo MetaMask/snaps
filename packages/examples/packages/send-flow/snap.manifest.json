@@ -21,7 +21,8 @@
       "dapps": true
     },
     "snap_dialog": {},
-    "endowment:page-home": {}
+    "endowment:page-home": {},
+    "snap_getPreferences": {}
   },
   "platformVersion": "8.1.0",
   "manifestVersion": "0.1"
