@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@metamask/base-controller": "^8.0.1",
-    "@metamask/eth-json-rpc-middleware": "^17.0.0",
+    "@metamask/eth-json-rpc-middleware": "^17.0.1",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.7",
     "@metamask/key-tree": "^10.1.1",
