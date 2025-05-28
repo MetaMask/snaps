@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- release: `110.0.0` ([#3425](https://github.com/MetaMask/snaps/pull/3425))
+- Release 109.0.0 ([#3412](https://github.com/MetaMask/snaps/pull/3412))
+
 ## [1.0.0]
 
 ### Added
