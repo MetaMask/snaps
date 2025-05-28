@@ -409,6 +409,7 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
     >,
     switchGlobalAccount: optional(boolean()),
     value: optional(CaipAccountIdStruct),
+    disabled: optional(boolean()),
   },
 );
 
@@ -595,7 +596,8 @@ const FieldChildStruct = selectiveUnion((value) => {
   | CheckboxElement
   | SelectorElement
   | AssetSelectorElement
-  | AddressInputElement,
+  | AddressInputElement
+  | AccountSelectorElement,
   null
 >;
 

@@ -79,6 +79,19 @@ describe('AccountSelector', () => {
     });
   });
 
+  it('returns an account selector element with a disabled prop', () => {
+    const result = <AccountSelector name="account" disabled={true} />;
+
+    expect(result).toStrictEqual({
+      type: 'AccountSelector',
+      props: {
+        name: 'account',
+        disabled: true,
+      },
+      key: null,
+    });
+  });
+
   it('returns an account selector element with all props', () => {
     const result = (
       <AccountSelector
@@ -86,6 +99,7 @@ describe('AccountSelector', () => {
         chainIds={['bip122:000000000019d6689c085ae165831e93']}
         hideExternalAccounts={true}
         switchGlobalAccount={true}
+        disabled={true}
         value="bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6"
       />
     );
@@ -97,6 +111,7 @@ describe('AccountSelector', () => {
         chainIds: ['bip122:000000000019d6689c085ae165831e93'],
         hideExternalAccounts: true,
         switchGlobalAccount: true,
+        disabled: true,
         value:
           'bip122:000000000019d6689c085ae165831e93:128Lkh3S7CkDTBZ8W7BbpsN3YYizJMp8p6',
       },
