@@ -197,6 +197,20 @@ export function unwrapError(
         return [getJsonRpcError(code, message, stack, data), true];
       }
 
+      // If the JSON-RPC error is double wrapped, unwrap it further to provide the stack.
+      if (
+        isObject(error.data.cause.data) &&
+        isObject(error.data.cause.data.cause) &&
+        error.data.cause.message === error.data.cause.data.cause.message
+      ) {
+        const nestedCause = error.data.cause.data.cause;
+        const { code, message } = error.data.cause;
+        return [
+          getJsonRpcError(code, message, getErrorStack(nestedCause)),
+          false,
+        ];
+      }
+
       // Otherwise, we use the original JSON-RPC error.
       const { code, message, stack, data } = error.data.cause;
       return [getJsonRpcError(code, message, stack, data), false];
