@@ -3252,15 +3252,15 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-block-tracker@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/eth-block-tracker@npm:12.0.0"
+  version: 12.0.1
+  resolution: "@metamask/eth-block-tracker@npm:12.0.1"
   dependencies:
     "@metamask/eth-json-rpc-provider": "npm:^4.1.5"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/utils": "npm:^11.0.1"
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^5.0.0"
-  checksum: 10/9c35ea024cd33a0353825d96eb16273fd6890f9cb41e6f04593422760e49f7969b097efd5b1412fb0029a7e7f55b32bf1d2a118cb0631c58345a0ed5aa096b38
+  checksum: 10/732dc58819bfb3593e2bde88f0cde5049db70d11ffffbe4ec18353edf2621328741f6ebb2ec5e6f6db26411c15b827941f88ca6eb739b2591624f85cfa5f687b
   languageName: node
   linkType: hard
 
