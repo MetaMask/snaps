@@ -20,10 +20,10 @@ export type PreinstalledSnapsMiddlewareHooks = {
  * that want to use the Ethereum provider endowment.
  *
  * @param hooks - The hooks used by the middleware.
- * @param hooks.getPermittedEvmAccounts
- * @param hooks.getAllEvmAccounts
- * @param hooks.getPermissions
- * @param hooks.grantPermissions
+ * @param hooks.getPermittedEvmAccounts - Hook for retrieving the currently permitted EVM addresses.
+ * @param hooks.getAllEvmAccounts - Hook for retriveing all available EVM addresses.
+ * @param hooks.getPermissions - Hook for retrieving the permissions of the requesting origin.
+ * @param hooks.grantPermissions - Hook for granting permissions to the requesting origin.
  * @returns The middleware.
  */
 export function createPreinstalledSnapsMiddleware({
@@ -33,10 +33,7 @@ export function createPreinstalledSnapsMiddleware({
   grantPermissions,
 }: PreinstalledSnapsMiddlewareHooks): JsonRpcMiddleware<JsonRpcParams, Json> {
   return function methodMiddleware(request, _response, next, _end) {
-    if (
-      !request.method.startsWith('wallet') &&
-      !request.method.startsWith('eth')
-    ) {
+    if (request.method.startsWith('snap')) {
       return next();
     }
 
