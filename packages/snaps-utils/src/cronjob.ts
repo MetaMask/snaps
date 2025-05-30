@@ -1,3 +1,4 @@
+import { selectiveUnion } from '@metamask/snaps-sdk';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
@@ -8,11 +9,15 @@ import {
   string,
 } from '@metamask/superstruct';
 import {
+  hasProperty,
+  isObject,
   JsonRpcIdStruct,
   JsonRpcParamsStruct,
   JsonRpcVersionStruct,
 } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
+
+import { ISO8601DurationStruct } from './time';
 
 export const CronjobRpcRequestStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),
@@ -25,34 +30,37 @@ export type CronjobRpcRequest = Infer<typeof CronjobRpcRequestStruct>;
 
 export const CronExpressionStruct = refine(
   string(),
-  'CronExpression',
+  'cronjob expression',
   (value) => {
     try {
       parseExpression(value);
       return true;
     } catch {
-      return false;
+      return `Expected a cronjob expression, but received: "${value}"`;
     }
   },
 );
 
 export type CronExpression = Infer<typeof CronExpressionStruct>;
 
-/**
- * Parses a cron expression.
- *
- * @param expression - Expression to parse.
- * @returns A CronExpression class instance.
- */
-export function parseCronExpression(expression: string | object) {
-  const ensureStringExpression = create(expression, CronExpressionStruct);
-  return parseExpression(ensureStringExpression);
-}
-
-export const CronjobSpecificationStruct = object({
+const CronjobExpressionSpecificationStruct = object({
   expression: CronExpressionStruct,
   request: CronjobRpcRequestStruct,
 });
+
+const CronjobDurationSpecificationStruct = object({
+  duration: ISO8601DurationStruct,
+  request: CronjobRpcRequestStruct,
+});
+
+export const CronjobSpecificationStruct = selectiveUnion((value) => {
+  if (isObject(value) && hasProperty(value, 'duration')) {
+    return CronjobDurationSpecificationStruct;
+  }
+
+  return CronjobExpressionSpecificationStruct;
+});
+
 export type CronjobSpecification = Infer<typeof CronjobSpecificationStruct>;
 
 /**

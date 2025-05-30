@@ -12,6 +12,7 @@ export const ISO8601DurationStruct = refine(
     if (!parsedDuration.isValid) {
       return 'Not a valid ISO 8601 duration';
     }
+
     return true;
   },
 );
