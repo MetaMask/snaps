@@ -1692,14 +1692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.8":
-  version: 1.1.8
-  resolution: "@endo/env-options@npm:1.1.8"
-  checksum: 10/f7e84346599dd2bcb6365c314e9a8129c5ebbb457476de72ed896ea461d616c0b7e0dfc7733e20c0abb8400212fb5eafdae993bcfd4cbfe92acbb5c881a6ad0d
-  languageName: node
-  linkType: hard
-
-"@endo/env-options@npm:^1.1.9":
+"@endo/env-options@npm:^1.1.8, @endo/env-options@npm:^1.1.9":
   version: 1.1.9
   resolution: "@endo/env-options@npm:1.1.9"
   checksum: 10/13a7525bc178d1a3d4b588893fe69cf369e0b741dc389e520a8f893635d6f1d0c63790c8a1e739b350b3f347bbd6758b1d382e3d72bb703dedac4a553b51b1ba
