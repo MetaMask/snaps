@@ -114,7 +114,7 @@
     "typescript": "~5.3.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^4.15.1"
+    "webpack-dev-server": "^5.2.1"
   },
   "engines": {
     "node": "^18.16 || >=20"
