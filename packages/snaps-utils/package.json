@@ -100,7 +100,7 @@
     "marked": "^12.0.1",
     "rfdc": "^1.3.0",
     "semver": "^7.5.4",
-    "ses": "^1.12.0",
+    "ses": "^1.13.0",
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {

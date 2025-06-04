@@ -108,7 +108,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",
-    "ses": "^1.12.0",
+    "ses": "^1.13.0",
     "stream-browserify": "^3.0.0",
     "terser": "^5.17.7",
     "ts-loader": "^9.5.2",
