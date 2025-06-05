@@ -1962,6 +1962,89 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('can recover from crash and handle next request', async () => {
+    const { manifest, sourceCode, svgIcon } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: `
+      module.exports.onRpcRequest = ({ request }) => {
+        if (request.method === "a") {
+          while(true) {}
+        } else {
+          return "foo";
+        }
+      };
+    `,
+      });
+
+    const rootMessenger = getControllerMessenger();
+    const [snapController, service] = getSnapControllerWithEES(
+      getSnapControllerWithEESOptions({
+        maxRequestTime: 50,
+        rootMessenger,
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile],
+        }),
+      }),
+    );
+
+    const spy = jest.spyOn(service, 'executeSnap');
+
+    await snapController.installSnaps(MOCK_ORIGIN, {
+      [MOCK_SNAP_ID]: {},
+    });
+
+    const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+    expect(snapController.state.snaps[snap.id].status).toBe('running');
+
+    // @ts-expect-error Accessing protected value.
+    const originalTerminateFunction = service.terminateJob.bind(service);
+
+    let promise: Promise<unknown>;
+
+    // Cause a request at termination time.
+    // @ts-expect-error Accessing protected value.
+    service.terminateJob = async (args) => {
+      promise = snapController.handleRequest({
+        snapId: snap.id,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'b',
+          params: {},
+          id: 2,
+        },
+      });
+      return originalTerminateFunction(args);
+    };
+
+    await expect(
+      snapController.handleRequest({
+        snapId: snap.id,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'a',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(
+      'npm:@metamask/example-snap failed to respond to the request in time.',
+    );
+
+    expect(await promise).toBe('foo');
+
+    expect(spy).toHaveBeenCalledTimes(2);
+
+    snapController.destroy();
+
+    await service.terminateAllSnaps();
+  });
+
   it('does not kill snaps with open sessions', async () => {
     const sourceCode = `
       module.exports.onRpcRequest = () => 'foo bar';
