@@ -1718,8 +1718,9 @@ export class SnapController extends BaseController<
       throw new Error(`The snap "${snapId}" is not running.`);
     }
 
-    // No-op if the Snap is already stopping.
+    // If we are already stopping, wait for that to finish.
     if (runtime.stopPromise) {
+      await runtime.stopPromise;
       return;
     }
 
@@ -4090,6 +4091,7 @@ export class SnapController extends BaseController<
     this.#snapsRuntimeData.set(snapId, {
       lastRequest: null,
       startPromise: null,
+      stopPromise: null,
       installPromise: null,
       encryptionKey: null,
       encryptionSalt: null,
@@ -4097,7 +4099,6 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
-      stopping: false,
       stateMutex: new Mutex(),
       getStateMutex: new Mutex(),
     });
