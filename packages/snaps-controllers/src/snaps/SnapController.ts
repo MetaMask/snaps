@@ -129,6 +129,7 @@ import {
   isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
+  createDeferredPromise,
 } from '@metamask/utils';
 import type { StateMachine } from '@xstate/fsm';
 import { createMachine, interpret } from '@xstate/fsm';
@@ -235,6 +236,11 @@ export type SnapRuntimeData = {
   startPromise: null | Promise<void>;
 
   /**
+   * A promise that resolves when the Snap has finished stopping
+   */
+  stopPromise: null | Promise<void>;
+
+  /**
    * A Unix timestamp for the last time the Snap received an RPC request
    */
   lastRequest: null | number;
@@ -272,11 +278,6 @@ export type SnapRuntimeData = {
    * Cached encryption salt used for state encryption.
    */
   encryptionSalt: string | null;
-
-  /**
-   * A boolean flag to determine whether the Snap is currently being stopped.
-   */
-  stopping: boolean;
 
   /**
    * Cached encrypted state of the Snap.
@@ -1717,14 +1718,16 @@ export class SnapController extends BaseController<
       throw new Error(`The snap "${snapId}" is not running.`);
     }
 
-    // No-op if the Snap is already stopping.
-    if (runtime.stopping) {
+    // If we are already stopping, wait for that to finish.
+    if (runtime.stopPromise) {
+      await runtime.stopPromise;
       return;
     }
 
     // Flag that the Snap is actively stopping, this prevents other calls to stopSnap
     // while we are handling termination of the Snap
-    runtime.stopping = true;
+    const { promise, resolve } = createDeferredPromise();
+    runtime.stopPromise = promise;
 
     try {
       if (this.isRunning(snapId)) {
@@ -1736,10 +1739,11 @@ export class SnapController extends BaseController<
       runtime.lastRequest = null;
       runtime.pendingInboundRequests = [];
       runtime.pendingOutboundRequests = 0;
-      runtime.stopping = false;
+      runtime.stopPromise = null;
       if (this.isRunning(snapId)) {
         this.#transition(snapId, statusEvent);
       }
+      resolve();
     }
   }
 
@@ -3550,8 +3554,13 @@ export class SnapController extends BaseController<
 
     const timeout = this.#getExecutionTimeout(handlerPermissions);
 
+    const runtime = this.#getRuntimeExpect(snapId);
+
+    if (runtime.stopPromise) {
+      await runtime.stopPromise;
+    }
+
     if (!this.isRunning(snapId)) {
-      const runtime = this.#getRuntimeExpect(snapId);
       if (!runtime.startPromise) {
         runtime.startPromise = this.startSnap(snapId);
       }
@@ -4082,6 +4091,7 @@ export class SnapController extends BaseController<
     this.#snapsRuntimeData.set(snapId, {
       lastRequest: null,
       startPromise: null,
+      stopPromise: null,
       installPromise: null,
       encryptionKey: null,
       encryptionSalt: null,
@@ -4089,7 +4099,6 @@ export class SnapController extends BaseController<
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,
-      stopping: false,
       stateMutex: new Mutex(),
       getStateMutex: new Mutex(),
     });
