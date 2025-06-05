@@ -2040,8 +2040,9 @@ describe('SnapController', () => {
 
     expect(spy).toHaveBeenCalledTimes(2);
 
+    // @ts-expect-error Accessing protected value.
+    service.terminateJob = originalTerminateFunction;
     snapController.destroy();
-
     await service.terminateAllSnaps();
   });
 
