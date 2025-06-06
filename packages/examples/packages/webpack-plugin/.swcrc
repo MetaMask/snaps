@@ -4,7 +4,7 @@
     "parser": {
       "syntax": "typescript"
     },
-    "target": "es2021"
+    "target": "ES2022"
   },
   "module": {
     "type": "es6"
