@@ -499,7 +499,9 @@ export function getHelpers({
       return response;
     },
 
-    onClientRequest: async (request) => {
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    onClientRequest: (request) => {
       log('Sending client request.');
 
       return handleRequest({
