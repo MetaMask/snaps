@@ -3626,6 +3626,10 @@ export class SnapController extends BaseController<
       const [jsonRpcError, handled] = unwrapError(error);
 
       if (!handled) {
+        logError(
+          `"${snapId}" threw an unhandled error and crashed:`,
+          jsonRpcError,
+        );
         await this.stopSnap(snapId, SnapStatusEvents.Crash);
       }
 
