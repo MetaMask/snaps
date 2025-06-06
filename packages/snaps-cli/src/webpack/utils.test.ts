@@ -2,7 +2,6 @@ import { dim } from 'chalk';
 
 import {
   WEBPACK_FALLBACKS,
-  getBrowserslistTargets,
   getDefaultLoader,
   getDevTool,
   getFallbacks,
@@ -58,18 +57,6 @@ describe('getProgressHandler', () => {
   it('works without spinner', () => {
     const progressHandler = getProgressHandler();
     expect(() => progressHandler(0.5)).not.toThrow();
-  });
-});
-
-describe('getBrowserslistTargets', () => {
-  it('returns the default targets', async () => {
-    const targets = await getBrowserslistTargets();
-    expect(targets).toMatchInlineSnapshot(`
-      [
-        "chrome >= 113",
-        "firefox >= 115",
-      ]
-    `);
   });
 });
 
