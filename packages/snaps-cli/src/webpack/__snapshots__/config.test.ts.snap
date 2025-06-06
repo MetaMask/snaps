@@ -16,12 +16,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -186,12 +188,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -356,12 +360,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -526,12 +532,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -687,12 +695,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -865,12 +875,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1035,12 +1047,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1205,12 +1219,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1383,12 +1399,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1561,12 +1579,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1716,12 +1736,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -1894,12 +1916,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2072,12 +2096,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2251,12 +2277,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2421,12 +2449,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2591,12 +2621,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2770,12 +2802,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",
@@ -2949,12 +2983,14 @@ exports[`getDefaultConfiguration returns the default Webpack configuration when 
         "use": {
           "loader": "/foo/bar/node_modules/swc-loader/index.js",
           "options": {
+            "env": {
+              "targets": "chrome >= 90, firefox >= 91",
+            },
             "jsc": {
               "parser": {
                 "syntax": "typescript",
                 "tsx": true,
               },
-              "target": "esnext",
               "transform": {
                 "react": {
                   "importSource": "@metamask/snaps-sdk",

@@ -1,5 +1,6 @@
 import { bytesToBase64 } from '@metamask/utils';
 import { dim } from 'chalk';
+import { promises as fs } from 'fs';
 import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
@@ -61,6 +62,7 @@ export const WEBPACK_FALLBACKS = {
  * @returns The default loader.
  */
 export async function getDefaultLoader({ sourceMap }: ProcessedConfig) {
+  const targets = await getBrowserslistTargets();
   return {
     /**
      * We use the `swc-loader` to transpile TypeScript and JavaScript files.
@@ -87,13 +89,6 @@ export async function getDefaultLoader({ sourceMap }: ProcessedConfig) {
       sourceMaps: Boolean(getDevTool(sourceMap)),
 
       jsc: {
-        /**
-         * This tells SWC to target the latest ECMAScript version, letting
-         * Webpack handle the final transpilation to the supported version
-         * later in the build process.
-         */
-        target: 'esnext',
-
         parser: {
           /**
            * This tells the parser to parse TypeScript files. If you
@@ -161,6 +156,10 @@ export async function getDefaultLoader({ sourceMap }: ProcessedConfig) {
          */
         type: 'es6',
       },
+
+      env: {
+        targets: targets.join(', '),
+      },
     },
   };
 }
@@ -208,6 +207,19 @@ export function getProgressHandler(spinner?: Ora, spinnerText?: string) {
       )}`;
     }
   };
+}
+
+/**
+ * Get the targets from the `.browserslistrc` file.
+ *
+ * @returns The browser targets as an array of strings.
+ */
+export async function getBrowserslistTargets() {
+  const contents = await fs.readFile(BROWSERSLIST_FILE, 'utf8');
+  return contents
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'));
 }
 
 /**
