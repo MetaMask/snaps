@@ -12,15 +12,9 @@ import {
   CronjobRpcRequestStruct,
   ISO8601DateStruct,
   ISO8601DurationStruct,
-  toCensoredISO8601String,
 } from '@metamask/snaps-utils';
 import { StructError, create, object } from '@metamask/superstruct';
-import {
-  assert,
-  hasProperty,
-  type PendingJsonRpcResponse,
-} from '@metamask/utils';
-import { DateTime, Duration } from 'luxon';
+import { hasProperty, type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
@@ -33,7 +27,7 @@ const hookNames: MethodHooksObject<ScheduleBackgroundEventMethodHooks> = {
 };
 
 type ScheduleBackgroundEventHookParams = {
-  date: string;
+  schedule: string;
   request: CronjobRpcRequest;
 };
 
@@ -78,24 +72,18 @@ export type ScheduleBackgroundEventParameters = InferMatching<
 >;
 
 /**
- * Generates a `DateTime` object based on if a duration or date is provided.
+ * Get the schedule for a background event based on the provided parameters.
  *
- * @param params - The validated params from the `snap_scheduleBackgroundEvent` call.
- * @returns A `DateTime` object.
+ * @param params - The parameters for the background event.
+ * @returns The schedule parameters for the background event.
  */
-function getStartDate(params: ScheduleBackgroundEventParams) {
-  if ('duration' in params) {
-    const parsed = Duration.fromISO(params.duration);
-
-    // Disallow durations less than 1 second.
-    const duration =
-      parsed.as('seconds') >= 1 ? parsed : Duration.fromObject({ seconds: 1 });
-
-    return DateTime.fromJSDate(new Date()).toUTC().plus(duration).toISO();
+function getSchedule(params: ScheduleBackgroundEventParameters): string {
+  if (hasProperty(params, 'date')) {
+    // TODO: Check why `params.date` is not a string.
+    return params.date as string;
   }
 
-  // Make sure any millisecond precision is removed.
-  return toCensoredISO8601String(params.date);
+  return params.duration;
 }
 
 /**
@@ -129,14 +117,14 @@ async function getScheduleBackgroundEventImplementation(
 
   try {
     const validatedParams = getValidatedParams(params);
-
     const { request } = validatedParams;
+    const schedule = getSchedule(validatedParams);
 
-    const date = getStartDate(validatedParams);
+    const id = scheduleBackgroundEvent({
+      schedule,
+      request,
+    });
 
-    assert(date);
-
-    const id = scheduleBackgroundEvent({ date, request });
     res.result = id;
   } catch (error) {
     return end(error);

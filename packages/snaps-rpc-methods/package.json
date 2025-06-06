@@ -62,8 +62,7 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.4.0",
-    "@noble/hashes": "^1.7.1",
-    "luxon": "^3.5.0"
+    "@noble/hashes": "^1.7.1"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.3.3",
@@ -72,7 +71,6 @@
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
     "@ts-bridge/cli": "^0.6.1",
-    "@types/luxon": "^3",
     "@types/node": "18.14.2",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
