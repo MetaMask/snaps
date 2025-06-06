@@ -515,6 +515,14 @@ export type Snap = {
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
+   * Send a JSON-RPC client request to the Snap.
+   *
+   * @param request - The JSON-RPC request.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  onClientRequest(request: Omit<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
    * specified response when a request with the specified method is sent.
    *
