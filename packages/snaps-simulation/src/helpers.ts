@@ -181,6 +181,14 @@ export type SnapHelpers = {
   ): Promise<SnapResponseWithoutInterface>;
 
   /**
+   * Send a JSON-RPC client request to the Snap.
+   *
+   * @param request - The JSON-RPC request.
+   * @returns The response promise, with extra {@link SnapRequestObject} fields.
+   */
+  onClientRequest(request: Omit<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
    * Mock a JSON-RPC request. This will cause the snap to respond with the
    * specified response when a request with the specified method is sent.
    *
@@ -489,6 +497,22 @@ export function getHelpers({
       });
 
       return response;
+    },
+
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    onClientRequest: (request) => {
+      log('Sending client request.');
+
+      return handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnClientRequest,
+        request,
+      });
     },
 
     mockJsonRpc(mock: JsonRpcMockOptions) {

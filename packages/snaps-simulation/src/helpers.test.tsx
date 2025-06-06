@@ -761,6 +761,34 @@ describe('helpers', () => {
     });
   });
 
+  describe('onClientRequest', () => {
+    it('sends a onClientRequest request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onClientRequest = async ({ request }) => {
+            return request.method;
+          };
+         `,
+      });
+
+      const { onClientRequest, close } = await installSnap(snapId);
+      const response = await onClientRequest({ method: 'foo' });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'foo',
+          },
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('mockJsonRpc', () => {
     it('mocks a JSON-RPC method', async () => {
       jest.spyOn(console, 'log').mockImplementation();
