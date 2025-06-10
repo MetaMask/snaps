@@ -1,25 +1,22 @@
+import { assert } from '@metamask/utils';
+
 import { rootRealmGlobal } from '../globalObject';
 
 export const createCrypto = () => {
-  if (
-    'crypto' in rootRealmGlobal &&
-    typeof rootRealmGlobal.crypto === 'object' &&
-    'SubtleCrypto' in rootRealmGlobal &&
-    typeof rootRealmGlobal.SubtleCrypto === 'function'
-  ) {
-    return {
-      crypto: harden(rootRealmGlobal.crypto),
-      SubtleCrypto: harden(rootRealmGlobal.SubtleCrypto),
-    };
-  }
-  // For now, we expose the experimental webcrypto API for Node.js execution environments
-  // TODO: Figure out if this is enough long-term or if we should use a polyfill.
-  /* eslint-disable-next-line @typescript-eslint/no-require-imports, import-x/no-nodejs-modules, no-restricted-globals */
-  const crypto = require('crypto').webcrypto;
+  assert(
+    rootRealmGlobal.crypto,
+    'Crypto endowment requires `globalThis.crypto` to be defined.',
+  );
+
+  assert(
+    rootRealmGlobal.SubtleCrypto,
+    'Crypto endowment requires `globalThis.SubtleCrypto` to be defined.',
+  );
+
   return {
-    crypto: harden(crypto),
-    SubtleCrypto: harden(crypto.subtle.constructor),
-  } as const;
+    crypto: harden(rootRealmGlobal.crypto),
+    SubtleCrypto: harden(rootRealmGlobal.SubtleCrypto),
+  };
 };
 
 const endowmentModule = {

@@ -212,7 +212,7 @@ describe('initialize', () => {
       };
 
       await expect(initHandler({ ...getMockArgv() })).rejects.toThrow(
-        `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node 18.16.0 or later.`,
+        `Init Error: You are using an outdated version of Node (${process.version}). Please update to Node 20.0.0 or later.`,
       );
     });
 
