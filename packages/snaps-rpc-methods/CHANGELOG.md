@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.0.0]
 
-### Uncategorized
+### Changed
 
 - **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
 - **BREAKING:** Refactor background event methods to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
