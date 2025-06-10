@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- refactor!: Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+- fix: Allow `AccountSelector` in `Field` and add `disabled` prop. ([#3430](https://github.com/MetaMask/snaps/pull/3430))
+
 ## [7.1.0]
 
 ### Added

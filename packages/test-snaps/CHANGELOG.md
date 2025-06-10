@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- chore: Bump webpack-dev-server from 4.15.1 to 5.2.1 in the npm_and_yarn group across 1 directory ([#3439](https://github.com/MetaMask/snaps/pull/3439))
+
 ## [2.23.1]
 
 ### Fixed

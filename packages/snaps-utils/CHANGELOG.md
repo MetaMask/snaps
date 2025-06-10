@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- refactor!: Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- chore: Bump ses from 1.12.0 to 1.13.0 in the npm_and_yarn group across 1 directory ([#3438](https://github.com/MetaMask/snaps/pull/3438))
+- fix: Unwrap double-wrapped JSON-RPC errors ([#3432](https://github.com/MetaMask/snaps/pull/3432))
+
 ## [9.4.0]
 
 ### Added

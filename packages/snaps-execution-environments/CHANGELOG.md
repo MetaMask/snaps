@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- chore: Update TypeScript build target to ES2022 ([#3444](https://github.com/MetaMask/snaps/pull/3444))
+- chore: Bump supported browsers ([#3441](https://github.com/MetaMask/snaps/pull/3441))
+- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- chore: Bump ses from 1.12.0 to 1.13.0 in the npm_and_yarn group across 1 directory ([#3438](https://github.com/MetaMask/snaps/pull/3438))
+
 ## [8.2.0]
 
 ### Added
