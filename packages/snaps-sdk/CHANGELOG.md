@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.0.0]
+
 ### Uncategorized
 
 - chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
@@ -591,7 +593,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.0.0...HEAD
+[8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.1.0...@metamask/snaps-sdk@8.0.0
 [7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.0.0...@metamask/snaps-sdk@7.1.0
 [7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.24.0...@metamask/snaps-sdk@7.0.0
 [6.24.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.23.0...@metamask/snaps-sdk@6.24.0
