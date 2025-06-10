@@ -36,15 +36,4 @@ describe('Crypto endowment', () => {
       SubtleCrypto: undefined,
     });
   });
-
-  it('returns Node.js webcrypto module', () => {
-    // eslint-disable-next-line jest/prefer-strict-equal
-    expect(crypto.factory()).toEqual({
-      crypto: {
-        mock: true,
-        subtle: { mock: true, constructor: { mock: true } },
-      },
-      SubtleCrypto: { mock: true },
-    });
-  });
 });

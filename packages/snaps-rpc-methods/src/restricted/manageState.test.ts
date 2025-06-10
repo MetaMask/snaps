@@ -4,7 +4,6 @@ import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
-import { webcrypto } from 'crypto';
 
 import {
   getEncryptionEntropy,
@@ -66,13 +65,6 @@ describe('snap_manageState', () => {
   });
 
   describe('getManageStateImplementation', () => {
-    if (!('CryptoKey' in globalThis)) {
-      // We can remove this once we drop Node 18
-      Object.defineProperty(globalThis, 'CryptoKey', {
-        value: webcrypto.CryptoKey,
-      });
-    }
-
     it('gets snap state', async () => {
       const mockSnapState = {
         some: {

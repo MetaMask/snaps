@@ -69,7 +69,6 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha512 } from '@noble/hashes/sha512';
 import { File } from 'buffer';
-import { webcrypto } from 'crypto';
 import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
@@ -122,14 +121,6 @@ import {
 } from '../test-utils';
 import { delay } from '../utils';
 
-if (!('CryptoKey' in globalThis)) {
-  // We can remove this once we drop Node 18
-  Object.defineProperty(globalThis, 'CryptoKey', {
-    value: webcrypto.CryptoKey,
-  });
-}
-
-globalThis.crypto ??= webcrypto as typeof globalThis.crypto;
 globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
   array: Type,
 ) => {
@@ -11255,11 +11246,6 @@ describe('SnapController', () => {
 
     it('supports hex encoding', async () => {
       fetchMock.disableMocks();
-
-      // We can remove this once we drop Node 18
-      Object.defineProperty(globalThis, 'File', {
-        value: File,
-      });
 
       // Because jest-fetch-mock replaces native fetch, we mock it here
       Object.defineProperty(globalThis, 'fetch', {

@@ -69,7 +69,7 @@
     "webpack-cli": "^5.1.4"
   },
   "engines": {
-    "node": "^18.16 || >=20"
+    "node": "^20 || >=22"
   },
   "publishConfig": {
     "access": "public",
