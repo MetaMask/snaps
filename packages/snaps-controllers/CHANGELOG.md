@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.0.0]
+
+### Changed
+
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- **BREAKING:** Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+  - The `jobs` state property was removed in favour of the `events` property,
+    which now contains all background events and cronjobs.
+  - `CronjobController:schedule` now expects a `schedule` field instead of
+    `date`.
+  - Some actions were renamed to remove the `BackgroundEvent` suffix:
+    - `CronjobController:scheduleBackgroundEvent` ->
+      `CronjobController:schedule`.
+    - `CronjobController:cancelBackgroundEvent` -> `CronjobController:cancel`.
+    - `CronjobController:getBackgroundEvents` -> `CronjobController:get`.
+
+### Fixed
+
+- Log errors that cause a crash ([#3443](https://github.com/MetaMask/snaps/pull/3443))
+- Recover from a crash more gracefully ([#3440](https://github.com/MetaMask/snaps/pull/3440))
+  - This resolves possible race conditions when sending requests to a Snap
+    that is in the process of being stopped.
+
 ## [12.3.1]
 
 ### Fixed
@@ -786,7 +809,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@13.0.0...HEAD
+[13.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.1...@metamask/snaps-controllers@13.0.0
 [12.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.0...@metamask/snaps-controllers@12.3.1
 [12.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.2.0...@metamask/snaps-controllers@12.3.0
 [12.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.1.0...@metamask/snaps-controllers@12.2.0

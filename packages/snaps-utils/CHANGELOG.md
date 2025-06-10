@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+
+### Added
+
+- Support scheduling cronjobs with an ISO 8601 duration ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+
+### Changed
+
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+
+### Fixed
+
+- Unwrap double-wrapped JSON-RPC errors ([#3432](https://github.com/MetaMask/snaps/pull/3432))
+
 ## [9.4.0]
 
 ### Added
@@ -623,7 +637,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...@metamask/snaps-utils@10.0.0
 [9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...@metamask/snaps-utils@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.2...@metamask/snaps-utils@9.3.0
 [9.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.1...@metamask/snaps-utils@9.2.2

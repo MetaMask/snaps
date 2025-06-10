@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0]
+
+### Added
+
+- Add support for `onClientRequest` ([#3445](https://github.com/MetaMask/snaps/pull/3445))
+
+### Changed
+
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+
 ## [8.16.0]
 
 ### Added
@@ -375,7 +385,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.16.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.0.0...HEAD
+[9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.16.0...@metamask/snaps-jest@9.0.0
 [8.16.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.15.0...@metamask/snaps-jest@8.16.0
 [8.15.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.1...@metamask/snaps-jest@8.15.0
 [8.14.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.14.0...@metamask/snaps-jest@8.14.1
