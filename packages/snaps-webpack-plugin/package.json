@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-webpack-plugin",
-  "version": "5.0.0",
+  "version": "4.3.0",
   "description": "A Webpack plugin to build MetaMask Snaps with Webpack",
   "keywords": [
     "MetaMask",

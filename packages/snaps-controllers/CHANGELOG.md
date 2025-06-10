@@ -9,14 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.0.0]
 
-### Uncategorized
+### Changed
 
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- refactor!: Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
-- chore: Bump supported browsers ([#3441](https://github.com/MetaMask/snaps/pull/3441))
-- fix: Log errors that cause a crash ([#3443](https://github.com/MetaMask/snaps/pull/3443))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
-- fix: Recover from a crash more gracefully ([#3440](https://github.com/MetaMask/snaps/pull/3440))
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- **BREAKING:** Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+  - The `jobs` state property was removed in favour of the `events` property,
+    which now contains all background events and cronjobs.
+  - `CronjobController:schedule` now expects a `schedule` field instead of
+    `date`.
+  - Some actions were renamed to remove the `BackgroundEvent` suffix:
+    - `CronjobController:scheduleBackgroundEvent` ->
+      `CronjobController:schedule`.
+    - `CronjobController:cancelBackgroundEvent` -> `CronjobController:cancel`.
+    - `CronjobController:getBackgroundEvents` -> `CronjobController:get`.
+
+### Fixed
+
+- Log errors that cause a crash ([#3443](https://github.com/MetaMask/snaps/pull/3443))
+- Recover from a crash more gracefully ([#3440](https://github.com/MetaMask/snaps/pull/3440))
+  - This resolves possible race conditions when sending requests to a Snap
+    that is in the process of being stopped.
 
 ## [12.3.1]
 

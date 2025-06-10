@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.0.0]
 
-### Uncategorized
+### Changed
 
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- chore: Bump supported browsers ([#3441](https://github.com/MetaMask/snaps/pull/3441))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- Bump minimum supported browser versions ([#3441](https://github.com/MetaMask/snaps/pull/3441))
+  - The minimum supported browser versions are now:
+    - Chrome 113
+    - Firefox 115
+- Bump `@swc/core` from `1.3.78` to `1.11.31` ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- Bump `swc-loader` from `0.2.3` to `0.2.6` ([#3442](https://github.com/MetaMask/snaps/pull/3442))
 
 ## [7.2.0]
 

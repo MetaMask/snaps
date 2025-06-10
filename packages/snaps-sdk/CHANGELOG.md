@@ -9,11 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.0.0]
 
-### Uncategorized
+### Added
 
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- refactor!: Refactor cronjob controller to reduce duplication ([#3421](https://github.com/MetaMask/snaps/pull/3421))
-- fix: Allow `AccountSelector` in `Field` and add `disabled` prop. ([#3430](https://github.com/MetaMask/snaps/pull/3430))
+- Support scheduling cronjobs with an ISO 8601 duration ([#3421](https://github.com/MetaMask/snaps/pull/3421))
+  - Instead of using a cron expression, you can now use a duration string to
+    schedule a cronjob. This is useful for scheduling recurring events that are
+    not based on a specific time of day.
+  - To schedule a cronjob with a duration, use `duration` instead of
+    `expression` in the Snap manifest.
+
+### Changed
+
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+
+### Fixed
+
+- Allow `AccountSelector` in `Field` and add `disabled` prop. ([#3430](https://github.com/MetaMask/snaps/pull/3430))
 
 ## [7.1.0]
 
