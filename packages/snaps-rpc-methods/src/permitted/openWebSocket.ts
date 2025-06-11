@@ -12,6 +12,7 @@ import {
   object,
   array,
   string,
+  optional,
   StructError,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
@@ -26,12 +27,12 @@ const hookNames: MethodHooksObject<OpenWebSocketMethodHooks> = {
 
 export type OpenWebSocketMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
-  openWebSocket: (url: string, protocols?: string[]) => string;
+  openWebSocket: (url: string, protocols?: string[]) => Promise<string>;
 };
 
 const OpenWebSocketParametersStruct = object({
   url: string(),
-  protocols: array(string()),
+  protocols: optional(array(string())),
 });
 
 export type OpenWebSocketParameters = InferMatching<
@@ -64,13 +65,13 @@ export const openWebSocketHandler: PermittedHandlerExport<
  * @param hooks.openWebSocket - The function to open a WebSocket.
  * @returns Nothing.
  */
-function openWebSocketImplementation(
+async function openWebSocketImplementation(
   req: JsonRpcRequest<OpenWebSocketParameters>,
   res: PendingJsonRpcResponse<OpenWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { hasPermission, openWebSocket }: OpenWebSocketMethodHooks,
-): void {
+): Promise<void> {
   if (!hasPermission(SnapEndowments.NetworkAccess)) {
     return end(providerErrors.unauthorized());
   }
@@ -79,7 +80,7 @@ function openWebSocketImplementation(
 
   try {
     const { url, protocols } = getValidatedParams(params);
-    res.result = openWebSocket(url, protocols);
+    res.result = await openWebSocket(url, protocols);
   } catch (error) {
     return end(error);
   }

@@ -6,3 +6,4 @@ export * from './cronjob';
 export * from './interface';
 export * from './insights';
 export * from './multichain';
+export * from './websocket';

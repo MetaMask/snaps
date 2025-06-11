@@ -1,7 +1,7 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { HandlerType, logError } from '@metamask/snaps-utils';
-import { assert } from '@metamask/utils';
+import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import type { HandleSnapRequest } from '../snaps';
@@ -106,7 +106,7 @@ export class WebSocketService {
         origin: METAMASK_ORIGIN,
         snapId,
         handler: HandlerType.OnRpcRequest,
-        request: { event },
+        request: { method: '', params: { event } },
       })
       .catch((error) => {
         logError(
@@ -116,12 +116,15 @@ export class WebSocketService {
       });
   }
 
-  open(snapId: SnapId, url: string, protocols?: string[]) {
+  async open(snapId: SnapId, url: string, protocols?: string[]) {
     const id = nanoid();
     // eslint-disable-next-line no-restricted-globals
     const socket = new WebSocket(url, protocols);
 
+    const { promise, resolve } = createDeferredPromise();
+
     socket.addEventListener('open', (_event) => {
+      resolve();
       this.#handleEvent(snapId, {
         type: 'open',
         id,
@@ -166,6 +169,11 @@ export class WebSocketService {
       url,
       socket,
     });
+
+    // TODO: Consider returning immediately and awaiting when sending messages.
+    await promise;
+
+    return id;
   }
 
   close(snapId: SnapId, id: string) {
