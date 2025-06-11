@@ -30,3 +30,6 @@ export type * from './cancel-background-event';
 export type * from './get-background-events';
 export type * from './set-state';
 export type * from './track-event';
+export type * from './open-web-socket';
+export type * from './close-web-socket';
+export type * from './send-web-socket-message';
