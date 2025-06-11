@@ -1,12 +1,13 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type {
-  JsonRpcRequest,
-  OpenWebSocketParams,
-  OpenWebSocketResult,
+import {
+  literal,
+  type JsonRpcRequest,
+  type OpenWebSocketParams,
+  type OpenWebSocketResult,
 } from '@metamask/snaps-sdk';
-import type { InferMatching } from '@metamask/snaps-utils';
+import { uri, type InferMatching } from '@metamask/snaps-utils';
 import {
   create,
   object,
@@ -31,7 +32,7 @@ export type OpenWebSocketMethodHooks = {
 };
 
 const OpenWebSocketParametersStruct = object({
-  url: string(),
+  url: uri({ protocol: literal('wss') }),
   protocols: optional(array(string())),
 });
 
