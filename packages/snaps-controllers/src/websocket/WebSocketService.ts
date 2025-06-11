@@ -4,7 +4,7 @@ import { HandlerType, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import type { HandleSnapRequest } from '../snaps';
+import type { HandleSnapRequest, SnapUninstalled, SnapUpdated } from '../snaps';
 import { METAMASK_ORIGIN } from '../snaps';
 
 const serviceName = 'WebSocketService';
@@ -37,7 +37,7 @@ export type WebSocketServiceActions =
 
 export type WebSocketServiceAllowedActions = HandleSnapRequest;
 
-export type WebSocketServiceEvents = never;
+export type WebSocketServiceEvents = SnapUninstalled | SnapUpdated;
 
 export type WebSocketServiceMessenger = RestrictedMessenger<
   'WebSocketService',
@@ -55,6 +55,7 @@ type InternalSocket = {
   id: string;
   snapId: SnapId;
   url: string;
+  openPromise: Promise<void>;
   // eslint-disable-next-line no-restricted-globals
   socket: WebSocket;
 };
@@ -87,6 +88,14 @@ export class WebSocketService {
       `${serviceName}:getAll`,
       this.getAll.bind(this),
     );
+
+    this.#messenger.subscribe('SnapController:snapUpdated', (snap) => {
+      this.closeAll(snap.id);
+    });
+
+    this.#messenger.subscribe('SnapController:snapUninstalled', (snap) => {
+      this.closeAll(snap.id);
+    });
   }
 
   #get(snapId: SnapId, id: string) {
@@ -126,6 +135,9 @@ export class WebSocketService {
       `An open WebSocket connection to ${url} already exists.`,
     );
 
+    const parsedUrl = new URL(url);
+    const { origin } = parsedUrl;
+
     const id = nanoid();
 
     // eslint-disable-next-line no-restricted-globals
@@ -133,12 +145,12 @@ export class WebSocketService {
 
     const { promise, resolve } = createDeferredPromise();
 
-    socket.addEventListener('open', (_event) => {
+    socket.addEventListener('open', () => {
       resolve();
       this.#handleEvent(snapId, {
         type: 'open',
         id,
-        origin: '',
+        origin,
       });
     });
 
@@ -146,18 +158,18 @@ export class WebSocketService {
       this.#handleEvent(snapId, {
         type: 'close',
         id,
-        origin: '',
+        origin,
         code: event.code,
         reason: event.reason,
         wasClean: event.wasClean,
       });
     });
 
-    socket.addEventListener('error', (_event) => {
+    socket.addEventListener('error', () => {
       this.#handleEvent(snapId, {
         type: 'error',
         id,
-        origin: '',
+        origin,
       });
     });
 
@@ -178,9 +190,9 @@ export class WebSocketService {
       snapId,
       url,
       socket,
+      openPromise: promise,
     });
 
-    // TODO: Consider returning immediately and awaiting when sending messages.
     await promise;
 
     return id;
@@ -190,10 +202,20 @@ export class WebSocketService {
     const { socket } = this.#get(snapId, id);
 
     socket.close();
+
+    this.#sockets.delete(id);
   }
 
-  sendMessage(snapId: SnapId, id: string, data: string | number[]) {
-    const { socket } = this.#get(snapId, id);
+  closeAll(snapId: SnapId) {
+    for (const socket of this.getAll(snapId)) {
+      this.close(snapId, socket.id);
+    }
+  }
+
+  async sendMessage(snapId: SnapId, id: string, data: string | number[]) {
+    const { socket, openPromise } = this.#get(snapId, id);
+
+    await openPromise;
 
     const wrappedData = Array.isArray(data) ? new Uint8Array(data) : data;
 
