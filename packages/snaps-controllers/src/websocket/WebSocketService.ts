@@ -100,6 +100,10 @@ export class WebSocketService {
     return socket;
   }
 
+  #exists(snapId: SnapId, url: string) {
+    return this.getAll(snapId).some((socket) => socket.url === url);
+  }
+
   #handleEvent(snapId: SnapId, event: any) {
     this.#messenger
       .call('SnapController:handleRequest', {
@@ -117,7 +121,13 @@ export class WebSocketService {
   }
 
   async open(snapId: SnapId, url: string, protocols?: string[]) {
+    assert(
+      !this.#exists(snapId, url),
+      `An open WebSocket connection to ${url} already exists.`,
+    );
+
     const id = nanoid();
+
     // eslint-disable-next-line no-restricted-globals
     const socket = new WebSocket(url, protocols);
 
