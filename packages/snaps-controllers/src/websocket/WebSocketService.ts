@@ -24,10 +24,16 @@ export type SendWebSocketMessage = {
   handler: WebSocketService['sendMessage'];
 };
 
+export type GetAll = {
+  type: `${typeof serviceName}:getAll`;
+  handler: WebSocketService['getAll'];
+};
+
 export type WebSocketServiceActions =
   | OpenWebSocket
   | CloseWebSocket
-  | SendWebSocketMessage;
+  | SendWebSocketMessage
+  | GetAll;
 
 export type WebSocketServiceAllowedActions = HandleSnapRequest;
 
@@ -48,6 +54,7 @@ type WebSocketServiceArgs = {
 type InternalSocket = {
   id: string;
   snapId: SnapId;
+  url: string;
   // eslint-disable-next-line no-restricted-globals
   socket: WebSocket;
 };
@@ -74,6 +81,11 @@ export class WebSocketService {
     this.#messenger.registerActionHandler(
       `${serviceName}:sendMessage`,
       this.sendMessage.bind(this),
+    );
+
+    this.#messenger.registerActionHandler(
+      `${serviceName}:getAll`,
+      this.getAll.bind(this),
     );
   }
 
@@ -151,6 +163,7 @@ export class WebSocketService {
     this.#sockets.set(id, {
       id,
       snapId,
+      url,
       socket,
     });
   }
@@ -167,5 +180,14 @@ export class WebSocketService {
     const wrappedData = Array.isArray(data) ? new Uint8Array(data) : data;
 
     socket.send(wrappedData);
+  }
+
+  getAll(snapId: SnapId) {
+    return [...this.#sockets.values()]
+      .filter((socket) => socket.snapId === snapId)
+      .map((socket) => ({
+        id: socket.id,
+        url: socket.url,
+      }));
   }
 }
