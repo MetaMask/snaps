@@ -45,6 +45,7 @@ export enum HandlerType {
   OnAssetHistoricalPrice = 'onAssetHistoricalPrice',
   OnProtocolRequest = 'onProtocolRequest',
   OnClientRequest = 'onClientRequest',
+  OnWebSocketEvent = 'onWebSocketEvent',
 }
 
 export type SnapHandler = {

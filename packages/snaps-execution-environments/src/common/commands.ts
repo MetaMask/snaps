@@ -103,6 +103,11 @@ export function getHandlerArguments(
       return { origin, request: nestedRequest, scope };
     }
 
+    case HandlerType.OnWebSocketEvent: {
+      const { event } = request.params;
+      return { event };
+    }
+
     case HandlerType.OnRpcRequest:
     case HandlerType.OnKeyringRequest:
       return { origin, request };

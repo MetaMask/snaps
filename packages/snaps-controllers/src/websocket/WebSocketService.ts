@@ -1,5 +1,5 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
-import type { SnapId } from '@metamask/snaps-sdk';
+import type { SnapId, WebSocketEvent } from '@metamask/snaps-sdk';
 import { HandlerType, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -113,12 +113,12 @@ export class WebSocketService {
     return this.getAll(snapId).some((socket) => socket.url === url);
   }
 
-  #handleEvent(snapId: SnapId, event: any) {
+  #handleEvent(snapId: SnapId, event: WebSocketEvent) {
     this.#messenger
       .call('SnapController:handleRequest', {
         origin: METAMASK_ORIGIN,
         snapId,
-        handler: HandlerType.OnRpcRequest,
+        handler: HandlerType.OnWebSocketEvent,
         request: { method: '', params: { event } },
       })
       .catch((error) => {

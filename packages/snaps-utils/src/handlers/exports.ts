@@ -15,6 +15,7 @@ import type {
   OnTransactionHandler,
   OnUpdateHandler,
   OnUserInputHandler,
+  OnWebSocketEventHandler,
 } from '@metamask/snaps-sdk';
 
 import { HandlerType } from './types';
@@ -135,6 +136,13 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnClientRequest,
     required: true,
     validator: (snapExport: unknown): snapExport is OnClientRequestHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnWebSocketEvent]: {
+    type: HandlerType.OnWebSocketEvent,
+    required: true,
+    validator: (snapExport: unknown): snapExport is OnWebSocketEventHandler => {
       return typeof snapExport === 'function';
     },
   },
