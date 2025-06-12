@@ -173,15 +173,22 @@ export class WebSocketService {
       });
     });
 
-    socket.addEventListener('message', (event) => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    socket.addEventListener('message', async (event) => {
+      const isText = typeof event.data === 'string';
+      const data = isText
+        ? { type: 'text' as const, message: event.data }
+        : {
+            type: 'binary' as const,
+            // We assume binary data to be sent via Blob for now.
+            message: Array.from(new Uint8Array(await event.data.arrayBuffer())),
+          };
+
       this.#handleEvent(snapId, {
         type: 'message',
         id,
         origin: event.origin,
-        data: {
-          type: event.type,
-          data: event.data,
-        },
+        data,
       });
     });
 
