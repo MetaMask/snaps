@@ -369,12 +369,6 @@ const WebSocketCloseEventStruct = object({
   wasClean: boolean(),
 });
 
-const WebSocketErrorEventStruct = object({
-  type: customLiteral('error'),
-  id: string(),
-  origin: string(),
-});
-
 const WebSocketMessageEventStruct = object({
   type: customLiteral('message'),
   id: string(),
@@ -394,7 +388,6 @@ const WebSocketMessageEventStruct = object({
 export const WebSocketEventStruct = typedUnion([
   WebSocketOpenEventStruct,
   WebSocketCloseEventStruct,
-  WebSocketErrorEventStruct,
   WebSocketMessageEventStruct,
 ]);
 

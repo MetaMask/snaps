@@ -13,12 +13,6 @@ export type WebSocketCloseEvent = {
   wasClean: boolean;
 };
 
-export type WebSocketErrorEvent = {
-  type: 'error';
-  id: string;
-  origin: string;
-};
-
 export type WebSocketTextMessage = {
   type: 'text';
   message: string;
@@ -42,8 +36,7 @@ export type WebSocketMessage = {
 export type WebSocketEvent =
   | WebSocketMessage
   | WebSocketOpenEvent
-  | WebSocketCloseEvent
-  | WebSocketErrorEvent;
+  | WebSocketCloseEvent;
 
 /**
  * The `onWebSocketEvent` handler, which is called when a Snap receives a WebSocket

@@ -185,11 +185,6 @@ export class WebSocketService {
           'An error occurred while opening the WebSocket.',
         ),
       );
-      this.#handleEvent(snapId, {
-        type: 'error',
-        id,
-        origin,
-      });
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
