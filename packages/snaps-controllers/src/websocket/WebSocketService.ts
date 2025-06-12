@@ -4,7 +4,12 @@ import { HandlerType, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import type { HandleSnapRequest, SnapUninstalled, SnapUpdated } from '../snaps';
+import type {
+  HandleSnapRequest,
+  SnapInstalled,
+  SnapUninstalled,
+  SnapUpdated,
+} from '../snaps';
 import { METAMASK_ORIGIN } from '../snaps';
 
 const serviceName = 'WebSocketService';
@@ -37,7 +42,10 @@ export type WebSocketServiceActions =
 
 export type WebSocketServiceAllowedActions = HandleSnapRequest;
 
-export type WebSocketServiceEvents = SnapUninstalled | SnapUpdated;
+export type WebSocketServiceEvents =
+  | SnapUninstalled
+  | SnapUpdated
+  | SnapInstalled;
 
 export type WebSocketServiceMessenger = RestrictedMessenger<
   'WebSocketService',
@@ -94,6 +102,11 @@ export class WebSocketService {
     });
 
     this.#messenger.subscribe('SnapController:snapUninstalled', (snap) => {
+      this.closeAll(snap.id);
+    });
+
+    // Due to local Snaps not currently triggering uninstalled we also close connections for new Snaps.
+    this.#messenger.subscribe('SnapController:snapInstalled', (snap) => {
       this.closeAll(snap.id);
     });
   }
