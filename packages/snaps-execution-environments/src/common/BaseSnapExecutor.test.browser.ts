@@ -1854,6 +1854,47 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports onWebSocketEvent export', async () => {
+    const CODE = `
+      module.exports.onWebSocketEvent = ({ event }) => ({ event });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnWebSocketEvent,
+        MOCK_ORIGIN,
+        {
+          jsonrpc: '2.0',
+          method: '',
+          params: {
+            event: { type: 'open', id: 'foo', origin: 'wss://metamask.io' },
+          },
+        },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: {
+        event: { type: 'open', id: 'foo', origin: 'wss://metamask.io' },
+      },
+    });
+  });
+
   describe('lifecycle hooks', () => {
     const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
 

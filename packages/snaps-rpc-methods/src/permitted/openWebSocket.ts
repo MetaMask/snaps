@@ -32,7 +32,7 @@ export type OpenWebSocketMethodHooks = {
 };
 
 const OpenWebSocketParametersStruct = object({
-  url: uri({ protocol: literal('wss') }),
+  url: uri({ protocol: literal('wss:') }),
   protocols: optional(array(string())),
 });
 

@@ -1,12 +1,10 @@
 import {
-  instance,
   is,
   optional,
   refine,
   size,
   string,
   type,
-  union,
   assert as assertSuperstruct,
 } from '@metamask/superstruct';
 import type { Infer, Struct } from '@metamask/superstruct';
@@ -119,7 +117,7 @@ type UriOptions<Type extends string> = {
 };
 
 export const uri = (opts: UriOptions<any> = {}) =>
-  refine(union([string(), instance(URL)]), 'uri', (value) => {
+  refine(string(), 'uri', (value) => {
     try {
       const url = new URL(value);
 
@@ -141,7 +139,7 @@ export const uri = (opts: UriOptions<any> = {}) =>
 export function isValidUrl(
   url: unknown,
   opts: UriOptions<any> = {},
-): url is string | URL {
+): url is string {
   return is(url, uri(opts));
 }
 

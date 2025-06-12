@@ -1,6 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   InterfaceContextStruct,
+  literal,
   typedUnion,
   UserInputEventStruct,
 } from '@metamask/snaps-sdk';
@@ -13,7 +14,6 @@ import {
   boolean,
   enums,
   is,
-  literal,
   nullable,
   number,
   object,
