@@ -1,4 +1,5 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
+import { rpcErrors } from '@metamask/rpc-errors';
 import type { SnapId, WebSocketEvent } from '@metamask/snaps-sdk';
 import { HandlerType, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
@@ -156,7 +157,7 @@ export class WebSocketService {
     // eslint-disable-next-line no-restricted-globals
     const socket = new WebSocket(url, protocols);
 
-    const { promise, resolve } = createDeferredPromise();
+    const { promise, resolve, reject } = createDeferredPromise();
 
     socket.addEventListener('open', () => {
       resolve();
@@ -179,6 +180,11 @@ export class WebSocketService {
     });
 
     socket.addEventListener('error', () => {
+      reject(
+        rpcErrors.resourceUnavailable(
+          'An error occurred while opening the WebSocket.',
+        ),
+      );
       this.#handleEvent(snapId, {
         type: 'error',
         id,
