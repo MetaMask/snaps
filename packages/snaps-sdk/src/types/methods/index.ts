@@ -33,3 +33,4 @@ export type * from './track-event';
 export type * from './open-web-socket';
 export type * from './close-web-socket';
 export type * from './send-web-socket-message';
+export type * from './get-web-sockets';

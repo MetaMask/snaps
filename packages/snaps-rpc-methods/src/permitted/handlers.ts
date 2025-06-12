@@ -12,6 +12,7 @@ import { getInterfaceContextHandler } from './getInterfaceContext';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
 import { getStateHandler } from './getState';
+import { getWebSocketsHandler } from './getWebSockets';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { listEntropySourcesHandler } from './listEntropySources';
@@ -51,6 +52,7 @@ export const methodHandlers = {
   snap_openWebSocket: openWebSocketHandler,
   snap_closeWebSocket: closeWebSocketHandler,
   snap_sendWebSocketMessage: sendWebSocketMessageHandler,
+  snap_getWebSockets: getWebSocketsHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
