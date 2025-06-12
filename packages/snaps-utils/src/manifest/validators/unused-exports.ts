@@ -17,6 +17,16 @@ export const unusedExports: ValidatorMeta = {
       return;
     }
 
+    // Endowments used based on the exports from the Snap. This is used to
+    // filter endowments that are used by multiple handlers, e.g., the lifecycle
+    // handlers.
+    const usedEndowments = Object.entries(handlerEndowments)
+      .filter(
+        ([handler, endowment]) =>
+          endowment === null || exports.includes(handler),
+      )
+      .map(([, endowment]) => endowment);
+
     const unusedHandlers = Object.entries(handlerEndowments)
       .filter(([handler, endowment]) => {
         if (endowment === null) {
@@ -39,9 +49,11 @@ export const unusedExports: ValidatorMeta = {
         }
 
         return (
+          !usedEndowments.includes(endowment) &&
           files.manifest.result.initialPermissions[
             endowment as keyof InitialPermissions
-          ] && !exports.includes(handler)
+          ] &&
+          !exports.includes(handler)
         );
       },
     );
