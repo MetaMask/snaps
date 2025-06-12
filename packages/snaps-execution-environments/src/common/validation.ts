@@ -1,7 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   InterfaceContextStruct,
-  literal,
+  literal as customLiteral,
   typedUnion,
   UserInputEventStruct,
 } from '@metamask/snaps-sdk';
@@ -23,6 +23,7 @@ import {
   string,
   tuple,
   union,
+  literal,
 } from '@metamask/superstruct';
 import type {
   CaipChainId,
@@ -354,13 +355,13 @@ export function assertIsOnProtocolRequestArguments(
 }
 
 const WebSocketOpenEventStruct = object({
-  type: literal('open'),
+  type: customLiteral('open'),
   id: string(),
   origin: string(),
 });
 
 const WebSocketCloseEventStruct = object({
-  type: literal('close'),
+  type: customLiteral('close'),
   id: string(),
   origin: string(),
   code: number(),
@@ -369,22 +370,22 @@ const WebSocketCloseEventStruct = object({
 });
 
 const WebSocketErrorEventStruct = object({
-  type: literal('error'),
+  type: customLiteral('error'),
   id: string(),
   origin: string(),
 });
 
 const WebSocketMessageEventStruct = object({
-  type: literal('message'),
+  type: customLiteral('message'),
   id: string(),
   origin: string(),
   data: typedUnion([
     object({
-      type: literal('text'),
+      type: customLiteral('text'),
       message: string(),
     }),
     object({
-      type: literal('binary'),
+      type: customLiteral('binary'),
       message: array(number()),
     }),
   ]),
