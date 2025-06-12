@@ -34,7 +34,8 @@ export const unusedExports: ValidatorMeta = {
 
     const unusedEndowments = Object.entries(handlerEndowments).filter(
       ([handler, endowment]) => {
-        if (endowment === null) {
+        // Ignore the network-access endowment, as it is a special case.
+        if (endowment === null || endowment === 'endowment:network-access') {
           return false;
         }
 
