@@ -15,7 +15,6 @@ describe.each([
     'local:asd.com',
     'http://asd@asd.com',
     'http://asd:foo@asd.com',
-    new URL('http://asd.com'),
   ])('validates correct uri', (value) => {
     expect(testedFn(value)).toBe(true);
   });

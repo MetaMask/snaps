@@ -31,6 +31,7 @@ describe('SNAP_EXPORT_NAMES', () => {
       'onAssetHistoricalPrice',
       'onProtocolRequest',
       'onClientRequest',
+      'onWebSocketEvent',
     ]);
   });
 });
