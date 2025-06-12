@@ -28,7 +28,7 @@ const hookNames: MethodHooksObject<SendWebSocketMessageMethodHooks> = {
 
 export type SendWebSocketMessageMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
-  sendWebSocketMessage: (id: string, data: string | number[]) => string;
+  sendWebSocketMessage: (id: string, data: string | number[]) => void;
 };
 
 const SendWebSocketMessageParametersStruct = object({
