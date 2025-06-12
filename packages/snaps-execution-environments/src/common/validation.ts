@@ -1,6 +1,7 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   InterfaceContextStruct,
+  typedUnion,
   UserInputEventStruct,
 } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -14,6 +15,7 @@ import {
   is,
   literal,
   nullable,
+  number,
   object,
   optional,
   record,
@@ -349,6 +351,72 @@ export function assertIsOnProtocolRequestArguments(
   value: unknown,
 ): asserts value is OnProtocolRequestArguments {
   assertRequestArguments(value, OnProtocolRequestArgumentsStruct);
+}
+
+const WebSocketOpenEventStruct = object({
+  type: literal('open'),
+  id: string(),
+  origin: string(),
+});
+
+const WebSocketCloseEventStruct = object({
+  type: literal('close'),
+  id: string(),
+  origin: string(),
+  code: number(),
+  reason: string(),
+  wasClean: boolean(),
+});
+
+const WebSocketErrorEventStruct = object({
+  type: literal('error'),
+  id: string(),
+  origin: string(),
+});
+
+const WebSocketMessageEventStruct = object({
+  type: literal('message'),
+  id: string(),
+  origin: string(),
+  data: typedUnion([
+    object({
+      type: literal('text'),
+      message: string(),
+    }),
+    object({
+      type: literal('binary'),
+      message: array(number()),
+    }),
+  ]),
+});
+
+export const WebSocketEventStruct = typedUnion([
+  WebSocketOpenEventStruct,
+  WebSocketCloseEventStruct,
+  WebSocketErrorEventStruct,
+  WebSocketMessageEventStruct,
+]);
+
+export const OnWebSocketEventArgumentsStruct = object({
+  event: WebSocketEventStruct,
+});
+
+export type OnWebSocketEventArguments = Infer<
+  typeof OnWebSocketEventArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnWebSocketEventArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnWebSocketEventArguments}
+ * object.
+ */
+export function assertIsOnWebSocketEventArguments(
+  value: unknown,
+): asserts value is OnWebSocketEventArguments {
+  assertRequestArguments(value, OnWebSocketEventArgumentsStruct);
 }
 
 // TODO: Either fix this lint violation or explain why it's necessary to ignore.
