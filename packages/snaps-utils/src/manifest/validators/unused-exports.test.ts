@@ -91,4 +91,36 @@ describe('unusedExports', () => {
       ),
     );
   });
+
+  it('does not report if the Snap exports a handler and requests permission for it in the manifest', async () => {
+    const report = jest.fn();
+    assert(unusedExports.semanticCheck);
+
+    const files = getMockSnapFiles({
+      manifest: getSnapManifest({
+        initialPermissions: {
+          'endowment:page-home': {},
+          'endowment:rpc': {},
+          'endowment:lifecycle-hooks': {},
+        },
+      }),
+      manifestPath: __filename,
+    });
+
+    await unusedExports.semanticCheck(files, {
+      report,
+      options: {
+        exports: ['onRpcRequest', 'onHomePage', 'onInstall'],
+        handlerEndowments: {
+          onRpcRequest: 'endowment:rpc',
+          onHomePage: 'endowment:page-home',
+          onInstall: 'endowment:lifecycle-hooks',
+          onUpdate: 'endowment:lifecycle-hooks',
+          onUserInput: null,
+        },
+      },
+    });
+
+    expect(report).toHaveBeenCalledTimes(0);
+  });
 });
