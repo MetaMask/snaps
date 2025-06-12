@@ -87,7 +87,7 @@
     "@metamask/key-tree": "^10.1.1",
     "@metamask/object-multiplex": "^2.1.0",
     "@metamask/permission-controller": "^11.0.6",
-    "@metamask/phishing-controller": "^12.5.0",
+    "@metamask/phishing-controller": "^12.6.0",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/rpc-errors": "^7.0.2",
     "@metamask/snaps-registry": "^3.2.3",
