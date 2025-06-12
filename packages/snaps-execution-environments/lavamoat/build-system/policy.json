@@ -323,8 +323,13 @@
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length": true
+      }
+    },
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
+      "packages": {
+        "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true
       }
     },
     "eslint>chalk": {
@@ -562,6 +567,7 @@
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
+        "Float16Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -718,6 +724,7 @@
     "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
