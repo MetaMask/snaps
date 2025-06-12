@@ -1,0 +1,334 @@
+import { HandlerType } from '@metamask/snaps-utils';
+import {
+  getSnapObject,
+  MOCK_ORIGIN,
+  MOCK_SNAP_ID,
+} from '@metamask/snaps-utils/test-utils';
+
+import { WebSocketService } from './WebSocketService';
+import {
+  getRestrictedWebSocketServiceMessenger,
+  getRootWebSocketServiceMessenger,
+} from '../test-utils';
+
+const MOCK_WEBSOCKET_URI = 'wss://metamask.io';
+
+class MockWebSocket {
+  readonly #origin: string;
+
+  #closeListener: EventListener;
+
+  #messageListener: EventListener;
+
+  constructor(url: string) {
+    this.#origin = new URL(url).origin;
+  }
+
+  addEventListener(type: string, listener: EventListener) {
+    if (type === 'open') {
+      listener(new Event('open'));
+    } else if (type === 'close') {
+      this.#closeListener = listener;
+    } else if (type === 'message') {
+      this.#messageListener = listener;
+    }
+  }
+
+  send(data: string | Uint8Array) {
+    if (data === 'Ping') {
+      this.#messageListener(
+        new MessageEvent('message', { origin: this.#origin, data: 'Pong' }),
+      );
+    }
+  }
+
+  close() {
+    // Mirrors the browser behavior
+    const event = new Event('close') as any;
+    event.code = 1005;
+    event.reason = '';
+    event.wasClean = true;
+    this.#closeListener(event);
+  }
+}
+
+describe('WebSocketService', () => {
+  beforeEach(() => {
+    Object.defineProperty(globalThis, 'WebSocket', { value: MockWebSocket });
+  });
+
+  it('opens a WebSocket connection and forwards messages to the Snap', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    const id = await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    await messenger.call(
+      'WebSocketService:sendMessage',
+      MOCK_SNAP_ID,
+      id,
+      'Ping',
+    );
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      2,
+      'SnapController:handleRequest',
+      {
+        handler: 'onWebSocketEvent',
+        origin: 'metamask',
+        request: {
+          method: '',
+          params: {
+            event: {
+              id,
+              origin: MOCK_WEBSOCKET_URI,
+              type: 'open',
+            },
+          },
+        },
+        snapId: 'npm:@metamask/example-snap',
+      },
+    );
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      4,
+      'SnapController:handleRequest',
+      {
+        handler: 'onWebSocketEvent',
+        origin: 'metamask',
+        request: {
+          method: '',
+          params: {
+            event: {
+              id,
+              data: {
+                message: 'Pong',
+                type: 'text',
+              },
+              origin: MOCK_WEBSOCKET_URI,
+              type: 'message',
+            },
+          },
+        },
+        snapId: 'npm:@metamask/example-snap',
+      },
+    );
+  });
+
+  it('closes an open connection when requested', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    const id = await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(1);
+
+    messenger.call('WebSocketService:close', MOCK_SNAP_ID, id);
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(0);
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      5,
+      'SnapController:handleRequest',
+      {
+        handler: 'onWebSocketEvent',
+        origin: 'metamask',
+        request: {
+          method: '',
+          params: {
+            event: {
+              id,
+              code: 1005,
+              reason: '',
+              wasClean: true,
+              origin: MOCK_WEBSOCKET_URI,
+              type: 'close',
+            },
+          },
+        },
+        snapId: 'npm:@metamask/example-snap',
+      },
+    );
+  });
+
+  it('disallows opening multiple WebSocket connections to the same URL', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    await expect(
+      messenger.call('WebSocketService:open', MOCK_SNAP_ID, MOCK_WEBSOCKET_URI),
+    ).rejects.toThrow(
+      'An open WebSocket connection to wss://metamask.io already exists.',
+    );
+  });
+
+  it('closes open connections when snapInstalled is emitted', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(1);
+
+    rootMessenger.publish(
+      'SnapController:snapInstalled',
+      getSnapObject(),
+      MOCK_ORIGIN,
+      false,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(0);
+  });
+
+  it('closes open connections when snapUpdated is emitted', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(1);
+
+    rootMessenger.publish(
+      'SnapController:snapUpdated',
+      getSnapObject(),
+      '1.0.0',
+      MOCK_ORIGIN,
+      false,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(0);
+  });
+
+  it('closes open connections when snapUninstalled is emitted', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(1);
+
+    rootMessenger.publish('SnapController:snapUninstalled', getSnapObject());
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(0);
+  });
+});
