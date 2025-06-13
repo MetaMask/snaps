@@ -120,6 +120,7 @@ export function getHandlerArguments(
 
     case HandlerType.OnInstall:
     case HandlerType.OnUpdate:
+    case HandlerType.OnStart:
       return { origin };
 
     case HandlerType.OnHomePage:
