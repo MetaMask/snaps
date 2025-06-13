@@ -5,7 +5,7 @@ import type {
   SnapId,
   WebSocketEvent,
 } from '@metamask/snaps-sdk';
-import { HandlerType, logError } from '@metamask/snaps-utils';
+import { HandlerType, isEqual, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
@@ -135,8 +135,11 @@ export class WebSocketService {
     return socket;
   }
 
-  #exists(snapId: SnapId, url: string) {
-    return this.#getAll(snapId).some((socket) => socket.url === url);
+  #exists(snapId: SnapId, url: string, protocols?: string[]) {
+    return this.#getAll(snapId).some(
+      (socket) =>
+        socket.url === url && isEqual(socket.protocols ?? [], protocols ?? []),
+    );
   }
 
   #handleEvent(snapId: SnapId, event: WebSocketEvent) {
@@ -157,7 +160,7 @@ export class WebSocketService {
 
   async #open(snapId: SnapId, url: string, protocols?: string[]) {
     assert(
-      !this.#exists(snapId, url),
+      !this.#exists(snapId, url, protocols),
       `An open WebSocket connection to ${url} already exists.`,
     );
 

@@ -354,6 +354,41 @@ describe('WebSocketService', () => {
     );
   });
 
+  it('allows opening multiple WebSocket connections to the same URL when using different protocols', async () => {
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async ({ handler }) => {
+        if (handler === HandlerType.OnWebSocketEvent) {
+          return null;
+        }
+        throw new Error('Unmocked request');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+      ['wamp'],
+    );
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(2);
+  });
+
   it('closes open connections when snapInstalled is emitted', async () => {
     const rootMessenger = getRootWebSocketServiceMessenger();
     const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
