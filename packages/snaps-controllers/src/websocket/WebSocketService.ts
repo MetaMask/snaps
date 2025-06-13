@@ -117,7 +117,7 @@ export class WebSocketService {
       this.#closeAll(snap.id);
     });
 
-    // Due to local Snaps not currently emitting snapUinstalled we also have to
+    // Due to local Snaps not currently emitting snapUninstalled we also have to
     // listen to snapInstalled.
     this.#messenger.subscribe('SnapController:snapInstalled', (snap) => {
       this.#closeAll(snap.id);
