@@ -124,6 +124,14 @@ export class WebSocketService {
     });
   }
 
+  /**
+   * Get information about a given WebSocket connection with an ID.
+   *
+   * @param snapId - The Snap ID.
+   * @param id - The identifier for the WebSocket connection.
+   * @returns Information abou the WebSocket connection.
+   * @throws If the WebSocket connection cannot be found.
+   */
   #get(snapId: SnapId, id: string) {
     const socket = this.#sockets.get(id);
 
@@ -135,6 +143,14 @@ export class WebSocketService {
     return socket;
   }
 
+  /**
+   * Check whether a given Snap ID already has an open connection for a URL and protocol.
+   *
+   * @param snapId - The Snap ID.
+   * @param url - The URL.
+   * @param protocols - An optional protocols parameter.
+   * @returns True if a matching connection already exists, otherwise false.
+   */
   #exists(snapId: SnapId, url: string, protocols?: string[]) {
     return this.#getAll(snapId).some(
       (socket) =>
@@ -142,6 +158,12 @@ export class WebSocketService {
     );
   }
 
+  /**
+   * Handle sending a specific WebSocketEvent to a Snap.
+   *
+   * @param snapId - The Snap ID.
+   * @param event - The WebSocketEvent.
+   */
   #handleEvent(snapId: SnapId, event: WebSocketEvent) {
     this.#messenger
       .call('SnapController:handleRequest', {
@@ -158,6 +180,15 @@ export class WebSocketService {
       });
   }
 
+  /**
+   * Open a WebSocket connection.
+   *
+   * @param snapId - The Snap ID.
+   * @param url - The URL for the WebSocket connection.
+   * @param protocols - An optional parameter for protocols.
+   * @returns The identifier for the opened connection.
+   * @throws If the connection fails.
+   */
   async #open(snapId: SnapId, url: string, protocols?: string[]) {
     assert(
       !this.#exists(snapId, url, protocols),
@@ -240,6 +271,12 @@ export class WebSocketService {
     return id;
   }
 
+  /**
+   * Close a given WebSocket connection.
+   *
+   * @param snapId - The Snap ID.
+   * @param id - The identifier for the WebSocket connection.
+   */
   #close(snapId: SnapId, id: string) {
     const { socket } = this.#get(snapId, id);
 
@@ -248,12 +285,24 @@ export class WebSocketService {
     this.#sockets.delete(id);
   }
 
+  /**
+   * Close all open connections for a given Snap ID.
+   *
+   * @param snapId - The Snap ID.
+   */
   #closeAll(snapId: SnapId) {
     for (const socket of this.#getAll(snapId)) {
       this.#close(snapId, socket.id);
     }
   }
 
+  /**
+   * Send a message from a given Snap ID to a WebSocket connection.
+   *
+   * @param snapId - The Snap ID.
+   * @param id - The identifier for the WebSocket connection.
+   * @param data - The message to send.
+   */
   async #sendMessage(snapId: SnapId, id: string, data: string | number[]) {
     const { socket, openPromise } = this.#get(snapId, id);
 
@@ -264,6 +313,12 @@ export class WebSocketService {
     socket.send(wrappedData);
   }
 
+  /**
+   * Get a list of all open WebSocket connections for a Snap ID.
+   *
+   * @param snapId - The Snap ID.
+   * @returns A list of WebSocket connections.
+   */
   #getAll(snapId: SnapId) {
     return [...this.#sockets.values()]
       .filter((socket) => socket.snapId === snapId)
