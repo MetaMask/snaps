@@ -702,7 +702,7 @@ describe('helpers', () => {
   });
 
   describe('onStart', () => {
-    it('sends a OnStart request and returns the result', async () => {
+    it('sends a onStart request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();
 
       const { snapId, close: closeServer } = await getMockServer({
