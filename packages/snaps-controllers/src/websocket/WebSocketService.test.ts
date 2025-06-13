@@ -261,6 +261,33 @@ describe('WebSocketService', () => {
     ).rejects.toThrow('An error occurred while opening the WebSocket.');
   });
 
+  it('logs if the Snap request fails', async () => {
+    const spy = jest.spyOn(console, 'error');
+    const rootMessenger = getRootWebSocketServiceMessenger();
+    const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async () => {
+        throw new Error('Invalid WebSocketEvent');
+      },
+    );
+
+    /* eslint-disable-next-line no-new */
+    new WebSocketService({ messenger });
+
+    await messenger.call(
+      'WebSocketService:open',
+      MOCK_SNAP_ID,
+      MOCK_WEBSOCKET_URI,
+    );
+
+    expect(spy).toHaveBeenCalledWith(
+      'An error occurred while handling a WebSocket message for Snap "npm:@metamask/example-snap":',
+      expect.any(Error),
+    );
+  });
+
   it('closes an open connection when requested', async () => {
     const rootMessenger = getRootWebSocketServiceMessenger();
     const messenger = getRestrictedWebSocketServiceMessenger(rootMessenger);
