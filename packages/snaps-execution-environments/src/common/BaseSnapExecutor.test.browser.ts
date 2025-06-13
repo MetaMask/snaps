@@ -1855,7 +1855,11 @@ describe('BaseSnapExecutor', () => {
   });
 
   describe('lifecycle hooks', () => {
-    const LIFECYCLE_HOOKS = [HandlerType.OnInstall, HandlerType.OnUpdate];
+    const LIFECYCLE_HOOKS = [
+      HandlerType.OnInstall,
+      HandlerType.OnUpdate,
+      HandlerType.OnStart,
+    ];
 
     for (const handler of LIFECYCLE_HOOKS) {
       it(`supports \`${handler}\` export`, async () => {

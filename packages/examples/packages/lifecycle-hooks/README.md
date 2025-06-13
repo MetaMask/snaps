@@ -1,7 +1,7 @@
 # `@metamask/lifecylce-hooks-example-snap`
 
-This snap demonstrates how to use the `onInstall` and `onUpdate` lifecycle
-hooks.
+This Snap demonstrates how to use the `onStart`, `onInstall`, and `onUpdate`
+lifecycle hooks.
 
 ## Snap manifest
 
@@ -22,9 +22,9 @@ Along with other permissions, the manifest of this snap includes the
 
 ## Snap usage
 
-This snap exposes the `onInstall` and `onUpdate` lifecycle hooks. These hooks
-are called when the snap is installed or updated, respectively, and cannot be
-called manually.
+This Snap exposes the `onStart`, `onInstall`, and `onUpdate` lifecycle hooks.
+These hooks are called when the client is started, when the Snap is installed,
+or the Snap is updated, respectively, and cannot be called manually.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
