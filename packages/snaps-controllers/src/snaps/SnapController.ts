@@ -1172,7 +1172,7 @@ export class SnapController extends BaseController<
   #registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
       `${controllerName}:init`,
-      async (...args) => this.init(...args),
+      (...args) => this.init(...args),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1287,7 +1287,7 @@ export class SnapController extends BaseController<
    * Currently this method calls the `onStart` lifecycle hook for all
    * installed Snaps.
    */
-  async init() {
+  init() {
     const snaps = this.getAllSnaps();
     for (const { id } of snaps) {
       const hasLifecycleHooksEndowment = this.messagingSystem.call(
