@@ -71,6 +71,11 @@ import type {
   SnapsRegistryEvents,
 } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
+import type {
+  WebSocketServiceActions,
+  WebSocketServiceAllowedActions,
+  WebSocketServiceEvents,
+} from '../websocket';
 
 const asyncNoOp = async () => Promise.resolve();
 
@@ -958,6 +963,40 @@ export const getRestrictedMultichainRouterMessenger = (
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],
+  });
+
+  return controllerMessenger;
+};
+
+// Mock controller messenger for WebSocketService
+export const getRootWebSocketServiceMessenger = () => {
+  const messenger = new MockControllerMessenger<
+    WebSocketServiceActions | WebSocketServiceAllowedActions,
+    WebSocketServiceEvents
+  >();
+
+  jest.spyOn(messenger, 'call');
+
+  return messenger;
+};
+
+export const getRestrictedWebSocketServiceMessenger = (
+  messenger: ReturnType<
+    typeof getRootWebSocketServiceMessenger
+  > = getRootWebSocketServiceMessenger(),
+) => {
+  const controllerMessenger = messenger.getRestricted<
+    'WebSocketService',
+    WebSocketServiceAllowedActions['type'],
+    WebSocketServiceEvents['type']
+  >({
+    name: 'WebSocketService',
+    allowedEvents: [
+      'SnapController:snapInstalled',
+      'SnapController:snapUpdated',
+      'SnapController:snapUninstalled',
+    ],
+    allowedActions: ['SnapController:handleRequest'],
   });
 
   return controllerMessenger;

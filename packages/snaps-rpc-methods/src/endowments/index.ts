@@ -131,6 +131,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnAssetsConversion]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,
   [HandlerType.OnClientRequest]: null,
+  [HandlerType.OnWebSocketEvent]: networkAccessEndowmentBuilder.targetName,
 };
 
 export * from './enum';

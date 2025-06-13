@@ -2,6 +2,9 @@ import type { InitialPermissions } from '@metamask/snaps-sdk';
 
 import type { ValidatorMeta } from '../validator-types';
 
+// Special case endowments that should be ignored.
+const IGNORED_ENDOWMENTS = ['endowment:network-access'];
+
 /**
  * Check if the Snap exports handlers that are not requested in the manifest, or
  * if the Snap requests permissions for handlers that are not exported.
@@ -44,7 +47,7 @@ export const unusedExports: ValidatorMeta = {
 
     const unusedEndowments = Object.entries(handlerEndowments).filter(
       ([handler, endowment]) => {
-        if (endowment === null) {
+        if (endowment === null || IGNORED_ENDOWMENTS.includes(endowment)) {
           return false;
         }
 

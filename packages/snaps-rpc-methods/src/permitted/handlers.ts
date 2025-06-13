@@ -1,5 +1,6 @@
 import { cancelBackgroundEventHandler } from './cancelBackgroundEvent';
 import { clearStateHandler } from './clearState';
+import { closeWebSocketHandler } from './closeWebSocket';
 import { createInterfaceHandler } from './createInterface';
 import { providerRequestHandler } from './experimentalProviderRequest';
 import { getAllSnapsHandler } from './getAllSnaps';
@@ -11,12 +12,15 @@ import { getInterfaceContextHandler } from './getInterfaceContext';
 import { getInterfaceStateHandler } from './getInterfaceState';
 import { getSnapsHandler } from './getSnaps';
 import { getStateHandler } from './getState';
+import { getWebSocketsHandler } from './getWebSockets';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { listEntropySourcesHandler } from './listEntropySources';
+import { openWebSocketHandler } from './openWebSocket';
 import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
+import { sendWebSocketMessageHandler } from './sendWebSocketMessage';
 import { setStateHandler } from './setState';
 import { trackEventHandler } from './trackEvent';
 import { updateInterfaceHandler } from './updateInterface';
@@ -45,6 +49,10 @@ export const methodHandlers = {
   snap_getBackgroundEvents: getBackgroundEventsHandler,
   snap_setState: setStateHandler,
   snap_trackEvent: trackEventHandler,
+  snap_openWebSocket: openWebSocketHandler,
+  snap_closeWebSocket: closeWebSocketHandler,
+  snap_sendWebSocketMessage: sendWebSocketMessageHandler,
+  snap_getWebSockets: getWebSocketsHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -19,6 +19,7 @@ import {
   assertIsOnAssetsConversionRequestArguments,
   assertIsOnProtocolRequestArguments,
   assertIsOnAssetHistoricalPriceRequestArguments,
+  assertIsOnWebSocketEventArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -101,6 +102,12 @@ export function getHandlerArguments(
 
       const { request: nestedRequest, scope } = request.params;
       return { origin, request: nestedRequest, scope };
+    }
+
+    case HandlerType.OnWebSocketEvent: {
+      assertIsOnWebSocketEventArguments(request.params);
+      const { event } = request.params;
+      return { event };
     }
 
     case HandlerType.OnRpcRequest:
