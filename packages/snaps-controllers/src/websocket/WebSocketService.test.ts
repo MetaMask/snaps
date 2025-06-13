@@ -40,6 +40,10 @@ class MockWebSocket {
     }
   }
 
+  removeEventListener() {
+    // no-op
+  }
+
   send(data: string | Uint8Array) {
     if (data === 'Ping') {
       this.#messageListener(

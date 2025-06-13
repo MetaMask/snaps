@@ -64,6 +64,7 @@ type InternalSocket = {
   id: string;
   snapId: SnapId;
   url: string;
+  protocols?: string[];
   openPromise: Promise<void>;
   // eslint-disable-next-line no-restricted-globals
   socket: WebSocket;
@@ -179,13 +180,15 @@ export class WebSocketService {
       });
     });
 
-    socket.addEventListener('error', () => {
+    const errorListener = () => {
       reject(
         rpcErrors.resourceUnavailable(
           'An error occurred while opening the WebSocket.',
         ),
       );
-    });
+    };
+
+    socket.addEventListener('error', errorListener);
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     socket.addEventListener('message', async (event) => {
@@ -210,11 +213,14 @@ export class WebSocketService {
       id,
       snapId,
       url,
+      protocols,
       socket,
       openPromise: promise,
     });
 
     await promise;
+
+    socket.removeEventListener('error', errorListener);
 
     return id;
   }
@@ -249,6 +255,7 @@ export class WebSocketService {
       .map((socket) => ({
         id: socket.id,
         url: socket.url,
+        ...(socket.protocols ? { protocols: socket.protocols } : {}),
       }));
   }
 }
