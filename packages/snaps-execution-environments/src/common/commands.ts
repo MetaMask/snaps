@@ -11,14 +11,14 @@ import type {
   Terminate,
 } from './validation';
 import {
-  assertIsOnTransactionRequestArguments,
-  assertIsOnSignatureRequestArguments,
-  assertIsOnNameLookupRequestArguments,
-  assertIsOnUserInputRequestArguments,
-  assertIsOnAssetsLookupRequestArguments,
-  assertIsOnAssetsConversionRequestArguments,
-  assertIsOnProtocolRequestArguments,
   assertIsOnAssetHistoricalPriceRequestArguments,
+  assertIsOnAssetsConversionRequestArguments,
+  assertIsOnAssetsLookupRequestArguments,
+  assertIsOnNameLookupRequestArguments,
+  assertIsOnProtocolRequestArguments,
+  assertIsOnSignatureRequestArguments,
+  assertIsOnTransactionRequestArguments,
+  assertIsOnUserInputRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -113,6 +113,7 @@ export function getHandlerArguments(
 
     case HandlerType.OnInstall:
     case HandlerType.OnUpdate:
+    case HandlerType.OnStart:
       return { origin };
 
     case HandlerType.OnHomePage:

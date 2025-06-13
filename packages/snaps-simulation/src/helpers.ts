@@ -159,6 +159,13 @@ export type SnapHelpers = {
   onUpdate(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
 
   /**
+   * Get the response from the Snap's `onStart` handler.
+   *
+   * @returns The response.
+   */
+  onStart(request?: Pick<RequestOptions, 'origin'>): SnapRequest;
+
+  /**
    * Get the response from the Snap's `onNameLookup` handler.
    *
    * @returns The response.
@@ -361,6 +368,25 @@ export function getHelpers({
         controllerMessenger,
         runSaga,
         handler: HandlerType.OnUpdate,
+        request: {
+          method: '',
+          ...request,
+        },
+      });
+    },
+
+    // This can't be async because it returns a `SnapRequest`.
+    // eslint-disable-next-line @typescript-eslint/promise-function-async
+    onStart: (request?: Pick<RequestOptions, 'origin'>) => {
+      log('Running onStart handler.');
+
+      return handleRequest({
+        snapId,
+        store,
+        executionService,
+        controllerMessenger,
+        runSaga,
+        handler: HandlerType.OnStart,
         request: {
           method: '',
           ...request,

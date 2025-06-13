@@ -701,6 +701,32 @@ describe('helpers', () => {
     });
   });
 
+  describe('onStart', () => {
+    it('sends a onStart request and returns the result', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onStart = async () => {
+            return { content: { type: 'text', value: 'Hello, world!' } };
+          };
+         `,
+      });
+
+      const { onStart, close } = await installSnap(snapId);
+      const response = await onStart();
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          getInterface: expect.any(Function),
+        }),
+      );
+
+      await close();
+      await closeServer();
+    });
+  });
+
   describe('onProtocolRequest', () => {
     it('sends a onProtocolRequest request and returns the result', async () => {
       jest.spyOn(console, 'log').mockImplementation();

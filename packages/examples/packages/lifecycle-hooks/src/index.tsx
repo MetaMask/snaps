@@ -1,5 +1,36 @@
-import type { OnInstallHandler, OnUpdateHandler } from '@metamask/snaps-sdk';
+import type {
+  OnInstallHandler,
+  OnStartHandler,
+  OnUpdateHandler,
+} from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
+
+/**
+ * Handle starting of the client. This handler is called when the client is
+ * started, and can be used to perform any initialization that is required.
+ *
+ * This handler is optional. If it is not provided, the Snap will be started
+ * as usual.
+ *
+ * @see https://docs.metamask.io/snaps/reference/entry-points/#onstart
+ * @returns The JSON-RPC response.
+ */
+export const onStart: OnStartHandler = async () => {
+  return await snap.request({
+    method: 'snap_dialog',
+    params: {
+      type: 'alert',
+      content: (
+        <Box>
+          <Text>
+            The client was started successfully, and the "onStart" handler was
+            called.
+          </Text>
+        </Box>
+      ),
+    },
+  });
+};
 
 /**
  * Handle installation of the snap. This handler is called when the snap is
@@ -8,7 +39,7 @@ import { Box, Text } from '@metamask/snaps-sdk/jsx';
  * This handler is optional. If it is not provided, the snap will be installed
  * as usual.
  *
- * @see https://docs.metamask.io/snaps/reference/exports/#oninstall
+ * @see https://docs.metamask.io/snaps/reference/entry-points/#oninstall
  * @returns The JSON-RPC response.
  */
 export const onInstall: OnInstallHandler = async () => {
@@ -35,7 +66,7 @@ export const onInstall: OnInstallHandler = async () => {
  * This handler is optional. If it is not provided, the snap will be updated
  * as usual.
  *
- * @see https://docs.metamask.io/snaps/reference/exports/#onupdate
+ * @see https://docs.metamask.io/snaps/reference/entry-points/#onupdate
  * @returns The JSON-RPC response.
  */
 export const onUpdate: OnUpdateHandler = async () => {

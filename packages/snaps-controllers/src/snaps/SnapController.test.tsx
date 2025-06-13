@@ -9889,6 +9889,127 @@ describe('SnapController', () => {
   });
 
   describe('SnapController actions', () => {
+    describe('SnapController:init', () => {
+      it('calls `onStart` for all Snaps with the `endowment:lifecycle-hooks` permission', async () => {
+        const rootMessenger = getControllerMessenger();
+        const messenger = getSnapControllerMessenger(rootMessenger);
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:getPermissions',
+          (origin) => {
+            if (origin === MOCK_SNAP_ID) {
+              return {
+                [SnapEndowments.LifecycleHooks]:
+                  MOCK_LIFECYCLE_HOOKS_PERMISSION,
+              };
+            }
+
+            return {};
+          },
+        );
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:hasPermission',
+          (origin) => {
+            return origin === MOCK_SNAP_ID;
+          },
+        );
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: getPersistedSnapsState(
+                getPersistedSnapObject({
+                  id: MOCK_SNAP_ID,
+                }),
+                getPersistedSnapObject({
+                  id: MOCK_LOCAL_SNAP_ID,
+                }),
+              ),
+            },
+          }),
+        );
+
+        const call = jest.spyOn(messenger, 'call');
+        messenger.call('SnapController:init');
+        await sleep(10);
+
+        expect(call).toHaveBeenNthCalledWith(
+          2,
+          'PermissionController:hasPermission',
+          MOCK_SNAP_ID,
+          'endowment:lifecycle-hooks',
+        );
+
+        expect(call).toHaveBeenNthCalledWith(
+          6,
+          'ExecutionService:executeSnap',
+          expect.any(Object),
+        );
+
+        expect(messenger.call).toHaveBeenNthCalledWith(
+          7,
+          'ExecutionService:handleRpcRequest',
+          MOCK_SNAP_ID,
+          {
+            handler: HandlerType.OnStart,
+            origin: METAMASK_ORIGIN,
+            request: {
+              jsonrpc: '2.0',
+              id: expect.any(String),
+              method: HandlerType.OnStart,
+            },
+          },
+        );
+
+        snapController.destroy();
+      });
+
+      it('logs an error if the lifecycle hook throws', async () => {
+        const consoleErrorSpy = jest
+          .spyOn(console, 'error')
+          .mockImplementation();
+
+        const rootMessenger = getControllerMessenger();
+        const messenger = getSnapControllerMessenger(rootMessenger);
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:getPermissions',
+          () => {
+            return {
+              [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+            };
+          },
+        );
+
+        rootMessenger.registerActionHandler(
+          'ExecutionService:handleRpcRequest',
+          () => {
+            throw new Error('Test error in lifecycle hook.');
+          },
+        );
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({
+            messenger,
+            state: {
+              snaps: getPersistedSnapsState(),
+            },
+          }),
+        );
+
+        messenger.call('SnapController:init');
+        await sleep(10);
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(
+          `Error when calling \`onStart\` lifecycle hook for Snap "npm:@metamask/example-snap": Test error in lifecycle hook.`,
+        );
+
+        snapController.destroy();
+      });
+    });
+
     describe('SnapController:get', () => {
       it('gets a snap', () => {
         const messenger = getSnapControllerMessenger();
