@@ -1,6 +1,10 @@
 import type { RestrictedMessenger } from '@metamask/base-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { SnapId, WebSocketEvent } from '@metamask/snaps-sdk';
+import type {
+  GetWebSocketsResult,
+  SnapId,
+  WebSocketEvent,
+} from '@metamask/snaps-sdk';
 import { HandlerType, logError } from '@metamask/snaps-utils';
 import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
@@ -15,31 +19,39 @@ import { METAMASK_ORIGIN } from '../snaps';
 
 const serviceName = 'WebSocketService';
 
-export type OpenWebSocket = {
+export type WebSocketServiceOpenAction = {
   type: `${typeof serviceName}:open`;
-  handler: WebSocketService['open'];
+  handler: (
+    snapId: SnapId,
+    url: string,
+    protocols?: string[],
+  ) => Promise<string>;
 };
 
-export type CloseWebSocket = {
+export type WebSocketServiceCloseAction = {
   type: `${typeof serviceName}:close`;
-  handler: WebSocketService['close'];
+  handler: (snapId: SnapId, id: string) => void;
 };
 
-export type SendWebSocketMessage = {
+export type WebSocketServiceSendMessageAction = {
   type: `${typeof serviceName}:sendMessage`;
-  handler: WebSocketService['sendMessage'];
+  handler: (
+    snapId: SnapId,
+    id: string,
+    data: string | number[],
+  ) => Promise<void>;
 };
 
-export type GetAll = {
+export type WebSocketServiceGetAllAction = {
   type: `${typeof serviceName}:getAll`;
-  handler: WebSocketService['getAll'];
+  handler: (snapId: SnapId) => GetWebSocketsResult;
 };
 
 export type WebSocketServiceActions =
-  | OpenWebSocket
-  | CloseWebSocket
-  | SendWebSocketMessage
-  | GetAll;
+  | WebSocketServiceOpenAction
+  | WebSocketServiceCloseAction
+  | WebSocketServiceSendMessageAction
+  | WebSocketServiceGetAllAction;
 
 export type WebSocketServiceAllowedActions = HandleSnapRequest;
 
@@ -81,35 +93,34 @@ export class WebSocketService {
 
     this.#messenger.registerActionHandler(
       `${serviceName}:open`,
-      this.open.bind(this),
+      async (...args) => this.#open(...args),
     );
 
-    this.#messenger.registerActionHandler(
-      `${serviceName}:close`,
-      this.close.bind(this),
+    this.#messenger.registerActionHandler(`${serviceName}:close`, (...args) =>
+      this.#close(...args),
     );
 
     this.#messenger.registerActionHandler(
       `${serviceName}:sendMessage`,
-      this.sendMessage.bind(this),
+      async (...args) => this.#sendMessage(...args),
     );
 
-    this.#messenger.registerActionHandler(
-      `${serviceName}:getAll`,
-      this.getAll.bind(this),
+    this.#messenger.registerActionHandler(`${serviceName}:getAll`, (...args) =>
+      this.#getAll(...args),
     );
 
     this.#messenger.subscribe('SnapController:snapUpdated', (snap) => {
-      this.closeAll(snap.id);
+      this.#closeAll(snap.id);
     });
 
     this.#messenger.subscribe('SnapController:snapUninstalled', (snap) => {
-      this.closeAll(snap.id);
+      this.#closeAll(snap.id);
     });
 
-    // Due to local Snaps not currently triggering uninstalled we also close connections for new Snaps.
+    // Due to local Snaps not currently emitting snapUinstalled we also have to
+    // listen to snapInstalled.
     this.#messenger.subscribe('SnapController:snapInstalled', (snap) => {
-      this.closeAll(snap.id);
+      this.#closeAll(snap.id);
     });
   }
 
@@ -125,7 +136,7 @@ export class WebSocketService {
   }
 
   #exists(snapId: SnapId, url: string) {
-    return this.getAll(snapId).some((socket) => socket.url === url);
+    return this.#getAll(snapId).some((socket) => socket.url === url);
   }
 
   #handleEvent(snapId: SnapId, event: WebSocketEvent) {
@@ -144,7 +155,7 @@ export class WebSocketService {
       });
   }
 
-  async open(snapId: SnapId, url: string, protocols?: string[]) {
+  async #open(snapId: SnapId, url: string, protocols?: string[]) {
     assert(
       !this.#exists(snapId, url),
       `An open WebSocket connection to ${url} already exists.`,
@@ -225,7 +236,7 @@ export class WebSocketService {
     return id;
   }
 
-  close(snapId: SnapId, id: string) {
+  #close(snapId: SnapId, id: string) {
     const { socket } = this.#get(snapId, id);
 
     socket.close();
@@ -233,13 +244,13 @@ export class WebSocketService {
     this.#sockets.delete(id);
   }
 
-  closeAll(snapId: SnapId) {
-    for (const socket of this.getAll(snapId)) {
-      this.close(snapId, socket.id);
+  #closeAll(snapId: SnapId) {
+    for (const socket of this.#getAll(snapId)) {
+      this.#close(snapId, socket.id);
     }
   }
 
-  async sendMessage(snapId: SnapId, id: string, data: string | number[]) {
+  async #sendMessage(snapId: SnapId, id: string, data: string | number[]) {
     const { socket, openPromise } = this.#get(snapId, id);
 
     await openPromise;
@@ -249,7 +260,7 @@ export class WebSocketService {
     socket.send(wrappedData);
   }
 
-  getAll(snapId: SnapId) {
+  #getAll(snapId: SnapId) {
     return [...this.#sockets.values()]
       .filter((socket) => socket.snapId === snapId)
       .map((socket) => ({
