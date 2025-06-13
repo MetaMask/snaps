@@ -76,7 +76,7 @@ type InternalSocket = {
   id: string;
   snapId: SnapId;
   url: string;
-  protocols?: string[];
+  protocols: string[];
   openPromise: Promise<void>;
   // eslint-disable-next-line no-restricted-globals
   socket: WebSocket;
@@ -148,13 +148,12 @@ export class WebSocketService {
    *
    * @param snapId - The Snap ID.
    * @param url - The URL.
-   * @param protocols - An optional protocols parameter.
+   * @param protocols - A protocols parameter.
    * @returns True if a matching connection already exists, otherwise false.
    */
-  #exists(snapId: SnapId, url: string, protocols?: string[]) {
+  #exists(snapId: SnapId, url: string, protocols: string[]) {
     return this.#getAll(snapId).some(
-      (socket) =>
-        socket.url === url && isEqual(socket.protocols ?? [], protocols ?? []),
+      (socket) => socket.url === url && isEqual(socket.protocols, protocols),
     );
   }
 
@@ -189,7 +188,7 @@ export class WebSocketService {
    * @returns The identifier for the opened connection.
    * @throws If the connection fails.
    */
-  async #open(snapId: SnapId, url: string, protocols?: string[]) {
+  async #open(snapId: SnapId, url: string, protocols: string[] = []) {
     assert(
       !this.#exists(snapId, url, protocols),
       `An open WebSocket connection to ${url} already exists.`,
@@ -325,7 +324,7 @@ export class WebSocketService {
       .map((socket) => ({
         id: socket.id,
         url: socket.url,
-        ...(socket.protocols ? { protocols: socket.protocols } : {}),
+        protocols: socket.protocols,
       }));
   }
 }
