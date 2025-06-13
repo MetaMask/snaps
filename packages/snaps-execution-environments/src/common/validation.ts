@@ -365,8 +365,8 @@ const WebSocketCloseEventStruct = object({
   id: string(),
   origin: string(),
   code: number(),
-  reason: string(),
-  wasClean: boolean(),
+  reason: nullable(string()),
+  wasClean: nullable(boolean()),
 });
 
 const WebSocketMessageEventStruct = object({

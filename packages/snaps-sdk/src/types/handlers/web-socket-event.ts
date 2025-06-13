@@ -26,8 +26,8 @@ export type WebSocketCloseEvent = {
   id: string;
   origin: string;
   code: number;
-  reason: string;
-  wasClean: boolean;
+  reason: string | null;
+  wasClean: boolean | null;
 };
 
 /**

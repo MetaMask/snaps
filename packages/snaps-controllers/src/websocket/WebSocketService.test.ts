@@ -10,7 +10,6 @@ import { WebSocketService } from './WebSocketService';
 import {
   getRestrictedWebSocketServiceMessenger,
   getRootWebSocketServiceMessenger,
-  sleep,
 } from '../test-utils';
 
 const MOCK_WEBSOCKET_URI = 'wss://metamask.io';
@@ -60,9 +59,7 @@ class MockWebSocket {
       this.#messageListener(
         new MessageEvent('message', {
           origin: this.#origin,
-          data:
-            // eslint-disable-next-line no-restricted-globals
-            new Blob([bytes]),
+          data: bytes.buffer,
         }),
       );
     }
@@ -212,9 +209,6 @@ describe('WebSocketService', () => {
         snapId: 'npm:@metamask/example-snap',
       },
     );
-
-    // Wait for binary decoding.
-    await sleep(1);
 
     expect(rootMessenger.call).toHaveBeenNthCalledWith(
       4,

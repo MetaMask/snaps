@@ -171,6 +171,7 @@ export class WebSocketService {
 
     // eslint-disable-next-line no-restricted-globals
     const socket = new WebSocket(url, protocols);
+    socket.binaryType = 'arraybuffer';
 
     const { promise, resolve, reject } = createDeferredPromise();
 
@@ -190,7 +191,8 @@ export class WebSocketService {
         origin,
         code: event.code,
         reason: event.reason,
-        wasClean: event.wasClean,
+        // wasClean is not available on mobile.
+        wasClean: event.wasClean ?? null,
       });
     });
 
@@ -204,21 +206,20 @@ export class WebSocketService {
 
     socket.addEventListener('error', errorListener);
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    socket.addEventListener('message', async (event) => {
+    socket.addEventListener('message', (event) => {
       const isText = typeof event.data === 'string';
       const data = isText
         ? { type: 'text' as const, message: event.data }
         : {
             type: 'binary' as const,
-            // We assume binary data to be sent via Blob for now.
-            message: Array.from(new Uint8Array(await event.data.arrayBuffer())),
+            // We request that the WebSocket gives us an array buffer.
+            message: Array.from(new Uint8Array(event.data)),
           };
 
       this.#handleEvent(snapId, {
         type: 'message',
         id,
-        origin: event.origin,
+        origin,
         data,
       });
     });
