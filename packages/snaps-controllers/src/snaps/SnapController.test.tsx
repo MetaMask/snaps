@@ -9932,7 +9932,7 @@ describe('SnapController', () => {
         );
 
         const call = jest.spyOn(messenger, 'call');
-        await messenger.call('SnapController:init');
+        messenger.call('SnapController:init');
         await sleep(10);
 
         expect(call).toHaveBeenNthCalledWith(
@@ -9999,7 +9999,7 @@ describe('SnapController', () => {
           }),
         );
 
-        await messenger.call('SnapController:init');
+        messenger.call('SnapController:init');
         await sleep(10);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
