@@ -96,7 +96,7 @@ describe('snap_openWebSocket', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: url -- Expected URL, got "http://metamask.io"..',
+            'Invalid params: At path: url -- At path: protocol -- Expected the value to satisfy a union of `"wss:" | "ws:"`, but received: "http:"..',
           stack: expect.any(String),
         },
         id: 1,
