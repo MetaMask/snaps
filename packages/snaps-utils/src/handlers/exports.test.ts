@@ -21,6 +21,7 @@ describe('SNAP_EXPORT_NAMES', () => {
       'onCronjob',
       'onInstall',
       'onUpdate',
+      'onStart',
       'onNameLookup',
       'onKeyringRequest',
       'onHomePage',

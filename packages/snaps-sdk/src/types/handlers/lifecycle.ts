@@ -37,3 +37,16 @@ export type OnInstallHandler = LifecycleEventHandler;
  * @param args.origin - The origin that triggered the lifecycle event hook.
  */
 export type OnUpdateHandler = LifecycleEventHandler;
+
+/**
+ * The `onStart` handler. This is called when the client is started.
+ *
+ * Note that using this handler requires the `endowment:lifecycle-hooks`
+ * permission.
+ *
+ * This type is an alias for {@link LifecycleEventHandler}.
+ *
+ * @param args - The request arguments.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
+ */
+export type OnStartHandler = LifecycleEventHandler;

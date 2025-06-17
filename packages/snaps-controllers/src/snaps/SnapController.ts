@@ -339,6 +339,15 @@ type PendingApproval = {
 // Controller Messenger Actions
 
 /**
+ * Initialise the SnapController. This should be called after all controllers
+ * are created.
+ */
+export type SnapControllerInitAction = {
+  type: `${typeof controllerName}:init`;
+  handler: SnapController['init'];
+};
+
+/**
  * Gets the specified Snap from state.
  */
 export type GetSnap = {
@@ -470,6 +479,7 @@ export type SnapControllerGetStateAction = ControllerGetStateAction<
 >;
 
 export type SnapControllerActions =
+  | SnapControllerInitAction
   | ClearSnapState
   | GetSnap
   | GetSnapState
@@ -1161,6 +1171,11 @@ export class SnapController extends BaseController<
    */
   #registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:init`,
+      (...args) => this.init(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:clearSnapState`,
       (...args) => this.clearSnapState(...args),
     );
@@ -1264,6 +1279,37 @@ export class SnapController extends BaseController<
       `${controllerName}:isMinimumPlatformVersion`,
       (...args) => this.isMinimumPlatformVersion(...args),
     );
+  }
+
+  /**
+   * Initialise the SnapController.
+   *
+   * Currently this method calls the `onStart` lifecycle hook for all
+   * installed Snaps.
+   */
+  init() {
+    const snaps = this.getRunnableSnaps();
+    for (const { id } of snaps) {
+      const hasLifecycleHooksEndowment = this.messagingSystem.call(
+        'PermissionController:hasPermission',
+        id,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      if (!hasLifecycleHooksEndowment) {
+        continue;
+      }
+
+      this.#callLifecycleHook(METAMASK_ORIGIN, id, HandlerType.OnStart).catch(
+        (error) => {
+          logError(
+            `Error when calling \`onStart\` lifecycle hook for Snap "${id}": ${getErrorMessage(
+              error,
+            )}`,
+          );
+        },
+      );
+    }
   }
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {

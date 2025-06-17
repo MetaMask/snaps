@@ -12,6 +12,7 @@ import type {
   OnRpcRequestHandler,
   OnSettingsPageHandler,
   OnSignatureHandler,
+  OnStartHandler,
   OnTransactionHandler,
   OnUpdateHandler,
   OnUserInputHandler,
@@ -60,6 +61,13 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnUpdate,
     required: false,
     validator: (snapExport: unknown): snapExport is OnUpdateHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnStart]: {
+    type: HandlerType.OnStart,
+    required: false,
+    validator: (snapExport: unknown): snapExport is OnStartHandler => {
       return typeof snapExport === 'function';
     },
   },
