@@ -1288,7 +1288,7 @@ export class SnapController extends BaseController<
    * installed Snaps.
    */
   init() {
-    const snaps = this.getAllSnaps();
+    const snaps = this.getRunnableSnaps();
     for (const { id } of snaps) {
       const hasLifecycleHooksEndowment = this.messagingSystem.call(
         'PermissionController:hasPermission',
