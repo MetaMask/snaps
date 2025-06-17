@@ -152,11 +152,12 @@ describe('handleRequest', () => {
       `,
       port: 4242,
     });
-
-    const snap = await installSnap(snapId);
+    const options = getMockOptions();
+    const snap = await installSnap(snapId, { options });
     const response = await handleRequest({
       ...snap,
       controllerMessenger,
+      simulationOptions: options,
       handler: HandlerType.OnHomePage,
       request: {
         method: '',
@@ -190,10 +191,12 @@ describe('handleRequest', () => {
       port: 4242,
     });
 
-    const snap = await installSnap(snapId);
+    const options = getMockOptions();
+    const snap = await installSnap(snapId, { options });
     const response = await handleRequest({
       ...snap,
       controllerMessenger,
+      simulationOptions: options,
       handler: HandlerType.OnHomePage,
       request: {
         method: '',
@@ -234,10 +237,12 @@ describe('handleRequest', () => {
       port: 4242,
     });
 
+    const options = getMockOptions();
     const snap = await installSnap(snapId);
     const promise = handleRequest({
       ...snap,
       controllerMessenger,
+      simulationOptions: options,
       handler: HandlerType.OnHomePage,
       request: {
         method: '',
@@ -261,10 +266,12 @@ describe('handleRequest', () => {
       `,
     });
 
-    const snap = await installSnap(snapId);
+    const options = getMockOptions();
+    const snap = await installSnap(snapId, { options });
     const response = await handleRequest({
       ...snap,
       handler: HandlerType.OnRpcRequest,
+      simulationOptions: options,
       request: {
         method: 'foo',
         params: ['bar'],
@@ -327,6 +334,7 @@ describe('getInterfaceFromResult', () => {
 
 describe('getInterfaceApi', () => {
   it('gets the content from the SnapInterfaceController if the result contains an interface ID', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
     const interfaceController = new SnapInterfaceController({
       messenger:
@@ -340,6 +348,7 @@ describe('getInterfaceApi', () => {
       { id },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     expect(getInterface).toStrictEqual(expect.any(Function));
@@ -360,6 +369,7 @@ describe('getInterfaceApi', () => {
   });
 
   it('gets the content from the SnapInterfaceController if the result contains content', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     // eslint-disable-next-line no-new
@@ -374,6 +384,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     expect(getInterface).toStrictEqual(expect.any(Function));
@@ -394,14 +405,21 @@ describe('getInterfaceApi', () => {
   });
 
   it('returns undefined if there is no interface ID associated with the result', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
-    const result = await getInterfaceApi({}, MOCK_SNAP_ID, controllerMessenger);
+    const result = await getInterfaceApi(
+      {},
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      options,
+    );
 
     expect(result).toBeUndefined();
   });
 
   it('sends the request to the snap when using `clickElement`', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -418,6 +436,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -449,6 +468,7 @@ describe('getInterfaceApi', () => {
   });
 
   it('sends the request to the snap when using `typeInField`', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -465,6 +485,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -497,6 +518,7 @@ describe('getInterfaceApi', () => {
   });
 
   it('sends the request to the snap when using `selectInDropdown`', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -518,6 +540,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -550,6 +573,7 @@ describe('getInterfaceApi', () => {
   });
 
   it('sends the request to the snap when using `selectFromRadioGroup`', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -571,6 +595,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -603,6 +628,7 @@ describe('getInterfaceApi', () => {
   });
 
   it('sends the request to the snap when using `selectInSelector`', async () => {
+    const options = getMockOptions();
     const controllerMessenger = getRootControllerMessenger();
 
     jest.spyOn(controllerMessenger, 'call');
@@ -628,6 +654,7 @@ describe('getInterfaceApi', () => {
       { content },
       MOCK_SNAP_ID,
       controllerMessenger,
+      options,
     );
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

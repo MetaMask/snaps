@@ -391,6 +391,7 @@ export function getHelpers({
         store,
         executionService,
         controllerMessenger,
+        simulationOptions: options,
         runSaga,
         handler: HandlerType.OnStart,
         request: {
@@ -520,6 +521,7 @@ export function getHelpers({
         store,
         executionService,
         controllerMessenger,
+        simulationOptions: options,
         runSaga,
         handler: HandlerType.OnProtocolRequest,
         request: {
@@ -545,6 +547,7 @@ export function getHelpers({
         store,
         executionService,
         controllerMessenger,
+        simulationOptions: options,
         runSaga,
         handler: HandlerType.OnClientRequest,
         request,
