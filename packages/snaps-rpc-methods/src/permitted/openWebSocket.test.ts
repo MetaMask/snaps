@@ -88,7 +88,7 @@ describe('snap_openWebSocket', () => {
         id: 1,
         method: 'snap_openWebSocket',
         params: {
-          url: 'ws://metamask.io',
+          url: 'http://metamask.io',
         },
       });
 
@@ -96,7 +96,7 @@ describe('snap_openWebSocket', () => {
         error: {
           code: -32602,
           message:
-            'Invalid params: At path: url -- Expected URL, got "ws://metamask.io"..',
+            'Invalid params: At path: url -- Expected URL, got "http://metamask.io"..',
           stack: expect.any(String),
         },
         id: 1,

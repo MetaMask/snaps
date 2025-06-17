@@ -3,6 +3,7 @@ import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   literal,
+  union,
   type JsonRpcRequest,
   type OpenWebSocketParams,
   type OpenWebSocketResult,
@@ -32,7 +33,7 @@ export type OpenWebSocketMethodHooks = {
 };
 
 const OpenWebSocketParametersStruct = object({
-  url: uri({ protocol: literal('wss:') }),
+  url: uri({ protocol: union([literal('wss:'), literal('ws:')]) }),
   protocols: optional(array(string())),
 });
 
