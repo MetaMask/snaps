@@ -1,7 +1,7 @@
-# `@metamask/cronjob-example-snap`
+# `@metamask/cronjob-duration-example-snap`
 
-This snap demonstrates the use of the `endowment:cronjob` permission to
-periodically execute a function.
+This Snap demonstrates the use of the `endowment:cronjob` permission to
+periodically execute a function, using ISO 8601 durations.
 
 ## Snap manifest
 
@@ -19,7 +19,7 @@ Along with other permissions, the manifest of this snap includes the
     "endowment:cronjob": {
       "jobs": [
         {
-          "expression": "* * * * *",
+          "duration": "PT10S",
           "request": {
             "method": "execute"
           }
@@ -30,16 +30,16 @@ Along with other permissions, the manifest of this snap includes the
 }
 ```
 
-A snap can schedule one or more cronjobs by specifying an array of `jobs` in
-the `endowment:cronjob` permission. Each job is defined by an `expression` and
-a `request` object. The `expression` is a cron expression that defines the
-schedule of the job. The `request` object defines the JSON-RPC request that
+A Snap can schedule one or more cronjobs by specifying an array of `jobs` in
+the `endowment:cronjob` permission. Each job is defined by a `duration` and
+a `request` object. The `duration` is an ISO 8601 duration that defines the
+interval of the job. The `request` object defines the JSON-RPC request that
 will be sent to the snap's `onCronjob` handler when the job is executed.
 
 > [!TIP]
-> You can also schedule jobs using ISO 8601 durations by using the `duration`
-> field instead of `expression`. For more information, refer to the
-> [cronjob duration example](../cronjob-duration/README.md).
+> You can also schedule jobs using cron expressions by using the `expression`
+> field instead of `duration`. For more information, refer to the
+> [cronjob example](../cronjobs/README.md).
 
 In this example, we schedule a job that executes every minute. When the job is
 executed, the snap's `onCronjob` handler is called with the following JSON-RPC

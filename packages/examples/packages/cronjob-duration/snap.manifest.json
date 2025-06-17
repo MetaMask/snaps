@@ -1,0 +1,34 @@
+{
+  "version": "0.0.0",
+  "description": "MetaMask example Snap demonstrating the use of cronjobs with ISO 8601 durations in Snaps.",
+  "proposedName": "Cronjob Duration Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "i/YSeO2E9gHo3ovjTjj4iYfEEkP8yEr5sU5O8TgzS7g=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/cronjob-duration-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:cronjob": {
+      "jobs": [
+        {
+          "duration": "PT10S",
+          "request": {
+            "method": "execute"
+          }
+        }
+      ]
+    },
+    "snap_notify": {}
+  },
+  "platformVersion": "8.0.0",
+  "manifestVersion": "0.1"
+}
