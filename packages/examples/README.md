@@ -27,7 +27,10 @@ The following is a list of the snaps in this directory.
   executing the snap.
 - [**`packages/cronjobs`**](./packages/cronjobs): This snap demonstrates how to
   use the `endowment:cronjob` permission to schedule a function to be called at
-  a later time.
+  a later time, using cron expressions.
+- [**`packages/cronjob-duration`**](./packages/cronjobs): This snap demonstrates how to
+  use the `endowment:cronjob` permission to schedule a function to be called at
+  a later time, using ISO 8601 durations instead of cron expressions.
 - [**`packages/dialogs`**](./packages/dialogs): This snap demonstrates how to
   use the `snap_dialog` method to display different types of dialogs to the
   user.
