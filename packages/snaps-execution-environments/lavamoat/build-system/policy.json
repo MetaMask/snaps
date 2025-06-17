@@ -330,7 +330,7 @@
     "eslint>chalk": {
       "packages": {
         "eslint>chalk>ansi-styles": true,
-        "istanbul-lib-report>supports-color": true
+        "eslint>chalk>supports-color": true
       }
     },
     "webpack>chrome-trace-event": {
@@ -416,7 +416,7 @@
       },
       "packages": {
         "eslint>debug>ms": true,
-        "istanbul-lib-report>supports-color": true
+        "eslint>chalk>supports-color": true
       }
     },
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": {
@@ -488,7 +488,7 @@
         "atob": true
       }
     },
-    "@esbuild-plugins/node-globals-polyfill>esbuild": {
+    "tsx>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -600,7 +600,7 @@
         "setTimeout": true
       }
     },
-    "istanbul-lib-report>supports-color>has-flag": {
+    "eslint>chalk>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       }
@@ -1032,7 +1032,7 @@
         "@types/jest>pretty-format>ansi-regex": true
       }
     },
-    "istanbul-lib-report>supports-color": {
+    "eslint>chalk>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -1042,7 +1042,7 @@
         "process.platform": true
       },
       "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true
+        "eslint>chalk>supports-color>has-flag": true
       }
     },
     "webpack>terser-webpack-plugin>jest-worker>supports-color": {
@@ -1055,7 +1055,7 @@
         "process.platform": true
       },
       "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true
+        "eslint>chalk>supports-color>has-flag": true
       }
     },
     "webpack>tapable": {
@@ -1095,7 +1095,7 @@
       "packages": {
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "@esbuild-plugins/node-globals-polyfill>esbuild": true,
+        "tsx>esbuild": true,
         "webpack>terser-webpack-plugin>jest-worker": true,
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>serialize-javascript": true,
