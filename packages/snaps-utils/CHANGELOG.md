@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
+- Add support for the `onWebSocketEvent` handler ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
 - Add support for the `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
 
 ### Fixed
