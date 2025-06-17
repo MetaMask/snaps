@@ -44,10 +44,10 @@ export const NetworkAccess: FunctionComponent = () => {
     }).catch(logError);
   };
 
-  const handleGetBlockNumber = () => {
+  const handleGetState = () => {
     invokeSnap({
       snapId,
-      method: 'getBlockNumber',
+      method: 'getState',
     }).catch(logError);
   };
 
@@ -77,8 +77,6 @@ export const NetworkAccess: FunctionComponent = () => {
         Fetch
       </Button>
 
-      <br />
-
       <ButtonGroup className="mb-3">
         <Button
           variant="primary"
@@ -99,11 +97,11 @@ export const NetworkAccess: FunctionComponent = () => {
 
         <Button
           variant="primary"
-          id="getBlockNumber"
+          id="getWebSocketState"
           disabled={isLoading}
-          onClick={handleGetBlockNumber}
+          onClick={handleGetState}
         >
-          Get Block Number
+          Get State
         </Button>
       </ButtonGroup>
 

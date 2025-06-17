@@ -1,7 +1,7 @@
 /**
- * The params for the `fetch` JSON-RPC method.
+ * Generic parameters containing an URL.
  */
-export type FetchParams = {
+export type UrlParams = {
   /**
    * The URL to fetch.
    */

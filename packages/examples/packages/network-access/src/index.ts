@@ -5,9 +5,9 @@ import {
 } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
-import type { FetchParams } from './types';
+import type { UrlParams } from './types';
 
-const WEBSOCKET_URL = 'ws://localhost:8545';
+const DEFAULT_WEBSOCKET_URL = 'ws://localhost:8545';
 
 /**
  * Fetch a JSON file from the provided URL. This uses the standard `fetch`
@@ -31,14 +31,15 @@ async function getJson(url: string) {
  * Open a WebSocket connection to a local Ethereum node and subscribe to
  * block updates.
  *
+ * @param url - The URL of the WebSocket connection.
  * @returns Null.
  * @throws If the WebSocket connection fails to open.
  */
-async function subscribe() {
+async function subscribe(url: string = DEFAULT_WEBSOCKET_URL) {
   const id = await snap.request({
     method: 'snap_openWebSocket',
     params: {
-      url: WEBSOCKET_URL,
+      url,
     },
   });
 
@@ -49,7 +50,7 @@ async function subscribe() {
     params: ['newHeads'],
   });
 
-  return snap.request({
+  return await snap.request({
     method: 'snap_sendWebSocketMessage',
     params: { id, message },
   });
@@ -58,28 +59,21 @@ async function subscribe() {
 /**
  * Close a WebSocket connection to a local Ethereum node, if it exists.
  *
+ * @param url - The URL of the WebSocket connection.
  * @returns Null.
  */
-async function unsubscribe() {
+async function unsubscribe(url: string = DEFAULT_WEBSOCKET_URL) {
   const sockets = await snap.request({
     method: 'snap_getWebSockets',
   });
 
-  if (sockets.length === 0) {
+  const socket = sockets.find((socketInfo) => socketInfo.url === url);
+
+  if (!socket) {
     return null;
   }
 
-  await snap.request({
-    method: 'snap_setState',
-    params: {
-      key: 'blockNumber',
-      value: null,
-      encrypted: false,
-    },
-  });
-
-  const socket = sockets[0];
-  return snap.request({
+  return await snap.request({
     method: 'snap_closeWebSocket',
     params: { id: socket.id },
   });
@@ -95,8 +89,8 @@ async function unsubscribe() {
  * - `startWebSocket`: Open a WebSocket connection to a local Ethereum node
  * and subscribe to block updates.
  * - `closeWebSocket`: Close a WebSocket connection, if one exists.
- * - `getBlockNumber`: Get the latest block number from the WebSocket connection,
- * stored in the Snap state.
+ * - `getState`: Get the state of the Snap, including the block number and whether
+ * the WebSocket connection is active.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -106,24 +100,27 @@ async function unsubscribe() {
  * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentnetwork-access
  */
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
+  const params = request.params as UrlParams | undefined;
+  const url = params?.url;
+
   switch (request.method) {
     case 'fetch': {
-      const params = request.params as FetchParams | undefined;
-      assert(params?.url, 'Required url parameter was not specified.');
-      return await getJson(params.url);
+      assert(url, 'Required url parameter was not specified.');
+      return await getJson(url);
     }
 
     case 'startWebSocket':
-      return subscribe();
+      return subscribe(url);
 
     case 'stopWebSocket':
-      return unsubscribe();
+      return unsubscribe(url);
 
-    case 'getBlockNumber': {
-      return snap.request({
+    case 'getState': {
+      const state = await snap.request({
         method: 'snap_getState',
-        params: { key: 'blockNumber', encrypted: false },
+        params: { encrypted: false },
       });
+      return state ?? { blockNumber: null, open: false };
     }
 
     default:
@@ -131,8 +128,35 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   }
 };
 
+/**
+ * Handle incoming WebSocket events sent by a client.
+ *
+ * @param params - The request parameters.
+ * @param params.event - The WebSocket event.
+ * @returns Nothing.
+ */
 export const onWebSocketEvent: OnWebSocketEventHandler = async ({ event }) => {
-  if (event.type !== 'message') {
+  const { origin } = event;
+
+  if (event.type === 'open') {
+    await snap.request({
+      method: 'snap_setState',
+      params: {
+        value: { blockNumber: null, origin, open: true },
+        encrypted: false,
+      },
+    });
+    return;
+  }
+
+  if (event.type === 'close') {
+    await snap.request({
+      method: 'snap_setState',
+      params: {
+        value: { blockNumber: null, origin: null, open: false },
+        encrypted: false,
+      },
+    });
     return;
   }
 
