@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `onStart` lifecycle hook ([#3455](https://github.com/MetaMask/snaps/pull/3455))
+- feat: Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
+
 ## [9.0.0]
 
 ### Changed

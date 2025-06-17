@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `onStart` lifecycle hook ([#3455](https://github.com/MetaMask/snaps/pull/3455))
+- feat: Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
+- chore: Bump @metamask/phishing-controller from 12.5.0 to 12.6.0 ([#3451](https://github.com/MetaMask/snaps/pull/3451))
+
 ## [13.0.0]
 
 ### Changed

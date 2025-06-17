@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- release: `113.0.0` ([#3448](https://github.com/MetaMask/snaps/pull/3448))
+- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+- chore: Bump supported browsers ([#3441](https://github.com/MetaMask/snaps/pull/3441))
+- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- release: `110.0.0` ([#3425](https://github.com/MetaMask/snaps/pull/3425))
+- feat: Add `AccountSelector` component ([#3088](https://github.com/MetaMask/snaps/pull/3088))
+- Release 109.0.0 ([#3412](https://github.com/MetaMask/snaps/pull/3412))
+- release: 107.0.0 ([#3400](https://github.com/MetaMask/snaps/pull/3400))
+- release: 104.0.0 ([#3384](https://github.com/MetaMask/snaps/pull/3384))
+- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
+- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
+- release: 103.0.0 ([#3360](https://github.com/MetaMask/snaps/pull/3360))
+- perf: Use `typedUnion` for `UserInputEventStruct` ([#3344](https://github.com/MetaMask/snaps/pull/3344))
+- chore(deps): bump @metamask/utils from 11.2.0 to 11.3.0 ([#3232](https://github.com/MetaMask/snaps/pull/3232))
+
 ## [1.1.2]
 
 ### Fixed
