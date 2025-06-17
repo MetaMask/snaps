@@ -96,6 +96,7 @@ export default defineConfig({
       enabled: true,
 
       reportsDirectory: 'coverage/vite',
+      reporter: ['json', 'json-summary', 'html'],
 
       // Configure the coverage provider. We can't use `istanbul` because it
       // changes functions, which breaks SES.

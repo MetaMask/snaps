@@ -1,16 +1,30 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, n/no-process-exit, import-x/no-named-as-default-member */
 
 import { promises as fs } from 'fs';
 import type { CoverageMap } from 'istanbul-lib-coverage';
-import { createCoverageMap } from 'istanbul-lib-coverage';
+import istanbul from 'istanbul-lib-coverage';
 import type { ReportBase } from 'istanbul-lib-report';
 import { createContext } from 'istanbul-lib-report';
 import type { ReportOptions, ReportType } from 'istanbul-reports';
 import { create } from 'istanbul-reports';
 import { resolve } from 'path';
 
-const COVERAGE_JSON = resolve(__dirname, '..', 'coverage.json');
-const COVERAGE_PATH = resolve(__dirname, '..', 'coverage');
+const COVERAGE_JSON = resolve(process.cwd(), 'coverage.json');
+const COVERAGE_PATH = resolve(process.cwd(), 'coverage');
+
+/**
+ * The threshold for coverage increase. If the coverage for a given file
+ * does not increase by at least this percentage, the script will not update the
+ * coverage percentages.
+ */
+const COVERAGE_INCREASE_THRESHOLD = 0.3;
+
+/**
+ * The threshold for coverage decrease. If the coverage for a given file
+ * decreases by more than this percentage, the script will log an error
+ * and exit with a non-zero exit code.
+ */
+const COVERAGE_DECREASE_THRESHOLD = 0.1;
 
 const JEST_COVERAGE_FILE = resolve(
   COVERAGE_PATH,
@@ -68,12 +82,12 @@ async function mergeReports() {
   const jestMap = await fs
     .readFile(JEST_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
-    .then(createCoverageMap);
+    .then(istanbul.createCoverageMap);
 
   const viteMap = await fs
     .readFile(VITE_COVERAGE_FILE, 'utf8')
     .then(JSON.parse)
-    .then(createCoverageMap);
+    .then(istanbul.createCoverageMap);
 
   const jestFiles = jestMap.files();
 
@@ -94,6 +108,7 @@ async function mergeReports() {
   generateSummaryReport(COVERAGE_PATH, jestMap, 'json');
   generateSummaryReport(COVERAGE_PATH, jestMap, 'json-summary');
   generateSummaryReport(COVERAGE_PATH, jestMap, 'html');
+  generateSummaryReport(COVERAGE_PATH, jestMap, 'text');
 
   return jestMap.getCoverageSummary();
 }
@@ -119,15 +134,23 @@ async function main() {
   const { percentages, errors } = Object.entries<number>(
     currentCoverage,
   ).reduce<Result>(
-    (target, [key, value]) => {
-      const percentage = summary[key as CoverageKey].pct;
-      if (percentage < value) {
+    (target, [key, currentValue]) => {
+      const newValue = summary[key as CoverageKey].pct;
+      if (
+        newValue < currentValue &&
+        currentValue - newValue > COVERAGE_DECREASE_THRESHOLD
+      ) {
         target.errors.push(
-          `Coverage for ${key} decreased from ${value} to ${percentage}.`,
+          `Coverage for ${key} decreased from ${currentValue}% to ${newValue}%.`,
         );
       }
 
-      target.percentages[key as keyof Result['percentages']] = percentage;
+      // If the coverage has not increased by the threshold, do not update it.
+      if (newValue - currentValue < COVERAGE_INCREASE_THRESHOLD) {
+        return target;
+      }
+
+      target.percentages[key as keyof Result['percentages']] = newValue;
       return target;
     },
     {
@@ -140,6 +163,16 @@ async function main() {
   if (errors.length > 0) {
     errors.forEach((error) => console.error(error));
     process.exit(1);
+  }
+
+  // Check if the coverage percentages have changed.
+  const hasChanged = Object.entries(percentages).some(
+    ([key, value]) => value !== currentCoverage[key as CoverageKey],
+  );
+
+  if (!hasChanged) {
+    console.log('No changes in coverage percentages detected.');
+    return;
   }
 
   // Write coverage percentages to disk.

@@ -3,9 +3,11 @@ const deepmerge = require('deepmerge');
 const baseConfig = require('../../jest.config.base');
 
 delete baseConfig.coverageThreshold;
+delete baseConfig.coverageReporters;
 
 module.exports = deepmerge(baseConfig, {
   coverageDirectory: './coverage/jest',
+  coverageReporters: ['json', 'json-summary', 'html'],
   coveragePathIgnorePatterns: [
     './src/index.ts',
     './src/index.browser.ts',
