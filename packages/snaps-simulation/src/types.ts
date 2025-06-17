@@ -2,20 +2,12 @@ import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
-<<<<<<< HEAD
 import type {
-<<<<<<< HEAD
   CaipChainId,
-=======
-  CaipAssetType,
->>>>>>> 7654d378d ([WIP] Refactor send-flow-example-snap and add support in snaps-simulator for asset/account selector)
   Json,
   JsonRpcId,
   JsonRpcParams,
 } from '@metamask/utils';
-=======
-import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
->>>>>>> 2b2df877e (add tests and refactor send flow tests)
 
 import type {
   NameLookupOptionsStruct,
