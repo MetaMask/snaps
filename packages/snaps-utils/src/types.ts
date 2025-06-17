@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
   is,
   optional,
@@ -6,6 +7,7 @@ import {
   string,
   type,
   assert as assertSuperstruct,
+  StructError,
 } from '@metamask/superstruct';
 import type { Infer, Struct } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
@@ -124,8 +126,11 @@ export const uri = (opts: UriOptions<any> = {}) =>
       const UrlStruct = type(opts);
       assertSuperstruct(url, UrlStruct);
       return true;
-    } catch {
-      return `Expected URL, got "${value.toString()}".`;
+    } catch (error) {
+      if (error instanceof StructError) {
+        return getErrorMessage(error);
+      }
+      return `Expected URL, got "${value.toString()}"`;
     }
   });
 
