@@ -1,7 +1,7 @@
 import { logError } from '@metamask/snaps-utils';
 import type { ChangeEvent, FunctionComponent } from 'react';
 import { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, ButtonGroup, Form } from 'react-bootstrap';
 
 import {
   NETWORK_ACCESS_PORT,
@@ -20,11 +20,34 @@ export const NetworkAccess: FunctionComponent = () => {
     setUrl(event.target.value);
   };
 
-  const handleSubmit = () => {
+  const snapId = getSnapId(NETWORK_ACCESS_SNAP_ID, NETWORK_ACCESS_PORT);
+
+  const handleFetch = () => {
     invokeSnap({
-      snapId: getSnapId(NETWORK_ACCESS_SNAP_ID, NETWORK_ACCESS_PORT),
+      snapId,
       method: 'fetch',
       params: { url },
+    }).catch(logError);
+  };
+
+  const handleStartWebSocket = () => {
+    invokeSnap({
+      snapId,
+      method: 'startWebSocket',
+    }).catch(logError);
+  };
+
+  const handleStopWebSocket = () => {
+    invokeSnap({
+      snapId,
+      method: 'stopWebSocket',
+    }).catch(logError);
+  };
+
+  const handleGetBlockNumber = () => {
+    invokeSnap({
+      snapId,
+      method: 'getBlockNumber',
     }).catch(logError);
   };
 
@@ -49,10 +72,41 @@ export const NetworkAccess: FunctionComponent = () => {
         id="sendNetworkAccessTest"
         className="mb-3"
         disabled={isLoading}
-        onClick={handleSubmit}
+        onClick={handleFetch}
       >
         Fetch
       </Button>
+
+      <br />
+
+      <ButtonGroup className="mb-3">
+        <Button
+          variant="primary"
+          id="startWebSocket"
+          disabled={isLoading}
+          onClick={handleStartWebSocket}
+        >
+          Start WebSocket
+        </Button>
+        <Button
+          variant="primary"
+          id="stopWebSocket"
+          disabled={isLoading}
+          onClick={handleStopWebSocket}
+        >
+          Stop WebSocket
+        </Button>
+
+        <Button
+          variant="primary"
+          id="getBlockNumber"
+          disabled={isLoading}
+          onClick={handleGetBlockNumber}
+        >
+          Get Block Number
+        </Button>
+      </ButtonGroup>
+
       <Result>
         <span id="networkAccessResult">
           {JSON.stringify(data, null, 2)}

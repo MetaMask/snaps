@@ -1,10 +1,13 @@
 import {
   MethodNotFoundError,
   type OnRpcRequestHandler,
+  type OnWebSocketEventHandler,
 } from '@metamask/snaps-sdk';
 import { assert } from '@metamask/utils';
 
 import type { FetchParams } from './types';
+
+const WEBSOCKET_URL = 'ws://localhost:8545';
 
 /**
  * Fetch a JSON file from the provided URL. This uses the standard `fetch`
@@ -47,7 +50,71 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await getJson(params.url);
     }
 
+    case 'startWebSocket': {
+      const id = await snap.request({
+        method: 'snap_openWebSocket',
+        params: {
+          url: WEBSOCKET_URL,
+        },
+      });
+
+      const message = JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_subscribe',
+        params: ['newHeads'],
+      });
+
+      return snap.request({
+        method: 'snap_sendWebSocketMessage',
+        params: { id, message },
+      });
+    }
+
+    case 'stopWebSocket': {
+      const sockets = await snap.request({
+        method: 'snap_getWebSockets',
+      });
+
+      if (sockets.length === 0) {
+        return null;
+      }
+
+      const socket = sockets[0];
+      return snap.request({
+        method: 'snap_closeWebSocket',
+        params: { id: socket.id },
+      });
+    }
+
+    case 'getBlockNumber': {
+      return snap.request({
+        method: 'snap_getState',
+        params: { key: 'blockNumber', encrypted: false },
+      });
+    }
+
     default:
       throw new MethodNotFoundError({ method: request.method });
   }
+};
+
+export const onWebSocketEvent: OnWebSocketEventHandler = async ({ event }) => {
+  if (event.type !== 'message') {
+    return;
+  }
+
+  assert(event.data.type === 'text');
+  const json = JSON.parse(event.data.message);
+
+  if (!json.params?.result) {
+    return;
+  }
+
+  const blockNumber = parseInt(json.params.result.number.slice(2), 16);
+
+  await snap.request({
+    method: 'snap_setState',
+    params: { key: 'blockNumber', value: blockNumber, encrypted: false },
+  });
 };
