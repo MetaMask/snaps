@@ -1,5 +1,5 @@
 import type { OnCronjobHandler } from '@metamask/snaps-sdk';
-import { panel, text, heading, MethodNotFoundError } from '@metamask/snaps-sdk';
+import { NotificationType, MethodNotFoundError } from '@metamask/snaps-sdk';
 
 /**
  * Handle cronjob execution requests from MetaMask. This handler handles one
@@ -19,16 +19,14 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
   switch (request.method) {
     case 'execute':
       // Cronjobs can execute any method that is available to the Snap.
-      return snap.request({
-        method: 'snap_dialog',
+      return await snap.request({
+        method: 'snap_notify',
         params: {
-          type: 'alert',
-          content: panel([
-            heading('Cronjob'),
-            text(
-              'This dialog was triggered by a cronjob using an ISO 8601 duration.',
-            ),
-          ]),
+          // We're using the `NotificationType` enum here, but you can also use
+          // the string values directly, e.g. `type: 'inApp'`.
+          type: NotificationType.InApp,
+          message:
+            'This notification was triggered by a cronjob using an ISO 8601 duration.',
         },
       });
     default:

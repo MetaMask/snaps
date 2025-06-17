@@ -1,33 +1,23 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { heading, panel, text } from '@metamask/snaps-sdk';
+import { NotificationType } from '@metamask/snaps-sdk';
 
 describe('onCronjob', () => {
   describe('execute', () => {
-    it('shows a dialog', async () => {
+    it('shows a notification', async () => {
       const { onCronjob } = await installSnap();
 
-      const request = onCronjob({
+      const response = await onCronjob({
         // This would normally be called by the MetaMask extension, but to make
-        // this testable, `@metamask/snaps-jest` exposes a `runCronjob` method.
+        // this testable, `@metamask/snaps-jest` exposes a `onCronjob` method.
         method: 'execute',
       });
 
-      const ui = await request.getInterface();
-
-      expect(ui).toRender(
-        panel([
-          heading('Cronjob'),
-          text(
-            'This dialog was triggered by a cronjob using an ISO 8601 duration.',
-          ),
-        ]),
+      expect(response).toSendNotification(
+        'This notification was triggered by a cronjob using an ISO 8601 duration.',
+        NotificationType.InApp,
       );
 
-      // TODO(ritave): Fix types in SnapInterface
-      await (ui as any).ok();
-
-      const response = await request;
       expect(response).toRespondWith(null);
     });
   });
