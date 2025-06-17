@@ -55,6 +55,11 @@ import { formatTypeErrorMessage } from './utils/errors';
 const MAX_FILE_SIZE = 10_000_000; // 10 MB
 
 /**
+ * The elements based on the Selector component.
+ */
+const SELECTOR_ELEMENTS = ['Selector', 'AccountSelector', 'AssetSelector'];
+
+/**
  * Get a user interface object from a type and content object.
  *
  * @param runSaga - A function to run a saga outside the usual Redux flow.
@@ -741,9 +746,91 @@ export async function selectFromRadioGroup(
 }
 
 /**
- * Choose an option with value from Selector interface element.
+ * Get the value from a Selector interface element.
+ *
+ * @param element - The Selector element to get the value from.
+ * @param options - The simulation options.
+ * @param value - The value to get from the Selector.
+ *
+ * @returns The value from the Selector element.
+ */
+export function getValueFromSelector(
+  element: NamedJSXElement,
+  options: SimulationOptions,
+  value: string,
+) {
+  switch (element.type) {
+    case 'Selector': {
+      const selectorOptions = getJsxChildren(element) as JSXElement[];
+      const selectedOption = selectorOptions.find(
+        (option) =>
+          hasProperty(option.props, 'value') && option.props.value === value,
+      );
+
+      assert(
+        selectedOption !== undefined,
+        `The Selector with the name "${element.props.name}" does not contain "${value}".`,
+      );
+
+      return value;
+    }
+
+    case 'AccountSelector': {
+      const { accounts } = options;
+
+      const selectedAccount = accounts.find((account) => account.id === value);
+
+      assert(
+        selectedAccount !== undefined,
+        `The AccountSelector with the name "${element.props.name}" does not contain an account with ID "${value}".`,
+      );
+
+      return {
+        accountId: selectedAccount.id,
+        addresses: createAccountList(
+          selectedAccount.address,
+          createChainIdList(selectedAccount.scopes, element.props.chainIds),
+        ),
+      };
+    }
+
+    case 'AssetSelector': {
+      const { assets, accounts } = options;
+
+      const selectedAsset = assets[value as CaipAssetType];
+
+      const { address } = parseCaipAccountId(element.props.addresses[0]);
+
+      const account = accounts.find(
+        (simulationAccount) => simulationAccount.address === address,
+      );
+
+      const accountHasAsset = account?.assets?.some((asset) => asset === value);
+
+      assert(
+        selectedAsset !== undefined && accountHasAsset,
+        `The AssetSelector with the name "${element.props.name}" does not contain an asset with ID "${value}".`,
+      );
+
+      return {
+        asset: value as CaipAssetType,
+        name: selectedAsset.name,
+        symbol: selectedAsset.symbol,
+      };
+    }
+
+    default:
+      throw new Error(
+        `Expected an element of type ${formatTypeErrorMessage(SELECTOR_ELEMENTS)}, but found "${element.type}".`,
+      );
+  }
+}
+
+/**
+ * Choose an option with value from a Selector interface element.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
+ * @param options - The simulation options.
  * @param id - The interface ID.
  * @param content - The interface Components.
  * @param snapId - The Snap ID.
@@ -752,6 +839,7 @@ export async function selectFromRadioGroup(
  */
 export async function selectFromSelector(
   controllerMessenger: RootControllerMessenger,
+  options: SimulationOptions,
   id: string,
   content: JSXElement,
   snapId: SnapId,
@@ -765,21 +853,7 @@ export async function selectFromSelector(
     `Could not find an element in the interface with the name "${name}".`,
   );
 
-  assert(
-    result.element.type === 'Selector',
-    `Expected an element of type "Selector", but found "${result.element.type}".`,
-  );
-
-  const options = getJsxChildren(result.element) as JSXElement[];
-  const selectedOption = options.find(
-    (option) =>
-      hasProperty(option.props, 'value') && option.props.value === value,
-  );
-
-  assert(
-    selectedOption !== undefined,
-    `The Selector with the name "${name}" does not contain "${value}".`,
-  );
+  const selectedValue = getValueFromSelector(result.element, options, value);
 
   const { state, context } = controllerMessenger.call(
     'SnapInterfaceController:getInterface',
@@ -787,7 +861,7 @@ export async function selectFromSelector(
     id,
   );
 
-  const newState = mergeValue(state, name, value, result.form);
+  const newState = mergeValue(state, name, selectedValue, result.form);
 
   controllerMessenger.call(
     'SnapInterfaceController:updateInterfaceState',
@@ -805,177 +879,7 @@ export async function selectFromSelector(
         event: {
           type: UserInputEventType.InputChangeEvent,
           name: result.element.props.name,
-          value,
-        },
-        id,
-        context,
-      },
-    },
-  });
-}
-
-/**
- * Select an account in the AccountSelector interface element.
- *
- * @param controllerMessenger - The controller messenger used to call actions.
- * @param options - The simulation options containing the available accounts.
- * @param id - The interface ID.
- * @param content - The interface Components.
- * @param snapId - The Snap ID.
- * @param name - The element name.
- * @param accountId - The account ID to select.
- */
-export async function selectFromAccountSelector(
-  controllerMessenger: RootControllerMessenger,
-  options: SimulationOptions,
-  id: string,
-  content: JSXElement,
-  snapId: SnapId,
-  name: string,
-  accountId: string,
-) {
-  const result = getElement(content, name);
-
-  assert(
-    result !== undefined,
-    `Could not find an element in the interface with the name "${name}".`,
-  );
-
-  assert(
-    result.element.type === 'AccountSelector',
-    `Expected an element of type "AccountSelector", but found "${result.element.type}".`,
-  );
-
-  const { accounts } = options;
-
-  const selectedAccount = accounts.find((account) => account.id === accountId);
-
-  assert(
-    selectedAccount !== undefined,
-    `The AccountSelector with the name "${name}" does not contain an account with ID "${accountId}".`,
-  );
-
-  const value = {
-    accountId: selectedAccount.id,
-    addresses: createAccountList(
-      selectedAccount.address,
-      createChainIdList(selectedAccount.scopes, result.element.props.chainIds),
-    ),
-  };
-
-  const { state, context } = controllerMessenger.call(
-    'SnapInterfaceController:getInterface',
-    snapId,
-    id,
-  );
-
-  const newState = mergeValue(state, name, value, result.form);
-
-  controllerMessenger.call(
-    'SnapInterfaceController:updateInterfaceState',
-    id,
-    newState,
-  );
-
-  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: 'metamask',
-    handler: HandlerType.OnUserInput,
-    request: {
-      jsonrpc: '2.0',
-      method: ' ',
-      params: {
-        event: {
-          type: UserInputEventType.InputChangeEvent,
-          name: result.element.props.name,
-          value,
-        },
-        id,
-        context,
-      },
-    },
-  });
-}
-
-/**
- * Select an asset in the AssetSelector interface element.
- *
- * @param controllerMessenger - The controller messenger used to call actions.
- * @param options - The simulation options containing the available assets.
- * @param id - The interface ID.
- * @param content - The interface Components.
- * @param snapId - The Snap ID.
- * @param name - The element name.
- * @param assetId - The asset ID to select.
- */
-export async function selectFromAssetSelector(
-  controllerMessenger: RootControllerMessenger,
-  options: SimulationOptions,
-  id: string,
-  content: JSXElement,
-  snapId: SnapId,
-  name: string,
-  assetId: CaipAssetType,
-) {
-  const result = getElement(content, name);
-
-  assert(
-    result !== undefined,
-    `Could not find an element in the interface with the name "${name}".`,
-  );
-
-  assert(
-    result.element.type === 'AssetSelector',
-    `Expected an element of type "AssetSelector", but found "${result.element.type}".`,
-  );
-
-  const { assets, accounts } = options;
-
-  const selectedAsset = assets[assetId];
-
-  const { address } = parseCaipAccountId(result.element.props.addresses[0]);
-
-  const account = accounts.find(
-    (simulationAccount) => simulationAccount.address === address,
-  );
-
-  const accountHasAsset = account?.assets?.some((asset) => asset === assetId);
-
-  assert(
-    selectedAsset !== undefined && accountHasAsset,
-    `The AssetSelector with the name "${name}" does not contain an asset with ID "${assetId}".`,
-  );
-
-  const value = {
-    asset: assetId,
-    name: selectedAsset.name,
-    symbol: selectedAsset.symbol,
-  };
-
-  const { state, context } = controllerMessenger.call(
-    'SnapInterfaceController:getInterface',
-    snapId,
-    id,
-  );
-
-  const newState = mergeValue(state, name, value, result.form);
-
-  controllerMessenger.call(
-    'SnapInterfaceController:updateInterfaceState',
-    id,
-    newState,
-  );
-
-  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
-    origin: 'metamask',
-    handler: HandlerType.OnUserInput,
-    request: {
-      jsonrpc: '2.0',
-      method: ' ',
-      params: {
-        event: {
-          type: UserInputEventType.InputChangeEvent,
-          name: result.element.props.name,
-          value,
+          value: selectedValue,
         },
         id,
         context,
@@ -1183,35 +1087,12 @@ export function getInterfaceActions(
     selectFromSelector: async (name: string, value: string) => {
       await selectFromSelector(
         controllerMessenger,
+        simulationOptions,
         id,
         content,
         snapId,
         name,
         value,
-      );
-    },
-
-    selectFromAccountSelector: async (name: string, accountId: string) => {
-      await selectFromAccountSelector(
-        controllerMessenger,
-        simulationOptions,
-        id,
-        content,
-        snapId,
-        name,
-        accountId,
-      );
-    },
-
-    selectFromAssetSelector: async (name: string, assetId: CaipAssetType) => {
-      await selectFromAssetSelector(
-        controllerMessenger,
-        simulationOptions,
-        id,
-        content,
-        snapId,
-        name,
-        assetId,
       );
     },
 

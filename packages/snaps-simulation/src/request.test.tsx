@@ -23,6 +23,7 @@ import {
 } from './request';
 import { installSnap } from './simulation';
 import {
+  getMockOptions,
   getMockServer,
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
@@ -39,9 +40,12 @@ describe('handleRequest', () => {
       `,
     });
 
-    const snap = await installSnap(snapId);
+    const options = getMockOptions();
+
+    const snap = await installSnap(snapId, { options });
     const response = await handleRequest({
       ...snap,
+      simulationOptions: options,
       handler: HandlerType.OnRpcRequest,
       request: {
         method: 'foo',
@@ -87,9 +91,12 @@ describe('handleRequest', () => {
       `,
     });
 
-    const snap = await installSnap(snapId);
+    const options = getMockOptions();
+
+    const snap = await installSnap(snapId, { options });
     const response = handleRequest({
       ...snap,
+      simulationOptions: options,
       handler: HandlerType.OnRpcRequest,
       request: {
         method: 'foo',

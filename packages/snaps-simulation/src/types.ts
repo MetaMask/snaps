@@ -2,6 +2,7 @@ import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
+<<<<<<< HEAD
 import type {
 <<<<<<< HEAD
   CaipChainId,
@@ -12,6 +13,9 @@ import type {
   JsonRpcId,
   JsonRpcParams,
 } from '@metamask/utils';
+=======
+import type { Json, JsonRpcId, JsonRpcParams } from '@metamask/utils';
+>>>>>>> 2b2df877e (add tests and refactor send flow tests)
 
 import type {
   NameLookupOptionsStruct,
@@ -154,28 +158,12 @@ export type SnapInterfaceActions = {
   selectFromRadioGroup(name: string, value: string): Promise<void>;
 
   /**
-   * Choose an option with a value from Selector component.
+   * Choose an option with a value from a Selector, AccountSelector or AssetSelector component.
    *
    * @param name - The element name to type in.
-   * @param value - The value to type.
+   * @param value - The value to select.
    */
   selectFromSelector(name: string, value: string): Promise<void>;
-
-  /**
-   * Choose an account from an Account Selector component.
-   *
-   * @param name - The element name to type in.
-   * @param accountId - The account ID.
-   */
-  selectFromAccountSelector(name: string, accountId: string): Promise<void>;
-
-  /**
-   * Choose an asset from an Asset Selector component.
-   *
-   * @param name - The element name to type in.
-   * @param assetId - The asset ID.
-   */
-  selectFromAssetSelector(name: string, assetId: CaipAssetType): Promise<void>;
 
   /**
    * Upload a file.
