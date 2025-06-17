@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.24.0]
 
-### Uncategorized
+### Added
 
-- feat: Add WebSocket logic to network access Snap ([#3458](https://github.com/MetaMask/snaps/pull/3458))
-- feat: Add cronjob duration example ([#3461](https://github.com/MetaMask/snaps/pull/3461))
+- Add WebSocket example ([#3458](https://github.com/MetaMask/snaps/pull/3458))
+- Add cronjob duration example ([#3461](https://github.com/MetaMask/snaps/pull/3461))
 
 ## [2.23.1]
 

@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `onStart` lifecycle hook ([#3455](https://github.com/MetaMask/snaps/pull/3455))
-- fix: Add missing WS types and allow local URLs ([#3459](https://github.com/MetaMask/snaps/pull/3459))
-- feat: Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
+- Add RPC methods for WebSockets ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
+- Add `onStart` to lifecycle hooks endowment ([#3455](https://github.com/MetaMask/snaps/pull/3455))
 
 ## [13.0.0]
 

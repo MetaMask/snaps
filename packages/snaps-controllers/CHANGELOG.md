@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `onStart` lifecycle hook ([#3455](https://github.com/MetaMask/snaps/pull/3455))
-- feat: Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
-- chore: Bump @metamask/phishing-controller from 12.5.0 to 12.6.0 ([#3451](https://github.com/MetaMask/snaps/pull/3451))
+- Add `WebSocketService` for WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
+  - This service must be instantiated to invoke `onWebSocketEvent` when WebSocket
+  messages are received.
+- Add `SnapController:init` to support `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
+  - This function should be called when the client has been fully started.
 
 ## [13.0.0]
 
