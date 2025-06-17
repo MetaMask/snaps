@@ -3128,7 +3128,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/cronjob-duration-example-snap@workspace:packages/examples/packages/cronjob-duration":
+"@metamask/cronjob-duration-example-snap@workspace:^, @metamask/cronjob-duration-example-snap@workspace:packages/examples/packages/cronjob-duration":
   version: 0.0.0-use.local
   resolution: "@metamask/cronjob-duration-example-snap@workspace:packages/examples/packages/cronjob-duration"
   dependencies:
@@ -4686,6 +4686,7 @@ __metadata:
     "@metamask/bip32-example-snap": "workspace:^"
     "@metamask/bip44-example-snap": "workspace:^"
     "@metamask/client-status-example-snap": "workspace:^"
+    "@metamask/cronjob-duration-example-snap": "workspace:^"
     "@metamask/cronjob-example-snap": "workspace:^"
     "@metamask/dialog-example-snap": "workspace:^"
     "@metamask/error-example-snap": "workspace:^"
