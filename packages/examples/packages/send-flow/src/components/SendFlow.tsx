@@ -15,6 +15,7 @@ import type { Currency } from '../types';
  * The props for the {@link SendFlow} component.
  *
  * @property accounts - The available accounts.
+ * @property asset - The selected asset to display.
  * @property total - The total cost of the transaction.
  * @property useFiat - Whether to use fiat currency.
  * @property fees - The fees for the transaction.

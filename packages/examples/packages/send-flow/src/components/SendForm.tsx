@@ -21,9 +21,11 @@ import type { SendFormErrors } from '../types';
 /**
  * The props for the {@link SendForm} component.
  *
- * @property accounts - The available accounts.
+ * @property account - The selected account.
+ * @property asset - The selected asset to display.
+ * @property useFiat - Whether to use fiat currency.
+ * @property fiatCurrency - The fiat currency to use.
  * @property errors - The form errors.
- * @property selectedCurrency - The selected currency to display.
  * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFormProps = {

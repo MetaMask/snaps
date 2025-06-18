@@ -10,14 +10,12 @@ import type {
  * @property asset - The selected asset.
  * @property to - The receiving address.
  * @property amount - The amount to send.
- * @property accountSelector - The selected account.
  */
 export type SendFormState = {
   account: AccountSelectorState;
   asset: AssetSelectorState;
   to: string;
   amount: string;
-  accountSelector: string;
 };
 
 /**
@@ -41,21 +39,6 @@ export type SendFormErrors = {
 };
 
 /**
- * An Account of the send flow interface.
- *
- * @property name - The name of the account.
- * @property address - The address of the account.
- * @property balance - The balance of the account.
- * @property icon - The icon of the account.
- */
-export type Account = {
-  name: string;
-  address: string;
-  balance: Currency;
-  icon: string;
-};
-
-/**
  * A currency value.
  *
  * @property amount - The amount in the selected currency.
@@ -69,9 +52,9 @@ export type Currency = {
 /**
  * The context of the send flow interface.
  *
- * @property accounts - The available accounts.
- * @property selectedCurrency - The selected currency.
+ * @property useFiat - Whether to use fiat currency.
  * @property fees - The fees for the transaction.
+ * @property fiatCurrency - The fiat currency to use.
  */
 export type SendFlowContext = {
   useFiat: boolean;
