@@ -83,6 +83,10 @@ type InternalSocket = {
 };
 
 export class WebSocketService {
+  name: typeof serviceName = serviceName;
+
+  state = null;
+
   readonly #messenger: WebSocketServiceMessenger;
 
   readonly #sockets: Map<string, InternalSocket>;
