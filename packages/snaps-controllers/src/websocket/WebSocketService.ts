@@ -219,6 +219,8 @@ export class WebSocketService {
     });
 
     socket.addEventListener('close', (event) => {
+      this.#sockets.delete(id);
+
       this.#handleEvent(snapId, {
         type: 'close',
         id,
@@ -284,8 +286,6 @@ export class WebSocketService {
     const { socket } = this.#get(snapId, id);
 
     socket.close();
-
-    this.#sockets.delete(id);
   }
 
   /**
