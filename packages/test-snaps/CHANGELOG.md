@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.24.0]
+
+### Added
+
+- Add WebSocket example ([#3458](https://github.com/MetaMask/snaps/pull/3458))
+- Add cronjob duration example ([#3461](https://github.com/MetaMask/snaps/pull/3461))
+
 ## [2.23.1]
 
 ### Fixed
@@ -346,7 +353,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.24.0...HEAD
+[2.24.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.1...@metamask/test-snaps@2.24.0
 [2.23.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.0...@metamask/test-snaps@2.23.1
 [2.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.22.0...@metamask/test-snaps@2.23.0
 [2.22.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.21.1...@metamask/test-snaps@2.22.0

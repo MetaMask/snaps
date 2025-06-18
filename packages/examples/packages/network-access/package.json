@@ -1,6 +1,6 @@
 {
   "name": "@metamask/network-example-snap",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "MetaMask example snap demonstrating the use of the `endowment:network-access` permission in snaps",
   "keywords": [
     "MetaMask",

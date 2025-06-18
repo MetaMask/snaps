@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.1.0]
+
+### Added
+
+- Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
+  - This introduces types for the `onWebSocketEvent` handler which receives 
+    events from `WebSocketService`.
+- Add types for `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
+
 ## [8.0.0]
 
 ### Added
@@ -604,7 +613,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.1.0...HEAD
+[8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.0.0...@metamask/snaps-sdk@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.1.0...@metamask/snaps-sdk@8.0.0
 [7.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@7.0.0...@metamask/snaps-sdk@7.1.0
 [7.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@6.24.0...@metamask/snaps-sdk@7.0.0

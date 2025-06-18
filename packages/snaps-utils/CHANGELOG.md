@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.0]
+
+### Added
+
+- Add support for the `onWebSocketEvent` handler ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
+- Add support for the `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
+
+### Fixed
+
+- Fix unused permission detection for endowments with multiple handlers ([#3452](https://github.com/MetaMask/snaps/pull/3452))
+
 ## [10.0.0]
 
 ### Added
@@ -637,7 +648,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.1.0...HEAD
+[10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.0.0...@metamask/snaps-utils@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...@metamask/snaps-utils@10.0.0
 [9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...@metamask/snaps-utils@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.2.2...@metamask/snaps-utils@9.3.0
