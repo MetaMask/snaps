@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.1.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Always delete socket when `close` is emitted ([#3465](https://github.com/MetaMask/snaps/pull/3465))
-- fix: Add missing boilerplate to `WebSocketService` ([#3464](https://github.com/MetaMask/snaps/pull/3464))
+- Always delete socket when `close` is emitted ([#3465](https://github.com/MetaMask/snaps/pull/3465))
+- Add missing boilerplate to `WebSocketService` ([#3464](https://github.com/MetaMask/snaps/pull/3464))
 
 ## [13.1.0]
 
