@@ -133,7 +133,7 @@ export class WebSocketService {
    *
    * @param snapId - The Snap ID.
    * @param id - The identifier for the WebSocket connection.
-   * @returns Information abou the WebSocket connection.
+   * @returns Information about the WebSocket connection.
    * @throws If the WebSocket connection cannot be found.
    */
   #get(snapId: SnapId, id: string) {

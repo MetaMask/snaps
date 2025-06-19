@@ -51,8 +51,8 @@ describe('endowment:keyring', () => {
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [
-            { type: 'keyringOrigin', value: { allowedOrgins: ['foo.com'] } },
-            { type: 'keyringOrigin', value: { allowedOrgins: ['bar.com'] } },
+            { type: 'keyringOrigin', value: { allowedOrigins: ['foo.com'] } },
+            { type: 'keyringOrigin', value: { allowedOrigins: ['bar.com'] } },
           ],
         }),
       ).toThrow('Duplicate caveats are not allowed.');
