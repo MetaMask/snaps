@@ -32,8 +32,10 @@ class MockWebSocket {
     } else if (type === 'close') {
       this.#closeListener = listener;
     } else if (type === 'error' && this.#origin === MOCK_WEBSOCKET_BROKEN_URI) {
-      listener(new Event('error'));
-      this.#closeWithCode(1006, '', false);
+      setTimeout(() => {
+        listener(new Event('error'));
+        this.#closeWithCode(1006, '', false);
+      }, 1);
     } else if (type === 'message') {
       this.#messageListener = listener;
     }
@@ -259,6 +261,10 @@ describe('WebSocketService', () => {
         MOCK_WEBSOCKET_BROKEN_URI,
       ),
     ).rejects.toThrow('An error occurred while opening the WebSocket.');
+
+    expect(
+      messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
+    ).toHaveLength(0);
   });
 
   it('logs if the Snap request fails', async () => {
