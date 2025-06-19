@@ -7,13 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.1.1]
+
+### Fixed
+
+- Always delete socket when `close` is emitted ([#3465](https://github.com/MetaMask/snaps/pull/3465))
+- Add missing boilerplate to `WebSocketService` ([#3464](https://github.com/MetaMask/snaps/pull/3464))
+
 ## [13.1.0]
 
 ### Added
 
 - Add `WebSocketService` for WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450))
   - This service must be instantiated to invoke `onWebSocketEvent` when WebSocket
-  messages are received.
+    messages are received.
 - Add `SnapController:init` to support `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
   - This function should be called when the client has been fully started.
 
@@ -819,7 +826,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@13.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@13.1.1...HEAD
+[13.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@13.1.0...@metamask/snaps-controllers@13.1.1
 [13.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@13.0.0...@metamask/snaps-controllers@13.1.0
 [13.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.1...@metamask/snaps-controllers@13.0.0
 [12.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@12.3.0...@metamask/snaps-controllers@12.3.1
