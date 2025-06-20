@@ -267,7 +267,7 @@ export class MultichainRouter {
 
   /**
    * Handle an incoming JSON-RPC request tied to a specific scope by routing
-   * to either a procotol Snap or an account Snap.
+   * to either a protocol Snap or an account Snap.
    *
    * Note: Addresses are considered case sensitive by the MultichainRouter as
    * not all non-EVM chains are case insensitive.
