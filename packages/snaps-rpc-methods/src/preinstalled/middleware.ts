@@ -16,7 +16,7 @@ export type PreinstalledSnapsMiddlewareHooks = {
 };
 
 /**
- * Creates a middleware that automatically grants permissions to preinstalled Snaps
+ * Creates a middleware that automatically grants account permissions to preinstalled Snaps
  * that want to use the Ethereum provider endowment.
  *
  * @param hooks - The hooks used by the middleware.
