@@ -44,4 +44,4 @@ in the [Permissionless Snaps Registry] repository.
 [snap controller]: ./snap-controller.md
 [jsonsnapsregistry]: ../../../packages/snaps-controllers/src/snaps/registry/json.ts
 [snaps registry]: https://github.com/MetaMask/snaps-registry
-[permissionless snaps registry]: https://github.com/MetaMask/permissionless-snaps-registry
+[permissionless snaps registry]: https://github.com/MetaMask/snaps-registry
