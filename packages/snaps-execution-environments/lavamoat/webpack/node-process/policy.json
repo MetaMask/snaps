@@ -126,10 +126,10 @@
       "packages": {
         "eslint>debug>ms": true,
         "@metamask/providers>extension-port-stream>readable-stream>process": true,
-        "istanbul-lib-report>supports-color": true
+        "eslint>chalk>supports-color": true
       }
     },
-    "istanbul-lib-report>supports-color>has-flag": {
+    "eslint>chalk>supports-color>has-flag": {
       "globals": {
         "process.argv": true
       },
@@ -192,7 +192,7 @@
         "readable-stream>string_decoder>safe-buffer": true
       }
     },
-    "istanbul-lib-report>supports-color": {
+    "eslint>chalk>supports-color": {
       "builtin": {
         "os.release": true,
         "tty.isatty": true
@@ -202,7 +202,7 @@
         "process.platform": true
       },
       "packages": {
-        "istanbul-lib-report>supports-color>has-flag": true,
+        "eslint>chalk>supports-color>has-flag": true,
         "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },

@@ -57,6 +57,7 @@ export default defineConfig({
       enabled: true,
 
       reportsDirectory: 'coverage/vite',
+      reporter: ['json', 'json-summary', 'html'],
 
       // Configure the coverage provider. We use `istanbul` instead of `v8`
       // because it seems to be more reliable.
