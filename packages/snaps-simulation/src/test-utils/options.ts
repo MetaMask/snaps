@@ -1,41 +1,5 @@
-import type { CaipAssetType, CaipChainId } from '@metamask/utils';
-
-import { DEFAULT_SRP } from '../constants';
+import { DEFAULT_ACCOUNTS, DEFAULT_ASSETS, DEFAULT_SRP } from '../constants';
 import type { SimulationOptions } from '../options';
-
-export const MOCK_ACCOUNTS = [
-  {
-    address: '0x1234567890abcdef1234567890abcdef12345678',
-    id: '29bc7513-d1b9-4466-98a6-f5f9e0b90137',
-    scopes: ['eip155:0'] as CaipChainId[],
-    selected: false,
-    assets: [
-      'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
-    ] as CaipAssetType[],
-  },
-  {
-    address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-    id: 'e051723c-85d0-43a3-b9bf-568a90d3f378',
-    scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'] as CaipChainId[],
-    selected: true,
-    assets: [
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    ] as CaipAssetType[],
-  },
-];
-
-export const MOCK_ASSETS = {
-  'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-    name: 'Dai Stablecoin',
-    symbol: 'DAI',
-  },
-  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
-    {
-      name: 'USDC',
-      symbol: 'USDC',
-    },
-};
-
 /**
  * Get the options for the simulation.
  *
@@ -59,8 +23,8 @@ export const MOCK_ASSETS = {
  * @returns The options for the simulation.
  */
 export function getMockOptions({
-  accounts = [],
-  assets = {},
+  accounts = DEFAULT_ACCOUNTS,
+  assets = DEFAULT_ASSETS,
   currency = 'usd',
   locale = 'en',
   hideBalances = false,

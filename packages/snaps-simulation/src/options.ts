@@ -16,7 +16,13 @@ import {
   JsonStruct,
 } from '@metamask/utils';
 
-import { DEFAULT_CURRENCY, DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
+import {
+  DEFAULT_ACCOUNTS,
+  DEFAULT_ASSETS,
+  DEFAULT_CURRENCY,
+  DEFAULT_LOCALE,
+  DEFAULT_SRP,
+} from './constants';
 
 const SimulationAccountStruct = object({
   address: string(),
@@ -26,10 +32,14 @@ const SimulationAccountStruct = object({
   assets: defaulted(optional(array(CaipAssetTypeStruct)), []),
 });
 
+export type SimulationAccount = Infer<typeof SimulationAccountStruct>;
+
 const SimulationAssetStruct = object({
   name: string(),
   symbol: string(),
 });
+
+export type SimulationAsset = Infer<typeof SimulationAssetStruct>;
 
 const SimulationOptionsStruct = object({
   currency: defaulted(optional(string()), DEFAULT_CURRENCY),
@@ -40,10 +50,13 @@ const SimulationOptionsStruct = object({
     optional(nullable(record(string(), JsonStruct))),
     null,
   ),
-  accounts: defaulted(optional(array(SimulationAccountStruct)), []),
+  accounts: defaulted(
+    optional(array(SimulationAccountStruct)),
+    DEFAULT_ACCOUNTS,
+  ),
   assets: defaulted(
     optional(record(CaipAssetTypeStruct, SimulationAssetStruct)),
-    {},
+    DEFAULT_ASSETS,
   ),
   hideBalances: defaulted(optional(boolean()), false),
   useSecurityAlerts: defaulted(optional(boolean()), true),

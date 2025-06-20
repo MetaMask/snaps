@@ -62,8 +62,6 @@ import {
   getMockOptions,
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
-  MOCK_ACCOUNTS,
-  MOCK_ASSETS,
 } from './test-utils';
 import {
   assertIsAlertDialog,
@@ -1816,9 +1814,7 @@ describe('getValueFromSelector', () => {
   });
 
   it('returns the selected value of an AccountSelector', () => {
-    const options = getMockOptions({
-      accounts: MOCK_ACCOUNTS,
-    });
+    const options = getMockOptions();
 
     const element = <AccountSelector name="accounts" />;
 
@@ -1829,7 +1825,7 @@ describe('getValueFromSelector', () => {
         'e051723c-85d0-43a3-b9bf-568a90d3f378',
       ),
     ).toStrictEqual({
-      accountId: MOCK_ACCOUNTS[1].id,
+      accountId: options.accounts[1].id,
       addresses: [
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       ],
@@ -1837,9 +1833,7 @@ describe('getValueFromSelector', () => {
   });
 
   it('throws if the AccountSelector does not contain the value', () => {
-    const options = getMockOptions({
-      accounts: MOCK_ACCOUNTS,
-    });
+    const options = getMockOptions();
 
     const element = <AccountSelector name="accounts" />;
 
@@ -1855,10 +1849,7 @@ describe('getValueFromSelector', () => {
   });
 
   it('returns the selected value of an AssetSelector', () => {
-    const options = getMockOptions({
-      assets: MOCK_ASSETS,
-      accounts: MOCK_ACCOUNTS,
-    });
+    const options = getMockOptions();
 
     const element = (
       <AssetSelector
@@ -1884,10 +1875,7 @@ describe('getValueFromSelector', () => {
   });
 
   it('throws if the AssetSelector does not contain the value', () => {
-    const options = getMockOptions({
-      assets: MOCK_ASSETS,
-      accounts: MOCK_ACCOUNTS,
-    });
+    const options = getMockOptions();
 
     const element = (
       <AssetSelector
