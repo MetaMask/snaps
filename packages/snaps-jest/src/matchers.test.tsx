@@ -2,7 +2,10 @@ import { expect } from '@jest/globals';
 import { NotificationType, panel, text } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 import { getInterfaceActions } from '@metamask/snaps-simulation';
-import type { RootControllerMessenger } from '@metamask/snaps-simulation';
+import type {
+  RootControllerMessenger,
+  SimulationOptions,
+} from '@metamask/snaps-simulation';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import {
@@ -186,6 +189,7 @@ describe('toSendNotification', () => {
     const actions = getInterfaceActions(
       MOCK_SNAP_ID,
       controllerMessenger as unknown as RootControllerMessenger,
+      {} as SimulationOptions,
       {
         content: (
           <Box>
@@ -237,6 +241,7 @@ describe('toSendNotification', () => {
     const actions = getInterfaceActions(
       MOCK_SNAP_ID,
       controllerMessenger as unknown as RootControllerMessenger,
+      {} as SimulationOptions,
       {
         content: (
           <Box>
@@ -329,6 +334,7 @@ describe('toSendNotification', () => {
     const actions = getInterfaceActions(
       MOCK_SNAP_ID,
       controllerMessenger as unknown as RootControllerMessenger,
+      {} as SimulationOptions,
       {
         content: (
           <Box>
@@ -377,6 +383,7 @@ describe('toSendNotification', () => {
     const actions = getInterfaceActions(
       MOCK_SNAP_ID,
       controllerMessenger as unknown as RootControllerMessenger,
+      {} as SimulationOptions,
       {
         content: (
           <Box>
@@ -430,6 +437,7 @@ describe('toSendNotification', () => {
     const actions = getInterfaceActions(
       MOCK_SNAP_ID,
       controllerMessenger as unknown as RootControllerMessenger,
+      {} as SimulationOptions,
       {
         content: (
           <Box>

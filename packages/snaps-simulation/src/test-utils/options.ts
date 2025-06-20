@@ -1,6 +1,5 @@
-import { DEFAULT_SRP } from '../constants';
+import { DEFAULT_ACCOUNTS, DEFAULT_ASSETS, DEFAULT_SRP } from '../constants';
 import type { SimulationOptions } from '../options';
-
 /**
  * Get the options for the simulation.
  *
@@ -19,9 +18,13 @@ import type { SimulationOptions } from '../options';
  * @param options.useNftDetection - Whether to auto-detect NFTs.
  * @param options.useExternalPricingData - Whether to get token price data from an external source.
  * @param options.showTestnets - Whether to show testnets.
+ * @param options.accounts - The accounts to use in the simulation.
+ * @param options.assets - The assets to use in the simulation.
  * @returns The options for the simulation.
  */
 export function getMockOptions({
+  accounts = DEFAULT_ACCOUNTS,
+  assets = DEFAULT_ASSETS,
   currency = 'usd',
   locale = 'en',
   hideBalances = false,
@@ -38,6 +41,8 @@ export function getMockOptions({
   showTestnets = true,
 }: Partial<SimulationOptions> = {}): SimulationOptions {
   return {
+    accounts,
+    assets,
     currency,
     locale,
     secretRecoveryPhrase,

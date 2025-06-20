@@ -1,3 +1,7 @@
+import type {
+  AccountSelectorState,
+  AssetSelectorState,
+} from '@metamask/snaps-sdk';
 import type { SnapComponent } from '@metamask/snaps-sdk/jsx';
 import { Box, Container } from '@metamask/snaps-sdk/jsx';
 
@@ -5,23 +9,24 @@ import { SendFlowFooter } from './SendFlowFooter';
 import { SendFlowHeader } from './SendFlowHeader';
 import { SendForm } from './SendForm';
 import { TransactionSummary } from './TransactionSummary';
-import type { Account, Currency } from '../types';
+import type { Currency } from '../types';
 
 /**
  * The props for the {@link SendFlow} component.
  *
  * @property accounts - The available accounts.
- * @property selectedAccount - The currently selected account.
- * @property selectedCurrency - The selected currency to display.
+ * @property asset - The selected asset to display.
  * @property total - The total cost of the transaction.
+ * @property useFiat - Whether to use fiat currency.
  * @property fees - The fees for the transaction.
  * @property errors - The form errors.
  * @property displayAvatar - Whether to display the avatar of the address.
  */
 export type SendFlowProps = {
-  accounts: Account[];
-  selectedAccount: string;
-  selectedCurrency: 'BTC' | '$';
+  account?: AccountSelectorState;
+  asset?: AssetSelectorState;
+  useFiat: boolean;
+  fiatCurrency: string;
   total: Currency;
   fees: Currency;
   errors?: {
@@ -35,9 +40,10 @@ export type SendFlowProps = {
  * A send flow component, which shows the user a form to send funds to another.
  *
  * @param props - The component props.
- * @param props.accounts - The available accounts.
- * @param props.selectedAccount - The currently selected account.
- * @param props.selectedCurrency - The selected currency to display.
+ * @param props.account - The account to use.
+ * @param props.asset - The asset to use.
+ * @param props.useFiat - Whether to use fiat currency.
+ * @param props.fiatCurrency - The fiat currency to use.
  * @param props.total - The total cost of the transaction.
  * @param props.errors - The form errors.
  * @param props.fees - The fees for the transaction.
@@ -45,9 +51,10 @@ export type SendFlowProps = {
  * @returns The SendFlow component.
  */
 export const SendFlow: SnapComponent<SendFlowProps> = ({
-  accounts,
-  selectedAccount,
-  selectedCurrency,
+  account,
+  asset,
+  useFiat,
+  fiatCurrency,
   total,
   fees,
   errors,
@@ -58,9 +65,10 @@ export const SendFlow: SnapComponent<SendFlowProps> = ({
       <Box>
         <SendFlowHeader />
         <SendForm
-          selectedAccount={selectedAccount}
-          accounts={accounts}
-          selectedCurrency={selectedCurrency}
+          account={account}
+          fiatCurrency={fiatCurrency}
+          asset={asset}
+          useFiat={useFiat}
           errors={errors}
           displayAvatar={displayAvatar}
         />

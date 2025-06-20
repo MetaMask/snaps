@@ -150,10 +150,10 @@ export type SnapInterfaceActions = {
   selectFromRadioGroup(name: string, value: string): Promise<void>;
 
   /**
-   * Choose an option with a value from Selector component.
+   * Choose an option with a value from a Selector, AccountSelector or AssetSelector component.
    *
    * @param name - The element name to type in.
-   * @param value - The value to type.
+   * @param value - The value to select.
    */
   selectFromSelector(name: string, value: string): Promise<void>;
 
