@@ -2,6 +2,7 @@ import type {
   OnAssetHistoricalPriceHandler,
   OnAssetsConversionHandler,
   OnAssetsLookupHandler,
+  OnAssetsMarketDataHandler,
   OnClientRequestHandler,
   OnCronjobHandler,
   OnHomePageHandler,
@@ -136,7 +137,7 @@ export const SNAP_EXPORTS = {
     required: true,
     validator: (
       snapExport: unknown,
-    ): snapExport is OnAssetsConversionHandler => {
+    ): snapExport is OnAssetsMarketDataHandler => {
       return typeof snapExport === 'function';
     },
   },
