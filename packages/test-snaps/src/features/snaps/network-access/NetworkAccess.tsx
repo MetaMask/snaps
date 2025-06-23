@@ -77,7 +77,7 @@ export const NetworkAccess: FunctionComponent = () => {
         Fetch
       </Button>
 
-      <ButtonGroup className="mb-3">
+      <ButtonGroup className="d-block mb-3">
         <Button
           variant="primary"
           id="startWebSocket"
