@@ -1022,13 +1022,31 @@ describe('getStateFromAsset', () => {
     expect(
       getStateFromAsset(
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        assetMetadata['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+        assetMetadata,
       ),
     ).toStrictEqual({
       asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
       name: 'Solana',
       symbol: 'SOL',
     });
+  });
+
+  it('throws an error if the asset is not found in the metadata', () => {
+    const assetMetadata = {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    };
+
+    expect(() =>
+      getStateFromAsset(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        assetMetadata,
+      ),
+    ).toThrow(
+      'Asset with ID "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" not found in simulation assets.',
+    );
   });
 });
 

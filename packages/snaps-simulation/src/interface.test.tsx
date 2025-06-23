@@ -1828,6 +1828,8 @@ describe('getValueFromSelector', () => {
       accountId: options.accounts[1].id,
       addresses: [
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       ],
     });
   });

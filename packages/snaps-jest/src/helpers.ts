@@ -11,7 +11,7 @@ import type {
   Snap,
 } from '@metamask/snaps-simulation';
 import { logInfo } from '@metamask/snaps-utils';
-import { createModuleLogger } from '@metamask/utils';
+import { assert, createModuleLogger } from '@metamask/utils';
 import type {
   CaipAccountId,
   CaipAssetType,
@@ -264,14 +264,18 @@ export function getStateFromAccount(
  * Get the state of an AssetSelector based on a {@link SimulationAsset}.
  *
  * @param id - The Asset id as a CAIP-19 asset type.
- * @param asset - The {@link SimulationAsset} to get the state from.
+ * @param assets - The {@link SimulationAsset} to get the state from.
  * @returns The state of the AssetSelector.
  */
 export function getStateFromAsset(
   id: CaipAssetType,
-  asset: SimulationAsset,
+  assets: Record<CaipAssetType, SimulationAsset>,
 ): AssetSelectorState {
-  const { name, symbol } = asset;
+  const asset = assets[id];
+
+  assert(asset, `Asset with ID "${id}" not found in simulation assets.`);
+
+  const { symbol, name } = asset;
 
   return {
     asset: id,
