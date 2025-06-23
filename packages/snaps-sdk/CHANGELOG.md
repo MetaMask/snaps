@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **BREAKING:** Move assets market data to `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
+  - This handler replaces the `marketData` field of `onAssetsConversion`, which is now removed.
+
 ## [8.1.0]
 
 ### Added
 
 - Add WebSockets support ([#3450](https://github.com/MetaMask/snaps/pull/3450), [#3459](https://github.com/MetaMask/snaps/pull/3459))
-  - This introduces types for the `onWebSocketEvent` handler which receives 
+  - This introduces types for the `onWebSocketEvent` handler which receives
     events from `WebSocketService`.
 - Add types for `onStart` handler ([#3455](https://github.com/MetaMask/snaps/pull/3455))
 
@@ -541,7 +544,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve support for Snap errors without a message ([#2176](https://github.com/MetaMask/snaps/pull/2176))
   - You can now add data to an error without having to specify a message. For example:
     ```ts
-    throw new MethodNotFoundError({ method: "some method name" });
+    throw new MethodNotFoundError({ method: 'some method name' });
     ```
 - Strip empty `data` from Snap errors ([#2179](https://github.com/MetaMask/snaps/pull/2179))
 
