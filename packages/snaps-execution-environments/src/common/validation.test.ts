@@ -4,6 +4,7 @@ import {
   assertIsOnAssetHistoricalPriceRequestArguments,
   assertIsOnAssetsConversionRequestArguments,
   assertIsOnAssetsLookupRequestArguments,
+  assertIsOnAssetsMarketDataRequestArguments,
   assertIsOnNameLookupRequestArguments,
   assertIsOnProtocolRequestArguments,
   assertIsOnSignatureRequestArguments,
@@ -283,24 +284,6 @@ describe('assertIsOnAssetsConversionRequestArguments', () => {
         },
       ],
     },
-    {
-      conversions: [
-        {
-          from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          to: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
-        },
-      ],
-      includeMarketData: true,
-    },
-    {
-      conversions: [
-        {
-          from: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          to: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
-        },
-      ],
-      includeMarketData: false,
-    },
   ])('does not throw for a valid assets conversion param object', (value) => {
     expect(() =>
       assertIsOnAssetsConversionRequestArguments(value),
@@ -323,13 +306,53 @@ describe('assertIsOnAssetsConversionRequestArguments', () => {
     { conversions: [{}] },
     { conversions: [{ from: 'foo' }] },
     { conversions: [{ from: 'foo', to: 'foo' }] },
-    { includeMarketData: true },
-    { includeMarketData: false },
   ])(
     'throws if the value is not a valid assets conversion params object',
     (value) => {
       expect(() =>
         assertIsOnAssetsConversionRequestArguments(value as any),
+      ).toThrow('Invalid request params:');
+    },
+  );
+});
+
+describe('assertIsOnAssetsMarketDataRequestArguments', () => {
+  it.each([
+    {
+      assets: [
+        {
+          asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          unit: 'swift:0/iso4217:USD',
+        },
+      ],
+    },
+  ])('does not throw for a valid assets market data param object', (value) => {
+    expect(() =>
+      assertIsOnAssetsMarketDataRequestArguments(value),
+    ).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    { assets: [] },
+    { assets: ['foo'] },
+    { assets: [{}] },
+    { assets: [{ asset: 'foo' }] },
+    { assets: [{ asset: 'foo', unit: 'foo' }] },
+  ])(
+    'throws if the value is not a valid assets market data params object',
+    (value) => {
+      expect(() =>
+        assertIsOnAssetsMarketDataRequestArguments(value as any),
       ).toThrow('Invalid request params:');
     },
   );

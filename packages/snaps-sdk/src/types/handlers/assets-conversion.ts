@@ -1,39 +1,13 @@
 import { type CaipAssetType } from '@metamask/utils';
-
-/**
- * The market data for an asset.
- *
- * @property marketCap - The market capitalization of the asset.
- * @property totalVolume - The total volume of the asset.
- * @property circulatingSupply - The circulating supply of the asset.
- * @property allTimeHigh - The all-time high price of the asset.
- * @property allTimeLow - The all-time low price of the asset.
- * @property pricePercentChange - The percentage change in price over different intervals.
- * @property pricePercentChange.interval - The time interval for the price change as a ISO 8601 duration
- * or the string "all" to represent the all-time change.
- */
-export type MarketData = {
-  marketCap: string;
-  totalVolume: string;
-  circulatingSupply: string;
-  allTimeHigh: string;
-  allTimeLow: string;
-  pricePercentChange: {
-    [interval: string]: number;
-  };
-};
-
 /**
  * The conversion rate between two assets.
  *
  * @property rate - The conversion rate between the two assets.
- * @property marketData - The market data for the asset, if requested.
  * @property conversionTime - The time at which the conversion rate was calculated.
  * @property expirationTime - The time at which the conversion rate expires.
  */
 export type AssetConversion = {
   rate: string;
-  marketData?: MarketData;
   conversionTime: number;
   expirationTime?: number;
 };
@@ -46,7 +20,6 @@ export type AssetConversion = {
  */
 export type OnAssetsConversionArguments = {
   conversions: { from: CaipAssetType; to: CaipAssetType }[];
-  includeMarketData?: boolean;
 };
 
 /**

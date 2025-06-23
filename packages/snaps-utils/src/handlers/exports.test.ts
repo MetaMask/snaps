@@ -30,6 +30,7 @@ describe('SNAP_EXPORT_NAMES', () => {
       'onAssetsLookup',
       'onAssetsConversion',
       'onAssetHistoricalPrice',
+      'onAssetsMarketData',
       'onProtocolRequest',
       'onClientRequest',
       'onWebSocketEvent',

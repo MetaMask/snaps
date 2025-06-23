@@ -130,6 +130,7 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnAssetHistoricalPrice]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnAssetsLookup]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnAssetsConversion]: assetsEndowmentBuilder.targetName,
+  [HandlerType.OnAssetsMarketData]: assetsEndowmentBuilder.targetName,
   [HandlerType.OnProtocolRequest]: protocolEndowmentBuilder.targetName,
   [HandlerType.OnClientRequest]: null,
   [HandlerType.OnWebSocketEvent]: networkAccessEndowmentBuilder.targetName,

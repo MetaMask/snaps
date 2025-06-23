@@ -4512,8 +4512,10 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+  });
 
-    it('returns the value when `onAssetsConversion` returns a valid response with market data', async () => {
+  describe('onAssetsMarketData', () => {
+    it('throws if `onAssetsMarketData` handler returns an invalid response', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
@@ -4552,19 +4554,72 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            conversionRates: {
+            marketData: { foo: {} },
+          }),
+      );
+
+      await expect(
+        snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnAssetsMarketData,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).rejects.toThrow(
+        `Assertion failed: At path: marketData.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
+      );
+
+      snapController.destroy();
+    });
+
+    it('filters out assets that are out of scope for `onAssetsMarketData`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            marketData: {
               'bip122:000000000019d6689c085ae165831e93/slip44:0': {
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-                  rate: '400',
-                  conversionTime: 1737548790,
-                  marketData: {
-                    marketCap: '123',
-                    totalVolume: '123',
-                    circulatingSupply: '123',
-                    allTimeHigh: '123',
-                    allTimeLow: '123',
-                    pricePercentChange: { all: 1.23 },
-                  },
+                'eip155:1/slip44:60': {
+                  fungible: true,
                 },
               },
             },
@@ -4575,36 +4630,103 @@ describe('SnapController', () => {
         await snapController.handleRequest({
           snapId: MOCK_SNAP_ID,
           origin: METAMASK_ORIGIN,
-          handler: HandlerType.OnAssetsConversion,
+          handler: HandlerType.OnAssetsMarketData,
           request: {
             jsonrpc: '2.0',
             method: ' ',
             params: {
-              conversions: [
+              assets: [
                 {
-                  from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
-                  to: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                  asset: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                  unit: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
                 },
               ],
-              includeMarketData: true,
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({ marketData: {} });
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetsMarketData` returns a valid response', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['bip122:000000000019d6689c085ae165831e93'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            marketData: {
+              'bip122:000000000019d6689c085ae165831e93/slip44:0': {
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                  fungible: true,
+                  marketCap: '10000',
+                  totalVolume: '100000000',
+                },
+              },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnAssetsMarketData,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              assets: [
+                {
+                  asset: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                  unit: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                },
+              ],
             },
             id: 1,
           },
         }),
       ).toStrictEqual({
-        conversionRates: {
+        marketData: {
           'bip122:000000000019d6689c085ae165831e93/slip44:0': {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-              rate: '400',
-              conversionTime: 1737548790,
-              marketData: {
-                marketCap: '123',
-                totalVolume: '123',
-                circulatingSupply: '123',
-                allTimeHigh: '123',
-                allTimeLow: '123',
-                pricePercentChange: { all: 1.23 },
-              },
+              fungible: true,
+              marketCap: '10000',
+              totalVolume: '100000000',
             },
           },
         },

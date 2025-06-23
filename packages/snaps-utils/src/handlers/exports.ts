@@ -131,6 +131,15 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnAssetsMarketData]: {
+    type: HandlerType.OnAssetsMarketData,
+    required: true,
+    validator: (
+      snapExport: unknown,
+    ): snapExport is OnAssetsConversionHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
   [HandlerType.OnProtocolRequest]: {
     type: HandlerType.OnProtocolRequest,
     required: true,

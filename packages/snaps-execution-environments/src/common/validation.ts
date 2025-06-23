@@ -255,6 +255,37 @@ export function assertIsOnAssetHistoricalPriceRequestArguments(
   assertRequestArguments(value, OnAssetHistoricalPriceRequestArgumentsStruct);
 }
 
+export const OnAssetsMarketDataRequestArgumentsStruct = object({
+  assets: size(
+    array(
+      object({
+        asset: CaipAssetTypeStruct,
+        unit: CaipAssetTypeStruct,
+      }),
+    ),
+    1,
+    Infinity,
+  ),
+});
+
+export type OnAssetsMarketDataRequestArguments = Infer<
+  typeof OnAssetsMarketDataRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnAssetsMarketDataRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnAssetsMarketDataRequestArguments}
+ * object.
+ */
+export function assertIsOnAssetsMarketDataRequestArguments(
+  value: unknown,
+): asserts value is OnAssetsMarketDataRequestArguments {
+  assertRequestArguments(value, OnAssetsMarketDataRequestArgumentsStruct);
+}
+
 export const OnAssetsLookupRequestArgumentsStruct = object({
   assets: size(array(CaipAssetTypeStruct), 1, Infinity),
 });
@@ -288,7 +319,6 @@ export const OnAssetsConversionRequestArgumentsStruct = object({
     1,
     Infinity,
   ),
-  includeMarketData: optional(boolean()),
 });
 
 export type OnAssetsConversionRequestArguments = Infer<
