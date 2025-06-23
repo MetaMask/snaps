@@ -47,7 +47,7 @@ describe('onRpcRequest', () => {
           account={getStateFromAccount(MOCK_ACCOUNT_1)}
           asset={getStateFromAsset(
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-            MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+            MOCK_ASSETS,
           )}
           useFiat={false}
           fiatCurrency="USD"
@@ -74,7 +74,7 @@ describe('onHomePage', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_1)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -106,7 +106,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_1)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -141,7 +141,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_1)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -173,7 +173,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_1)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -207,7 +207,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_2)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -230,7 +230,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_2)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
@@ -250,7 +250,7 @@ describe('onUserInput', () => {
         account={getStateFromAccount(MOCK_ACCOUNT_2)}
         asset={getStateFromAsset(
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          MOCK_ASSETS['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501'],
+          MOCK_ASSETS,
         )}
         useFiat={false}
         fiatCurrency="USD"
