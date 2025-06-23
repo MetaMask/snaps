@@ -10,7 +10,12 @@ import {
 } from '@metamask/snaps-simulation';
 import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 
-import { installSnap } from './helpers';
+import {
+  getMockAccount,
+  getStateFromAccount,
+  getStateFromAsset,
+  installSnap,
+} from './helpers';
 import { getMockServer } from './test-utils';
 
 describe('installSnap', () => {
@@ -988,5 +993,105 @@ describe('installSnap', () => {
       await close();
       await closeServer();
     });
+  });
+});
+
+describe('getStateFromAccount', () => {
+  it('returns the state for the given account', () => {
+    const account = getMockAccount({
+      address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+      scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+    });
+
+    expect(getStateFromAccount(account)).toStrictEqual({
+      addresses: [`${account.scopes[0]}:${account.address}`],
+      accountId: account.id,
+    });
+  });
+});
+
+describe('getStateFromAsset', () => {
+  it('returns the state for the given asset', () => {
+    const assetMetadata = {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    };
+
+    expect(
+      getStateFromAsset(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        assetMetadata,
+      ),
+    ).toStrictEqual({
+      asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+      name: 'Solana',
+      symbol: 'SOL',
+    });
+  });
+
+  it('throws an error if the asset is not found in the metadata', () => {
+    const assetMetadata = {
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+        name: 'Solana',
+        symbol: 'SOL',
+      },
+    };
+
+    expect(() =>
+      getStateFromAsset(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        assetMetadata,
+      ),
+    ).toThrow(
+      'Asset with ID "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" not found in simulation assets.',
+    );
+  });
+});
+
+describe('getMockAccount', () => {
+  it('returns a mock account for the given `address`', () => {
+    expect(
+      getMockAccount({
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+      }),
+    ).toMatchInlineSnapshot(`
+      {
+        "address": "DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK",
+        "assets": [],
+        "id": "6b86b273-ff344ce1-9d6b804e-ff5a3f57",
+        "scopes": [
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        ],
+        "selected": false,
+      }
+    `);
+  });
+
+  it('returns a mock account for the given `address` and `assets`', () => {
+    expect(
+      getMockAccount({
+        address: 'DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK',
+        assets: [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+      }),
+    ).toMatchInlineSnapshot(`
+      {
+        "address": "DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK",
+        "assets": [
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        ],
+        "id": "d4735e3a-265e46ee-a03f5971-8b9b5d03",
+        "scopes": [
+          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        ],
+        "selected": false,
+      }
+    `);
   });
 });

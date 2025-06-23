@@ -1,8 +1,17 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
+import {
+  installSnap,
+  getStateFromAccount,
+  getStateFromAsset,
+} from '@metamask/snaps-jest';
 
 import { SendFlow } from './components';
-import { accountsArray } from './data';
+import {
+  MOCK_ACCOUNT_1,
+  MOCK_ACCOUNT_2,
+  MOCK_ASSETS,
+  MOCK_OPTIONS,
+} from './test-utils';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -25,7 +34,7 @@ describe('onRpcRequest', () => {
 
   describe('display', () => {
     it('shows a custom dialog with the SendFlow interface', async () => {
-      const { request } = await installSnap();
+      const { request } = await installSnap({ options: MOCK_OPTIONS });
 
       const response = request({
         method: 'display',
@@ -35,9 +44,13 @@ describe('onRpcRequest', () => {
 
       expect(sendFlowInterface).toRender(
         <SendFlow
-          accounts={accountsArray}
-          selectedAccount={accountsArray[0].address}
-          selectedCurrency="BTC"
+          account={getStateFromAccount(MOCK_ACCOUNT_1)}
+          asset={getStateFromAsset(
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+            MOCK_ASSETS,
+          )}
+          useFiat={false}
+          fiatCurrency="USD"
           total={{ amount: 0, fiat: 0 }}
           fees={{ amount: 1.0001, fiat: 1.23 }}
         />,
@@ -48,7 +61,9 @@ describe('onRpcRequest', () => {
 
 describe('onHomePage', () => {
   it('returns a custom UI', async () => {
-    const { onHomePage } = await installSnap();
+    const { onHomePage } = await installSnap({
+      options: MOCK_OPTIONS,
+    });
 
     const response = await onHomePage();
 
@@ -56,9 +71,13 @@ describe('onHomePage', () => {
 
     expect(sendFlowInterface).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[0].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_1)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 0, fiat: 0 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
       />,
@@ -67,37 +86,10 @@ describe('onHomePage', () => {
 });
 
 describe('onUserInput', () => {
-  it('handles account selection', async () => {
-    const { request } = await installSnap();
-
-    const response = request({
-      method: 'display',
-    });
-
-    const sendFlowInterface = await response.getInterface();
-
-    await sendFlowInterface.selectFromSelector(
-      'accountSelector',
-      accountsArray[1].address,
-    );
-
-    const updatedInterface = await response.getInterface();
-
-    expect(updatedInterface).toRender(
-      <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[1].address}
-        selectedCurrency="BTC"
-        total={{ amount: 1.0001, fiat: 251.23 }}
-        fees={{ amount: 1.0001, fiat: 1.23 }}
-        errors={{}}
-        displayAvatar={false}
-      />,
-    );
-  });
-
   it('handles amount input', async () => {
-    const { request } = await installSnap();
+    const { request } = await installSnap({
+      options: MOCK_OPTIONS,
+    });
 
     const response = request({
       method: 'display',
@@ -111,9 +103,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[0].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_1)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 1.5001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
@@ -123,7 +119,9 @@ describe('onUserInput', () => {
   });
 
   it('handles to input', async () => {
-    const { request } = await installSnap();
+    const { request } = await installSnap({
+      options: MOCK_OPTIONS,
+    });
 
     const response = request({
       method: 'display',
@@ -140,9 +138,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[0].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_1)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 1.0001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
@@ -152,7 +154,9 @@ describe('onUserInput', () => {
   });
 
   it('handles invalid input', async () => {
-    const { request } = await installSnap();
+    const { request } = await installSnap({
+      options: MOCK_OPTIONS,
+    });
 
     const response = request({
       method: 'display',
@@ -166,9 +170,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[0].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_1)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 3.0000999999999998, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{ amount: 'Insufficient funds' }}
@@ -178,7 +186,9 @@ describe('onUserInput', () => {
   });
 
   it('maintains state across multiple interactions', async () => {
-    const { request } = await installSnap();
+    const { request } = await installSnap({
+      options: MOCK_OPTIONS,
+    });
 
     const response = request({
       method: 'display',
@@ -186,10 +196,7 @@ describe('onUserInput', () => {
 
     const sendFlowInterface = await response.getInterface();
 
-    await sendFlowInterface.selectFromSelector(
-      'accountSelector',
-      accountsArray[1].address,
-    );
+    await sendFlowInterface.selectFromSelector('account', MOCK_ACCOUNT_2.id);
 
     await sendFlowInterface.typeInField('amount', '0.5');
 
@@ -197,9 +204,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[1].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_2)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 1.5001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
@@ -216,9 +227,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface2).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[1].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_2)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 1.5001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}
@@ -232,9 +247,13 @@ describe('onUserInput', () => {
 
     expect(updatedInterface3).toRender(
       <SendFlow
-        accounts={accountsArray}
-        selectedAccount={accountsArray[1].address}
-        selectedCurrency="BTC"
+        account={getStateFromAccount(MOCK_ACCOUNT_2)}
+        asset={getStateFromAsset(
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          MOCK_ASSETS,
+        )}
+        useFiat={false}
+        fiatCurrency="USD"
         total={{ amount: 1.0001, fiat: 251.23 }}
         fees={{ amount: 1.0001, fiat: 1.23 }}
         errors={{}}

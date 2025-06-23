@@ -7,77 +7,82 @@ import {
 } from '@metamask/utils';
 
 import { SendFlow } from './components';
-import type {
-  Account,
-  Currency,
-  SendFlowContext,
-  SendFormErrors,
-  SendFormState,
-} from './types';
+import type { Currency, SendFormErrors, SendFormState } from './types';
 
 export type GenerateSendFlowParams = {
-  accountsArray: Account[];
-  accounts: Record<string, Account>;
   fees: Currency;
+  fiatCurrency: string;
 };
 
 /**
  * Generate the send flow.
  *
  * @param params - The parameters for the send form.
- * @param params.accountsArray - The available accounts as an array.
- * @param params.accounts - The available accounts.
  * @param params.fees - The fees for the transaction.
+ * @param params.fiatCurrency - The fiat currency to use.
  * @returns The interface ID.
  */
 export async function generateSendFlow({
-  accountsArray,
-  accounts,
   fees,
+  fiatCurrency,
 }: GenerateSendFlowParams) {
-  return await snap.request({
+  const interfaceId = await snap.request({
     method: 'snap_createInterface',
     params: {
       ui: (
         <SendFlow
-          accounts={accountsArray}
-          selectedAccount={accountsArray[0].address}
-          selectedCurrency="BTC"
+          useFiat={false}
+          fiatCurrency={fiatCurrency}
           total={{ amount: 0, fiat: 0 }}
           fees={fees}
         />
       ),
       context: {
-        accounts,
-        selectedCurrency: 'BTC',
+        useFiat: false,
+        fiatCurrency,
         fees,
       },
     },
   });
+
+  const { sendForm } = (await snap.request({
+    method: 'snap_getInterfaceState',
+    params: { id: interfaceId },
+  })) as { sendForm: SendFormState };
+
+  await snap.request({
+    method: 'snap_updateInterface',
+    params: {
+      id: interfaceId,
+      ui: (
+        <SendFlow
+          fiatCurrency={fiatCurrency}
+          useFiat={false}
+          account={sendForm.account}
+          total={{ amount: 0, fiat: 0 }}
+          fees={fees}
+        />
+      ),
+    },
+  });
+
+  return interfaceId;
 }
 
 /**
  * Validate the send form.
  *
  * @param formState - The state of the send form.
- * @param context - The context of the interface.
  * @returns The form errors.
  */
-export function formValidation(
-  formState: SendFormState,
-  context: SendFlowContext,
-): SendFormErrors {
+export function formValidation(formState: SendFormState): SendFormErrors {
   const errors: Partial<SendFormErrors> = {};
 
   if (formState.to === 'invalid address') {
     errors.to = 'Invalid address';
   }
 
-  if (
-    formState.amount &&
-    Number(formState.amount) >
-      context.accounts[formState.accountSelector].balance.amount
-  ) {
+  if (formState.amount && Number(formState.amount) > 1.5) {
     errors.amount = 'Insufficient funds';
   }
 

@@ -60,3 +60,8 @@ export type SnapsEnvironmentOptions = Infer<
 export function getOptions(testEnvironmentOptions: Record<string, unknown>) {
   return create(testEnvironmentOptions, SnapsEnvironmentOptionsStruct);
 }
+
+export type {
+  SimulationAccount,
+  SimulationAsset,
+} from '@metamask/snaps-simulation';

@@ -1,5 +1,6 @@
 import type { Infer } from '@metamask/superstruct';
 import {
+  array,
   boolean,
   create,
   defaulted,
@@ -9,9 +10,36 @@ import {
   record,
   string,
 } from '@metamask/superstruct';
-import { JsonStruct } from '@metamask/utils';
+import {
+  CaipAssetTypeStruct,
+  CaipChainIdStruct,
+  JsonStruct,
+} from '@metamask/utils';
 
-import { DEFAULT_CURRENCY, DEFAULT_LOCALE, DEFAULT_SRP } from './constants';
+import {
+  DEFAULT_ACCOUNTS,
+  DEFAULT_ASSETS,
+  DEFAULT_CURRENCY,
+  DEFAULT_LOCALE,
+  DEFAULT_SRP,
+} from './constants';
+
+const SimulationAccountStruct = object({
+  address: string(),
+  id: string(),
+  scopes: array(CaipChainIdStruct),
+  selected: defaulted(optional(boolean()), false),
+  assets: defaulted(optional(array(CaipAssetTypeStruct)), []),
+});
+
+export type SimulationAccount = Infer<typeof SimulationAccountStruct>;
+
+const SimulationAssetStruct = object({
+  name: string(),
+  symbol: string(),
+});
+
+export type SimulationAsset = Infer<typeof SimulationAssetStruct>;
 
 const SimulationOptionsStruct = object({
   currency: defaulted(optional(string()), DEFAULT_CURRENCY),
@@ -21,6 +49,14 @@ const SimulationOptionsStruct = object({
   unencryptedState: defaulted(
     optional(nullable(record(string(), JsonStruct))),
     null,
+  ),
+  accounts: defaulted(
+    optional(array(SimulationAccountStruct)),
+    DEFAULT_ACCOUNTS,
+  ),
+  assets: defaulted(
+    optional(record(CaipAssetTypeStruct, SimulationAssetStruct)),
+    DEFAULT_ASSETS,
   ),
   hideBalances: defaulted(optional(boolean()), false),
   useSecurityAlerts: defaulted(optional(boolean()), true),
@@ -42,6 +78,12 @@ const SimulationOptionsStruct = object({
  * phrase.
  * @property locale - The locale to use. Defaults to `en`.
  * @property state - The initial state of the Snap, if any. Defaults to `null`.
+ * @property unencryptedState - The initial unencrypted state of the Snap, if
+ * any. Defaults to `null`.
+ * @property accounts - The accounts to use in the simulation, if any. Defaults
+ * to an empty array.
+ * @property assets - The assets to use in the simulation, if any. Defaults to
+ * an empty object.
  * @property useSecurityAlerts - Whether to run transactions and signatures through security providers.
  * @property simulateOnChainActions - Whether to simulate transactions and signatures.
  * @property useTokenDetection - Whether to auto-detect tokens.

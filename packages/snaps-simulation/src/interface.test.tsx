@@ -29,6 +29,8 @@ import {
   Card,
   Selector,
   Field,
+  AccountSelector,
+  AssetSelector,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -52,6 +54,7 @@ import {
   uploadFile,
   selectFromSelector,
   waitForUpdate,
+  getValueFromSelector,
 } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -1334,7 +1337,8 @@ describe('getInterface', () => {
     messenger: controllerMessenger,
   });
   it('returns the current user interface, if any', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = text('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
@@ -1348,6 +1352,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
     expect(result).toStrictEqual({
       id,
@@ -1365,13 +1370,15 @@ describe('getInterface', () => {
   });
 
   it('waits for a user interface to be set if none is currently set', async () => {
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const promise = runSaga(
       getInterface,
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     const content = text('foo');
@@ -1398,7 +1405,8 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `clickElement` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = button({ value: 'foo', name: 'foo' });
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
@@ -1412,6 +1420,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     await result.clickElement('foo');
@@ -1440,7 +1449,8 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `typeInField` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = input('foo');
     const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
@@ -1454,6 +1464,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     await result.typeInField('foo', 'bar');
@@ -1483,7 +1494,8 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `selectInDropdown` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = (
       <Dropdown name="foo">
@@ -1502,6 +1514,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     await result.selectInDropdown('foo', 'option2');
@@ -1531,7 +1544,8 @@ describe('getInterface', () => {
 
   it('sends a request to the snap when `uploadFile` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = (
       <Box>
@@ -1549,6 +1563,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     await result.uploadFile('foo', new Uint8Array([1, 2, 3]));
@@ -1583,7 +1598,8 @@ describe('getInterface', () => {
 
   it('waits for the interface content to update when `waitForUpdate` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
-    const { store, runSaga } = createStore(getMockOptions());
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
 
     const content = (
       <Box>
@@ -1601,6 +1617,7 @@ describe('getInterface', () => {
       runSaga,
       MOCK_SNAP_ID,
       rootControllerMessenger,
+      options,
     ).toPromise();
 
     const promise = result.waitForUpdate();
@@ -1759,6 +1776,140 @@ describe('selectFromRadioGroup', () => {
   });
 });
 
+describe('getValueFromSelector', () => {
+  it('returns the selected value of a Selector', () => {
+    const options = getMockOptions();
+
+    const element = (
+      <Selector name="foo" title="Choose an option">
+        <SelectorOption value="option1">
+          <Card title="Option 1" value="option1" />
+        </SelectorOption>
+        <SelectorOption value="option2">
+          <Card title="Option 2" value="option2" />
+        </SelectorOption>
+      </Selector>
+    );
+
+    expect(getValueFromSelector(element, options, 'option2')).toBe('option2');
+  });
+
+  it('throws if the Selector does not contain the value', () => {
+    const options = getMockOptions();
+
+    const element = (
+      <Selector name="foo" title="Choose an option">
+        <SelectorOption value="option1">
+          <Card title="Option 1" value="option1" />
+        </SelectorOption>
+        <SelectorOption value="option2">
+          <Card title="Option 2" value="option2" />
+        </SelectorOption>
+      </Selector>
+    );
+
+    expect(() => getValueFromSelector(element, options, 'option3')).toThrow(
+      'The Selector with the name "foo" does not contain "option3"',
+    );
+  });
+
+  it('returns the selected value of an AccountSelector', () => {
+    const options = getMockOptions();
+
+    const element = <AccountSelector name="accounts" />;
+
+    expect(
+      getValueFromSelector(
+        element,
+        options,
+        'e051723c-85d0-43a3-b9bf-568a90d3f378',
+      ),
+    ).toStrictEqual({
+      accountId: options.accounts[1].id,
+      addresses: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+      ],
+    });
+  });
+
+  it('throws if the AccountSelector does not contain the value', () => {
+    const options = getMockOptions();
+
+    const element = <AccountSelector name="accounts" />;
+
+    expect(() =>
+      getValueFromSelector(
+        element,
+        options,
+        'de3fa629-b619-46f7-885e-36788af5c3be',
+      ),
+    ).toThrow(
+      'The AccountSelector with the name "accounts" does not contain an account with ID "de3fa629-b619-46f7-885e-36788af5c3be"',
+    );
+  });
+
+  it('returns the selected value of an AssetSelector', () => {
+    const options = getMockOptions();
+
+    const element = (
+      <AssetSelector
+        name="assets"
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
+      />
+    );
+
+    expect(
+      getValueFromSelector(
+        element,
+        options,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      ),
+    ).toStrictEqual({
+      asset:
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      name: 'USDC',
+      symbol: 'USDC',
+    });
+  });
+
+  it('throws if the AssetSelector does not contain the value', () => {
+    const options = getMockOptions();
+
+    const element = (
+      <AssetSelector
+        name="assets"
+        addresses={[
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        ]}
+      />
+    );
+
+    expect(() =>
+      getValueFromSelector(
+        element,
+        options,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:InvalidToken',
+      ),
+    ).toThrow(
+      'The AssetSelector with the name "assets" does not contain an asset with ID "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:InvalidToken"',
+    );
+  });
+
+  it('throws if the element is not a Selector, AccountSelector or AssetSelector', () => {
+    const options = getMockOptions();
+
+    const element = <Input name="foo" />;
+
+    expect(() => getValueFromSelector(element, options, 'option1')).toThrow(
+      'Expected an element of type "Selector", "AccountSelector" or "AssetSelector", but found "Input".',
+    );
+  });
+});
+
 describe('selectFromSelector', () => {
   const rootControllerMessenger = getRootControllerMessenger();
   const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
@@ -1779,6 +1930,8 @@ describe('selectFromSelector', () => {
   it('updates the interface state and sends an InputChangeEvent', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
 
+    const options = getMockOptions();
+
     const content = (
       <Selector name="foo" title="Choose an option" value="option1">
         <SelectorOption value="option1">
@@ -1797,6 +1950,7 @@ describe('selectFromSelector', () => {
 
     await selectFromSelector(
       rootControllerMessenger,
+      options,
       interfaceId,
       content,
       MOCK_SNAP_ID,
@@ -1830,6 +1984,8 @@ describe('selectFromSelector', () => {
   });
 
   it('throws if chosen option does not exist', async () => {
+    const options = getMockOptions();
+
     const content = (
       <Selector name="foo" title="Choose an option" value="option1">
         <SelectorOption value="option1">
@@ -1849,6 +2005,7 @@ describe('selectFromSelector', () => {
     await expect(
       selectFromSelector(
         rootControllerMessenger,
+        options,
         interfaceId,
         content,
         MOCK_SNAP_ID,
@@ -1861,6 +2018,8 @@ describe('selectFromSelector', () => {
   });
 
   it('throws if there is no Selector in the interface', async () => {
+    const options = getMockOptions();
+
     const content = (
       <Box>
         <Text>Foo</Text>
@@ -1875,6 +2034,7 @@ describe('selectFromSelector', () => {
     await expect(
       selectFromSelector(
         rootControllerMessenger,
+        options,
         interfaceId,
         content,
         MOCK_SNAP_ID,
@@ -1887,6 +2047,8 @@ describe('selectFromSelector', () => {
   });
 
   it('throws if the element is not a Selector', async () => {
+    const options = getMockOptions();
+
     const content = <Input name="foo" />;
 
     const interfaceId = await interfaceController.createInterface(
@@ -1897,6 +2059,7 @@ describe('selectFromSelector', () => {
     await expect(
       selectFromSelector(
         rootControllerMessenger,
+        options,
         interfaceId,
         content,
         MOCK_SNAP_ID,
@@ -1904,12 +2067,14 @@ describe('selectFromSelector', () => {
         'baz',
       ),
     ).rejects.toThrow(
-      'Expected an element of type "Selector", but found "Input".',
+      'Expected an element of type "Selector", "AccountSelector" or "AssetSelector", but found "Input".',
     );
   });
 });
 
 describe('waitForUpdate', () => {
+  const options = getMockOptions();
+
   const rootControllerMessenger = getRootControllerMessenger();
   const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
     rootControllerMessenger,
@@ -1929,6 +2094,7 @@ describe('waitForUpdate', () => {
 
     const promise = waitForUpdate(
       rootControllerMessenger,
+      options,
       MOCK_SNAP_ID,
       interfaceId,
       content,

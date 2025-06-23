@@ -1,14 +1,30 @@
+import type {
+  AccountSelectorState,
+  AssetSelectorState,
+} from '@metamask/snaps-sdk';
+
 /**
  * The state of the send form.
  *
+ * @property account - The selected account.
+ * @property asset - The selected asset.
  * @property to - The receiving address.
  * @property amount - The amount to send.
- * @property accountSelector - The selected account.
  */
 export type SendFormState = {
+  account: AccountSelectorState;
+  asset: AssetSelectorState;
   to: string;
   amount: string;
-  accountSelector: string;
+};
+
+/**
+ * The state of the send flow interface.
+ *
+ * @property sendForm - The state of the send form.
+ */
+export type SendFlowState = {
+  sendForm: SendFormState;
 };
 
 /**
@@ -20,21 +36,6 @@ export type SendFormState = {
 export type SendFormErrors = {
   to?: string;
   amount?: string;
-};
-
-/**
- * An Account of the send flow interface.
- *
- * @property name - The name of the account.
- * @property address - The address of the account.
- * @property balance - The balance of the account.
- * @property icon - The icon of the account.
- */
-export type Account = {
-  name: string;
-  address: string;
-  balance: Currency;
-  icon: string;
 };
 
 /**
@@ -51,12 +52,12 @@ export type Currency = {
 /**
  * The context of the send flow interface.
  *
- * @property accounts - The available accounts.
- * @property selectedCurrency - The selected currency.
+ * @property useFiat - Whether to use fiat currency.
  * @property fees - The fees for the transaction.
+ * @property fiatCurrency - The fiat currency to use.
  */
 export type SendFlowContext = {
-  accounts: Record<string, Account>;
-  selectedCurrency: 'BTC' | '$';
+  useFiat: boolean;
   fees: Currency;
+  fiatCurrency: string;
 };
