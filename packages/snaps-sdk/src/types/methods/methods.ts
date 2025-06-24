@@ -96,6 +96,7 @@ import type {
   UpdateInterfaceResult,
 } from './update-interface';
 import type { Method } from '../../internals';
+import type { TrackErrorParams, TrackErrorResult } from '@metamask/snaps-sdk';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
@@ -141,6 +142,7 @@ export type SnapMethods = {
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   snap_setState: [SetStateParams, SetStateResult];
   snap_trackEvent: [TrackEventParams, TrackEventResult];
+  snap_trackError: [TrackErrorParams, TrackErrorResult];
   snap_openWebSocket: [OpenWebSocketParams, OpenWebSocketResult];
   snap_closeWebSocket: [CloseWebSocketParams, CloseWebSocketResult];
   snap_getWebSockets: [GetWebSocketsParams, GetWebSocketsResult];

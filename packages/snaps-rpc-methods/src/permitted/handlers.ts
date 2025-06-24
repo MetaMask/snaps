@@ -22,6 +22,7 @@ import { resolveInterfaceHandler } from './resolveInterface';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 import { sendWebSocketMessageHandler } from './sendWebSocketMessage';
 import { setStateHandler } from './setState';
+import { trackErrorHandler } from './trackError';
 import { trackEventHandler } from './trackEvent';
 import { updateInterfaceHandler } from './updateInterface';
 
@@ -48,6 +49,7 @@ export const methodHandlers = {
   snap_cancelBackgroundEvent: cancelBackgroundEventHandler,
   snap_getBackgroundEvents: getBackgroundEventsHandler,
   snap_setState: setStateHandler,
+  snap_trackError: trackErrorHandler,
   snap_trackEvent: trackEventHandler,
   snap_openWebSocket: openWebSocketHandler,
   snap_closeWebSocket: closeWebSocketHandler,

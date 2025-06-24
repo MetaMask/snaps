@@ -1,4 +1,8 @@
-import { MethodNotFoundError, UserInputEventType } from '@metamask/snaps-sdk';
+import {
+  getJsonError,
+  MethodNotFoundError,
+  UserInputEventType,
+} from '@metamask/snaps-sdk';
 import type {
   OnRpcRequestHandler,
   OnSettingsPageHandler,
@@ -46,6 +50,18 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           encrypted: false,
         },
       });
+
+    case 'trackError': {
+      const error = new Error('This is a test error.');
+      error.name = 'TestError';
+
+      return await snap.request({
+        method: 'snap_trackError',
+        params: {
+          error: getJsonError(error),
+        },
+      });
+    }
 
     default:
       throw new MethodNotFoundError({ method: request.method });
