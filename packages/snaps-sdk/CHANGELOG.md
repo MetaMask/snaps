@@ -7,8 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- **BREAKING:** Move assets market data to `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
-  - This handler replaces the `marketData` field of `onAssetsConversion`, which is now removed.
+- **BREAKING:** Market data is now fetched through `onAssetsMarketData` instead
+  of `onAssetConversion`
+  - Previously, `onAssetConversion` could return a `marketData` property, which
+    contained market data for the asset being converted. This property
+    has been removed, and `onAssetsMarketData` should be used instead.
+  - The `MarketData` type has been replaced with `FungibleAssetMarketData`.
 
 ## [8.1.0]
 

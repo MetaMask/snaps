@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- **BREAKING:** Move assets market data to `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
-  - This handler replaces the `marketData` field of `onAssetsConversion`, which is now removed.
+- Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
 
 ## [13.1.0]
 
