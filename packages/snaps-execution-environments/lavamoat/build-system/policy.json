@@ -5,7 +5,7 @@
         "ts-loader": true
       }
     },
-    "@testing-library/dom>@babel/code-frame": {
+    "lavamoat>@babel/code-frame": {
       "globals": {
         "console.warn": true,
         "process": true
@@ -30,33 +30,23 @@
     },
     "depcheck>@babel/traverse>@babel/template": {
       "packages": {
-        "@testing-library/dom>@babel/code-frame": true,
+        "lavamoat>@babel/code-frame": true,
         "depcheck>@babel/parser": true,
         "@metamask/snaps-utils>@babel/types": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
+    "depcheck>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "@testing-library/dom>@babel/code-frame": true,
+        "lavamoat>@babel/code-frame": true,
         "depcheck>@babel/traverse>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "@metamask/snaps-utils>@babel/types": true,
         "eslint>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env": true
-      },
-      "packages": {
-        "@metamask/snaps-utils>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+        "depcheck>@babel/traverse>globals": true
       }
     },
     "@metamask/snaps-utils>@babel/types": {
@@ -137,7 +127,6 @@
         "__dirname": true,
         "console.error": true,
         "console.trace": true,
-        "console.warn": true,
         "process._rawDebug": true
       },
       "packages": {
@@ -323,8 +312,13 @@
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length": true
+      }
+    },
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
+      "packages": {
+        "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true
       }
     },
     "eslint>chalk": {
@@ -562,6 +556,7 @@
       "globals": {
         "AggregateError": true,
         "FinalizationRegistry": true,
+        "Float16Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -718,6 +713,7 @@
     "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -767,7 +763,7 @@
       },
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
+        "depcheck>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
