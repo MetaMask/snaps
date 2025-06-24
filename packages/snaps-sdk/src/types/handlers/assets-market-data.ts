@@ -29,7 +29,7 @@ export type FungibleAssetMarketData = {
 /**
  * The arguments for the `onAssetsMarketData` handler.
  *
- * @property assets - An object containing the asset and unit types.
+ * @property assets - An array of objects containing the asset and unit types.
  * @property assets.asset - The CAIP-19 asset type of the asset.
  * @property assets.unit - The CAIP-19 asset type of the unit to use.
  */
@@ -52,7 +52,7 @@ export type OnAssetsMarketDataHandler = (
 ) => Promise<OnAssetsMarketDataResponse>;
 
 /**
- * The response from the market data query, containing market data for the requested asset.
+ * The response from the market data query, containing market data for the requested assets.
  *
  * @property marketData - A nested object with two CAIP-19 keys that contains a {@link FungibleAssetMarketData} object or null between the two keys.
  */
