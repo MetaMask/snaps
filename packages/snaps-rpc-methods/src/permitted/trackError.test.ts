@@ -61,12 +61,63 @@ describe('snap_trackError', () => {
         result: 'test-id',
       });
 
-      expect(trackError).toHaveBeenCalledWith({
-        name: 'TestError',
-        message: 'This is a test error.',
-        stack:
-          'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+      expect(trackError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'TestError',
+          message: 'This is a test error.',
+          stack:
+            'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+        }),
+      );
+    });
+
+    it('tracks an error with a name, and message', async () => {
+      const { implementation } = trackErrorHandler;
+
+      const trackError = jest.fn().mockReturnValue('test-id');
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
+      const hooks = { trackError, getSnap };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<TrackErrorParams>,
+          response as PendingJsonRpcResponse<TrackErrorResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
       });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_trackError',
+        params: {
+          error: {
+            name: 'TestError',
+            message: 'This is a test error.',
+            stack: null,
+          },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: 'test-id',
+      });
+
+      expect(trackError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'TestError',
+          message: 'This is a test error.',
+          stack: undefined,
+        }),
+      );
     });
 
     it('tracks an error with the error helper', async () => {
@@ -108,11 +159,14 @@ describe('snap_trackError', () => {
         result: 'test-id',
       });
 
-      expect(trackError).toHaveBeenCalledWith({
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-      });
+      expect(trackError.mock.calls[0][0]).toBeInstanceOf(Error);
+      expect(trackError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        }),
+      );
     });
 
     it('throws an error if the Snap is not preinstalled', async () => {

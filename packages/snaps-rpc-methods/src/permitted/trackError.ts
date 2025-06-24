@@ -32,7 +32,7 @@ export type TrackErrorMethodHooks = {
    * @returns The ID of the tracked error, as returned by the Sentry instance
    * in the client.
    */
-  trackError: (error: TrackableError) => string;
+  trackError: (error: Error) => string;
 
   /**
    * Get Snap metadata.
@@ -101,7 +101,9 @@ function getTrackErrorImplementation(
 
   try {
     const validatedParams = getValidatedParams(params);
-    response.result = trackError(validatedParams.error);
+    const error = deserializeError(validatedParams.error);
+
+    response.result = trackError(error);
   } catch (error) {
     return end(error);
   }
@@ -129,4 +131,19 @@ function getValidatedParams(params: unknown): TrackErrorParameters {
     /* istanbul ignore next */
     throw rpcErrors.internal();
   }
+}
+
+/**
+ * Deserialize a {@link TrackableError} into a standard {@link Error} object.
+ *
+ * @param error - The error to deserialize.
+ * @returns A standard {@link Error} object with the same properties as the
+ * original {@link TrackableError}.
+ */
+function deserializeError(error: TrackableError): Error {
+  const deserializedError = new Error(error.message);
+  deserializedError.name = error.name;
+  deserializedError.stack = error.stack ?? undefined;
+
+  return deserializedError;
 }
