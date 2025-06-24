@@ -18,6 +18,8 @@ import type { ResolveInterfaceMethodHooks } from './resolveInterface';
 import type { ScheduleBackgroundEventMethodHooks } from './scheduleBackgroundEvent';
 import type { SendWebSocketMessageMethodHooks } from './sendWebSocketMessage';
 import type { SetStateHooks } from './setState';
+import type { TrackErrorMethodHooks } from './trackError';
+import type { TrackEventMethodHooks } from './trackEvent';
 import type { UpdateInterfaceMethodHooks } from './updateInterface';
 
 export type PermittedRpcMethodHooks = ClearStateHooks &
@@ -40,7 +42,9 @@ export type PermittedRpcMethodHooks = ClearStateHooks &
   OpenWebSocketMethodHooks &
   CloseWebSocketMethodHooks &
   SendWebSocketMessageMethodHooks &
-  GetWebSocketsMethodHooks;
+  GetWebSocketsMethodHooks &
+  TrackEventMethodHooks &
+  TrackErrorMethodHooks;
 
 export * from './handlers';
 export * from './middleware';

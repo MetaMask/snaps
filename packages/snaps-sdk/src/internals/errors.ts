@@ -4,6 +4,32 @@ export const SNAP_ERROR_CODE = -31002;
 export const SNAP_ERROR_MESSAGE = 'Snap Error';
 
 /**
+ * Get a string property from an object, or convert the object to a string
+ * if the property does not exist or is not a string.
+ *
+ * @param object - The object to get the property from.
+ * @param property - The property to get from the object.
+ * @param fallback - The fallback value to return if the property does not exist
+ * or is not a string. Defaults to the string representation of the object.
+ * @returns The value of the property if it exists and is a string, or the
+ * fallback value if it does not exist or is not a string.
+ */
+function getObjectStringProperty<Fallback = string>(
+  object: unknown,
+  property: string,
+  fallback: Fallback = String(object) as Fallback,
+): string | Fallback {
+  if (isObject(object) && hasProperty(object, property)) {
+    const value = object[property];
+    if (typeof value === 'string') {
+      return value;
+    }
+  }
+
+  return fallback;
+}
+
+/**
  * Get the error message from an unknown error type.
  *
  * - If the error is an object with a `message` property, return the message.
@@ -14,15 +40,7 @@ export const SNAP_ERROR_MESSAGE = 'Snap Error';
  * @internal
  */
 export function getErrorMessage(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'message') &&
-    typeof error.message === 'string'
-  ) {
-    return error.message;
-  }
-
-  return String(error);
+  return getObjectStringProperty(error, 'message');
 }
 
 /**
@@ -34,15 +52,19 @@ export function getErrorMessage(error: unknown) {
  * @internal
  */
 export function getErrorStack(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'stack') &&
-    typeof error.stack === 'string'
-  ) {
-    return error.stack;
-  }
+  return getObjectStringProperty(error, 'stack', null);
+}
 
-  return undefined;
+/**
+ * Get the error name from an unknown error type.
+ *
+ * @param error - The error to get the name from.
+ * @returns The error name, or `'Error'` if the error does not have a valid
+ * name.
+ */
+export function getErrorName(error: unknown) {
+  const fallbackName = error instanceof Error ? error.name : 'Error';
+  return getObjectStringProperty(error, 'name', fallbackName);
 }
 
 /**

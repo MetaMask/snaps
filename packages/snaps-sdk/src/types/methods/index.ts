@@ -29,6 +29,7 @@ export type * from './schedule-background-event';
 export type * from './cancel-background-event';
 export type * from './get-background-events';
 export type * from './set-state';
+export type * from './track-error';
 export type * from './track-event';
 export type * from './open-web-socket';
 export type * from './close-web-socket';
