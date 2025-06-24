@@ -90,13 +90,13 @@ import type {
   SendWebSocketMessageResult,
 } from './send-web-socket-message';
 import type { SetStateParams, SetStateResult } from './set-state';
+import type { TrackErrorParams, TrackErrorResult } from './track-error';
 import type { TrackEventParams, TrackEventResult } from './track-event';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
 import type { Method } from '../../internals';
-import type { TrackErrorParams, TrackErrorResult } from '@metamask/snaps-sdk';
 
 /**
  * The methods that are available to the Snap. Each method is a tuple of the
