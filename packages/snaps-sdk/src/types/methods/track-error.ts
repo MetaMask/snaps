@@ -18,6 +18,12 @@ export type TrackableError = {
    * will be `null`.
    */
   stack: string | null;
+
+  /**
+   * The cause of the error, if available. This can be another error object or
+   * `null` if there is no cause.
+   */
+  cause: TrackableError | null;
 };
 
 /**

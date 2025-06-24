@@ -1,7 +1,31 @@
+import type { Json } from '@metamask/utils';
 import { hasProperty, isObject, isValidJson } from '@metamask/utils';
 
 export const SNAP_ERROR_CODE = -31002;
 export const SNAP_ERROR_MESSAGE = 'Snap Error';
+
+/**
+ * Get a property from an object, or return a fallback value if the property
+ * does not exist.
+ *
+ * @param object - The object to get the property from.
+ * @param property - The property to get from the object.
+ * @param fallback - The fallback value to return if the property does not
+ * exist.
+ * @returns The value of the property if it exists, or the fallback value if
+ * the property does not exist.
+ */
+function getObjectProperty<Fallback = null>(
+  object: unknown,
+  property: string,
+  fallback: Fallback = null as Fallback,
+): unknown {
+  if (isObject(object) && hasProperty(object, property)) {
+    return object[property];
+  }
+
+  return fallback;
+}
 
 /**
  * Get a string property from an object, or convert the object to a string
@@ -19,11 +43,9 @@ function getObjectStringProperty<Fallback = string>(
   property: string,
   fallback: Fallback = String(object) as Fallback,
 ): string | Fallback {
-  if (isObject(object) && hasProperty(object, property)) {
-    const value = object[property];
-    if (typeof value === 'string') {
-      return value;
-    }
+  const value = getObjectProperty(object, property);
+  if (typeof value === 'string') {
+    return value;
   }
 
   return fallback;
@@ -75,16 +97,23 @@ export function getErrorName(error: unknown) {
  * @internal
  */
 export function getErrorCode(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'code') &&
-    typeof error.code === 'number' &&
-    Number.isInteger(error.code)
-  ) {
-    return error.code;
+  const value = getObjectProperty(error, 'code');
+  if (typeof value === 'number') {
+    return value;
   }
 
   return -32603;
+}
+
+/**
+ * Get the error cause from an unknown error type.
+ *
+ * @param error - The error to get the cause from.
+ * @returns The error cause, or `null` if the error does not have a valid
+ * cause.
+ */
+export function getErrorCause(error: unknown) {
+  return getObjectProperty(error, 'cause');
 }
 
 /**
@@ -96,15 +125,9 @@ export function getErrorCode(error: unknown) {
  * @internal
  */
 export function getErrorData(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'data') &&
-    typeof error.data === 'object' &&
-    error.data !== null &&
-    isValidJson(error.data) &&
-    !Array.isArray(error.data)
-  ) {
-    return error.data;
+  const value = getObjectProperty(error, 'data');
+  if (value !== null && isValidJson(value) && !Array.isArray(value)) {
+    return value as Record<string, Json>;
   }
 
   return {};

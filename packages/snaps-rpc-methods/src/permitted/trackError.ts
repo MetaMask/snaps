@@ -8,8 +8,10 @@ import type {
   TrackErrorResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching, Snap } from '@metamask/snaps-utils';
+import type { Struct } from '@metamask/superstruct';
 import {
   create,
+  lazy,
   nullable,
   object,
   string,
@@ -42,12 +44,15 @@ export type TrackErrorMethodHooks = {
   getSnap: (snapId: string) => Snap | undefined;
 };
 
+const TrackableErrorStruct: Struct<TrackableError> = object({
+  name: string(),
+  message: string(),
+  stack: nullable(string()),
+  cause: nullable(lazy<TrackableError>(() => TrackableErrorStruct)),
+});
+
 const TrackErrorParametersStruct = object({
-  error: object({
-    name: string(),
-    message: string(),
-    stack: nullable(string()),
-  }),
+  error: TrackableErrorStruct,
 });
 
 export type TrackErrorParameters = InferMatching<
@@ -144,6 +149,9 @@ function deserializeError(error: TrackableError): Error {
   const deserializedError = new Error(error.message);
   deserializedError.name = error.name;
   deserializedError.stack = error.stack ?? undefined;
+  deserializedError.cause = error.cause
+    ? deserializeError(error.cause)
+    : undefined;
 
   return deserializedError;
 }

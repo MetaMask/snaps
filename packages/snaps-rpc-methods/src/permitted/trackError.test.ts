@@ -51,6 +51,7 @@ describe('snap_trackError', () => {
             message: 'This is a test error.',
             stack:
               'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+            cause: null,
           },
         },
       });
@@ -61,12 +62,79 @@ describe('snap_trackError', () => {
         result: 'test-id',
       });
 
+      expect(trackError.mock.calls[0][0]).toBeInstanceOf(Error);
       expect(trackError).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'TestError',
           message: 'This is a test error.',
           stack:
             'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+        }),
+      );
+    });
+
+    it('tracks an error with a name, message, stack, and cause', async () => {
+      const { implementation } = trackErrorHandler;
+
+      const trackError = jest.fn().mockReturnValue('test-id');
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
+      const hooks = { trackError, getSnap };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<TrackErrorParams>,
+          response as PendingJsonRpcResponse<TrackErrorResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_trackError',
+        params: {
+          error: {
+            name: 'TestError',
+            message: 'This is a test error.',
+            stack:
+              'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+            cause: {
+              name: 'TestCauseError',
+              message: 'This is a test cause error.',
+              stack:
+                'TestCauseError: This is a test cause error.\n    at Object.<anonymous> (cause.js:1:1)',
+              cause: null,
+            },
+          },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: 'test-id',
+      });
+
+      expect(trackError.mock.calls[0][0]).toBeInstanceOf(Error);
+      expect(trackError.mock.calls[0][0].cause).toBeInstanceOf(Error);
+      expect(trackError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'TestError',
+          message: 'This is a test error.',
+          stack:
+            'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
+          cause: expect.objectContaining({
+            name: 'TestCauseError',
+            message: 'This is a test cause error.',
+            stack:
+              'TestCauseError: This is a test cause error.\n    at Object.<anonymous> (cause.js:1:1)',
+          }),
         }),
       );
     });
@@ -101,6 +169,7 @@ describe('snap_trackError', () => {
             name: 'TestError',
             message: 'This is a test error.',
             stack: null,
+            cause: null,
           },
         },
       });
@@ -111,6 +180,7 @@ describe('snap_trackError', () => {
         result: 'test-id',
       });
 
+      expect(trackError.mock.calls[0][0]).toBeInstanceOf(Error);
       expect(trackError).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'TestError',

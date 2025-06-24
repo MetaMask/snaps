@@ -295,6 +295,7 @@ describe('getJsonError', () => {
         name: 'Error',
         message: 'Test error string.',
         stack: null,
+        cause: null,
       },
     ],
     [
@@ -303,6 +304,7 @@ describe('getJsonError', () => {
         name: 'Error',
         message: 'Test error object.',
         stack: expect.stringContaining('Error: Test error object.'),
+        cause: null,
       },
     ],
     [
@@ -311,6 +313,7 @@ describe('getJsonError', () => {
         name: 'Error',
         message: 'Test error object with message property.',
         stack: null,
+        cause: null,
       },
     ],
     [
@@ -319,6 +322,7 @@ describe('getJsonError', () => {
         name: 'JsonRpcError',
         message: 'Test error object with code.',
         stack: null,
+        cause: null,
       },
     ],
     [
@@ -329,6 +333,7 @@ describe('getJsonError', () => {
         stack: expect.stringContaining(
           'ReferenceError: Test error object with custom name.',
         ),
+        cause: null,
       },
     ],
     [
@@ -337,9 +342,30 @@ describe('getJsonError', () => {
         name: 'JsonRpcError',
         message: 'Invalid parameters.',
         stack: expect.stringContaining('Error: Invalid parameters.'),
+        cause: null,
       },
     ],
   ])('returns an object with a message and stack from %p', (error, result) => {
     expect(getJsonError(error)).toStrictEqual(result);
+  });
+
+  it('returns an object with a cause if the error has a cause', () => {
+    const cause = new Error('Original error.');
+    cause.name = 'CauseError';
+
+    const error = new Error('Test error.', { cause });
+    error.name = 'TestError';
+
+    expect(getJsonError(error)).toStrictEqual({
+      name: 'TestError',
+      message: 'Test error.',
+      stack: expect.stringContaining('TestError: Test error.'),
+      cause: {
+        name: 'CauseError',
+        message: 'Original error.',
+        stack: expect.stringContaining('CauseError: Original error.'),
+        cause: null,
+      },
+    });
   });
 });

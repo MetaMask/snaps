@@ -2,6 +2,7 @@ import type { Json, JsonRpcError } from '@metamask/utils';
 import { isJsonRpcError } from '@metamask/utils';
 
 import {
+  getErrorCause,
   getErrorCode,
   getErrorData,
   getErrorMessage,
@@ -189,6 +190,7 @@ export function getJsonError(
       name: 'Error',
       message: error,
       stack: null,
+      cause: null,
     };
   }
 
@@ -197,12 +199,16 @@ export function getJsonError(
       name: 'JsonRpcError',
       message: getErrorMessage(error),
       stack: getErrorStack(error) ?? getErrorStack(error.data) ?? null,
+      cause: null,
     };
   }
+
+  const cause = getErrorCause(error);
 
   return {
     name: getErrorName(error),
     message: getErrorMessage(error),
     stack: getErrorStack(error) ?? null,
+    cause: cause === null ? null : getJsonError(cause),
   };
 }
