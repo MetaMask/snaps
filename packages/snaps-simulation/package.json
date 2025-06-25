@@ -76,7 +76,7 @@
     "redux-saga": "^1.2.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.3.3",
+    "@lavamoat/allow-scripts": "^3.3.4",
     "@metamask/auto-changelog": "^5.0.2",
     "@ts-bridge/cli": "^0.6.1",
     "@types/express": "^5.0.1",
