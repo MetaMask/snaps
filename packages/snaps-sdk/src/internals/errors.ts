@@ -98,7 +98,7 @@ export function getErrorName(error: unknown) {
  */
 export function getErrorCode(error: unknown) {
   const value = getObjectProperty(error, 'code');
-  if (typeof value === 'number') {
+  if (typeof value === 'number' && Number.isInteger(value)) {
     return value;
   }
 
