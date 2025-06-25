@@ -13,11 +13,18 @@ import { Result, Snap } from '../../../components';
 import { getSnapId } from '../../../utils';
 
 export const NetworkAccess: FunctionComponent = () => {
-  const [url, setUrl] = useState(`${window.location.href}test-data.json`);
+  const [fetchUrl, setFetchUrl] = useState(
+    `${window.location.href}test-data.json`,
+  );
+  const [webSocketUrl, setWebSocketUrl] = useState('ws://localhost:8545');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setUrl(event.target.value);
+  const handleFetchUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFetchUrl(event.target.value);
+  };
+
+  const handleWebSocketUrlChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setWebSocketUrl(event.target.value);
   };
 
   const snapId = getSnapId(NETWORK_ACCESS_SNAP_ID, NETWORK_ACCESS_PORT);
@@ -26,7 +33,7 @@ export const NetworkAccess: FunctionComponent = () => {
     invokeSnap({
       snapId,
       method: 'fetch',
-      params: { url },
+      params: { url: fetchUrl },
     }).catch(logError);
   };
 
@@ -34,6 +41,7 @@ export const NetworkAccess: FunctionComponent = () => {
     invokeSnap({
       snapId,
       method: 'startWebSocket',
+      params: { url: webSocketUrl },
     }).catch(logError);
   };
 
@@ -41,6 +49,7 @@ export const NetworkAccess: FunctionComponent = () => {
     invokeSnap({
       snapId,
       method: 'stopWebSocket',
+      params: { url: webSocketUrl },
     }).catch(logError);
   };
 
@@ -62,8 +71,8 @@ export const NetworkAccess: FunctionComponent = () => {
       <Form.Control
         type="text"
         placeholder="URL"
-        value={url}
-        onChange={handleChange}
+        value={fetchUrl}
+        onChange={handleFetchUrlChange}
         id="fetchUrl"
         className="mb-3"
       />
@@ -76,6 +85,15 @@ export const NetworkAccess: FunctionComponent = () => {
       >
         Fetch
       </Button>
+
+      <Form.Control
+        type="text"
+        placeholder="URL"
+        value={webSocketUrl}
+        onChange={handleWebSocketUrlChange}
+        id="webSocketUrl"
+        className="mb-3"
+      />
 
       <ButtonGroup className="d-block mb-3">
         <Button
