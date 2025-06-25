@@ -2750,13 +2750,13 @@ __metadata:
   linkType: hard
 
 "@lavamoat/aa@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "@lavamoat/aa@npm:4.3.2"
+  version: 4.3.3
+  resolution: "@lavamoat/aa@npm:4.3.3"
   dependencies:
     resolve: "npm:1.22.10"
   bin:
     lavamoat-ls: src/cli.js
-  checksum: 10/a13300a65a0628be5b32360f5ddd68e1e5f356f00d13191de08900a6df4ee713a9558abb688d7a852ba35e5bb6b0114f95cd26e107c81be11c204cd1619590cf
+  checksum: 10/a1051478a59efd3fc032c955369b1dada86148d192a5cccb0c08140f697b96c5211a93a77f5bddf8254b98e60d8f0759cf961000a59b910673db14c0ac0237ae
   languageName: node
   linkType: hard
 
