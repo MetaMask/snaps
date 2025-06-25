@@ -1,4 +1,8 @@
-import { MethodNotFoundError, UserInputEventType } from '@metamask/snaps-sdk';
+import {
+  getJsonError,
+  MethodNotFoundError,
+  UserInputEventType,
+} from '@metamask/snaps-sdk';
 import type {
   OnRpcRequestHandler,
   OnSettingsPageHandler,
@@ -15,10 +19,11 @@ type SnapState = {
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles two methods:
+ * `wallet_invokeSnap` method. This handler handles the following methods:
  *
  * - `showDialog` - Opens a dialog.
  * - `getSettings`: Get the settings state from the snap state.
+ * - `trackError`: Tracks an error and sends it to Sentry.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -46,6 +51,18 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           encrypted: false,
         },
       });
+
+    case 'trackError': {
+      const error = new Error('This is a test error.');
+      error.name = 'TestError';
+
+      return await snap.request({
+        method: 'snap_trackError',
+        params: {
+          error: getJsonError(error),
+        },
+      });
+    }
 
     default:
       throw new MethodNotFoundError({ method: request.method });

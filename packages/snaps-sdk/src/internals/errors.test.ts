@@ -4,6 +4,7 @@ import {
   getErrorCode,
   getErrorData,
   getErrorMessage,
+  getErrorName,
   getErrorStack,
 } from './errors';
 
@@ -33,13 +34,31 @@ describe('getErrorStack', () => {
     expect(getErrorStack(rpcErrors.invalidParams('foo'))).toBeDefined();
   });
 
-  it('returns undefined if the error does not have a stack property', () => {
-    expect(getErrorStack('foo')).toBeUndefined();
-    expect(getErrorStack(123)).toBeUndefined();
-    expect(getErrorStack(true)).toBeUndefined();
-    expect(getErrorStack(null)).toBeUndefined();
-    expect(getErrorStack(undefined)).toBeUndefined();
-    expect(getErrorStack({ foo: 'bar' })).toBeUndefined();
+  it('returns null if the error does not have a stack property', () => {
+    expect(getErrorStack('foo')).toBeNull();
+    expect(getErrorStack(123)).toBeNull();
+    expect(getErrorStack(true)).toBeNull();
+    expect(getErrorStack(null)).toBeNull();
+    expect(getErrorStack(undefined)).toBeNull();
+    expect(getErrorStack({ foo: 'bar' })).toBeNull();
+  });
+});
+
+describe('getErrorName', () => {
+  it('returns the error name if the error is an object with a name property', () => {
+    expect(getErrorName(new Error('foo'))).toBe('Error');
+    expect(getErrorName({ name: 'foo' })).toBe('foo');
+    expect(getErrorName(rpcErrors.invalidParams('foo'))).toBe('Error');
+    expect(getErrorName(new TypeError('foo'))).toBe('TypeError');
+  });
+
+  it('returns "Error" if the error does not have a name property', () => {
+    expect(getErrorName('foo')).toBe('Error');
+    expect(getErrorName(123)).toBe('Error');
+    expect(getErrorName(true)).toBe('Error');
+    expect(getErrorName(null)).toBe('Error');
+    expect(getErrorName(undefined)).toBe('Error');
+    expect(getErrorName({ foo: 'bar' })).toBe('Error');
   });
 });
 

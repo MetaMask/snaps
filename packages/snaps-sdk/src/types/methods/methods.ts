@@ -90,6 +90,7 @@ import type {
   SendWebSocketMessageResult,
 } from './send-web-socket-message';
 import type { SetStateParams, SetStateResult } from './set-state';
+import type { TrackErrorParams, TrackErrorResult } from './track-error';
 import type { TrackEventParams, TrackEventResult } from './track-event';
 import type {
   UpdateInterfaceParams,
@@ -141,6 +142,7 @@ export type SnapMethods = {
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   snap_setState: [SetStateParams, SetStateResult];
   snap_trackEvent: [TrackEventParams, TrackEventResult];
+  snap_trackError: [TrackErrorParams, TrackErrorResult];
   snap_openWebSocket: [OpenWebSocketParams, OpenWebSocketResult];
   snap_closeWebSocket: [CloseWebSocketParams, CloseWebSocketResult];
   snap_getWebSockets: [GetWebSocketsParams, GetWebSocketsResult];

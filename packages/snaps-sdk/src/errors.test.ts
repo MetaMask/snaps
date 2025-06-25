@@ -1,6 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 
-import { SnapError } from './errors';
+import { getJsonError, SnapError } from './errors';
 
 describe('SnapError', () => {
   it('creates an error from a message', () => {
@@ -284,5 +284,88 @@ describe('SnapError', () => {
     const error = new SnapError('foo');
 
     expect(error.serialize()).toStrictEqual(error.toJSON());
+  });
+});
+
+describe('getJsonError', () => {
+  it.each([
+    [
+      'Test error string.',
+      {
+        name: 'Error',
+        message: 'Test error string.',
+        stack: null,
+        cause: null,
+      },
+    ],
+    [
+      new Error('Test error object.'),
+      {
+        name: 'Error',
+        message: 'Test error object.',
+        stack: expect.stringContaining('Error: Test error object.'),
+        cause: null,
+      },
+    ],
+    [
+      { message: 'Test error object with message property.' },
+      {
+        name: 'Error',
+        message: 'Test error object with message property.',
+        stack: null,
+        cause: null,
+      },
+    ],
+    [
+      { code: 123, message: 'Test error object with code.' },
+      {
+        name: 'JsonRpcError',
+        message: 'Test error object with code.',
+        stack: null,
+        cause: null,
+      },
+    ],
+    [
+      new ReferenceError('Test error object with custom name.'),
+      {
+        name: 'ReferenceError',
+        message: 'Test error object with custom name.',
+        stack: expect.stringContaining(
+          'ReferenceError: Test error object with custom name.',
+        ),
+        cause: null,
+      },
+    ],
+    [
+      rpcErrors.invalidParams('Invalid parameters.'),
+      {
+        name: 'JsonRpcError',
+        message: 'Invalid parameters.',
+        stack: expect.stringContaining('Error: Invalid parameters.'),
+        cause: null,
+      },
+    ],
+  ])('returns an object with a message and stack from %p', (error, result) => {
+    expect(getJsonError(error)).toStrictEqual(result);
+  });
+
+  it('returns an object with a cause if the error has a cause', () => {
+    const cause = new Error('Original error.');
+    cause.name = 'CauseError';
+
+    const error = new Error('Test error.', { cause });
+    error.name = 'TestError';
+
+    expect(getJsonError(error)).toStrictEqual({
+      name: 'TestError',
+      message: 'Test error.',
+      stack: expect.stringContaining('TestError: Test error.'),
+      cause: {
+        name: 'CauseError',
+        message: 'Original error.',
+        stack: expect.stringContaining('CauseError: Original error.'),
+        cause: null,
+      },
+    });
   });
 });

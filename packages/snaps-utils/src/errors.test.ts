@@ -37,6 +37,28 @@ describe('WrappedSnapError', () => {
     });
   });
 
+  it('wraps an error without a stack', () => {
+    const error = new Error('foo');
+    delete error.stack;
+
+    const wrapped = new WrappedSnapError(error);
+
+    expect(wrapped).toBeInstanceOf(Error);
+    expect(wrapped).toBeInstanceOf(WrappedSnapError);
+    expect(wrapped.name).toBe('WrappedSnapError');
+    expect(wrapped.message).toBe('foo');
+    expect(wrapped.stack).toBeDefined();
+    expect(wrapped.toJSON()).toStrictEqual({
+      code: SNAP_ERROR_WRAPPER_CODE,
+      message: SNAP_ERROR_WRAPPER_MESSAGE,
+      data: {
+        cause: {
+          message: 'foo',
+        },
+      },
+    });
+  });
+
   it('wraps a JSON-RPC error', () => {
     const error = new JsonRpcError(-1, 'foo');
     const wrapped = new WrappedSnapError(error);
@@ -275,6 +297,19 @@ describe('unwrapError', () => {
     expect(unwrappedError.code).toBe(errorCodes.rpc.internal);
     expect(unwrappedError.message).toBe('foo');
     expect(unwrappedError.stack).toBeDefined();
+    expect(handled).toBe(false);
+  });
+
+  it('unwraps an error without a stack', () => {
+    const error = new Error('foo');
+    delete error.stack;
+
+    const [unwrappedError, handled] = unwrapError(error);
+
+    expect(unwrappedError).toBeInstanceOf(Error);
+    expect(unwrappedError.code).toBe(errorCodes.rpc.internal);
+    expect(unwrappedError.message).toBe('foo');
+    expect(unwrappedError.stack).toBeUndefined();
     expect(handled).toBe(false);
   });
 

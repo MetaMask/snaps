@@ -1,7 +1,55 @@
+import type { Json } from '@metamask/utils';
 import { hasProperty, isObject, isValidJson } from '@metamask/utils';
 
 export const SNAP_ERROR_CODE = -31002;
 export const SNAP_ERROR_MESSAGE = 'Snap Error';
+
+/**
+ * Get a property from an object, or return a fallback value if the property
+ * does not exist.
+ *
+ * @param object - The object to get the property from.
+ * @param property - The property to get from the object.
+ * @param fallback - The fallback value to return if the property does not
+ * exist.
+ * @returns The value of the property if it exists, or the fallback value if
+ * the property does not exist.
+ */
+function getObjectProperty<Fallback = null>(
+  object: unknown,
+  property: string,
+  fallback: Fallback = null as Fallback,
+): unknown {
+  if (isObject(object) && hasProperty(object, property)) {
+    return object[property];
+  }
+
+  return fallback;
+}
+
+/**
+ * Get a string property from an object, or convert the object to a string
+ * if the property does not exist or is not a string.
+ *
+ * @param object - The object to get the property from.
+ * @param property - The property to get from the object.
+ * @param fallback - The fallback value to return if the property does not exist
+ * or is not a string. Defaults to the string representation of the object.
+ * @returns The value of the property if it exists and is a string, or the
+ * fallback value if it does not exist or is not a string.
+ */
+function getObjectStringProperty<Fallback = string>(
+  object: unknown,
+  property: string,
+  fallback: Fallback = String(object) as Fallback,
+): string | Fallback {
+  const value = getObjectProperty(object, property);
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  return fallback;
+}
 
 /**
  * Get the error message from an unknown error type.
@@ -14,15 +62,7 @@ export const SNAP_ERROR_MESSAGE = 'Snap Error';
  * @internal
  */
 export function getErrorMessage(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'message') &&
-    typeof error.message === 'string'
-  ) {
-    return error.message;
-  }
-
-  return String(error);
+  return getObjectStringProperty(error, 'message');
 }
 
 /**
@@ -34,15 +74,19 @@ export function getErrorMessage(error: unknown) {
  * @internal
  */
 export function getErrorStack(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'stack') &&
-    typeof error.stack === 'string'
-  ) {
-    return error.stack;
-  }
+  return getObjectStringProperty(error, 'stack', null);
+}
 
-  return undefined;
+/**
+ * Get the error name from an unknown error type.
+ *
+ * @param error - The error to get the name from.
+ * @returns The error name, or `'Error'` if the error does not have a valid
+ * name.
+ */
+export function getErrorName(error: unknown) {
+  const fallbackName = error instanceof Error ? error.name : 'Error';
+  return getObjectStringProperty(error, 'name', fallbackName);
 }
 
 /**
@@ -53,16 +97,23 @@ export function getErrorStack(error: unknown) {
  * @internal
  */
 export function getErrorCode(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'code') &&
-    typeof error.code === 'number' &&
-    Number.isInteger(error.code)
-  ) {
-    return error.code;
+  const value = getObjectProperty(error, 'code');
+  if (typeof value === 'number' && Number.isInteger(value)) {
+    return value;
   }
 
   return -32603;
+}
+
+/**
+ * Get the error cause from an unknown error type.
+ *
+ * @param error - The error to get the cause from.
+ * @returns The error cause, or `null` if the error does not have a valid
+ * cause.
+ */
+export function getErrorCause(error: unknown) {
+  return getObjectProperty(error, 'cause');
 }
 
 /**
@@ -74,15 +125,9 @@ export function getErrorCode(error: unknown) {
  * @internal
  */
 export function getErrorData(error: unknown) {
-  if (
-    isObject(error) &&
-    hasProperty(error, 'data') &&
-    typeof error.data === 'object' &&
-    error.data !== null &&
-    isValidJson(error.data) &&
-    !Array.isArray(error.data)
-  ) {
-    return error.data;
+  const value = getObjectProperty(error, 'data');
+  if (value !== null && isValidJson(value) && !Array.isArray(value)) {
+    return value as Record<string, Json>;
   }
 
   return {};

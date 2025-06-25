@@ -43,7 +43,7 @@ export class WrappedSnapError extends Error {
 
     this.#error = error;
     this.#message = message;
-    this.#stack = getErrorStack(error);
+    this.#stack = getErrorStack(error) ?? undefined;
   }
 
   /**
@@ -162,11 +162,11 @@ export function isWrappedSnapError(
 function getJsonRpcError(
   code: number,
   message: string,
-  stack?: string,
+  stack?: string | null,
   data?: Json,
 ) {
   const error = new RpcError(code, message, data);
-  error.stack = stack;
+  error.stack = stack ?? undefined;
 
   return error;
 }

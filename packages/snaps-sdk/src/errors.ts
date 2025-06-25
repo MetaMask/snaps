@@ -1,12 +1,17 @@
 import type { Json, JsonRpcError } from '@metamask/utils';
+import { isJsonRpcError } from '@metamask/utils';
 
 import {
+  getErrorCause,
   getErrorCode,
   getErrorData,
   getErrorMessage,
+  getErrorName,
+  getErrorStack,
   SNAP_ERROR_CODE,
   SNAP_ERROR_MESSAGE,
 } from './internals';
+import type { TrackableError } from './types';
 
 /**
  * A generic error which can be thrown by a Snap, without it causing the Snap to
@@ -152,3 +157,58 @@ export type SerializedSnapError = {
     cause: JsonRpcError;
   };
 };
+
+/**
+ * Get a serialised JSON error from a given error. This is intended to be used
+ * with `snap_trackError` to convert an error to a JSON object that can be
+ * tracked by the Sentry instance in the client.
+ *
+ * @param error - The error to convert to a JSON error. This can be a string, an
+ * `Error`, a `JsonRpcError`, or any other type. If it is not a string or an
+ * `Error`, it will be converted to a string using its `toString()` method.
+ * @returns A JSON object containing the error message and stack trace, if
+ * available.
+ * @example
+ * try {
+ *   // Some code that may throw an error
+ * } catch (error) {
+ *   await snap.request({
+ *     method: 'snap_trackError',
+ *     params: {
+ *       error: getJsonError(error),
+ *     },
+ *   });
+ * }
+ */
+export function getJsonError(
+  // TypeScript will narrow this to `unknown`, but we specify all the types for
+  // clarity.
+  error: string | Error | JsonRpcError | unknown,
+): TrackableError {
+  if (typeof error === 'string') {
+    return {
+      name: 'Error',
+      message: error,
+      stack: null,
+      cause: null,
+    };
+  }
+
+  if (isJsonRpcError(error)) {
+    return {
+      name: 'JsonRpcError',
+      message: getErrorMessage(error),
+      stack: getErrorStack(error) ?? getErrorStack(error.data) ?? null,
+      cause: null,
+    };
+  }
+
+  const cause = getErrorCause(error);
+
+  return {
+    name: getErrorName(error),
+    message: getErrorMessage(error),
+    stack: getErrorStack(error) ?? null,
+    cause: cause === null ? null : getJsonError(cause),
+  };
+}
