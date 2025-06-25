@@ -50,7 +50,7 @@
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-typescript": "^7.23.2",
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^3.3.3",
+    "@lavamoat/allow-scripts": "^3.3.4",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-rollup-plugin": "workspace:^",

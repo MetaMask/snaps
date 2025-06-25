@@ -80,7 +80,7 @@
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "@lavamoat/allow-scripts": "^3.3.3",
+    "@lavamoat/allow-scripts": "^3.3.4",
     "@lavamoat/lavatube": "^1.0.0",
     "@lavamoat/webpack": "^0.9.0-beta.0",
     "@metamask/auto-changelog": "^5.0.2",
