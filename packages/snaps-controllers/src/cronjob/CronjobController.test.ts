@@ -46,6 +46,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     cronjobController.register(MOCK_SNAP_ID);
 
     expect(rootMessenger.call).toHaveBeenCalledWith(
@@ -92,6 +94,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     cronjobController.register(MOCK_SNAP_ID);
 
     expect(rootMessenger.call).toHaveBeenCalledWith(
@@ -127,6 +131,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     cronjobController.register(MOCK_SNAP_ID);
     cronjobController.unregister(MOCK_SNAP_ID);
 
@@ -156,6 +162,8 @@ describe('CronjobController', () => {
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
+
+    cronjobController.init();
 
     // @ts-expect-error: `update` is protected.
     cronjobController.update(() => {
@@ -226,6 +234,8 @@ describe('CronjobController', () => {
       },
     });
 
+    cronjobController.init();
+
     await new Promise((resolve) => originalProcessNextTick(resolve));
     expect(rootMessenger.call).toHaveBeenCalledWith(
       'SnapController:handleRequest',
@@ -244,6 +254,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
       state: cronjobController.state,
     });
+
+    secondCronjobController.init();
 
     await new Promise((resolve) => originalProcessNextTick(resolve));
     expect(handleRequest).toHaveBeenCalledTimes(1);
@@ -271,6 +283,8 @@ describe('CronjobController', () => {
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
+
+    cronjobController.init();
 
     cronjobController.register(MOCK_SNAP_ID);
     jest.runOnlyPendingTimers();
@@ -316,6 +330,8 @@ describe('CronjobController', () => {
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
+
+    cronjobController.init();
 
     cronjobController.register(MOCK_SNAP_ID);
 
@@ -372,6 +388,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     cronjobController.register(MOCK_SNAP_ID);
     expect(cronjobController.state.events).toStrictEqual({});
 
@@ -403,6 +421,8 @@ describe('CronjobController', () => {
       },
     });
 
+    cronjobController.init();
+
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
     expect(rootMessenger.call).toHaveBeenCalledWith(
@@ -431,6 +451,8 @@ describe('CronjobController', () => {
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
+
+    cronjobController.init();
 
     const snapInfo: TruncatedSnap = {
       blocked: false,
@@ -514,6 +536,8 @@ describe('CronjobController', () => {
       },
     });
 
+    cronjobController.init();
+
     const snapInfo: TruncatedSnap = {
       blocked: false,
       enabled: true,
@@ -594,6 +618,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     const snapInfo: TruncatedSnap = {
       blocked: false,
       enabled: true,
@@ -625,6 +651,8 @@ describe('CronjobController', () => {
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
     });
+
+    cronjobController.init();
 
     const snapInfo: TruncatedSnap = {
       blocked: false,
@@ -686,6 +714,8 @@ describe('CronjobController', () => {
       },
     });
 
+    cronjobController.init();
+
     const snapInfo: TruncatedSnap = {
       blocked: false,
       enabled: true,
@@ -729,6 +759,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     cronjobController.register(MOCK_SNAP_ID);
 
     cronjobController.destroy();
@@ -764,6 +796,8 @@ describe('CronjobController', () => {
       messenger: controllerMessenger,
     });
 
+    cronjobController.init();
+
     const error = new Error('Test error.');
     rootMessenger.registerActionHandler(
       'SnapController:handleRequest',
@@ -794,6 +828,8 @@ describe('CronjobController', () => {
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
       });
+
+      cronjobController.init();
 
       const event = {
         snapId: MOCK_SNAP_ID,
@@ -844,6 +880,8 @@ describe('CronjobController', () => {
         messenger: controllerMessenger,
       });
 
+      cronjobController.init();
+
       const event = {
         snapId: MOCK_SNAP_ID,
         schedule: '2021-01-01T01:00Z',
@@ -872,6 +910,8 @@ describe('CronjobController', () => {
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
       });
+
+      cronjobController.init();
 
       const event = {
         snapId: MOCK_SNAP_ID,
@@ -911,6 +951,8 @@ describe('CronjobController', () => {
         messenger: controllerMessenger,
       });
 
+      cronjobController.init();
+
       const event = {
         snapId: MOCK_SNAP_ID,
         schedule: '2022-01-01T01:00Z',
@@ -949,6 +991,8 @@ describe('CronjobController', () => {
         messenger: controllerMessenger,
       });
 
+      cronjobController.init();
+
       const event = {
         snapId: MOCK_SNAP_ID,
         schedule: '2025-05-21T13:25:21.500Z',
@@ -975,6 +1019,53 @@ describe('CronjobController', () => {
           scheduledAt: expect.any(String),
         },
       ]);
+
+      cronjobController.destroy();
+    });
+  });
+
+  describe('CronjobController:init', () => {
+    it('initializes the controller', () => {
+      const rootMessenger = getRootCronjobControllerMessenger();
+      const controllerMessenger =
+        getRestrictedCronjobControllerMessenger(rootMessenger);
+
+      const cronjobController = new CronjobController({
+        messenger: controllerMessenger,
+        state: {
+          events: {
+            [`cronjob-${MOCK_SNAP_ID}-0`]: {
+              id: `cronjob-${MOCK_SNAP_ID}-0`,
+              snapId: MOCK_SNAP_ID,
+              date: new Date('2022-01-01T00:00Z').toISOString(),
+              scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+              schedule: 'PT25H',
+              recurring: true,
+              request: {
+                method: 'exampleMethod',
+                params: ['p1'],
+              },
+            },
+          },
+        },
+      });
+
+      controllerMessenger.call('CronjobController:init');
+
+      jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
+
+      expect(rootMessenger.call).toHaveBeenCalledWith(
+        'SnapController:handleRequest',
+        {
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnCronjob,
+          request: {
+            method: 'exampleMethod',
+            params: ['p1'],
+          },
+        },
+      );
 
       cronjobController.destroy();
     });
