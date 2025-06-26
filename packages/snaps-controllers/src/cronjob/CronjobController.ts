@@ -42,6 +42,15 @@ export type CronjobControllerStateChangeEvent = ControllerStateChangeEvent<
   CronjobControllerState
 >;
 
+/**
+ * Initialise the CronjobController. This should be called after all controllers
+ * are created.
+ */
+export type CronjobControllerInitAction = {
+  type: `${typeof controllerName}:init`;
+  handler: CronjobController['init'];
+};
+
 export type Schedule = {
   type: `${typeof controllerName}:schedule`;
   handler: CronjobController['schedule'];
@@ -63,7 +72,8 @@ export type CronjobControllerActions =
   | GetPermissions
   | Schedule
   | Cancel
-  | Get;
+  | Get
+  | CronjobControllerInitAction;
 
 export type CronjobControllerEvents =
   | CronjobControllerStateChangeEvent
@@ -190,6 +200,11 @@ export class CronjobController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
+      `${controllerName}:init`,
+      (...args) => this.init(...args),
+    );
+
+    this.messagingSystem.registerActionHandler(
       `${controllerName}:schedule`,
       (...args) => this.schedule(...args),
     );
@@ -203,7 +218,15 @@ export class CronjobController extends BaseController<
       `${controllerName}:get`,
       (...args) => this.get(...args),
     );
+  }
 
+  /**
+   * Initialize the CronjobController.
+   *
+   * This starts the daily timer, clears out expired events
+   * and reschedules any remaining events.
+   */
+  init() {
     this.#start();
     this.#clear();
     this.#reschedule();
