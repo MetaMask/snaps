@@ -1608,9 +1608,9 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
-  it('supports `onAssetsConversion` export with the market data flag', async () => {
+  it('supports `onAssetsMarketData` export', async () => {
     const CODE = `
-      module.exports.onAssetsConversion = () => ({ conversionRates: {} });
+      module.exports.onAssetsMarketData = () => ({ marketData: {} });
     `;
 
     const executor = new TestSnapExecutor();
@@ -1628,19 +1628,18 @@ describe('BaseSnapExecutor', () => {
       method: 'snapRpc',
       params: [
         MOCK_SNAP_ID,
-        HandlerType.OnAssetsConversion,
+        HandlerType.OnAssetsMarketData,
         MOCK_ORIGIN,
         {
           jsonrpc: '2.0',
           method: '',
           params: {
-            conversions: [
+            assets: [
               {
-                from: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
-                to: 'eip155:1/slip44:60',
+                asset: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+                unit: 'eip155:1/slip44:60',
               },
             ],
-            includeMarketData: true,
           },
         },
       ],
@@ -1649,7 +1648,7 @@ describe('BaseSnapExecutor', () => {
     expect(await executor.readCommand()).toStrictEqual({
       id: 2,
       jsonrpc: '2.0',
-      result: { conversionRates: {} },
+      result: { marketData: {} },
     });
   });
 

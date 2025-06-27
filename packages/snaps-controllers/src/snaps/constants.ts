@@ -43,5 +43,6 @@ export const CLIENT_ONLY_HANDLERS = Object.freeze([
   HandlerType.OnAssetsLookup,
   HandlerType.OnAssetsConversion,
   HandlerType.OnAssetHistoricalPrice,
+  HandlerType.OnAssetsMarketData,
   HandlerType.OnWebSocketEvent,
 ]);

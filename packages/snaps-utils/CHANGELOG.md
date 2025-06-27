@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **BREAKING:** Market data is now fetched through `onAssetsMarketData` instead
+  of `onAssetConversion`
+  - Previously, `onAssetConversion` could return a `marketData` property, which
+    contained market data for the asset being converted. This property
+    has been removed, and `onAssetsMarketData` should be used instead.
+  - The `MarketDataStruct` is now replaced by the `FungibleAssetMarketDataStruct` struct.
+
 ## [10.1.0]
 
 ### Added

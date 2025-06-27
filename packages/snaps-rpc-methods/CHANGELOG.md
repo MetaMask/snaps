@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
+
 ## [13.1.0]
 
 ### Added

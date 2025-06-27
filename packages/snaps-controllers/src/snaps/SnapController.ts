@@ -55,6 +55,9 @@ import type {
   OnAssetsConversionArguments,
   AssetConversion,
   OnAssetsLookupArguments,
+  OnAssetsMarketDataArguments,
+  FungibleAssetMarketData,
+  OnAssetsMarketDataResponse,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -105,6 +108,7 @@ import {
   isValidUrl,
   OnAssetHistoricalPriceResponseStruct,
   OnAssetsConversionResponseStruct,
+  OnAssetsMarketDataResponseStruct,
 } from '@metamask/snaps-utils';
 import type {
   Json,
@@ -3780,6 +3784,14 @@ export class SnapController extends BaseController<
           },
           result as OnAssetsConversionResponse,
         );
+
+      case HandlerType.OnAssetsMarketData:
+        // We can cast since the request and result have already been validated.
+        return this.#transformOnAssetsMarketDataResult(
+          request as { params: OnAssetsMarketDataArguments },
+          result as OnAssetsMarketDataResponse,
+        );
+
       default:
         return result;
     }
@@ -3862,6 +3874,38 @@ export class SnapController extends BaseController<
       return accumulator;
     }, {});
     return { conversionRates: filteredConversionRates };
+  }
+
+  /**
+   * Transforms an RPC response coming from the `onAssetsMarketData` handler.
+   *
+   * This filters out responses that are out of scope for the Snap based on
+   * the incoming request.
+   *
+   * @param request - The request that returned the result.
+   * @param request.params - The parameters for the request.
+   * @param result - The result.
+   * @param result.marketData - The market data returned by the Snap.
+   * @returns The transformed result.
+   */
+  #transformOnAssetsMarketDataResult(
+    { params: requestedParams }: { params: OnAssetsMarketDataArguments },
+    { marketData }: OnAssetsMarketDataResponse,
+  ) {
+    const { assets: requestedAssets } = requestedParams;
+
+    const filteredMarketData = requestedAssets.reduce<
+      Record<CaipAssetType, Record<CaipAssetType, FungibleAssetMarketData>>
+    >((accumulator, assets) => {
+      const result = marketData[assets.asset]?.[assets.unit];
+      // Only include rates that were actually requested.
+      if (result) {
+        accumulator[assets.asset] ??= {};
+        accumulator[assets.asset][assets.unit] = result;
+      }
+      return accumulator;
+    }, {});
+    return { marketData: filteredMarketData };
   }
 
   /**
@@ -3960,6 +4004,9 @@ export class SnapController extends BaseController<
         break;
       case HandlerType.OnAssetHistoricalPrice:
         assertStruct(result, OnAssetHistoricalPriceResponseStruct);
+        break;
+      case HandlerType.OnAssetsMarketData:
+        assertStruct(result, OnAssetsMarketDataResponseStruct);
         break;
       default:
         break;

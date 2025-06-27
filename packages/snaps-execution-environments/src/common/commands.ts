@@ -20,6 +20,7 @@ import {
   assertIsOnProtocolRequestArguments,
   assertIsOnAssetHistoricalPriceRequestArguments,
   assertIsOnWebSocketEventArguments,
+  assertIsOnAssetsMarketDataRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -75,9 +76,16 @@ export function getHandlerArguments(
     }
     case HandlerType.OnAssetsConversion: {
       assertIsOnAssetsConversionRequestArguments(request.params);
-      const { conversions, includeMarketData } = request.params;
-      return { conversions, includeMarketData };
+      const { conversions } = request.params;
+      return { conversions };
     }
+
+    case HandlerType.OnAssetsMarketData: {
+      assertIsOnAssetsMarketDataRequestArguments(request.params);
+      const { assets } = request.params;
+      return { assets };
+    }
+
     case HandlerType.OnNameLookup: {
       assertIsOnNameLookupRequestArguments(request.params);
 

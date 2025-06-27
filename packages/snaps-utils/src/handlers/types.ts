@@ -44,6 +44,7 @@ export enum HandlerType {
   OnAssetsLookup = 'onAssetsLookup',
   OnAssetsConversion = 'onAssetsConversion',
   OnAssetHistoricalPrice = 'onAssetHistoricalPrice',
+  OnAssetsMarketData = 'onAssetsMarketData',
   OnProtocolRequest = 'onProtocolRequest',
   OnClientRequest = 'onClientRequest',
   OnWebSocketEvent = 'onWebSocketEvent',
