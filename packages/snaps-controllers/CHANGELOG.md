@@ -7,15 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Handle scheduled events close to current time gracefully ([#3510](https://github.com/MetaMask/snaps/pull/3510))
+
 ## [14.0.0]
-
-### Changed
-
-- **BREAKING:** Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
 
 ### Added
 
 - Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
+
+### Changed
+
+- **BREAKING:** Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
 
 ## [13.1.1]
 
