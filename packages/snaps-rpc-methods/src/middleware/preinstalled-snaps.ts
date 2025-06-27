@@ -4,9 +4,9 @@ import type {
   RequestedPermissions,
 } from '@metamask/permission-controller';
 import { isEqual } from '@metamask/snaps-utils';
-import type {
-  CaipAccountId,
-  CaipChainId,
+import {
+  type CaipAccountId,
+  type CaipChainId,
   hasProperty,
   type Json,
   type JsonRpcParams,
