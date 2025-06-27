@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add WebSocket URL input ([#3506](https://github.com/MetaMask/snaps/pull/3506))
+- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
+- chore(dev-deps): Bump `favicons` from `^7.1.2` to `^7.2.0` ([#3499](https://github.com/MetaMask/snaps/pull/3499))
+- fix: Move WebSocket controls to new line ([#3473](https://github.com/MetaMask/snaps/pull/3473))
+
 ## [2.24.0]
 
 ### Added

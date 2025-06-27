@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
+- fix: Fix broken test file link in README ([#3470](https://github.com/MetaMask/snaps/pull/3470))
+
 ## [2.2.0]
 
 ### Added

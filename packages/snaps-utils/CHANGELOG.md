@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: Add `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
+- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
+- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
+- chore(dev-deps): Bump `tsx` from `^4.19.1` to `^4.20.3` ([#3500](https://github.com/MetaMask/snaps/pull/3500))
+- chore: Bump the npm_and_yarn group across 1 directory with 2 updates ([#3497](https://github.com/MetaMask/snaps/pull/3497))
+- chore(devex): Add thresholds to coverage script and log coverage for merged report ([#3460](https://github.com/MetaMask/snaps/pull/3460))
+- fix: Fix typos in documentation and code comments ([#3469](https://github.com/MetaMask/snaps/pull/3469))
+
+### Added
+
 - **BREAKING:** Market data is now fetched through `onAssetsMarketData` instead
   of `onAssetConversion`
   - Previously, `onAssetConversion` could return a `marketData` property, which
