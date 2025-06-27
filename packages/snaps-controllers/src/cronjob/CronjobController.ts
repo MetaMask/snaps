@@ -417,7 +417,7 @@ export class CronjobController extends BaseController<
 
     // When an event is supposed to be scheduled close to the current time
     // we may end up needing to execute immediately instead.
-    if (ms < 0) {
+    if (ms <= 0) {
       this.#execute(event);
       return;
     }
