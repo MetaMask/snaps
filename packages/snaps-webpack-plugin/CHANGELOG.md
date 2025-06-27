@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.4.0]
+## [5.0.0]
 
-### Uncategorized
+### Changed
 
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+
+### Added
+
+- Support scheduling cronjobs with an ISO 8601 duration ([#3421](https://github.com/MetaMask/snaps/pull/3421))
 
 ## [4.3.0]
 
@@ -136,8 +138,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.4.0...HEAD
-[4.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.3.0...@metamask/snaps-webpack-plugin@4.4.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.3.0...@metamask/snaps-webpack-plugin@5.0.0
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.1...@metamask/snaps-webpack-plugin@4.3.0
 [4.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.0...@metamask/snaps-webpack-plugin@4.2.1
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.1.2...@metamask/snaps-webpack-plugin@4.2.0

@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.0.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Handle scheduled events close to current time gracefully ([#3510](https://github.com/MetaMask/snaps/pull/3510))
+- Handle scheduled events close to current time gracefully ([#3510](https://github.com/MetaMask/snaps/pull/3510))
 
 ## [14.0.0]
 

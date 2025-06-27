@@ -7,18 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.3.0]
+## [5.0.0]
 
-### Uncategorized
+### Changed
 
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps/pull/3283))
-- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps/pull/3277))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
+- **BREAKING:** Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
+
+### Added
+
+- Support scheduling cronjobs with an ISO 8601 duration ([#3421](https://github.com/MetaMask/snaps/pull/3421))
 
 ## [4.2.0]
 
@@ -96,8 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.3.0...HEAD
-[4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.2.0...@metamask/snaps-rollup-plugin@4.3.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@5.0.0...HEAD
+[5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.2.0...@metamask/snaps-rollup-plugin@5.0.0
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.1.2...@metamask/snaps-rollup-plugin@4.2.0
 [4.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.1.1...@metamask/snaps-rollup-plugin@4.1.2
 [4.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rollup-plugin@4.1.0...@metamask/snaps-rollup-plugin@4.1.1

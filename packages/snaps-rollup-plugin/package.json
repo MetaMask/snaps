@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-rollup-plugin",
-  "version": "4.3.0",
+  "version": "5.0.0",
   "description": "A Rollup plugin to build MetaMask Snaps with Rollup",
   "keywords": [
     "MetaMask",
