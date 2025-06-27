@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0]
+
 ### Uncategorized
 
 - feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
@@ -46,7 +48,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.5.0...HEAD
+[0.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.4.0...@metamask/preinstalled-example-snap@0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...@metamask/preinstalled-example-snap@0.4.0
 [0.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
 [0.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.1.0...@metamask/preinstalled-example-snap@0.2.0
