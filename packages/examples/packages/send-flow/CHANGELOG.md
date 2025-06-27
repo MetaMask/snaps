@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Use the new `AccountSelector` and `AssetSelector` component. ([#3462](https://github.com/MetaMask/snaps/pull/3462))
+- Use the new `AccountSelector` and `AssetSelector` component ([#3462](https://github.com/MetaMask/snaps/pull/3462))
 
 ## [1.1.2]
 
