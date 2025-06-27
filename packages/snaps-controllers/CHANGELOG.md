@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING** Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
+- **BREAKING:** Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
 
 ### Added
 
