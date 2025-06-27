@@ -9,7 +9,7 @@ import {
   string,
   union,
 } from '@metamask/superstruct';
-import { CaipAssetTypeStruct } from '@metamask/utils';
+import { CaipAssetTypeOrIdStruct, CaipAssetTypeStruct } from '@metamask/utils';
 
 import { ISO8601DurationStruct } from '../time';
 
@@ -35,11 +35,48 @@ export const FungibleAssetMarketDataStruct = object({
 });
 
 /**
+ * A struct representing the metadata for a fungible asset.
+ */
+export const AssetValueStruct = object({
+  asset: CaipAssetTypeOrIdStruct,
+  amount: string(),
+});
+
+/**
+ * A struct representing the market data for a non-fungible asset.
+ */
+export const NonFungibleAssetMarketDataStruct = object({
+  fungible: literal(false),
+  lastSale: optional(AssetValueStruct),
+  topBid: optional(AssetValueStruct),
+  floorPrice: optional(AssetValueStruct),
+  rarity: optional(
+    object({
+      ranking: optional(
+        object({
+          source: string(),
+          rank: number(),
+        }),
+      ),
+      metadata: optional(record(string(), number())),
+    }),
+  ),
+});
+
+/**
+ * A struct representing the market data for an asset, which can be either fungible or non-fungible.
+ */
+export const AssetMarketDataStruct = union([
+  FungibleAssetMarketDataStruct,
+  NonFungibleAssetMarketDataStruct,
+]);
+
+/**
  * A struct representing the response of the `onAssetsMarketData` method.
  */
 export const OnAssetsMarketDataResponseStruct = object({
   marketData: record(
     CaipAssetTypeStruct,
-    record(CaipAssetTypeStruct, nullable(FungibleAssetMarketDataStruct)),
+    record(CaipAssetTypeStruct, nullable(AssetMarketDataStruct)),
   ),
 });

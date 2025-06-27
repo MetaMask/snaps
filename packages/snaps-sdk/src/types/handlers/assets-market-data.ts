@@ -1,4 +1,4 @@
-import type { CaipAssetType } from '@metamask/utils';
+import type { CaipAssetType, CaipAssetTypeOrId } from '@metamask/utils';
 
 /**
  * The market data for a fungible asset.
@@ -27,15 +27,62 @@ export type FungibleAssetMarketData = {
 };
 
 /**
+ * An asset value, which includes the asset type and the amount.
+ *
+ * @property asset - The CAIP-19 asset type or ID of the asset.
+ * @property amount - The pice represented as a number in string format.
+ */
+export type AssetValue = {
+  asset: CaipAssetTypeOrId;
+  amount: string;
+};
+
+/**
+ * The market data for a non-fungible asset.
+ *
+ * @property fungible - Indicates that this is a non-fungible asset.
+ * This is always `false` for non-fungible assets.
+ * @property lastSale - The last sale price of the asset, if available. See {@link AssetValue}.
+ * @property topBid - The top bid price for the asset, if available. See {@link AssetValue}.
+ * @property floorPrice - The floor price of the asset, if available. See {@link AssetValue}.
+ * @property rarity - The rarity information for the asset, if available.
+ * @property rarity.ranking - The ranking of the asset's rarity, if available.
+ * @property rarity.ranking.source - The source of the rarity ranking.
+ * @property rarity.ranking.rank - The rank of the asset in the rarity ranking.
+ * @property rarity.metadata - Additional metadata about the asset's rarity, if available.
+ * This is a record of string keys and number values.
+ */
+export type NonFungibleAssetMarketData = {
+  fungible: false;
+  lastSale?: AssetValue;
+  topBid?: AssetValue;
+  floorPrice?: AssetValue;
+  rarity?: {
+    ranking?: {
+      source: string;
+      rank: number;
+    };
+    metadata?: Record<string, number>;
+  };
+};
+
+/**
+ * The market data for an asset, which can be either fungible or non-fungible.
+ */
+export type AssetMarketData =
+  | FungibleAssetMarketData
+  | NonFungibleAssetMarketData;
+
+/**
  * The arguments for the `onAssetsMarketData` handler.
  *
  * @property assets - An array of objects containing the asset and unit types.
- * @property assets.asset - The CAIP-19 asset type of the asset.
+ * @property assets.asset - The CAIP-19 asset type or ID of the asset.
  * @property assets.unit - The CAIP-19 asset type of the unit to use.
  */
 export type OnAssetsMarketDataArguments = {
   assets: {
-    asset: CaipAssetType;
+    asset: CaipAssetTypeOrId;
     unit: CaipAssetType;
   }[];
 };
@@ -54,11 +101,11 @@ export type OnAssetsMarketDataHandler = (
 /**
  * The response from the market data query, containing market data for the requested assets.
  *
- * @property marketData - A nested object with two CAIP-19 keys that contains a {@link FungibleAssetMarketData} object or null between the two keys.
+ * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketData} object or null between the two keys.
  */
 export type OnAssetsMarketDataResponse = {
   marketData: Record<
-    CaipAssetType,
-    Record<CaipAssetType, FungibleAssetMarketData | null>
+    CaipAssetTypeOrId,
+    Record<CaipAssetType, AssetMarketData | null>
   >;
 };
