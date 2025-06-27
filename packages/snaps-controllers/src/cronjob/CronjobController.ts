@@ -415,6 +415,13 @@ export class CronjobController extends BaseController<
       return;
     }
 
+    // When an event is supposed to be scheduled close to the current time
+    // we may end up needing to execute immediately instead.
+    if (ms <= 0) {
+      this.#execute(event);
+      return;
+    }
+
     const timer = new Timer(ms);
     timer.start(() => {
       this.#execute(event);

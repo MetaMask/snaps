@@ -443,6 +443,54 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
+  it('handles scheduled event close to current time gracefully', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      state: {
+        events: {
+          foo: {
+            id: 'foo',
+            recurring: false,
+            date: '2022-01-01T00:00:01.000Z',
+            schedule: '2022-01-01T00:00:01.000Z',
+            scheduledAt: new Date().toISOString(),
+            snapId: MOCK_SNAP_ID,
+            request: {
+              method: 'handleEvent',
+              params: ['p1'],
+            },
+          },
+        },
+      },
+    });
+
+    rootMessenger.subscribe('CronjobController:stateChange', () => {
+      jest.advanceTimersByTime(inMilliseconds(2, Duration.Second));
+    });
+
+    cronjobController.init();
+
+    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      1,
+      'SnapController:handleRequest',
+      {
+        snapId: MOCK_SNAP_ID,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnCronjob,
+        request: {
+          method: 'handleEvent',
+          params: ['p1'],
+        },
+      },
+    );
+
+    cronjobController.destroy();
+  });
+
   it('handles the `snapInstalled` event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
