@@ -1,6 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 
-import { createPreinstalledSnapsMiddleware } from './middleware';
+import { createPreinstalledSnapsMiddleware } from './preinstalled-snaps';
 import { SnapEndowments } from '../endowments';
 
 describe('createPreinstalledSnapsMiddleware', () => {
