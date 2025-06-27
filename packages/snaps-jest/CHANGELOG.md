@@ -9,10 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.2.0]
 
-### Uncategorized
+### Added
 
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- feat: Add support for `AssetSelector` and `AccountSelector` in `snaps-jest` ([#3462](https://github.com/MetaMask/snaps/pull/3462))
+- Add support for `AssetSelector` and `AccountSelector` ([#3462](https://github.com/MetaMask/snaps/pull/3462))
 
 ## [9.1.0]
 

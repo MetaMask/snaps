@@ -9,14 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.2.0]
 
-### Uncategorized
-
-- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- fix: typos in function and comments ([#3467](https://github.com/MetaMask/snaps/pull/3467))
-
 ### Added
 
+- Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
 - Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
 
 ## [13.1.0]

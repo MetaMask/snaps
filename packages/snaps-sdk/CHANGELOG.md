@@ -9,16 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.0.0]
 
-### Uncategorized
-
-- feat!: Add `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
-- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-
 ### Added
 
+- Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
 - **BREAKING:** Market data is now fetched through `onAssetsMarketData` instead
-  of `onAssetConversion`
+  of `onAssetConversion` ([#3496](https://github.com/MetaMask/snaps/pull/3496))
   - Previously, `onAssetConversion` could return a `marketData` property, which
     contained market data for the asset being converted. This property
     has been removed, and `onAssetsMarketData` should be used instead.

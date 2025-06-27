@@ -9,19 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.0.0]
 
-### Uncategorized
-
-- feat!: Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- chore(dev-deps): Bump `tsx` from `^4.19.1` to `^4.20.3` ([#3500](https://github.com/MetaMask/snaps/pull/3500))
-- fix: Minor Typo Fixes in Comments ([#3471](https://github.com/MetaMask/snaps/pull/3471))
-- chore(devex): Add thresholds to coverage script and log coverage for merged report ([#3460](https://github.com/MetaMask/snaps/pull/3460))
-- fix: Fix typos in documentation and code comments ([#3469](https://github.com/MetaMask/snaps/pull/3469))
-- fix: typos in function and comments ([#3467](https://github.com/MetaMask/snaps/pull/3467))
-
 ### Added
 
 - Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
+
+### Changed
+
+- **BREAKING** Move `CronjobController` init to separate function ([#3507](https://github.com/MetaMask/snaps/pull/3507))
 
 ## [13.1.1]
 
