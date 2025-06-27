@@ -1,7 +1,9 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
   },
   "include": ["./src", "./src/**/*.json", "package.json"],
   "references": [{ "path": "../snaps-cli" }, { "path": "../snaps-utils" }]

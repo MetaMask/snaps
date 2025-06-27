@@ -1,0 +1,7 @@
+{
+  "name": "{{ packageName }}",
+  "version": "0.0.0",
+  "dependencies": {
+    "@metamask/snaps-sdk": "^8.1.0"
+  }
+}

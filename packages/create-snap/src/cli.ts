@@ -1,34 +1,24 @@
+import { assert } from '@metamask/utils';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import builders from './builders';
-import { init } from './cmds';
+import { create } from './create.js';
 
 /**
- * The main CLI entry point function. This processes the command line args, and
- * runs the appropriate function.
  *
- * @param argv - The raw command line arguments, i.e., `process.argv`.
- * @param initCommand - Optional specification for init command.
  */
-export async function cli(
-  argv: string[],
-  initCommand: typeof init = init,
-): Promise<void> {
-  await yargs(hideBin(argv))
-    .scriptName('create-snap')
-    .usage('Usage: $0 [directory-name]')
-
-    .example(
-      '$0 my-new-snap',
-      `\tInitialize a snap project in the 'my-new-snap' directory`,
-    )
-    .command(initCommand)
-
-    .option('verboseErrors', builders.verboseErrors)
-
-    .strict()
+export function main() {
+  const argv = yargs(hideBin(process.argv))
+    .usage('$0 [snap-name] [options]')
     .help()
     .alias('help', 'h')
-    .parseAsync();
+    .version()
+    .alias('version', 'v')
+    .parseSync();
+
+  const snapName = argv._[0];
+  assert(snapName, 'Snap name is required.');
+
+  console.log(`Creating Snap with name: ${snapName}`);
+  create();
 }

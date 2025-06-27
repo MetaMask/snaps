@@ -2,6 +2,7 @@
   "name": "@metamask/create-snap",
   "version": "4.0.4",
   "description": "A CLI for creating MetaMask Snaps",
+  "type": "module",
   "keywords": [
     "MetaMask",
     "Snaps",
@@ -61,6 +62,15 @@
   },
   "dependencies": {
     "@metamask/snaps-utils": "workspace:^",
+    "@metamask/superstruct": "^3.2.1",
+    "@metamask/utils": "^11.4.0",
+    "execa": "^9.6.0",
+    "ink": "^6.0.0",
+    "ink-link": "^4.1.0",
+    "ink-select-input": "^6.2.0",
+    "ink-text-input": "^6.0.0",
+    "jotai": "^2.12.5",
+    "react": "^19.1.0",
     "semver": "^7.5.4",
     "yargs": "^17.7.1"
   },
@@ -72,6 +82,7 @@
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
+    "@types/react": "^19",
     "@types/yargs": "^17.0.24",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
