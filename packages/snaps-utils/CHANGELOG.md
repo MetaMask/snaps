@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0]
+
+### Added
+
 - **BREAKING:** Market data is now fetched through `onAssetsMarketData` instead
-  of `onAssetConversion`
+  of `onAssetConversion` ([#3496](https://github.com/MetaMask/snaps/pull/3496))
   - Previously, `onAssetConversion` could return a `marketData` property, which
     contained market data for the asset being converted. This property
     has been removed, and `onAssetsMarketData` should be used instead.
   - The `MarketDataStruct` is now replaced by the `FungibleAssetMarketDataStruct` struct.
+- Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
 
 ## [10.1.0]
 
@@ -655,7 +660,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.0.0...HEAD
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.1.0...@metamask/snaps-utils@11.0.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.0.0...@metamask/snaps-utils@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...@metamask/snaps-utils@10.0.0
 [9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.3.0...@metamask/snaps-utils@9.4.0

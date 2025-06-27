@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.25.0]
+
+### Added
+
+- Add `snap_trackError` method example in preinstalled example Snap ([#3498](https://github.com/MetaMask/snaps/pull/3498))
+- Add URL input to Websocket example Snap ([#3506](https://github.com/MetaMask/snaps/pull/3506))
+
+### Fixed
+
+- Move WebSocket controls to new line ([#3473](https://github.com/MetaMask/snaps/pull/3473))
+
 ## [2.24.0]
 
 ### Added
@@ -353,7 +364,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.24.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.25.0...HEAD
+[2.25.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.24.0...@metamask/test-snaps@2.25.0
 [2.24.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.1...@metamask/test-snaps@2.24.0
 [2.23.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.0...@metamask/test-snaps@2.23.1
 [2.23.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.22.0...@metamask/test-snaps@2.23.0

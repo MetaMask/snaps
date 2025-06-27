@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0]
+
+### Uncategorized
+
+### Changed
+
+- Use the new `AccountSelector` and `AssetSelector` component ([#3462](https://github.com/MetaMask/snaps/pull/3462))
+
 ## [1.1.2]
 
 ### Fixed
@@ -31,7 +39,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of the `@metamask/send-flow-example-snap` example.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.2.0...HEAD
+[1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.2...@metamask/send-flow-example-snap@1.2.0
 [1.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.1...@metamask/send-flow-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.0...@metamask/send-flow-example-snap@1.1.1
 [1.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.0.0...@metamask/send-flow-example-snap@1.1.0

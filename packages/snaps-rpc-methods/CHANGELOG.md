@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.2.0]
+
+### Added
+
+- Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
 - Add support for `onAssetsMarketData` handler ([#3496](https://github.com/MetaMask/snaps/pull/3496))
 
 ## [13.1.0]
@@ -464,7 +469,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.2.0...HEAD
+[13.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.1.0...@metamask/snaps-rpc-methods@13.2.0
 [13.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.0.0...@metamask/snaps-rpc-methods@13.1.0
 [13.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.4.0...@metamask/snaps-rpc-methods@13.0.0
 [12.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@12.3.0...@metamask/snaps-rpc-methods@12.4.0
