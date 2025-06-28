@@ -148,20 +148,18 @@ module.exports = defineConfig({
 
         // All non-root package must have valid "changelog:update" and
         // "changelog:validate" scripts.
-        expectWorkspaceField(
-          workspace,
-          'scripts.changelog:validate',
-          `${getRelativePath(workspace, 'scripts/validate-changelog.sh')} ${
-            workspace.manifest.name
-          }`,
-        );
-        expectWorkspaceField(
-          workspace,
-          'scripts.changelog:validate',
-          `${getRelativePath(workspace, 'scripts/validate-changelog.sh')} ${
-            workspace.manifest.name
-          }`,
-        );
+        if (
+          workspace.cwd !== 'packages/examples' &&
+          workspace.cwd !== 'packages/examples/packages/invoke-snap'
+        ) {
+          expectWorkspaceField(
+            workspace,
+            'scripts.changelog:validate',
+            `${getRelativePath(workspace, 'scripts/validate-changelog.sh')} ${
+              workspace.manifest.name
+            }`,
+          );
+        }
 
         // All non-root packages must have a valid "since-latest-release" script.
         expectWorkspaceField(

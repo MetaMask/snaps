@@ -126,6 +126,8 @@ jobs:
           is-high-risk-environment: false
       - name: Lint
         run: yarn lint
+      - name: Validate changelogs
+        run: yarn changelog:validate
       - name: Require clean working directory
         shell: bash
         run: |
