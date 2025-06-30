@@ -521,6 +521,8 @@ export class CronjobController extends BaseController<
    * @param snap - Basic Snap information.
    */
   readonly #handleSnapInstalledEvent = (snap: TruncatedSnap) => {
+    // In case of local Snaps, they may already have cronjobs that should be cleared.
+    this.unregister(snap.id);
     this.register(snap.id);
   };
 
