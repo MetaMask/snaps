@@ -498,6 +498,22 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      state: {
+        events: {
+          [`cronjob-${MOCK_SNAP_ID}-0`]: {
+            id: `cronjob-${MOCK_SNAP_ID}-0`,
+            recurring: true,
+            date: '2022-01-01T00:01:00.000Z',
+            schedule: '* * * * *',
+            scheduledAt: '2022-01-01T00:00:00.000Z',
+            snapId: MOCK_SNAP_ID,
+            request: {
+              method: 'exampleMethodTwo',
+              params: ['p1'],
+            },
+          },
+        },
+      },
     });
 
     cronjobController.init();
@@ -532,6 +548,8 @@ describe('CronjobController', () => {
         },
       },
     );
+
+    expect(rootMessenger.call).toHaveBeenCalledTimes(2);
 
     cronjobController.destroy();
   });
