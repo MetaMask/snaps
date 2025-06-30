@@ -549,6 +549,8 @@ describe('CronjobController', () => {
       },
     );
 
+    expect(rootMessenger.call).toHaveBeenCalledTimes(2);
+
     cronjobController.destroy();
   });
 
