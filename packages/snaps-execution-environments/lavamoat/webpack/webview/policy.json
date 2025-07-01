@@ -99,8 +99,14 @@
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
         "eslint>debug": true,
+        "@metamask/utils>lodash.memoize": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true
       }
     },
     "@metamask/providers>extension-port-stream>readable-stream>buffer": {
