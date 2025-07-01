@@ -365,6 +365,14 @@ const config = createConfig([
       'import-x/no-unresolved': 'off',
     },
   },
+
+  // ESM
+  {
+    files: ['packages/create-snap/src/**'],
+    rules: {
+      'import-x/no-useless-path-segments': 'off',
+    },
+  },
 ]);
 
 export default config;

@@ -1,12 +1,12 @@
 import type { FunctionComponent } from 'react';
 
-import { Fullscreen } from './components';
-import { Install } from './features/install/Install.js';
+import { Fullscreen } from './components/index.js';
+import { InstallFlow } from './features/install-flow/InstallFlow.js';
 
 export const App: FunctionComponent = () => {
   return (
     <Fullscreen>
-      <Install />
+      <InstallFlow />
     </Fullscreen>
   );
 };

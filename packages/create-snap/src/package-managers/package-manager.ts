@@ -1,4 +1,5 @@
 import { npm } from './npm.js';
+import { pnpm } from './pnpm.js';
 import { yarn } from './yarn.js';
 
 export type PackageManager = {
@@ -15,6 +16,7 @@ export type PackageManager = {
 
 export const PACKAGE_MANAGERS = {
   npm,
+  pnpm,
   yarn,
 } as const;
 

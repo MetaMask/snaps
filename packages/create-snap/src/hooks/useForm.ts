@@ -1,8 +1,8 @@
 import { validate } from '@metamask/superstruct';
-import type { Struct, ObjectType } from '@metamask/superstruct';
+import type { Struct, StructSchema } from '@metamask/superstruct';
 import { useState } from 'react';
 
-import type { InputProps } from '../components';
+import type { InputProps } from '../components/index.js';
 
 export type Form<Type> = {
   values: Type;
@@ -16,8 +16,8 @@ export type Form<Type> = {
  * @param schema
  * @param initialValues
  */
-export function useForm<Type>(
-  schema: Struct<Type, ObjectType<Type>>,
+export function useForm<Type extends Record<string, unknown>>(
+  schema: Struct<Type, StructSchema<Type>>,
   initialValues: Partial<Type> = {},
 ): Form<Type> {
   const [values, setValues] = useState<Partial<Type>>(initialValues);
@@ -25,9 +25,14 @@ export function useForm<Type>(
 
   const register = (name: keyof Type): InputProps => {
     return {
-      value: values[name] ?? '',
+      value: (values[name] as string) ?? '',
+
+      /**
+       * Handle the blur event for the input field.
+       */
       onBlur: () => {
-        const fieldSchema = schema.schema[name];
+        // TODO: Figure out the type of `schema.schema` to avoid using `any`.
+        const fieldSchema = (schema.schema as any)[name];
         const [error] = validate(values[name], fieldSchema);
 
         if (error) {
@@ -44,6 +49,11 @@ export function useForm<Type>(
         }
       },
 
+      /**
+       * Handle the change event for the input field.
+       *
+       * @param value - The new value of the input field.
+       */
       onChange: (value: string) => {
         setValues((previousValues) => ({
           ...previousValues,

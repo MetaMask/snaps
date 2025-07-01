@@ -9,7 +9,7 @@ import type { PackageManager } from './package-manager.js';
  * version of Yarn is used.
  */
 export const yarn: PackageManager = {
-  name: 'Yarn',
+  name: 'Yarn (recommended)',
 
   install: async (targetDirectory: string) => {
     await execa('yarn', ['set', 'version', 'stable'], {

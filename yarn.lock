@@ -3146,6 +3146,7 @@ __metadata:
     ink: "npm:^6.0.0"
     ink-link: "npm:^4.1.0"
     ink-select-input: "npm:^6.2.0"
+    ink-spinner: "npm:^5.0.0"
     ink-text-input: "npm:^6.0.0"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
@@ -9217,6 +9218,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cli-spinners@npm:^2.7.0":
+  version: 2.9.2
+  resolution: "cli-spinners@npm:2.9.2"
+  checksum: 10/a0a863f442df35ed7294424f5491fa1756bd8d2e4ff0c8736531d886cec0ece4d85e8663b77a5afaf1d296e3cbbebff92e2e99f52bbea89b667cbe789b994794
+  languageName: node
+  linkType: hard
+
 "cli-truncate@npm:^2.1.0":
   version: 2.1.0
   resolution: "cli-truncate@npm:2.1.0"
@@ -12582,6 +12590,18 @@ __metadata:
     ink: ">=5.0.0"
     react: ">=18.0.0"
   checksum: 10/35c50da68d4561320e68af55fc6b70d48b045f52bdde665051a61abfd6a2da429ec86acd659795f16254c168052035a68253d655d9c975d3acbfebcf4cea4012
+  languageName: node
+  linkType: hard
+
+"ink-spinner@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "ink-spinner@npm:5.0.0"
+  dependencies:
+    cli-spinners: "npm:^2.7.0"
+  peerDependencies:
+    ink: ">=4.0.0"
+    react: ">=18.0.0"
+  checksum: 10/88e547ff56ac8ee31239daef43b03ca2797eb20cc338ad25aba8e8fbe2cb322ea212494f8c545f327d345051be50542e1a27fdee3758a32a1b4a5db5308cad63
   languageName: node
   linkType: hard
 

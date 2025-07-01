@@ -2,9 +2,10 @@ import { object, optional, size, string } from '@metamask/superstruct';
 import { Box, Text } from 'ink';
 import type { FunctionComponent } from 'react';
 
-import { Field, Input } from '../../../components';
+import { Field, Input } from '../../../components/index.js';
 import { useForm } from '../../../hooks/useForm.js';
 import { useFlow } from '../hooks/useFlow.js';
+import type { InstallFlowContext } from '../types.js';
 
 const MetadataSchema = object({
   name: size(string(), 3, Infinity),
@@ -13,14 +14,16 @@ const MetadataSchema = object({
 });
 
 export const Metadata: FunctionComponent = () => {
-  const { context, setContext, next } = useFlow();
-  const { register, submit, errors } = useForm(MetadataSchema);
+  const { context, setContext, next } = useFlow<InstallFlowContext>();
+  const { register, submit, errors } = useForm(
+    MetadataSchema,
+    context.metadata,
+  );
 
   const handleSubmit = () => {
     submit((validatedValues) => {
       setContext({
-        ...context,
-        ...validatedValues,
+        metadata: validatedValues,
       });
 
       next();

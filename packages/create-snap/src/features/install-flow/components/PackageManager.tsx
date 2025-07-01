@@ -1,18 +1,15 @@
-/* eslint-disable import-x/no-useless-path-segments */
-
 import { Box, Text } from 'ink';
 import Link from 'ink-link';
 import SelectInput from 'ink-select-input';
 import type { FunctionComponent, ComponentProps } from 'react';
-import { useState } from 'react';
 
 import { GITHUB_ISSUES_URL } from '../../../constants.js';
-import { useFlow } from '../hooks/useFlow.js';
 import {
   PACKAGE_MANAGERS,
   getPackageManagerByName,
-  yarn,
-} from '../package-managers/index.js';
+} from '../../../package-managers/index.js';
+import { useFlow } from '../hooks/useFlow.js';
+import type { InstallFlowContext } from '../types.js';
 
 type Item<Type> = Parameters<
   Exclude<ComponentProps<typeof SelectInput>['onSelect'], undefined>
@@ -21,16 +18,19 @@ type Item<Type> = Parameters<
 };
 
 export const PackageManager: FunctionComponent = () => {
-  const { context, setContext, next } = useFlow();
+  const { context, setContext, next } = useFlow<InstallFlowContext>();
 
   const items = Object.entries(PACKAGE_MANAGERS).map(([key, { name }]) => ({
     label: name,
     value: key as keyof typeof PACKAGE_MANAGERS,
   }));
 
+  const initialIndex = items.findIndex(
+    (item) => item.label === context.packageManager.name,
+  );
+
   const handleSelect = (item: Item<keyof typeof PACKAGE_MANAGERS>) => {
     setContext({
-      ...context,
       packageManager: getPackageManagerByName(item.value),
     });
 
@@ -44,7 +44,11 @@ export const PackageManager: FunctionComponent = () => {
         <Text color="green">Enter</Text> to continue.
       </Text>
       <Box margin={1}>
-        <SelectInput items={items} onSelect={handleSelect} initialIndex={1} />
+        <SelectInput
+          items={items}
+          onSelect={handleSelect}
+          initialIndex={initialIndex}
+        />
       </Box>
       <Text dimColor={true}>
         If your preferred package manager is not listed, feel free to open an

@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-import { yarn } from './package-managers/yarn.js';
+import { yarn } from '../../package-managers/yarn.js';
 
 export const packageManagerAtom = atom(yarn);
 

@@ -1,8 +1,9 @@
-import { Box } from 'ink';
+import { Box, useInput } from 'ink';
 import type { FunctionComponent } from 'react';
-import { useState, createContext } from 'react';
+import { useEffect, useState, createContext } from 'react';
 
-import { Header } from './Header.js';
+import { FlowHeader } from './FlowHeader.js';
+import { Header } from '../../../components/Header.js';
 
 export type Step = {
   title: string;
@@ -22,7 +23,7 @@ export type FlowContext<Context> = {
   setStep: (step: number) => void;
   next: () => void;
   context: Context;
-  setContext: (context: Context) => void;
+  setContext: (context: Partial<Context>) => void;
 };
 
 export const FlowReactContext = createContext<FlowContext<any>>({
@@ -51,18 +52,42 @@ export const Flow = <Context = Record<string, unknown>,>({
   const [step, setStep] = useState(initialStep);
   const [context, setContext] = useState<Context>(initialContext);
 
-  const { title, component: Component } = steps[step];
+  useEffect(() => {
+    // This is done in `useEffect` to ensure that the context is updated before
+    // the `onSubmit` callback is called, allowing the context to be fully
+    // populated with the latest values.
+    if (step === steps.length && onSubmit) {
+      onSubmit(context);
+    }
+  }, [step, context]);
+
+  const previous = () => {
+    if (step > 0) {
+      setStep((currentStep) => currentStep - 1);
+    }
+  };
+
+  const next = () => {
+    return setStep((currentStep) => currentStep + 1);
+  };
+
+  const setContextWrapper = (newContext: Partial<Context>) => {
+    setContext((previousContext) => ({
+      ...previousContext,
+      ...newContext,
+    }));
+  };
+
+  useInput((_, key) => {
+    if (key.escape) {
+      previous();
+    }
+  });
+
+  const { title, component: Component } = steps[step] ?? {};
   if (!Component) {
     return null;
   }
-
-  const next = () => {
-    if (step < steps.length - 1) {
-      return setStep(step + 1);
-    }
-
-    return onSubmit?.(context);
-  };
 
   return (
     <FlowContextProvider
@@ -72,13 +97,13 @@ export const Flow = <Context = Record<string, unknown>,>({
         setStep,
         next,
         context,
-        setContext,
+        setContext: setContextWrapper,
       }}
     >
       <Box flexDirection="column">
-        <Header currentStep={step} totalSteps={steps.length}>
+        <FlowHeader currentStep={step} totalSteps={steps.length}>
           {title}
-        </Header>
+        </FlowHeader>
         <Component />
       </Box>
     </FlowContextProvider>
