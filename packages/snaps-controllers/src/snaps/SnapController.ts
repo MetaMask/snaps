@@ -3642,7 +3642,13 @@ export class SnapController extends BaseController<
       const result = await withTimeout(handleRpcRequestPromise, timer);
 
       if (result === hasTimedOut) {
-        throw new Error(`${snapId} failed to respond to the request in time.`);
+        const stopping =
+          runtime.stopPromise !== null || !this.isRunning(snapId);
+        throw new Error(
+          stopping
+            ? `${snapId} has been stopped and the request was cancelled.`
+            : `${snapId} failed to respond to the request in time.`,
+        );
       }
 
       await this.#assertSnapRpcResponse(snapId, handlerType, result);
