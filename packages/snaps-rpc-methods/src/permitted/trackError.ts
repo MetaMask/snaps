@@ -117,7 +117,7 @@ function getTrackErrorImplementation(
 }
 
 /**
- * Validates the parameters for the snap_trackEvent method.
+ * Validate the parameters for the `snap_trackError` method.
  *
  * @param params - Parameters to validate.
  * @returns Validated parameters.

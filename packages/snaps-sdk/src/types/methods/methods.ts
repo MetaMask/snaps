@@ -12,6 +12,7 @@ import type {
   CreateInterfaceResult,
 } from './create-interface';
 import type { DialogParams, DialogResult } from './dialog';
+import type { EndTraceParams, EndTraceResult } from './end-trace';
 import type {
   GetBackgroundEventsParams,
   GetBackgroundEventsResult,
@@ -90,6 +91,7 @@ import type {
   SendWebSocketMessageResult,
 } from './send-web-socket-message';
 import type { SetStateParams, SetStateResult } from './set-state';
+import type { StartTraceParams, StartTraceResult } from './start-trace';
 import type { TrackErrorParams, TrackErrorResult } from './track-error';
 import type { TrackEventParams, TrackEventResult } from './track-event';
 import type {
@@ -106,6 +108,7 @@ export type SnapMethods = {
   /* eslint-disable @typescript-eslint/naming-convention */
   snap_clearState: [ClearStateParams, ClearStateResult];
   snap_dialog: [DialogParams, DialogResult];
+  snap_endTrace: [EndTraceParams, EndTraceResult];
   snap_getBip32Entropy: [GetBip32EntropyParams, GetBip32EntropyResult];
   snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
   snap_getBip44Entropy: [GetBip44EntropyParams, GetBip44EntropyResult];
@@ -141,6 +144,7 @@ export type SnapMethods = {
   ];
   snap_resolveInterface: [ResolveInterfaceParams, ResolveInterfaceResult];
   snap_setState: [SetStateParams, SetStateResult];
+  snap_startTrace: [StartTraceParams, StartTraceResult];
   snap_trackEvent: [TrackEventParams, TrackEventResult];
   snap_trackError: [TrackErrorParams, TrackErrorResult];
   snap_openWebSocket: [OpenWebSocketParams, OpenWebSocketResult];

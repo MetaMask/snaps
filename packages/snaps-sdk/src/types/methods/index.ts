@@ -1,6 +1,7 @@
 export type * from './clear-state';
 export type * from './create-interface';
 export * from './dialog';
+export type * from './end-trace';
 export type * from './get-bip32-entropy';
 export type * from './get-bip32-public-key';
 export type * from './get-bip44-entropy';
@@ -23,6 +24,7 @@ export type * from './methods';
 export * from './notify';
 export type * from './provider-request';
 export type * from './request-snaps';
+export type * from './start-trace';
 export type * from './update-interface';
 export type * from './resolve-interface';
 export type * from './schedule-background-event';
