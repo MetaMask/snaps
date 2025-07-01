@@ -1947,7 +1947,7 @@ describe('SnapController', () => {
     expect(results[0].status).toBe('fulfilled');
     expect(results[1].status).toBe('rejected');
     expect((results[1] as PromiseRejectedResult).reason.message).toBe(
-      `${snap.id} has been stopped and the request was cancelled.`,
+      `${snap.id} was stopped and the request was cancelled. This is likely because the Snap crashed.`,
     );
 
     snapController.destroy();

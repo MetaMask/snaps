@@ -3646,7 +3646,7 @@ export class SnapController extends BaseController<
           runtime.stopPromise !== null || !this.isRunning(snapId);
         throw new Error(
           stopping
-            ? `${snapId} has been stopped and the request was cancelled.`
+            ? `${snapId} was stopped and the request was cancelled. This is likely because the Snap crashed.`
             : `${snapId} failed to respond to the request in time.`,
         );
       }
