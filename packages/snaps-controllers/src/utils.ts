@@ -470,3 +470,14 @@ export function isTrackableHandler(
 ): handler is TrackableHandler {
   return TRACKABLE_HANDLERS.includes(handler as TrackableHandler);
 }
+
+/**
+ * Checks if the given Snap ID is a local Snap ID. This assumes the Snap ID is
+ * validated before calling this function, as it only checks the prefix.
+ *
+ * @param snapId - The Snap ID to check.
+ * @returns True if the Snap ID is a local Snap ID, false otherwise.
+ */
+export function isLocalSnapId(snapId: SnapId): boolean {
+  return snapId.startsWith('local:');
+}

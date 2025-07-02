@@ -187,6 +187,7 @@ import {
   throttleTracking,
   withTimeout,
   isTrackableHandler,
+  isLocalSnapId,
 } from '../utils';
 
 export const controllerName = 'SnapController';
@@ -700,6 +701,14 @@ type FeatureFlags = {
   disableSnapInstallation?: boolean;
   rejectInvalidPlatformVersion?: boolean;
   useCaip25Permission?: boolean;
+
+  /**
+   * Force any local Snap to be treated as a preinstalled Snap.
+   *
+   * This should only be used for local testing, and should not be enabled in
+   * any production builds (including beta and Flask).
+   */
+  forcePreinstalledSnaps?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -2987,11 +2996,21 @@ export class SnapController extends BaseController<
 
       this.#transition(snapId, SnapStatusEvents.Update);
 
+      const preinstalledArgs =
+        this.#featureFlags.forcePreinstalledSnaps && isLocalSnapId(snapId)
+          ? {
+              preinstalled: true,
+              hideSnapBranding: false,
+              hidden: false,
+            }
+          : {};
+
       this.#set({
         origin,
         id: snapId,
         files: newSnap,
         isUpdate: true,
+        ...preinstalledArgs,
       });
 
       this.#updatePermissions({
@@ -3117,10 +3136,20 @@ export class SnapController extends BaseController<
           platformVersion: manifest.platformVersion,
         });
 
+        const preinstalledArgs =
+          this.#featureFlags.forcePreinstalledSnaps && isLocalSnapId(snapId)
+            ? {
+                preinstalled: true,
+                hideSnapBranding: false,
+                hidden: false,
+              }
+            : {};
+
         return this.#set({
           ...args,
           files: fetchedSnap,
           id: snapId,
+          ...preinstalledArgs,
         });
       })();
     }
