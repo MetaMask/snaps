@@ -2,6 +2,7 @@ import { cancelBackgroundEventHandler } from './cancelBackgroundEvent';
 import { clearStateHandler } from './clearState';
 import { closeWebSocketHandler } from './closeWebSocket';
 import { createInterfaceHandler } from './createInterface';
+import { endTraceHandler } from './endTrace';
 import { providerRequestHandler } from './experimentalProviderRequest';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getBackgroundEventsHandler } from './getBackgroundEvents';
@@ -22,6 +23,7 @@ import { resolveInterfaceHandler } from './resolveInterface';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 import { sendWebSocketMessageHandler } from './sendWebSocketMessage';
 import { setStateHandler } from './setState';
+import { startTraceHandler } from './startTrace';
 import { trackErrorHandler } from './trackError';
 import { trackEventHandler } from './trackEvent';
 import { updateInterfaceHandler } from './updateInterface';
@@ -55,6 +57,8 @@ export const methodHandlers = {
   snap_closeWebSocket: closeWebSocketHandler,
   snap_sendWebSocketMessage: sendWebSocketMessageHandler,
   snap_getWebSockets: getWebSocketsHandler,
+  snap_startTrace: startTraceHandler,
+  snap_endTrace: endTraceHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
