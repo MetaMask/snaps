@@ -6,10 +6,12 @@ import type { TerminateJobArgs } from '..';
 import { AbstractExecutionService } from '..';
 
 export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
-  protected async initEnvStream(): Promise<{
+  protected async initEnvStream(snapId: string): Promise<{
     worker: Worker;
     stream: BasePostMessageStream;
   }> {
+    this.setSnapStatus(snapId, 'initializing');
+
     const worker = new Worker(
       require.resolve('@metamask/snaps-execution-environments/node-thread'),
       {

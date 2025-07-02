@@ -37,6 +37,8 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     worker: Window;
     stream: BasePostMessageStream;
   }> {
+    this.setSnapStatus(snapId, 'initializing');
+
     const iframeWindow = await createWindow({
       uri: this.iframeUrl.toString(),
       id: snapId,
