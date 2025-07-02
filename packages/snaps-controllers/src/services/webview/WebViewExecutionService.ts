@@ -40,6 +40,8 @@ export class WebViewExecutionService extends AbstractExecutionService<WebViewInt
    * @returns An object with the webview and stream.
    */
   protected async initEnvStream(snapId: string) {
+    this.setSnapStatus(snapId, 'initializing');
+
     const webView = await this.#createWebView(snapId);
 
     const stream = new WebViewMessageStream({

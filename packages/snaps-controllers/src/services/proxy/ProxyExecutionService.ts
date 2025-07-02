@@ -71,6 +71,8 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
    * @returns An object with the worker ID and stream.
    */
   protected async initEnvStream(snapId: string) {
+    this.setSnapStatus(snapId, 'initializing');
+
     const stream = new ProxyPostMessageStream({
       stream: this.#stream,
       jobId: snapId,

@@ -58,10 +58,12 @@ describe('AbstractExecutionService', () => {
       `,
         endowments: ['console'],
       }),
-    ).rejects.toThrow('The Snaps execution environment failed to start.');
+    ).rejects.toThrow(
+      'The executor for "npm:@metamask/example-snap" was unreachable. The executor did not respond in time.',
+    );
   });
 
-  it('throws an error if execution environment fails to init', async () => {
+  it('throws an error if execution environment fails to start initialization', async () => {
     const { service } = createService(MockExecutionService);
 
     // @ts-expect-error Accessing private property and returning unusable worker.
@@ -78,7 +80,33 @@ describe('AbstractExecutionService', () => {
       `,
         endowments: ['console'],
       }),
-    ).rejects.toThrow('The Snaps execution environment failed to start.');
+    ).rejects.toThrow(
+      `The executor for "npm:@metamask/example-snap" couldn't start initialization. The offscreen document may not exist.`,
+    );
+  });
+
+  it('throws an error if execution environment fails to init', async () => {
+    const { service } = createService(MockExecutionService);
+
+    // @ts-expect-error Accessing private property and returning unusable worker.
+    service.initEnvStream = async (snapId: string) =>
+      new Promise((_resolve) => {
+        // @ts-expect-error Accessing private property to mirror updating state
+        service.setSnapStatus(snapId, 'initializing');
+        // no-op
+      });
+
+    await expect(
+      service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `
+        console.log('foo');
+      `,
+        endowments: ['console'],
+      }),
+    ).rejects.toThrow(
+      'The executor for "npm:@metamask/example-snap" failed to initialize. The iframe/webview/worker failed to load.',
+    );
   });
 
   it('throws an error if Snap fails to init', async () => {

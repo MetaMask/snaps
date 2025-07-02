@@ -60,6 +60,21 @@ export type Job<WorkerType> = {
 export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
   Pick<Job<WorkerType>, 'id'>;
 
+/** 
+  Statuses used for diagnostic purposes
+  - created: The initial state, no initialization has started 
+  - initializing: Snap execution environment is initializing
+  - initialized: Snap execution environment has initialized
+  - executing: Snap source code is being executed
+  - running: Snap executed and ready for RPC requests
+ */
+type ExecutionStatus =
+  | 'created'
+  | 'initializing'
+  | 'initialized'
+  | 'executing'
+  | 'running';
+
 export abstract class AbstractExecutionService<WorkerType>
   implements ExecutionService
 {
@@ -68,6 +83,8 @@ export abstract class AbstractExecutionService<WorkerType>
   state = null;
 
   readonly #jobs: Map<string, Job<WorkerType>>;
+
+  readonly #status: Map<string, ExecutionStatus>;
 
   readonly #setupSnapProvider: SetupSnapProvider;
 
@@ -90,6 +107,7 @@ export abstract class AbstractExecutionService<WorkerType>
     usePing = true,
   }: ExecutionServiceArgs) {
     this.#jobs = new Map();
+    this.#status = new Map();
     this.#setupSnapProvider = setupSnapProvider;
     this.#messenger = messenger;
     this.#initTimeout = initTimeout;
@@ -186,6 +204,7 @@ export abstract class AbstractExecutionService<WorkerType>
     this.terminateJob(job);
 
     this.#jobs.delete(snapId);
+    this.#status.delete(snapId);
     log(`Snap "${snapId}" terminated.`);
   }
 
@@ -244,7 +263,17 @@ export abstract class AbstractExecutionService<WorkerType>
     if (result === hasTimedOut) {
       // For certain environments, such as the iframe we may have already created the worker and wish to terminate it.
       this.terminateJob({ id: snapId });
-      throw new Error('The Snaps execution environment failed to start.');
+
+      const status = this.#status.get(snapId);
+      if (status === 'created') {
+        // Currently this error can only be thrown by OffscreenExecutionService.
+        throw new Error(
+          `The executor for "${snapId}" couldn't start initialization. The offscreen document may not exist.`,
+        );
+      }
+      throw new Error(
+        `The executor for "${snapId}" failed to initialize. The iframe/webview/worker failed to load.`,
+      );
     }
 
     const { worker, stream: envStream } = result;
@@ -307,6 +336,16 @@ export abstract class AbstractExecutionService<WorkerType>
     stream: BasePostMessageStream;
   }>;
 
+  /**
+   * Set the execution status of the Snap.
+   *
+   * @param snapId - The Snap ID.
+   * @param status - The current execution status.
+   */
+  protected setSnapStatus(snapId: string, status: ExecutionStatus) {
+    this.#status.set(snapId, status);
+  }
+
   async terminateAllSnaps() {
     await Promise.all(
       [...this.#jobs.keys()].map(async (snapId) => this.terminateSnap(snapId)),
@@ -332,6 +371,8 @@ export abstract class AbstractExecutionService<WorkerType>
       throw new Error(`"${snapId}" is already running.`);
     }
 
+    this.setSnapStatus(snapId, 'created');
+
     const timer = new Timer(this.#initTimeout);
 
     // This may resolve even if the environment has failed to start up fully
@@ -350,7 +391,9 @@ export abstract class AbstractExecutionService<WorkerType>
       );
 
       if (pingResult === hasTimedOut) {
-        throw new Error('The Snaps execution environment failed to start.');
+        throw new Error(
+          `The executor for "${snapId}" was unreachable. The executor did not respond in time.`,
+        );
       }
     }
 
@@ -362,6 +405,8 @@ export abstract class AbstractExecutionService<WorkerType>
     // Snap gets at least half the init timeout.
     const remainingTime = Math.max(timer.remaining, this.#initTimeout / 2);
 
+    this.setSnapStatus(snapId, 'initialized');
+
     const request = {
       jsonrpc: '2.0',
       method: 'executeSnap',
@@ -371,6 +416,8 @@ export abstract class AbstractExecutionService<WorkerType>
 
     assertIsJsonRpcRequest(request);
 
+    this.setSnapStatus(snapId, 'executing');
+
     const result = await withTimeout(
       this.#command(job.id, request),
       remainingTime,
@@ -378,6 +425,10 @@ export abstract class AbstractExecutionService<WorkerType>
 
     if (result === hasTimedOut) {
       throw new Error(`${snapId} failed to start.`);
+    }
+
+    if (result === 'OK') {
+      this.setSnapStatus(snapId, 'running');
     }
 
     return result as string;

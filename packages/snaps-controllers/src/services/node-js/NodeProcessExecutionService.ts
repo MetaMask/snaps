@@ -7,10 +7,12 @@ import type { TerminateJobArgs } from '..';
 import { AbstractExecutionService } from '..';
 
 export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
-  protected async initEnvStream(): Promise<{
+  protected async initEnvStream(snapId: string): Promise<{
     worker: ChildProcess;
     stream: BasePostMessageStream;
   }> {
+    this.setSnapStatus(snapId, 'initializing');
+
     const worker = fork(
       require.resolve('@metamask/snaps-execution-environments/node-process'),
       {
