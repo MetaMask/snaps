@@ -265,16 +265,14 @@ export abstract class AbstractExecutionService<WorkerType>
 
       const status = this.#status.get(snapId);
       if (status === 'created') {
+        // Currently this error can only be thrown by OffscreenExecutionService.
         throw new Error(
-          `The executor for ${snapId} couldn't start initialization.`,
+          `The executor for ${snapId} couldn't start initialization. The offscreen document may not exist.`,
         );
       }
-
-      if (status === 'initializing') {
-        throw new Error(`The executor for ${snapId} failed to initialize.`);
-      }
-
-      throw new Error(`The executor for ${snapId} was unreachable.`);
+      throw new Error(
+        `The executor for ${snapId} failed to initialize. The iframe/webview/worker failed to load.`,
+      );
     }
 
     const { worker, stream: envStream } = result;
@@ -392,7 +390,9 @@ export abstract class AbstractExecutionService<WorkerType>
       );
 
       if (pingResult === hasTimedOut) {
-        throw new Error(`The executor for ${snapId} was unreachable.`);
+        throw new Error(
+          `The executor for ${snapId} was unreachable. The executor did not respond in time.`,
+        );
       }
     }
 

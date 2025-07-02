@@ -81,7 +81,7 @@ describe('AbstractExecutionService', () => {
         endowments: ['console'],
       }),
     ).rejects.toThrow(
-      `The executor for npm:@metamask/example-snap couldn't start initialization.`,
+      `The executor for npm:@metamask/example-snap couldn't start initialization. The offscreen document may not exist.`,
     );
   });
 
@@ -105,7 +105,7 @@ describe('AbstractExecutionService', () => {
         endowments: ['console'],
       }),
     ).rejects.toThrow(
-      'The executor for npm:@metamask/example-snap failed to initialize.',
+      'The executor for npm:@metamask/example-snap failed to initialize. The iframe/webview/worker failed to load.',
     );
   });
 
