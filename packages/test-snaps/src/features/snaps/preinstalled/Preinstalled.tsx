@@ -30,6 +30,20 @@ export const Preinstalled: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleStartTrace = () => {
+    invokeSnap({
+      snapId: PREINSTALLED_SNAP_ID,
+      method: 'startTrace',
+    }).catch(logError);
+  };
+
+  const handleEndTrace = () => {
+    invokeSnap({
+      snapId: PREINSTALLED_SNAP_ID,
+      method: 'endTrace',
+    }).catch(logError);
+  };
+
   return (
     <Snap
       name="Preinstalled Snap"
@@ -61,6 +75,24 @@ export const Preinstalled: FunctionComponent = () => {
           onClick={handleSubmitTrackError}
         >
           Track error
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup className="mb-3">
+        <Button
+          variant="primary"
+          id="start-trace"
+          disabled={isLoading}
+          onClick={handleStartTrace}
+        >
+          Start trace
+        </Button>
+        <Button
+          variant="primary"
+          id="end-trace"
+          disabled={isLoading}
+          onClick={handleEndTrace}
+        >
+          End trace
         </Button>
       </ButtonGroup>
       <Result>

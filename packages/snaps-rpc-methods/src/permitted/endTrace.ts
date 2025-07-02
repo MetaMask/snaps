@@ -99,7 +99,9 @@ function getEndTraceImplementation(
 
   try {
     const validatedParams = getValidatedParams(params);
-    response.result = endTrace(validatedParams);
+    endTrace(validatedParams);
+
+    response.result = null;
   } catch (error) {
     return end(error);
   }
