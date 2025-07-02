@@ -268,11 +268,11 @@ export abstract class AbstractExecutionService<WorkerType>
       if (status === 'created') {
         // Currently this error can only be thrown by OffscreenExecutionService.
         throw new Error(
-          `The executor for ${snapId} couldn't start initialization. The offscreen document may not exist.`,
+          `The executor for "${snapId}" couldn't start initialization. The offscreen document may not exist.`,
         );
       }
       throw new Error(
-        `The executor for ${snapId} failed to initialize. The iframe/webview/worker failed to load.`,
+        `The executor for "${snapId}" failed to initialize. The iframe/webview/worker failed to load.`,
       );
     }
 
