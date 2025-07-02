@@ -5,6 +5,7 @@ import type {
   JsonRpcRequest,
   StartTraceParams,
   StartTraceResult,
+  TraceContext,
   TraceRequest,
 } from '@metamask/snaps-sdk';
 import type { InferMatching, Snap } from '@metamask/snaps-utils';
@@ -36,7 +37,7 @@ export type StartTraceMethodHooks = {
    * @param request - The trace request object.
    * @returns The performance trace context.
    */
-  startTrace: (request: TraceRequest) => string;
+  startTrace: (request: TraceRequest) => TraceContext;
 
   /**
    * Get Snap metadata.

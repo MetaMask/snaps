@@ -93,9 +93,6 @@ describe('snap_endTrace', () => {
         params: {
           id: 'test-id',
           name: 'Test Trace',
-          data: { foo: 'bar' },
-          tags: { tag1: 'value1', tag2: 42 },
-          startTime: 1234567890,
         },
       });
 
