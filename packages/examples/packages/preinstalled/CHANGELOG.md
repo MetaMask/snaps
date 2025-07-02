@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0]
+
+### Added
+
+- Add `snap_startTrace` and `snap_endTrace` method examples for performance tracing ([#3519](https://github.com/MetaMask/snaps/pull/3519))
+
 ## [0.5.0]
 
 ### Added
@@ -37,7 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.6.0...HEAD
+[0.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.5.0...@metamask/preinstalled-example-snap@0.6.0
 [0.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.4.0...@metamask/preinstalled-example-snap@0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...@metamask/preinstalled-example-snap@0.4.0
 [0.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.2.0...@metamask/preinstalled-example-snap@0.3.0
