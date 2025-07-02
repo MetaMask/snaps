@@ -358,7 +358,9 @@ export abstract class AbstractExecutionService<WorkerType>
 
     this.#setupSnapProvider(snapId, rpcStream);
 
-    const remainingTime = timer.remaining;
+    // Use the remaining time as the timer, but ensure that the
+    // Snap gets at least half the init timeout.
+    const remainingTime = Math.max(timer.remaining, this.#initTimeout / 2);
 
     const request = {
       jsonrpc: '2.0',
