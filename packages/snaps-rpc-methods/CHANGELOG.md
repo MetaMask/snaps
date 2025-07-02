@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/utils from 11.4.0 to 11.4.1 ([#3516](https://github.com/MetaMask/snaps/pull/3516))
+- feat: Auto grant EVM permissions to preinstalled Snaps ([#3410](https://github.com/MetaMask/snaps/pull/3410))
+
 ## [13.2.0]
 
 ### Added

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Improve executor error messaging ([#3521](https://github.com/MetaMask/snaps/pull/3521))
+- fix: Ensure Snap gets half of allocated init time ([#3522](https://github.com/MetaMask/snaps/pull/3522))
+- chore: Bump @metamask/utils from 11.4.0 to 11.4.1 ([#3516](https://github.com/MetaMask/snaps/pull/3516))
+- fix: Show different error message for cancelled requests when Snap is stopped ([#3518](https://github.com/MetaMask/snaps/pull/3518))
+- fix: Clear cronjobs when installing a Snap ([#3514](https://github.com/MetaMask/snaps/pull/3514))
+
 ## [14.0.1]
 
 ### Fixed
