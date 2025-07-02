@@ -32,7 +32,7 @@ export type EndTraceMethodHooks = {
    * @param request - The trace request object.
    * @returns The performance trace context.
    */
-  endTrace: (request: EndTraceRequest) => string;
+  endTrace: (request: EndTraceRequest) => void;
 
   /**
    * Get Snap metadata.
