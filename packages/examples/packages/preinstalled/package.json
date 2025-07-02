@@ -1,6 +1,6 @@
 {
   "name": "@metamask/preinstalled-example-snap",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "MetaMask example snap demonstrating preinstalled Snaps",
   "keywords": [
     "MetaMask",
