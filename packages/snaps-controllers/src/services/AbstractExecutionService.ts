@@ -204,6 +204,7 @@ export abstract class AbstractExecutionService<WorkerType>
     this.terminateJob(job);
 
     this.#jobs.delete(snapId);
+    this.#status.delete(snapId);
     log(`Snap "${snapId}" terminated.`);
   }
 
