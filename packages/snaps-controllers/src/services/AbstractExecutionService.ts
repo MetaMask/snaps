@@ -392,7 +392,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
       if (pingResult === hasTimedOut) {
         throw new Error(
-          `The executor for ${snapId} was unreachable. The executor did not respond in time.`,
+          `The executor for "${snapId}" was unreachable. The executor did not respond in time.`,
         );
       }
     }
