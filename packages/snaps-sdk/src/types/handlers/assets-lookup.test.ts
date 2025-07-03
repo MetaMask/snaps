@@ -1,6 +1,7 @@
 import { is } from '@metamask/superstruct';
 
 import {
+  AssetMetadataStruct,
   FungibleAssetMetadataStruct,
   NonFungibleAssetMetadataStruct,
 } from './assets-lookup';
@@ -176,5 +177,75 @@ describe('NonFungibleAssetMetadataStruct', () => {
     },
   ])('does not validate "%p"', (value) => {
     expect(is(value, NonFungibleAssetMetadataStruct)).toBe(false);
+  });
+});
+
+describe('AssetMetadataStruct', () => {
+  it.each([
+    {
+      fungible: false,
+      name: 'CryptoPunk #3100',
+      symbol: 'PUNK',
+      imageUrl: `data:image/svg+xml;base64,${BTC_ICON_BASE64}`,
+      description: 'A rare CryptoPunk',
+      acquiredAt: 1750941834,
+      isPossibleSpam: false,
+      attributes: {
+        type: 'Alien',
+        accessories: 'Headband',
+        age: 32,
+      },
+      collection: {
+        name: 'CryptoPunks',
+        address: 'eip155:1:0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb',
+        symbol: 'PUNK',
+        tokenCount: 10000,
+        creator: 'eip155:1:0x8c5be1e5e09f6a7b3c0d8f5b4c1e2f5b4c1e2f5',
+        imageUrl: `data:image/svg+xml;base64,${BTC_ICON_BASE64}`,
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      fungible: true,
+      iconUrl: `data:image/svg+xml;base64,${BTC_ICON_BASE64}`,
+      units: [
+        {
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          decimals: 8,
+        },
+      ],
+    },
+  ])('validates an object %p', (value) => {
+    expect(is(value, AssetMetadataStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    {
+      fungible: false,
+      name: 'CryptoPunk #3100',
+      symbol: 'PUNK',
+      imageUrl: 'https://metamask.io/cryptopunk.svg',
+      description: 'A rare CryptoPunk',
+      acquiredAt: 1750941834,
+      isPossibleSpam: false,
+      collection: {},
+    },
+    {
+      fungible: true,
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      iconUrl: 'https://metamask.io/btc.svg',
+      units: [],
+    },
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, AssetMetadataStruct)).toBe(false);
   });
 });

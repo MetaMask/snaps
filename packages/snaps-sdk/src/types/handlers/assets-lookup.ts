@@ -17,6 +17,8 @@ import {
   CaipAccountIdStruct,
   CaipAssetTypeOrIdStruct,
   assert,
+  hasProperty,
+  isObject,
 } from '@metamask/utils';
 import type { CaipAssetTypeOrId } from '@metamask/utils';
 
@@ -78,6 +80,10 @@ export const NonFungibleAssetMetadataStruct = object({
 });
 
 export const AssetMetadataStruct = selectiveUnion((metadata) => {
+  if (!isObject(metadata) || !hasProperty(metadata, 'fungible')) {
+    return union([FungibleAssetMetadataStruct, NonFungibleAssetMetadataStruct]);
+  }
+
   if (metadata.fungible) {
     return FungibleAssetMetadataStruct;
   }

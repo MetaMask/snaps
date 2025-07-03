@@ -9,7 +9,12 @@ import {
   string,
   union,
 } from '@metamask/superstruct';
-import { CaipAssetTypeOrIdStruct, CaipAssetTypeStruct } from '@metamask/utils';
+import {
+  CaipAssetTypeOrIdStruct,
+  CaipAssetTypeStruct,
+  hasProperty,
+  isObject,
+} from '@metamask/utils';
 
 import { ISO8601DurationStruct } from '../time';
 
@@ -67,6 +72,13 @@ export const NonFungibleAssetMarketDataStruct = object({
  * A struct representing the market data for an asset, which can be either fungible or non-fungible.
  */
 export const AssetMarketDataStruct = selectiveUnion((marketData) => {
+  if (!isObject(marketData) || !hasProperty(marketData, 'fungible')) {
+    return union([
+      FungibleAssetMarketDataStruct,
+      NonFungibleAssetMarketDataStruct,
+    ]);
+  }
+
   if (marketData.fungible) {
     return FungibleAssetMarketDataStruct;
   }
