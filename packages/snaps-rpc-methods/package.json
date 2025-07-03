@@ -57,7 +57,7 @@
   "dependencies": {
     "@metamask/key-tree": "^10.1.1",
     "@metamask/permission-controller": "^11.0.6",
-    "@metamask/rpc-errors": "^7.0.2",
+    "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
