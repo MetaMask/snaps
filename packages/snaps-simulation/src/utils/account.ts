@@ -1,5 +1,6 @@
 import type { SnapId } from '@metamask/snaps-sdk';
-import type { SimulationAccount } from 'src/options';
+
+import type { SimulationAccount } from '../options';
 
 export const addSnapMetadataToAccount = (
   account: SimulationAccount,
