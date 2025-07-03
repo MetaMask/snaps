@@ -43,7 +43,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/rpc-errors": "^7.0.2",
+    "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^"
   },
   "devDependencies": {
