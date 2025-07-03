@@ -20,6 +20,8 @@ import {
 } from '@metamask/utils';
 import type { CaipAssetTypeOrId } from '@metamask/utils';
 
+import { selectiveUnion } from '../../internals';
+
 export const FungibleAssetUnitStruct = object({
   name: optional(string()),
   symbol: optional(string()),
@@ -75,10 +77,13 @@ export const NonFungibleAssetMetadataStruct = object({
   collection: optional(NonFungibleAssetCollectionStruct),
 });
 
-export const AssetMetadataStruct = union([
-  FungibleAssetMetadataStruct,
-  NonFungibleAssetMetadataStruct,
-]);
+export const AssetMetadataStruct = selectiveUnion((metadata) => {
+  if (metadata.fungible) {
+    return FungibleAssetMetadataStruct;
+  }
+
+  return NonFungibleAssetMetadataStruct;
+});
 
 export const OnAssetsLookupResponseStruct = object({
   assets: record(CaipAssetTypeOrIdStruct, nullable(AssetMetadataStruct)),

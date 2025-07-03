@@ -1,4 +1,4 @@
-import { nonEmptyRecord } from '@metamask/snaps-sdk';
+import { nonEmptyRecord, selectiveUnion } from '@metamask/snaps-sdk';
 import {
   literal,
   nullable,
@@ -66,10 +66,13 @@ export const NonFungibleAssetMarketDataStruct = object({
 /**
  * A struct representing the market data for an asset, which can be either fungible or non-fungible.
  */
-export const AssetMarketDataStruct = union([
-  FungibleAssetMarketDataStruct,
-  NonFungibleAssetMarketDataStruct,
-]);
+export const AssetMarketDataStruct = selectiveUnion((marketData) => {
+  if (marketData.fungible) {
+    return FungibleAssetMarketDataStruct;
+  }
+
+  return NonFungibleAssetMarketDataStruct;
+});
 
 /**
  * A struct representing the response of the `onAssetsMarketData` method.
