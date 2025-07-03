@@ -50,14 +50,14 @@ import type {
   ComponentOrElement,
   ContentType,
   OnAssetsLookupResponse,
-  FungibleAssetMetadata,
   OnAssetsConversionResponse,
   OnAssetsConversionArguments,
   AssetConversion,
   OnAssetsLookupArguments,
   OnAssetsMarketDataArguments,
-  FungibleAssetMarketData,
   OnAssetsMarketDataResponse,
+  AssetMarketData,
+  AssetMetadata,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -118,6 +118,7 @@ import type {
   JsonRpcRequest,
   Hex,
   SemVerVersion,
+  CaipAssetTypeOrId,
 } from '@metamask/utils';
 import {
   hexToNumber,
@@ -3854,9 +3855,9 @@ export class SnapController extends BaseController<
     const { assets: requestedAssets } = requestedParams;
 
     const filteredAssets = Object.keys(assets).reduce<
-      Record<CaipAssetType, FungibleAssetMetadata | null>
+      Record<CaipAssetType, AssetMetadata | null>
     >((accumulator, assetType) => {
-      const castAssetType = assetType as CaipAssetType;
+      const castAssetType = assetType as CaipAssetTypeOrId;
       const isValid =
         scopes.some((scope) => castAssetType.startsWith(scope)) &&
         requestedAssets.includes(castAssetType);
@@ -3920,7 +3921,7 @@ export class SnapController extends BaseController<
     const { assets: requestedAssets } = requestedParams;
 
     const filteredMarketData = requestedAssets.reduce<
-      Record<CaipAssetType, Record<CaipAssetType, FungibleAssetMarketData>>
+      Record<CaipAssetTypeOrId, Record<CaipAssetType, AssetMarketData | null>>
     >((accumulator, assets) => {
       const result = marketData[assets.asset]?.[assets.unit];
       // Only include rates that were actually requested.

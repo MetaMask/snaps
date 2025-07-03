@@ -76,7 +76,7 @@ export const AssetMarketDataStruct = union([
  */
 export const OnAssetsMarketDataResponseStruct = object({
   marketData: record(
-    CaipAssetTypeStruct,
+    CaipAssetTypeOrIdStruct,
     record(CaipAssetTypeStruct, nullable(AssetMarketDataStruct)),
   ),
 });

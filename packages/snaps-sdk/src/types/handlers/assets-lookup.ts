@@ -15,10 +15,10 @@ import {
 } from '@metamask/superstruct';
 import {
   CaipAccountIdStruct,
-  CaipAssetTypeStruct,
+  CaipAssetTypeOrIdStruct,
   assert,
 } from '@metamask/utils';
-import type { CaipAssetTypeOrId, CaipAssetType } from '@metamask/utils';
+import type { CaipAssetTypeOrId } from '@metamask/utils';
 
 export const FungibleAssetUnitStruct = object({
   name: optional(string()),
@@ -81,7 +81,7 @@ export const AssetMetadataStruct = union([
 ]);
 
 export const OnAssetsLookupResponseStruct = object({
-  assets: record(CaipAssetTypeStruct, nullable(AssetMetadataStruct)),
+  assets: record(CaipAssetTypeOrIdStruct, nullable(AssetMetadataStruct)),
 });
 
 /**
@@ -126,5 +126,5 @@ export type OnAssetsLookupHandler = (
  * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object or null.
  */
 export type OnAssetsLookupResponse = {
-  assets: Record<CaipAssetType, AssetMetadata | null>;
+  assets: Record<CaipAssetTypeOrId, AssetMetadata | null>;
 };
