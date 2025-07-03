@@ -10,7 +10,10 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { CaipAssetType, CaipChainId } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
-import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
+import {
+  getSnapManifest,
+  MOCK_SNAP_ID,
+} from '@metamask/snaps-utils/test-utils';
 
 import { DEFAULT_SRP } from './constants';
 import {
@@ -26,6 +29,7 @@ import {
   getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from './test-utils';
+import { addSnapMetadataToAccount } from './utils/account';
 
 describe('installSnap', () => {
   it('installs a Snap and returns the execution service', async () => {
@@ -693,7 +697,7 @@ describe('registerActions', () => {
   const controllerMessenger = getRootControllerMessenger(false);
 
   it('registers `PhishingController:testOrigin`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     expect(
       controllerMessenger.call('PhishingController:testOrigin', 'foo'),
@@ -701,7 +705,7 @@ describe('registerActions', () => {
   });
 
   it('registers `ApprovalController:hasRequest`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     store.dispatch(
       setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
@@ -713,7 +717,7 @@ describe('registerActions', () => {
   });
 
   it('registers `ApprovalController:acceptRequest`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     store.dispatch(
       setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
@@ -729,36 +733,59 @@ describe('registerActions', () => {
   });
 
   it('registers `AccountsController:getAccountByAddress`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     expect(
       controllerMessenger.call(
         'AccountsController:getAccountByAddress',
         mockedAccounts[0].address,
       ),
-    ).toStrictEqual(mockedAccounts[0]);
+    ).toStrictEqual(addSnapMetadataToAccount(mockedAccounts[0], MOCK_SNAP_ID));
+
+    expect(
+      controllerMessenger.call('AccountsController:getAccountByAddress', 'foo'),
+    ).toBeUndefined();
   });
 
   it('registers `AccountsController:getSelectedMultichainAccount`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     expect(
       controllerMessenger.call(
         'AccountsController:getSelectedMultichainAccount',
       ),
-    ).toStrictEqual(mockedAccounts[0]);
+    ).toStrictEqual(addSnapMetadataToAccount(mockedAccounts[0], MOCK_SNAP_ID));
+  });
+
+  it('returns `undefined` in `AccountsController:getSelectedMultichainAccount` if no account is selected', async () => {
+    registerActions(
+      controllerMessenger,
+      runSaga,
+      { ...options, accounts: [] },
+      MOCK_SNAP_ID,
+    );
+
+    expect(
+      controllerMessenger.call(
+        'AccountsController:getSelectedMultichainAccount',
+      ),
+    ).toBeUndefined();
   });
 
   it('registers `AccountsController:listMultichainAccounts`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     expect(
       controllerMessenger.call('AccountsController:listMultichainAccounts'),
-    ).toStrictEqual(mockedAccounts);
+    ).toStrictEqual(
+      mockedAccounts.map((account) =>
+        addSnapMetadataToAccount(account, MOCK_SNAP_ID),
+      ),
+    );
   });
 
   it('registers `MultichainAssetsController:getState`', async () => {
-    registerActions(controllerMessenger, runSaga, options);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
 
     expect(
       controllerMessenger.call('MultichainAssetsController:getState'),

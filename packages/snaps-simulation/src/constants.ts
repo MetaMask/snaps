@@ -40,6 +40,7 @@ export const DEFAULT_ACCOUNTS: SimulationAccount[] = [
     id: '29bc7513-d1b9-4466-98a6-f5f9e0b90137',
     scopes: ['eip155:0'],
     selected: false,
+    owned: false,
     // We don't expose assets for EVM accounts as it's not supported in the AssetSelector.
     assets: [],
   },
@@ -52,6 +53,7 @@ export const DEFAULT_ACCOUNTS: SimulationAccount[] = [
       'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
     ],
     selected: true,
+    owned: true,
     assets: [
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',

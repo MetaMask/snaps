@@ -11,6 +11,7 @@ describe('getOptions', () => {
             "address": "0x1234567890abcdef1234567890abcdef12345678",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
+            "owned": false,
             "scopes": [
               "eip155:0",
             ],
@@ -23,6 +24,7 @@ describe('getOptions', () => {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             ],
             "id": "e051723c-85d0-43a3-b9bf-568a90d3f378",
+            "owned": true,
             "scopes": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
               "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
@@ -72,6 +74,7 @@ describe('getOptions', () => {
             "address": "0x1234567890abcdef1234567890abcdef12345678",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
+            "owned": false,
             "scopes": [
               "eip155:0",
             ],
@@ -84,6 +87,7 @@ describe('getOptions', () => {
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             ],
             "id": "e051723c-85d0-43a3-b9bf-568a90d3f378",
+            "owned": true,
             "scopes": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
               "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1",
