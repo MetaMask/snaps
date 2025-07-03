@@ -3000,7 +3000,7 @@ export class SnapController extends BaseController<
         this.#featureFlags.forcePreinstalledSnaps && isLocalSnapId(snapId)
           ? {
               preinstalled: true,
-              hideSnapBranding: false,
+              hideSnapBranding: true,
               hidden: false,
             }
           : {};
@@ -3140,7 +3140,7 @@ export class SnapController extends BaseController<
           this.#featureFlags.forcePreinstalledSnaps && isLocalSnapId(snapId)
             ? {
                 preinstalled: true,
-                hideSnapBranding: false,
+                hideSnapBranding: true,
                 hidden: false,
               }
             : {};

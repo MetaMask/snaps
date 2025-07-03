@@ -8113,6 +8113,82 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('installs a local Snap as preinstalled Snap when `forcePreinstalledSnaps` is enabled', async () => {
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect(),
+          featureFlags: {
+            allowLocalSnaps: true,
+            forcePreinstalledSnaps: true,
+          },
+        }),
+      );
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_LOCAL_SNAP_ID]: {},
+        [MOCK_SNAP_ID]: {},
+      });
+
+      const localSnap = snapController.getExpect(MOCK_LOCAL_SNAP_ID);
+      expect(localSnap.preinstalled).toBe(true);
+      expect(localSnap.hideSnapBranding).toBe(true);
+      expect(localSnap.hidden).toBe(false);
+
+      const npmSnap = snapController.getExpect(MOCK_SNAP_ID);
+      expect(npmSnap.preinstalled).toBeUndefined();
+      expect(npmSnap.hideSnapBranding).toBeUndefined();
+      expect(npmSnap.hidden).toBeUndefined();
+
+      snapController.destroy();
+    });
+
+    it('updates an existing local Snap to be a preinstalled Snap when `forcePreinstalledSnaps` is enabled', async () => {
+      const snapObject = getPersistedSnapObject({
+        id: MOCK_LOCAL_SNAP_ID,
+      });
+
+      const location = new LoopbackLocation({
+        manifest: snapObject.manifest,
+        shouldAlwaysReload: true,
+      });
+
+      const messenger = getSnapControllerMessenger();
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation: loopbackDetect(location),
+          featureFlags: {
+            allowLocalSnaps: true,
+            forcePreinstalledSnaps: true,
+          },
+          state: {
+            snaps: {
+              [MOCK_LOCAL_SNAP_ID]: snapObject,
+            },
+          },
+        }),
+      );
+
+      const localSnapBeforeUpdate =
+        snapController.getExpect(MOCK_LOCAL_SNAP_ID);
+      expect(localSnapBeforeUpdate.preinstalled).toBeUndefined();
+      expect(localSnapBeforeUpdate.hideSnapBranding).toBeUndefined();
+      expect(localSnapBeforeUpdate.hidden).toBeUndefined();
+
+      await snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_LOCAL_SNAP_ID]: {},
+      });
+
+      const localSnap = snapController.getExpect(MOCK_LOCAL_SNAP_ID);
+      expect(localSnap.preinstalled).toBe(true);
+      expect(localSnap.hideSnapBranding).toBe(true);
+      expect(localSnap.hidden).toBe(false);
+
+      snapController.destroy();
+    });
   });
 
   it('throws if the Snap source code is too large', async () => {
