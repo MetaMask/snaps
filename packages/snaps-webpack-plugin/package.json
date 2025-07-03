@@ -60,7 +60,7 @@
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^11.4.1",
+    "@metamask/utils": "^11.4.2",
     "chalk": "^4.1.2",
     "webpack-sources": "^3.2.3"
   },
