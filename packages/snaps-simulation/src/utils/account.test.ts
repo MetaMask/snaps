@@ -1,7 +1,7 @@
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
-import type { SimulationAccount } from 'src/options';
 
 import { addSnapMetadataToAccount } from './account';
+import type { SimulationAccount } from '../options';
 
 describe('addSnapMetadataToAccount', () => {
   it('adds snap metadata to an owned account', () => {
