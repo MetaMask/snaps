@@ -2996,21 +2996,11 @@ export class SnapController extends BaseController<
 
       this.#transition(snapId, SnapStatusEvents.Update);
 
-      const preinstalledArgs =
-        this.#featureFlags.forcePreinstalledSnaps && isLocalSnapId(snapId)
-          ? {
-              preinstalled: true,
-              hideSnapBranding: true,
-              hidden: false,
-            }
-          : {};
-
       this.#set({
         origin,
         id: snapId,
         files: newSnap,
         isUpdate: true,
-        ...preinstalledArgs,
       });
 
       this.#updatePermissions({
