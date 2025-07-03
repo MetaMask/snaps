@@ -1062,6 +1062,7 @@ describe('getMockAccount', () => {
         "address": "DYw8jCTfwHNRJhhmFcbXvVDTqWMEVFBX6ZKUmG5CNSKK",
         "assets": [],
         "id": "6b86b273-ff344ce1-9d6b804e-ff5a3f57",
+        "owned": false,
         "scopes": [
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
         ],
@@ -1087,6 +1088,7 @@ describe('getMockAccount', () => {
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         ],
         "id": "d4735e3a-265e46ee-a03f5971-8b9b5d03",
+        "owned": false,
         "scopes": [
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
         ],
