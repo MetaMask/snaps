@@ -2015,15 +2015,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^5.0.2":
-  version: 5.0.2
-  resolution: "@ethereumjs/rlp@npm:5.0.2"
-  bin:
-    rlp: bin/rlp.cjs
-  checksum: 10/2af80d98faf7f64dfb6d739c2df7da7350ff5ad52426c3219897e843ee441215db0ffa346873200a6be6d11142edb9536e66acd62436b5005fa935baaf7eb6bd
-  languageName: node
-  linkType: hard
-
 "@ethereumjs/tx@npm:^4.2.0":
   version: 4.2.0
   resolution: "@ethereumjs/tx@npm:4.2.0"
@@ -2044,16 +2035,6 @@ __metadata:
     ethereum-cryptography: "npm:^2.0.0"
     micro-ftch: "npm:^0.3.1"
   checksum: 10/cc35338932e49b15e54ca6e548b32a1f48eed7d7e1d34ee743e4d3600dd616668bd50f70139e86c5c35f55aac35fba3b6cc4e6f679cf650aeba66bf93016200c
-  languageName: node
-  linkType: hard
-
-"@ethereumjs/util@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@ethereumjs/util@npm:9.1.0"
-  dependencies:
-    "@ethereumjs/rlp": "npm:^5.0.2"
-    ethereum-cryptography: "npm:^2.2.1"
-  checksum: 10/4e22c4081c63eebb808eccd54f7f91cd3407f4cac192da5f30a0d6983fe07d51f25e6a9d08624f1376e604bb7dce574aafcf0fbf0becf42f62687c11e710ac41
   languageName: node
   linkType: hard
 
@@ -3013,13 +2994,12 @@ __metadata:
   linkType: soft
 
 "@metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.5.0":
-  version: 11.10.0
-  resolution: "@metamask/controller-utils@npm:11.10.0"
+  version: 11.11.0
+  resolution: "@metamask/controller-utils@npm:11.11.0"
   dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/utils": "npm:^11.4.2"
     "@spruceid/siwe-parser": "npm:2.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bignumber.js: "npm:^9.1.2"
@@ -3027,9 +3007,10 @@ __metadata:
     cockatiel: "npm:^3.1.2"
     eth-ens-namehash: "npm:^2.0.8"
     fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/e563d1705ddba1b4cf2903827bd9a47d95700b150e17d3c5b57dcdd9b51d3f8e2bee9daaa6d2d5718beba3e28498be06d308daba2c294adf0716bb34894d0c96
+  checksum: 10/9b4ac01beb7359fea6da869117be69f8973d2d0e190469773b5f2726b86ccf0150d455bf8b19e9aa0504228fb2fb5fb7e9334a66df83cd2d02a4c84f250dad5a
   languageName: node
   linkType: hard
 
@@ -10862,7 +10843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-cryptography@npm:^2.0.0, ethereum-cryptography@npm:^2.1.2, ethereum-cryptography@npm:^2.2.1":
+"ethereum-cryptography@npm:^2.0.0, ethereum-cryptography@npm:^2.1.2":
   version: 2.2.1
   resolution: "ethereum-cryptography@npm:2.2.1"
   dependencies:
