@@ -895,6 +895,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   >({
     name: 'SnapInsightsController',
     allowedEvents: [
+      'TransactionController:activityItemViewed',
       'TransactionController:unapprovedTransactionAdded',
       'TransactionController:transactionStatusUpdated',
       'SignatureController:stateChange',

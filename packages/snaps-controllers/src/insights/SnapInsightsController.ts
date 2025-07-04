@@ -24,6 +24,7 @@ import { getRunnableSnaps } from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
+  TransactionControllerActivityItemViewedEvent,
   SignatureStateChange,
   SignatureControllerState,
   StateSignature,
@@ -56,6 +57,7 @@ export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
+  | TransactionControllerActivityItemViewedEvent
   | SignatureStateChange;
 
 export type SnapInsightsControllerMessenger = RestrictedMessenger<
@@ -119,6 +121,11 @@ export class SnapInsightsController extends BaseController<
     this.messagingSystem.subscribe(
       'SignatureController:stateChange',
       this.#handleSignatureStateChange.bind(this),
+    );
+
+    this.messagingSystem.subscribe(
+      'ActivityController:activityItemViewed',
+      this.#handleViewActivityItem.bind(this),
     );
   }
 

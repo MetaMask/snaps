@@ -20,6 +20,8 @@ import type {
   OnWebSocketEventHandler,
 } from '@metamask/snaps-sdk';
 
+import { OnViewActivityItemHandler } from '../../../snaps-sdk/src/types/handlers/activity-item'; // change to npm
+
 import { HandlerType } from './types';
 
 export const SNAP_EXPORTS = {
@@ -34,6 +36,15 @@ export const SNAP_EXPORTS = {
     type: HandlerType.OnTransaction,
     required: true,
     validator: (snapExport: unknown): snapExport is OnTransactionHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnViewActivityItem]: {
+    type: HandlerType.OnViewActivityItem,
+    required: true,
+    validator: (
+      snapExport: unknown,
+    ): snapExport is OnViewActivityItemHandler => {
       return typeof snapExport === 'function';
     },
   },
