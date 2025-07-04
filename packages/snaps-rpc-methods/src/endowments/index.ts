@@ -2,6 +2,7 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
+import { activityItemInsightEndowmentBuilder } from './activity-item-insight';
 import { assetsEndowmentBuilder, getAssetsCaveatMapper } from './assets';
 import {
   createMaxRequestTimeMapper,
@@ -117,6 +118,8 @@ export const endowmentCaveatMappers: Record<
 export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
+  [HandlerType.OnViewActivityItem]:
+    activityItemInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
   [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetName,
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
@@ -141,6 +144,7 @@ export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
 export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
+export { getActivityItemInsightCaveat } from './activity-item-insight';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
 export { getCronjobCaveatJobs } from './cronjob';

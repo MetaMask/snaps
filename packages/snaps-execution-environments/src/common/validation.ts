@@ -171,6 +171,28 @@ export function assertIsOnTransactionRequestArguments(
   assertRequestArguments(value, OnTransactionRequestArgumentsStruct);
 }
 
+export const OnViewActivityItemRequestArgumentsStruct = object({
+  transactionMeta: record(string(), JsonStruct),
+});
+
+export type OnViewActivityItemRequestArguments = Infer<
+  typeof OnViewActivityItemRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnViewActivityItemRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnViewActivityItemRequestArguments}
+ * object.
+ */
+export function assertIsOnViewActivityItemRequestArguments(
+  value: unknown,
+): asserts value is OnViewActivityItemRequestArguments {
+  assertRequestArguments(value, OnViewActivityItemRequestArgumentsStruct);
+}
+
 export const OnSignatureRequestArgumentsStruct = object({
   signature: record(string(), JsonStruct),
   signatureOrigin: nullable(string()),

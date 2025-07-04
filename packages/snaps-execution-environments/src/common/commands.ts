@@ -21,6 +21,7 @@ import {
   assertIsOnAssetHistoricalPriceRequestArguments,
   assertIsOnWebSocketEventArguments,
   assertIsOnAssetsMarketDataRequestArguments,
+  assertIsOnViewActivityItemRequestArguments,
 } from './validation';
 
 export type CommandMethodsMapping = {
@@ -56,6 +57,13 @@ export function getHandlerArguments(
         transactionOrigin,
       };
     }
+
+    case HandlerType.OnViewActivityItem: {
+      assertIsOnViewActivityItemRequestArguments(request.params);
+      const { transactionMeta } = request.params;
+      return { transactionMeta };
+    }
+
     case HandlerType.OnSignature: {
       assertIsOnSignatureRequestArguments(request.params);
 
