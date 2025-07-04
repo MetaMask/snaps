@@ -12,7 +12,6 @@ import {
 import {
   CaipAssetTypeOrIdStruct,
   CaipAssetTypeStruct,
-  hasProperty,
   isObject,
 } from '@metamask/utils';
 
@@ -72,14 +71,7 @@ export const NonFungibleAssetMarketDataStruct = object({
  * A struct representing the market data for an asset, which can be either fungible or non-fungible.
  */
 export const AssetMarketDataStruct = selectiveUnion((marketData) => {
-  if (!isObject(marketData) || !hasProperty(marketData, 'fungible')) {
-    return union([
-      FungibleAssetMarketDataStruct,
-      NonFungibleAssetMarketDataStruct,
-    ]);
-  }
-
-  if (marketData.fungible) {
+  if (isObject(marketData) && marketData.fungible) {
     return FungibleAssetMarketDataStruct;
   }
 
