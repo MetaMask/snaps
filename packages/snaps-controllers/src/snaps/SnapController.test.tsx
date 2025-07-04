@@ -4118,7 +4118,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: assets.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
+        `Assertion failed: At path: assets.foo -- Expected a value of type \`CaipAssetTypeOrId\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();
@@ -4200,7 +4200,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('returns the value when `onAssetsLookup` returns a valid response', async () => {
+    it('returns the value when `onAssetsLookup` returns a valid response for fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
@@ -4286,6 +4286,126 @@ describe('SnapController', () => {
               },
             ],
           },
+        },
+      });
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetsLookup` returns a valid response for non-fungible assets', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            assets: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w':
+                {
+                  fungible: false,
+                  name: 'Persky Penguins #398',
+                  symbol: 'PENGUIN',
+                  imageUrl: `https://metamask.io/pinguin.svg`,
+                  description:
+                    'A nice penguin from the Persky Penguins collection.',
+                  acquiredAt: 1750941834,
+                  isPossibleSpam: false,
+                  attributes: {
+                    type: 'Alien',
+                    accessories: 'Headband',
+                    age: 32,
+                  },
+                  collection: {
+                    name: 'Persky Penguins',
+                    address:
+                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvd:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+                    symbol: 'PENGUIN',
+                    tokenCount: 10000,
+                    creator:
+                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvd:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+                    imageUrl: `https://metamask.io/pinguin.svg`,
+                  },
+                },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnAssetsLookup,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              assets: [
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+              ],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        assets: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w':
+            {
+              fungible: false,
+              name: 'Persky Penguins #398',
+              symbol: 'PENGUIN',
+              imageUrl: `https://metamask.io/pinguin.svg`,
+              description:
+                'A nice penguin from the Persky Penguins collection.',
+              acquiredAt: 1750941834,
+              isPossibleSpam: false,
+              attributes: {
+                type: 'Alien',
+                accessories: 'Headband',
+                age: 32,
+              },
+              collection: {
+                name: 'Persky Penguins',
+                address:
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvd:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+                symbol: 'PENGUIN',
+                tokenCount: 10000,
+                creator:
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvd:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+                imageUrl: `https://metamask.io/pinguin.svg`,
+              },
+            },
         },
       });
 
@@ -4571,7 +4691,7 @@ describe('SnapController', () => {
           },
         }),
       ).rejects.toThrow(
-        `Assertion failed: At path: marketData.foo -- Expected a value of type \`CaipAssetType\`, but received: \`"foo"\`.`,
+        `Assertion failed: At path: marketData.foo -- Expected a value of type \`CaipAssetTypeOrId\`, but received: \`"foo"\`.`,
       );
 
       snapController.destroy();
@@ -4650,7 +4770,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('returns the value when `onAssetsMarketData` returns a valid response', async () => {
+    it('returns the value when `onAssetsMarketData` returns a valid response for fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
@@ -4729,6 +4849,128 @@ describe('SnapController', () => {
               totalVolume: '100000000',
             },
           },
+        },
+      });
+
+      snapController.destroy();
+    });
+
+    it('returns the value when `onAssetsMarketData` returns a valid response for non-fungible assets', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Assets]: {
+            caveats: [
+              {
+                type: SnapCaveatType.ChainIds,
+                value: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+              },
+            ],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.Assets,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'SubjectMetadataController:getSubjectMetadata',
+        () => MOCK_SNAP_SUBJECT_METADATA,
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            marketData: {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w':
+                {
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                    fungible: false,
+                    lastSale: {
+                      asset:
+                        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                      amount: '123',
+                    },
+                    topBid: {
+                      asset:
+                        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                      amount: '123',
+                    },
+                    floorPrice: {
+                      asset:
+                        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                      amount: '123',
+                    },
+                    rarity: {
+                      ranking: { source: 'source', rank: 1 },
+                      metadata: { attribute1: 1, attribute2: 2 },
+                    },
+                  },
+                },
+            },
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnAssetsMarketData,
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              assets: [
+                {
+                  asset:
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w',
+                  unit: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+                },
+              ],
+            },
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        marketData: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:Fz6LxeUg5qjesYX3BdmtTwyyzBtMxk644XiTqU5W3w9w':
+            {
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+                fungible: false,
+                lastSale: {
+                  asset:
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                  amount: '123',
+                },
+                topBid: {
+                  asset:
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                  amount: '123',
+                },
+                floorPrice: {
+                  asset:
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/nft:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                  amount: '123',
+                },
+                rarity: {
+                  ranking: { source: 'source', rank: 1 },
+                  metadata: { attribute1: 1, attribute2: 2 },
+                },
+              },
+            },
         },
       });
 

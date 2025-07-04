@@ -10,12 +10,18 @@ import {
   record,
   nullable,
   optional,
+  boolean,
+  union,
 } from '@metamask/superstruct';
 import {
+  CaipAccountIdStruct,
+  CaipAssetTypeOrIdStruct,
   assert,
-  CaipAssetTypeStruct,
-  type CaipAssetType,
+  isObject,
 } from '@metamask/utils';
+import type { CaipAssetTypeOrId } from '@metamask/utils';
+
+import { selectiveUnion } from '../../internals';
 
 export const FungibleAssetUnitStruct = object({
   name: optional(string()),
@@ -47,14 +53,67 @@ export const FungibleAssetMetadataStruct = object({
   units: size(array(FungibleAssetUnitStruct), 1, Infinity),
 });
 
-export const OnAssetsLookupResponseStruct = object({
-  assets: record(CaipAssetTypeStruct, nullable(FungibleAssetMetadataStruct)),
+export const NonFungibleAssetCollectionStruct = object({
+  name: string(),
+  address: CaipAccountIdStruct,
+  symbol: string(),
+  tokenCount: optional(number()),
+  creator: optional(CaipAccountIdStruct),
+  imageUrl: optional(AssetIconUrlStruct),
 });
 
+export type NonFungibleAssetCollection = Infer<
+  typeof NonFungibleAssetCollectionStruct
+>;
+
+export const NonFungibleAssetMetadataStruct = object({
+  fungible: literal(false),
+  name: optional(string()),
+  symbol: optional(string()),
+  imageUrl: optional(AssetIconUrlStruct),
+  description: optional(string()),
+  acquiredAt: optional(number()),
+  isPossibleSpam: optional(boolean()),
+  attributes: optional(record(string(), union([string(), number()]))),
+  collection: optional(NonFungibleAssetCollectionStruct),
+});
+
+export const AssetMetadataStruct = selectiveUnion((metadata) => {
+  if (isObject(metadata) && metadata.fungible) {
+    return FungibleAssetMetadataStruct;
+  }
+
+  return NonFungibleAssetMetadataStruct;
+});
+
+export const OnAssetsLookupResponseStruct = object({
+  assets: record(CaipAssetTypeOrIdStruct, nullable(AssetMetadataStruct)),
+});
+
+/**
+ * The metadata for an asset, which can be either fungible or non-fungible.
+ */
+export type AssetMetadata = Infer<typeof AssetMetadataStruct>;
+
+/**
+ * The metadata for a fungible asset.
+ */
 export type FungibleAssetMetadata = Infer<typeof FungibleAssetMetadataStruct>;
 
+/**
+ * The metadata for a non-fungible asset.
+ */
+export type NonFungibleAssetMetadata = Infer<
+  typeof NonFungibleAssetMetadataStruct
+>;
+
+/**
+ * The arguments for the `onAssetsLookup` handler.
+ *
+ * @property assets - An array of CAIP-19 asset types to look up.
+ */
 export type OnAssetsLookupArguments = {
-  assets: CaipAssetType[];
+  assets: CaipAssetTypeOrId[];
 };
 
 /**
@@ -73,5 +132,5 @@ export type OnAssetsLookupHandler = (
  * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object or null.
  */
 export type OnAssetsLookupResponse = {
-  assets: Record<CaipAssetType, FungibleAssetMetadata | null>;
+  assets: Record<CaipAssetTypeOrId, AssetMetadata | null>;
 };
