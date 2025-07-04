@@ -29,6 +29,7 @@ const SimulationAccountStruct = object({
   id: string(),
   scopes: array(CaipChainIdStruct),
   selected: defaulted(optional(boolean()), false),
+  owned: defaulted(optional(boolean()), false),
   assets: defaulted(optional(array(CaipAssetTypeStruct)), []),
 });
 

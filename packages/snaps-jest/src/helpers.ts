@@ -310,6 +310,11 @@ export type BaseMockAccountOptions = {
    * Whether the account is selected by default.
    */
   selected?: boolean;
+
+  /**
+   * Whether the account is owned by the snap.
+   */
+  owned?: boolean;
 };
 
 /**
@@ -363,6 +368,7 @@ export type GetMockAccountOptions =
  * @param options.assets - The assets associated with the account, in CAIP
  * format. If not provided, it will default to an empty array.
  * @param options.selected - Whether the account is selected by default.
+ * @param options.owned - Whether the account is owned by the snap.
  * @param options.id - The ID of the account. If not provided, a pseudo-random
  * UUID will be generated.
  * @returns A mock account object with the specified properties.
@@ -371,6 +377,7 @@ export function getMockAccount({
   address,
   assets = [],
   selected = false,
+  owned = false,
   id = getPseudoRandomUuid(),
   scopes = getScopesFromAssets(assets),
 }: GetMockAccountOptions): SimulationAccount {
@@ -379,6 +386,7 @@ export function getMockAccount({
     id,
     scopes,
     selected,
+    owned,
     assets,
   };
 }

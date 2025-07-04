@@ -50,6 +50,7 @@ import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
 import type { Interface, RunSagaFunction, Store } from './store';
 import { createStore, getCurrentInterface } from './store';
+import { addSnapMetadataToAccount } from './utils/account';
 
 /**
  * Options for the execution service, without the options that are shared
@@ -303,7 +304,7 @@ export async function installSnap<
 
   const controllerMessenger = new Messenger<any, any>();
 
-  registerActions(controllerMessenger, runSaga, options);
+  registerActions(controllerMessenger, runSaga, options, snapId);
 
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options);
@@ -474,11 +475,13 @@ export function getPermittedHooks(
  * @param controllerMessenger - The controller messenger.
  * @param runSaga - The run saga function.
  * @param options - The simulation options.
+ * @param snapId - The ID of the Snap.
  */
 export function registerActions(
   controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
   options: SimulationOptions,
+  snapId: SnapId,
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
@@ -487,24 +490,47 @@ export function registerActions(
 
   controllerMessenger.registerActionHandler(
     'AccountsController:getAccountByAddress',
-    (address) =>
-      // @ts-expect-error - This is a partial account with only the necessary
-      // data used by the interface controller.
-      options.accounts.find((account) => address === account.address),
+    // @ts-expect-error - This is a partial account with only the necessary
+    // data used by the interface controller.
+    (address) => {
+      const matchingAccount = options.accounts.find(
+        (account) => address === account.address,
+      );
+
+      if (!matchingAccount) {
+        return undefined;
+      }
+
+      return addSnapMetadataToAccount(matchingAccount, snapId);
+    },
   );
 
   controllerMessenger.registerActionHandler(
     'AccountsController:getSelectedMultichainAccount',
     // @ts-expect-error - This is a partial account with only the necessary
     // data used by the interface controller.
-    () => options.accounts.find((account) => account.selected),
+    () => {
+      const selectedAccount = options.accounts.find(
+        (account) => account.selected,
+      );
+
+      if (!selectedAccount) {
+        return undefined;
+      }
+
+      return addSnapMetadataToAccount(selectedAccount, snapId);
+    },
   );
 
   controllerMessenger.registerActionHandler(
     'AccountsController:listMultichainAccounts',
-    // @ts-expect-error - These are partial accounts with only the necessary
-    // data used by the interface controller.
-    () => options.accounts,
+
+    () =>
+      // @ts-expect-error - These are partial accounts with only the necessary
+      // data used by the interface controller.
+      options.accounts.map((account) =>
+        addSnapMetadataToAccount(account, snapId),
+      ),
   );
 
   controllerMessenger.registerActionHandler(
