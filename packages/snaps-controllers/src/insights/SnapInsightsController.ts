@@ -124,7 +124,7 @@ export class SnapInsightsController extends BaseController<
     );
 
     this.messagingSystem.subscribe(
-      'ActivityController:activityItemViewed',
+      'TransactionController:activityItemViewed',
       this.#handleViewActivityItem.bind(this),
     );
   }
@@ -164,6 +164,47 @@ export class SnapInsightsController extends BaseController<
 
       return accumulator;
     }, []);
+  }
+
+  /**
+   * Handle a newly added unapproved transaction.
+   * This function fetches insights from all available Snaps
+   * and populates the insights state blob with the responses.
+   *
+   * @param transactionMeta - The transaction object.
+   */
+  #handleViewActivityItem(transactionMeta: TransactionMeta) {
+    const { id, chainId /*, txParams */ } = transactionMeta;
+    // This assumes that the transactions are EVM-compatible for now.
+    const caipChainId = `eip155:${hexToBigInt(chainId).toString(10)}`;
+
+    const snaps = this.#getSnapsWithPermission(
+      SnapEndowments.ActivityItemInsight,
+    );
+
+    snaps.forEach(({ snapId /*, permission */ }) => {
+      this.update((state) => {
+        state.insights[id] ??= {};
+        state.insights[id][snapId] = { snapId, loading: true };
+      });
+
+      this.#handleSnapRequest({
+        snapId,
+        handler: HandlerType.OnViewActivityItem,
+        params: {
+          transaction: transactionMeta,
+          chainId: caipChainId,
+        },
+      })
+        .then((response) =>
+          this.#handleSnapResponse({
+            id,
+            snapId,
+            response: response as Record<string, Json>,
+          }),
+        )
+        .catch((error) => this.#handleSnapResponse({ id, snapId, error }));
+    });
   }
 
   /**
@@ -363,7 +404,10 @@ export class SnapInsightsController extends BaseController<
     params,
   }: {
     snapId: SnapId;
-    handler: HandlerType.OnTransaction | HandlerType.OnSignature;
+    handler:
+      | HandlerType.OnTransaction
+      | HandlerType.OnSignature
+      | HandlerType.OnViewActivityItem;
     params: Record<string, Json>;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {
