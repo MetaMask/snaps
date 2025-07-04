@@ -20,9 +20,8 @@ import type {
   OnWebSocketEventHandler,
 } from '@metamask/snaps-sdk';
 
-import { OnViewActivityItemHandler } from '../../../snaps-sdk/src/types/handlers/activity-item'; // change to npm
-
 import { HandlerType } from './types';
+import type { OnViewActivityItemHandler } from '../../../snaps-sdk/src/types/handlers/activity-item';
 
 export const SNAP_EXPORTS = {
   [HandlerType.OnRpcRequest]: {
