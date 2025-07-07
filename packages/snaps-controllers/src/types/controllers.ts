@@ -137,7 +137,7 @@ export type TransactionControllerTransactionStatusUpdatedEvent = {
 
 export type TransactionControllerActivityItemViewedEvent = {
   type: `TransactionController:activityItemViewed`;
-  payload: [transactionMeta: TransactionMeta];
+  payload: [{ transactionMeta: TransactionMeta }];
 };
 
 export type StateSignatureParams = {

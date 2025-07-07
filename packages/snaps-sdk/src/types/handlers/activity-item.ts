@@ -14,7 +14,7 @@ export type OnViewActivityItemParams = {
   /**
    * The activity item data.
    */
-  activity: {
+  transactionMeta: {
     id: string;
     hash: string;
     type: string;

@@ -166,15 +166,20 @@ export class SnapInsightsController extends BaseController<
     }, []);
   }
 
-  /**
-   * Handle a newly added unapproved transaction.
-   * This function fetches insights from all available Snaps
-   * and populates the insights state blob with the responses.
-   *
-   * @param transactionMeta - The transaction object.
-   */
-  #handleViewActivityItem(transactionMeta: TransactionMeta) {
-    const { id, chainId /*, txParams */ } = transactionMeta;
+  #handleViewActivityItem({
+    transactionMeta,
+  }: {
+    transactionMeta: TransactionMeta;
+  }) {
+    console.log(
+      'kylan snaps-controllers->handleViewActivityItem1',
+      transactionMeta,
+    );
+    const { id, chainId, origin, txParams } = transactionMeta;
+    console.log(
+      'kylan snaps-controllers->handleViewActivityItem, chainId',
+      chainId,
+    );
     // This assumes that the transactions are EVM-compatible for now.
     const caipChainId = `eip155:${hexToBigInt(chainId).toString(10)}`;
 
@@ -182,18 +187,24 @@ export class SnapInsightsController extends BaseController<
       SnapEndowments.ActivityItemInsight,
     );
 
-    snaps.forEach(({ snapId /*, permission */ }) => {
+    snaps.forEach(({ snapId, permission }) => {
       this.update((state) => {
         state.insights[id] ??= {};
         state.insights[id][snapId] = { snapId, loading: true };
       });
 
+      // Check if snap has transactionOrigin caveat
+      const hasTransactionOriginCaveat = getTransactionOriginCaveat(permission);
+      const transactionOrigin =
+        hasTransactionOriginCaveat && origin ? origin : null;
+
       this.#handleSnapRequest({
         snapId,
         handler: HandlerType.OnViewActivityItem,
         params: {
-          transaction: transactionMeta,
+          transaction: txParams,
           chainId: caipChainId,
+          transactionOrigin,
         },
       })
         .then((response) =>
@@ -410,6 +421,11 @@ export class SnapInsightsController extends BaseController<
       | HandlerType.OnViewActivityItem;
     params: Record<string, Json>;
   }) {
+    console.log('kylan snaps-controllers->#handleSnapRequest', {
+      snapId,
+      handler,
+      params,
+    });
     return this.messagingSystem.call('SnapController:handleRequest', {
       snapId,
       origin: 'metamask',
@@ -441,9 +457,17 @@ export class SnapInsightsController extends BaseController<
     response?: Record<string, Json>;
     error?: Error;
   }) {
+    console.log(
+      'kylan snaps-controllers->#handleSnapResponse1',
+      id,
+      snapId, // local:_______
+      response, // n/a
+      error,
+    );
     // If the insight has been cleaned up already, we can skip setting the state.
     // This may happen if a user accepts/rejects a transaction/signature faster than the Snap responds.
     if (!this.#hasInsight(id)) {
+      console.log('kylan snaps-controllers->#handleSnapResponse, no insight');
       return;
     }
 

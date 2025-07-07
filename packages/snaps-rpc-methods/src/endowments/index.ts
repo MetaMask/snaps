@@ -2,7 +2,11 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
-import { activityItemInsightEndowmentBuilder } from './activity-item-insight';
+import {
+  activityItemInsightCaveatSpecifications,
+  activityItemInsightEndowmentBuilder,
+  getActivityItemInsightCaveatMapper,
+} from './activity-item-insight';
 import { assetsEndowmentBuilder, getAssetsCaveatMapper } from './assets';
 import {
   createMaxRequestTimeMapper,
@@ -55,6 +59,8 @@ export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetName]: networkAccessEndowmentBuilder,
   [transactionInsightEndowmentBuilder.targetName]:
     transactionInsightEndowmentBuilder,
+  [activityItemInsightEndowmentBuilder.targetName]:
+    activityItemInsightEndowmentBuilder,
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetName]:
     ethereumProviderEndowmentBuilder,
@@ -74,6 +80,7 @@ export const endowmentPermissionBuilders = {
 export const endowmentCaveatSpecifications = {
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
+  ...activityItemInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
   ...nameLookupCaveatSpecifications,
   ...keyringCaveatSpecifications,
@@ -91,6 +98,9 @@ export const endowmentCaveatMappers: Record<
   ),
   [transactionInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getTransactionInsightCaveatMapper,
+  ),
+  [activityItemInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
+    getActivityItemInsightCaveatMapper,
   ),
   [rpcEndowmentBuilder.targetName]:
     createMaxRequestTimeMapper(getRpcCaveatMapper),
@@ -143,8 +153,8 @@ export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
+export { getActivityItemOriginCaveat } from './activity-item-insight';
 export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
-export { getActivityItemInsightCaveat } from './activity-item-insight';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
 export { getCronjobCaveatJobs } from './cronjob';

@@ -81,6 +81,10 @@ export type InitialPermissions = Partial<{
     allowTransactionOrigin?: boolean;
     maxRequestTime?: number;
   };
+  'endowment:activity-item-insight': {
+    allowActivityItemOrigin?: boolean;
+    maxRequestTime?: number;
+  };
   'endowment:webassembly': EmptyObject;
 
   /* eslint-disable @typescript-eslint/naming-convention */

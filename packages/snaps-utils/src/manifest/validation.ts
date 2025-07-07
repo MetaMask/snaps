@@ -243,6 +243,14 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
+  'endowment:activity-item-insight': optional(
+    mergeStructs(
+      HandlerCaveatsStruct,
+      object({
+        allowActivityItemOrigin: optional(boolean()),
+      }),
+    ),
+  ),
   'endowment:webassembly': optional(EmptyObjectStruct),
   snap_dialog: optional(EmptyObjectStruct),
   snap_manageState: optional(EmptyObjectStruct),
