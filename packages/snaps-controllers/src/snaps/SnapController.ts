@@ -3776,6 +3776,7 @@ export class SnapController extends BaseController<
     switch (handlerType) {
       case HandlerType.OnTransaction:
       case HandlerType.OnSignature:
+      case HandlerType.OnViewActivityItem:
       case HandlerType.OnHomePage:
       case HandlerType.OnSettingsPage: {
         // Since this type has been asserted earlier we can cast
@@ -3993,6 +3994,15 @@ export class SnapController extends BaseController<
       }
       case HandlerType.OnSignature: {
         assertStruct(result, OnSignatureResponseStruct);
+
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
+        break;
+      }
+      case HandlerType.OnViewActivityItem: {
+        assertStruct(result, OnTransactionResponseStruct);
 
         if (result && hasProperty(result, 'id')) {
           this.#assertInterfaceExists(snapId, result.id as string);
