@@ -173,6 +173,8 @@ export function assertIsOnTransactionRequestArguments(
 
 export const OnViewActivityItemRequestArgumentsStruct = object({
   transactionMeta: record(string(), JsonStruct),
+  origin: nullable(string()),
+  chainId: CaipChainIdStruct,
 });
 
 export type OnViewActivityItemRequestArguments = Infer<
