@@ -67,7 +67,7 @@ export type NonFungibleAssetMarketData = {
 };
 
 /**
- * The market data for an asset, which can be either fungible or non-fungible.
+ * The market data for an asset, which can be either {@link FungibleAssetMarketData} or {@link NonFungibleAssetMarketData}.
  */
 export type AssetMarketData =
   | FungibleAssetMarketData
