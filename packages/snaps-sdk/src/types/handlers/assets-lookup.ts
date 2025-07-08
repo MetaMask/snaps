@@ -29,6 +29,14 @@ export const FungibleAssetUnitStruct = object({
   decimals: number(),
 });
 
+/**
+ * A unit of a fungible asset, which can be used to represent
+ * different denominations of the asset.
+ *
+ * @property name - The name of the unit, if available.
+ * @property symbol - The symbol of the unit, if available.
+ * @property decimals - The number of decimal places for the unit.
+ */
 export type FungibleAssetUnit = Infer<typeof FungibleAssetUnitStruct>;
 
 export const AssetIconUrlStruct = refine(string(), 'Asset URL', (value) => {
@@ -45,6 +53,16 @@ export const AssetIconUrlStruct = refine(string(), 'Asset URL', (value) => {
   }
 });
 
+/**
+ * A struct representing the metadata for a fungible asset.
+ *
+ * @property name - The name of the asset, if available.
+ * @property symbol - The symbol of the asset, if available.
+ * @property fungible - Indicates that this is a fungible asset. This is always `
+ * true` for fungible assets.
+ * @property iconUrl - The URL of the asset's icon, which can be a base64 SVG or a remote HTTPS URL.
+ * @property units - An array of units for the asset, each represented by {@link FungibleAssetUnitStruct}.
+ */
 export const FungibleAssetMetadataStruct = object({
   name: optional(string()),
   symbol: optional(string()),
@@ -53,6 +71,18 @@ export const FungibleAssetMetadataStruct = object({
   units: size(array(FungibleAssetUnitStruct), 1, Infinity),
 });
 
+/**
+ * A collection of non-fungible assets, which can be used to group
+ * assets that share a common theme or creator.
+ *
+ * @property name - The name of the collection.
+ * @property address - The CAIP-10 account ID of the collection's creator.
+ * @property symbol - The symbol of the collection.
+ * @property tokenCount - The number of tokens in the collection, if available.
+ * @property creator - The CAIP-10 account ID of the collection's creator, if
+ * available.
+ * @property imageUrl - The URL of the collection's image.
+ */
 export const NonFungibleAssetCollectionStruct = object({
   name: string(),
   address: CaipAccountIdStruct,
@@ -62,10 +92,37 @@ export const NonFungibleAssetCollectionStruct = object({
   imageUrl: optional(AssetIconUrlStruct),
 });
 
+/**
+ * A collection of non-fungible assets, which can be used to group
+ * assets that share a common theme or creator.
+ *
+ * @property name - The name of the collection.
+ * @property address - The CAIP-10 account ID of the collection's creator.
+ * @property symbol - The symbol of the collection.
+ * @property tokenCount - The number of tokens in the collection, if available.
+ * @property creator - The CAIP-10 account ID of the collection's creator, if
+ * available.
+ * @property imageUrl - The URL of the collection's image.
+ */
 export type NonFungibleAssetCollection = Infer<
   typeof NonFungibleAssetCollectionStruct
 >;
 
+/**
+ * A struct representing the metadata for a non-fungible asset.
+ *
+ * @property fungible - Indicates that this is a non-fungible asset.
+ * This is always `false` for non-fungible assets.
+ * @property name - The name of the asset, if available.
+ * @property symbol - The symbol of the asset, if available.
+ * @property imageUrl - The URL of the asset's image, which can be a base64 SVG or a remote HTTPS URL.
+ * @property description - A description of the asset, if available.
+ * @property acquiredAt - The timestamp when the asset was acquired, if available.
+ * @property isPossibleSpam - Indicates if the asset is possibly spam, if available.
+ * @property attributes - Additional attributes of the asset, represented as a record of string keys and
+ * string or number values.
+ * @property collection - The collection the asset belongs to, if available. See {@link NonFungibleAssetCollectionStruct}.
+ */
 export const NonFungibleAssetMetadataStruct = object({
   fungible: literal(false),
   name: optional(string()),
@@ -78,6 +135,10 @@ export const NonFungibleAssetMetadataStruct = object({
   collection: optional(NonFungibleAssetCollectionStruct),
 });
 
+/**
+ * A struct representing the metadata for an asset, which can be either
+ * {@link FungibleAssetMetadataStruct} or {@link NonFungibleAssetMetadataStruct}.
+ */
 export const AssetMetadataStruct = selectiveUnion((metadata) => {
   if (isObject(metadata) && metadata.fungible) {
     return FungibleAssetMetadataStruct;
@@ -86,22 +147,47 @@ export const AssetMetadataStruct = selectiveUnion((metadata) => {
   return NonFungibleAssetMetadataStruct;
 });
 
+/**
+ * A struct representing the response of the `onAssetsLookup` method.
+ *
+ * @property assets - An object containing a mapping between the CAIP-19 key and a metadata object or null.
+ */
 export const OnAssetsLookupResponseStruct = object({
   assets: record(CaipAssetTypeOrIdStruct, nullable(AssetMetadataStruct)),
 });
 
 /**
  * The metadata for an asset, which can be either fungible or non-fungible.
+ *
  */
 export type AssetMetadata = Infer<typeof AssetMetadataStruct>;
 
 /**
  * The metadata for a fungible asset.
+ *
+ * @property fungible - Indicates that this is a fungible asset.
+ * This is always `true` for fungible assets.
+ * @property name - The name of the asset.
+ * @property symbol - The symbol of the asset.
+ * @property iconUrl - The URL of the asset's icon.
+ * @property units - An array of units for the asset, each represented by {@link FungibleAssetUnit}.
  */
 export type FungibleAssetMetadata = Infer<typeof FungibleAssetMetadataStruct>;
 
 /**
  * The metadata for a non-fungible asset.
+ *
+ * @property fungible - Indicates that this is a non-fungible asset.
+ * This is always `false` for non-fungible assets.
+ * @property name - The name of the asset.
+ * @property symbol - The symbol of the asset.
+ * @property imageUrl - The URL of the asset's image.
+ * @property description - A description of the asset.
+ * @property acquiredAt - The timestamp when the asset was acquired, if available.
+ * @property isPossibleSpam - Indicates if the asset is possibly spam, if available.
+ * @property attributes - Additional attributes of the asset, represented as a record of string keys and
+ * string or number values.
+ * @property collection - The collection the asset belongs to, if available. See {@link NonFungibleAssetCollection}.
  */
 export type NonFungibleAssetMetadata = Infer<
   typeof NonFungibleAssetMetadataStruct

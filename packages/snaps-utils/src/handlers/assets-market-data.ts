@@ -26,7 +26,18 @@ export const PricePercentChangeStruct = nonEmptyRecord(
 );
 
 /**
- * A struct representing the market data for an asset.
+ * A struct representing the market data for a fungible asset.
+ *
+ * @property fungible - Indicates that this is a fungible asset.
+ * This is always `true` for fungible assets.
+ * @property marketCap - The market capitalization of the asset.
+ * @property totalVolume - The total volume of the asset.
+ * @property circulatingSupply - The circulating supply of the asset.
+ * @property allTimeHigh - The all-time high price of the asset.
+ * @property allTimeLow - The all-time low price of the asset.
+ * @property pricePercentChange - The percentage change in price over different intervals.
+ * @property pricePercentChange.interval - The time interval for the price change as a ISO 8601 duration
+ * or the string "all" to represent the all-time change.
  */
 export const FungibleAssetMarketDataStruct = object({
   fungible: literal(true),
@@ -40,6 +51,9 @@ export const FungibleAssetMarketDataStruct = object({
 
 /**
  * A struct representing the metadata for a fungible asset.
+ *
+ * @property asset - The CAIP-19 asset type or ID of the asset.
+ * @property amount - The pice represented as a number in string format.
  */
 export const AssetValueStruct = object({
   asset: CaipAssetTypeOrIdStruct,
@@ -48,6 +62,20 @@ export const AssetValueStruct = object({
 
 /**
  * A struct representing the market data for a non-fungible asset.
+ *
+ * @property asset - The CAIP-19 asset type or ID of the asset.
+ * @property amount - The pice represented as a number in string format.
+ * @property fungible - Indicates that this is a non-fungible asset.
+ * This is always `false` for non-fungible assets.
+ * @property lastSale - The last sale price of the asset, if available. See {@link AssetValueStruct}.
+ * @property topBid - The top bid price for the asset, if available. See {@link AssetValueStruct}.
+ * @property floorPrice - The floor price of the asset, if available. See {@link AssetValueStruct}.
+ * @property rarity - The rarity information for the asset, if available.
+ * @property rarity.ranking - The ranking of the asset's rarity, if available.
+ * @property rarity.ranking.source - The source of the rarity ranking.
+ * @property rarity.ranking.rank - The rank of the asset in the rarity ranking.
+ * @property rarity.metadata - Additional metadata about the asset's rarity, if available.
+ * This is a record of string keys and number values.
  */
 export const NonFungibleAssetMarketDataStruct = object({
   fungible: literal(false),
@@ -68,7 +96,7 @@ export const NonFungibleAssetMarketDataStruct = object({
 });
 
 /**
- * A struct representing the market data for an asset, which can be either fungible or non-fungible.
+ * A struct representing the market data for an asset, which can be either {@link FungibleAssetMarketDataStruct} or {@link NonFungibleAssetMarketDataStruct}.
  */
 export const AssetMarketDataStruct = selectiveUnion((marketData) => {
   if (isObject(marketData) && marketData.fungible) {
@@ -80,6 +108,8 @@ export const AssetMarketDataStruct = selectiveUnion((marketData) => {
 
 /**
  * A struct representing the response of the `onAssetsMarketData` method.
+ *
+ * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketDataStruct} object or null between the two keys.
  */
 export const OnAssetsMarketDataResponseStruct = object({
   marketData: record(
