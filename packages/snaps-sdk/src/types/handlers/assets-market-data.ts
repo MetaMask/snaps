@@ -101,7 +101,7 @@ export type OnAssetsMarketDataHandler = (
 /**
  * The response from the market data query, containing market data for the requested assets.
  *
- * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketData} object or null between the two keys.
+ * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketData} object or null.
  */
 export type OnAssetsMarketDataResponse = {
   marketData: Record<

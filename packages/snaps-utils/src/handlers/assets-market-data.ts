@@ -109,7 +109,7 @@ export const AssetMarketDataStruct = selectiveUnion((marketData) => {
 /**
  * A struct representing the response of the `onAssetsMarketData` method.
  *
- * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketDataStruct} object or null between the two keys.
+ * @property marketData - A nested object with two CAIP-19 keys that contains a {@link AssetMarketData} object or null.
  */
 export const OnAssetsMarketDataResponseStruct = object({
   marketData: record(
