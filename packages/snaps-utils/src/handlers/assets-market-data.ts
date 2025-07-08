@@ -50,7 +50,7 @@ export const FungibleAssetMarketDataStruct = object({
 });
 
 /**
- * A struct representing the metadata for a fungible asset.
+ * A struct representing an asset value, which includes the asset type and the amount.
  *
  * @property asset - The CAIP-19 asset type or ID of the asset.
  * @property amount - The pice represented as a number in string format.
