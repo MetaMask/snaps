@@ -175,6 +175,8 @@ export const OnViewActivityItemRequestArgumentsStruct = object({
   transactionMeta: record(string(), JsonStruct),
   origin: nullable(string()),
   chainId: CaipChainIdStruct,
+  selectedAddress: string(),
+  selectedAccount: record(string(), JsonStruct),
 });
 
 export type OnViewActivityItemRequestArguments = Infer<

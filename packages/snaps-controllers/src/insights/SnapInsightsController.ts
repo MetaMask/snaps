@@ -16,7 +16,7 @@ import {
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, SnapId } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, InternalAccount } from '@metamask/snaps-utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 
 import type { DeleteInterface } from '../interface';
@@ -169,8 +169,12 @@ export class SnapInsightsController extends BaseController<
 
   #handleViewActivityItem({
     transactionMeta,
+    selectedAddress,
+    selectedAccount,
   }: {
     transactionMeta: TransactionMeta;
+    selectedAddress: string;
+    selectedAccount: InternalAccount;
   }) {
     const { id, chainId, origin } = transactionMeta;
     // This assumes that the transactions are EVM-compatible for now.
@@ -199,6 +203,8 @@ export class SnapInsightsController extends BaseController<
           transactionMeta,
           chainId: caipChainId,
           origin: activityItemOrigin,
+          selectedAddress,
+          selectedAccount,
         },
       })
         .then((response) =>

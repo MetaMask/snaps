@@ -34,6 +34,16 @@ export type OnViewActivityItemParams = {
    * The origin of the activity view request.
    */
   origin?: string;
+
+  /**
+   * The selected address of the user.
+   */
+  selectedAddress: string;
+
+  /**
+   * The selected account of the user.
+   */
+  selectedAccount: any;
 };
 
 export type OnViewActivityItemResponse = {

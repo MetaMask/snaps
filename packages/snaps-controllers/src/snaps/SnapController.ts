@@ -91,6 +91,7 @@ import {
   logError,
   normalizeRelative,
   OnTransactionResponseStruct,
+  OnViewActivityItemResponseStruct,
   OnSignatureResponseStruct,
   resolveVersionRange,
   SnapCaveatType,
@@ -4002,8 +4003,7 @@ export class SnapController extends BaseController<
         break;
       }
       case HandlerType.OnViewActivityItem: {
-        assertStruct(result, OnTransactionResponseStruct);
-
+        assertStruct(result, OnViewActivityItemResponseStruct);
         if (result && hasProperty(result, 'id')) {
           this.#assertInterfaceExists(snapId, result.id as string);
         }

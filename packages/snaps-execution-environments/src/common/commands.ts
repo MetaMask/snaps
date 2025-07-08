@@ -60,8 +60,15 @@ export function getHandlerArguments(
 
     case HandlerType.OnViewActivityItem: {
       assertIsOnViewActivityItemRequestArguments(request.params);
-      const { transactionMeta, chainId } = request.params;
-      return { transactionMeta, origin, chainId };
+      const { transactionMeta, chainId, selectedAddress, selectedAccount } =
+        request.params;
+      return {
+        transactionMeta,
+        origin,
+        chainId,
+        selectedAddress,
+        selectedAccount,
+      };
     }
 
     case HandlerType.OnSignature: {
