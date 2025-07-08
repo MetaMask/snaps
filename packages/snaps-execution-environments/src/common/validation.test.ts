@@ -247,6 +247,12 @@ describe('assertIsOnAssetsLookupRequestArguments', () => {
         'bip122:000000000019d6689c085ae165831e93/slip44:0',
       ],
     },
+    {
+      assets: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        'hedera:mainnet/nft:0.0.55492/12',
+      ],
+    },
   ])('does not throw for a valid assets lookup param object', (value) => {
     expect(() => assertIsOnAssetsLookupRequestArguments(value)).not.toThrow();
   });
@@ -322,6 +328,14 @@ describe('assertIsOnAssetsMarketDataRequestArguments', () => {
       assets: [
         {
           asset: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          unit: 'swift:0/iso4217:USD',
+        },
+      ],
+    },
+    {
+      assets: [
+        {
+          asset: 'hedera:mainnet/nft:0.0.55492/12',
           unit: 'swift:0/iso4217:USD',
         },
       ],

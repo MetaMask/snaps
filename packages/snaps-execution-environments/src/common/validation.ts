@@ -32,6 +32,7 @@ import type {
 } from '@metamask/utils';
 import {
   assertStruct,
+  CaipAssetTypeOrIdStruct,
   CaipAssetTypeStruct,
   CaipChainIdStruct,
   JsonRpcIdStruct,
@@ -259,7 +260,7 @@ export const OnAssetsMarketDataRequestArgumentsStruct = object({
   assets: size(
     array(
       object({
-        asset: CaipAssetTypeStruct,
+        asset: CaipAssetTypeOrIdStruct,
         unit: CaipAssetTypeStruct,
       }),
     ),
@@ -287,7 +288,7 @@ export function assertIsOnAssetsMarketDataRequestArguments(
 }
 
 export const OnAssetsLookupRequestArgumentsStruct = object({
-  assets: size(array(CaipAssetTypeStruct), 1, Infinity),
+  assets: size(array(CaipAssetTypeOrIdStruct), 1, Infinity),
 });
 
 export type OnAssetsLookupRequestArguments = Infer<
