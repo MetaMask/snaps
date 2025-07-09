@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Display CLI minimum version range ([#3531](https://github.com/MetaMask/snaps/pull/3531))
+- chore: Bump @metamask/utils from 11.4.1 to 11.4.2 ([#3526](https://github.com/MetaMask/snaps/pull/3526))
+- chore: Bump @metamask/utils from 11.4.0 to 11.4.1 ([#3516](https://github.com/MetaMask/snaps/pull/3516))
+
 ## [8.1.0]
 
 ### Added

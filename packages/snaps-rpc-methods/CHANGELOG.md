@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/rpc-errors from 7.0.2 to 7.0.3 ([#3525](https://github.com/MetaMask/snaps/pull/3525))
+- chore: Bump @metamask/utils from 11.4.1 to 11.4.2 ([#3526](https://github.com/MetaMask/snaps/pull/3526))
+
 ## [13.3.0]
 
 ### Added
