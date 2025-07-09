@@ -1466,9 +1466,6 @@ describe('RowStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Row />,
-    <Row label="label">
-      <Bold>foo</Bold>
-    </Row>,
     // @ts-expect-error - Invalid props.
     <Row label="label" variant="foo">
       <Text>foo</Text>

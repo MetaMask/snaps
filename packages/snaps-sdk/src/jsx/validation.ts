@@ -918,10 +918,9 @@ export const BannerStruct: Describe<BannerElement> = element('Banner', {
  */
 export const RowStruct: Describe<RowElement> = element('Row', {
   label: string(),
-  children: lazy(
-    () =>
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      BoxChildStruct,
+  children: lazy(() =>
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    typedUnion([ValueStruct, BoxChildStruct]),
   ) as unknown as Describe<GenericSnapElement>,
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),

@@ -10,8 +10,7 @@ export type RowChildren = GenericSnapElement;
  * The props of the {@link Row} component.
  *
  * @property label - The label of the row.
- * @property children - The content of the row. This can be an address, an
- * image, or text.
+ * @property children - The content of the row. This can be any component.
  * @property variant - The variant of the row.
  * @property tooltip - An optional tooltip to show for the row.
  */
