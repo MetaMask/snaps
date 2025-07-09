@@ -925,6 +925,7 @@ export const RowStruct: Describe<RowElement> = element('Row', {
     ValueStruct,
     LinkStruct,
     SkeletonStruct,
+    BoxStruct,
   ]),
   variant: optional(
     nullUnion([literal('default'), literal('warning'), literal('critical')]),

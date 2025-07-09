@@ -1448,6 +1448,11 @@ describe('RowStruct', () => {
     <Row label="label" variant="default" tooltip="This is a tooltip.">
       <Value extra="foo" value="bar" />
     </Row>,
+    <Row label="label">
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    </Row>,
   ])('validates a row element', (value) => {
     expect(is(value, RowStruct)).toBe(true);
   });

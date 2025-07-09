@@ -1,4 +1,5 @@
 import type { AddressElement } from './Address';
+import type { BoxElement } from './Box';
 import type { ImageElement } from './Image';
 import type { LinkElement } from './Link';
 import type { SkeletonElement } from './Skeleton';
@@ -15,7 +16,8 @@ export type RowChildren =
   | TextElement
   | ValueElement
   | LinkElement
-  | SkeletonElement;
+  | SkeletonElement
+  | BoxElement;
 
 /**
  * The props of the {@link Row} component.
