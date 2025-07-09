@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.3.0]
+
+### Added
+
+- Add Snap metadata to simulated accounts ([#3528](https://github.com/MetaMask/snaps/pull/3528))
+
 ## [9.2.0]
 
 ### Added
@@ -397,7 +403,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.3.0...HEAD
+[9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.2.0...@metamask/snaps-jest@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.1.0...@metamask/snaps-jest@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.0.0...@metamask/snaps-jest@9.1.0
 [9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@8.16.0...@metamask/snaps-jest@9.0.0

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.26.0]
+
+### Added
+
+- Add `snap_startTrace` and `snap_endTrace` RPC method buttons ([#3498](https://github.com/MetaMask/snaps/pull/3498))
+
 ## [2.25.0]
 
 ### Added
@@ -364,7 +370,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.25.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.26.0...HEAD
+[2.26.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.25.0...@metamask/test-snaps@2.26.0
 [2.25.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.24.0...@metamask/test-snaps@2.25.0
 [2.24.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.1...@metamask/test-snaps@2.24.0
 [2.23.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.23.0...@metamask/test-snaps@2.23.1

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.2.0]
+
+### Added
+
+- Add types for non-fungible assets in `endowment:assets` ([#3527](https://github.com/MetaMask/snaps/pull/3527))
+- Allow all children in `Row` ([#3532](https://github.com/MetaMask/snaps/pull/3532))
+
 ## [9.1.0]
 
 ### Added
@@ -631,7 +638,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.2.0...HEAD
+[9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.1.0...@metamask/snaps-sdk@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.0.0...@metamask/snaps-sdk@9.1.0
 [9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.1.0...@metamask/snaps-sdk@9.0.0
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.0.0...@metamask/snaps-sdk@8.1.0
