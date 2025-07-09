@@ -1,28 +1,16 @@
-import type { AddressElement } from './Address';
-import type { ImageElement } from './Image';
-import type { LinkElement } from './Link';
-import type { SkeletonElement } from './Skeleton';
-import type { TextElement } from './Text';
-import type { ValueElement } from './Value';
+import type { GenericSnapElement } from '../component';
 import { createSnapComponent } from '../component';
 
 /**
  * The children of a {@link Row} component.
  */
-export type RowChildren =
-  | AddressElement
-  | ImageElement
-  | TextElement
-  | ValueElement
-  | LinkElement
-  | SkeletonElement;
+export type RowChildren = GenericSnapElement;
 
 /**
  * The props of the {@link Row} component.
  *
  * @property label - The label of the row.
- * @property children - The content of the row. This can be an address, an
- * image, or text.
+ * @property children - The content of the row. This can be any component.
  * @property variant - The variant of the row.
  * @property tooltip - An optional tooltip to show for the row.
  */

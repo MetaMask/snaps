@@ -1448,6 +1448,11 @@ describe('RowStruct', () => {
     <Row label="label" variant="default" tooltip="This is a tooltip.">
       <Value extra="foo" value="bar" />
     </Row>,
+    <Row label="label">
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    </Row>,
   ])('validates a row element', (value) => {
     expect(is(value, RowStruct)).toBe(true);
   });
@@ -1461,9 +1466,6 @@ describe('RowStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Row />,
-    <Row label="label">
-      <Bold>foo</Bold>
-    </Row>,
     // @ts-expect-error - Invalid props.
     <Row label="label" variant="foo">
       <Text>foo</Text>
