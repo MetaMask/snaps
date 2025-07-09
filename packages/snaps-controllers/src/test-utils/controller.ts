@@ -287,6 +287,18 @@ export const MOCK_INSIGHTS_PERMISSIONS: Record<string, PermissionConstraint> = {
     invoker: MOCK_SNAP_ID,
     parentCapability: SnapEndowments.SignatureInsight,
   },
+  [SnapEndowments.ActivityItemInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.ActivityItemOrigin,
+        value: true,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.ActivityItemInsight,
+  },
 };
 
 export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
@@ -304,6 +316,18 @@ export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
     id: 'izn0WGUO8cvq_jqvLQuQP',
     invoker: MOCK_SNAP_ID,
     parentCapability: SnapEndowments.TransactionInsight,
+  },
+  [SnapEndowments.ActivityItemInsight]: {
+    caveats: [
+      {
+        type: SnapCaveatType.ActivityItemOrigin,
+        value: false,
+      },
+    ],
+    date: 1664187844588,
+    id: 'izn0WGUO8cvq_jqvLQuQP',
+    invoker: MOCK_SNAP_ID,
+    parentCapability: SnapEndowments.ActivityItemInsight,
   },
   [SnapEndowments.SignatureInsight]: {
     caveats: [

@@ -13,6 +13,7 @@ import type {
   OnRpcRequestHandler,
   OnSettingsPageHandler,
   OnSignatureHandler,
+  OnViewActivityItemHandler,
   OnStartHandler,
   OnTransactionHandler,
   OnUpdateHandler,
@@ -21,7 +22,6 @@ import type {
 } from '@metamask/snaps-sdk';
 
 import { HandlerType } from './types';
-import type { OnViewActivityItemHandler } from '../../../snaps-sdk/src/types/handlers/activity-item';
 
 export const SNAP_EXPORTS = {
   [HandlerType.OnRpcRequest]: {

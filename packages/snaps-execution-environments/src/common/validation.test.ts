@@ -9,6 +9,7 @@ import {
   assertIsOnProtocolRequestArguments,
   assertIsOnSignatureRequestArguments,
   assertIsOnTransactionRequestArguments,
+  assertIsOnViewActivityItemRequestArguments,
   assertIsOnUserInputRequestArguments,
   isEndowment,
   isEndowmentsArray,
@@ -85,6 +86,86 @@ describe('assertIsOnTransactionRequestArguments', () => {
       expect(() => assertIsOnTransactionRequestArguments(value as any)).toThrow(
         'Invalid request params:',
       );
+    },
+  );
+});
+
+describe('assertIsOnViewActivityItemRequestArguments', () => {
+  it.each([
+    {
+      transactionMeta: { foo: 'bar' },
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: { baz: 'bar' },
+      chainId: 'eip155:1',
+      origin: 'https://some.origin',
+    },
+    {
+      transactionMeta: { foo: 'bar' },
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: { baz: 'bar' },
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      origin: 'https://some.origin',
+    },
+    {
+      transactionMeta: { bar: 'baz' },
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: { baz: 'bar' },
+      chainId: 'eip155:84532',
+      origin: 'https://some.origin',
+    },
+  ])('does not throw for a valid transaction params object', (args) => {
+    expect(() =>
+      assertIsOnViewActivityItemRequestArguments(args),
+    ).not.toThrow();
+  });
+
+  it.each([
+    true,
+    false,
+    null,
+    undefined,
+    0,
+    1,
+    '',
+    'foo',
+    [],
+    {},
+    {
+      // missing origin
+      transaction: { foo: 'bar' },
+      chainId: 'eip155:84532',
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: { baz: 'bar' },
+    },
+    {
+      origin: null,
+      transaction: 'falseTransaction',
+      chainId: 'eip155:84532',
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: { baz: 'bar' },
+    },
+
+    {
+      origin: null,
+      transaction: { foo: 'bar' },
+      chainId: 1,
+      selectedAddress: ['0xsomeAddress'],
+      selectedAccount: { baz: 'bar' },
+    },
+
+    {
+      origin: null,
+      transaction: { foo: 'bar' },
+      chainId: 'eip155:84532',
+      selectedAddress: '0xsomeAddress',
+      selectedAccount: null,
+    },
+  ])(
+    'throws if the value is not a valid transaction params object',
+    (value) => {
+      expect(() =>
+        assertIsOnViewActivityItemRequestArguments(value as any),
+      ).toThrow('Invalid request params:');
     },
   );
 });
