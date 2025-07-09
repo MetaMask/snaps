@@ -1,23 +1,10 @@
-import type { AddressElement } from './Address';
-import type { BoxElement } from './Box';
-import type { ImageElement } from './Image';
-import type { LinkElement } from './Link';
-import type { SkeletonElement } from './Skeleton';
-import type { TextElement } from './Text';
-import type { ValueElement } from './Value';
+import type { GenericSnapElement } from '../component';
 import { createSnapComponent } from '../component';
 
 /**
  * The children of a {@link Row} component.
  */
-export type RowChildren =
-  | AddressElement
-  | ImageElement
-  | TextElement
-  | ValueElement
-  | LinkElement
-  | SkeletonElement
-  | BoxElement;
+export type RowChildren = GenericSnapElement;
 
 /**
  * The props of the {@link Row} component.
