@@ -1,0 +1,24 @@
+{
+  "version": "2.2.3",
+  "description": "MetaMask example snap demonstrating the use of the View Activity Item Insights API.",
+  "proposedName": "Insights Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "xtETCsV7ar+PvDWsk8dW9mLv5BvG+cHlMf4H5GsJ9sA=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/insights-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:transaction-insight": {}
+  },
+  "platformVersion": "9.1.0",
+  "manifestVersion": "0.1"
+}
