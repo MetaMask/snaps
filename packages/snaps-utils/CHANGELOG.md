@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.0]
+
 ### Uncategorized
 
 - feat: Add non-fungible assets support to `endowment:assets` ([#3527](https://github.com/MetaMask/snaps/pull/3527))
@@ -667,7 +669,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.1.0...HEAD
+[11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.0.0...@metamask/snaps-utils@11.1.0
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.1.0...@metamask/snaps-utils@11.0.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.0.0...@metamask/snaps-utils@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@9.4.0...@metamask/snaps-utils@10.0.0
