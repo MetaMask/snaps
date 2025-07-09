@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.26.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @metamask/utils from 11.4.1 to 11.4.2 ([#3526](https://github.com/MetaMask/snaps/pull/3526))
+- Add `snap_startTrace` and `snap_endTrace` RPC method buttons ([#3498](https://github.com/MetaMask/snaps/pull/3498))
 
 ## [2.25.0]
 

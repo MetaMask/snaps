@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.0]
 
-### Uncategorized
+### Added
 
-- fix: Add snap metadata to simulation accounts ([#3528](https://github.com/MetaMask/snaps/pull/3528))
-- chore: Bump @metamask/utils from 11.4.1 to 11.4.2 ([#3526](https://github.com/MetaMask/snaps/pull/3526))
-- chore: Bump @metamask/utils from 11.4.0 to 11.4.1 ([#3516](https://github.com/MetaMask/snaps/pull/3516))
+- Add Snap metadata to simulated accounts ([#3528](https://github.com/MetaMask/snaps/pull/3528))
 
 ## [3.2.0]
 
