@@ -2,6 +2,7 @@ import type yargs from 'yargs';
 
 import { checkNodeVersion, cli } from './cli';
 import commands from './commands';
+import packageJson from '@metamask/snaps-cli/package.json';
 
 jest.mock('./config');
 
@@ -26,6 +27,8 @@ const getMockArgv = (...args: string[]) => {
 // In Jest, that's sometimes "childProcess.js", sometimes other things.
 // In practice, it should always be "mm-snap".
 const HELP_TEXT_REGEX = /^\s*Usage: .+ <command> \[options\]/u;
+
+const versionRange = packageJson.engines.node;
 
 describe('checkNodeVersion', () => {
   it.each(['20.0.0', '20.1.2', '22.0.0'])(
@@ -57,7 +60,7 @@ describe('checkNodeVersion', () => {
     expect(consoleErrorSpy).toHaveBeenCalledTimes(1);
     expect(consoleErrorSpy).toHaveBeenCalledWith(
       expect.stringContaining(
-        `Node version ${version} is not supported. Please use Node 20.0.0 or later.`,
+        `Node version ${version} is not supported. Please use a Node version that satisfies the following range: ${versionRange}`,
       ),
     );
   });
