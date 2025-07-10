@@ -243,11 +243,11 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       }),
     ),
   ),
-  'endowment:activity-item-insight': optional(
+  'endowment:transaction-details-insight': optional(
     mergeStructs(
       HandlerCaveatsStruct,
       object({
-        allowActivityItemOrigin: optional(boolean()),
+        allowTransactionDetailsOrigin: optional(boolean()),
       }),
     ),
   ),

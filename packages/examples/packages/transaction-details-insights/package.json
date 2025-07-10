@@ -1,13 +1,13 @@
 {
-  "name": "@metamask/insights-example-snap",
+  "name": "@metamask/transaction-details-insights-example-snap",
   "version": "2.2.3",
-  "description": "MetaMask example snap demonstrating the use of the Activity Item Insights API",
+  "description": "MetaMask example snap demonstrating the use of the Transaction Details Insights API",
   "keywords": [
     "MetaMask",
     "Snaps",
     "Ethereum"
   ],
-  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/activity-item-insights#readme",
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/transaction-details-insights#readme",
   "bugs": {
     "url": "https://github.com/MetaMask/snaps/issues"
   },

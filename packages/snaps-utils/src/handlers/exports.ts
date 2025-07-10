@@ -13,7 +13,7 @@ import type {
   OnRpcRequestHandler,
   OnSettingsPageHandler,
   OnSignatureHandler,
-  OnViewActivityItemHandler,
+  OnTransactionDetailsHandler,
   OnStartHandler,
   OnTransactionHandler,
   OnUpdateHandler,
@@ -38,12 +38,12 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
-  [HandlerType.OnViewActivityItem]: {
-    type: HandlerType.OnViewActivityItem,
+  [HandlerType.OnTransactionDetails]: {
+    type: HandlerType.OnTransactionDetails,
     required: true,
     validator: (
       snapExport: unknown,
-    ): snapExport is OnViewActivityItemHandler => {
+    ): snapExport is OnTransactionDetailsHandler => {
       return typeof snapExport === 'function';
     },
   },

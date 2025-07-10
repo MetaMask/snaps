@@ -19,9 +19,9 @@ describe('getHandlerArguments', () => {
     ).toThrow('Invalid request params');
   });
 
-  it('validates the request params for the OnViewActivityItem handler', () => {
+  it('validates the request params for the OnTransactionDetails handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnViewActivityItem, {
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnTransactionDetails, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',

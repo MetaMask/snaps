@@ -4,8 +4,8 @@ import type { ComponentOrElement } from '..';
  * This event is called when a user clicks on a transaction to bring up the
  * transaction details modal
  *
- * The `onViewActivityItem` handler returns a Snaps UI component, which is displayed
- * in the activity item insights panel (transaction details modal).
+ * The `onTransactionDetails` handler returns a Snaps UI component, which is displayed
+ * in the transaction details insights panel (transaction details modal).
  *
  * @param params - The request parameters.
  * @param params.transactionMeta - The transaction object. This contains the
@@ -15,15 +15,15 @@ import type { ComponentOrElement } from '..';
  * @param params.chainId - The chain ID of the transaction.
  * @param params.selectedAddress - The address of the account that initiated the transaction.
  * @param params.selectedAccount - The account object of the account that initiated the transaction.
- * @returns The activity item insights.
+ * @returns The transaction details insights.
  */
-export type OnViewActivityItemHandler = (
-  params: OnViewActivityItemParams,
-) => Promise<OnViewActivityItemResponse>;
+export type OnTransactionDetailsHandler = (
+  params: OnTransactionDetailsParams,
+) => Promise<OnTransactionDetailsResponse>;
 
-export type OnViewActivityItemParams = {
+export type OnTransactionDetailsParams = {
   /**
-   * The activity item data.
+   * The transaction details data.
    */
   transactionMeta: {
     /** Unique transaction identifier */
@@ -66,14 +66,14 @@ export type OnViewActivityItemParams = {
 };
 
 /**
- * The response from a Snap's `onViewActivityItem` handler.
+ * The response from a Snap's `onTransactionDetails` handler.
  *
  * @property id - A unique identifier for the insight interface.
  * @property severity - The severity level of the insight. Currently only one
  * level is supported: `critical`.
- * @property content - Optional content to display in the activity item view.
+ * @property content - Optional content to display in the transaction details view.
  */
-export type OnViewActivityItemResponse = {
+export type OnTransactionDetailsResponse = {
   /**
    * A unique identifier for the insight interface.
    */

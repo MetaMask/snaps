@@ -8,25 +8,25 @@ import {
   nullable,
 } from '@metamask/superstruct';
 
-export const OnViewActivityItemSeverityResponseStruct = object({
+export const OnTransactionDetailsSeverityResponseStruct = object({
   severity: optional(literal(SeverityLevel.Critical)),
 });
 
-export const OnViewActivityItemResponseWithIdStruct = assign(
-  OnViewActivityItemSeverityResponseStruct,
+export const OnTransactionDetailsResponseWithIdStruct = assign(
+  OnTransactionDetailsSeverityResponseStruct,
   object({
     id: string(),
   }),
 );
 
-export const OnViewActivityItemResponseWithContentStruct = assign(
-  OnViewActivityItemSeverityResponseStruct,
+export const OnTransactionDetailsResponseWithContentStruct = assign(
+  OnTransactionDetailsSeverityResponseStruct,
   object({
     content: ComponentOrElementStruct,
   }),
 );
 
-export const OnViewActivityItemResponseStruct = nullable(
+export const OnTransactionDetailsResponseStruct = nullable(
   object({
     id: optional(string()),
     severity: optional(literal(SeverityLevel.Critical)),

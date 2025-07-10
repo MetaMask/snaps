@@ -2,7 +2,7 @@ export enum SnapEndowments {
   NetworkAccess = 'endowment:network-access',
   SignatureInsight = 'endowment:signature-insight',
   TransactionInsight = 'endowment:transaction-insight',
-  ActivityItemInsight = 'endowment:activity-item-insight',
+  TransactionDetailsInsight = 'endowment:transaction-details-insight',
   Cronjob = 'endowment:cronjob',
   EthereumProvider = 'endowment:ethereum-provider',
   Rpc = 'endowment:rpc',

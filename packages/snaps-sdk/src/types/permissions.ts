@@ -81,8 +81,8 @@ export type InitialPermissions = Partial<{
     allowTransactionOrigin?: boolean;
     maxRequestTime?: number;
   };
-  'endowment:activity-item-insight': {
-    allowActivityItemOrigin?: boolean;
+  'endowment:transaction-details-insight': {
+    allowTransactionDetailsOrigin?: boolean;
     maxRequestTime?: number;
   };
   'endowment:webassembly': EmptyObject;

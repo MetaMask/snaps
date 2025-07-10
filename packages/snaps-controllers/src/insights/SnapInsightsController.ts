@@ -10,7 +10,7 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
-  getActivityItemOriginCaveat,
+  getTransactionDetailsOriginCaveat,
   getSignatureOriginCaveat,
   getTransactionOriginCaveat,
   SnapEndowments,
@@ -25,7 +25,7 @@ import { getRunnableSnaps } from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
-  TransactionControllerActivityItemViewedEvent,
+  TransactionControllerTransactionDetailsViewedEvent,
   SignatureStateChange,
   SignatureControllerState,
   StateSignature,
@@ -58,7 +58,7 @@ export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
-  | TransactionControllerActivityItemViewedEvent
+  | TransactionControllerTransactionDetailsViewedEvent
   | SignatureStateChange;
 
 export type SnapInsightsControllerMessenger = RestrictedMessenger<
@@ -125,8 +125,8 @@ export class SnapInsightsController extends BaseController<
     );
 
     this.messagingSystem.subscribe(
-      'TransactionController:activityItemViewed',
-      this.#handleViewActivityItem.bind(this),
+      'TransactionController:transactionDetailsViewed',
+      this.#handleTransactionDetails.bind(this),
     );
   }
 
@@ -167,7 +167,7 @@ export class SnapInsightsController extends BaseController<
     }, []);
   }
 
-  #handleViewActivityItem({
+  #handleTransactionDetails({
     transactionMeta,
     selectedAddress,
     selectedAccount,
@@ -181,7 +181,7 @@ export class SnapInsightsController extends BaseController<
     const caipChainId = `eip155:${hexToBigInt(chainId).toString(10)}`;
 
     const snaps = this.#getSnapsWithPermission(
-      SnapEndowments.ActivityItemInsight,
+      SnapEndowments.TransactionDetailsInsight,
     );
 
     snaps.forEach(({ snapId, permission }) => {
@@ -191,18 +191,18 @@ export class SnapInsightsController extends BaseController<
       });
 
       // Check if snap has transactionOrigin caveat
-      const hasActivityItemOriginCaveat =
-        getActivityItemOriginCaveat(permission);
-      const activityItemOrigin =
-        hasActivityItemOriginCaveat && origin ? origin : null;
+      const hasTransactionDetailsOriginCaveat =
+        getTransactionDetailsOriginCaveat(permission);
+      const transactionDetailsOrigin =
+        hasTransactionDetailsOriginCaveat && origin ? origin : null;
 
       this.#handleSnapRequest({
         snapId,
-        handler: HandlerType.OnViewActivityItem,
+        handler: HandlerType.OnTransactionDetails,
         params: {
           transactionMeta,
           chainId: caipChainId,
-          origin: activityItemOrigin,
+          origin: transactionDetailsOrigin,
           selectedAddress,
           selectedAccount,
         },
@@ -418,7 +418,7 @@ export class SnapInsightsController extends BaseController<
     handler:
       | HandlerType.OnTransaction
       | HandlerType.OnSignature
-      | HandlerType.OnViewActivityItem;
+      | HandlerType.OnTransactionDetails;
     params: Record<string, Json>;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {

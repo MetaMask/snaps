@@ -15,4 +15,4 @@ export type * from './signature';
 export * from './user-input';
 export type * from './settings-page';
 export type * from './web-socket-event';
-export type * from './activity-item';
+export type * from './transaction-details';

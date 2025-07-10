@@ -16,18 +16,19 @@ import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
 
-const permissionName = SnapEndowments.ActivityItemInsight;
+const permissionName = SnapEndowments.TransactionDetailsInsight;
 
-type ActivityItemInsightEndowmentSpecification = ValidPermissionSpecification<{
-  permissionType: PermissionType.Endowment;
-  targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => null;
-  allowedCaveats: Readonly<NonEmptyArray<string>> | null;
-  validator: PermissionValidatorConstraint;
-}>;
+type TransactionDetailsInsightEndowmentSpecification =
+  ValidPermissionSpecification<{
+    permissionType: PermissionType.Endowment;
+    targetName: typeof permissionName;
+    endowmentGetter: (_options?: EndowmentGetterParams) => null;
+    allowedCaveats: Readonly<NonEmptyArray<string>> | null;
+    validator: PermissionValidatorConstraint;
+  }>;
 
 /**
- * `endowment:activity-item-insight` returns nothing; it is intended to be used as a flag
+ * `endowment:transaction-details-insight` returns nothing; it is intended to be used as a flag
  * by the extension to detect whether the snap has the capability to show information on the transaction confirmation screen.
  *
  * @param _builderOptions - Optional specification builder options.
@@ -36,25 +37,25 @@ type ActivityItemInsightEndowmentSpecification = ValidPermissionSpecification<{
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.Endowment,
   any,
-  ActivityItemInsightEndowmentSpecification
+  TransactionDetailsInsightEndowmentSpecification
 > = (_builderOptions?: unknown) => {
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [
       SnapCaveatType.MaxRequestTime,
-      SnapCaveatType.ActivityItemOrigin,
+      SnapCaveatType.TransactionDetailsOrigin,
     ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
-      { type: SnapCaveatType.ActivityItemOrigin, optional: true },
+      { type: SnapCaveatType.TransactionDetailsOrigin, optional: true },
       { type: SnapCaveatType.MaxRequestTime, optional: true },
     ]),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
-export const activityItemInsightEndowmentBuilder = Object.freeze({
+export const transactionDetailsInsightEndowmentBuilder = Object.freeze({
   targetName: permissionName,
   specificationBuilder,
 } as const);
@@ -88,7 +89,7 @@ function validateCaveat(caveat: Caveat<string, any>): void {
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
  */
-export function getActivityItemInsightCaveatMapper(
+export function getTransactionDetailsInsightCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
   if (
@@ -101,17 +102,17 @@ export function getActivityItemInsightCaveatMapper(
   return {
     caveats: [
       {
-        type: SnapCaveatType.ActivityItemOrigin,
+        type: SnapCaveatType.TransactionDetailsOrigin,
         value:
-          hasProperty(value, 'allowActivityItemOrigin') &&
-          (value.allowActivityItemOrigin as boolean),
+          hasProperty(value, 'allowTransactionDetailsOrigin') &&
+          (value.allowTransactionDetailsOrigin as boolean),
       },
     ],
   };
 }
 
 /**
- * Getter function to get the activity item origin caveat from a permission.
+ * Getter function to get the transaction details origin caveat from a permission.
  *
  * This does basic validation of the caveat, but does not validate the type or
  * value of the namespaces object itself, as this is handled by the
@@ -121,7 +122,7 @@ export function getActivityItemInsightCaveatMapper(
  * @returns The transaction origin, or `null` if the permission does not have a
  * transaction origin caveat.
  */
-export function getActivityItemOriginCaveat(
+export function getTransactionDetailsOriginCaveat(
   permission?: PermissionConstraint,
 ): boolean | null {
   if (!permission?.caveats) {
@@ -129,19 +130,21 @@ export function getActivityItemOriginCaveat(
   }
 
   assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.ActivityItemOrigin);
+  assert(
+    permission.caveats[0].type === SnapCaveatType.TransactionDetailsOrigin,
+  );
 
   const caveat = permission.caveats[0] as Caveat<string, boolean>;
 
   return caveat.value ?? null;
 }
 
-export const activityItemInsightCaveatSpecifications: Record<
-  SnapCaveatType.ActivityItemOrigin,
+export const transactionDetailsInsightCaveatSpecifications: Record<
+  SnapCaveatType.TransactionDetailsOrigin,
   CaveatSpecificationConstraint
 > = {
-  [SnapCaveatType.ActivityItemOrigin]: Object.freeze({
-    type: SnapCaveatType.ActivityItemOrigin,
+  [SnapCaveatType.TransactionDetailsOrigin]: Object.freeze({
+    type: SnapCaveatType.TransactionDetailsOrigin,
     validator: (caveat: Caveat<string, any>) => validateCaveat(caveat),
   }),
 };

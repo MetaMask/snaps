@@ -9,7 +9,7 @@ import {
   assertIsOnProtocolRequestArguments,
   assertIsOnSignatureRequestArguments,
   assertIsOnTransactionRequestArguments,
-  assertIsOnViewActivityItemRequestArguments,
+  assertIsOnTransactionDetailsRequestArguments,
   assertIsOnUserInputRequestArguments,
   isEndowment,
   isEndowmentsArray,
@@ -90,7 +90,7 @@ describe('assertIsOnTransactionRequestArguments', () => {
   );
 });
 
-describe('assertIsOnViewActivityItemRequestArguments', () => {
+describe('assertIsOnTransactionDetailsRequestArguments', () => {
   it.each([
     {
       transactionMeta: { foo: 'bar' },
@@ -115,7 +115,7 @@ describe('assertIsOnViewActivityItemRequestArguments', () => {
     },
   ])('does not throw for a valid transaction params object', (args) => {
     expect(() =>
-      assertIsOnViewActivityItemRequestArguments(args),
+      assertIsOnTransactionDetailsRequestArguments(args),
     ).not.toThrow();
   });
 
@@ -164,7 +164,7 @@ describe('assertIsOnViewActivityItemRequestArguments', () => {
     'throws if the value is not a valid transaction params object',
     (value) => {
       expect(() =>
-        assertIsOnViewActivityItemRequestArguments(value as any),
+        assertIsOnTransactionDetailsRequestArguments(value as any),
       ).toThrow('Invalid request params:');
     },
   );

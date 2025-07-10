@@ -1,6 +1,6 @@
 {
   "version": "2.2.3",
-  "description": "MetaMask example snap demonstrating the use of the View Activity Item Insights API.",
+  "description": "MetaMask example snap demonstrating the use of the View Transaction Details Insights API.",
   "proposedName": "Insights Example Snap",
   "repository": {
     "type": "git",

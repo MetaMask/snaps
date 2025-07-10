@@ -2,22 +2,22 @@ import type { PermissionConstraint } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 
-import { getActivityItemOriginCaveat, SnapEndowments } from '.';
+import { getTransactionDetailsOriginCaveat, SnapEndowments } from '.';
 import {
-  activityItemInsightEndowmentBuilder,
-  activityItemInsightCaveatSpecifications,
-  getActivityItemInsightCaveatMapper,
-} from './activity-item-insight';
+  transactionDetailsInsightEndowmentBuilder,
+  transactionDetailsInsightCaveatSpecifications,
+  getTransactionDetailsInsightCaveatMapper,
+} from './transaction-details-insight';
 
-describe('endowment:activity-item-insight-insight', () => {
+describe('endowment:transaction-details-insight-insight', () => {
   const specification =
-    activityItemInsightEndowmentBuilder.specificationBuilder({});
+    transactionDetailsInsightEndowmentBuilder.specificationBuilder({});
   it('builds the expected permission specification', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
-      targetName: SnapEndowments.ActivityItemInsight,
+      targetName: SnapEndowments.TransactionDetailsInsight,
       allowedCaveats: [
-        SnapCaveatType.ActivityItemOrigin,
+        SnapCaveatType.TransactionDetailsOrigin,
         SnapCaveatType.MaxRequestTime,
       ],
       endowmentGetter: expect.any(Function),
@@ -36,22 +36,22 @@ describe('endowment:activity-item-insight-insight', () => {
       ).not.toThrow();
     });
 
-    it('throws if the caveat is not a single "activityItemOrigin"', () => {
+    it('throws if the caveat is not a single "transactionDetailsOrigin"', () => {
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "activityItemOrigin", "maxRequestTime", received "foo".',
+        'Expected the following caveats: "transactionDetailsOrigin", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
         specification.validator({
           caveats: [
-            { type: 'activityItemOrigin', value: [] },
-            { type: 'activityItemOrigin', value: [] },
+            { type: 'transactionDetailsOrigin', value: [] },
+            { type: 'transactionDetailsOrigin', value: [] },
           ],
         }),
       ).toThrow('Duplicate caveats are not allowed.');
@@ -59,8 +59,8 @@ describe('endowment:activity-item-insight-insight', () => {
   });
 });
 
-describe('getActivityItemOriginCaveat', () => {
-  it('returns the value from a activity item insight permission', () => {
+describe('getTransactionDetailsOriginCaveat', () => {
+  it('returns the value from a transaction details insight permission', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -68,17 +68,17 @@ describe('getActivityItemOriginCaveat', () => {
       id: 'baz',
       caveats: [
         {
-          type: SnapCaveatType.ActivityItemOrigin,
+          type: SnapCaveatType.TransactionDetailsOrigin,
           value: true,
         },
       ],
     };
 
-    expect(getActivityItemOriginCaveat(permission)).toBe(true);
+    expect(getTransactionDetailsOriginCaveat(permission)).toBe(true);
   });
 
   it('returns null if the input is undefined', () => {
-    expect(getActivityItemOriginCaveat(undefined)).toBeNull();
+    expect(getTransactionDetailsOriginCaveat(undefined)).toBeNull();
   });
 
   it('returns null if the permission does not have caveats', () => {
@@ -90,7 +90,7 @@ describe('getActivityItemOriginCaveat', () => {
       caveats: null,
     };
 
-    expect(getActivityItemOriginCaveat(permission)).toBeNull();
+    expect(getTransactionDetailsOriginCaveat(permission)).toBeNull();
   });
 
   it('throws if the permission does not have exactly one caveat', () => {
@@ -101,22 +101,22 @@ describe('getActivityItemOriginCaveat', () => {
       id: 'baz',
       caveats: [
         {
-          type: SnapCaveatType.ActivityItemOrigin,
+          type: SnapCaveatType.TransactionDetailsOrigin,
           value: true,
         },
         {
-          type: SnapCaveatType.ActivityItemOrigin,
+          type: SnapCaveatType.TransactionDetailsOrigin,
           value: true,
         },
       ],
     };
 
-    expect(() => getActivityItemOriginCaveat(permission)).toThrow(
+    expect(() => getTransactionDetailsOriginCaveat(permission)).toThrow(
       'Assertion failed',
     );
   });
 
-  it('throws if the first caveat is not a "activityItemOrigin" caveat', () => {
+  it('throws if the first caveat is not a "transactionDetailsOrigin" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -130,22 +130,22 @@ describe('getActivityItemOriginCaveat', () => {
       ],
     };
 
-    expect(() => getActivityItemOriginCaveat(permission)).toThrow(
+    expect(() => getTransactionDetailsOriginCaveat(permission)).toThrow(
       'Assertion failed',
     );
   });
 });
 
-describe('getActivityItemInsightCaveatMapper', () => {
+describe('getTransactionDetailsInsightCaveatMapper', () => {
   it('maps input to a caveat', () => {
     expect(
-      getActivityItemInsightCaveatMapper({
-        allowActivityItemOrigin: true,
+      getTransactionDetailsInsightCaveatMapper({
+        allowTransactionDetailsOrigin: true,
       }),
     ).toStrictEqual({
       caveats: [
         {
-          type: 'activityItemOrigin',
+          type: 'transactionDetailsOrigin',
           value: true,
         },
       ],
@@ -153,31 +153,31 @@ describe('getActivityItemInsightCaveatMapper', () => {
   });
 
   it('does not include caveat if input is empty object', () => {
-    expect(getActivityItemInsightCaveatMapper({})).toStrictEqual({
+    expect(getTransactionDetailsInsightCaveatMapper({})).toStrictEqual({
       caveats: null,
     });
   });
 });
 
-describe('activityItemInsightCaveatSpecifications', () => {
+describe('transactionDetailsInsightCaveatSpecifications', () => {
   describe('validator', () => {
     it('throws if the caveat values are invalid', () => {
       expect(() =>
-        activityItemInsightCaveatSpecifications[
-          SnapCaveatType.ActivityItemOrigin
+        transactionDetailsInsightCaveatSpecifications[
+          SnapCaveatType.TransactionDetailsOrigin
         ].validator?.(
           // @ts-expect-error Missing value type.
           {
-            type: SnapCaveatType.ActivityItemOrigin,
+            type: SnapCaveatType.TransactionDetailsOrigin,
           },
         ),
       ).toThrow('Expected a plain object.');
 
       expect(() =>
-        activityItemInsightCaveatSpecifications[
-          SnapCaveatType.ActivityItemOrigin
+        transactionDetailsInsightCaveatSpecifications[
+          SnapCaveatType.TransactionDetailsOrigin
         ].validator?.({
-          type: SnapCaveatType.ActivityItemOrigin,
+          type: SnapCaveatType.TransactionDetailsOrigin,
           value: undefined,
         }),
       ).toThrow('Expected caveat value to have type "boolean"');

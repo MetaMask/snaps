@@ -171,7 +171,7 @@ export function assertIsOnTransactionRequestArguments(
   assertRequestArguments(value, OnTransactionRequestArgumentsStruct);
 }
 
-export const OnViewActivityItemRequestArgumentsStruct = object({
+export const OnTransactionDetailsRequestArgumentsStruct = object({
   transactionMeta: record(string(), JsonStruct),
   origin: nullable(string()),
   chainId: CaipChainIdStruct,
@@ -179,22 +179,22 @@ export const OnViewActivityItemRequestArgumentsStruct = object({
   selectedAccount: record(string(), JsonStruct),
 });
 
-export type OnViewActivityItemRequestArguments = Infer<
-  typeof OnViewActivityItemRequestArgumentsStruct
+export type OnTransactionDetailsRequestArguments = Infer<
+  typeof OnTransactionDetailsRequestArgumentsStruct
 >;
 
 /**
- * Asserts that the given value is a valid {@link OnViewActivityItemRequestArguments}
+ * Asserts that the given value is a valid {@link OnTransactionDetailsRequestArguments}
  * object.
  *
  * @param value - The value to validate.
- * @throws If the value is not a valid {@link OnViewActivityItemRequestArguments}
+ * @throws If the value is not a valid {@link OnTransactionDetailsRequestArguments}
  * object.
  */
-export function assertIsOnViewActivityItemRequestArguments(
+export function assertIsOnTransactionDetailsRequestArguments(
   value: unknown,
-): asserts value is OnViewActivityItemRequestArguments {
-  assertRequestArguments(value, OnViewActivityItemRequestArgumentsStruct);
+): asserts value is OnTransactionDetailsRequestArguments {
+  assertRequestArguments(value, OnTransactionDetailsRequestArgumentsStruct);
 }
 
 export const OnSignatureRequestArgumentsStruct = object({

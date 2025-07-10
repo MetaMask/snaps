@@ -3,10 +3,10 @@ import { HandlerType } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
 import {
-  activityItemInsightCaveatSpecifications,
-  activityItemInsightEndowmentBuilder,
-  getActivityItemInsightCaveatMapper,
-} from './activity-item-insight';
+  transactionDetailsInsightCaveatSpecifications,
+  transactionDetailsInsightEndowmentBuilder,
+  getTransactionDetailsInsightCaveatMapper,
+} from './transaction-details-insight';
 import { assetsEndowmentBuilder, getAssetsCaveatMapper } from './assets';
 import {
   createMaxRequestTimeMapper,
@@ -59,8 +59,8 @@ export const endowmentPermissionBuilders = {
   [networkAccessEndowmentBuilder.targetName]: networkAccessEndowmentBuilder,
   [transactionInsightEndowmentBuilder.targetName]:
     transactionInsightEndowmentBuilder,
-  [activityItemInsightEndowmentBuilder.targetName]:
-    activityItemInsightEndowmentBuilder,
+  [transactionDetailsInsightEndowmentBuilder.targetName]:
+    transactionDetailsInsightEndowmentBuilder,
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetName]:
     ethereumProviderEndowmentBuilder,
@@ -80,7 +80,7 @@ export const endowmentPermissionBuilders = {
 export const endowmentCaveatSpecifications = {
   ...cronjobCaveatSpecifications,
   ...transactionInsightCaveatSpecifications,
-  ...activityItemInsightCaveatSpecifications,
+  ...transactionDetailsInsightCaveatSpecifications,
   ...rpcCaveatSpecifications,
   ...nameLookupCaveatSpecifications,
   ...keyringCaveatSpecifications,
@@ -99,9 +99,8 @@ export const endowmentCaveatMappers: Record<
   [transactionInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getTransactionInsightCaveatMapper,
   ),
-  [activityItemInsightEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
-    getActivityItemInsightCaveatMapper,
-  ),
+  [transactionDetailsInsightEndowmentBuilder.targetName]:
+    createMaxRequestTimeMapper(getTransactionDetailsInsightCaveatMapper),
   [rpcEndowmentBuilder.targetName]:
     createMaxRequestTimeMapper(getRpcCaveatMapper),
   [nameLookupEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
@@ -128,8 +127,8 @@ export const endowmentCaveatMappers: Record<
 export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnRpcRequest]: rpcEndowmentBuilder.targetName,
   [HandlerType.OnTransaction]: transactionInsightEndowmentBuilder.targetName,
-  [HandlerType.OnViewActivityItem]:
-    activityItemInsightEndowmentBuilder.targetName,
+  [HandlerType.OnTransactionDetails]:
+    transactionDetailsInsightEndowmentBuilder.targetName,
   [HandlerType.OnCronjob]: cronjobEndowmentBuilder.targetName,
   [HandlerType.OnNameLookup]: nameLookupEndowmentBuilder.targetName,
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
@@ -153,7 +152,7 @@ export * from './enum';
 export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
-export { getActivityItemOriginCaveat } from './activity-item-insight';
+export { getTransactionDetailsOriginCaveat } from './transaction-details-insight';
 export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
 export { getKeyringCaveatOrigins } from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';

@@ -287,17 +287,17 @@ export const MOCK_INSIGHTS_PERMISSIONS: Record<string, PermissionConstraint> = {
     invoker: MOCK_SNAP_ID,
     parentCapability: SnapEndowments.SignatureInsight,
   },
-  [SnapEndowments.ActivityItemInsight]: {
+  [SnapEndowments.TransactionDetailsInsight]: {
     caveats: [
       {
-        type: SnapCaveatType.ActivityItemOrigin,
+        type: SnapCaveatType.TransactionDetailsOrigin,
         value: true,
       },
     ],
     date: 1664187844588,
     id: 'izn0WGUO8cvq_jqvLQuQP',
     invoker: MOCK_SNAP_ID,
-    parentCapability: SnapEndowments.ActivityItemInsight,
+    parentCapability: SnapEndowments.TransactionDetailsInsight,
   },
 };
 
@@ -317,17 +317,17 @@ export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
     invoker: MOCK_SNAP_ID,
     parentCapability: SnapEndowments.TransactionInsight,
   },
-  [SnapEndowments.ActivityItemInsight]: {
+  [SnapEndowments.TransactionDetailsInsight]: {
     caveats: [
       {
-        type: SnapCaveatType.ActivityItemOrigin,
+        type: SnapCaveatType.TransactionDetailsOrigin,
         value: false,
       },
     ],
     date: 1664187844588,
     id: 'izn0WGUO8cvq_jqvLQuQP',
     invoker: MOCK_SNAP_ID,
-    parentCapability: SnapEndowments.ActivityItemInsight,
+    parentCapability: SnapEndowments.TransactionDetailsInsight,
   },
   [SnapEndowments.SignatureInsight]: {
     caveats: [
@@ -919,7 +919,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   >({
     name: 'SnapInsightsController',
     allowedEvents: [
-      'TransactionController:activityItemViewed',
+      'TransactionController:transactionDetailsViewed',
       'TransactionController:unapprovedTransactionAdded',
       'TransactionController:transactionStatusUpdated',
       'SignatureController:stateChange',
