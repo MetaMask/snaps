@@ -64,11 +64,11 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/snaps-rpc-methods": "workspace:^",
-    "@metamask/snaps-sandbox": "workspace:^",
-    "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-utils": "workspace:^",
-    "@metamask/snaps-webpack-plugin": "workspace:^",
+    "@metamask/snaps-rpc-methods": "file:../snaps-rpc-methods",
+    "@metamask/snaps-sandbox": "file:../snaps-sandbox",
+    "@metamask/snaps-sdk": "file:../snaps-sdk",
+    "@metamask/snaps-utils": "file:../snaps-utils",
+    "@metamask/snaps-webpack-plugin": "file:../snaps-webpack-plugin",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.4.2",
     "@swc/core": "1.11.31",
