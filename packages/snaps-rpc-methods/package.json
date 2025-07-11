@@ -58,8 +58,8 @@
     "@metamask/key-tree": "^10.1.1",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/rpc-errors": "^7.0.3",
-    "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/snaps-sdk": "file:../snaps-sdk",
+    "@metamask/snaps-utils": "file:../snaps-utils",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.4.2",
     "@noble/hashes": "^1.7.1"

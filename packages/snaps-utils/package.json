@@ -86,7 +86,7 @@
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/slip44": "^4.2.0",
     "@metamask/snaps-registry": "^3.2.3",
-    "@metamask/snaps-sdk": "workspace:^",
+    "@metamask/snaps-sdk": "file:../snaps-sdk",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.4.2",
     "@noble/hashes": "^1.7.1",
