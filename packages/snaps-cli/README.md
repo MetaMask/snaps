@@ -116,7 +116,7 @@ snap-project/
 
 Source files other than `index.js` are located through its imports. The
 defaults can be overwritten using the `snap.config.js` or (`snap.config.ts`)
-[config file](#configuration-file).
+[config file](#configuration).
 
 ## Configuration
 
