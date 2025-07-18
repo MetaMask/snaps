@@ -174,7 +174,11 @@ export class CronjobController extends BaseController<
 
   #dailyTimer: Timer = new Timer(DAILY_TIMEOUT);
 
-  constructor({ messenger, state, stateManager }: CronjobControllerArgs) {
+  constructor({
+    messenger,
+    stateManager,
+    state = stateManager.getInitialState(),
+  }: CronjobControllerArgs) {
     super({
       messenger,
       metadata: {
@@ -184,7 +188,6 @@ export class CronjobController extends BaseController<
       state: {
         events: {},
         ...state,
-        ...stateManager.getInitialState(),
       },
     });
 
