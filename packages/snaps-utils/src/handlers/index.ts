@@ -1,3 +1,4 @@
+export * from './transaction-details';
 export * from './asset-historical-price';
 export * from './assets-conversion';
 export * from './assets-market-data';
