@@ -93,6 +93,11 @@ export type CronjobControllerMessenger = RestrictedMessenger<
 
 export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
 
+export type CronjobControllerStateManager = {
+  set(state: CronjobControllerState): void;
+  get(): CronjobControllerState | undefined;
+};
+
 export type CronjobControllerArgs = {
   messenger: CronjobControllerMessenger;
 
@@ -100,6 +105,14 @@ export type CronjobControllerArgs = {
    * Persisted state that will be used for rehydration.
    */
   state?: CronjobControllerState;
+
+  /**
+   * State manager for the controller.
+   *
+   * This is a temporary workaround to allow the controller to update the state
+   * often without persisting all of the client state to disk.
+   */
+  stateManager: CronjobControllerStateManager;
 };
 
 /**
@@ -157,22 +170,26 @@ export class CronjobController extends BaseController<
 > {
   readonly #timers: Map<string, Timer>;
 
+  readonly #stateManager: CronjobControllerStateManager;
+
   #dailyTimer: Timer = new Timer(DAILY_TIMEOUT);
 
-  constructor({ messenger, state }: CronjobControllerArgs) {
+  constructor({ messenger, state, stateManager }: CronjobControllerArgs) {
     super({
       messenger,
       metadata: {
-        events: { persist: true, anonymous: false },
+        events: { persist: false, anonymous: false },
       },
       name: controllerName,
       state: {
         events: {},
         ...state,
+        ...stateManager.get(),
       },
     });
 
     this.#timers = new Map();
+    this.#stateManager = stateManager;
 
     this.messagingSystem.subscribe(
       'SnapController:snapInstalled',
@@ -375,9 +392,11 @@ export class CronjobController extends BaseController<
       scheduledAt: new Date().toISOString(),
     };
 
-    this.update((state) => {
+    const { nextState } = this.update((state) => {
       state.events[internalEvent.id] = castDraft(internalEvent);
     });
+
+    this.#stateManager.set(nextState);
 
     this.#schedule(internalEvent);
     return id;
@@ -390,9 +409,11 @@ export class CronjobController extends BaseController<
    */
   #schedule(event: InternalBackgroundEvent) {
     const date = getExecutionDate(event.schedule);
-    this.update((state) => {
+    const { nextState } = this.update((state) => {
       state.events[event.id].date = date;
     });
+
+    this.#stateManager.set(nextState);
 
     this.#startTimer({
       ...event,
@@ -459,9 +480,11 @@ export class CronjobController extends BaseController<
     // Non-recurring events are removed from the state after execution, and
     // recurring events are rescheduled.
     if (!event.recurring) {
-      this.update((state) => {
+      const { nextState } = this.update((state) => {
         delete state.events[event.id];
       });
+
+      this.#stateManager.set(nextState);
 
       return;
     }
@@ -480,9 +503,11 @@ export class CronjobController extends BaseController<
     timer?.cancel();
     this.#timers.delete(id);
 
-    this.update((state) => {
+    const { nextState } = this.update((state) => {
       delete state.events[id];
     });
+
+    this.#stateManager.set(nextState);
   }
 
   /**

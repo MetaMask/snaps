@@ -5,6 +5,10 @@ import { MOCK_ORIGIN, MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { SemVerVersion } from '@metamask/utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
+import type {
+  CronjobControllerState,
+  CronjobControllerStateManager,
+} from './CronjobController';
 import { CronjobController } from './CronjobController';
 import { METAMASK_ORIGIN } from '../snaps/constants';
 import {
@@ -14,6 +18,22 @@ import {
 import { getCronjobPermission } from '../test-utils/cronjob';
 
 const MOCK_VERSION = '1.0.0' as SemVerVersion;
+
+/**
+ * Get a mock state manager for the `CronjobController`.
+ *
+ * @returns A state manager object with `get` and `set` methods.
+ */
+function getMockStateManager(): CronjobControllerStateManager {
+  let state: CronjobControllerState | undefined;
+
+  return {
+    get: () => state,
+    set: (newState) => {
+      state = newState;
+    },
+  };
+}
 
 describe('CronjobController', () => {
   const originalProcessNextTick = process.nextTick;
@@ -44,6 +64,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -92,6 +113,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -129,6 +151,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -161,6 +184,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -216,6 +240,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           [`cronjob-${MOCK_SNAP_ID}-0`]: {
@@ -253,6 +278,7 @@ describe('CronjobController', () => {
     const secondCronjobController = new CronjobController({
       messenger: controllerMessenger,
       state: cronjobController.state,
+      stateManager: getMockStateManager(),
     });
 
     secondCronjobController.init();
@@ -282,6 +308,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -329,6 +356,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -386,6 +414,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -403,6 +432,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           foo: {
@@ -450,6 +480,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           foo: {
@@ -498,6 +529,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           [`cronjob-${MOCK_SNAP_ID}-0`]: {
@@ -572,6 +604,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           foo: {
@@ -682,6 +715,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -716,6 +750,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -750,6 +785,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
       state: {
         events: {
           [`cronjob-${MOCK_SNAP_ID}-0`]: {
@@ -823,6 +859,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -860,6 +897,7 @@ describe('CronjobController', () => {
 
     const cronjobController = new CronjobController({
       messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
     });
 
     cronjobController.init();
@@ -893,6 +931,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
       });
 
       cronjobController.init();
@@ -944,6 +983,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
       });
 
       cronjobController.init();
@@ -975,6 +1015,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
       });
 
       cronjobController.init();
@@ -1015,6 +1056,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
       });
 
       cronjobController.init();
@@ -1055,6 +1097,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
       });
 
       cronjobController.init();
@@ -1098,6 +1141,7 @@ describe('CronjobController', () => {
 
       const cronjobController = new CronjobController({
         messenger: controllerMessenger,
+        stateManager: getMockStateManager(),
         state: {
           events: {
             [`cronjob-${MOCK_SNAP_ID}-0`]: {
