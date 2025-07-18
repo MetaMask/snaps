@@ -28,7 +28,7 @@ function getMockStateManager(): CronjobControllerStateManager {
   let state: CronjobControllerState | undefined;
 
   return {
-    get: () => state,
+    getInitialState: () => state,
     set: (newState) => {
       state = newState;
     },

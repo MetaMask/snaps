@@ -95,7 +95,7 @@ export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
 
 export type CronjobControllerStateManager = {
   set(state: CronjobControllerState): void;
-  get(): CronjobControllerState | undefined;
+  getInitialState(): CronjobControllerState | undefined;
 };
 
 export type CronjobControllerArgs = {
@@ -184,7 +184,7 @@ export class CronjobController extends BaseController<
       state: {
         events: {},
         ...state,
-        ...stateManager.get(),
+        ...stateManager.getInitialState(),
       },
     });
 
