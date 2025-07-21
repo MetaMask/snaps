@@ -479,6 +479,11 @@ export type IsMinimumPlatformVersion = {
   handler: SnapController['isMinimumPlatformVersion'];
 };
 
+export type SetActive = {
+  type: `${typeof controllerName}:setActive`;
+  handler: SnapController['setActive'];
+};
+
 export type SnapControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapControllerState
@@ -507,7 +512,8 @@ export type SnapControllerActions =
   | GetSnapFile
   | SnapControllerGetStateAction
   | StopAllSnaps
-  | IsMinimumPlatformVersion;
+  | IsMinimumPlatformVersion
+  | SetActive;
 
 // Controller Messenger Events
 
@@ -1293,37 +1299,21 @@ export class SnapController extends BaseController<
       `${controllerName}:isMinimumPlatformVersion`,
       (...args) => this.isMinimumPlatformVersion(...args),
     );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:setActive`,
+      (...args) => this.setActive(...args),
+    );
   }
 
   /**
    * Initialise the SnapController.
    *
    * Currently this method calls the `onStart` lifecycle hook for all
-   * installed Snaps.
+   * runnable Snaps.
    */
   init() {
-    const snaps = this.getRunnableSnaps();
-    for (const { id } of snaps) {
-      const hasLifecycleHooksEndowment = this.messagingSystem.call(
-        'PermissionController:hasPermission',
-        id,
-        SnapEndowments.LifecycleHooks,
-      );
-
-      if (!hasLifecycleHooksEndowment) {
-        continue;
-      }
-
-      this.#callLifecycleHook(METAMASK_ORIGIN, id, HandlerType.OnStart).catch(
-        (error) => {
-          logError(
-            `Error when calling \`onStart\` lifecycle hook for Snap "${id}": ${getErrorMessage(
-              error,
-            )}`,
-          );
-        },
-      );
-    }
+    this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
   }
 
   #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
@@ -3714,6 +3704,20 @@ export class SnapController extends BaseController<
   }
 
   /**
+   * Set the active state of the client. This will trigger the `onActive` or
+   * `onInactive` lifecycle hooks for all Snaps.
+   *
+   * @param active - A boolean indicating whether the client is active or not.
+   */
+  setActive(active: boolean) {
+    if (active) {
+      this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnActive);
+    } else {
+      this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnInactive);
+    }
+  }
+
+  /**
    * Determine the execution timeout for a given handler permission.
    *
    * If no permission is specified or the permission itself has no execution timeout defined
@@ -4449,6 +4453,36 @@ export class SnapController extends BaseController<
     }
 
     return true;
+  }
+
+  /**
+   * Call a lifecycle hook for all runnable Snaps.
+   *
+   * @param origin - The origin of the request.
+   * @param handler - The lifecycle hook to call. This should be one of the
+   * supported lifecycle hooks.
+   */
+  #callLifecycleHooks(origin: string, handler: HandlerType) {
+    const snaps = this.getRunnableSnaps();
+    for (const { id } of snaps) {
+      const hasLifecycleHooksEndowment = this.messagingSystem.call(
+        'PermissionController:hasPermission',
+        id,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      if (!hasLifecycleHooksEndowment) {
+        continue;
+      }
+
+      this.#callLifecycleHook(origin, id, handler).catch((error) => {
+        logError(
+          `Error calling lifecycle hook "${handler}" for Snap "${id}": ${getErrorMessage(
+            error,
+          )}`,
+        );
+      });
+    }
   }
 
   /**

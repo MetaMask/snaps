@@ -1899,6 +1899,8 @@ describe('BaseSnapExecutor', () => {
       HandlerType.OnInstall,
       HandlerType.OnUpdate,
       HandlerType.OnStart,
+      HandlerType.OnActive,
+      HandlerType.OnInactive,
     ];
 
     for (const handler of LIFECYCLE_HOOKS) {

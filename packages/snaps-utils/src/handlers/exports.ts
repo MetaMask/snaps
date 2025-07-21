@@ -72,6 +72,20 @@ export const SNAP_EXPORTS = {
       return typeof snapExport === 'function';
     },
   },
+  [HandlerType.OnActive]: {
+    type: HandlerType.OnActive,
+    required: false,
+    validator: (snapExport: unknown): snapExport is OnStartHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
+  [HandlerType.OnInactive]: {
+    type: HandlerType.OnInactive,
+    required: false,
+    validator: (snapExport: unknown): snapExport is OnStartHandler => {
+      return typeof snapExport === 'function';
+    },
+  },
   [HandlerType.OnKeyringRequest]: {
     type: HandlerType.OnKeyringRequest,
     required: true,

@@ -48,6 +48,8 @@ export enum HandlerType {
   OnProtocolRequest = 'onProtocolRequest',
   OnClientRequest = 'onClientRequest',
   OnWebSocketEvent = 'onWebSocketEvent',
+  OnActive = 'onActive',
+  OnInactive = 'onInactive',
 }
 
 export type SnapHandler = {

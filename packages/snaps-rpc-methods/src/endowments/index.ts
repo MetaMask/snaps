@@ -122,6 +122,8 @@ export const handlerEndowments: Record<HandlerType, string | null> = {
   [HandlerType.OnInstall]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnUpdate]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnStart]: lifecycleHooksEndowmentBuilder.targetName,
+  [HandlerType.OnActive]: lifecycleHooksEndowmentBuilder.targetName,
+  [HandlerType.OnInactive]: lifecycleHooksEndowmentBuilder.targetName,
   [HandlerType.OnKeyringRequest]: keyringEndowmentBuilder.targetName,
   [HandlerType.OnHomePage]: homePageEndowmentBuilder.targetName,
   [HandlerType.OnSettingsPage]: settingsPageEndowmentBuilder.targetName,
