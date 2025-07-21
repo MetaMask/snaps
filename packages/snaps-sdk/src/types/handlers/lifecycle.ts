@@ -50,3 +50,29 @@ export type OnUpdateHandler = LifecycleEventHandler;
  * @param args.origin - The origin that triggered the lifecycle event hook.
  */
 export type OnStartHandler = LifecycleEventHandler;
+
+/**
+ * The `onActive` handler. This is called when the Snap becomes active.
+ *
+ * Note that using this handler requires the `endowment:lifecycle-hooks`
+ * permission.
+ *
+ * This type is an alias for {@link LifecycleEventHandler}.
+ *
+ * @param args - The request arguments.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
+ */
+export type OnActiveHandler = LifecycleEventHandler;
+
+/**
+ * The `onInactive` handler. This is called when the Snap becomes inactive.
+ *
+ * Note that using this handler requires the `endowment:lifecycle-hooks`
+ * permission.
+ *
+ * This type is an alias for {@link LifecycleEventHandler}.
+ *
+ * @param args - The request arguments.
+ * @param args.origin - The origin that triggered the lifecycle event hook.
+ */
+export type OnInactiveHandler = LifecycleEventHandler;

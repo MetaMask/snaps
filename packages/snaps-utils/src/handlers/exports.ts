@@ -1,4 +1,5 @@
 import type {
+  OnActiveHandler,
   OnAssetHistoricalPriceHandler,
   OnAssetsConversionHandler,
   OnAssetsLookupHandler,
@@ -6,6 +7,7 @@ import type {
   OnClientRequestHandler,
   OnCronjobHandler,
   OnHomePageHandler,
+  OnInactiveHandler,
   OnInstallHandler,
   OnKeyringRequestHandler,
   OnNameLookupHandler,
@@ -75,14 +77,14 @@ export const SNAP_EXPORTS = {
   [HandlerType.OnActive]: {
     type: HandlerType.OnActive,
     required: false,
-    validator: (snapExport: unknown): snapExport is OnStartHandler => {
+    validator: (snapExport: unknown): snapExport is OnActiveHandler => {
       return typeof snapExport === 'function';
     },
   },
   [HandlerType.OnInactive]: {
     type: HandlerType.OnInactive,
     required: false,
-    validator: (snapExport: unknown): snapExport is OnStartHandler => {
+    validator: (snapExport: unknown): snapExport is OnInactiveHandler => {
       return typeof snapExport === 'function';
     },
   },
