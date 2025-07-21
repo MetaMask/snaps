@@ -36,6 +36,8 @@ export enum HandlerType {
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',
   OnStart = 'onStart',
+  OnActive = 'onActive',
+  OnInactive = 'onInactive',
   OnNameLookup = 'onNameLookup',
   OnKeyringRequest = 'onKeyringRequest',
   OnHomePage = 'onHomePage',
@@ -48,8 +50,6 @@ export enum HandlerType {
   OnProtocolRequest = 'onProtocolRequest',
   OnClientRequest = 'onClientRequest',
   OnWebSocketEvent = 'onWebSocketEvent',
-  OnActive = 'onActive',
-  OnInactive = 'onInactive',
 }
 
 export type SnapHandler = {
