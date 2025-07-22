@@ -10,6 +10,7 @@ import type {
   Caveat,
   SubjectPermissions,
   ValidPermission,
+  CaveatConstraint,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
@@ -10336,7 +10337,11 @@ describe('SnapController', () => {
 
         rootMessenger.registerActionHandler(
           'PermissionController:getPermissions',
-          (origin) => {
+          (
+            origin,
+          ): SubjectPermissions<
+            ValidPermission<TargetName, CaveatConstraint>
+          > => {
             if (origin === MOCK_SNAP_ID) {
               return {
                 [SnapEndowments.LifecycleHooks]:
@@ -10443,7 +10448,7 @@ describe('SnapController', () => {
         await sleep(10);
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
-          `Error when calling \`onStart\` lifecycle hook for Snap "npm:@metamask/example-snap": Test error in lifecycle hook.`,
+          `Error calling lifecycle hook "onStart" for Snap "npm:@metamask/example-snap": Test error in lifecycle hook.`,
         );
 
         snapController.destroy();
@@ -12365,6 +12370,180 @@ describe('SnapController', () => {
           '999.0.0' as SemVerVersion,
         ),
       ).toBe(false);
+
+      snapController.destroy();
+    });
+  });
+
+  describe('SnapController:setClientActive', () => {
+    it('calls the `onActive` lifecycle hook for all Snaps when called with `true`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        (
+          origin,
+        ): SubjectPermissions<ValidPermission<string, CaveatConstraint>> => {
+          if (origin === MOCK_SNAP_ID) {
+            return {
+              [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+            };
+          }
+
+          return {};
+        },
+      );
+
+      const manifest = getSnapManifest({
+        initialPermissions: {
+          [SnapEndowments.LifecycleHooks]: {},
+        },
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
+
+      messenger.call('SnapController:setClientActive', true);
+      await sleep(10);
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PermissionController:hasPermission',
+        MOCK_SNAP_ID,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:hasPermission',
+        MOCK_SNAP_ID,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        4,
+        'PermissionController:getPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        5,
+        'ExecutionService:executeSnap',
+        expect.any(Object),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          handler: HandlerType.OnActive,
+          origin: METAMASK_ORIGIN,
+          request: {
+            jsonrpc: '2.0',
+            id: expect.any(String),
+            method: HandlerType.OnActive,
+          },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('calls the `onInactive` lifecycle hook for all Snaps when called with `false`', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        (
+          origin,
+        ): SubjectPermissions<ValidPermission<string, CaveatConstraint>> => {
+          if (origin === MOCK_SNAP_ID) {
+            return {
+              [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+            };
+          }
+
+          return {};
+        },
+      );
+
+      const manifest = getSnapManifest({
+        initialPermissions: {
+          [SnapEndowments.LifecycleHooks]: {},
+        },
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(getPersistedSnapObject({ manifest })),
+          },
+        }),
+      );
+
+      messenger.call('SnapController:setClientActive', false);
+      await sleep(10);
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'PermissionController:hasPermission',
+        MOCK_SNAP_ID,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:hasPermission',
+        MOCK_SNAP_ID,
+        SnapEndowments.LifecycleHooks,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        4,
+        'PermissionController:getPermissions',
+        MOCK_SNAP_ID,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        5,
+        'ExecutionService:executeSnap',
+        expect.any(Object),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          handler: HandlerType.OnInactive,
+          origin: METAMASK_ORIGIN,
+          request: {
+            jsonrpc: '2.0',
+            id: expect.any(String),
+            method: HandlerType.OnInactive,
+          },
+        },
+      );
 
       snapController.destroy();
     });

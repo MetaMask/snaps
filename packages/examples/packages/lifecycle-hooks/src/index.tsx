@@ -1,4 +1,5 @@
 import type {
+  OnActiveHandler,
   OnInstallHandler,
   OnStartHandler,
   OnUpdateHandler,
@@ -82,6 +83,46 @@ export const onUpdate: OnUpdateHandler = async () => {
           </Text>
         </Box>
       ),
+    },
+  });
+};
+
+/**
+ * Handle activation of the client. This handler is called when the client is
+ * activated, and can be used to perform any initialization that is required.
+ *
+ * This handler is optional.
+ *
+ * @see https://docs.metamask.io/snaps/reference/entry-points/#onactive
+ * @returns The JSON-RPC response.
+ */
+export const onActive: OnActiveHandler = async () => {
+  return await snap.request({
+    method: 'snap_notify',
+    params: {
+      type: 'inApp',
+      message:
+        'The client was activated, and the "onActive" handler was called.',
+    },
+  });
+};
+
+/**
+ * Handle deactivation of the client. This handler is called when the client
+ * is deactivated, and can be used to perform any cleanup that is required.
+ *
+ * This handler is optional.
+ *
+ * @see https://docs.metamask.io/snaps/reference/entry-points/#oninactive
+ * @returns The JSON-RPC response.
+ */
+export const onInactive = async () => {
+  return await snap.request({
+    method: 'snap_notify',
+    params: {
+      type: 'inApp',
+      message:
+        'The client was deactivated, and the "onInactive" handler was called.',
     },
   });
 };

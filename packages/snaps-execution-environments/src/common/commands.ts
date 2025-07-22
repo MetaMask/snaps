@@ -129,6 +129,8 @@ export function getHandlerArguments(
     case HandlerType.OnInstall:
     case HandlerType.OnUpdate:
     case HandlerType.OnStart:
+    case HandlerType.OnActive:
+    case HandlerType.OnInactive:
       return { origin };
 
     case HandlerType.OnHomePage:

@@ -36,6 +36,8 @@ export enum HandlerType {
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',
   OnStart = 'onStart',
+  OnActive = 'onActive',
+  OnInactive = 'onInactive',
   OnNameLookup = 'onNameLookup',
   OnKeyringRequest = 'onKeyringRequest',
   OnHomePage = 'onHomePage',
