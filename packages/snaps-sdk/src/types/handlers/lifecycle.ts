@@ -65,7 +65,7 @@ export type OnStartHandler = LifecycleEventHandler;
 export type OnActiveHandler = LifecycleEventHandler;
 
 /**
- * The `onInactive` handler. This is called when the Snap becomes inactive.
+ * The `onInactive` handler. This is called when the client becomes inactive.
  *
  * Note that using this handler requires the `endowment:lifecycle-hooks`
  * permission.
