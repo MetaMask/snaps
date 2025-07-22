@@ -9,14 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `onActive` and `onInactive` lifecycle hooks ([#3542](https://github.com/MetaMask/snaps/pull/3542))
-- release: `119.0.0` ([#3533](https://github.com/MetaMask/snaps/pull/3533))
-- release: `118.0.0` ([#3524](https://github.com/MetaMask/snaps/pull/3524))
-- release: `116.0.0` ([#3509](https://github.com/MetaMask/snaps/pull/3509))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- fix: Fix broken test file link in README ([#3470](https://github.com/MetaMask/snaps/pull/3470))
+- Add `onActive` and `onInactive` lifecycle hooks ([#3542](https://github.com/MetaMask/snaps/pull/3542))
 
 ## [2.2.0]
 
