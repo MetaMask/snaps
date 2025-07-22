@@ -52,7 +52,7 @@ export type OnUpdateHandler = LifecycleEventHandler;
 export type OnStartHandler = LifecycleEventHandler;
 
 /**
- * The `onActive` handler. This is called when the Snap becomes active.
+ * The `onActive` handler. This is called when the client becomes active.
  *
  * Note that using this handler requires the `endowment:lifecycle-hooks`
  * permission.
