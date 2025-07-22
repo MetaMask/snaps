@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/phishing-controller from 12.6.0 to 13.1.0 ([#3538](https://github.com/MetaMask/snaps/pull/3538))
-
 ## [3.3.0]
 
 ### Added

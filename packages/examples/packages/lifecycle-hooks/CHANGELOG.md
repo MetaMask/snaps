@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.0]
+
 ### Uncategorized
 
 - feat: Add `onActive` and `onInactive` lifecycle hooks ([#3542](https://github.com/MetaMask/snaps/pull/3542))
@@ -79,7 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add lifecycle hooks example snap ([#1645](https://github.com/MetaMask/snaps/pull/1645))
   - This snap demonstrates how to use the `onInstall` and `onUpdate` lifecycle hooks.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.3.0...HEAD
+[2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.2.0...@metamask/lifecycle-hooks-example-snap@2.3.0
 [2.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.1.3...@metamask/lifecycle-hooks-example-snap@2.2.0
 [2.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.1.2...@metamask/lifecycle-hooks-example-snap@2.1.3
 [2.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/lifecycle-hooks-example-snap@2.1.1...@metamask/lifecycle-hooks-example-snap@2.1.2
