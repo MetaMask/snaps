@@ -12375,7 +12375,7 @@ describe('SnapController', () => {
     });
   });
 
-  describe('SnapController:setActive', () => {
+  describe('SnapController:setClientActive', () => {
     it('calls the `onActive` lifecycle hook for all Snaps when called with `true`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
@@ -12415,7 +12415,7 @@ describe('SnapController', () => {
         }),
       );
 
-      messenger.call('SnapController:setActive', true);
+      messenger.call('SnapController:setClientActive', true);
       await sleep(10);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
@@ -12501,7 +12501,7 @@ describe('SnapController', () => {
         }),
       );
 
-      messenger.call('SnapController:setActive', false);
+      messenger.call('SnapController:setClientActive', false);
       await sleep(10);
 
       expect(messenger.call).toHaveBeenNthCalledWith(

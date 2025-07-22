@@ -479,9 +479,9 @@ export type IsMinimumPlatformVersion = {
   handler: SnapController['isMinimumPlatformVersion'];
 };
 
-export type SetActive = {
-  type: `${typeof controllerName}:setActive`;
-  handler: SnapController['setActive'];
+export type SetClientActive = {
+  type: `${typeof controllerName}:setClientActive`;
+  handler: SnapController['setClientActive'];
 };
 
 export type SnapControllerGetStateAction = ControllerGetStateAction<
@@ -513,7 +513,7 @@ export type SnapControllerActions =
   | SnapControllerGetStateAction
   | StopAllSnaps
   | IsMinimumPlatformVersion
-  | SetActive;
+  | SetClientActive;
 
 // Controller Messenger Events
 
@@ -1301,8 +1301,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:setActive`,
-      (...args) => this.setActive(...args),
+      `${controllerName}:setClientActive`,
+      (...args) => this.setClientActive(...args),
     );
   }
 
@@ -3709,7 +3709,7 @@ export class SnapController extends BaseController<
    *
    * @param active - A boolean indicating whether the client is active or not.
    */
-  setActive(active: boolean) {
+  setClientActive(active: boolean) {
     if (active) {
       this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnActive);
     } else {
