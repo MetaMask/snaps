@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.3.0]
+
+### Added
+
+- Add support for `onActive` and `onInactive` lifecycle hooks ([#3542](https://github.com/MetaMask/snaps/pull/3542))
+  - These hooks are called when the client is activated or deactivated,
+    respectively.
+
 ## [9.2.0]
 
 ### Added
@@ -638,7 +646,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.3.0...HEAD
+[9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.2.0...@metamask/snaps-sdk@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.1.0...@metamask/snaps-sdk@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.0.0...@metamask/snaps-sdk@9.1.0
 [9.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@8.1.0...@metamask/snaps-sdk@9.0.0
