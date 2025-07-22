@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `onActive` and `onInactive` lifecycle hooks ([#3542](https://github.com/MetaMask/snaps/pull/3542))
+- fix: Use custom state manager for cronjob controller ([#3539](https://github.com/MetaMask/snaps/pull/3539))
+- chore: Bump @metamask/phishing-controller from 12.6.0 to 13.1.0 ([#3538](https://github.com/MetaMask/snaps/pull/3538))
+
 ## [14.1.0]
 
 ### Added
