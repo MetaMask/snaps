@@ -90,9 +90,9 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-registry": "^3.2.3",
-    "@metamask/snaps-rpc-methods": "workspace:^",
-    "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/snaps-rpc-methods": "file:../snaps-rpc-methods",
+    "@metamask/snaps-sdk": "file:../snaps-sdk",
+    "@metamask/snaps-utils": "file:../snaps-utils",
     "@metamask/utils": "^11.4.2",
     "@xstate/fsm": "^2.0.0",
     "async-mutex": "^0.5.0",
@@ -145,7 +145,7 @@
     "vitest": "^3.1.1"
   },
   "peerDependencies": {
-    "@metamask/snaps-execution-environments": "workspace:^"
+    "@metamask/snaps-execution-environments": "*"
   },
   "peerDependenciesMeta": {
     "@metamask/snaps-execution-environments": {

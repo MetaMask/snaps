@@ -387,6 +387,7 @@ export const TRACKABLE_HANDLERS = Object.freeze([
   HandlerType.OnRpcRequest,
   HandlerType.OnSignature,
   HandlerType.OnTransaction,
+  HandlerType.OnTransactionDetails,
   HandlerType.OnUpdate,
 ] as const);
 

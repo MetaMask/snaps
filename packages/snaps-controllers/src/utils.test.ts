@@ -233,6 +233,7 @@ describe('TRACKABLE_HANDLERS', () => {
       HandlerType.OnRpcRequest,
       HandlerType.OnSignature,
       HandlerType.OnTransaction,
+      HandlerType.OnTransactionDetails,
       HandlerType.OnUpdate,
     ]);
   });
