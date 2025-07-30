@@ -64,6 +64,22 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
     }
 
+    case 'trackEvent': {
+      return await snap.request({
+        method: 'snap_trackEvent',
+        params: {
+          event: {
+            event: 'Test Event',
+            properties: {
+              // Event properties must be snake_case.
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_property: 'test value',
+            },
+          },
+        },
+      });
+    }
+
     case 'startTrace':
       return await snap.request({
         method: 'snap_startTrace',

@@ -74,6 +74,39 @@ interface SnapsMatchers {
    * expect(ui).toRender(panel([heading('Hello, world!')]));
    */
   toRender(component: ComponentOrElement): void;
+
+  /**
+   * Assert that the Snap tracked an error with the expected parameters. This
+   * is equivalent to calling
+   * `expect(response.tracked.errors).toContainEqual(error)`.
+   *
+   * @param error - The expected error parameters.
+   * @throws If the snap did not track an error with the expected parameters.
+   * @example
+   * const response = await request({ method: 'foo' });
+   * expect(response).toTrackError({
+   *   name: 'Error',
+   *   message: 'This is an error.',
+   * });
+   */
+  toTrackError(error?: unknown): void;
+
+  /**
+   * Assert that the Snap tracked an event with the expected parameters. This
+   * is equivalent to calling
+   * `expect(response.tracked.events).toContainEqual(event)`.
+   *
+   * @param event - The expected event parameters.
+   * @throws If the snap did not track an event with the expected parameters.
+   * @example
+   * const response = await request({ method: 'foo' });
+   * expect(response).toTrackEvent({
+   *   event: 'bar',
+   *   properties: { baz: 'qux' },
+   *   sensitiveProperties: { quux: 'corge' },
+   * });
+   */
+  toTrackEvent(event?: unknown): void;
 }
 
 // Extend the `expect` interface with the new matchers. This is used when

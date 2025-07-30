@@ -13,6 +13,8 @@ import {
   toRespondWith,
   toRespondWithError,
   toSendNotification,
+  toTrackError,
+  toTrackEvent,
 } from './matchers';
 import {
   getMockInterfaceResponse,
@@ -25,6 +27,8 @@ expect.extend({
   toRespondWithError,
   toSendNotification,
   toRender,
+  toTrackError,
+  toTrackEvent,
 });
 
 describe('toRespondWith', () => {
@@ -594,6 +598,354 @@ describe('toRender', () => {
           <Text>foo</Text>,
         ),
       ).toThrow('Received:');
+    });
+  });
+});
+
+describe('toTrackError', () => {
+  it('passes when the error is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          errors: [
+            {
+              name: 'foo',
+              message: 'bar',
+              stack: 'baz',
+              cause: null,
+            },
+          ],
+        },
+      }),
+    ).toTrackError({
+      name: 'foo',
+      message: 'bar',
+      stack: 'baz',
+      cause: null,
+    });
+  });
+
+  it('passes when the partial error is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          errors: [
+            {
+              name: 'foo',
+              message: 'bar',
+              stack: 'baz',
+              cause: null,
+            },
+          ],
+        },
+      }),
+    ).toTrackError(
+      expect.objectContaining({
+        name: 'foo',
+        message: 'bar',
+      }),
+    );
+  });
+
+  it('passes when any error is tracked', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          errors: [
+            {
+              name: 'foo',
+              message: 'bar',
+              stack: 'baz',
+              cause: null,
+            },
+          ],
+        },
+      }),
+    ).toTrackError();
+  });
+
+  it('fails when the error is incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            errors: [
+              {
+                name: 'foo',
+                message: 'bar',
+                stack: 'baz',
+                cause: null,
+              },
+            ],
+          },
+        }),
+      ).toTrackError({
+        name: 'baz',
+        message: 'qux',
+      }),
+    ).toThrow('Received');
+  });
+
+  it('fails when the error is missing', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            errors: [],
+          },
+        }),
+      ).toTrackError({
+        name: 'foo',
+        message: 'bar',
+      }),
+    ).toThrow('Expected to track error with data');
+  });
+
+  describe('not', () => {
+    it('passes when the error is correct', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            errors: [
+              {
+                name: 'foo',
+                message: 'bar',
+                stack: 'baz',
+                cause: null,
+              },
+            ],
+          },
+        }),
+      ).not.toTrackError({
+        name: 'baz',
+        message: 'qux',
+      });
+    });
+
+    it('passes when there are no errors', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            errors: [],
+          },
+        }),
+      ).not.toTrackError();
+    });
+
+    it('fails when the error is incorrect', () => {
+      expect(() =>
+        expect(
+          getMockResponse({
+            tracked: {
+              errors: [
+                {
+                  name: 'foo',
+                  message: 'bar',
+                  stack: 'baz',
+                  cause: null,
+                },
+              ],
+            },
+          }),
+        ).not.toTrackError({
+          name: 'foo',
+          message: 'bar',
+          stack: 'baz',
+          cause: null,
+        }),
+      ).toThrow('Expected not to track error with data');
+    });
+  });
+});
+
+describe('toTrackEvent', () => {
+  it('passes when the event is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+              sensitiveProperties: { qux: 'quux' },
+            },
+          ],
+        },
+      }),
+    ).toTrackEvent({
+      event: 'foo',
+      properties: { bar: 'baz' },
+      sensitiveProperties: { qux: 'quux' },
+    });
+  });
+
+  it('passes when the partial event is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+            },
+          ],
+        },
+      }),
+    ).toTrackEvent({
+      event: 'foo',
+      properties: { bar: 'baz' },
+    });
+  });
+
+  it('passes when any event is tracked', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+              sensitiveProperties: { qux: 'quux' },
+            },
+          ],
+        },
+      }),
+    ).toTrackEvent();
+  });
+
+  it('fails when the event is incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
+        }),
+      ).toTrackEvent({
+        event: 'bar',
+        properties: { bar: 'baz' },
+        sensitiveProperties: { qux: 'quux' },
+      }),
+    ).toThrow('Received');
+  });
+
+  it('fails when the properties are incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
+        }),
+      ).toTrackEvent({
+        event: 'foo',
+        properties: { bar: 'qux' },
+        sensitiveProperties: { qux: 'quux' },
+      }),
+    ).toThrow('Received');
+  });
+
+  it('fails when the sensitive properties are incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
+        }),
+      ).toTrackEvent({
+        event: 'foo',
+        properties: { bar: 'baz' },
+        sensitiveProperties: { qux: 'corge' },
+      }),
+    ).toThrow('Received');
+  });
+
+  it('fails when the event is missing', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [],
+          },
+        }),
+      ).toTrackEvent({
+        event: 'foo',
+        properties: { bar: 'baz' },
+        sensitiveProperties: { qux: 'quux' },
+      }),
+    ).toThrow('Expected to track event with data:');
+  });
+
+  describe('not', () => {
+    it('passes when the event is correct', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
+        }),
+      ).not.toTrackEvent({
+        event: 'bar',
+        properties: { bar: 'baz' },
+        sensitiveProperties: { qux: 'quux' },
+      });
+    });
+
+    it('passes when there are no events', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            events: [],
+          },
+        }),
+      ).not.toTrackEvent();
+    });
+
+    it('fails when the event is incorrect', () => {
+      expect(() =>
+        expect(
+          getMockResponse({
+            tracked: {
+              events: [
+                {
+                  event: 'foo',
+                  properties: { bar: 'baz' },
+                  sensitiveProperties: { qux: 'quux' },
+                },
+              ],
+            },
+          }),
+        ).not.toTrackEvent({
+          event: 'foo',
+          properties: { bar: 'baz' },
+          sensitiveProperties: { qux: 'quux' },
+        }),
+      ).toThrow('Expected not to track event with data');
     });
   });
 });

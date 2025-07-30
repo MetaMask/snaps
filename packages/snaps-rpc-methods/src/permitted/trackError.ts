@@ -8,15 +8,8 @@ import type {
   TrackErrorResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching, Snap } from '@metamask/snaps-utils';
-import type { Struct } from '@metamask/superstruct';
-import {
-  create,
-  lazy,
-  nullable,
-  object,
-  string,
-  StructError,
-} from '@metamask/superstruct';
+import { TrackableErrorStruct } from '@metamask/snaps-utils';
+import { create, object, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
@@ -43,13 +36,6 @@ export type TrackErrorMethodHooks = {
    */
   getSnap: (snapId: string) => Snap | undefined;
 };
-
-const TrackableErrorStruct: Struct<TrackableError> = object({
-  name: string(),
-  message: string(),
-  stack: nullable(string()),
-  cause: nullable(lazy<TrackableError>(() => TrackableErrorStruct)),
-});
 
 const TrackErrorParametersStruct = object({
   error: TrackableErrorStruct,

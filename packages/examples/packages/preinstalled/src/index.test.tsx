@@ -87,6 +87,43 @@ describe('onRpcRequest', () => {
       });
     });
   });
+
+  describe('trackError', () => {
+    it('tracks an error', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'trackError',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toTrackError(
+        expect.objectContaining({
+          name: 'TestError',
+          message: 'This is a test error.',
+        }),
+      );
+    });
+  });
+
+  describe('trackEvent', () => {
+    it('tracks an event', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'trackEvent',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toTrackEvent({
+        event: 'Test Event',
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          test_property: 'test value',
+        },
+      });
+    });
+  });
 });
 
 describe('onSettingsPage', () => {
