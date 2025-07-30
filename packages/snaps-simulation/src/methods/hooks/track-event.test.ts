@@ -1,6 +1,6 @@
 import { getTrackEventImplementation } from './track-event';
+import { createStore } from '../../store';
 import { getMockOptions } from '../../test-utils';
-import { createStore } from '@metamask/snaps-simulation';
 
 describe('getTrackEventImplementation', () => {
   it('returns the implementation of the `trackEvent` hook', async () => {

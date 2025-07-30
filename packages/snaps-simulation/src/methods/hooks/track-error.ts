@@ -2,8 +2,8 @@ import { getJsonError } from '@metamask/snaps-sdk';
 import type { SagaIterator } from 'redux-saga';
 import { put } from 'redux-saga/effects';
 
-import { trackError } from '../../store/trackables';
-import type { RunSagaFunction } from '@metamask/snaps-simulation';
+import type { RunSagaFunction } from '../../store';
+import { trackError } from '../../store';
 
 /**
  * Track an error.

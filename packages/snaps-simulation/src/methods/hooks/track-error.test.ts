@@ -1,6 +1,6 @@
 import { getTrackErrorImplementation } from './track-error';
+import { createStore } from '../../store';
 import { getMockOptions } from '../../test-utils';
-import { createStore } from '@metamask/snaps-simulation';
 
 describe('getTrackErrorImplementation', () => {
   it('returns the implementation of the `trackError` hook', async () => {

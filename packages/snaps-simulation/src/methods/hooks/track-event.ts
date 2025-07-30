@@ -2,8 +2,8 @@ import type { TrackEventParams } from '@metamask/snaps-sdk';
 import type { SagaIterator } from 'redux-saga';
 import { put } from 'redux-saga/effects';
 
-import { trackEvent } from '../../store/trackables';
-import type { RunSagaFunction } from '@metamask/snaps-simulation';
+import type { RunSagaFunction } from '../../store';
+import { trackEvent } from '../../store';
 
 /**
  * Track an event.
