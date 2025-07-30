@@ -1,5 +1,6 @@
 import { NotificationType, enumValue } from '@metamask/snaps-sdk';
 import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
+import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import {
   array,
   assign,
@@ -263,6 +264,16 @@ export const SnapResponseWithoutInterfaceStruct = object({
           text: string(),
         }),
       ),
+    }),
+  ),
+
+  errors: array(TrackableErrorStruct),
+
+  events: array(
+    object({
+      event: string(),
+      properties: optional(record(string(), JsonStruct)),
+      sensitiveProperties: optional(record(string(), JsonStruct)),
     }),
   ),
 });

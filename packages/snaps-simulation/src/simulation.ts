@@ -14,15 +14,16 @@ import {
   setupMultiplex,
 } from '@metamask/snaps-controllers/node';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import {
-  type AuxiliaryFileEncoding,
-  type Component,
-  type InterfaceState,
-  type InterfaceContext,
-  type SnapId,
-  type EntropySource,
+import type {
+  TrackEventParams,
+  AuxiliaryFileEncoding,
+  Component,
+  InterfaceState,
+  InterfaceContext,
+  SnapId,
+  EntropySource,
 } from '@metamask/snaps-sdk';
-import type { FetchedSnapFiles } from '@metamask/snaps-utils';
+import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
 import type { CaipAssetType, Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
@@ -43,6 +44,9 @@ import {
   getPermittedUpdateSnapStateMethodImplementation,
   getGetEntropySourcesImplementation,
   getGetMnemonicImplementation,
+  getGetSnapImplementation,
+  getTrackEventImplementation,
+  getTrackErrorImplementation,
 } from './methods/hooks';
 import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
@@ -261,6 +265,28 @@ export type PermittedMiddlewareHooks = {
    * @param value - The value to resolve the interface with.
    */
   resolveInterface: (id: string, value: Json) => Promise<void>;
+
+  /**
+   * A hook that gets the Snap's metadata.
+   *
+   * @param snapId - The ID of the Snap to get.
+   * @returns The Snap's metadata.
+   */
+  getSnap(snapId: string): Snap;
+
+  /**
+   * A hook that tracks an error.
+   *
+   * @param error - The error object containing error details and properties.
+   */
+  trackError(error: Error): void;
+
+  /**
+   * A hook that tracks an event.
+   *
+   * @param event - The event object containing event details and properties.
+   */
+  trackEvent(event: TrackEventParams['event']): void;
 };
 
 /**
@@ -466,6 +492,10 @@ export function getPermittedHooks(
     getSnapState: getPermittedGetSnapStateMethodImplementation(runSaga),
     updateSnapState: getPermittedUpdateSnapStateMethodImplementation(runSaga),
     clearSnapState: getPermittedClearSnapStateMethodImplementation(runSaga),
+
+    getSnap: getGetSnapImplementation(true),
+    trackError: getTrackErrorImplementation(runSaga),
+    trackEvent: getTrackEventImplementation(runSaga),
   };
 }
 

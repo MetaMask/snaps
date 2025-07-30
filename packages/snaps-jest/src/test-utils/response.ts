@@ -12,6 +12,8 @@ import type {
  * @param options.id - The ID to use.
  * @param options.response - The response to use.
  * @param options.notifications - The notifications to use.
+ * @param options.errors - The errors to use.
+ * @param options.events - The events to use.
  * @param options.getInterface - The `getInterface` function to use.
  * @returns The mock response.
  */
@@ -21,12 +23,16 @@ export function getMockResponse({
     result: 'foo',
   },
   notifications = [],
+  errors = [],
+  events = [],
   getInterface,
 }: Partial<SnapResponseWithInterface>): SnapResponse {
   return {
     id,
     response,
     notifications,
+    errors,
+    events,
     ...(getInterface ? { getInterface } : {}),
   };
 }

@@ -4,13 +4,19 @@ import {
   serializeCause,
 } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import type { SerializedSnapError, SnapError } from '@metamask/snaps-sdk';
+import type {
+  SerializedSnapError,
+  SnapError,
+  TrackableError,
+} from '@metamask/snaps-sdk';
 import {
   getErrorMessage,
   getErrorStack,
   SNAP_ERROR_CODE,
   SNAP_ERROR_MESSAGE,
 } from '@metamask/snaps-sdk';
+import type { Struct } from '@metamask/superstruct';
+import { lazy, nullable, object, string } from '@metamask/superstruct';
 import type { Json, JsonRpcError } from '@metamask/utils';
 import { isObject, isJsonRpcError } from '@metamask/utils';
 
@@ -246,3 +252,10 @@ export function unwrapError(
     false,
   ];
 }
+
+export const TrackableErrorStruct: Struct<TrackableError> = object({
+  name: string(),
+  message: string(),
+  stack: nullable(string()),
+  cause: nullable(lazy<TrackableError>(() => TrackableErrorStruct)),
+});

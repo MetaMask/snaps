@@ -4,6 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import { mocksSlice } from './mocks';
 import { notificationsSlice } from './notifications';
 import { setState, stateSlice } from './state';
+import { trackablesSlice } from './trackables';
 import { uiSlice } from './ui';
 import type { SimulationOptions } from '../options';
 
@@ -22,6 +23,7 @@ export function createStore({ state, unencryptedState }: SimulationOptions) {
       mocks: mocksSlice.reducer,
       notifications: notificationsSlice.reducer,
       state: stateSlice.reducer,
+      trackables: trackablesSlice.reducer,
       ui: uiSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>

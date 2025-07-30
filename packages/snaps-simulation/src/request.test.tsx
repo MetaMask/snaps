@@ -59,6 +59,8 @@ describe('handleRequest', () => {
         result: 'Hello, world!',
       },
       notifications: [],
+      errors: [],
+      events: [],
     });
 
     await closeServer();
@@ -172,6 +174,8 @@ describe('handleRequest', () => {
         },
       },
       notifications: [],
+      errors: [],
+      events: [],
       getInterface: expect.any(Function),
     });
 
@@ -212,6 +216,8 @@ describe('handleRequest', () => {
         }),
       },
       notifications: [],
+      errors: [],
+      events: [],
       getInterface: expect.any(Function),
     });
 
@@ -287,6 +293,8 @@ describe('handleRequest', () => {
         }),
       },
       notifications: [],
+      errors: [],
+      events: [],
       getInterface: expect.any(Function),
     });
 

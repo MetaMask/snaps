@@ -4,6 +4,7 @@ import {
   SNAP_ERROR_CODE,
   SNAP_ERROR_MESSAGE,
 } from '@metamask/snaps-sdk';
+import { is } from '@metamask/superstruct';
 
 import {
   isSerializedSnapError,
@@ -11,6 +12,7 @@ import {
   isWrappedSnapError,
   SNAP_ERROR_WRAPPER_CODE,
   SNAP_ERROR_WRAPPER_MESSAGE,
+  TrackableErrorStruct,
   unwrapError,
   WrappedSnapError,
 } from './errors';
@@ -343,5 +345,59 @@ describe('unwrapError', () => {
     expect(unwrappedError.stack).toStrictEqual(
       expect.stringContaining('PermissionController._executeRestrictedMethod'),
     );
+  });
+});
+
+describe('TrackableError', () => {
+  it.each([
+    {
+      name: 'TestError',
+      message: 'Test error',
+      stack: 'Error stack trace',
+      cause: null,
+    },
+    {
+      name: 'TestError',
+      message: 'Test error',
+      stack: null,
+      cause: {
+        name: 'CauseError',
+        message: 'Cause error',
+        stack: 'Cause error stack trace',
+        cause: {
+          name: 'NestedCauseError',
+          message: 'Nested cause error',
+          stack: 'Nested cause error stack trace',
+          cause: null,
+        },
+      },
+    },
+    {
+      name: 'TestError',
+      message: 'Test error',
+      stack: null,
+      cause: null,
+    },
+  ])('validates a trackable error', (value) => {
+    expect(is(value, TrackableErrorStruct)).toBe(true);
+  });
+
+  it.each([
+    true,
+    false,
+    0,
+    'TestError',
+    { name: 'TestError' },
+    { message: 'Test error' },
+    { stack: 'Error stack trace' },
+    { cause: null },
+    {
+      name: 'TestError',
+      message: 'Test error',
+      stack: 'Error stack trace',
+      cause: {},
+    },
+  ])('validates an invalid trackable error', (value) => {
+    expect(is(value, TrackableErrorStruct)).toBe(false);
   });
 });
