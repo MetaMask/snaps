@@ -25,13 +25,11 @@ export function getMockResponse({
   tracked = {
     errors: [],
     events: [],
+    traces: [],
   },
   getInterface,
 }: Omit<Partial<SnapResponseWithInterface>, 'tracked'> & {
-  tracked?: {
-    errors?: SnapResponse['tracked']['errors'];
-    events?: SnapResponse['tracked']['events'];
-  };
+  tracked?: Partial<SnapResponse['tracked']>;
 }): SnapResponse {
   return {
     id,
@@ -40,6 +38,7 @@ export function getMockResponse({
     tracked: {
       errors: [],
       events: [],
+      traces: [],
       ...tracked,
     },
     ...(getInterface ? { getInterface } : {}),

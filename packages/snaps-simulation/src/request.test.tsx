@@ -62,6 +62,7 @@ describe('handleRequest', () => {
       tracked: {
         errors: [],
         events: [],
+        traces: [],
       },
     });
 
@@ -179,6 +180,7 @@ describe('handleRequest', () => {
       tracked: {
         errors: [],
         events: [],
+        traces: [],
       },
       getInterface: expect.any(Function),
     });
@@ -223,6 +225,7 @@ describe('handleRequest', () => {
       tracked: {
         errors: [],
         events: [],
+        traces: [],
       },
       getInterface: expect.any(Function),
     });
@@ -302,6 +305,7 @@ describe('handleRequest', () => {
       tracked: {
         errors: [],
         events: [],
+        traces: [],
       },
       getInterface: expect.any(Function),
     });

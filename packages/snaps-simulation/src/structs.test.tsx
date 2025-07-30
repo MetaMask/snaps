@@ -240,6 +240,13 @@ describe('SnapResponseWithInterfaceStruct', () => {
               },
             },
           ],
+          traces: [
+            {
+              id: 'trace-1',
+              name: 'Test Trace',
+              startTime: 0,
+            },
+          ],
         },
         getInterface: () => undefined,
       },
@@ -275,6 +282,13 @@ describe('SnapResponseWithInterfaceStruct', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               test_property: 'test value',
             },
+          },
+        ],
+        traces: [
+          {
+            id: 'trace-1',
+            name: 'Test Trace',
+            startTime: 0,
           },
         ],
       },
@@ -322,6 +336,13 @@ describe('SnapResponseWithoutInterfaceStruct', () => {
               },
             },
           ],
+          traces: [
+            {
+              id: 'trace-1',
+              name: 'Test Trace',
+              startTime: 0,
+            },
+          ],
         },
       },
       SnapResponseWithoutInterfaceStruct,
@@ -356,6 +377,13 @@ describe('SnapResponseWithoutInterfaceStruct', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               test_property: 'test value',
             },
+          },
+        ],
+        traces: [
+          {
+            id: 'trace-1',
+            name: 'Test Trace',
+            startTime: 0,
           },
         ],
       },
@@ -402,6 +430,13 @@ describe('SnapResponseStruct', () => {
               },
             },
           ],
+          traces: [
+            {
+              id: 'trace-1',
+              name: 'Test Trace',
+              startTime: 0,
+            },
+          ],
         },
         getInterface: () => undefined,
       },
@@ -437,6 +472,13 @@ describe('SnapResponseStruct', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               test_property: 'test value',
             },
+          },
+        ],
+        traces: [
+          {
+            id: 'trace-1',
+            name: 'Test Trace',
+            startTime: 0,
           },
         ],
       },
@@ -475,6 +517,13 @@ describe('SnapResponseStruct', () => {
               },
             },
           ],
+          traces: [
+            {
+              id: 'trace-1',
+              name: 'Test Trace',
+              startTime: 0,
+            },
+          ],
         },
       },
       SnapResponseStruct,
@@ -509,6 +558,13 @@ describe('SnapResponseStruct', () => {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               test_property: 'test value',
             },
+          },
+        ],
+        traces: [
+          {
+            id: 'trace-1',
+            name: 'Test Trace',
+            startTime: 0,
           },
         ],
       },

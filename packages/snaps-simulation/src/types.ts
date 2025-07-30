@@ -2,6 +2,7 @@ import type {
   NotificationType,
   EnumToUnion,
   TrackableError,
+  TraceRequest,
 } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
@@ -581,6 +582,7 @@ export type TrackedSnapResponseData = {
     properties?: Record<string, Json>;
     sensitiveProperties?: Record<string, Json>;
   }[];
+  traces: TraceRequest[];
 };
 
 export type SnapResponseWithInterface = {

@@ -21,6 +21,7 @@ import { getInterface, getInterfaceActions } from './interface';
 import type { SimulationOptions } from './options';
 import type { RunSagaFunction, Store } from './store';
 import {
+  getTraces,
   getErrors,
   clearNotifications,
   getNotifications,
@@ -97,6 +98,7 @@ export function handleRequest({
       const notifications = getNotifications(state);
       const errors = getErrors(state);
       const events = getEvents(state);
+      const traces = getTraces(state);
       const interfaceId = notifications[0]?.content;
 
       store.dispatch(clearNotifications());
@@ -120,6 +122,7 @@ export function handleRequest({
           tracked: {
             errors,
             events,
+            traces,
           },
           ...(getInterfaceFn ? { getInterface: getInterfaceFn } : {}),
         };
@@ -134,6 +137,7 @@ export function handleRequest({
           tracked: {
             errors: [],
             events: [],
+            traces: [],
           },
           getInterface: getInterfaceError,
         };
@@ -151,6 +155,7 @@ export function handleRequest({
         tracked: {
           errors: [],
           events: [],
+          traces: [],
         },
         getInterface: getInterfaceError,
       };

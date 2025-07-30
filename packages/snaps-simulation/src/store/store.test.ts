@@ -21,6 +21,8 @@ describe('createStore', () => {
         "trackables": {
           "errors": [],
           "events": [],
+          "pendingTraces": [],
+          "traces": [],
         },
         "ui": {
           "current": null,
@@ -54,6 +56,8 @@ describe('createStore', () => {
         "trackables": {
           "errors": [],
           "events": [],
+          "pendingTraces": [],
+          "traces": [],
         },
         "ui": {
           "current": null,
@@ -87,6 +91,8 @@ describe('createStore', () => {
         "trackables": {
           "errors": [],
           "events": [],
+          "pendingTraces": [],
+          "traces": [],
         },
         "ui": {
           "current": null,
