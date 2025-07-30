@@ -574,6 +574,15 @@ export type SnapHandlerInterface = {
   content: JSXElement;
 } & SnapInterfaceActions;
 
+export type TrackedSnapResponseData = {
+  errors: TrackableError[];
+  events: {
+    event: string;
+    properties?: Record<string, Json>;
+    sensitiveProperties?: Record<string, Json>;
+  }[];
+};
+
 export type SnapResponseWithInterface = {
   id: string;
   response: { result: Json } | { error: Json };
@@ -587,13 +596,7 @@ export type SnapResponseWithInterface = {
     footerLink?: { text: string; href: string } | undefined;
   }[];
 
-  errors: TrackableError[];
-
-  events: {
-    event: string;
-    properties?: Record<string, Json>;
-    sensitiveProperties?: Record<string, Json>;
-  }[];
+  tracked: TrackedSnapResponseData;
 
   getInterface(): SnapHandlerInterface;
 };

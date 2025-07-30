@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention, @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unused-vars, @typescript-eslint/no-namespace */
 
 import type {
-  TrackEventParams,
   EnumToUnion,
   NotificationType,
   ComponentOrElement,
-  TrackableError,
 } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 
@@ -79,7 +77,8 @@ interface SnapsMatchers {
 
   /**
    * Assert that the Snap tracked an error with the expected parameters. This
-   * is equivalent to calling `expect(response.errors).toContainEqual(error)`.
+   * is equivalent to calling
+   * `expect(response.tracked.errors).toContainEqual(error)`.
    *
    * @param error - The expected error parameters.
    * @throws If the snap did not track an error with the expected parameters.
@@ -94,7 +93,8 @@ interface SnapsMatchers {
 
   /**
    * Assert that the Snap tracked an event with the expected parameters. This
-   * is equivalent to calling `expect(response.events).toContainEqual(event)`.
+   * is equivalent to calling
+   * `expect(response.tracked.events).toContainEqual(event)`.
    *
    * @param event - The expected event parameters.
    * @throws If the snap did not track an event with the expected parameters.

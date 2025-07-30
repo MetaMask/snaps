@@ -267,15 +267,17 @@ export const SnapResponseWithoutInterfaceStruct = object({
     }),
   ),
 
-  errors: array(TrackableErrorStruct),
+  tracked: object({
+    errors: array(TrackableErrorStruct),
 
-  events: array(
-    object({
-      event: string(),
-      properties: optional(record(string(), JsonStruct)),
-      sensitiveProperties: optional(record(string(), JsonStruct)),
-    }),
-  ),
+    events: array(
+      object({
+        event: string(),
+        properties: optional(record(string(), JsonStruct)),
+        sensitiveProperties: optional(record(string(), JsonStruct)),
+      }),
+    ),
+  }),
 });
 
 export const SnapResponseWithInterfaceStruct = assign(

@@ -221,6 +221,44 @@ describe('SnapResponseWithInterfaceStruct', () => {
             message: 'Hello, world!',
           },
         ],
+        tracked: {
+          errors: [
+            {
+              name: 'Error',
+              message: 'An error occurred',
+              stack:
+                'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
+              cause: null,
+            },
+          ],
+          events: [
+            {
+              event: 'Test Event',
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_property: 'test value',
+              },
+            },
+          ],
+        },
+        getInterface: () => undefined,
+      },
+      SnapResponseWithInterfaceStruct,
+    );
+
+    expect(options).toStrictEqual({
+      id: '1',
+      response: {
+        result: '0x1',
+      },
+      notifications: [
+        {
+          id: '1',
+          type: 'native',
+          message: 'Hello, world!',
+        },
+      ],
+      tracked: {
         errors: [
           {
             name: 'Error',
@@ -239,41 +277,7 @@ describe('SnapResponseWithInterfaceStruct', () => {
             },
           },
         ],
-        getInterface: () => undefined,
       },
-      SnapResponseWithInterfaceStruct,
-    );
-
-    expect(options).toStrictEqual({
-      id: '1',
-      response: {
-        result: '0x1',
-      },
-      notifications: [
-        {
-          id: '1',
-          type: 'native',
-          message: 'Hello, world!',
-        },
-      ],
-      errors: [
-        {
-          name: 'Error',
-          message: 'An error occurred',
-          stack:
-            'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
-          cause: null,
-        },
-      ],
-      events: [
-        {
-          event: 'Test Event',
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            test_property: 'test value',
-          },
-        },
-      ],
       getInterface: expect.any(Function),
     });
   });
@@ -299,6 +303,43 @@ describe('SnapResponseWithoutInterfaceStruct', () => {
             message: 'Hello, world!',
           },
         ],
+        tracked: {
+          errors: [
+            {
+              name: 'Error',
+              message: 'An error occurred',
+              stack:
+                'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
+              cause: null,
+            },
+          ],
+          events: [
+            {
+              event: 'Test Event',
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_property: 'test value',
+              },
+            },
+          ],
+        },
+      },
+      SnapResponseWithoutInterfaceStruct,
+    );
+
+    expect(options).toStrictEqual({
+      id: '1',
+      response: {
+        result: '0x1',
+      },
+      notifications: [
+        {
+          id: '1',
+          type: 'native',
+          message: 'Hello, world!',
+        },
+      ],
+      tracked: {
         errors: [
           {
             name: 'Error',
@@ -318,39 +359,6 @@ describe('SnapResponseWithoutInterfaceStruct', () => {
           },
         ],
       },
-      SnapResponseWithoutInterfaceStruct,
-    );
-
-    expect(options).toStrictEqual({
-      id: '1',
-      response: {
-        result: '0x1',
-      },
-      notifications: [
-        {
-          id: '1',
-          type: 'native',
-          message: 'Hello, world!',
-        },
-      ],
-      errors: [
-        {
-          name: 'Error',
-          message: 'An error occurred',
-          stack:
-            'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
-          cause: null,
-        },
-      ],
-      events: [
-        {
-          event: 'Test Event',
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            test_property: 'test value',
-          },
-        },
-      ],
     });
   });
 
@@ -375,24 +383,26 @@ describe('SnapResponseStruct', () => {
             message: 'Hello, world!',
           },
         ],
-        errors: [
-          {
-            name: 'Error',
-            message: 'An error occurred',
-            stack:
-              'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
-            cause: null,
-          },
-        ],
-        events: [
-          {
-            event: 'Test Event',
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              test_property: 'test value',
+        tracked: {
+          errors: [
+            {
+              name: 'Error',
+              message: 'An error occurred',
+              stack:
+                'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
+              cause: null,
             },
-          },
-        ],
+          ],
+          events: [
+            {
+              event: 'Test Event',
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_property: 'test value',
+              },
+            },
+          ],
+        },
         getInterface: () => undefined,
       },
       SnapResponseStruct,
@@ -410,40 +420,7 @@ describe('SnapResponseStruct', () => {
           message: 'Hello, world!',
         },
       ],
-      errors: [
-        {
-          name: 'Error',
-          message: 'An error occurred',
-          stack:
-            'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
-          cause: null,
-        },
-      ],
-      events: [
-        {
-          event: 'Test Event',
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            test_property: 'test value',
-          },
-        },
-      ],
-      getInterface: expect.any(Function),
-    });
-
-    const optionsWithoutInterface = create(
-      {
-        id: '1',
-        response: {
-          result: '0x1',
-        },
-        notifications: [
-          {
-            id: '1',
-            type: 'native',
-            message: 'Hello, world!',
-          },
-        ],
+      tracked: {
         errors: [
           {
             name: 'Error',
@@ -463,6 +440,43 @@ describe('SnapResponseStruct', () => {
           },
         ],
       },
+      getInterface: expect.any(Function),
+    });
+
+    const optionsWithoutInterface = create(
+      {
+        id: '1',
+        response: {
+          result: '0x1',
+        },
+        notifications: [
+          {
+            id: '1',
+            type: 'native',
+            message: 'Hello, world!',
+          },
+        ],
+        tracked: {
+          errors: [
+            {
+              name: 'Error',
+              message: 'An error occurred',
+              stack:
+                'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
+              cause: null,
+            },
+          ],
+          events: [
+            {
+              event: 'Test Event',
+              properties: {
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                test_property: 'test value',
+              },
+            },
+          ],
+        },
+      },
       SnapResponseStruct,
     );
 
@@ -478,24 +492,26 @@ describe('SnapResponseStruct', () => {
           message: 'Hello, world!',
         },
       ],
-      errors: [
-        {
-          name: 'Error',
-          message: 'An error occurred',
-          stack:
-            'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
-          cause: null,
-        },
-      ],
-      events: [
-        {
-          event: 'Test Event',
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            test_property: 'test value',
+      tracked: {
+        errors: [
+          {
+            name: 'Error',
+            message: 'An error occurred',
+            stack:
+              'Error: An error occurred\n    at Object.<anonymous> (test.js:1:1)',
+            cause: null,
           },
-        },
-      ],
+        ],
+        events: [
+          {
+            event: 'Test Event',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              test_property: 'test value',
+            },
+          },
+        ],
+      },
     });
   });
 

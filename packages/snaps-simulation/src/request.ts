@@ -117,8 +117,10 @@ export function handleRequest({
             result: getSafeJson(result),
           },
           notifications,
-          errors,
-          events,
+          tracked: {
+            errors,
+            events,
+          },
           ...(getInterfaceFn ? { getInterface: getInterfaceFn } : {}),
         };
       } catch (error) {
@@ -128,9 +130,11 @@ export function handleRequest({
           response: {
             error: unwrappedError.serialize(),
           },
-          errors: [],
           notifications: [],
-          events: [],
+          tracked: {
+            errors: [],
+            events: [],
+          },
           getInterface: getInterfaceError,
         };
       }
@@ -143,9 +147,11 @@ export function handleRequest({
         response: {
           error: unwrappedError.serialize(),
         },
-        errors: [],
         notifications: [],
-        events: [],
+        tracked: {
+          errors: [],
+          events: [],
+        },
         getInterface: getInterfaceError,
       };
     }) as unknown as SnapRequest;

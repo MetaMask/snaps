@@ -374,7 +374,7 @@ export const toTrackError: MatcherFunction<
 > = function (actual, errorData) {
   assertActualIsSnapResponse(actual, 'toTrackError');
 
-  const errorValidator = (error: SnapResponse['errors'][number]) => {
+  const errorValidator = (error: SnapResponse['tracked']['errors'][number]) => {
     if (!errorData) {
       // If no error data is provided, we just check for the existence of an error.
       return true;
@@ -383,7 +383,7 @@ export const toTrackError: MatcherFunction<
     return this.equals(error, errorData);
   };
 
-  const { errors } = actual;
+  const { errors } = actual.tracked;
   const pass = errors.some(errorValidator);
 
   const message = pass
@@ -407,7 +407,9 @@ export const toTrackEvent: MatcherFunction<[eventData?: Json | undefined]> =
   function (actual, eventData) {
     assertActualIsSnapResponse(actual, 'toTrackEvent');
 
-    const eventValidator = (event: SnapResponse['events'][number]) => {
+    const eventValidator = (
+      event: SnapResponse['tracked']['events'][number],
+    ) => {
       if (!eventData) {
         // If no event data is provided, we just check for the existence of an event.
         return true;
@@ -416,7 +418,7 @@ export const toTrackEvent: MatcherFunction<[eventData?: Json | undefined]> =
       return this.equals(event, eventData);
     };
 
-    const { events } = actual;
+    const { events } = actual.tracked;
     const pass = events.some(eventValidator);
 
     const message = pass

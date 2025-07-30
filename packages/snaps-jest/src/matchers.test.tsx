@@ -606,14 +606,16 @@ describe('toTrackError', () => {
   it('passes when the error is correct', () => {
     expect(
       getMockResponse({
-        errors: [
-          {
-            name: 'foo',
-            message: 'bar',
-            stack: 'baz',
-            cause: null,
-          },
-        ],
+        tracked: {
+          errors: [
+            {
+              name: 'foo',
+              message: 'bar',
+              stack: 'baz',
+              cause: null,
+            },
+          ],
+        },
       }),
     ).toTrackError({
       name: 'foo',
@@ -626,14 +628,16 @@ describe('toTrackError', () => {
   it('passes when the partial error is correct', () => {
     expect(
       getMockResponse({
-        errors: [
-          {
-            name: 'foo',
-            message: 'bar',
-            stack: 'baz',
-            cause: null,
-          },
-        ],
+        tracked: {
+          errors: [
+            {
+              name: 'foo',
+              message: 'bar',
+              stack: 'baz',
+              cause: null,
+            },
+          ],
+        },
       }),
     ).toTrackError(
       expect.objectContaining({
@@ -646,22 +650,7 @@ describe('toTrackError', () => {
   it('passes when any error is tracked', () => {
     expect(
       getMockResponse({
-        errors: [
-          {
-            name: 'foo',
-            message: 'bar',
-            stack: 'baz',
-            cause: null,
-          },
-        ],
-      }),
-    ).toTrackError();
-  });
-
-  it('fails when the error is incorrect', () => {
-    expect(() =>
-      expect(
-        getMockResponse({
+        tracked: {
           errors: [
             {
               name: 'foo',
@@ -670,6 +659,25 @@ describe('toTrackError', () => {
               cause: null,
             },
           ],
+        },
+      }),
+    ).toTrackError();
+  });
+
+  it('fails when the error is incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            errors: [
+              {
+                name: 'foo',
+                message: 'bar',
+                stack: 'baz',
+                cause: null,
+              },
+            ],
+          },
         }),
       ).toTrackError({
         name: 'baz',
@@ -682,7 +690,9 @@ describe('toTrackError', () => {
     expect(() =>
       expect(
         getMockResponse({
-          errors: [],
+          tracked: {
+            errors: [],
+          },
         }),
       ).toTrackError({
         name: 'foo',
@@ -695,14 +705,16 @@ describe('toTrackError', () => {
     it('passes when the error is correct', () => {
       expect(
         getMockResponse({
-          errors: [
-            {
-              name: 'foo',
-              message: 'bar',
-              stack: 'baz',
-              cause: null,
-            },
-          ],
+          tracked: {
+            errors: [
+              {
+                name: 'foo',
+                message: 'bar',
+                stack: 'baz',
+                cause: null,
+              },
+            ],
+          },
         }),
       ).not.toTrackError({
         name: 'baz',
@@ -713,7 +725,9 @@ describe('toTrackError', () => {
     it('passes when there are no errors', () => {
       expect(
         getMockResponse({
-          errors: [],
+          tracked: {
+            errors: [],
+          },
         }),
       ).not.toTrackError();
     });
@@ -722,14 +736,16 @@ describe('toTrackError', () => {
       expect(() =>
         expect(
           getMockResponse({
-            errors: [
-              {
-                name: 'foo',
-                message: 'bar',
-                stack: 'baz',
-                cause: null,
-              },
-            ],
+            tracked: {
+              errors: [
+                {
+                  name: 'foo',
+                  message: 'bar',
+                  stack: 'baz',
+                  cause: null,
+                },
+              ],
+            },
           }),
         ).not.toTrackError({
           name: 'foo',
@@ -746,13 +762,15 @@ describe('toTrackEvent', () => {
   it('passes when the event is correct', () => {
     expect(
       getMockResponse({
-        events: [
-          {
-            event: 'foo',
-            properties: { bar: 'baz' },
-            sensitiveProperties: { qux: 'quux' },
-          },
-        ],
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+              sensitiveProperties: { qux: 'quux' },
+            },
+          ],
+        },
       }),
     ).toTrackEvent({
       event: 'foo',
@@ -764,12 +782,14 @@ describe('toTrackEvent', () => {
   it('passes when the partial event is correct', () => {
     expect(
       getMockResponse({
-        events: [
-          {
-            event: 'foo',
-            properties: { bar: 'baz' },
-          },
-        ],
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+            },
+          ],
+        },
       }),
     ).toTrackEvent({
       event: 'foo',
@@ -780,13 +800,15 @@ describe('toTrackEvent', () => {
   it('passes when any event is tracked', () => {
     expect(
       getMockResponse({
-        events: [
-          {
-            event: 'foo',
-            properties: { bar: 'baz' },
-            sensitiveProperties: { qux: 'quux' },
-          },
-        ],
+        tracked: {
+          events: [
+            {
+              event: 'foo',
+              properties: { bar: 'baz' },
+              sensitiveProperties: { qux: 'quux' },
+            },
+          ],
+        },
       }),
     ).toTrackEvent();
   });
@@ -795,13 +817,15 @@ describe('toTrackEvent', () => {
     expect(() =>
       expect(
         getMockResponse({
-          events: [
-            {
-              event: 'foo',
-              properties: { bar: 'baz' },
-              sensitiveProperties: { qux: 'quux' },
-            },
-          ],
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
         }),
       ).toTrackEvent({
         event: 'bar',
@@ -815,13 +839,15 @@ describe('toTrackEvent', () => {
     expect(() =>
       expect(
         getMockResponse({
-          events: [
-            {
-              event: 'foo',
-              properties: { bar: 'baz' },
-              sensitiveProperties: { qux: 'quux' },
-            },
-          ],
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
         }),
       ).toTrackEvent({
         event: 'foo',
@@ -835,13 +861,15 @@ describe('toTrackEvent', () => {
     expect(() =>
       expect(
         getMockResponse({
-          events: [
-            {
-              event: 'foo',
-              properties: { bar: 'baz' },
-              sensitiveProperties: { qux: 'quux' },
-            },
-          ],
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
         }),
       ).toTrackEvent({
         event: 'foo',
@@ -855,7 +883,9 @@ describe('toTrackEvent', () => {
     expect(() =>
       expect(
         getMockResponse({
-          events: [],
+          tracked: {
+            events: [],
+          },
         }),
       ).toTrackEvent({
         event: 'foo',
@@ -869,13 +899,15 @@ describe('toTrackEvent', () => {
     it('passes when the event is correct', () => {
       expect(
         getMockResponse({
-          events: [
-            {
-              event: 'foo',
-              properties: { bar: 'baz' },
-              sensitiveProperties: { qux: 'quux' },
-            },
-          ],
+          tracked: {
+            events: [
+              {
+                event: 'foo',
+                properties: { bar: 'baz' },
+                sensitiveProperties: { qux: 'quux' },
+              },
+            ],
+          },
         }),
       ).not.toTrackEvent({
         event: 'bar',
@@ -887,7 +919,9 @@ describe('toTrackEvent', () => {
     it('passes when there are no events', () => {
       expect(
         getMockResponse({
-          events: [],
+          tracked: {
+            events: [],
+          },
         }),
       ).not.toTrackEvent();
     });
@@ -896,13 +930,15 @@ describe('toTrackEvent', () => {
       expect(() =>
         expect(
           getMockResponse({
-            events: [
-              {
-                event: 'foo',
-                properties: { bar: 'baz' },
-                sensitiveProperties: { qux: 'quux' },
-              },
-            ],
+            tracked: {
+              events: [
+                {
+                  event: 'foo',
+                  properties: { bar: 'baz' },
+                  sensitiveProperties: { qux: 'quux' },
+                },
+              ],
+            },
           }),
         ).not.toTrackEvent({
           event: 'foo',
