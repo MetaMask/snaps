@@ -4,14 +4,15 @@ import { SnapStatus } from '@metamask/snaps-utils';
 import type { SemVerVersion } from '@metamask/utils';
 
 /**
- * Get a method that can be used to track an event.
+ * Get a method that gets a Snap by its ID.
  *
  * @param preinstalled - Whether the Snap is preinstalled. If `true`, the Snap
  * will be returned as a preinstalled Snap.
- * @returns A method that can be used to track an event.
+ * @returns A method that gets a Snap by its ID. It will always return a mock
+ * Snap for simulation purposes.
  */
 export function getGetSnapImplementation(preinstalled: boolean = true) {
-  return (): Snap => {
+  return (_snapId: string): Snap => {
     // This is a mock Snap for simulation purposes. Most of the fields are not
     // actually used, but returned for type-safety sake.
     return {
