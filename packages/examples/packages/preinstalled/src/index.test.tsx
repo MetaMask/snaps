@@ -124,6 +124,21 @@ describe('onRpcRequest', () => {
       });
     });
   });
+
+  describe('trace', () => {
+    it('starts and ends a trace', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'trace',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toTrace({
+        name: 'Test Snap Trace',
+      });
+    });
+  });
 });
 
 describe('onSettingsPage', () => {

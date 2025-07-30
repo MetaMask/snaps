@@ -97,6 +97,22 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       });
     }
 
+    case 'trace': {
+      await snap.request({
+        method: 'snap_startTrace',
+        params: {
+          name: 'Test Snap Trace',
+        },
+      });
+
+      return await snap.request({
+        method: 'snap_endTrace',
+        params: {
+          name: 'Test Snap Trace',
+        },
+      });
+    }
+
     default:
       throw new MethodNotFoundError({ method: request.method });
   }
