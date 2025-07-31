@@ -125,16 +125,27 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('trace', () => {
+  describe('startTrace + endTrace', () => {
     it('starts and ends a trace', async () => {
       const { request } = await installSnap();
 
       const response = await request({
-        method: 'trace',
+        method: 'startTrace',
       });
 
-      expect(response).toRespondWith(null);
-      expect(response).toTrace({
+      expect(response).toRespondWith({
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _traceId: expect.any(String),
+        _spanId: expect.any(String),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
+
+      const endResponse = await request({
+        method: 'endTrace',
+      });
+
+      expect(endResponse).toRespondWith(null);
+      expect(endResponse).toTrace({
         name: 'Test Snap Trace',
       });
     });

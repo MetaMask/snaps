@@ -1,4 +1,4 @@
-import type { TrackedError, TrackedEvent } from './trackables';
+import type { TrackablesState, TrackedError, TrackedEvent } from './trackables';
 import { trackablesSlice, trackError } from './trackables';
 
 describe('trackablesSlice', () => {
@@ -105,6 +105,51 @@ describe('trackablesSlice', () => {
       expect(state.pendingTraces).not.toContainEqual(trace);
       expect(state.traces).toHaveLength(1);
       expect(state.traces[0]).toStrictEqual(trace);
+    });
+
+    it('works in last in first out order', () => {
+      const initialState: TrackablesState = {
+        events: [],
+        errors: [],
+        traces: [],
+        pendingTraces: [
+          {
+            id: '123',
+            name: 'Pending Trace',
+            tags: {
+              'test-tag': 'test-value',
+            },
+          },
+          {
+            id: '123',
+            name: 'Pending Trace',
+            tags: {
+              'other-tag': 'other-value',
+            },
+          },
+        ],
+      };
+
+      const trace = {
+        id: '123',
+        name: 'Pending Trace',
+      };
+
+      const state = trackablesSlice.reducer(
+        initialState,
+        trackablesSlice.actions.endTrace(trace),
+      );
+
+      expect(state.pendingTraces).toHaveLength(1);
+      expect(state.pendingTraces[0].id).toBe('123');
+      expect(state.traces).toHaveLength(1);
+      expect(state.traces[0]).toStrictEqual({
+        id: '123',
+        name: 'Pending Trace',
+        tags: {
+          'other-tag': 'other-value',
+        },
+      });
     });
 
     it('does not modify state if trace is not found in pending traces', () => {

@@ -65,7 +65,7 @@ export const trackablesSlice = createSlice({
     },
     endTrace: (state, action: PayloadAction<EndTraceParams>) => {
       const endTrace = castDraft(action.payload);
-      const index = state.pendingTraces.findIndex(
+      const index = state.pendingTraces.findLastIndex(
         (pendingTrace) =>
           pendingTrace.id === endTrace.id &&
           pendingTrace.name === endTrace.name,
@@ -81,7 +81,6 @@ export const trackablesSlice = createSlice({
       state.events = [];
       state.errors = [];
       state.traces = [];
-      state.pendingTraces = [];
     },
   },
 });
