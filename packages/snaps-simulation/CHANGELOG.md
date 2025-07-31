@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.4.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `snap_startTrace` and `snap_endTrace` support to `snaps-jest` ([#3547](https://github.com/MetaMask/snaps/pull/3547))
-- feat: Add `snap_trackError` and `snap_trackEvent` support to `snaps-jest` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
-- chore: Bump @metamask/phishing-controller from 12.6.0 to 13.1.0 ([#3538](https://github.com/MetaMask/snaps/pull/3538))
+- Add support for `snap_startTrace` and `snap_endTrace` ([#3547](https://github.com/MetaMask/snaps/pull/3547))
+- Add support for `snap_trackError` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+- Add support for `snap_trackEvent` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
 
 ## [3.3.0]
 

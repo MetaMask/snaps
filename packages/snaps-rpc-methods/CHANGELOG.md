@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.5.0]
 
-### Uncategorized
+### Changed
 
-- feat: Add `snap_trackError` and `snap_trackEvent` support to `snaps-jest` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+- Use `TrackableErrorStruct` from `@metamask/snaps-utils` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
 
 ## [13.4.0]
 

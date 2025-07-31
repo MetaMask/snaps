@@ -9,13 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `snap_startTrace` and `snap_endTrace` support to `snaps-jest` ([#3547](https://github.com/MetaMask/snaps/pull/3547))
-- feat: Add `snap_trackError` and `snap_trackEvent` support to `snaps-jest` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
-- release: 120.0.0 ([#3543](https://github.com/MetaMask/snaps/pull/3543))
-- release: `119.0.0` ([#3533](https://github.com/MetaMask/snaps/pull/3533))
-- chore: Bump @metamask/utils from 11.4.1 to 11.4.2 ([#3526](https://github.com/MetaMask/snaps/pull/3526))
+- Add `trackEvent` method for testing `snap_trackEvent` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
 
 ## [0.6.0]
 
