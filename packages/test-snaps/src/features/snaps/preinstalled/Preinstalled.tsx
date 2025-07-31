@@ -30,6 +30,13 @@ export const Preinstalled: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleSubmitTrackEvent = () => {
+    invokeSnap({
+      snapId: PREINSTALLED_SNAP_ID,
+      method: 'trackEvent',
+    }).catch(logError);
+  };
+
   const handleStartTrace = () => {
     invokeSnap({
       snapId: PREINSTALLED_SNAP_ID,
@@ -75,6 +82,14 @@ export const Preinstalled: FunctionComponent = () => {
           onClick={handleSubmitTrackError}
         >
           Track error
+        </Button>
+        <Button
+          variant="primary"
+          id="trackEvent"
+          disabled={isLoading}
+          onClick={handleSubmitTrackEvent}
+        >
+          Track event
         </Button>
       </ButtonGroup>
       <ButtonGroup className="mb-3">
