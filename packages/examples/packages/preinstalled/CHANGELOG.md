@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.1]
 
+### Fixed
+
+- Add missing testing functionality ([#3550](https://github.com/MetaMask/snaps/pull/3550))
+
 ## [0.7.0]
 
 ### Added
