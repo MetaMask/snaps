@@ -10,7 +10,7 @@ import { startTrace } from '../../store';
  *
  * @param event - The performance trace to start.
  * @returns `null`.
- * @yields Adds the event to the store.
+ * @yields Adds the pending trace to the store.
  */
 function* startTraceImplementation(event: StartTraceParams): SagaIterator {
   yield put(startTrace(event));
