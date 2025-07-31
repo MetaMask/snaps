@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.28.1]
+
 ### Uncategorized
 
 - fix: Add track event button to `test-snaps` ([#3550](https://github.com/MetaMask/snaps/pull/3550))
@@ -386,7 +388,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.1...HEAD
+[2.28.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.0...@metamask/test-snaps@2.28.1
 [2.28.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.27.0...@metamask/test-snaps@2.28.0
 [2.27.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.26.0...@metamask/test-snaps@2.27.0
 [2.26.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.25.0...@metamask/test-snaps@2.26.0

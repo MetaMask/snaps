@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @lavamoat/webpack from 1.0.0 to 1.1.0 ([#3548](https://github.com/MetaMask/snaps/pull/3548))
-
 ## [10.2.0]
 
 ### Added
