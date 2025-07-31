@@ -64,15 +64,17 @@ export const trackablesSlice = createSlice({
       state.pendingTraces.push(trace);
     },
     endTrace: (state, action: PayloadAction<EndTraceParams>) => {
-      const trace = castDraft(action.payload);
+      const endTrace = castDraft(action.payload);
       const index = state.pendingTraces.findIndex(
         (pendingTrace) =>
-          pendingTrace.id === trace.id && pendingTrace.name === trace.name,
+          pendingTrace.id === endTrace.id &&
+          pendingTrace.name === endTrace.name,
       );
 
       if (index !== -1) {
+        const pendingTrace = state.pendingTraces[index];
         state.pendingTraces.splice(index, 1);
-        state.traces.push(trace);
+        state.traces.push(pendingTrace);
       }
     },
     clearTrackables: (state) => {
