@@ -13,6 +13,7 @@ import {
   toRespondWith,
   toRespondWithError,
   toSendNotification,
+  toTrace,
   toTrackError,
   toTrackEvent,
 } from './matchers';
@@ -29,6 +30,7 @@ expect.extend({
   toRender,
   toTrackError,
   toTrackEvent,
+  toTrace,
 });
 
 describe('toRespondWith', () => {
@@ -946,6 +948,169 @@ describe('toTrackEvent', () => {
           sensitiveProperties: { qux: 'quux' },
         }),
       ).toThrow('Expected not to track event with data');
+    });
+  });
+});
+
+describe('toTrace', () => {
+  it('passes when the trace is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          traces: [
+            {
+              id: '1',
+              name: 'foo',
+              parentContext: { bar: 'baz' },
+              startTime: 1234567890,
+              data: { qux: 'quux' },
+              tags: { corge: 'grault' },
+            },
+          ],
+        },
+      }),
+    ).toTrace({
+      id: '1',
+      name: 'foo',
+      parentContext: { bar: 'baz' },
+      startTime: 1234567890,
+      data: { qux: 'quux' },
+      tags: { corge: 'grault' },
+    });
+  });
+
+  it('passes when the partial trace is correct', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          traces: [
+            {
+              id: '1',
+              name: 'foo',
+              parentContext: { bar: 'baz' },
+              startTime: 1234567890,
+            },
+          ],
+        },
+      }),
+    ).toTrace({
+      id: '1',
+      name: 'foo',
+      parentContext: { bar: 'baz' },
+      startTime: 1234567890,
+    });
+  });
+
+  it('passes when any trace is tracked', () => {
+    expect(
+      getMockResponse({
+        tracked: {
+          traces: [
+            {
+              id: '1',
+              name: 'foo',
+              parentContext: { bar: 'baz' },
+              startTime: 1234567890,
+              data: { qux: 'quux' },
+              tags: { corge: 'grault' },
+            },
+          ],
+        },
+      }),
+    ).toTrace();
+  });
+
+  it('fails when the trace is incorrect', () => {
+    expect(() =>
+      expect(
+        getMockResponse({
+          tracked: {
+            traces: [
+              {
+                id: '1',
+                name: 'foo',
+                parentContext: { bar: 'baz' },
+                startTime: 1234567890,
+                data: { qux: 'quux' },
+                tags: { corge: 'grault' },
+              },
+            ],
+          },
+        }),
+      ).toTrace({
+        id: '2',
+        name: 'foo',
+        parentContext: { bar: 'baz' },
+        startTime: 1234567890,
+        data: { qux: 'quux' },
+        tags: { corge: 'grault' },
+      }),
+    ).toThrow('Received');
+  });
+
+  describe('not', () => {
+    it('passes when the trace does not match', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            traces: [
+              {
+                id: '1',
+                name: 'foo',
+                parentContext: { bar: 'baz' },
+                startTime: 1234567890,
+                data: { qux: 'quux' },
+                tags: { corge: 'grault' },
+              },
+            ],
+          },
+        }),
+      ).not.toTrace({
+        id: '2',
+        name: 'foo',
+        parentContext: { bar: 'baz' },
+        startTime: 1234567890,
+        data: { qux: 'quux' },
+        tags: { corge: 'grault' },
+      });
+    });
+
+    it('passes when there are no traces', () => {
+      expect(
+        getMockResponse({
+          tracked: {
+            traces: [],
+          },
+        }),
+      ).not.toTrace();
+    });
+
+    it('fails when the trace matches', () => {
+      expect(() =>
+        expect(
+          getMockResponse({
+            tracked: {
+              traces: [
+                {
+                  id: '1',
+                  name: 'foo',
+                  parentContext: { bar: 'baz' },
+                  startTime: 1234567890,
+                  data: { qux: 'quux' },
+                  tags: { corge: 'grault' },
+                },
+              ],
+            },
+          }),
+        ).not.toTrace({
+          id: '1',
+          name: 'foo',
+          parentContext: { bar: 'baz' },
+          startTime: 1234567890,
+          data: { qux: 'quux' },
+          tags: { corge: 'grault' },
+        }),
+      ).toThrow('Expected not to trace with data');
     });
   });
 });

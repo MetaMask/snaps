@@ -107,6 +107,21 @@ interface SnapsMatchers {
    * });
    */
   toTrackEvent(event?: unknown): void;
+
+  /**
+   * Assert that the Snap started and ended a trace with the expected
+   * parameters. This is equivalent to calling
+   * `expect(response.tracked.traces).toContainEqual(span)`.
+   *
+   * @param trace - The expected trace parameters.
+   * @throws If the snap did not end a trace with the expected parameters.
+   * @example
+   * const response = await request({ method: 'foo' });
+   * expect(response).toTrace({
+   *   name: 'My Trace',
+   * });
+   */
+  toTrace(trace?: unknown): void;
 }
 
 // Extend the `expect` interface with the new matchers. This is used when

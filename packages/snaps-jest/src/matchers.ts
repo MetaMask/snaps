@@ -9,6 +9,7 @@ import type {
   Component,
   NotificationType,
   TrackableError,
+  TraceRequest,
 } from '@metamask/snaps-sdk';
 import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe, JSXElementStruct } from '@metamask/snaps-sdk/jsx';
@@ -376,7 +377,8 @@ export const toTrackError: MatcherFunction<
 
   const errorValidator = (error: SnapResponse['tracked']['errors'][number]) => {
     if (!errorData) {
-      // If no error data is provided, we just check for the existence of an error.
+      // If no error data is provided, we just check for the existence of an
+      // error.
       return true;
     }
 
@@ -411,7 +413,8 @@ export const toTrackEvent: MatcherFunction<[eventData?: Json | undefined]> =
       event: SnapResponse['tracked']['events'][number],
     ) => {
       if (!eventData) {
-        // If no event data is provided, we just check for the existence of an event.
+        // If no event data is provided, we just check for the existence of an
+        // event.
         return true;
       }
 
@@ -438,6 +441,42 @@ export const toTrackEvent: MatcherFunction<[eventData?: Json | undefined]> =
     return { message, pass };
   };
 
+export const toTrace: MatcherFunction<[traceData?: TraceRequest]> = function (
+  actual,
+  traceData,
+) {
+  assertActualIsSnapResponse(actual, 'toTrace');
+
+  const traceValidator = (trace: SnapResponse['tracked']['traces'][number]) => {
+    if (!traceData) {
+      // If no trace data is provided, we just check for the existence of a
+      // trace.
+      return true;
+    }
+
+    return this.equals(trace, traceData);
+  };
+
+  const { traces } = actual.tracked;
+  const pass = traces.some(traceValidator);
+
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toTrace')}\n\n` +
+        `Expected not to trace with data: ${this.utils.printExpected(
+          traceData,
+        )}\n` +
+        `Received traces: ${this.utils.printReceived(traces)}`
+    : () =>
+        `${this.utils.matcherHint('.toTrace')}\n\n` +
+        `Expected to trace with data: ${this.utils.printExpected(
+          traceData,
+        )}\n` +
+        `Received traces: ${this.utils.printReceived(traces)}`;
+
+  return { message, pass };
+};
+
 expect.extend({
   toRespondWith,
   toRespondWithError,
@@ -445,4 +484,5 @@ expect.extend({
   toRender,
   toTrackError,
   toTrackEvent,
+  toTrace,
 });

@@ -18,6 +18,7 @@ import {
   any,
   func,
   type,
+  boolean,
 } from '@metamask/superstruct';
 import {
   assertStruct,
@@ -275,6 +276,21 @@ export const SnapResponseWithoutInterfaceStruct = object({
         event: string(),
         properties: optional(record(string(), JsonStruct)),
         sensitiveProperties: optional(record(string(), JsonStruct)),
+      }),
+    ),
+
+    traces: array(
+      object({
+        id: optional(string()),
+        name: string(),
+        parentContext: optional(JsonStruct),
+        startTime: optional(number()),
+        data: optional(
+          record(string(), union([string(), number(), boolean()])),
+        ),
+        tags: optional(
+          record(string(), union([string(), number(), boolean()])),
+        ),
       }),
     ),
   }),

@@ -22,6 +22,9 @@ import type {
   InterfaceContext,
   SnapId,
   EntropySource,
+  TraceRequest,
+  EndTraceRequest,
+  TraceContext,
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
@@ -47,6 +50,8 @@ import {
   getGetSnapImplementation,
   getTrackEventImplementation,
   getTrackErrorImplementation,
+  getEndTraceImplementation,
+  getStartTraceImplementation,
 } from './methods/hooks';
 import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
@@ -287,6 +292,21 @@ export type PermittedMiddlewareHooks = {
    * @param event - The event object containing event details and properties.
    */
   trackEvent(event: TrackEventParams['event']): void;
+
+  /**
+   * A hook that starts a performance trace.
+   *
+   * @param request - The trace request object containing trace details.
+   */
+  startTrace(request: TraceRequest): TraceContext;
+
+  /**
+   * A hook that ends a performance trace.
+   *
+   * @param request - The trace request object containing trace details.
+   * @returns The trace data.
+   */
+  endTrace(request: EndTraceRequest): void;
 };
 
 /**
@@ -496,6 +516,8 @@ export function getPermittedHooks(
     getSnap: getGetSnapImplementation(true),
     trackError: getTrackErrorImplementation(runSaga),
     trackEvent: getTrackEventImplementation(runSaga),
+    startTrace: getStartTraceImplementation(runSaga),
+    endTrace: getEndTraceImplementation(runSaga),
   };
 }
 
