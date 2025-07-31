@@ -10,7 +10,7 @@ import { endTrace } from '../../store';
  *
  * @param event - The performance trace to end.
  * @returns `null`.
- * @yields Adds the event to the store.
+ * @yields Adds the completed trace to the store.
  */
 function* endTraceImplementation(event: EndTraceParams): SagaIterator {
   yield put(endTrace(event));
