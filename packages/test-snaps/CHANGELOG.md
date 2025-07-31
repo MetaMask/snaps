@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Add track event button to `test-snaps` ([#3550](https://github.com/MetaMask/snaps/pull/3550))
+
 ## [2.28.0]
 
 ### Changed
