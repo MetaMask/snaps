@@ -181,7 +181,7 @@ describe('trackablesSlice', () => {
   });
 
   describe('clearTrackables', () => {
-    it('clears all events and errors from the state', () => {
+    it('clears all events, errors, and traces from the state, but does not clear pending traces', () => {
       const initialState = {
         events: [{ event: 'TestEvent', properties: {} }],
         errors: [
@@ -213,7 +213,7 @@ describe('trackablesSlice', () => {
       expect(state.events).toHaveLength(0);
       expect(state.errors).toHaveLength(0);
       expect(state.traces).toHaveLength(0);
-      expect(state.pendingTraces).toHaveLength(0);
+      expect(state.pendingTraces).toHaveLength(1);
     });
   });
 });
