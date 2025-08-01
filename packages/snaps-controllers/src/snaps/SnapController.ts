@@ -2265,11 +2265,6 @@ export class SnapController extends BaseController<
    */
   async clearState() {
     const snapIds = Object.keys(this.state.snaps);
-    if (this.#closeAllConnections) {
-      snapIds.forEach((snapId) => {
-        this.#closeAllConnections?.(snapId);
-      });
-    }
 
     await this.stopAllSnaps();
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
