@@ -2271,9 +2271,7 @@ export class SnapController extends BaseController<
       });
     }
 
-    await Promise.allSettled(
-      snapIds.map(async (snapId) => this.#terminateSnap(snapId as SnapId)),
-    );
+    await this.stopAllSnaps();
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
 
     this.update((state) => {

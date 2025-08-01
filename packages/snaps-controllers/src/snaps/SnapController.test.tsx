@@ -10211,10 +10211,18 @@ describe('SnapController', () => {
   });
 
   describe('clearState', () => {
-    it('clears the state and terminates running snaps', async () => {
+    it('clears the state, terminates running Snaps and cancels pending requests', async () => {
       const options = getSnapControllerWithEESOptions({
         state: {
-          snaps: getPersistedSnapsState(),
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({
+              sourceCode: `
+      module.exports.onRpcRequest = () => {
+        while(true) {}
+      };
+    `,
+            }),
+          ),
           snapStates: {
             [MOCK_SNAP_ID]: JSON.stringify({ foo: 'bar' }),
           },
@@ -10231,6 +10239,21 @@ describe('SnapController', () => {
 
       expect(snapController.has(MOCK_SNAP_ID)).toBe(true);
 
+      const requestPromise = snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          method: 'foo',
+        },
+      });
+
+      await waitForStateChange(messenger);
+
+      expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(true);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       await snapController.clearState();
 
       expect(snapController.has(MOCK_SNAP_ID)).toBe(false);
@@ -10243,6 +10266,10 @@ describe('SnapController', () => {
       expect(callActionSpy).toHaveBeenCalledWith(
         'PermissionController:revokeAllPermissions',
         MOCK_SNAP_ID,
+      );
+
+      await expect(requestPromise).rejects.toThrow(
+        'npm:@metamask/example-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
       );
 
       expect(snapController.state).toStrictEqual({
@@ -10290,6 +10317,9 @@ describe('SnapController', () => {
 
       expect(snapController.has(MOCK_SNAP_ID)).toBe(true);
       expect(snapController.has(preinstalledSnapId)).toBe(true);
+
+      await snapController.startSnap(MOCK_SNAP_ID);
+      await snapController.startSnap(preinstalledSnapId);
 
       await snapController.clearState();
 
