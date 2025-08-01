@@ -91,6 +91,7 @@ import {
   logError,
   normalizeRelative,
   OnTransactionResponseStruct,
+  OnTransactionDetailsResponseStruct,
   OnSignatureResponseStruct,
   resolveVersionRange,
   SnapCaveatType,
@@ -3774,6 +3775,7 @@ export class SnapController extends BaseController<
     switch (handlerType) {
       case HandlerType.OnTransaction:
       case HandlerType.OnSignature:
+      case HandlerType.OnTransactionDetails:
       case HandlerType.OnHomePage:
       case HandlerType.OnSettingsPage: {
         // Since this type has been asserted earlier we can cast
@@ -3992,6 +3994,14 @@ export class SnapController extends BaseController<
       case HandlerType.OnSignature: {
         assertStruct(result, OnSignatureResponseStruct);
 
+        if (result && hasProperty(result, 'id')) {
+          this.#assertInterfaceExists(snapId, result.id as string);
+        }
+
+        break;
+      }
+      case HandlerType.OnTransactionDetails: {
+        assertStruct(result, OnTransactionDetailsResponseStruct);
         if (result && hasProperty(result, 'id')) {
           this.#assertInterfaceExists(snapId, result.id as string);
         }
