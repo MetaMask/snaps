@@ -12,7 +12,8 @@ import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import type { IPromisesAPI } from 'memfs/lib/promises';
-import type { Stats, Configuration } from 'webpack';
+import { promisify } from 'util';
+import type { Stats, Configuration, Watching } from 'webpack';
 // TODO: Either fix this lint violation or explain why it's necessary to
 //  ignore.
 // eslint-disable-next-line import-x/no-named-as-default
@@ -84,6 +85,55 @@ const bundle = async ({
     code: (await fs.readFile('/lib/foo.js', 'utf-8')) as string,
     fs,
     stats: outputStats,
+  };
+};
+
+const watch = async ({
+  code = DEFAULT_SNAP_BUNDLE,
+  options = { eval: false, manifestPath: undefined },
+  fileSystem = createFsFromVolume(new Volume()),
+  webpackOptions,
+}: BundleOptions = {}): Promise<{
+  code: string;
+  fs: IPromisesAPI;
+  watching: Watching;
+}> => {
+  const { promises: fs } = fileSystem;
+
+  const bundler = webpack({
+    watch: true,
+    mode: 'none',
+    entry: {
+      foo: '/foo.js',
+    },
+    output: {
+      path: '/lib',
+      filename: '[name].js',
+    },
+    plugins: [new SnapsWebpackPlugin(options)],
+    ...webpackOptions,
+  });
+
+  bundler.inputFileSystem = fileSystem;
+  bundler.outputFileSystem = fileSystem;
+
+  await fs.mkdir('/lib', { recursive: true });
+  await fs.writeFile('/foo.js', code);
+
+  const outputWatching = await new Promise<Watching>((resolve, reject) => {
+    const watching = bundler.watch({}, (error, stats) => {
+      if (error || !stats) {
+        return reject(error);
+      }
+
+      return resolve(watching);
+    });
+  });
+
+  return {
+    code: (await fs.readFile('/lib/foo.js', 'utf-8')) as string,
+    fs,
+    watching: outputWatching,
   };
 };
 
@@ -232,6 +282,7 @@ describe('SnapsWebpackPlugin', () => {
       updateAndWriteManifest: true,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
+      watchMode: false,
     });
 
     const writeFileFn = mock.mock.calls[0][1]?.writeFileFn;
@@ -275,6 +326,7 @@ describe('SnapsWebpackPlugin', () => {
       updateAndWriteManifest: true,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
+      watchMode: false,
     });
   });
 
@@ -301,7 +353,41 @@ describe('SnapsWebpackPlugin', () => {
       updateAndWriteManifest: false,
       sourceCode: expect.any(String),
       writeFileFn: expect.any(Function),
+      watchMode: false,
     });
+  });
+
+  it('does not fix warnings in the manifest if the compiler is in watch mode', async () => {
+    const mock = checkManifest as jest.MockedFunction<typeof checkManifest>;
+    mock.mockResolvedValue({
+      files: undefined,
+      updated: false,
+      reports: [],
+    });
+
+    const { watching } = await watch({
+      options: {
+        eval: false,
+        manifestPath: '/snap.manifest.json',
+        writeManifest: false,
+      },
+      webpackOptions: {
+        watch: true,
+      },
+    });
+
+    expect(mock).toHaveBeenCalledTimes(1);
+    expect(mock).toHaveBeenCalledWith('/', {
+      exports: undefined,
+      handlerEndowments,
+      updateAndWriteManifest: false,
+      sourceCode: expect.any(String),
+      writeFileFn: expect.any(Function),
+      watchMode: true,
+    });
+
+    const close = promisify(watching.close.bind(watching));
+    await close();
   });
 
   it('logs manifest errors if writeManifest is disabled', async () => {

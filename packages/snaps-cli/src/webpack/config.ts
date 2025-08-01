@@ -1,7 +1,6 @@
 import SnapsWebpackPlugin from '@metamask/snaps-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import type { Ora } from 'ora';
-import { resolve } from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import type { Configuration } from 'webpack';
 import { DefinePlugin, ProgressPlugin, ProvidePlugin } from 'webpack';
@@ -308,7 +307,7 @@ export async function getDefaultConfiguration(
         {
           manifestPath: config.manifest.path,
           writeManifest: config.manifest.update,
-          eval: !options.watch && options.evaluate,
+          eval: options.evaluate,
         },
         options.spinner,
       ),
@@ -355,8 +354,6 @@ export async function getDefaultConfiguration(
       options.watch &&
         new SnapsWatchPlugin(
           {
-            bundle: resolve(config.output.path, config.output.filename),
-            evaluate: options.evaluate,
             files: [config.manifest.path],
           },
           options.spinner,
