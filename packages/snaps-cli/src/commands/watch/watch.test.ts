@@ -34,8 +34,6 @@ describe('watchHandler', () => {
     expect(listen).toHaveBeenCalledWith(config.server.port);
     expect(watch).toHaveBeenCalledWith(config, {
       spinner: expect.any(Object),
-      evaluate: true,
-      spinner: expect.any(Object),
     });
 
     expect(log).toHaveBeenCalledWith(
