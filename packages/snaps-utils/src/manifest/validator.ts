@@ -103,11 +103,26 @@ export async function runValidators(
 }
 
 /**
+ * Check whether a report is fixable.
+ *
+ * @param report - The report to check.
+ * @param errorsOnly - Whether to only consider errors for fixability.
+ * @returns Whether the report is fixable.
+ */
+export function isReportFixable(report: ValidatorReport, errorsOnly?: boolean) {
+  return Boolean(report.fix && (!errorsOnly || report.severity === 'error'));
+}
+
+/**
  * Get whether any reports has pending fixes.
  *
  * @param results - Results of the validation run.
+ * @param errorsOnly - Whether to only consider errors for pending fixes.
  * @returns Whether there are fixes pending.
  */
-export function hasFixes(results: ValidatorResults): boolean {
-  return results.reports.some((report) => report.fix);
+export function hasFixes(
+  results: ValidatorResults,
+  errorsOnly?: boolean,
+): boolean {
+  return results.reports.some((report) => isReportFixable(report, errorsOnly));
 }

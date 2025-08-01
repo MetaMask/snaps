@@ -64,4 +64,46 @@ describe('mm-snap watch', () => {
       );
     },
   );
+
+  it('evaluates a bundle and reports manifest warnings', async () => {
+    runner = getCommandRunner(
+      'watch',
+      ['--port', '0'],
+      resolve(__dirname, '__test__', 'invalid'),
+    );
+
+    await runner.waitForStderr(
+      /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+    );
+
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Checking the input file\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Starting the development server\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(
+        /The server is listening on http:\/\/localhost:\d+\./u,
+      ),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Building the Snap bundle\./u),
+    );
+    expect(runner.stderr).toContainEqual(
+      expect.stringMatching(
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+      ),
+    );
+    expect(runner.stderr).toContainEqual(
+      expect.stringContaining(
+        'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+      ),
+    );
+    expect(runner.stderr).toContainEqual(
+      expect.stringContaining(
+        'The Snap exports the following handlers, but does not request permission for them: onRpcRequest (endowment:rpc).',
+      ),
+    );
+  });
 });
