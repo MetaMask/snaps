@@ -80,7 +80,7 @@ export type VersionHistory = {
   date: number;
 };
 
-export type SnapAuxilaryFile = {
+export type SnapAuxiliaryFile = {
   path: string;
   // Value here should be stored as base64
   value: string;
@@ -131,7 +131,7 @@ export type Snap = TruncatedSnap & {
   /**
    * Static auxiliary files that can be loaded at runtime.
    */
-  auxiliaryFiles?: SnapAuxilaryFile[];
+  auxiliaryFiles?: SnapAuxiliaryFile[];
 
   /**
    * Localization files which are used to translate the manifest.
