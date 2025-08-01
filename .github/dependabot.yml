@@ -11,6 +11,7 @@ updates:
     allow:
       - dependency-name: '@metamask/*'
       - dependency-name: '@lavamoat/*'
+      - dependency-name: 'ses'
     target-branch: 'main'
     versioning-strategy: 'increase'
     open-pull-requests-limit: 10
