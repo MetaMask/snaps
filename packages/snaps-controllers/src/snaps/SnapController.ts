@@ -171,7 +171,6 @@ import type {
   ExecutionServiceEvents,
   HandleRpcRequestAction,
   SnapErrorJson,
-  TerminateAllSnapsAction,
   TerminateSnapAction,
 } from '../services';
 import type {
@@ -675,7 +674,6 @@ export type AllowedActions =
   | AddApprovalRequest
   | HandleRpcRequestAction
   | ExecuteSnapAction
-  | TerminateAllSnapsAction
   | TerminateSnapAction
   | UpdateCaveat
   | UpdateRequestState
@@ -2273,7 +2271,9 @@ export class SnapController extends BaseController<
       });
     }
 
-    await this.messagingSystem.call('ExecutionService:terminateAllSnaps');
+    await Promise.allSettled(
+      snapIds.map(async (snapId) => this.#terminateSnap(snapId as SnapId)),
+    );
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
 
     this.update((state) => {

@@ -10236,7 +10236,8 @@ describe('SnapController', () => {
       expect(snapController.has(MOCK_SNAP_ID)).toBe(false);
 
       expect(callActionSpy).toHaveBeenCalledWith(
-        'ExecutionService:terminateAllSnaps',
+        'ExecutionService:terminateSnap',
+        MOCK_SNAP_ID,
       );
 
       expect(callActionSpy).toHaveBeenCalledWith(
@@ -10296,7 +10297,13 @@ describe('SnapController', () => {
       expect(snapController.has(preinstalledSnapId)).toBe(true);
 
       expect(callActionSpy).toHaveBeenCalledWith(
-        'ExecutionService:terminateAllSnaps',
+        'ExecutionService:terminateSnap',
+        MOCK_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ExecutionService:terminateSnap',
+        preinstalledSnapId,
       );
 
       expect(callActionSpy).toHaveBeenCalledWith(
