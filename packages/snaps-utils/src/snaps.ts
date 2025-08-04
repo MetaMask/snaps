@@ -86,6 +86,11 @@ export type SnapAuxiliaryFile = {
   value: string;
 };
 
+/**
+ * @deprecated Use SnapAuxiliaryFile instead. This was a typo that has been fixed.
+ */
+export type SnapAuxilaryFile = SnapAuxiliaryFile;
+
 export type PersistedSnap = Snap;
 
 /**
