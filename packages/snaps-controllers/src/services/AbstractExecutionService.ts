@@ -157,15 +157,14 @@ export abstract class AbstractExecutionService<WorkerType>
   /**
    * Terminates the Snap with the specified ID and deletes all its associated
    * data. Any subsequent messages targeting the Snap will fail with an error.
-   * Throws an error if the specified Snap does not exist, or if termination
-   * fails unexpectedly.
+   * Throws an error if termination fails unexpectedly.
    *
    * @param snapId - The id of the Snap to be terminated.
    */
   public async terminateSnap(snapId: string): Promise<void> {
     const job = this.#jobs.get(snapId);
     if (!job) {
-      throw new Error(`"${snapId}" is not currently running.`);
+      return;
     }
 
     try {
