@@ -39,8 +39,8 @@ describe('parseMetaMaskUrl', () => {
   });
 
   it('will throw on an invalid scheme', () => {
-    expect(() => parseMetaMaskUrl('metamask://client/')).toThrow(
-      'Unable to parse URL. Expected the protocol to be "metamask:", but received "metamask:".',
+    expect(() => parseMetaMaskUrl('metmask://client/')).toThrow(
+      'Unable to parse URL. Expected the protocol to be "metamask:", but received "metmask:".',
     );
   });
 
