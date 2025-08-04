@@ -80,11 +80,16 @@ export type VersionHistory = {
   date: number;
 };
 
-export type SnapAuxilaryFile = {
+export type SnapAuxiliaryFile = {
   path: string;
   // Value here should be stored as base64
   value: string;
 };
+
+/**
+ * @deprecated Use SnapAuxiliaryFile instead. This was a typo that has been fixed.
+ */
+export type SnapAuxilaryFile = SnapAuxiliaryFile;
 
 export type PersistedSnap = Snap;
 
@@ -131,7 +136,7 @@ export type Snap = TruncatedSnap & {
   /**
    * Static auxiliary files that can be loaded at runtime.
    */
-  auxiliaryFiles?: SnapAuxilaryFile[];
+  auxiliaryFiles?: SnapAuxiliaryFile[];
 
   /**
    * Localization files which are used to translate the manifest.

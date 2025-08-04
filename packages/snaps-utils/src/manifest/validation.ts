@@ -268,7 +268,12 @@ export type SnapPermissions = InferMatching<
   InitialPermissions
 >;
 
-export const SnapAuxilaryFilesStruct = array(string());
+export const SnapAuxiliaryFilesStruct = array(string());
+
+/**
+ * @deprecated Use SnapAuxiliaryFilesStruct instead. This was a typo that has been fixed.
+ */
+export const SnapAuxilaryFilesStruct = SnapAuxiliaryFilesStruct;
 
 export const InitialConnectionsStruct = record(
   intersection([string(), uri()]),
@@ -300,8 +305,8 @@ export const SnapManifestStruct = object({
         ]),
       }),
     }),
-    files: optional(SnapAuxilaryFilesStruct),
-    locales: optional(SnapAuxilaryFilesStruct),
+    files: optional(SnapAuxiliaryFilesStruct),
+    locales: optional(SnapAuxiliaryFilesStruct),
   }),
   initialConnections: optional(InitialConnectionsStruct),
   initialPermissions: PermissionsStruct,
