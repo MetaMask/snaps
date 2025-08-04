@@ -14,6 +14,7 @@ const config = createConfig([
       '**/docs',
       '**/public',
       '.yarn',
+      'packages/snaps-cli/src/commands/watch/__test__',
       '!packages/snaps-cli/src/commands/build',
     ],
   },

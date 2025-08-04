@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.0]
+
+### Added
+
+- Add support for `snap_startTrace` and `snap_endTrace` ([#3547](https://github.com/MetaMask/snaps/pull/3547))
+- Add support for `snap_trackError` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+- Add support for `snap_trackEvent` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+
 ## [3.3.0]
 
 ### Added
@@ -196,7 +204,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.0...HEAD
+[3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.3.0...@metamask/snaps-simulation@3.4.0
 [3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.2.0...@metamask/snaps-simulation@3.3.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.1.0...@metamask/snaps-simulation@3.2.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.0.0...@metamask/snaps-simulation@3.1.0

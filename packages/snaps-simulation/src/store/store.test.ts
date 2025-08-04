@@ -18,6 +18,12 @@ describe('createStore', () => {
           "encrypted": null,
           "unencrypted": null,
         },
+        "trackables": {
+          "errors": [],
+          "events": [],
+          "pendingTraces": [],
+          "traces": [],
+        },
         "ui": {
           "current": null,
         },
@@ -47,6 +53,12 @@ describe('createStore', () => {
           "encrypted": "{"foo":"bar"}",
           "unencrypted": null,
         },
+        "trackables": {
+          "errors": [],
+          "events": [],
+          "pendingTraces": [],
+          "traces": [],
+        },
         "ui": {
           "current": null,
         },
@@ -75,6 +87,12 @@ describe('createStore', () => {
         "state": {
           "encrypted": null,
           "unencrypted": "{"foo":"bar"}",
+        },
+        "trackables": {
+          "errors": [],
+          "events": [],
+          "pendingTraces": [],
+          "traces": [],
         },
         "ui": {
           "current": null,

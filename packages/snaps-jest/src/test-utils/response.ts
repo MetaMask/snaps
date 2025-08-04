@@ -12,6 +12,7 @@ import type {
  * @param options.id - The ID to use.
  * @param options.response - The response to use.
  * @param options.notifications - The notifications to use.
+ * @param options.tracked - The tracked errors and events to use.
  * @param options.getInterface - The `getInterface` function to use.
  * @returns The mock response.
  */
@@ -21,12 +22,25 @@ export function getMockResponse({
     result: 'foo',
   },
   notifications = [],
+  tracked = {
+    errors: [],
+    events: [],
+    traces: [],
+  },
   getInterface,
-}: Partial<SnapResponseWithInterface>): SnapResponse {
+}: Omit<Partial<SnapResponseWithInterface>, 'tracked'> & {
+  tracked?: Partial<SnapResponse['tracked']>;
+}): SnapResponse {
   return {
     id,
     response,
     notifications,
+    tracked: {
+      errors: [],
+      events: [],
+      traces: [],
+      ...tracked,
+    },
     ...(getInterface ? { getInterface } : {}),
   };
 }

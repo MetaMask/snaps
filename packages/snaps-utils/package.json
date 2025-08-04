@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "11.2.0",
+  "version": "11.3.0",
   "description": "A collection of utilities for MetaMask Snaps",
   "keywords": [
     "MetaMask",
@@ -100,7 +100,7 @@
     "marked": "^12.0.1",
     "rfdc": "^1.3.0",
     "semver": "^7.5.4",
-    "ses": "^1.13.1",
+    "ses": "^1.14.0",
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {

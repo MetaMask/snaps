@@ -8,6 +8,8 @@ import type {
   ComponentOrElement,
   Component,
   NotificationType,
+  TrackableError,
+  TraceRequest,
 } from '@metamask/snaps-sdk';
 import type { JSXElement, SnapNode } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe, JSXElementStruct } from '@metamask/snaps-sdk/jsx';
@@ -368,9 +370,119 @@ export const toRender: MatcherFunction<[expected: ComponentOrElement]> =
     return { message, pass };
   };
 
+export const toTrackError: MatcherFunction<
+  [errorData?: Partial<TrackableError>]
+> = function (actual, errorData) {
+  assertActualIsSnapResponse(actual, 'toTrackError');
+
+  const errorValidator = (error: SnapResponse['tracked']['errors'][number]) => {
+    if (!errorData) {
+      // If no error data is provided, we just check for the existence of an
+      // error.
+      return true;
+    }
+
+    return this.equals(error, errorData);
+  };
+
+  const { errors } = actual.tracked;
+  const pass = errors.some(errorValidator);
+
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toTrackError')}\n\n` +
+        `Expected not to track error with data: ${this.utils.printExpected(
+          errorData,
+        )}\n` +
+        `Received errors: ${this.utils.printReceived(errors)}`
+    : () =>
+        `${this.utils.matcherHint('.toTrackError')}\n\n` +
+        `Expected to track error with data: ${this.utils.printExpected(
+          errorData,
+        )}\n` +
+        `Received errors: ${this.utils.printReceived(errors)}`;
+
+  return { message, pass };
+};
+
+export const toTrackEvent: MatcherFunction<[eventData?: Json | undefined]> =
+  function (actual, eventData) {
+    assertActualIsSnapResponse(actual, 'toTrackEvent');
+
+    const eventValidator = (
+      event: SnapResponse['tracked']['events'][number],
+    ) => {
+      if (!eventData) {
+        // If no event data is provided, we just check for the existence of an
+        // event.
+        return true;
+      }
+
+      return this.equals(event, eventData);
+    };
+
+    const { events } = actual.tracked;
+    const pass = events.some(eventValidator);
+
+    const message = pass
+      ? () =>
+          `${this.utils.matcherHint('.not.toTrackEvent')}\n\n` +
+          `Expected not to track event with data: ${this.utils.printExpected(
+            eventData,
+          )}\n` +
+          `Received events: ${this.utils.printReceived(events)}`
+      : () =>
+          `${this.utils.matcherHint('.toTrackEvent')}\n\n` +
+          `Expected to track event with data: ${this.utils.printExpected(
+            eventData,
+          )}\n` +
+          `Received events: ${this.utils.printReceived(events)}`;
+
+    return { message, pass };
+  };
+
+export const toTrace: MatcherFunction<[traceData?: TraceRequest]> = function (
+  actual,
+  traceData,
+) {
+  assertActualIsSnapResponse(actual, 'toTrace');
+
+  const traceValidator = (trace: SnapResponse['tracked']['traces'][number]) => {
+    if (!traceData) {
+      // If no trace data is provided, we just check for the existence of a
+      // trace.
+      return true;
+    }
+
+    return this.equals(trace, traceData);
+  };
+
+  const { traces } = actual.tracked;
+  const pass = traces.some(traceValidator);
+
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toTrace')}\n\n` +
+        `Expected not to trace with data: ${this.utils.printExpected(
+          traceData,
+        )}\n` +
+        `Received traces: ${this.utils.printReceived(traces)}`
+    : () =>
+        `${this.utils.matcherHint('.toTrace')}\n\n` +
+        `Expected to trace with data: ${this.utils.printExpected(
+          traceData,
+        )}\n` +
+        `Received traces: ${this.utils.printReceived(traces)}`;
+
+  return { message, pass };
+};
+
 expect.extend({
   toRespondWith,
   toRespondWithError,
   toSendNotification,
   toRender,
+  toTrackError,
+  toTrackEvent,
+  toTrace,
 });

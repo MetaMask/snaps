@@ -1,4 +1,9 @@
-import type { NotificationType, EnumToUnion } from '@metamask/snaps-sdk';
+import type {
+  NotificationType,
+  EnumToUnion,
+  TrackableError,
+  TraceRequest,
+} from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
@@ -570,9 +575,20 @@ export type SnapHandlerInterface = {
   content: JSXElement;
 } & SnapInterfaceActions;
 
+export type TrackedSnapResponseData = {
+  errors: TrackableError[];
+  events: {
+    event: string;
+    properties?: Record<string, Json>;
+    sensitiveProperties?: Record<string, Json>;
+  }[];
+  traces: TraceRequest[];
+};
+
 export type SnapResponseWithInterface = {
   id: string;
   response: { result: Json } | { error: Json };
+
   notifications: {
     id: string;
     message: string;
@@ -581,6 +597,9 @@ export type SnapResponseWithInterface = {
     content?: string | undefined;
     footerLink?: { text: string; href: string } | undefined;
   }[];
+
+  tracked: TrackedSnapResponseData;
+
   getInterface(): SnapHandlerInterface;
 };
 

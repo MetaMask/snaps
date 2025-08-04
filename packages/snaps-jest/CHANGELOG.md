@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.0]
+
+### Added
+
+- Add support for `snap_startTrace` and `snap_endTrace` ([#3547](https://github.com/MetaMask/snaps/pull/3547))
+- Add support for `snap_trackError` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+- Add support for `snap_trackEvent` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+
 ## [9.3.0]
 
 ### Added
@@ -403,7 +411,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.0...HEAD
+[9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.3.0...@metamask/snaps-jest@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.2.0...@metamask/snaps-jest@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.1.0...@metamask/snaps-jest@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.0.0...@metamask/snaps-jest@9.1.0

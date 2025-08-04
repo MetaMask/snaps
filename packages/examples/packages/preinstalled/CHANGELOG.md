@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.1]
+
+### Fixed
+
+- Add missing testing functionality ([#3550](https://github.com/MetaMask/snaps/pull/3550))
+
+## [0.7.0]
+
+### Added
+
+- Add `trackEvent` method for testing `snap_trackEvent` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+
 ## [0.6.0]
 
 ### Added
@@ -43,7 +55,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.1...HEAD
+[0.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.0...@metamask/preinstalled-example-snap@0.7.1
+[0.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.6.0...@metamask/preinstalled-example-snap@0.7.0
 [0.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.5.0...@metamask/preinstalled-example-snap@0.6.0
 [0.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.4.0...@metamask/preinstalled-example-snap@0.5.0
 [0.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.3.0...@metamask/preinstalled-example-snap@0.4.0

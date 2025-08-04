@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.3.0]
+
+### Changed
+
+- Move `TrackableErrorStruct` from `@metamask/snaps-rpc-methods` for reusability ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+
 ## [11.2.0]
 
 ### Added
@@ -672,7 +678,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...HEAD
+[11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.2.0...@metamask/snaps-utils@11.3.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.1.0...@metamask/snaps-utils@11.2.0
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.0.0...@metamask/snaps-utils@11.1.0
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@10.1.0...@metamask/snaps-utils@11.0.0

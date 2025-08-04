@@ -2183,7 +2183,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
-        "eval": false,
+        "eval": true,
         "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
@@ -2225,8 +2225,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "bundle": "/bar/baz/bundle.js",
-        "evaluate": true,
         "files": [
           "/bar/snap.manifest.json",
         ],
@@ -2750,8 +2748,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "bundle": "/bar/baz/bundle.js",
-        "evaluate": false,
         "files": [
           "/bar/snap.manifest.json",
         ],
@@ -2889,7 +2885,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
   "plugins": [
     SnapsWebpackPlugin {
       "options": {
-        "eval": false,
+        "eval": true,
         "manifestPath": "/bar/snap.manifest.json",
         "writeManifest": true,
       },
@@ -2931,8 +2927,6 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "bundle": "/bar/baz/bundle.js",
-        "evaluate": true,
         "files": [
           "/bar/snap.manifest.json",
         ],

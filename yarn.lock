@@ -1675,17 +1675,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.10, @endo/env-options@npm:^1.1.8":
-  version: 1.1.10
-  resolution: "@endo/env-options@npm:1.1.10"
-  checksum: 10/a9facb3ac3b05ff7ccb699c6f2d3896b87e75d5c13a1ad82feb5309bd7a78d51f1155bf35eb02f48a6fdc2436ae6b52a87e6a7d6e6ac843f70233afaf280be40
+"@endo/cache-map@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@endo/cache-map@npm:1.1.0"
+  checksum: 10/1cf2ebae70e9983edd30e830933df52ab9a0140fdecd420325fd20f1633b9afeb377b5cac548c7b7d04beb4cd1a14e672055ad25145119b2b151db78ffaa0b2f
   languageName: node
   linkType: hard
 
-"@endo/immutable-arraybuffer@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@endo/immutable-arraybuffer@npm:1.1.1"
-  checksum: 10/87a8a51b11a844f7ee7d67ba9370ce20ac38218e6af1eeaf7550c4699897c89f16751ca18c83930b87c7c994a7f6136354ca29afb08780f9286356b21a13e39f
+"@endo/env-options@npm:^1.1.11, @endo/env-options@npm:^1.1.8":
+  version: 1.1.11
+  resolution: "@endo/env-options@npm:1.1.11"
+  checksum: 10/a85326b2f422ebb3f5895ed263d230bf9c4915ed2f798210bebb3941daf94d97495f4767f4113bab8f3781b0534ecbe1d29067d7806478fd6237ab69e97fe5c1
+  languageName: node
+  linkType: hard
+
+"@endo/immutable-arraybuffer@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@endo/immutable-arraybuffer@npm:1.1.2"
+  checksum: 10/99159e4a04aad1dbe633b54b90f4591ff527c301ff2dc6585b65949e9c98b8942d726a23815470e6e4641c447bc94368cc96282f8fb50fb78f326b670c48cd16
   languageName: node
   linkType: hard
 
@@ -2754,9 +2761,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@lavamoat/webpack@npm:1.0.0"
+"@lavamoat/webpack@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@lavamoat/webpack@npm:1.1.0"
   dependencies:
     "@lavamoat/aa": "npm:^4.3.3"
     browser-resolve: "npm:2.0.0"
@@ -2765,7 +2772,7 @@ __metadata:
     ses: "npm:1.12.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/ddfd979186dbdae5429ade13e9743f7b3e221dace14e5c7349a5de96d4d0c17e3040a0214ec51aa6b32cb6b9e04b77a4acbf25d1d74f84130f145f02252a2b99
+  checksum: 10/232be6adf942c3675f55f38c786594406428b90af35156f276efbf121afa9c5b4908527c66c96821af6e7779b87d474c1e9e4bbd86e450a392345822a9a068ed
   languageName: node
   linkType: hard
 
@@ -4246,7 +4253,7 @@ __metadata:
     eslint: "npm:^9.11.0"
     fast-deep-equal: "npm:^3.1.3"
     get-npm-tarball-url: "npm:^2.0.3"
-    immer: "npm:^9.0.6"
+    immer: "npm:^9.0.21"
     jest: "npm:^29.0.2"
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
@@ -4281,7 +4288,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^3.3.4"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": "npm:^1.0.0"
+    "@lavamoat/webpack": "npm:^1.1.0"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -4314,7 +4321,7 @@ __metadata:
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
     serve-handler: "npm:^6.1.5"
-    ses: "npm:^1.13.1"
+    ses: "npm:^1.14.0"
     stream-browserify: "npm:^3.0.0"
     terser: "npm:^5.17.7"
     ts-loader: "npm:^9.5.2"
@@ -4523,6 +4530,7 @@ __metadata:
     eslint: "npm:^9.11.0"
     express: "npm:^5.1.0"
     fast-deep-equal: "npm:^3.1.3"
+    immer: "npm:^9.0.21"
     jest: "npm:^29.0.2"
     jest-it-up: "npm:^2.0.0"
     jest-silent-reporter: "npm:^0.6.0"
@@ -4584,7 +4592,7 @@ __metadata:
     rfdc: "npm:^1.3.0"
     rimraf: "npm:^4.1.2"
     semver: "npm:^7.5.4"
-    ses: "npm:^1.13.1"
+    ses: "npm:^1.14.0"
     tsx: "npm:^4.20.3"
     typescript: "npm:~5.3.3"
     validate-npm-package-name: "npm:^5.0.0"
@@ -16748,13 +16756,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^1.13.1":
-  version: 1.13.1
-  resolution: "ses@npm:1.13.1"
+"ses@npm:^1.14.0":
+  version: 1.14.0
+  resolution: "ses@npm:1.14.0"
   dependencies:
-    "@endo/env-options": "npm:^1.1.10"
-    "@endo/immutable-arraybuffer": "npm:^1.1.1"
-  checksum: 10/7077a5349bebccddb7cdd07f6cca1d8c8af6b36106d34efdf362030c2a4a820f2c4acf3e7ffcc003403312d0833bbc3d4b21c490cd2f198b697cbe375761c159
+    "@endo/cache-map": "npm:^1.1.0"
+    "@endo/env-options": "npm:^1.1.11"
+    "@endo/immutable-arraybuffer": "npm:^1.1.2"
+  checksum: 10/bee10b958938fb3d153ea8f1b4514f8ddb390dc7533fe9cfc382dcc046bebd5fca02d80836bfb8f98e94609ffbe3580a0bb65428eb7e39d523315eacdc052300
   languageName: node
   linkType: hard
 

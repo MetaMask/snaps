@@ -1,5 +1,6 @@
 import { NotificationType, enumValue } from '@metamask/snaps-sdk';
 import { JSXElementStruct } from '@metamask/snaps-sdk/jsx';
+import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import {
   array,
   assign,
@@ -17,6 +18,7 @@ import {
   any,
   func,
   type,
+  boolean,
 } from '@metamask/superstruct';
 import {
   assertStruct,
@@ -265,6 +267,33 @@ export const SnapResponseWithoutInterfaceStruct = object({
       ),
     }),
   ),
+
+  tracked: object({
+    errors: array(TrackableErrorStruct),
+
+    events: array(
+      object({
+        event: string(),
+        properties: optional(record(string(), JsonStruct)),
+        sensitiveProperties: optional(record(string(), JsonStruct)),
+      }),
+    ),
+
+    traces: array(
+      object({
+        id: optional(string()),
+        name: string(),
+        parentContext: optional(JsonStruct),
+        startTime: optional(number()),
+        data: optional(
+          record(string(), union([string(), number(), boolean()])),
+        ),
+        tags: optional(
+          record(string(), union([string(), number(), boolean()])),
+        ),
+      }),
+    ),
+  }),
 });
 
 export const SnapResponseWithInterfaceStruct = assign(

@@ -87,6 +87,69 @@ describe('onRpcRequest', () => {
       });
     });
   });
+
+  describe('trackError', () => {
+    it('tracks an error', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'trackError',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toTrackError(
+        expect.objectContaining({
+          name: 'TestError',
+          message: 'This is a test error.',
+        }),
+      );
+    });
+  });
+
+  describe('trackEvent', () => {
+    it('tracks an event', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'trackEvent',
+      });
+
+      expect(response).toRespondWith(null);
+      expect(response).toTrackEvent({
+        event: 'Test Event',
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          test_property: 'test value',
+        },
+      });
+    });
+  });
+
+  describe('startTrace + endTrace', () => {
+    it('starts and ends a trace', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'startTrace',
+      });
+
+      expect(response).toRespondWith({
+        /* eslint-disable @typescript-eslint/naming-convention */
+        _traceId: expect.any(String),
+        _spanId: expect.any(String),
+        /* eslint-enable @typescript-eslint/naming-convention */
+      });
+
+      const endResponse = await request({
+        method: 'endTrace',
+      });
+
+      expect(endResponse).toRespondWith(null);
+      expect(endResponse).toTrace({
+        name: 'Test Snap Trace',
+      });
+    });
+  });
 });
 
 describe('onSettingsPage', () => {

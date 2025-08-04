@@ -19,8 +19,15 @@ import { nanoid } from '@reduxjs/toolkit';
 import type { RootControllerMessenger } from './controllers';
 import { getInterface, getInterfaceActions } from './interface';
 import type { SimulationOptions } from './options';
-import { clearNotifications, getNotifications } from './store';
 import type { RunSagaFunction, Store } from './store';
+import {
+  getTraces,
+  getErrors,
+  clearNotifications,
+  getNotifications,
+  getEvents,
+  clearTrackables,
+} from './store';
 import { SnapResponseStruct } from './structs';
 import type {
   RequestOptions,
@@ -87,9 +94,15 @@ export function handleRequest({
       },
     })
     .then(async (result) => {
-      const notifications = getNotifications(store.getState());
+      const state = store.getState();
+      const notifications = getNotifications(state);
+      const errors = getErrors(state);
+      const events = getEvents(state);
+      const traces = getTraces(state);
       const interfaceId = notifications[0]?.content;
+
       store.dispatch(clearNotifications());
+      store.dispatch(clearTrackables());
 
       try {
         const getInterfaceFn = await getInterfaceApi(
@@ -106,6 +119,11 @@ export function handleRequest({
             result: getSafeJson(result),
           },
           notifications,
+          tracked: {
+            errors,
+            events,
+            traces,
+          },
           ...(getInterfaceFn ? { getInterface: getInterfaceFn } : {}),
         };
       } catch (error) {
@@ -116,6 +134,11 @@ export function handleRequest({
             error: unwrappedError.serialize(),
           },
           notifications: [],
+          tracked: {
+            errors: [],
+            events: [],
+            traces: [],
+          },
           getInterface: getInterfaceError,
         };
       }
@@ -129,6 +152,11 @@ export function handleRequest({
           error: unwrappedError.serialize(),
         },
         notifications: [],
+        tracked: {
+          errors: [],
+          events: [],
+          traces: [],
+        },
         getInterface: getInterfaceError,
       };
     }) as unknown as SnapRequest;

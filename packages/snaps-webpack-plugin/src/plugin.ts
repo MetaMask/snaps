@@ -194,6 +194,7 @@ export default class SnapsWebpackPlugin {
             sourceCode: bundleContent,
             exports,
             handlerEndowments,
+            watchMode: compiler.watchMode,
             writeFileFn: async (path, data) => {
               assert(
                 compiler.outputFileSystem,

@@ -141,11 +141,9 @@ describe('AbstractExecutionService', () => {
     ).rejects.toThrow(`"${MOCK_SNAP_ID}" is already running.`);
   });
 
-  it('throws an error if the Snap is not running when attempted to be terminated', async () => {
+  it('does nothing if the Snap is not running when attempted to be terminated', async () => {
     const { service } = createService(MockExecutionService);
 
-    await expect(service.terminateSnap(MOCK_SNAP_ID)).rejects.toThrow(
-      `"${MOCK_SNAP_ID}" is not currently running.`,
-    );
+    expect(await service.terminateSnap(MOCK_SNAP_ID)).toBeUndefined();
   });
 });

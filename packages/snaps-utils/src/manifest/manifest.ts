@@ -6,7 +6,7 @@ import pathUtils from 'path';
 
 import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
-import { hasFixes, runValidators } from './validator';
+import { isReportFixable, hasFixes, runValidators } from './validator';
 import type { ValidatorMeta, ValidatorReport } from './validator-types';
 import * as defaultValidators from './validators';
 import { deepClone } from '../deep-clone';
@@ -65,6 +65,12 @@ export type CheckManifestOptions = {
    * between `@metamask/snaps-utils` and `@metamask/snaps-rpc-methods`.
    */
   handlerEndowments?: Record<string, string | null>;
+
+  /**
+   * Whether the compiler is running in watch mode. This is used to determine
+   * whether to fix warnings or errors only.
+   */
+  watchMode?: boolean;
 };
 
 /**
@@ -99,6 +105,8 @@ export type WriteFileFunction = (path: string, data: string) => Promise<void>;
  * handlers and their respective permission name. This must be provided to avoid
  * circular dependencies between `@metamask/snaps-utils` and
  * `@metamask/snaps-rpc-methods`.
+ * @param options.watchMode - Whether the compiler is running in watch mode.
+ * This is used to determine whether to fix warnings or errors only.
  * @returns Whether the manifest was updated, and an array of warnings that
  * were encountered during processing of the manifest files.
  */
@@ -110,6 +118,7 @@ export async function checkManifest(
     writeFileFn = fs.writeFile,
     exports,
     handlerEndowments,
+    watchMode = false,
   }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
   const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
@@ -169,8 +178,8 @@ export async function checkManifest(
     reports: validatorResults.reports,
   };
 
-  if (updateAndWriteManifest && hasFixes(manifestResults)) {
-    const fixedResults = await runFixes(validatorResults);
+  if (updateAndWriteManifest && hasFixes(manifestResults, watchMode)) {
+    const fixedResults = await runFixes(validatorResults, undefined, watchMode);
 
     if (fixedResults.updated) {
       manifestResults = fixedResults;
@@ -206,11 +215,13 @@ export async function checkManifest(
  *
  * @param results - Results of the initial run of validation.
  * @param rules - Optional list of rules to run the fixes with.
+ * @param errorsOnly - Whether to only run fixes for errors, not warnings.
  * @returns The updated manifest and whether it was updated.
  */
 export async function runFixes(
   results: ValidatorResults,
   rules?: ValidatorMeta[],
+  errorsOnly = false,
 ): Promise<CheckManifestResult> {
   let shouldRunFixes = true;
   const MAX_ATTEMPTS = 10;
@@ -230,7 +241,10 @@ export async function runFixes(
 
     let manifest = fixResults.files.manifest.result;
 
-    const fixable = fixResults.reports.filter((report) => report.fix);
+    const fixable = fixResults.reports.filter((report) =>
+      isReportFixable(report, errorsOnly),
+    );
+
     for (const report of fixable) {
       assert(report.fix);
       ({ manifest } = await report.fix({ manifest }));
@@ -244,7 +258,7 @@ export async function runFixes(
     fixResults.files.manifest.result = manifest;
 
     fixResults = await runValidators(fixResults.files, rules);
-    shouldRunFixes = hasFixes(fixResults);
+    shouldRunFixes = hasFixes(fixResults, errorsOnly);
   }
 
   const initialReports: (CheckManifestReport & ValidatorReport)[] = deepClone(
