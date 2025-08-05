@@ -38,10 +38,8 @@ stable version of the MetaMask extension.
 
 In the future, we may move to a smart contract based registry. This would allow
 us to have a decentralized registry, and allow snap developers to register their
-snaps themselves. This is currently a work in progress. Progress can be tracked
-in the [Permissionless Snaps Registry] repository.
+snaps themselves. This is currently a work in progress.
 
 [snap controller]: ./snap-controller.md
 [jsonsnapsregistry]: ../../../packages/snaps-controllers/src/snaps/registry/json.ts
 [snaps registry]: https://github.com/MetaMask/snaps-registry
-[permissionless snaps registry]: https://github.com/MetaMask/permissionless-snaps-registry
