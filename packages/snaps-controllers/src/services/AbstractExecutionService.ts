@@ -193,9 +193,9 @@ export abstract class AbstractExecutionService<WorkerType>
 
     Object.values(job.streams).forEach((stream) => {
       try {
-        stream.destroy();
+        stream.end();
       } catch (error) {
-        logError('Error while destroying stream', error);
+        logError('Error while ending stream', error);
       }
     });
 
