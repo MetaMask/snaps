@@ -403,7 +403,7 @@ export class BaseSnapExecutor {
 
     const multiplex = new ObjectMultiplex();
     pipeline(this.rpcStream, multiplex, this.rpcStream, (error) => {
-      if (error) {
+      if (error && !error.message?.match('Premature close')) {
         logError(`Provider stream failure.`, error);
       }
     });

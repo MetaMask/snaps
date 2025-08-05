@@ -393,8 +393,8 @@ export async function installSnap<
 
       // Error function is difficult to test, so we ignore it.
       /* istanbul ignore next 2 */
-      pipeline(stream, providerStream, stream, (error: unknown) => {
-        if (error) {
+      pipeline(stream, providerStream, stream, (error) => {
+        if (error && !error.message?.match('Premature close')) {
           logError(`Provider stream failure.`, error);
         }
       });
