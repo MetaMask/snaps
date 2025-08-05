@@ -56,7 +56,7 @@ export const getNodeEES = (
         });
         const providerStream = createEngineStream({ engine });
         pipeline(stream, providerStream, stream, (error) => {
-          if (error) {
+          if (error && !error.message?.match('Premature close')) {
             logError(`Provider stream failure.`, error);
           }
         });

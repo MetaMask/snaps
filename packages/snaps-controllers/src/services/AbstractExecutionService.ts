@@ -193,9 +193,9 @@ export abstract class AbstractExecutionService<WorkerType>
 
     Object.values(job.streams).forEach((stream) => {
       try {
-        stream.end();
+        stream.destroy();
       } catch (error) {
-        logError('Error while ending stream', error);
+        logError('Error while destroying stream', error);
       }
     });
 
@@ -225,7 +225,7 @@ export abstract class AbstractExecutionService<WorkerType>
       streams.command,
       jsonRpcConnection.stream,
       (error) => {
-        if (error) {
+        if (error && !error.message?.match('Premature close')) {
           logError(`Command stream failure.`, error);
         }
       },
@@ -495,7 +495,7 @@ export function setupMultiplex(
 ): ObjectMultiplex {
   const mux = new ObjectMultiplex();
   pipeline(connectionStream, mux, connectionStream, (error) => {
-    if (error) {
+    if (error && !error.message?.match('Premature close')) {
       logError(`"${streamName}" stream failure.`, error);
     }
   });
