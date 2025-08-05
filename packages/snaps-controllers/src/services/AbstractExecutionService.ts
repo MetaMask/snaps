@@ -193,7 +193,9 @@ export abstract class AbstractExecutionService<WorkerType>
 
     Object.values(job.streams).forEach((stream) => {
       try {
-        stream.destroy();
+        if (!stream.destroyed) {
+          stream.destroy();
+        }
       } catch (error) {
         logError('Error while destroying stream', error);
       }
