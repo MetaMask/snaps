@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Destroying execution environment streams should emit events ([#3074](https://github.com/MetaMask/snaps/pull/3074))
+
 ## [3.4.0]
 
 ### Added
