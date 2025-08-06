@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.1.0]
+
 ### Uncategorized
 
 - feat: Allow eval in watch mode ([#3553](https://github.com/MetaMask/snaps/pull/3553))
@@ -144,7 +146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@5.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@5.1.0...HEAD
+[5.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@5.0.0...@metamask/snaps-webpack-plugin@5.1.0
 [5.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.3.0...@metamask/snaps-webpack-plugin@5.0.0
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.1...@metamask/snaps-webpack-plugin@4.3.0
 [4.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-webpack-plugin@4.2.0...@metamask/snaps-webpack-plugin@4.2.1

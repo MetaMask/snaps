@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.1]
+
 ### Uncategorized
 
 - fix: Destroying execution environment streams should emit events ([#3074](https://github.com/MetaMask/snaps/pull/3074))
@@ -551,7 +553,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...HEAD
+[10.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...@metamask/snaps-execution-environments@10.2.1
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.1.0...@metamask/snaps-execution-environments@10.2.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.0.0...@metamask/snaps-execution-environments@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@9.1.0...@metamask/snaps-execution-environments@10.0.0
