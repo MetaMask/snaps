@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.2.1]
 
-### Uncategorized
+### Changed
 
-- fix: Destroying execution environment streams should emit events ([#3074](https://github.com/MetaMask/snaps/pull/3074))
-- chore: Bump ses from 1.13.1 to 1.14.0 ([#3557](https://github.com/MetaMask/snaps/pull/3557))
-- chore: Bump @lavamoat/webpack from 1.0.0 to 1.1.0 ([#3548](https://github.com/MetaMask/snaps/pull/3548))
+- Bump ses from `1.13.1` to `1.14.0` ([#3557](https://github.com/MetaMask/snaps/pull/3557))
+
+### Fixed
+
+- Ignore "Premature close" stream messages ([#3074](https://github.com/MetaMask/snaps/pull/3074))
 
 ## [10.2.0]
 

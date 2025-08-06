@@ -9,11 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.4.0]
 
-### Uncategorized
+### Added
 
-- fix: correct typos in Snap types and validation ([#3545](https://github.com/MetaMask/snaps/pull/3545))
-- feat: Allow eval in watch mode ([#3553](https://github.com/MetaMask/snaps/pull/3553))
-- chore: Bump ses from 1.13.1 to 1.14.0 ([#3557](https://github.com/MetaMask/snaps/pull/3557))
+- Add support for eval in watch mode for Snaps CLI ([#3553](https://github.com/MetaMask/snaps/pull/3553))
+
+### Changed
+
+- Bump ses from `1.13.1` to `1.14.0` ([#3557](https://github.com/MetaMask/snaps/pull/3557))
+
+### Fixed
+
+- Fix typos in `SnapAuxiliaryFilesStruct` variable and `SnapAuxiliaryFile` type ([#3545](https://github.com/MetaMask/snaps/pull/3545))
+  - `SnapAuxilaryFilesStruct` and `SnapAuxilaryFile` are still exported for
+    backwards compatibility, but will be removed in a future release.
 
 ## [11.3.0]
 

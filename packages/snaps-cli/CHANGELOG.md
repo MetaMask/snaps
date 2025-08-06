@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.2.0]
 
-### Uncategorized
+### Changed
 
-- feat: Allow eval in watch mode ([#3553](https://github.com/MetaMask/snaps/pull/3553))
-- chore: update configuration section anchor in snaps-cli/README ([#3537](https://github.com/MetaMask/snaps/pull/3537))
+- Add support for eval in watch mode ([#3553](https://github.com/MetaMask/snaps/pull/3553))
+  - This enables some extra validation checks in watch mode, which can help
+    catch issues earlier in the development process.
 
 ## [8.1.1]
 

@@ -9,13 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.2.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Prevent double scheduling events and ensure long-running events work correctly ([#3561](https://github.com/MetaMask/snaps/pull/3561))
-- fix: Destroying execution environment streams should emit events ([#3074](https://github.com/MetaMask/snaps/pull/3074))
-- fix: Ignore terminate calls to not executing Snaps ([#3559](https://github.com/MetaMask/snaps/pull/3559))
-- fix: Properly stop Snaps when clearing state ([#3552](https://github.com/MetaMask/snaps/pull/3552))
-- feat: Add `snap_trackError` and `snap_trackEvent` support to `snaps-jest` ([#3546](https://github.com/MetaMask/snaps/pull/3546))
+- Prevent double scheduling events and ensure long-running events work correctly ([#3561](https://github.com/MetaMask/snaps/pull/3561))
+- Emit event when destroying execution environment streams ([#3074](https://github.com/MetaMask/snaps/pull/3074))
+- Ignore terminate calls to not executing Snaps ([#3559](https://github.com/MetaMask/snaps/pull/3559))
+- Properly stop Snaps when clearing state ([#3552](https://github.com/MetaMask/snaps/pull/3552))
 
 ## [14.2.0]
 
