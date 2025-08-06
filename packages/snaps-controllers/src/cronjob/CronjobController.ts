@@ -406,8 +406,15 @@ export class CronjobController extends BaseController<
    * Get the next execution date for a given event and start a timer for it.
    *
    * @param event - The event to schedule.
+   * @param next - Whether to schedule to the next date, otherwise will
+   * schedule for existing date.
    */
-  #schedule(event: InternalBackgroundEvent) {
+  #schedule(event: InternalBackgroundEvent, next = true) {
+    if (!next) {
+      this.#startTimer(event);
+      return;
+    }
+
     const date = getExecutionDate(event.schedule);
     const { nextState } = this.update((state) => {
       state.events[event.id].date = date;
@@ -624,13 +631,7 @@ export class CronjobController extends BaseController<
         continue;
       }
 
-      // If the existing event has not passed, start the timer.
-      if (eventDate >= now) {
-        this.#startTimer(event);
-        continue;
-      }
-
-      this.#schedule(event);
+      this.#schedule(event, false);
     }
   }
 
