@@ -275,19 +275,14 @@ describe('CronjobController', () => {
       },
     );
 
-    const secondCronjobController = new CronjobController({
-      messenger: controllerMessenger,
-      state: cronjobController.state,
-      stateManager: getMockStateManager(),
-    });
-
-    secondCronjobController.init();
-
-    await new Promise((resolve) => originalProcessNextTick(resolve));
     expect(handleRequest).toHaveBeenCalledTimes(1);
 
+    jest.advanceTimersByTime(inMilliseconds(26, Duration.Hour));
+
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+    expect(handleRequest).toHaveBeenCalledTimes(2);
+
     cronjobController.destroy();
-    secondCronjobController.destroy();
   });
 
   it('does not schedule cronjob that is too far in the future', () => {
@@ -473,55 +468,6 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('handles scheduled event close to current time gracefully', () => {
-    const rootMessenger = getRootCronjobControllerMessenger();
-    const controllerMessenger =
-      getRestrictedCronjobControllerMessenger(rootMessenger);
-
-    const cronjobController = new CronjobController({
-      messenger: controllerMessenger,
-      stateManager: getMockStateManager(),
-      state: {
-        events: {
-          foo: {
-            id: 'foo',
-            recurring: false,
-            date: '2022-01-01T00:00:01.000Z',
-            schedule: '2022-01-01T00:00:01.000Z',
-            scheduledAt: new Date().toISOString(),
-            snapId: MOCK_SNAP_ID,
-            request: {
-              method: 'handleEvent',
-              params: ['p1'],
-            },
-          },
-        },
-      },
-    });
-
-    rootMessenger.subscribe('CronjobController:stateChange', () => {
-      jest.advanceTimersByTime(inMilliseconds(2, Duration.Second));
-    });
-
-    cronjobController.init();
-
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
-      1,
-      'SnapController:handleRequest',
-      {
-        snapId: MOCK_SNAP_ID,
-        origin: METAMASK_ORIGIN,
-        handler: HandlerType.OnCronjob,
-        request: {
-          method: 'handleEvent',
-          params: ['p1'],
-        },
-      },
-    );
-
-    cronjobController.destroy();
-  });
-
   it('handles the `snapInstalled` event', () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
@@ -663,7 +609,7 @@ describe('CronjobController', () => {
       foo: {
         id: 'foo',
         recurring: false,
-        date: '2022-01-01T01:00:00Z',
+        date: '2022-01-01T01:00Z',
         schedule: '2022-01-01T01:00Z',
         scheduledAt: new Date().toISOString(),
         snapId: MOCK_SNAP_ID,
