@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.1]
+
+### Changed
+
+- Bump ses from `1.13.1` to `1.14.0` ([#3557](https://github.com/MetaMask/snaps/pull/3557))
+
+### Fixed
+
+- Ignore "Premature close" stream messages ([#3074](https://github.com/MetaMask/snaps/pull/3074))
+
 ## [10.2.0]
 
 ### Added
@@ -545,7 +555,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...HEAD
+[10.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...@metamask/snaps-execution-environments@10.2.1
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.1.0...@metamask/snaps-execution-environments@10.2.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.0.0...@metamask/snaps-execution-environments@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@9.1.0...@metamask/snaps-execution-environments@10.0.0

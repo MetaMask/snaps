@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.4.0]
+
+### Added
+
+- Add support for eval in watch mode for Snaps CLI ([#3553](https://github.com/MetaMask/snaps/pull/3553))
+
+### Changed
+
+- Bump ses from `1.13.1` to `1.14.0` ([#3557](https://github.com/MetaMask/snaps/pull/3557))
+
+### Fixed
+
+- Fix typos in `SnapAuxiliaryFilesStruct` variable and `SnapAuxiliaryFile` type ([#3545](https://github.com/MetaMask/snaps/pull/3545))
+  - `SnapAuxilaryFilesStruct` and `SnapAuxilaryFile` are still exported for
+    backwards compatibility, but will be removed in a future release.
+
 ## [11.3.0]
 
 ### Changed
@@ -678,7 +694,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.4.0...HEAD
+[11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...@metamask/snaps-utils@11.4.0
 [11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.2.0...@metamask/snaps-utils@11.3.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.1.0...@metamask/snaps-utils@11.2.0
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.0.0...@metamask/snaps-utils@11.1.0

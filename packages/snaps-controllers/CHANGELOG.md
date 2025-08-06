@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.2.1]
+
+### Fixed
+
+- Prevent double scheduling events and ensure long-running events work correctly ([#3561](https://github.com/MetaMask/snaps/pull/3561))
+- Emit event when destroying execution environment streams ([#3074](https://github.com/MetaMask/snaps/pull/3074))
+- Ignore terminate calls to not executing Snaps ([#3559](https://github.com/MetaMask/snaps/pull/3559))
+- Properly stop Snaps when clearing state ([#3552](https://github.com/MetaMask/snaps/pull/3552))
+
 ## [14.2.0]
 
 ### Added
@@ -872,7 +881,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.1...HEAD
+[14.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.0...@metamask/snaps-controllers@14.2.1
 [14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.1.0...@metamask/snaps-controllers@14.2.0
 [14.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.0.2...@metamask/snaps-controllers@14.1.0
 [14.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.0.1...@metamask/snaps-controllers@14.0.2

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.2.0]
+
+### Changed
+
+- Add support for eval in watch mode ([#3553](https://github.com/MetaMask/snaps/pull/3553))
+  - This enables some extra validation checks in watch mode, which can help
+    catch issues earlier in the development process.
+
 ## [8.1.1]
 
 ### Fixed
@@ -393,7 +401,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.2.0...HEAD
+[8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.1...@metamask/snaps-cli@8.2.0
 [8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.0...@metamask/snaps-cli@8.1.1
 [8.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.0.0...@metamask/snaps-cli@8.1.0
 [8.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@7.2.0...@metamask/snaps-cli@8.0.0
