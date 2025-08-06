@@ -621,13 +621,13 @@ export class CronjobController extends BaseController<
       // immediately.
       if (event.recurring && eventDate <= now) {
         this.#execute(event);
-        return;
+        continue;
       }
 
       // If the existing event has not passed, start the timer.
       if (eventDate >= now) {
         this.#startTimer(event);
-        return;
+        continue;
       }
 
       this.#schedule(event);
