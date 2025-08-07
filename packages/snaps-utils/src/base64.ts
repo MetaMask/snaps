@@ -12,7 +12,7 @@ import type { VirtualFile } from './virtual-file';
 export async function encodeBase64(input: Uint8Array | VirtualFile | string) {
   const bytes = getBytes(input);
   // In the browser, FileReader is much faster than bytesToBase64.
-  if ('FileReader' in globalThis) {
+  if ('FileReader' in globalThis && navigator.product !== 'ReactNative') {
     return await new Promise((resolve, reject) => {
       const reader = Object.assign(new FileReader(), {
         onload: () =>
