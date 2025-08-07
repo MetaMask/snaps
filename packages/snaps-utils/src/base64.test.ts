@@ -51,6 +51,21 @@ describe('encodeBase64', () => {
     );
     expect(await encodeBase64(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
   });
+
+  it('does not use optimization when running in React Native', async () => {
+    Object.defineProperty(globalThis, 'FileReader', {
+      value: MockFileReader,
+    });
+
+    Object.defineProperty(globalThis, 'navigator', {
+      value: { product: 'ReactNative' },
+    });
+
+    const vfile = new VirtualFile(
+      stringToBytes(JSON.stringify({ foo: 'bar' })),
+    );
+    expect(await encodeBase64(vfile)).toBe('eyJmb28iOiJiYXIifQ==');
+  });
 });
 
 describe('decodeBase64', () => {
