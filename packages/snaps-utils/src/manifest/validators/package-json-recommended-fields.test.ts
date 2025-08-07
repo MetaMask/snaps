@@ -26,6 +26,7 @@ describe('packageJsonRecommendedFields', () => {
     await packageJsonRecommendedFields.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
+      'package-json-recommended-fields',
       'Missing recommended package.json property: "repository".',
     );
   });

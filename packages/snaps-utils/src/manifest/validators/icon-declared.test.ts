@@ -23,6 +23,7 @@ describe('iconDeclared', () => {
     });
 
     expect(report).toHaveBeenCalledWith(
+      'icon-declared',
       'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
     );
   });

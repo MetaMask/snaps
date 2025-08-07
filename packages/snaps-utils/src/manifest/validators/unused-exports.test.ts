@@ -46,13 +46,14 @@ describe('unusedExports', () => {
 
     expect(report).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledWith(
+      'unused-endowments',
       expect.stringContaining(
         `The Snap requests permission for the following handlers, but does not export them: onHomePage (endowment:page-home).`,
       ),
       expect.any(Function),
     );
 
-    const fix = report.mock.calls[0][1];
+    const fix = report.mock.calls[0][2];
     assert(fix);
 
     const { manifest } = await fix({ manifest: files.manifest.result });
@@ -86,6 +87,7 @@ describe('unusedExports', () => {
 
     expect(report).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledWith(
+      'unused-exports',
       expect.stringContaining(
         'The Snap exports the following handlers, but does not request permission for them: onRpcRequest (endowment:rpc).',
       ),

@@ -26,6 +26,7 @@ export const manifestLocalization: ValidatorMeta = {
         getLocalizedSnapManifest(manifest, locale, localizations);
       } catch (error) {
         context.report(
+          'manifest-localization',
           `Failed to localize Snap manifest: ${getErrorMessage(error)}`,
         );
       }

@@ -33,12 +33,22 @@ class Context implements ValidatorContext {
     this.#options = options;
   }
 
-  report(message: string, fix?: ValidatorFix): void {
+  /**
+   * Report a validation error or warning.
+   *
+   * @param id - The unique identifier for the report.
+   * @param message - The message describing the validation issue.
+   * @param fix - An optional fix function that can be used to automatically
+   * resolve the issue.
+   */
+  report(id: string, message: string, fix?: ValidatorFix): void {
     assert(this.#nextSeverity !== undefined);
+
     this.reports.push({
-      severity: this.#nextSeverity,
+      id,
       message,
       fix,
+      severity: this.#nextSeverity,
     });
   }
 
@@ -80,6 +90,7 @@ export async function runValidators(
     context.prepareForValidator({
       severity: rule.severity,
     });
+
     await rule.structureCheck?.(files, context);
   }
 
@@ -93,6 +104,7 @@ export async function runValidators(
     context.prepareForValidator({
       severity: rule.severity,
     });
+
     await rule.semanticCheck?.(files as SnapFiles, context);
   }
 

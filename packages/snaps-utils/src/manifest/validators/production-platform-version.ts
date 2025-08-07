@@ -60,6 +60,7 @@ export const productionPlatformVersion: ValidatorMeta = {
 
     if (gt(manifestPlatformVersion, maximumVersion)) {
       context.report(
+        'production-platform-version',
         `The specified platform version "${manifestPlatformVersion}" is not supported in the production version of MetaMask. The current maximum supported version is "${maximumVersion}". To resolve this, downgrade \`@metamask/snaps-sdk\` to a compatible version.`,
       );
     }

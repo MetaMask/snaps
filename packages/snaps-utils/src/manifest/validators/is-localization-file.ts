@@ -16,6 +16,7 @@ export const isLocalizationFile: ValidatorMeta = {
       if (error) {
         for (const failure of error.failures()) {
           context.report(
+            'is-localization-file',
             `Failed to validate localization file "${
               file.path
             }": ${getStructFailureMessage(

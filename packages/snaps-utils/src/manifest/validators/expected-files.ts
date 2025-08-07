@@ -17,7 +17,10 @@ export const expectedFiles: ValidatorMeta = {
   structureCheck(files, context) {
     for (const expectedFile of EXPECTED_SNAP_FILES) {
       if (!files[expectedFile]) {
-        context.report(`Missing file "${SnapFileNameFromKey[expectedFile]}".`);
+        context.report(
+          'expected-files',
+          `Missing file "${SnapFileNameFromKey[expectedFile]}".`,
+        );
       }
     }
   },

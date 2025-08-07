@@ -232,6 +232,8 @@ export async function runFixes(
   assert(fixResults.files);
   fixResults.files.manifest = fixResults.files.manifest.clone();
 
+  const mergedReports: ValidatorReport[] = deepClone(fixResults.reports);
+
   for (
     let attempts = 1;
     shouldRunFixes && attempts <= MAX_ATTEMPTS;
@@ -259,15 +261,21 @@ export async function runFixes(
 
     fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults, errorsOnly);
+
+    mergedReports.push(
+      ...fixResults.reports.filter(
+        (report) =>
+          !mergedReports.find((mergedReport) => mergedReport.id === report.id),
+      ),
+    );
   }
 
-  const initialReports: (CheckManifestReport & ValidatorReport)[] = deepClone(
-    results.reports,
-  );
+  const allReports: (CheckManifestReport & ValidatorReport)[] =
+    deepClone(mergedReports);
 
   // Was fixed
   if (!shouldRunFixes) {
-    for (const report of initialReports) {
+    for (const report of allReports) {
       if (report.fix) {
         report.wasFixed = true;
         delete report.fix;
@@ -277,18 +285,18 @@ export async function runFixes(
     return {
       files: fixResults.files,
       updated: true,
-      reports: initialReports,
+      reports: allReports,
     };
   }
 
-  for (const report of initialReports) {
+  for (const report of allReports) {
     delete report.fix;
   }
 
   return {
     files: results.files,
     updated: false,
-    reports: initialReports,
+    reports: allReports,
   };
 }
 

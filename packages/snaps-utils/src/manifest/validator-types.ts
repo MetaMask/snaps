@@ -27,11 +27,12 @@ export type ValidatorContextOptions = {
 export type ValidatorSeverity = 'error' | 'warning';
 
 export type ValidatorContext = {
-  readonly report: (message: string, fix?: ValidatorFix) => void;
+  readonly report: (id: string, message: string, fix?: ValidatorFix) => void;
   readonly options?: ValidatorContextOptions;
 };
 
 export type ValidatorReport = {
+  id: string;
   severity: ValidatorSeverity;
   message: string;
   fix?: ValidatorFix;
@@ -41,7 +42,8 @@ export type ValidatorMeta = {
   severity: ValidatorSeverity;
 
   /**
-   * 1. Run the validator on unverified files to ensure that the files are structurally sound.
+   * 1. Run the validator on unverified files to ensure that the files are
+   * structurally sound.
    *
    * @param files - Files to be verified
    * @param context - Validator context to report errors

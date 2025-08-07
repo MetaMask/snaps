@@ -21,6 +21,7 @@ export const platformVersion: ValidatorMeta = {
 
     if (!manifestPlatformVersion) {
       context.report(
+        'platform-version-missing',
         'The "platformVersion" field is missing from the manifest.',
         ({ manifest }) => {
           manifest.platformVersion = actualVersion;
@@ -33,6 +34,7 @@ export const platformVersion: ValidatorMeta = {
 
     if (manifestPlatformVersion !== actualVersion) {
       context.report(
+        'platform-version-mismatch',
         `The "platformVersion" field in the manifest must match the version of the Snaps SDK. Got "${manifestPlatformVersion}", expected "${actualVersion}".`,
         async ({ manifest }) => {
           manifest.platformVersion = actualVersion;

@@ -17,7 +17,7 @@ export const isSnapIcon: ValidatorMeta = {
       assertIsSnapIcon(files.svgIcon);
     } catch (error) {
       assert(error instanceof Error);
-      context.report(error.message);
+      context.report('is-snap-icon', error.message);
     }
   },
 };

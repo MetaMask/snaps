@@ -26,11 +26,12 @@ describe('packageNameMatch', () => {
     await packageNameMatch.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
+      'package-name-match',
       '"snap.manifest.json" npm package name ("foobar") does not match the "package.json" "name" field ("@metamask/example-snap").',
       expect.any(Function),
     );
 
-    const { manifest: newManifest } = await report.mock.calls[0][1]({
+    const { manifest: newManifest } = await report.mock.calls[0][2]({
       manifest: deepClone(manifest),
     });
     expect(manifest.source.location.npm.packageName).toBe('foobar');

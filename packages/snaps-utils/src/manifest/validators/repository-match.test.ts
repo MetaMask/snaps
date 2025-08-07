@@ -27,11 +27,12 @@ describe('repositoryMatch', () => {
     await repositoryMatch.semanticCheck(files, { report });
 
     expect(report).toHaveBeenLastCalledWith(
+      'repository-match',
       '"snap.manifest.json" "repository" field does not match the "package.json" "repository" field.',
       expect.any(Function),
     );
 
-    const { manifest: newManifest } = await report.mock.calls[0][1]({
+    const { manifest: newManifest } = await report.mock.calls[0][2]({
       manifest: deepClone(manifest),
     });
     expect(manifest.repository).toBeUndefined();

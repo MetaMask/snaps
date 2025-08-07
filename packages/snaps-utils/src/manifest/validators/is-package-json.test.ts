@@ -64,6 +64,7 @@ describe('isPackageJson', () => {
     );
 
     expect(report).toHaveBeenCalledWith(
+      'is-package-json',
       '"package.json" is invalid: At path: version — Expected SemVer version, got "foo".',
     );
   });

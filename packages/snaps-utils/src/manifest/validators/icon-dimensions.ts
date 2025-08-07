@@ -14,6 +14,7 @@ export const iconDimensions: ValidatorMeta = {
     const dimensions = getSvgDimensions(files.svgIcon.toString());
     if (dimensions && dimensions?.height !== dimensions.width) {
       context.report(
+        'icon-dimensions',
         'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
       );
     }

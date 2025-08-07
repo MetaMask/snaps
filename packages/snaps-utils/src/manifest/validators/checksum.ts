@@ -14,6 +14,7 @@ export const checksum: ValidatorMeta = {
     const expectedChecksum = await getSnapChecksum(fetchedFiles);
     if (gotChecksum !== expectedChecksum) {
       context.report(
+        'checksum',
         `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum. Got "${gotChecksum}", expected "${expectedChecksum}".`,
         async ({ manifest }) => {
           manifest.source.shasum = expectedChecksum;
