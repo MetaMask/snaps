@@ -265,7 +265,7 @@ export async function runFixes(
     mergedReports.push(
       ...fixResults.reports.filter(
         (report) =>
-          !mergedReports.find((mergedReport) => mergedReport.id === report.id),
+          !mergedReports.some((mergedReport) => mergedReport.id === report.id),
       ),
     );
   }
