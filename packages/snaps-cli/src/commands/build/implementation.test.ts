@@ -6,7 +6,6 @@ import {
   getPackageJson,
   getSnapManifest,
 } from '@metamask/snaps-utils/test-utils';
-import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
 import { dirname } from 'path';
 import type { Configuration } from 'webpack';
@@ -58,7 +57,7 @@ describe('build', () => {
   beforeEach(async () => {
     const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
-        platformVersion: getPlatformVersion() as SemVerVersion,
+        platformVersion: getPlatformVersion(),
       }),
     });
 

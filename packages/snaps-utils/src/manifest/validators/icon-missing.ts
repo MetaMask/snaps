@@ -8,7 +8,7 @@ export const iconMissing: ValidatorMeta = {
   semanticCheck(files, context) {
     const { iconPath } = files.manifest.result.source.location.npm;
     if (iconPath && !files.svgIcon) {
-      context.report(`Could not find icon "${iconPath}".`);
+      context.report('icon-missing', `Could not find icon "${iconPath}".`);
     }
   },
 };

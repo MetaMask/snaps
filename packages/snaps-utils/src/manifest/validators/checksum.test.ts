@@ -27,6 +27,7 @@ describe('checksum', () => {
 
     expect(report).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledWith(
+      'checksum',
       expect.stringContaining(
         '"snap.manifest.json" "shasum" field does not match computed shasum.',
       ),
@@ -38,7 +39,7 @@ describe('checksum', () => {
     const manifest = getSnapManifest({ shasum: 'foobar' });
 
     let fix: ValidatorFix | undefined;
-    const report = (_: any, fixer?: ValidatorFix) => {
+    const report = (_id: string, _message: string, fixer?: ValidatorFix) => {
       assert(fixer !== undefined);
       fix = fixer;
     };

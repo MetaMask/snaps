@@ -28,6 +28,7 @@ describe('iconDimensions', () => {
     });
 
     expect(report).toHaveBeenCalledWith(
+      'icon-dimensions',
       'The icon in the Snap manifest is not square. It is recommended to use a square icon for the Snap.',
     );
   });

@@ -11,6 +11,7 @@ export const versionMatch: ValidatorMeta = {
     const manifestPackageVersion = files.manifest.result.version;
     if (packageJsonVersion !== manifestPackageVersion) {
       context.report(
+        'version-match',
         `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
         ({ manifest }) => {
           manifest.version = packageJsonVersion;

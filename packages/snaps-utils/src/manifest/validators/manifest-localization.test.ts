@@ -43,6 +43,7 @@ describe('manifestLocalization', () => {
     await manifestLocalization.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
+      'manifest-localization',
       'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
     );
   });

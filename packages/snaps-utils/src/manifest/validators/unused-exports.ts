@@ -68,6 +68,7 @@ export const unusedExports: ValidatorMeta = {
       // 2. Adding the permission to the manifest is not always possible, as it
       //    may require additional configuration in the manifest.
       context.report(
+        `unused-exports`,
         `The Snap exports the following handlers, but does not request permission for them: ${unusedHandlers.join(
           ', ',
         )}.`,
@@ -80,6 +81,7 @@ export const unusedExports: ValidatorMeta = {
         .join(', ');
 
       context.report(
+        `unused-endowments`,
         `The Snap requests permission for the following handlers, but does not export them: ${formattedEndowments}.`,
         ({ manifest }) => {
           unusedEndowments.forEach(([, endowment]) => {

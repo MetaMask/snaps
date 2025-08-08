@@ -23,6 +23,7 @@ describe('iconMissing', () => {
     await iconMissing.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
+      'icon-missing',
       'Could not find icon "images/icon.svg".',
     );
   });

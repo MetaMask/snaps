@@ -28,11 +28,12 @@ describe('versionMatch', () => {
     await versionMatch.semanticCheck(files, { report });
 
     expect(report).toHaveBeenCalledWith(
+      'version-match',
       '"snap.manifest.json" npm package version ("foo") does not match the "package.json" "version" field ("1.0.0").',
       expect.any(Function),
     );
 
-    const { manifest: newManifest } = await report.mock.calls[0][1]({
+    const { manifest: newManifest } = await report.mock.calls[0][2]({
       manifest: deepClone(manifest),
     });
     expect(manifest.version).toBe('foo');

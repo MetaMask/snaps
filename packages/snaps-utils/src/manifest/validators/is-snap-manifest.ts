@@ -18,6 +18,7 @@ export const isSnapManifest: ValidatorMeta = {
     if (error) {
       for (const failure of error.failures()) {
         context.report(
+          `is-snap-manifest-${failure.type}-${failure.path.join('-')}`,
           `"${NpmSnapFileNames.Manifest}" is invalid: ${getStructFailureMessage(
             SnapManifestStruct,
             failure,

@@ -30,6 +30,13 @@ import {
 import { NpmSnapFileNames } from '../types';
 
 jest.mock('fs');
+jest.mock('../fs', () => ({
+  ...jest.requireActual('../fs'),
+  useFileSystemCache:
+    <Type>(_key: string, _ttl: number, fn: () => Promise<Type>) =>
+    async () =>
+      fn(),
+}));
 
 const BASE_PATH = '/snap';
 const MANIFEST_PATH = join(BASE_PATH, NpmSnapFileNames.Manifest);
@@ -150,6 +157,65 @@ describe('checkManifest', () => {
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(2);
+
+    const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
+    const { source, version } = file.result;
+    expect(source.shasum).toBe(defaultManifest.source.shasum);
+    expect(version).toBe('1.0.0');
+  });
+
+  it('includes new validation warnings', async () => {
+    fetchMock.mockResponseOnce(MOCK_GITHUB_RESPONSE).mockResponseOnce(
+      JSON.stringify({
+        dependencies: {
+          '@metamask/snaps-sdk': '1.0.0',
+        },
+      }),
+    );
+
+    const manifest = getSnapManifest({
+      shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+    });
+    delete manifest.platformVersion;
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
+
+    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const unfixed = reports.filter((report) => !report.wasFixed);
+    const fixed = reports.filter((report) => report.wasFixed);
+
+    const defaultManifest = await getDefaultManifest();
+
+    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(updated).toBe(true);
+
+    expect(unfixed).toHaveLength(1);
+    expect(unfixed).toContainEqual({
+      id: 'production-platform-version',
+      severity: 'warning',
+      message: expect.stringContaining(
+        'The current maximum supported version is "1.0.0". To resolve this, downgrade `@metamask/snaps-sdk` to a compatible version.',
+      ),
+    });
+
+    expect(fixed).toHaveLength(2);
+    expect(fixed).toContainEqual({
+      id: 'platform-version-missing',
+      severity: 'error',
+      message: expect.stringContaining(
+        'The "platformVersion" field is missing from the manifest.',
+      ),
+      wasFixed: true,
+    });
+
+    expect(fixed).toContainEqual({
+      id: 'checksum',
+      severity: 'error',
+      message: expect.stringContaining(
+        '"snap.manifest.json" "shasum" field does not match computed shasum.',
+      ),
+      wasFixed: true,
+    });
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
@@ -348,7 +414,7 @@ describe('runFixes', () => {
     const rule: ValidatorMeta = {
       severity: 'error',
       semanticCheck(_, context) {
-        context.report('Always fail', (files) => files);
+        context.report('always-fail', 'Always fail', (files) => files);
       },
     };
 
@@ -360,7 +426,9 @@ describe('runFixes', () => {
     expect(fixesResults).toStrictEqual({
       files,
       updated: false,
-      reports: [{ severity: 'error', message: 'Always fail' }],
+      reports: [
+        { id: 'always-fail', severity: 'error', message: 'Always fail' },
+      ],
     });
   });
 });

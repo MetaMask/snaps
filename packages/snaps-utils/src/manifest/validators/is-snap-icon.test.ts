@@ -32,6 +32,9 @@ describe('isSnapIcon', () => {
       { report },
     );
 
-    expect(report).toHaveBeenCalledWith('Snap icon must be a valid SVG.');
+    expect(report).toHaveBeenCalledWith(
+      'is-snap-icon',
+      'Snap icon must be a valid SVG.',
+    );
   });
 });

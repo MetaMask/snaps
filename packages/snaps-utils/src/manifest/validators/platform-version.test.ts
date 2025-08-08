@@ -42,13 +42,14 @@ describe('platformVersion', () => {
 
     expect(report).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledWith(
+      'platform-version-missing',
       expect.stringContaining(
         `The "platformVersion" field is missing from the manifest.`,
       ),
       expect.any(Function),
     );
 
-    const fix = report.mock.calls[0][1];
+    const fix = report.mock.calls[0][2];
     expect(fix).toBeInstanceOf(Function);
     assert(fix);
 
@@ -71,13 +72,14 @@ describe('platformVersion', () => {
 
     expect(report).toHaveBeenCalledTimes(1);
     expect(report).toHaveBeenCalledWith(
+      'platform-version-mismatch',
       expect.stringContaining(
         `The "platformVersion" field in the manifest must match the version of the Snaps SDK. Got "1.2.3", expected "${sdkVersion}".`,
       ),
       expect.any(Function),
     );
 
-    const fix = report.mock.calls[0][1];
+    const fix = report.mock.calls[0][2];
     expect(fix).toBeInstanceOf(Function);
     assert(fix);
 
