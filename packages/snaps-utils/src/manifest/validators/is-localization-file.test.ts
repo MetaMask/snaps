@@ -52,7 +52,7 @@ describe('isLocalizationFile', () => {
     );
 
     expect(report).toHaveBeenCalledWith(
-      `is-localization-file-${localizationFile.path}`,
+      `is-localization-file-${localizationFile.path}-record-messages`,
       'Failed to validate localization file "/foo": At path: messages — Expected a value of type record, but received: "foo".',
     );
   });
