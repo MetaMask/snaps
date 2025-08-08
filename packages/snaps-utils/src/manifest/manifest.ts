@@ -262,12 +262,12 @@ export async function runFixes(
     fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults, errorsOnly);
 
-    mergedReports.push(
-      ...fixResults.reports.filter(
+    fixResults.reports
+      .filter(
         (report) =>
           !mergedReports.some((mergedReport) => mergedReport.id === report.id),
-      ),
-    );
+      )
+      .forEach((report) => mergedReports.push(report));
   }
 
   const allReports: (CheckManifestReport & ValidatorReport)[] =
