@@ -188,8 +188,34 @@ describe('checkManifest', () => {
 
     expect(files?.manifest.result).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
+
     expect(unfixed).toHaveLength(1);
+    expect(unfixed).toContainEqual({
+      id: 'production-platform-version',
+      severity: 'warning',
+      message: expect.stringContaining(
+        'The current maximum supported version is "1.0.0". To resolve this, downgrade `@metamask/snaps-sdk` to a compatible version.',
+      ),
+    });
+
     expect(fixed).toHaveLength(2);
+    expect(fixed).toContainEqual({
+      id: 'platform-version-missing',
+      severity: 'error',
+      message: expect.stringContaining(
+        'The "platformVersion" field is missing from the manifest.',
+      ),
+      wasFixed: true,
+    });
+
+    expect(fixed).toContainEqual({
+      id: 'checksum',
+      severity: 'error',
+      message: expect.stringContaining(
+        '"snap.manifest.json" "shasum" field does not match computed shasum.',
+      ),
+      wasFixed: true,
+    });
 
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
