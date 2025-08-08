@@ -18,7 +18,7 @@ export const expectedFiles: ValidatorMeta = {
     for (const expectedFile of EXPECTED_SNAP_FILES) {
       if (!files[expectedFile]) {
         context.report(
-          'expected-files',
+          `expected-files-${expectedFile}`,
           `Missing file "${SnapFileNameFromKey[expectedFile]}".`,
         );
       }

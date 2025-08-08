@@ -20,7 +20,7 @@ export const isPackageJson: ValidatorMeta = {
     if (error) {
       for (const failure of error.failures()) {
         context.report(
-          'is-package-json',
+          `is-package-json-${failure.type}-${failure.path.join('-')}`,
           `"${
             NpmSnapFileNames.PackageJson
           }" is invalid: ${getStructFailureMessage(

@@ -11,7 +11,7 @@ export const packageJsonRecommendedFields: ValidatorMeta = {
     for (const recommendedField of RECOMMENDED_FIELDS) {
       if (!files.packageJson.result[recommendedField]) {
         context.report(
-          'package-json-recommended-fields',
+          `package-json-recommended-fields-${recommendedField}`,
           `Missing recommended package.json property: "${recommendedField}".`,
         );
       }

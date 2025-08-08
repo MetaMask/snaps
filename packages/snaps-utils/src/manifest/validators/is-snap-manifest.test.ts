@@ -42,7 +42,7 @@ describe('isSnapManifest', () => {
     );
 
     expect(report).toHaveBeenCalledWith(
-      'is-snap-manifest',
+      'is-snap-manifest-object-',
       '"snap.manifest.json" is invalid: Expected a value of type object, but received: "foo".',
     );
   });

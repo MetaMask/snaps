@@ -25,7 +25,7 @@ describe('expectedFiles', () => {
 
       expect(report).toHaveBeenCalledTimes(1);
       expect(report).toHaveBeenCalledWith(
-        'expected-files',
+        `expected-files-${missingFile}`,
         expect.stringContaining('Missing file'),
       );
     },
