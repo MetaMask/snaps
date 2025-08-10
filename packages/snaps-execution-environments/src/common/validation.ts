@@ -172,6 +172,32 @@ export function assertIsOnTransactionRequestArguments(
   assertRequestArguments(value, OnTransactionRequestArgumentsStruct);
 }
 
+export const OnTransactionDetailsRequestArgumentsStruct = object({
+  transactionMeta: record(string(), JsonStruct),
+  origin: nullable(string()),
+  chainId: CaipChainIdStruct,
+  selectedAddress: string(),
+  selectedAccount: record(string(), JsonStruct),
+});
+
+export type OnTransactionDetailsRequestArguments = Infer<
+  typeof OnTransactionDetailsRequestArgumentsStruct
+>;
+
+/**
+ * Asserts that the given value is a valid {@link OnTransactionDetailsRequestArguments}
+ * object.
+ *
+ * @param value - The value to validate.
+ * @throws If the value is not a valid {@link OnTransactionDetailsRequestArguments}
+ * object.
+ */
+export function assertIsOnTransactionDetailsRequestArguments(
+  value: unknown,
+): asserts value is OnTransactionDetailsRequestArguments {
+  assertRequestArguments(value, OnTransactionDetailsRequestArgumentsStruct);
+}
+
 export const OnSignatureRequestArgumentsStruct = object({
   signature: record(string(), JsonStruct),
   signatureOrigin: nullable(string()),

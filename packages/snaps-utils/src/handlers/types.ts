@@ -32,6 +32,7 @@ export enum HandlerType {
   OnRpcRequest = 'onRpcRequest',
   OnSignature = 'onSignature',
   OnTransaction = 'onTransaction',
+  OnTransactionDetails = 'onTransactionDetails',
   OnCronjob = 'onCronjob',
   OnInstall = 'onInstall',
   OnUpdate = 'onUpdate',

@@ -20,6 +20,11 @@ export enum SnapCaveatType {
   TransactionOrigin = 'transactionOrigin',
 
   /**
+   * Caveat specifying access to the transaction details origin, used by `endowment:transaction-details-insight`.
+   */
+  TransactionDetailsOrigin = 'transactionDetailsOrigin',
+
+  /**
    * Caveat specifying access to the signature origin, used by `endowment:signature-insight`.
    */
   SignatureOrigin = 'signatureOrigin',

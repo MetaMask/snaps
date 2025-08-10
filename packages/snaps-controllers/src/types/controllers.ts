@@ -1,4 +1,5 @@
 import type { ControllerStateChangeEvent } from '@metamask/base-controller';
+import { InternalAccount } from '@metamask/snaps-utils';
 import type { Hex, Json } from '@metamask/utils';
 
 // Partial types that should overlap with types from controllers.
@@ -131,6 +132,17 @@ export type TransactionControllerTransactionStatusUpdatedEvent = {
   payload: [
     {
       transactionMeta: TransactionMeta;
+    },
+  ];
+};
+
+export type TransactionControllerTransactionDetailsViewedEvent = {
+  type: `TransactionController:transactionDetailsViewed`;
+  payload: [
+    {
+      transactionMeta: TransactionMeta;
+      selectedAddress: string;
+      selectedAccount: InternalAccount;
     },
   ];
 };

@@ -10,12 +10,13 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
+  getTransactionDetailsOriginCaveat,
   getSignatureOriginCaveat,
   getTransactionOriginCaveat,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
 import type { Json, SnapId } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, InternalAccount } from '@metamask/snaps-utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 
 import type { DeleteInterface } from '../interface';
@@ -24,6 +25,7 @@ import { getRunnableSnaps } from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
+  TransactionControllerTransactionDetailsViewedEvent,
   SignatureStateChange,
   SignatureControllerState,
   StateSignature,
@@ -56,6 +58,7 @@ export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
+  | TransactionControllerTransactionDetailsViewedEvent
   | SignatureStateChange;
 
 export type SnapInsightsControllerMessenger = RestrictedMessenger<
@@ -120,6 +123,11 @@ export class SnapInsightsController extends BaseController<
       'SignatureController:stateChange',
       this.#handleSignatureStateChange.bind(this),
     );
+
+    this.messagingSystem.subscribe(
+      'TransactionController:transactionDetailsViewed',
+      this.#handleTransactionDetails.bind(this),
+    );
   }
 
   /**
@@ -157,6 +165,57 @@ export class SnapInsightsController extends BaseController<
 
       return accumulator;
     }, []);
+  }
+
+  #handleTransactionDetails({
+    transactionMeta,
+    selectedAddress,
+    selectedAccount,
+  }: {
+    transactionMeta: TransactionMeta;
+    selectedAddress: string;
+    selectedAccount: InternalAccount;
+  }) {
+    const { id, chainId, origin } = transactionMeta;
+    // This assumes that the transactions are EVM-compatible for now.
+    const caipChainId = `eip155:${hexToBigInt(chainId).toString(10)}`;
+
+    const snaps = this.#getSnapsWithPermission(
+      SnapEndowments.TransactionDetailsInsight,
+    );
+
+    snaps.forEach(({ snapId, permission }) => {
+      this.update((state) => {
+        state.insights[id] ??= {};
+        state.insights[id][snapId] = { snapId, loading: true };
+      });
+
+      // Check if snap has transactionOrigin caveat
+      const hasTransactionDetailsOriginCaveat =
+        getTransactionDetailsOriginCaveat(permission);
+      const transactionDetailsOrigin =
+        hasTransactionDetailsOriginCaveat && origin ? origin : null;
+
+      this.#handleSnapRequest({
+        snapId,
+        handler: HandlerType.OnTransactionDetails,
+        params: {
+          transactionMeta,
+          chainId: caipChainId,
+          origin: transactionDetailsOrigin,
+          selectedAddress,
+          selectedAccount,
+        },
+      })
+        .then((response) =>
+          this.#handleSnapResponse({
+            id,
+            snapId,
+            response: response as Record<string, Json>,
+          }),
+        )
+        .catch((error) => this.#handleSnapResponse({ id, snapId, error }));
+    });
   }
 
   /**
@@ -356,7 +415,10 @@ export class SnapInsightsController extends BaseController<
     params,
   }: {
     snapId: SnapId;
-    handler: HandlerType.OnTransaction | HandlerType.OnSignature;
+    handler:
+      | HandlerType.OnTransaction
+      | HandlerType.OnSignature
+      | HandlerType.OnTransactionDetails;
     params: Record<string, Json>;
   }) {
     return this.messagingSystem.call('SnapController:handleRequest', {

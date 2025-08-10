@@ -19,6 +19,17 @@ describe('getHandlerArguments', () => {
     ).toThrow('Invalid request params');
   });
 
+  it('validates the request params for the OnTransactionDetails handler', () => {
+    expect(() =>
+      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnTransactionDetails, {
+        id: 1,
+        jsonrpc: '2.0',
+        method: 'foo',
+        params: {},
+      }),
+    ).toThrow('Invalid request params');
+  });
+
   it('validates the request params for the OnSignature handler', () => {
     expect(() =>
       getHandlerArguments(MOCK_ORIGIN, HandlerType.OnSignature, {

@@ -12,6 +12,7 @@ export const ALLOWED_PERMISSIONS = Object.freeze([
   SnapEndowments.LifecycleHooks,
   SnapEndowments.EthereumProvider,
   SnapEndowments.TransactionInsight,
+  SnapEndowments.TransactionDetailsInsight,
   SnapEndowments.SignatureInsight,
 ]);
 
@@ -35,6 +36,7 @@ export const CLIENT_ONLY_HANDLERS = Object.freeze([
   HandlerType.OnClientRequest,
   HandlerType.OnSignature,
   HandlerType.OnTransaction,
+  HandlerType.OnTransactionDetails,
   HandlerType.OnCronjob,
   HandlerType.OnNameLookup,
   HandlerType.OnHomePage,
