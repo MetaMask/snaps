@@ -207,7 +207,7 @@ describe('NpmLocation', () => {
   });
 
   it('throws if fetching the NPM tarball fails', async () => {
-    const tarballRegistry = `https://registry.npmjs.org/@metamask/jsx-example-snap/-/template-snap-${exampleSnapVersion}.tgz`;
+    const tarballRegistry = `https://registry.npmjs.org/@metamask/jsx-example-snap/-/jsx-example-snap-${exampleSnapVersion}.tgz`;
 
     const customFetchMock = jest.fn();
 
