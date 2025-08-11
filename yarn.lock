@@ -4227,7 +4227,6 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/template-snap": "npm:^0.7.0"
     "@metamask/utils": "npm:^11.4.2"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
@@ -4637,13 +4636,6 @@ __metadata:
   version: 3.2.1
   resolution: "@metamask/superstruct@npm:3.2.1"
   checksum: 10/9e29380f2cf8b129283ccb2b568296d92682b705109ba62dbd7739ffd6a1982fe38c7228cdcf3cbee94dbcdd5fcc1c846ab9d1dd3582167154f914422fcff547
-  languageName: node
-  linkType: hard
-
-"@metamask/template-snap@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/template-snap@npm:0.7.0"
-  checksum: 10/70f11ec66945be906c22ea9f66e39624e5f7b7ae6b1e913bf2067e3278ed71ebe63953bb89146dcf7add21fc0815b895076c82d8a2af396029f06d2381eeacf9
   languageName: node
   linkType: hard
 
