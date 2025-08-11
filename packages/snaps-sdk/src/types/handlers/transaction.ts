@@ -91,9 +91,9 @@ export type Transaction = EIP1559Transaction | LegacyTransaction;
  * @param args.chainId - The CAIP-2 {@link CaipChainId} of the network the
  * transaction is being submitted to.
  * @param args.transactionOrigin - The origin of the transaction. This is the
- * URL of the website that submitted the transaction. This is only available if
- * the Snap has enabled the `allowTransactionOrigin` option in the
- * `endowment:transaction-insight` permission.
+ * URL of the website that submitted the transaction or 'metamask'.
+ * This is only available if the Snap has enabled the `allowTransactionOrigin`
+ * option in the `endowment:transaction-insight` permission.
  * @returns An object containing insights about the transaction. See
  * {@link OnTransactionResponse}. Can also return `null` if no insights are
  * available.
