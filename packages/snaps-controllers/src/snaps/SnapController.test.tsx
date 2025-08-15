@@ -74,6 +74,8 @@ import fetchMock from 'jest-fetch-mock';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 import { inc } from 'semver';
+import path from 'path';
+import { Readable } from 'stream';
 
 import {
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
@@ -121,6 +123,7 @@ import {
   waitForStateChange,
 } from '../test-utils';
 import { delay } from '../utils';
+import { createReadStream } from 'fs';
 
 globalThis.crypto.getRandomValues = <Type extends ArrayBufferView | null>(
   array: Type,
@@ -10227,6 +10230,50 @@ describe('SnapController', () => {
         `Encountered error when stopping blocked snap "${mockSnap.id}".`,
         new Error('foo'),
       );
+
+      snapController.destroy();
+    });
+
+    it.only('updates preinstalled Snaps', async () => {
+      const registry = new MockSnapsRegistry();
+      const rootMessenger = getControllerMessenger(registry);
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({ id: snapId, preinstalled: true });
+
+      const updateVersion = '1.2.1';
+      
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+          const fetchFunction = jest.fn()
+            .mockResolvedValueOnce({
+              // eslint-disable-next-line no-restricted-globals
+              headers: new Headers({ 'content-length': '5477' }),
+              ok: true,
+              body: Readable.toWeb(
+                createReadStream(
+                  path.resolve(
+                    __dirname,
+                    `../../test/fixtures/metamask-jsx-example-snap-${updateVersion}.tgz`,
+                  ),
+                ),
+              ),
+            } as any);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(mockSnap),
+          },
+          fetchFunction,
+        }),
+      );
+
+      await snapController.updateBlockedSnaps();
+
+      expect(snapController.get(snapId)?.version).toStrictEqual(updateVersion);
 
       snapController.destroy();
     });
