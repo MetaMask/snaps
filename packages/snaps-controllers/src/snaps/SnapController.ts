@@ -84,7 +84,6 @@ import {
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
-  DEFAULT_REQUESTED_SNAP_VERSION,
   encodeAuxiliaryFile,
   HandlerType,
   isOriginAllowed,
@@ -2717,18 +2716,12 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      return await this.#updateSnap(
+      return await this.#updateSnap({
         origin,
         snapId,
         location,
         versionRange,
-        // Since we are requesting an update from within processRequestedSnap,
-        // we disable the emitting of the snapUpdated event and rely on the caller
-        // to publish this event after the update is complete.
-        // This is necessary as installSnaps may be installing multiple snaps
-        // and we don't want to emit events prematurely.
-        false,
-      );
+      });
     }
 
     this.#assertCanInstallSnaps();
@@ -2863,20 +2856,24 @@ export class SnapController extends BaseController<
    * If the original version of the snap was blocked and the update succeeded,
    * the snap will be unblocked and enabled before it is restarted.
    *
-   * @param origin - The origin requesting the snap update.
-   * @param snapId - The id of the Snap to be updated.
-   * @param location - The location implementation of the snap.
-   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
-   * @param emitEvent - An optional boolean flag to indicate whether this update should emit an event.
+   * @param options - An options bag.
+   * @param options.origin - The origin requesting the snap update.
+   * @param options.snapId - The id of the Snap to be updated.
+   * @param options.location - The location implementation of the snap.
+   * @param options.versionRange - A semver version range in which the maximum version will be chosen.
    * @returns The snap metadata if updated, `null` otherwise.
    */
-  async #updateSnap(
-    origin: string,
-    snapId: SnapId,
-    location: SnapLocation,
-    newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-    emitEvent = true,
-  ): Promise<TruncatedSnap> {
+  async #updateSnap({
+    origin,
+    snapId,
+    location,
+    versionRange,
+  }: {
+    origin: string;
+    snapId: SnapId;
+    location: SnapLocation;
+    versionRange: SemVerRange;
+  }): Promise<TruncatedSnap> {
     this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
 
@@ -2910,13 +2907,13 @@ export class SnapController extends BaseController<
       const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
         throw rpcErrors.invalidParams(
-          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
+          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
         );
       }
 
-      if (!satisfiesVersionRange(newVersion, newVersionRange)) {
+      if (!satisfiesVersionRange(newVersion, versionRange)) {
         throw new Error(
-          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}".`,
+          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${versionRange}".`,
         );
       }
 
@@ -3013,16 +3010,6 @@ export class SnapController extends BaseController<
       }
 
       const truncatedSnap = this.getTruncatedExpect(snapId);
-
-      if (emitEvent) {
-        this.messagingSystem.publish(
-          'SnapController:snapUpdated',
-          truncatedSnap,
-          snap.version,
-          origin,
-          false,
-        );
-      }
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
