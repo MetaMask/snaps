@@ -2900,7 +2900,8 @@ export class SnapController extends BaseController<
    * @param location - The location implementation of the snap.
    * @param newVersionRange - A semver version range in which the maximum version will be chosen.
    * @param emitEvent - An optional boolean flag to indicate whether this update should emit an event.
-   * @param automaticUpdate
+   * @param automaticUpdate - An optional boolean flag to indicate whether this update should be done
+   * automatically.
    * @returns The snap metadata if updated, `null` otherwise.
    */
   // TODO: Make hash private
@@ -2992,7 +2993,6 @@ export class SnapController extends BaseController<
       let requestData;
 
       if (automaticUpdate) {
-        // TODO: This probably doesn't work as it doesn't account for initialConnections.
         approvedNewPermissions = newPermissions;
       } else {
         assert(pendingApproval);
@@ -3008,8 +3008,11 @@ export class SnapController extends BaseController<
           loading: false,
         });
 
-        const { permissions: approvedNewPermissions, ...requestData } =
+        const { permissions, ...rest } =
           (await pendingApproval.promise) as PermissionsRequest;
+
+        approvedNewPermissions = permissions;
+        requestData = rest;
 
         pendingApproval = this.#createApproval({
           origin,
