@@ -2895,6 +2895,8 @@ export class SnapController extends BaseController<
    * @param options.snapId - The id of the Snap to be updated.
    * @param options.location - The location implementation of the snap.
    * @param options.versionRange - A semver version range in which the maximum version will be chosen.
+   * @param options.automaticUpdate - An optional boolean flag to indicate whether this update should be done
+   * automatically.
    * @returns The snap metadata if updated, `null` otherwise.
    */
   async #updateSnap({
@@ -2984,7 +2986,6 @@ export class SnapController extends BaseController<
       let requestData;
 
       if (automaticUpdate) {
-        // TODO: This probably doesn't work as it doesn't account for initialConnections.
         approvedNewPermissions = newPermissions;
       } else {
         assert(pendingApproval);
@@ -3000,8 +3001,11 @@ export class SnapController extends BaseController<
           loading: false,
         });
 
-        const { permissions: approvedNewPermissions, ...requestData } =
+        const { permissions, ...rest } =
           (await pendingApproval.promise) as PermissionsRequest;
+
+        approvedNewPermissions = permissions;
+        requestData = rest;
 
         pendingApproval = this.#createApproval({
           origin,
