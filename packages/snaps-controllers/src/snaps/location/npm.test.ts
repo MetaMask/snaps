@@ -246,6 +246,26 @@ describe('NpmLocation', () => {
     );
   });
 
+  it('throws if NPM returns 404', async () => {
+    const customFetchMock = jest.fn().mockResolvedValue({
+      ok: false,
+      body: null,
+      status: 404,
+    } as any);
+
+    const location = new NpmLocation(
+      new URL('npm:@metamask/jsx-example-snap'),
+      {
+        versionRange: exampleSnapVersion,
+        fetch: customFetchMock as typeof fetch,
+      },
+    );
+
+    await expect(location.manifest()).rejects.toThrow(
+      '"@metamask/jsx-example-snap" was not found in the NPM registry',
+    );
+  });
+
   it('throws if the NPM tarball URL is invalid', async () => {
     const customFetchMock = jest.fn();
 

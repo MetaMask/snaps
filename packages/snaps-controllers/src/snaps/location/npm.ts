@@ -220,11 +220,15 @@ export class NpmLocation extends BaseNpmLocation {
   async fetchNpmTarball(tarballUrl: URL): Promise<Map<string, VirtualFile>> {
     // Perform a raw fetch because we want the Response object itself.
     const tarballResponse = await this.meta.fetch(tarballUrl.toString());
-    if (!tarballResponse.ok || !tarballResponse.body) {
-      throw new Error(
-        `Failed to fetch tarball for package "${this.meta.packageName}".`,
-      );
-    }
+
+    assert(
+      tarballResponse.status !== 404,
+      `"${this.meta.packageName}" was not found in the NPM registry`,
+    );
+    assert(
+      tarballResponse.ok && tarballResponse.body,
+      `Failed to fetch tarball for package "${this.meta.packageName}"`,
+    );
 
     // We assume that NPM is a good actor and provides us with a valid `content-length` header.
     const tarballSizeString = tarballResponse.headers.get('content-length');
@@ -234,6 +238,7 @@ export class NpmLocation extends BaseNpmLocation {
       tarballSize <= TARBALL_SIZE_SAFETY_LIMIT,
       'Snap tarball exceeds size limit',
     );
+
     return new Promise((resolve, reject) => {
       const files = new Map();
 
