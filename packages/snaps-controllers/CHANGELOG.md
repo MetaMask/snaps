@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Throw clearer error when the NPM registry returns 404 ([#3602](https://github.com/MetaMask/snaps/pull/3602))
-- Only log error that originally caused the crash ([#3569](https://github.com/MetaMask/snaps/pull/3569))
+- Throw a different error when the NPM registry returns 404 while fetching tarballs ([#3602](https://github.com/MetaMask/snaps/pull/3602))
+- Prevent logging multiple errors as the cause when a Snap crashes due to an unhandled error ([#3569](https://github.com/MetaMask/snaps/pull/3569))
 
 ## [14.2.1]
 
