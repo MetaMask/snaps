@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.5.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @metamask/base-controller from 8.0.1 to 8.1.0 ([#3582](https://github.com/MetaMask/snaps/pull/3582))
-- fix: Merge manifest validation reports to include latest validation errors and warnings ([#3567](https://github.com/MetaMask/snaps/pull/3567))
-- fix: Disable base64 optimization in ReactNative ([#3564](https://github.com/MetaMask/snaps/pull/3564))
+- Merge manifest validation reports to include latest validation errors and warnings ([#3567](https://github.com/MetaMask/snaps/pull/3567))
+
+### Fixed
+
+- Disable base64 optimization in React Native ([#3564](https://github.com/MetaMask/snaps/pull/3564))
 
 ## [11.4.0]
 
