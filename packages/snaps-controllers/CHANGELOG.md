@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.2.2]
+
 ### Uncategorized
 
 - fix: Throw clearer error when the NPM registry returns 404 ([#3602](https://github.com/MetaMask/snaps/pull/3602))
@@ -888,7 +890,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.2...HEAD
+[14.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.1...@metamask/snaps-controllers@14.2.2
 [14.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.0...@metamask/snaps-controllers@14.2.1
 [14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.1.0...@metamask/snaps-controllers@14.2.0
 [14.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.0.2...@metamask/snaps-controllers@14.1.0

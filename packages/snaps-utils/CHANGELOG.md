@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.5.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/base-controller from 8.0.1 to 8.1.0 ([#3582](https://github.com/MetaMask/snaps/pull/3582))
@@ -700,7 +702,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.5.0...HEAD
+[11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.4.0...@metamask/snaps-utils@11.5.0
 [11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...@metamask/snaps-utils@11.4.0
 [11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.2.0...@metamask/snaps-utils@11.3.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.1.0...@metamask/snaps-utils@11.2.0
