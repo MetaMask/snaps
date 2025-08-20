@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Merge manifest validation reports to include latest validation errors and warnings ([#3567](https://github.com/MetaMask/snaps/pull/3567))
+
 ## [8.2.0]
 
 ### Changed

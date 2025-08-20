@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Throw clearer error when the NPM registry returns 404 ([#3602](https://github.com/MetaMask/snaps/pull/3602))
+- chore: Bump @metamask/base-controller from 8.0.1 to 8.1.0 ([#3582](https://github.com/MetaMask/snaps/pull/3582))
+- test: Use newer example Snap as NPM fixture ([#3570](https://github.com/MetaMask/snaps/pull/3570))
+- fix: Only log error that originally caused the crash ([#3569](https://github.com/MetaMask/snaps/pull/3569))
+
 ## [14.2.1]
 
 ### Fixed
