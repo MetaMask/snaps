@@ -2,7 +2,7 @@
 
 ## Getting started
 
-- Install [Node.js](https://nodejs.org) version 16.
+- Install [Node.js](https://nodejs.org) version 20.
   - If you're using [NVM](https://github.com/creationix/nvm#installation)
     (recommended), `nvm use` will ensure that the right version is installed.
 - Install [Yarn v3](https://yarnpkg.com/getting-started/install).
