@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.5.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Await `sendWebSocketMessage` promise ([#3608](https://github.com/MetaMask/snaps/pull/3608))
+- Await `sendWebSocketMessage` promise ([#3608](https://github.com/MetaMask/snaps/pull/3608))
+  - Errors were not previously being thrown when calling `snap_sendWebSocketMessage`, this also fixes that.
 
 ## [13.5.0]
 
