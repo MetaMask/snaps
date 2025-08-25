@@ -28,7 +28,7 @@ const hookNames: MethodHooksObject<SendWebSocketMessageMethodHooks> = {
 
 export type SendWebSocketMessageMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
-  sendWebSocketMessage: (id: string, data: string | number[]) => void;
+  sendWebSocketMessage: (id: string, data: string | number[]) => Promise<void>;
 };
 
 const SendWebSocketMessageParametersStruct = object({
@@ -66,13 +66,13 @@ export const sendWebSocketMessageHandler: PermittedHandlerExport<
  * @param hooks.sendWebSocketMessage - The function to send a WebSocket message.
  * @returns Nothing.
  */
-function sendWebSocketMessageImplementation(
+async function sendWebSocketMessageImplementation(
   req: JsonRpcRequest<SendWebSocketMessageParameters>,
   res: PendingJsonRpcResponse<SendWebSocketMessageResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { hasPermission, sendWebSocketMessage }: SendWebSocketMessageMethodHooks,
-): void {
+): Promise<void> {
   if (!hasPermission(SnapEndowments.NetworkAccess)) {
     return end(providerErrors.unauthorized());
   }
@@ -81,7 +81,7 @@ function sendWebSocketMessageImplementation(
 
   try {
     const { id, message } = getValidatedParams(params);
-    sendWebSocketMessage(id, message);
+    await sendWebSocketMessage(id, message);
     res.result = null;
   } catch (error) {
     return end(error);
