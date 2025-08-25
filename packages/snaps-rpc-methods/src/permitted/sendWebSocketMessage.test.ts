@@ -23,7 +23,7 @@ describe('snap_sendWebSocketMessage', () => {
     it('throws if the origin does not have permission', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn();
+      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(false);
       const hooks = { hasPermission, sendWebSocketMessage };
 
@@ -63,7 +63,7 @@ describe('snap_sendWebSocketMessage', () => {
     it('throws if invalid parameters are passed', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn();
+      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
       const hooks = { hasPermission, sendWebSocketMessage };
 
@@ -103,7 +103,7 @@ describe('snap_sendWebSocketMessage', () => {
     it('sends a WebSocket message and returns null', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn();
+      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
       const hooks = { hasPermission, sendWebSocketMessage };
 
