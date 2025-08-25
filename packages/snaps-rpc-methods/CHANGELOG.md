@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Await `sendWebSocketMessage` promise ([#3608](https://github.com/MetaMask/snaps/pull/3608))
+
 ## [13.5.0]
 
 ### Changed
