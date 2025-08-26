@@ -1,4 +1,4 @@
-import { getPersistentState } from '@metamask/base-controller';
+import { getPersistentState } from '@metamask/base-controller/next';
 import { encrypt } from '@metamask/browser-passworder';
 import {
   createAsyncMiddleware,

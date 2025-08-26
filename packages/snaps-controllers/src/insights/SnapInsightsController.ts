@@ -1,9 +1,9 @@
+import type { Messenger } from '@metamask/messenger';
 import type {
-  RestrictedMessenger,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-} from '@metamask/base-controller';
-import { BaseController } from '@metamask/base-controller';
+} from '@metamask/base-controller/next';
+import { BaseController } from '@metamask/base-controller/next';
 import type {
   Caveat,
   GetPermissions,
@@ -58,12 +58,10 @@ export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerTransactionStatusUpdatedEvent
   | SignatureStateChange;
 
-export type SnapInsightsControllerMessenger = RestrictedMessenger<
+export type SnapInsightsControllerMessenger = Messenger<
   typeof controllerName,
   SnapInsightsControllerActions | SnapInsightsControllerAllowedActions,
-  SnapInsightControllerEvents | SnapInsightsControllerAllowedEvents,
-  SnapInsightsControllerAllowedActions['type'],
-  SnapInsightsControllerAllowedEvents['type']
+  SnapInsightControllerEvents | SnapInsightsControllerAllowedEvents
 >;
 
 export type SnapInsight = {
@@ -106,17 +104,17 @@ export class SnapInsightsController extends BaseController<
       state: { insights: {}, ...state },
     });
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'TransactionController:unapprovedTransactionAdded',
       this.#handleTransaction.bind(this),
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'TransactionController:transactionStatusUpdated',
       this.#handleTransactionStatusUpdate.bind(this),
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SignatureController:stateChange',
       this.#handleSignatureStateChange.bind(this),
     );
@@ -140,11 +138,11 @@ export class SnapInsightsController extends BaseController<
    * @returns A list of objects containing Snap IDs and the permission object.
    */
   #getSnapsWithPermission(permissionName: string) {
-    const allSnaps = this.messagingSystem.call('SnapController:getAll');
+    const allSnaps = this.messenger.call('SnapController:getAll');
     const filteredSnaps = getRunnableSnaps(allSnaps);
 
     return filteredSnaps.reduce<SnapWithPermission[]>((accumulator, snap) => {
-      const permissions = this.messagingSystem.call(
+      const permissions = this.messenger.call(
         'PermissionController:getPermissions',
         snap.id,
       );
@@ -330,7 +328,7 @@ export class SnapInsightsController extends BaseController<
     Object.values(this.state.insights[id])
       .filter((insight) => insight.interfaceId)
       .forEach((insight) => {
-        this.messagingSystem.call(
+        this.messenger.call(
           'SnapInterfaceController:deleteInterface',
           insight.interfaceId as string,
         );
@@ -359,7 +357,7 @@ export class SnapInsightsController extends BaseController<
     handler: HandlerType.OnTransaction | HandlerType.OnSignature;
     params: Record<string, Json>;
   }) {
-    return this.messagingSystem.call('SnapController:handleRequest', {
+    return this.messenger.call('SnapController:handleRequest', {
       snapId,
       origin: 'metamask',
       handler,

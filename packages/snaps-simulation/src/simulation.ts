@@ -1,8 +1,8 @@
 import type {
   ActionConstraint,
   EventConstraint,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/base-controller';
+} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import type { CryptographicFunctions } from '@metamask/key-tree';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';

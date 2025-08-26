@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller/next';
 import {
   PermissionController,
   SubjectMetadataController,

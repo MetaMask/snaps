@@ -1,4 +1,4 @@
-import type { Messenger } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/base-controller/next';
 import type {
   CaveatSpecificationConstraint,
   PermissionSpecificationConstraint,

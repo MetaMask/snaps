@@ -1,9 +1,9 @@
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
-import { BaseController } from '@metamask/base-controller';
+} from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
+import { BaseController } from '@metamask/base-controller/next';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import { getTargetVersion } from '@metamask/snaps-utils';
@@ -88,12 +88,10 @@ export type SnapsRegistryStateChangeEvent = ControllerStateChangeEvent<
 
 export type SnapsRegistryEvents = SnapsRegistryStateChangeEvent;
 
-export type SnapsRegistryMessenger = RestrictedMessenger<
+export type SnapsRegistryMessenger = Messenger<
   'SnapsRegistry',
   SnapsRegistryActions,
-  SnapsRegistryEvents,
-  SnapsRegistryActions['type'],
-  SnapsRegistryEvents['type']
+  SnapsRegistryEvents
 >;
 
 export type SnapsRegistryState = {
@@ -159,22 +157,22 @@ export class JsonSnapsRegistry extends BaseController<
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#currentUpdate = null;
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:get',
       async (...args) => this.#get(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:getMetadata',
       (...args) => this.#getMetadata(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:resolveVersion',
       async (...args) => this.#resolveVersion(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:update',
       async () => this.#triggerUpdate(),
     );
