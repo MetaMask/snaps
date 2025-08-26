@@ -1,5 +1,5 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
-import type { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
   encryptWithKey,
   decryptWithKey,
@@ -919,7 +919,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
 export async function waitForStateChange(
   messenger:
     | Messenger<any, SnapControllerStateChangeEvent>
-    | RestrictedMessenger<
+    | Messenger<
         'SnapController',
         any,
         SnapControllerStateChangeEvent,
