@@ -1682,7 +1682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.11, @endo/env-options@npm:^1.1.8":
+"@endo/env-options@npm:^1.1.11":
   version: 1.1.11
   resolution: "@endo/env-options@npm:1.1.11"
   checksum: 10/a85326b2f422ebb3f5895ed263d230bf9c4915ed2f798210bebb3941daf94d97495f4767f4113bab8f3781b0534ecbe1d29067d7806478fd6237ab69e97fe5c1
@@ -2727,18 +2727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "@lavamoat/aa@npm:4.3.3"
-  dependencies:
-    resolve: "npm:1.22.10"
-  bin:
-    lavamoat-ls: src/cli.js
-  checksum: 10/a1051478a59efd3fc032c955369b1dada86148d192a5cccb0c08140f697b96c5211a93a77f5bddf8254b98e60d8f0759cf961000a59b910673db14c0ac0237ae
-  languageName: node
-  linkType: hard
-
-"@lavamoat/aa@npm:^4.3.4":
+"@lavamoat/aa@npm:^4.3.3, @lavamoat/aa@npm:^4.3.4":
   version: 4.3.4
   resolution: "@lavamoat/aa@npm:4.3.4"
   dependencies:
@@ -13632,22 +13621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.5.0":
-  version: 16.5.0
-  resolution: "lavamoat-core@npm:16.5.0"
-  dependencies:
-    "@babel/types": "npm:7.27.3"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^8.0.8"
-    merge-deep: "npm:3.0.3"
-    ses: "npm:1.12.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/c8164ee8e3802aa2c8c36408a570d75238db4c77b3c0fa69b204e7fb7ca1665edb981765eae80fb5542beb4f44b6749fa197137877607d913a7b73e975db5dea
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^16.5.1":
+"lavamoat-core@npm:^16.5.0, lavamoat-core@npm:^16.5.1":
   version: 16.5.1
   resolution: "lavamoat-core@npm:16.5.1"
   dependencies:
@@ -16762,15 +16736,6 @@ __metadata:
     parseurl: "npm:^1.3.3"
     send: "npm:^1.2.0"
   checksum: 10/9f1a900738c5bb02258275ce3bd1273379c4c3072b622e15d44e8f47d89a1ba2d639ec2d63b11c263ca936096b40758acb7a0d989cd6989018a65a12f9433ada
-  languageName: node
-  linkType: hard
-
-"ses@npm:1.12.0":
-  version: 1.12.0
-  resolution: "ses@npm:1.12.0"
-  dependencies:
-    "@endo/env-options": "npm:^1.1.8"
-  checksum: 10/209731eb2f6cfcc9e12296964f8f31cab7fefb53de97aff8d75e357aa6c85e40f69e62ebc0a8d946c6cbdd7ef644caf247f38d5c85a6ad891c00a1c5653f0e39
   languageName: node
   linkType: hard
 
