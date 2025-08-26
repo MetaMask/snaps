@@ -1,9 +1,9 @@
-import type { Messenger } from '@metamask/messenger';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller/next';
 import { BaseController } from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
   GetPermissions,

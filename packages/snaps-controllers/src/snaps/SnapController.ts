@@ -3,13 +3,13 @@ import {
   type AddApprovalRequest,
   type UpdateRequestState,
 } from '@metamask/approval-controller';
-import type { Messenger } from '@metamask/messenger';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller/next';
 import { BaseController } from '@metamask/base-controller/next';
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
   GetEndowments,
@@ -1213,9 +1213,8 @@ export class SnapController extends BaseController<
    * actions.
    */
   #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(
-      `${controllerName}:init`,
-      (...args) => this.init(...args),
+    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
+      this.init(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -1223,9 +1222,8 @@ export class SnapController extends BaseController<
       (...args) => this.clearSnapState(...args),
     );
 
-    this.messenger.registerActionHandler(
-      `${controllerName}:get`,
-      (...args) => this.get(...args),
+    this.messenger.registerActionHandler(`${controllerName}:get`, (...args) =>
+      this.get(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -1238,9 +1236,8 @@ export class SnapController extends BaseController<
       async (...args) => this.handleRequest(...args),
     );
 
-    this.messenger.registerActionHandler(
-      `${controllerName}:has`,
-      (...args) => this.has(...args),
+    this.messenger.registerActionHandler(`${controllerName}:has`, (...args) =>
+      this.has(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -2396,10 +2393,7 @@ export class SnapController extends BaseController<
 
         // If the snap has been fully installed before, also emit snapUninstalled.
         if (snap.status !== SnapStatus.Installing) {
-          this.messenger.publish(
-            `SnapController:snapUninstalled`,
-            truncated,
-          );
+          this.messenger.publish(`SnapController:snapUninstalled`, truncated);
         }
       }),
     );
@@ -2564,13 +2558,8 @@ export class SnapController extends BaseController<
    * @param snapId - The snap ID.
    */
   #revokeAllSnapPermissions(snapId: string) {
-    if (
-      this.messenger.call('PermissionController:hasPermissions', snapId)
-    ) {
-      this.messenger.call(
-        'PermissionController:revokeAllPermissions',
-        snapId,
-      );
+    if (this.messenger.call('PermissionController:hasPermissions', snapId)) {
+      this.messenger.call('PermissionController:revokeAllPermissions', snapId);
     }
   }
 
@@ -2624,10 +2613,7 @@ export class SnapController extends BaseController<
    */
   getPermittedSnaps(origin: string): RequestSnapsResult {
     const permissions =
-      this.messenger.call(
-        'PermissionController:getPermissions',
-        origin,
-      ) ?? {};
+      this.messenger.call('PermissionController:getPermissions', origin) ?? {};
     const snaps =
       permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats?.find(
         (caveat) => caveat.type === SnapCaveatType.SnapIds,
@@ -3218,13 +3204,10 @@ export class SnapController extends BaseController<
 
     try {
       const runtime = this.#getRuntimeExpect(snapId);
-      const result = await this.messenger.call(
-        'ExecutionService:executeSnap',
-        {
-          ...snapData,
-          endowments: await this.#getEndowments(snapId),
-        },
-      );
+      const result = await this.messenger.call('ExecutionService:executeSnap', {
+        ...snapData,
+        endowments: await this.#getEndowments(snapId),
+      });
 
       this.#transition(snapId, SnapStatusEvents.Start);
       // We treat the initialization of the snap as the first request, for idle timing purposes.
@@ -3560,9 +3543,7 @@ export class SnapController extends BaseController<
       this._onOutboundResponse,
     );
 
-    this.messenger.clearEventSubscriptions(
-      'SnapController:snapInstalled',
-    );
+    this.messenger.clearEventSubscriptions('SnapController:snapInstalled');
 
     this.messenger.clearEventSubscriptions('SnapController:snapUpdated');
     /* eslint-enable @typescript-eslint/unbound-method */
@@ -3828,11 +3809,7 @@ export class SnapController extends BaseController<
   #assertInterfaceExists(snapId: SnapId, id: string) {
     // This will throw if the interface isn't accessible, but we assert nevertheless.
     assert(
-      this.messenger.call(
-        'SnapInterfaceController:getInterface',
-        snapId,
-        id,
-      ),
+      this.messenger.call('SnapInterfaceController:getInterface', snapId, id),
     );
   }
 
@@ -4329,10 +4306,7 @@ export class SnapController extends BaseController<
     >;
   } {
     const oldPermissions =
-      this.messenger.call(
-        'PermissionController:getPermissions',
-        snapId,
-      ) ?? {};
+      this.messenger.call('PermissionController:getPermissions', snapId) ?? {};
 
     const newPermissions = permissionsDiff(
       desiredPermissionsSet,

@@ -1,5 +1,4 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
-import type { Messenger } from '@metamask/messenger';
 import {
   encryptWithKey,
   decryptWithKey,
@@ -9,6 +8,7 @@ import {
   generateSalt,
   isVaultUpdated,
 } from '@metamask/browser-passworder';
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionConstraint,
   SubjectPermissions,
