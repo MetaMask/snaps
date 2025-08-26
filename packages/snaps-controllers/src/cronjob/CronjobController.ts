@@ -1,9 +1,9 @@
-import type { Messenger } from '@metamask/messenger';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller/next';
 import { BaseController } from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import type { GetPermissions } from '@metamask/permission-controller';
 import {
   getCronjobCaveatJobs,
@@ -214,9 +214,8 @@ export class CronjobController extends BaseController<
       this.#handleSnapUpdatedEvent,
     );
 
-    this.messenger.registerActionHandler(
-      `${controllerName}:init`,
-      (...args) => this.init(...args),
+    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
+      this.init(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -229,9 +228,8 @@ export class CronjobController extends BaseController<
       (...args) => this.cancel(...args),
     );
 
-    this.messenger.registerActionHandler(
-      `${controllerName}:get`,
-      (...args) => this.get(...args),
+    this.messenger.registerActionHandler(`${controllerName}:get`, (...args) =>
+      this.get(...args),
     );
   }
 

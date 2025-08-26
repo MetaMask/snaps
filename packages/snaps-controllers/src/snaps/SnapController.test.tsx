@@ -11487,7 +11487,7 @@ describe('SnapController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-      // eslint-disable-next-line @typescript-eslint/await-thenable
+
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
       jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
@@ -11614,7 +11614,7 @@ describe('SnapController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-      // eslint-disable-next-line @typescript-eslint/await-thenable
+
       const result = await messenger.call(
         'SnapController:getPermitted',
         mockSnap.origin,

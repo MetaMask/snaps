@@ -8,7 +8,11 @@ import { Messenger } from '@metamask/messenger';
 export class MockControllerMessenger<
   Action extends ActionConstraint,
   Event extends EventConstraint,
-> extends Messenger<Action, Event> {
+> extends Messenger<'MockMessenger', Action, Event> {
+  constructor(){
+    super({ namespace: 'MockMessenger' })
+  }
+
   /**
    * Registers an action handler for the given action type. If an action handler
    * already exists for the given action type, it will be overwritten.

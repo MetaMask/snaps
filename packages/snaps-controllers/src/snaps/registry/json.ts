@@ -2,8 +2,8 @@ import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller/next';
-import type { Messenger } from '@metamask/messenger';
 import { BaseController } from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import { getTargetVersion } from '@metamask/snaps-utils';
@@ -157,9 +157,8 @@ export class JsonSnapsRegistry extends BaseController<
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#currentUpdate = null;
 
-    this.messenger.registerActionHandler(
-      'SnapsRegistry:get',
-      async (...args) => this.#get(...args),
+    this.messenger.registerActionHandler('SnapsRegistry:get', async (...args) =>
+      this.#get(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -172,9 +171,8 @@ export class JsonSnapsRegistry extends BaseController<
       async (...args) => this.#resolveVersion(...args),
     );
 
-    this.messenger.registerActionHandler(
-      'SnapsRegistry:update',
-      async () => this.#triggerUpdate(),
+    this.messenger.registerActionHandler('SnapsRegistry:update', async () =>
+      this.#triggerUpdate(),
     );
   }
 

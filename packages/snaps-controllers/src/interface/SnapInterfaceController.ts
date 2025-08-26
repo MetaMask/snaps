@@ -2,12 +2,12 @@ import type {
   AcceptRequest,
   HasApprovalRequest,
 } from '@metamask/approval-controller';
-import type { Messenger } from '@metamask/messenger';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller/next';
 import { BaseController } from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
@@ -437,8 +437,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns True if the origin is on the phishing list, otherwise false.
    */
   #checkPhishingList(origin: string) {
-    return this.messenger.call('PhishingController:testOrigin', origin)
-      .result;
+    return this.messenger.call('PhishingController:testOrigin', origin).result;
   }
 
   /**
@@ -461,11 +460,7 @@ export class SnapInterfaceController extends BaseController<
    * @param value - The value to resolve the promise with.
    */
   async #acceptApprovalRequest(id: string, value: Json) {
-    await this.messenger.call(
-      'ApprovalController:acceptRequest',
-      id,
-      value,
-    );
+    await this.messenger.call('ApprovalController:acceptRequest', id, value);
   }
 
   /**

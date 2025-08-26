@@ -1617,7 +1617,7 @@ describe('SnapInterfaceController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
       rootMessenger.call(
         'SnapInterfaceController:resolveInterface',
         MOCK_SNAP_ID,

@@ -1,4 +1,4 @@
-import type { Messenger } from '@metamask/base-controller/next';
+import { Messenger } from '@metamask/messenger';
 import type {
   CaveatSpecificationConstraint,
   PermissionSpecificationConstraint,
@@ -43,6 +43,7 @@ export type RootControllerAllowedEvents =
   SnapInterfaceControllerStateChangeEvent;
 
 export type RootControllerMessenger = Messenger<
+  'Root',
   RootControllerAllowedActions,
   RootControllerAllowedEvents
 >;
@@ -72,30 +73,34 @@ export type Controllers = {
 export function getControllers(options: GetControllersOptions): Controllers {
   const { controllerMessenger } = options;
   const subjectMetadataController = new SubjectMetadataController({
-    messenger: controllerMessenger.getRestricted({
-      name: 'SubjectMetadataController',
-      allowedActions: [],
-      allowedEvents: [],
+    messenger: new Messenger({
+      namespace: 'SubjectMetadataController',
+      parent: controllerMessenger,
     }),
     subjectCacheLimit: 100,
   });
 
+  const interfaceControllerMessenger = new Messenger({
+    namespace: 'SnapInterfaceController',
+    parent: controllerMessenger,
+  });
+
+  controllerMessenger.delegate({
+    messenger: interfaceControllerMessenger,
+    actions: [
+      'PhishingController:testOrigin',
+      'ApprovalController:hasRequest',
+      'ApprovalController:acceptRequest',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:listMultichainAccounts',
+      'MultichainAssetsController:getState',
+    ],
+    events: ['NotificationServicesController:notificationsListUpdated'],
+  });
+
   const interfaceController = new SnapInterfaceController({
-    messenger: controllerMessenger.getRestricted({
-      name: 'SnapInterfaceController',
-      allowedActions: [
-        'PhishingController:testOrigin',
-        'ApprovalController:hasRequest',
-        'ApprovalController:acceptRequest',
-        'AccountsController:getAccountByAddress',
-        'AccountsController:getSelectedMultichainAccount',
-        'AccountsController:listMultichainAccounts',
-        'MultichainAssetsController:getState',
-      ],
-      allowedEvents: [
-        'NotificationServicesController:notificationsListUpdated',
-      ],
-    }),
+    messenger: interfaceControllerMessenger,
   });
 
   const permissionController = getPermissionController(options);
@@ -118,20 +123,26 @@ export function getControllers(options: GetControllersOptions): Controllers {
 function getPermissionController(options: GetControllersOptions) {
   const { controllerMessenger } = options;
   const permissionSpecifications = getPermissionSpecifications(options);
+  const messenger = new Messenger({
+    namespace: 'PermissionController',
+    parent: controllerMessenger,
+  });
+
+  controllerMessenger.delegate({
+    messenger,
+    actions: [
+      `ApprovalController:addRequest`,
+      `ApprovalController:hasRequest`,
+      `ApprovalController:acceptRequest`,
+      `ApprovalController:rejectRequest`,
+      `SnapController:getPermitted`,
+      `SnapController:install`,
+      `SubjectMetadataController:getSubjectMetadata`,
+    ],
+  });
+
   return new PermissionController({
-    messenger: controllerMessenger.getRestricted({
-      name: 'PermissionController',
-      allowedActions: [
-        `ApprovalController:addRequest`,
-        `ApprovalController:hasRequest`,
-        `ApprovalController:acceptRequest`,
-        `ApprovalController:rejectRequest`,
-        `SnapController:getPermitted`,
-        `SnapController:install`,
-        `SubjectMetadataController:getSubjectMetadata`,
-      ],
-      allowedEvents: [],
-    }),
+    messenger,
     caveatSpecifications: {
       ...snapsCaveatsSpecifications,
       ...snapsEndowmentCaveatSpecifications,
