@@ -2,8 +2,8 @@ import type {
   ActionConstraint,
   ActionHandler,
   EventConstraint,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/base-controller';
+} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 
 export class MockControllerMessenger<
   Action extends ActionConstraint,
