@@ -98,7 +98,5 @@ export type ExecutionServiceActions =
 export type ExecutionServiceMessenger = Messenger<
   'ExecutionService',
   ExecutionServiceActions,
-  ExecutionServiceEvents,
-  ExecutionServiceActions['type'],
-  ExecutionServiceEvents['type']
+  ExecutionServiceEvents
 >;
