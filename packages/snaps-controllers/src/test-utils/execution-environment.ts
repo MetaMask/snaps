@@ -1,5 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import { Messenger } from '@metamask/messenger';
 import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { pipeline } from 'readable-stream';
@@ -20,20 +21,12 @@ export const getNodeEESMessenger = (
     ExecutionServiceEvents
   >,
 ) =>
-  messenger.getRestricted({
-    name: 'ExecutionService',
-    allowedEvents: [
-      'ExecutionService:unhandledError',
-      'ExecutionService:outboundRequest',
-      'ExecutionService:outboundResponse',
-    ],
-    allowedActions: [
-      'ExecutionService:executeSnap',
-      'ExecutionService:handleRpcRequest',
-      'ExecutionService:terminateAllSnaps',
-      'ExecutionService:terminateSnap',
-    ],
-  });
+  new Messenger<
+    'ExecutionService',
+    ExecutionServiceActions,
+    ExecutionServiceEvents,
+    any
+  >({ namespace: 'ExecutionService', parent: messenger });
 
 export const getNodeEES = (
   messenger: ReturnType<typeof getNodeEESMessenger>,

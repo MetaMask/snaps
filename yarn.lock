@@ -4425,6 +4425,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/messenger": "npm:^0.1.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "workspace:^"

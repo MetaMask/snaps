@@ -1,6 +1,6 @@
-import { Messenger } from '@metamask/base-controller/next';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import { Messenger } from '@metamask/messenger';
 import { logError } from '@metamask/snaps-utils';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
@@ -18,18 +18,12 @@ export const createService = <
     'messenger' | 'setupSnapProvider'
   >,
 ) => {
-  const messenger = new Messenger<never, ErrorMessageEvent>();
-
-  const restrictedMessenger = messenger.getRestricted<
-    'ExecutionService',
-    never,
-    ErrorMessageEvent['type']
-  >({
-    name: 'ExecutionService',
-  });
+  const messenger = new Messenger<'ExecutionService', never, ErrorMessageEvent>(
+    { namespace: 'ExecutionService' },
+  );
 
   const service = new ServiceClass({
-    messenger: restrictedMessenger,
+    messenger,
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'foo');
       const stream = mux.createStream('metamask-provider');
@@ -54,6 +48,6 @@ export const createService = <
 
   return {
     service,
-    messenger: restrictedMessenger,
+    messenger,
   };
 };

@@ -9,8 +9,8 @@ export class MockControllerMessenger<
   Action extends ActionConstraint,
   Event extends EventConstraint,
 > extends Messenger<'MockMessenger', Action, Event> {
-  constructor(){
-    super({ namespace: 'MockMessenger' })
+  constructor() {
+    super({ namespace: 'MockMessenger' });
   }
 
   /**
@@ -24,7 +24,18 @@ export class MockControllerMessenger<
     actionType: ActionType,
     handler: ActionHandler<Action, ActionType>,
   ) {
-    super.unregisterActionHandler(actionType);
-    super.registerActionHandler(actionType, handler);
+    /**
+     const namespace = actionType.split(":")[0];
+    const messenger = new Messenger<any, Action, never, any>({ namespace, parent: this });
+     
+    messenger.registerActionHandler(actionType, handler)*
+     */
+    /**
+     super.unregisterActionHandler(actionType);
+    super.registerActionHandler(actionType, handler);*
+     */
+
+    super._internalUnregisterDelegatedActionHandler(actionType);
+    super._internalRegisterDelegatedActionHandler(actionType, handler);
   }
 }

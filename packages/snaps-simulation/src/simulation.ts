@@ -541,12 +541,12 @@ export function registerActions(
   options: SimulationOptions,
   snapId: SnapId,
 ) {
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: PhishingDetectorResultType.All }),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:getAccountByAddress',
     // @ts-expect-error - This is a partial account with only the necessary
     // data used by the interface controller.
@@ -563,7 +563,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:getSelectedMultichainAccount',
     // @ts-expect-error - This is a partial account with only the necessary
     // data used by the interface controller.
@@ -580,7 +580,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:listMultichainAccounts',
 
     () =>
@@ -591,7 +591,7 @@ export function registerActions(
       ),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'MultichainAssetsController:getState',
     () => ({
       // @ts-expect-error - These are partial assets with only the
@@ -607,7 +607,7 @@ export function registerActions(
     }),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'ApprovalController:hasRequest',
     (opts) => {
       /**
@@ -631,7 +631,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'ApprovalController:acceptRequest',
     async (_id: string, value: unknown) => {
       await runSaga(resolveWithSaga, value).toPromise();
