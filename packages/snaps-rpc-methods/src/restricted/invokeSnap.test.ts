@@ -120,7 +120,7 @@ describe('handleSnapInstall', () => {
     const sideEffectMessenger = new Messenger<
       'PermissionController',
       InstallSnaps | GetPermittedSnaps
-    >({ namespace: 'PermissionController' });
+    >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
       messenger: sideEffectMessenger,
@@ -181,7 +181,7 @@ describe('handleSnapInstall', () => {
     const sideEffectMessenger = new Messenger<
       'PermissionController',
       InstallSnaps | GetPermittedSnaps
-    >({ namespace: 'PermissionController' });
+    >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
       messenger: sideEffectMessenger,

@@ -24,17 +24,6 @@ export class MockControllerMessenger<
     actionType: ActionType,
     handler: ActionHandler<Action, ActionType>,
   ) {
-    /**
-     const namespace = actionType.split(":")[0];
-    const messenger = new Messenger<any, Action, never, any>({ namespace, parent: this });
-     
-    messenger.registerActionHandler(actionType, handler)*
-     */
-    /**
-     super.unregisterActionHandler(actionType);
-    super.registerActionHandler(actionType, handler);*
-     */
-
     super._internalUnregisterDelegatedActionHandler(actionType);
     super._internalRegisterDelegatedActionHandler(actionType, handler);
   }
