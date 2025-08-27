@@ -28,7 +28,6 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MockControllerMessenger,
   getPersistedSnapObject,
-  getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
@@ -412,10 +411,6 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     asyncNoOp,
   );
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
-  messenger.registerActionHandler(
-    'ExecutionService:terminateAllSnaps',
-    asyncNoOp,
-  );
 
   messenger.registerActionHandler(
     'SnapsRegistry:get',
@@ -468,7 +463,8 @@ export const getSnapControllerMessenger = (
   const snapControllerMessenger = new Messenger<
     'SnapController',
     SnapControllerActions | AllowedActions,
-    SnapControllerEvents | AllowedEvents
+    SnapControllerEvents | AllowedEvents,
+    any
   >({
     namespace: 'SnapController',
     parent: messenger,
@@ -479,7 +475,6 @@ export const getSnapControllerMessenger = (
       'ApprovalController:addRequest',
       'ApprovalController:updateRequestState',
       'ExecutionService:executeSnap',
-      'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',
       'ExecutionService:handleRpcRequest',
       'NetworkController:getNetworkClientById',
@@ -493,7 +488,6 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissionForAllSubjects',
       'PermissionController:updateCaveat',
       'PermissionController:getSubjectNames',
-      'PhishingController:testOrigin',
       'SelectedNetworkController:getNetworkClientIdForDomain',
       'SubjectMetadataController:getSubjectMetadata',
       'SubjectMetadataController:addSubjectMetadata',
@@ -665,7 +659,8 @@ export const getRestrictedCronjobControllerMessenger = (
   const cronjobControllerMessenger = new Messenger<
     'CronjobController',
     CronjobControllerActions | AllowedActions,
-    CronjobControllerEvents | AllowedEvents
+    CronjobControllerEvents | AllowedEvents,
+    any
   >({
     namespace: 'CronjobController',
     parent: messenger,
@@ -675,11 +670,7 @@ export const getRestrictedCronjobControllerMessenger = (
     actions: [
       'PermissionController:hasPermission',
       'PermissionController:getPermissions',
-      'SnapController:getAll',
       'SnapController:handleRequest',
-      'CronjobController:scheduleBackgroundEvent',
-      'CronjobController:cancelBackgroundEvent',
-      'CronjobController:getBackgroundEvents',
     ],
     events: [
       'SnapController:snapInstalled',
@@ -706,12 +697,10 @@ export const getRestrictedCronjobControllerMessenger = (
       },
     );
 
-    messenger.registerActionHandler('SnapController:getAll', () => {
-      return [getTruncatedSnap()];
-    });
-
     messenger.registerActionHandler('SnapController:handleRequest', asyncNoOp);
   }
+
+  jest.spyOn(cronjobControllerMessenger, 'call');
 
   return cronjobControllerMessenger;
 };
@@ -736,7 +725,8 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   return new Messenger<
     'SnapsRegistry',
     SnapsRegistryActions,
-    SnapsRegistryEvents
+    SnapsRegistryEvents,
+    any
   >({ namespace: 'SnapsRegistry', parent: messenger });
 };
 
@@ -761,7 +751,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   const snapInterfaceControllerMessenger = new Messenger<
     'SnapInterfaceController',
     SnapInterfaceControllerAllowedActions,
-    SnapInterfaceControllerEvents
+    SnapInterfaceControllerEvents,
+    any
   >({ namespace: 'SnapInterfaceController', parent: messenger });
 
   messenger.delegate({
@@ -861,7 +852,8 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   const controllerMessenger = new Messenger<
     'SnapInsightsController',
     SnapInsightsControllerAllowedActions,
-    SnapInsightsControllerAllowedEvents
+    SnapInsightsControllerAllowedEvents,
+    any
   >({
     namespace: 'SnapInsightsController',
     parent: messenger,
@@ -920,7 +912,9 @@ export const getRestrictedMultichainRouterMessenger = (
 ) => {
   const controllerMessenger = new Messenger<
     'MultichainRouter',
-    MultichainRouterAllowedActions
+    MultichainRouterAllowedActions,
+    never,
+    any
   >({ namespace: 'MultichainRouter', parent: messenger });
 
   messenger.delegate({
@@ -956,7 +950,8 @@ export const getRestrictedWebSocketServiceMessenger = (
   const controllerMessenger = new Messenger<
     'WebSocketService',
     WebSocketServiceAllowedActions,
-    WebSocketServiceEvents
+    WebSocketServiceEvents,
+    any
   >({ namespace: 'WebSocketService', parent: messenger });
 
   messenger.delegate({

@@ -2905,7 +2905,7 @@ describe('SnapController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      expect(messenger.call).toHaveBeenNthCalledWith(
         4,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
@@ -7037,7 +7037,7 @@ describe('SnapController', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      expect(messenger.call).toHaveBeenNthCalledWith(
         6,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
@@ -7103,7 +7103,7 @@ describe('SnapController', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      expect(messenger.call).toHaveBeenNthCalledWith(
         6,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
@@ -11487,7 +11487,7 @@ describe('SnapController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       await messenger.call('SnapController:clearSnapState', MOCK_SNAP_ID, true);
 
       jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
@@ -11614,7 +11614,7 @@ describe('SnapController', () => {
 
       // TODO: Either fix this lint violation or explain why it's necessary to
       //  ignore.
-
+      // eslint-disable-next-line @typescript-eslint/await-thenable
       const result = await messenger.call(
         'SnapController:getPermitted',
         mockSnap.origin,
