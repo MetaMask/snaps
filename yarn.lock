@@ -1682,7 +1682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@endo/env-options@npm:^1.1.11, @endo/env-options@npm:^1.1.8":
+"@endo/env-options@npm:^1.1.11":
   version: 1.1.11
   resolution: "@endo/env-options@npm:1.1.11"
   checksum: 10/a85326b2f422ebb3f5895ed263d230bf9c4915ed2f798210bebb3941daf94d97495f4767f4113bab8f3781b0534ecbe1d29067d7806478fd6237ab69e97fe5c1
@@ -2761,18 +2761,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@lavamoat/webpack@npm:1.1.0"
+"@lavamoat/webpack@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@lavamoat/webpack@npm:1.2.0"
   dependencies:
-    "@lavamoat/aa": "npm:^4.3.3"
+    "@lavamoat/aa": "npm:^4.3.4"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^16.5.0"
-    ses: "npm:1.12.0"
+    lavamoat-core: "npm:^16.5.1"
+    ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/232be6adf942c3675f55f38c786594406428b90af35156f276efbf121afa9c5b4908527c66c96821af6e7779b87d474c1e9e4bbd86e450a392345822a9a068ed
+  checksum: 10/bef023b5e044f5f458b2cf4324286ffa538cebebdca39bf63ebb4b8011dbd5fee22febf964a28a037758e30ecc1f21fc74ea5fcd3d4aff1869a5211a498f0477
   languageName: node
   linkType: hard
 
@@ -4287,7 +4287,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^3.3.5"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": "npm:^1.1.0"
+    "@lavamoat/webpack": "npm:^1.2.0"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -13621,18 +13621,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.5.0":
-  version: 16.5.0
-  resolution: "lavamoat-core@npm:16.5.0"
+"lavamoat-core@npm:^16.5.0, lavamoat-core@npm:^16.5.1":
+  version: 16.5.1
+  resolution: "lavamoat-core@npm:16.5.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
     json-stable-stringify: "npm:1.3.0"
     lavamoat-tofu: "npm:^8.0.8"
     merge-deep: "npm:3.0.3"
-    ses: "npm:1.12.0"
+    ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/c8164ee8e3802aa2c8c36408a570d75238db4c77b3c0fa69b204e7fb7ca1665edb981765eae80fb5542beb4f44b6749fa197137877607d913a7b73e975db5dea
+  checksum: 10/91f043b733902b1af02f5efa1862598c21f80fba14d531a276ff6017a6bf51b01dd9cee4cd241eee2279acf59847c220f473d364d1d88290f4e67a029dfb4a5a
   languageName: node
   linkType: hard
 
@@ -16739,16 +16739,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.12.0":
-  version: 1.12.0
-  resolution: "ses@npm:1.12.0"
-  dependencies:
-    "@endo/env-options": "npm:^1.1.8"
-  checksum: 10/209731eb2f6cfcc9e12296964f8f31cab7fefb53de97aff8d75e357aa6c85e40f69e62ebc0a8d946c6cbdd7ef644caf247f38d5c85a6ad891c00a1c5653f0e39
-  languageName: node
-  linkType: hard
-
-"ses@npm:^1.14.0":
+"ses@npm:1.14.0, ses@npm:^1.14.0":
   version: 1.14.0
   resolution: "ses@npm:1.14.0"
   dependencies:
