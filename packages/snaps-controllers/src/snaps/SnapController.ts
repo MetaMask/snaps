@@ -3396,8 +3396,6 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
-   * This function is not hash private yet because of tests.
-   *
    * @param snapId - The id of the Snap.
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
