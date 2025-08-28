@@ -2922,15 +2922,13 @@ export class SnapController extends BaseController<
       throw new Error('Preinstalled Snaps cannot be manually updated.');
     }
 
-    let pendingApproval;
-
-    if (!automaticUpdate) {
-      pendingApproval = this.#createApproval({
-        origin,
-        snapId,
-        type: SNAP_APPROVAL_UPDATE,
-      });
-    }
+    let pendingApproval = automaticUpdate
+      ? null
+      : this.#createApproval({
+          origin,
+          snapId,
+          type: SNAP_APPROVAL_UPDATE,
+        });
 
     try {
       this.messagingSystem.publish(
@@ -2986,10 +2984,7 @@ export class SnapController extends BaseController<
       let approvedNewPermissions;
       let requestData;
 
-      if (automaticUpdate) {
-        approvedNewPermissions = newPermissions;
-      } else {
-        assert(pendingApproval);
+      if (pendingApproval) {
         this.#updateApproval(pendingApproval.id, {
           permissions: newPermissions,
           newVersion: manifest.version,
@@ -3013,6 +3008,9 @@ export class SnapController extends BaseController<
           snapId,
           type: SNAP_APPROVAL_RESULT,
         });
+      } else {
+        assert(automaticUpdate);
+        approvedNewPermissions = newPermissions;
       }
 
       if (this.isRunning(snapId)) {
@@ -3065,8 +3063,7 @@ export class SnapController extends BaseController<
 
       const truncatedSnap = this.getTruncatedExpect(snapId);
 
-      if (!automaticUpdate) {
-        assert(pendingApproval);
+      if (pendingApproval) {
         this.#updateApproval(pendingApproval.id, {
           loading: false,
           type: SNAP_APPROVAL_UPDATE,
@@ -3080,8 +3077,7 @@ export class SnapController extends BaseController<
       const errorString =
         error instanceof Error ? error.message : error.toString();
 
-      if (!automaticUpdate) {
-        assert(pendingApproval);
+      if (pendingApproval) {
         this.#updateApproval(pendingApproval.id, {
           loading: false,
           error: errorString,
