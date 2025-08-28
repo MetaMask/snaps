@@ -2918,7 +2918,9 @@ export class SnapController extends BaseController<
 
     const snap = this.getExpect(snapId);
 
-    if (snap.preinstalled && !automaticUpdate) {
+    const { preinstalled, removable, hidden, hideSnapBranding } = snap;
+
+    if (preinstalled && !automaticUpdate) {
       throw new Error('Preinstalled Snaps cannot be manually updated.');
     }
 
@@ -3023,6 +3025,10 @@ export class SnapController extends BaseController<
         origin,
         id: snapId,
         files: newSnap,
+        removable,
+        preinstalled,
+        hidden,
+        hideSnapBranding,
         isUpdate: true,
       });
 
