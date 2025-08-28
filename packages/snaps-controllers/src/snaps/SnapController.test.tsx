@@ -10239,6 +10239,17 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger(registry);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
+      // Simulate previous permissions, some of which will be removed
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => {
+          return {
+            [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+            [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+          };
+        },
+      );
+
       const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
 
       const mockSnap = getPersistedSnapObject({
@@ -10275,7 +10286,33 @@ describe('SnapController', () => {
 
       await snapController.updateRegistry();
 
-      expect(snapController.get(snapId)?.version).toStrictEqual(updateVersion);
+      const updatedSnap = snapController.get(snapId);
+      assert(updatedSnap);
+
+      expect(updatedSnap.version).toStrictEqual(updateVersion);
+      expect(updatedSnap.preinstalled).toBe(true);
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:revokePermissions',
+        { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
+      );
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        8,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [{ type: 'rpcOrigin', value: { dapps: true } }],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {},
+          },
+          subject: { origin: snapId },
+        },
+      );
 
       snapController.destroy();
     });

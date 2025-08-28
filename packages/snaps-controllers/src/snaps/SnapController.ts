@@ -1493,7 +1493,7 @@ export class SnapController extends BaseController<
 
     const preinstalledVersionRange = '*' as SemVerRange;
 
-    await Promise.all(
+    await Promise.allSettled(
       Object.values(this.state.snaps)
         .filter((snap) => snap.preinstalled)
         .map(async (snap) => {
