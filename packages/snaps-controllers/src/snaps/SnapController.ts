@@ -1495,26 +1495,27 @@ export class SnapController extends BaseController<
       Object.values(this.state.snaps)
         .filter((snap) => snap.preinstalled)
         .map(async (snap) => {
-          const resolvedVersion = (await this.#resolveAllowlistVersion(
+          const resolvedVersion = await this.#resolveAllowlistVersion(
             snap.id,
             '*' as SemVerRange,
-          )) as unknown as SemVerVersion;
+          );
 
-          if (gtVersion(resolvedVersion, snap.version)) {
+          if (
+            gtVersion(resolvedVersion as unknown as SemVerVersion, snap.version)
+          ) {
             const location = this.#detectSnapLocation(snap.id, {
-              versionRange: resolvedVersion as unknown as SemVerRange,
+              versionRange: resolvedVersion,
               fetch: this.#fetchFunction,
               allowLocal: false,
             });
 
-            await this.updateSnap(
-              ORIGIN_METAMASK,
-              snap.id,
+            await this.#updateSnap({
+              origin: ORIGIN_METAMASK,
+              snapId: snap.id,
               location,
-              resolvedVersion,
-              true,
-              true,
-            );
+              versionRange: resolvedVersion,
+              automaticUpdate: true,
+            });
           }
         }),
     );
@@ -2910,7 +2911,7 @@ export class SnapController extends BaseController<
     snapId: SnapId;
     location: SnapLocation;
     versionRange: SemVerRange;
-    automaticUpdate: boolean;
+    automaticUpdate?: boolean;
   }): Promise<TruncatedSnap> {
     this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
