@@ -4171,6 +4171,7 @@ export class SnapController extends BaseController<
       requestData: permissions.requestData,
     });
 
+    // Calling this in reverse order to undo the changes
     this.#handleInitialConnections(
       snapId,
       newInitialConnections ?? null,
