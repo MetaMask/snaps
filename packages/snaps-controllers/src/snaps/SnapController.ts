@@ -405,9 +405,9 @@ export type ClearSnapState = {
 /**
  * Checks all installed snaps against the blocklist.
  */
-export type UpdateBlockedSnaps = {
-  type: `${typeof controllerName}:updateBlockedSnaps`;
-  handler: SnapController['updateBlockedSnaps'];
+export type UpdateRegistry = {
+  type: `${typeof controllerName}:updateRegistry`;
+  handler: SnapController['updateRegistry'];
 };
 
 export type EnableSnap = {
@@ -497,7 +497,7 @@ export type SnapControllerActions =
   | GetSnapState
   | HandleSnapRequest
   | HasSnap
-  | UpdateBlockedSnaps
+  | UpdateRegistry
   | UpdateSnapState
   | EnableSnap
   | DisableSnap
@@ -1221,8 +1221,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:updateBlockedSnaps`,
-      async () => this.updateBlockedSnaps(),
+      `${controllerName}:updateRegistry`,
+      async () => this.updateRegistry(),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1463,7 +1463,7 @@ export class SnapController extends BaseController<
    *
    * Also updates any preinstalled Snaps to the latest allowlisted version.
    */
-  async updateBlockedSnaps(): Promise<void> {
+  async updateRegistry(): Promise<void> {
     this.#assertCanUsePlatform();
     await this.messagingSystem.call('SnapsRegistry:update');
 

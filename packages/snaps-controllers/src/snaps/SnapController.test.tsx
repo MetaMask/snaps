@@ -9956,7 +9956,7 @@ describe('SnapController', () => {
     });
   });
 
-  describe('updateBlockedSnaps', () => {
+  describe('updateRegistry', () => {
     it('updates the registry database', async () => {
       const registry = new MockSnapsRegistry();
       const rootMessenger = getControllerMessenger(registry);
@@ -9970,7 +9970,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       expect(registry.update).toHaveBeenCalled();
 
@@ -10014,7 +10014,7 @@ describe('SnapController', () => {
           reason: { explanation, infoUrl },
         },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // Ensure that CheckSnapBlockListArg is correct
       expect(registry.get).toHaveBeenCalledWith({
@@ -10073,7 +10073,7 @@ describe('SnapController', () => {
       registry.get.mockResolvedValueOnce({
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // The snap is blocked, disabled, and stopped
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10127,7 +10127,7 @@ describe('SnapController', () => {
         [mockSnapA.id]: { status: SnapsRegistryStatus.Unverified },
         [mockSnapB.id]: { status: SnapsRegistryStatus.Unverified },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // A is unblocked, but still disabled
       expect(snapController.get(mockSnapA.id)?.blocked).toBe(false);
@@ -10171,7 +10171,7 @@ describe('SnapController', () => {
         new Promise<unknown>((resolve) => (resolveBlockListPromise = resolve)),
       );
 
-      const updateBlockList = snapController.updateBlockedSnaps();
+      const updateBlockList = snapController.updateRegistry();
 
       // Remove the snap while waiting for the blocklist
       await snapController.removeSnap(mockSnap.id);
@@ -10219,7 +10219,7 @@ describe('SnapController', () => {
       registry.get.mockResolvedValueOnce({
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // A is blocked and disabled
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10273,7 +10273,7 @@ describe('SnapController', () => {
         }),
       );
 
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       expect(snapController.get(snapId)?.version).toStrictEqual(updateVersion);
 
@@ -11570,8 +11570,8 @@ describe('SnapController', () => {
     });
   });
 
-  describe('SnapController:updateBlockedSnaps', () => {
-    it('calls SnapController.updateBlockedSnaps()', async () => {
+  describe('SnapController:updateRegistry', () => {
+    it('calls SnapController.updateRegistry()', async () => {
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11579,12 +11579,12 @@ describe('SnapController', () => {
         }),
       );
 
-      const updateBlockedSnapsSpy = jest
-        .spyOn(snapController, 'updateBlockedSnaps')
+      const updateRegistrySpy = jest
+        .spyOn(snapController, 'updateRegistry')
         .mockImplementation();
 
-      await messenger.call('SnapController:updateBlockedSnaps');
-      expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
+      await messenger.call('SnapController:updateRegistry');
+      expect(updateRegistrySpy).toHaveBeenCalledTimes(1);
 
       snapController.destroy();
     });
