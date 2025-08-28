@@ -1491,16 +1491,19 @@ export class SnapController extends BaseController<
       }),
     );
 
+    const preinstalledVersionRange = '*' as SemVerRange;
+
     await Promise.all(
       Object.values(this.state.snaps)
         .filter((snap) => snap.preinstalled)
         .map(async (snap) => {
           const resolvedVersion = await this.#resolveAllowlistVersion(
             snap.id,
-            '*' as SemVerRange,
+            preinstalledVersionRange,
           );
 
           if (
+            resolvedVersion !== preinstalledVersionRange &&
             gtVersion(resolvedVersion as unknown as SemVerVersion, snap.version)
           ) {
             const location = this.#detectSnapLocation(snap.id, {
