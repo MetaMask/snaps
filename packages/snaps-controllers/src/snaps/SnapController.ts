@@ -58,6 +58,7 @@ import type {
   OnAssetsMarketDataResponse,
   AssetMarketData,
   AssetMetadata,
+  EmptyObject,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -333,6 +334,8 @@ type RollbackSnapshot = {
     granted?: RequestedPermissions;
     requestData?: Record<string, unknown>;
   };
+  previousInitialConnections?: Record<string, EmptyObject> | null;
+  newInitialConnections?: Record<string, EmptyObject>;
   newVersion: string;
 };
 
@@ -2994,19 +2997,22 @@ export class SnapController extends BaseController<
         requestData,
       });
 
-      if (manifest.initialConnections) {
-        this.#handleInitialConnections(
-          snapId,
-          oldManifest.initialConnections ?? null,
-          manifest.initialConnections,
-        );
-      }
+      const previousInitialConnections = oldManifest.initialConnections ?? null;
+      const newInitialConnections = manifest.initialConnections ?? {};
+      this.#handleInitialConnections(
+        snapId,
+        previousInitialConnections,
+        newInitialConnections,
+      );
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.permissions.revoked = unusedPermissions;
         rollbackSnapshot.permissions.granted = approvedNewPermissions;
         rollbackSnapshot.permissions.requestData = requestData;
+        rollbackSnapshot.previousInitialConnections =
+          previousInitialConnections;
+        rollbackSnapshot.newInitialConnections = newInitialConnections;
       }
 
       const sourceCode = sourceCodeFile.toString();
@@ -4139,7 +4145,12 @@ export class SnapController extends BaseController<
       this.#transition(snapId, SnapStatusEvents.Stop);
     }
 
-    const { statePatches, permissions } = rollbackSnapshot;
+    const {
+      statePatches,
+      permissions,
+      previousInitialConnections,
+      newInitialConnections,
+    } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
@@ -4159,6 +4170,12 @@ export class SnapController extends BaseController<
       newPermissions: permissions.revoked,
       requestData: permissions.requestData,
     });
+
+    this.#handleInitialConnections(
+      snapId,
+      newInitialConnections ?? null,
+      previousInitialConnections ?? {},
+    );
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
 
