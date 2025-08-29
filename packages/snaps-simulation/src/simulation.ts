@@ -541,6 +541,8 @@ export function registerActions(
   options: SimulationOptions,
   snapId: SnapId,
 ) {
+  // TODO: Undo the changes in this file once you can unregister/register globally for tests
+
   controllerMessenger._internalRegisterDelegatedActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: PhishingDetectorResultType.All }),
