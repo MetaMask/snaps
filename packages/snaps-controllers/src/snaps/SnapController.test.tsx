@@ -5182,8 +5182,8 @@ describe('SnapController', () => {
         },
       });
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(options.messenger.call).toHaveBeenCalledTimes(5);
+      expect(options.messenger.call).toHaveBeenCalledWith(
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
@@ -6312,7 +6312,7 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6328,7 +6328,7 @@ describe('SnapController', () => {
         },
       );
 
-      expect(rootMessenger.publish).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.publish).toHaveBeenCalledWith(
         'SnapController:snapInstalled',
         getTruncatedSnap(),
         METAMASK_ORIGIN,
@@ -6412,12 +6412,12 @@ describe('SnapController', () => {
         () => MOCK_SNAP_PERMISSIONS,
       );
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         { approvedPermissions, subject: { origin: 'npm:filsnap' } },
       );
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions,
@@ -6461,7 +6461,7 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6541,14 +6541,14 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:revokePermissions',
         {
           [MOCK_SNAP_ID]: ['snap_dialog'],
         },
       );
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6559,7 +6559,7 @@ describe('SnapController', () => {
         },
       );
 
-      expect(rootMessenger.publish).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.publish).toHaveBeenCalledWith(
         'SnapController:snapUpdated',
         getTruncatedSnap({
           version: '1.2.3',
@@ -6628,7 +6628,7 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(rootMessenger.call).toHaveBeenCalledTimes(0);
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledTimes(0);
 
       snapController.destroy();
     });
@@ -6678,7 +6678,7 @@ describe('SnapController', () => {
       });
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
