@@ -20,13 +20,21 @@ export const getNodeEESMessenger = (
     ExecutionServiceActions,
     ExecutionServiceEvents
   >,
-) =>
-  new Messenger<
+) => {
+  const executionServiceMessenger = new Messenger<
     'ExecutionService',
     ExecutionServiceActions,
     ExecutionServiceEvents,
     any
   >({ namespace: 'ExecutionService', parent: messenger });
+
+  messenger.unregisterActionHandler('ExecutionService:handleRpcRequest');
+  messenger.unregisterActionHandler('ExecutionService:executeSnap');
+  messenger.unregisterActionHandler('ExecutionService:terminateSnap');
+  messenger.unregisterActionHandler('ExecutionService:terminateAllSnaps');
+
+  return executionServiceMessenger;
+};
 
 export const getNodeEES = (
   messenger: ReturnType<typeof getNodeEESMessenger>,

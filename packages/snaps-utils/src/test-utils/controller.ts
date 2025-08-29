@@ -2,6 +2,7 @@ import type {
   ActionConstraint,
   ActionHandler,
   EventConstraint,
+  ExtractEventPayload,
 } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
 
@@ -24,7 +25,23 @@ export class MockControllerMessenger<
     actionType: ActionType,
     handler: ActionHandler<Action, ActionType>,
   ) {
+    // TODO: Undo this once you can unregister/register globally for tests
     super._internalUnregisterDelegatedActionHandler(actionType);
     super._internalRegisterDelegatedActionHandler(actionType, handler);
+  }
+
+  unregisterActionHandler<ActionType extends Action['type']>(
+    actionType: ActionType,
+  ) {
+    // TODO: Undo this once you can unregister/register globally for tests
+    super._internalUnregisterDelegatedActionHandler(actionType);
+  }
+
+  publish<EventType extends Event['type']>(
+    eventType: EventType,
+    ...payload: ExtractEventPayload<Event, EventType>
+  ): void {
+    // TODO: Undo this once you can publish globally for tests
+    super._internalPublishDelegated(eventType, ...payload);
   }
 }
