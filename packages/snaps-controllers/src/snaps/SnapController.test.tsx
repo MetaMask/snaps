@@ -8092,7 +8092,17 @@ describe('SnapController', () => {
         })
       ).manifest.result;
 
-      const manifest2 = (
+      const manifest2Old = (
+        await getMockSnapFilesWithUpdatedChecksum({
+          manifest: getSnapManifest({
+            initialConnections: {
+              [MOCK_ORIGIN]: {},
+            },
+          }),
+        })
+      ).manifest.result;
+
+      const manifest2New = (
         await getMockSnapFilesWithUpdatedChecksum({
           manifest: getSnapManifest({
             version: newVersion,
@@ -8105,7 +8115,9 @@ describe('SnapController', () => {
       const detect = jest
         .fn()
         .mockImplementationOnce(() => new LoopbackLocation())
-        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () => new LoopbackLocation({ manifest: manifest2Old }),
+        )
         .mockImplementationOnce(() => new LoopbackLocation())
         .mockImplementationOnce(
           () =>
@@ -8116,7 +8128,7 @@ describe('SnapController', () => {
         .mockImplementationOnce(
           () =>
             new LoopbackLocation({
-              manifest: manifest2,
+              manifest: manifest2New,
               files: [
                 new VirtualFile({
                   value: 'foo',
@@ -8130,8 +8142,46 @@ describe('SnapController', () => {
             }),
         );
 
+      const rootMessenger = getControllerMessenger();
+
+      let revokedConnection = false;
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:revokePermissions',
+        () => {
+          revokedConnection = true;
+          return {};
+        },
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        (origin) => {
+          if (origin === MOCK_ORIGIN && !revokedConnection) {
+            return {
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                caveats: [
+                  {
+                    type: SnapCaveatType.SnapIds,
+                    value: {
+                      [snapId2]: {},
+                    },
+                  },
+                ],
+                date: 1664187844588,
+                id: 'izn0WGUO8cvq_jqvLQuQP',
+                invoker: MOCK_ORIGIN,
+                parentCapability: WALLET_SNAP_PERMISSION_KEY,
+              },
+            };
+          }
+          return MOCK_SNAP_PERMISSIONS;
+        },
+      );
+
       const options = getSnapControllerWithEESOptions({
         detectSnapLocation: detect,
+        rootMessenger,
       });
 
       const { messenger } = options;
@@ -8174,6 +8224,34 @@ describe('SnapController', () => {
       expect(messenger.publish).not.toHaveBeenCalledWith(
         'SnapController:snapUpdated',
         expect.anything(),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        48,
+        'PermissionController:revokePermissions',
+        {
+          [MOCK_ORIGIN]: [WALLET_SNAP_PERMISSION_KEY],
+        },
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        59,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            [WALLET_SNAP_PERMISSION_KEY]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.SnapIds,
+                  value: {
+                    [snapId2]: {},
+                  },
+                },
+              ],
+            },
+          },
+          subject: { origin: MOCK_ORIGIN },
+        },
       );
 
       controller.destroy();
