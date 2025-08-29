@@ -99,7 +99,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
         "eslint>debug": true,
-        "@metamask/utils>lodash.memoize": true,
+        "depcheck>lodash": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true
       }
@@ -134,6 +134,11 @@
     "webpack>events": {
       "globals": {
         "console": true
+      }
+    },
+    "depcheck>lodash": {
+      "globals": {
+        "define": true
       }
     },
     "@metamask/object-multiplex>once": {
