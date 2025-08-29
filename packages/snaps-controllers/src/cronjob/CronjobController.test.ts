@@ -71,14 +71,14 @@ describe('CronjobController', () => {
 
     cronjobController.register(MOCK_SNAP_ID);
 
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -120,14 +120,14 @@ describe('CronjobController', () => {
 
     cronjobController.register(MOCK_SNAP_ID);
 
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -161,7 +161,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+    expect(controllerMessenger.call).not.toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -211,7 +211,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(24, Duration.Hour));
 
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -262,7 +262,7 @@ describe('CronjobController', () => {
     cronjobController.init();
 
     await new Promise((resolve) => originalProcessNextTick(resolve));
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -311,13 +311,13 @@ describe('CronjobController', () => {
     cronjobController.register(MOCK_SNAP_ID);
     jest.runOnlyPendingTimers();
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
-    expect(rootMessenger.call).not.toHaveBeenCalledWith(
+    expect(controllerMessenger.call).not.toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -359,18 +359,18 @@ describe('CronjobController', () => {
     cronjobController.register(MOCK_SNAP_ID);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
-    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
-    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
-    expect(rootMessenger.call).toHaveBeenCalledTimes(2);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -450,7 +450,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapController:handleRequest',
       {
         snapId: MOCK_SNAP_ID,
@@ -513,7 +513,7 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Minute));
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -527,7 +527,7 @@ describe('CronjobController', () => {
       },
     );
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(2);
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(2);
 
     cronjobController.destroy();
   });
@@ -622,8 +622,8 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(3);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(3);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -637,7 +637,7 @@ describe('CronjobController', () => {
       },
     );
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       3,
       'SnapController:handleRequest',
       {
@@ -816,8 +816,8 @@ describe('CronjobController', () => {
 
     jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(1);
-    expect(rootMessenger.call).toHaveBeenCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(1);
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
       'PermissionController:getPermissions',
       MOCK_SNAP_ID,
     );
@@ -904,7 +904,7 @@ describe('CronjobController', () => {
 
       jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(controllerMessenger.call).toHaveBeenCalledWith(
         'SnapController:handleRequest',
         {
           snapId: MOCK_SNAP_ID,
@@ -1110,7 +1110,7 @@ describe('CronjobController', () => {
 
       jest.advanceTimersByTime(inMilliseconds(1, Duration.Day));
 
-      expect(rootMessenger.call).toHaveBeenCalledWith(
+      expect(controllerMessenger.call).toHaveBeenCalledWith(
         'SnapController:handleRequest',
         {
           snapId: MOCK_SNAP_ID,

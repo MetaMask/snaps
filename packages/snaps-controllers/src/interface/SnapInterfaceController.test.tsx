@@ -1,4 +1,4 @@
-import { getPersistentState } from '@metamask/base-controller';
+import { getPersistentState } from '@metamask/base-controller/next';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
   form,

@@ -1,10 +1,11 @@
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   ActionConstraint,
   EventConstraint,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/base-controller';
-import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import type { CryptographicFunctions } from '@metamask/key-tree';
+  NamespacedName,
+} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -106,7 +107,11 @@ export type InstalledSnap = {
   snapId: SnapId;
   store: Store;
   executionService: InstanceType<typeof AbstractExecutionService>;
-  controllerMessenger: Messenger<ActionConstraint, EventConstraint>;
+  controllerMessenger: Messenger<
+    NamespacedName,
+    ActionConstraint,
+    EventConstraint
+  >;
   runSaga: RunSagaFunction;
 };
 
@@ -348,7 +353,9 @@ export async function installSnap<
   // Create Redux store.
   const { store, runSaga } = createStore(options);
 
-  const controllerMessenger = new Messenger<any, any>();
+  const controllerMessenger = new Messenger<'Root', any, any>({
+    namespace: 'Root',
+  });
 
   registerActions(controllerMessenger, runSaga, options, snapId);
 
@@ -381,10 +388,9 @@ export async function installSnap<
   const ExecutionService = executionService ?? NodeThreadExecutionService;
   const service = new ExecutionService({
     ...executionServiceOptions,
-    messenger: controllerMessenger.getRestricted({
-      name: 'ExecutionService',
-      allowedActions: [],
-      allowedEvents: [],
+    messenger: new Messenger({
+      namespace: 'ExecutionService',
+      parent: controllerMessenger,
     }),
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');
@@ -535,12 +541,14 @@ export function registerActions(
   options: SimulationOptions,
   snapId: SnapId,
 ) {
-  controllerMessenger.registerActionHandler(
+  // TODO: Undo the changes in this file once you can unregister/register globally for tests
+
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'PhishingController:testOrigin',
     () => ({ result: false, type: PhishingDetectorResultType.All }),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:getAccountByAddress',
     // @ts-expect-error - This is a partial account with only the necessary
     // data used by the interface controller.
@@ -557,7 +565,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:getSelectedMultichainAccount',
     // @ts-expect-error - This is a partial account with only the necessary
     // data used by the interface controller.
@@ -574,7 +582,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'AccountsController:listMultichainAccounts',
 
     () =>
@@ -585,7 +593,7 @@ export function registerActions(
       ),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'MultichainAssetsController:getState',
     () => ({
       // @ts-expect-error - These are partial assets with only the
@@ -601,7 +609,7 @@ export function registerActions(
     }),
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'ApprovalController:hasRequest',
     (opts) => {
       /**
@@ -625,7 +633,7 @@ export function registerActions(
     },
   );
 
-  controllerMessenger.registerActionHandler(
+  controllerMessenger._internalRegisterDelegatedActionHandler(
     'ApprovalController:acceptRequest',
     async (_id: string, value: unknown) => {
       await runSaga(resolveWithSaga, value).toPromise();
