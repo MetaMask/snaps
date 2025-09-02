@@ -70,10 +70,13 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha512 } from '@noble/hashes/sha512';
 import { File } from 'buffer';
+import { createReadStream } from 'fs';
 import fetchMock from 'jest-fetch-mock';
+import path from 'path';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 import { inc } from 'semver';
+import { Readable } from 'stream';
 
 import {
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
@@ -9953,7 +9956,7 @@ describe('SnapController', () => {
     });
   });
 
-  describe('updateBlockedSnaps', () => {
+  describe('updateRegistry', () => {
     it('updates the registry database', async () => {
       const registry = new MockSnapsRegistry();
       const rootMessenger = getControllerMessenger(registry);
@@ -9967,7 +9970,7 @@ describe('SnapController', () => {
           },
         }),
       );
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       expect(registry.update).toHaveBeenCalled();
 
@@ -10011,7 +10014,7 @@ describe('SnapController', () => {
           reason: { explanation, infoUrl },
         },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // Ensure that CheckSnapBlockListArg is correct
       expect(registry.get).toHaveBeenCalledWith({
@@ -10070,7 +10073,7 @@ describe('SnapController', () => {
       registry.get.mockResolvedValueOnce({
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // The snap is blocked, disabled, and stopped
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10124,7 +10127,7 @@ describe('SnapController', () => {
         [mockSnapA.id]: { status: SnapsRegistryStatus.Unverified },
         [mockSnapB.id]: { status: SnapsRegistryStatus.Unverified },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // A is unblocked, but still disabled
       expect(snapController.get(mockSnapA.id)?.blocked).toBe(false);
@@ -10168,7 +10171,7 @@ describe('SnapController', () => {
         new Promise<unknown>((resolve) => (resolveBlockListPromise = resolve)),
       );
 
-      const updateBlockList = snapController.updateBlockedSnaps();
+      const updateBlockList = snapController.updateRegistry();
 
       // Remove the snap while waiting for the blocklist
       await snapController.removeSnap(mockSnap.id);
@@ -10216,7 +10219,7 @@ describe('SnapController', () => {
       registry.get.mockResolvedValueOnce({
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
-      await snapController.updateBlockedSnaps();
+      await snapController.updateRegistry();
 
       // A is blocked and disabled
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10227,6 +10230,131 @@ describe('SnapController', () => {
         `Encountered error when stopping blocked snap "${mockSnap.id}".`,
         new Error('foo'),
       );
+
+      snapController.destroy();
+    });
+
+    it('updates preinstalled Snaps', async () => {
+      const registry = new MockSnapsRegistry();
+      const rootMessenger = getControllerMessenger(registry);
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      // Simulate previous permissions, some of which will be removed
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => {
+          return {
+            [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+            [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+          };
+        },
+      );
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({
+        id: snapId,
+        preinstalled: true,
+      });
+
+      const updateVersion = '1.2.1';
+
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+      const fetchFunction = jest.fn().mockResolvedValueOnce({
+        // eslint-disable-next-line no-restricted-globals
+        headers: new Headers({ 'content-length': '5477' }),
+        ok: true,
+        body: Readable.toWeb(
+          createReadStream(
+            path.resolve(
+              __dirname,
+              `../../test/fixtures/metamask-jsx-example-snap-${updateVersion}.tgz`,
+            ),
+          ),
+        ),
+      });
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(mockSnap),
+          },
+          fetchFunction,
+          featureFlags: {
+            autoUpdatePreinstalledSnaps: true,
+          },
+        }),
+      );
+
+      await snapController.updateRegistry();
+
+      const updatedSnap = snapController.get(snapId);
+      assert(updatedSnap);
+
+      expect(updatedSnap.version).toStrictEqual(updateVersion);
+      expect(updatedSnap.preinstalled).toBe(true);
+
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:revokePermissions',
+        { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
+      );
+      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+        8,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [{ type: 'rpcOrigin', value: { dapps: true } }],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {},
+          },
+          subject: { origin: snapId },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('does not update preinstalled Snaps when the feature flag is off', async () => {
+      const registry = new MockSnapsRegistry();
+      const rootMessenger = getControllerMessenger(registry);
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({
+        id: snapId,
+        preinstalled: true,
+      });
+
+      const updateVersion = '1.2.1';
+
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(mockSnap),
+          },
+          featureFlags: {
+            autoUpdatePreinstalledSnaps: false,
+          },
+        }),
+      );
+
+      await snapController.updateRegistry();
+
+      const snap = snapController.get(snapId);
+      assert(snap);
+
+      expect(snap.version).toStrictEqual(mockSnap.version);
+      expect(registry.resolveVersion).not.toHaveBeenCalled();
 
       snapController.destroy();
     });
@@ -11521,8 +11649,8 @@ describe('SnapController', () => {
     });
   });
 
-  describe('SnapController:updateBlockedSnaps', () => {
-    it('calls SnapController.updateBlockedSnaps()', async () => {
+  describe('SnapController:updateRegistry', () => {
+    it('calls SnapController.updateRegistry()', async () => {
       const messenger = getSnapControllerMessenger();
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11530,12 +11658,12 @@ describe('SnapController', () => {
         }),
       );
 
-      const updateBlockedSnapsSpy = jest
-        .spyOn(snapController, 'updateBlockedSnaps')
+      const updateRegistrySpy = jest
+        .spyOn(snapController, 'updateRegistry')
         .mockImplementation();
 
-      await messenger.call('SnapController:updateBlockedSnaps');
-      expect(updateBlockedSnapsSpy).toHaveBeenCalledTimes(1);
+      await messenger.call('SnapController:updateRegistry');
+      expect(updateRegistrySpy).toHaveBeenCalledTimes(1);
 
       snapController.destroy();
     });
