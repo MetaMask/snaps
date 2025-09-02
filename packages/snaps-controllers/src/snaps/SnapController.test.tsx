@@ -10319,6 +10319,45 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('does not update preinstalled Snaps when the feature flag is off', async () => {
+      const registry = new MockSnapsRegistry();
+      const rootMessenger = getControllerMessenger(registry);
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({
+        id: snapId,
+        preinstalled: true,
+      });
+
+      const updateVersion = '1.2.1';
+
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(mockSnap),
+          },
+          featureFlags: {
+            autoUpdatePreinstalledSnaps: false,
+          },
+        }),
+      );
+
+      await snapController.updateRegistry();
+
+      const snap = snapController.get(snapId);
+      assert(snap);
+
+      expect(snap.version).toStrictEqual(mockSnap.version);
+      expect(registry.resolveVersion).not.toHaveBeenCalled();
+
+      snapController.destroy();
+    });
   });
 
   describe('clearState', () => {
