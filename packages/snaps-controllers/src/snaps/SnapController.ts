@@ -85,7 +85,6 @@ import {
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
-  DEFAULT_REQUESTED_SNAP_VERSION,
   encodeAuxiliaryFile,
   HandlerType,
   isOriginAllowed,
@@ -132,7 +131,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
   createDeferredPromise,
@@ -2653,7 +2651,7 @@ export class SnapController extends BaseController<
           pendingInstalls.push(snapId);
         }
 
-        result[snapId] = await this.processRequestedSnap(
+        result[snapId] = await this.#processRequestedSnap(
           origin,
           snapId,
           location,
@@ -2707,10 +2705,7 @@ export class SnapController extends BaseController<
    * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private async processRequestedSnap(
+  async #processRequestedSnap(
     origin: string,
     snapId: SnapId,
     location: SnapLocation,
@@ -2724,18 +2719,12 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      return await this.updateSnap(
+      return await this.#updateSnap({
         origin,
         snapId,
         location,
         versionRange,
-        // Since we are requesting an update from within processRequestedSnap,
-        // we disable the emitting of the snapUpdated event and rely on the caller
-        // to publish this event after the update is complete.
-        // This is necessary as installSnaps may be installing multiple snaps
-        // and we don't want to emit events prematurely.
-        false,
-      );
+      });
     }
 
     this.#assertCanInstallSnaps();
@@ -2771,7 +2760,7 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.authorize(snapId, pendingApproval);
+      await this.#authorize(snapId, pendingApproval);
 
       pendingApproval = this.#createApproval({
         origin,
@@ -2870,20 +2859,24 @@ export class SnapController extends BaseController<
    * If the original version of the snap was blocked and the update succeeded,
    * the snap will be unblocked and enabled before it is restarted.
    *
-   * @param origin - The origin requesting the snap update.
-   * @param snapId - The id of the Snap to be updated.
-   * @param location - The location implementation of the snap.
-   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
-   * @param emitEvent - An optional boolean flag to indicate whether this update should emit an event.
+   * @param options - An options bag.
+   * @param options.origin - The origin requesting the snap update.
+   * @param options.snapId - The id of the Snap to be updated.
+   * @param options.location - The location implementation of the snap.
+   * @param options.versionRange - A semver version range in which the maximum version will be chosen.
    * @returns The snap metadata if updated, `null` otherwise.
    */
-  async updateSnap(
-    origin: string,
-    snapId: SnapId,
-    location: SnapLocation,
-    newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-    emitEvent = true,
-  ): Promise<TruncatedSnap> {
+  async #updateSnap({
+    origin,
+    snapId,
+    location,
+    versionRange,
+  }: {
+    origin: string;
+    snapId: SnapId;
+    location: SnapLocation;
+    versionRange: SemVerRange;
+  }): Promise<TruncatedSnap> {
     this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
 
@@ -2891,12 +2884,6 @@ export class SnapController extends BaseController<
 
     if (snap.preinstalled) {
       throw new Error('Preinstalled Snaps cannot be manually updated.');
-    }
-
-    if (!isValidSemVerRange(newVersionRange)) {
-      throw new Error(
-        `Received invalid snap version range: "${newVersionRange}".`,
-      );
     }
 
     let pendingApproval = this.#createApproval({
@@ -2923,13 +2910,13 @@ export class SnapController extends BaseController<
       const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
         throw rpcErrors.invalidParams(
-          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
+          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
         );
       }
 
-      if (!satisfiesVersionRange(newVersion, newVersionRange)) {
+      if (!satisfiesVersionRange(newVersion, versionRange)) {
         throw new Error(
-          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}".`,
+          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${versionRange}".`,
         );
       }
 
@@ -3029,16 +3016,6 @@ export class SnapController extends BaseController<
       }
 
       const truncatedSnap = this.getTruncatedExpect(snapId);
-
-      if (emitEvent) {
-        this.messagingSystem.publish(
-          'SnapController:snapUpdated',
-          truncatedSnap,
-          snap.version,
-          origin,
-          false,
-        );
-      }
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
@@ -3425,14 +3402,11 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
-   * This function is not hash private yet because of tests.
-   *
    * @param snapId - The id of the Snap.
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  private async authorize(
+  async #authorize(
     snapId: SnapId,
     pendingApproval: PendingApproval,
   ): Promise<void> {
