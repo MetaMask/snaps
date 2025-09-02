@@ -10272,7 +10272,7 @@ describe('SnapController', () => {
             ),
           ),
         ),
-      } as any);
+      });
 
       const snapController = getSnapController(
         getSnapControllerOptions({
