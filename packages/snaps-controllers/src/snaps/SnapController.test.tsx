@@ -10281,6 +10281,9 @@ describe('SnapController', () => {
             snaps: getPersistedSnapsState(mockSnap),
           },
           fetchFunction,
+          featureFlags: {
+            autoUpdatePreinstalledSnaps: true,
+          },
         }),
       );
 

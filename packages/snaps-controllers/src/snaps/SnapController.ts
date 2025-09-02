@@ -716,6 +716,12 @@ type FeatureFlags = {
    * any production builds (including beta and Flask).
    */
   forcePreinstalledSnaps?: boolean;
+
+  /**
+   * Automatically update preinstalled Snaps "over the air",
+   * when a new version of the Snap is added to the registry.
+   */
+  autoUpdatePreinstalledSnaps?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -1490,6 +1496,10 @@ export class SnapController extends BaseController<
         return this.#unblockSnap(snapId as SnapId);
       }),
     );
+
+    if (!this.#featureFlags.autoUpdatePreinstalledSnaps) {
+      return;
+    }
 
     const preinstalledVersionRange = '*' as SemVerRange;
 
