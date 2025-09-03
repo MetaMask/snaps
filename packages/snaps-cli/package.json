@@ -70,7 +70,7 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/snaps-webpack-plugin": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.5.0",
+    "@metamask/utils": "^11.7.0",
     "@swc/core": "1.11.31",
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
