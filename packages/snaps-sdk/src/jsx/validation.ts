@@ -620,7 +620,7 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
         return string();
       }
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      return lazy(() => ItalicStruct) as unknown as Struct<
+      return ItalicStruct as unknown as Struct<
         SnapElement<JsonObject, 'Italic'>
       >;
     }),
@@ -637,9 +637,7 @@ export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
         return string();
       }
 
-      return lazy(() => BoldStruct) as unknown as Struct<
-        SnapElement<JsonObject, 'Bold'>
-      >;
+      return BoldStruct as unknown as Struct<SnapElement<JsonObject, 'Bold'>>;
     }),
   ]),
 });

@@ -69,14 +69,6 @@ describe('typedUnion', () => {
     BoxStruct,
     typedUnion([TextStruct, FieldStruct]),
   ]);
-  const stringUnion = nullUnion([
-    string(),
-    typedUnion([TextStruct, BoldStruct]),
-  ]);
-  const nonTypedObjectUnion = nullUnion([
-    typedUnion([TextStruct, BoldStruct]),
-    object({ type: literal('bar') }),
-  ]);
 
   it('validates strictly the part of the union that matches the type', () => {
     // @ts-expect-error Invalid props.
@@ -97,6 +89,11 @@ describe('typedUnion', () => {
   });
 
   it('validates when nested in a union including primitives', () => {
+    const stringUnion = nullUnion([
+      string(),
+      typedUnion([TextStruct, BoldStruct]),
+    ]);
+
     // @ts-expect-error Invalid props.
     const result = validate(Text({}), stringUnion);
 
@@ -106,6 +103,11 @@ describe('typedUnion', () => {
   });
 
   it('validates when nested in a union including non-typed objects', () => {
+    const nonTypedObjectUnion = nullUnion([
+      typedUnion([TextStruct, BoldStruct]),
+      object({ type: literal('bar') }),
+    ]);
+
     const result = validate({ type: 'abc' }, nonTypedObjectUnion);
 
     expect(result[0]?.message).toBe(
