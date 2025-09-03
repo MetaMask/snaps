@@ -8,6 +8,7 @@ import {
   any,
 } from '@metamask/superstruct';
 
+import { nullUnion } from './jsx';
 import {
   enumValue,
   literal,
@@ -18,6 +19,7 @@ import {
 import type { BoxElement } from '../jsx';
 import { Footer, Icon, Text, Button, Box } from '../jsx';
 import {
+  BoldStruct,
   BoxStruct,
   FieldStruct,
   FooterStruct,
@@ -83,6 +85,33 @@ describe('typedUnion', () => {
 
     expect(result[0]?.message).toBe(
       'At path: props.children -- Expected type to be one of: "Bold", "Italic", "Link", "Icon", "Skeleton", but received: undefined',
+    );
+  });
+
+  it('validates when nested in a union including primitives', () => {
+    const stringUnion = nullUnion([
+      string(),
+      typedUnion([TextStruct, BoldStruct]),
+    ]);
+
+    // @ts-expect-error Invalid props.
+    const result = validate(Text({}), stringUnion);
+
+    expect(result[0]?.message).toBe(
+      'Expected the value to satisfy a union of `string | union`, but received: [object Object]',
+    );
+  });
+
+  it('validates when nested in a union including non-typed objects', () => {
+    const nonTypedObjectUnion = nullUnion([
+      typedUnion([TextStruct, BoldStruct]),
+      object({ type: literal('bar') }),
+    ]);
+
+    const result = validate({ type: 'abc' }, nonTypedObjectUnion);
+
+    expect(result[0]?.message).toBe(
+      'Expected the value to satisfy a union of `union | object`, but received: [object Object]',
     );
   });
 
