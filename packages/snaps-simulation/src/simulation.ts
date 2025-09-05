@@ -3,9 +3,10 @@ import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   ActionConstraint,
   EventConstraint,
+  MockAnyNamespace,
   NamespacedName,
 } from '@metamask/messenger';
-import { Messenger } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -358,8 +359,8 @@ export async function installSnap<
   // Create Redux store.
   const { store, runSaga } = createStore(options);
 
-  const controllerMessenger = new Messenger<'Root', any, any>({
-    namespace: 'Root',
+  const controllerMessenger = new Messenger<MockAnyNamespace, any, any>({
+    namespace: MOCK_ANY_NAMESPACE,
   });
 
   registerActions(controllerMessenger, runSaga, options, snapId);
