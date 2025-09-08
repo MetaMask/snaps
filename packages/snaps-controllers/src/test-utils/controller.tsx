@@ -879,6 +879,8 @@ export const getRestrictedSnapInsightsControllerMessenger = (
     messenger: controllerMessenger,
   });
 
+  jest.spyOn(controllerMessenger, 'call');
+
   return controllerMessenger;
 };
 
