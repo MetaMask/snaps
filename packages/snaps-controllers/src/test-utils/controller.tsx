@@ -919,7 +919,7 @@ export const getRestrictedMultichainRouterMessenger = (
 ) => {
   const controllerMessenger = new Messenger<
     'MultichainRouter',
-    MultichainRouterAllowedActions,
+    MultichainRouterActions | MultichainRouterAllowedActions,
     never,
     any
   >({ namespace: 'MultichainRouter', parent: messenger });
@@ -933,6 +933,8 @@ export const getRestrictedMultichainRouterMessenger = (
     ],
     messenger: controllerMessenger,
   });
+
+  jest.spyOn(controllerMessenger, 'call');
 
   return controllerMessenger;
 };

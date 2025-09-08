@@ -4,6 +4,8 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { CaipAccountId, CaipChainId, Json } from '@metamask/utils';
 
+import type { WithSnapKeyringFunction } from '@metamask/snaps-controllers';
+
 export const BTC_CAIP2 =
   'bip122:000000000019d6689c085ae165831e93' as CaipChainId;
 export const BTC_CONNECTED_ACCOUNTS = [
@@ -28,6 +30,7 @@ export const MOCK_BTC_ACCOUNTS = [
     methods: ['sendBitcoin'],
     options: { index: 0, scope: BTC_CAIP2 },
     type: 'bip122:p2wpkh',
+    scopes: [],
   },
 ];
 
@@ -55,6 +58,7 @@ export const MOCK_SOLANA_ACCOUNTS = [
     methods: ['signAndSendTransaction'],
     options: { index: 0, scope: SOLANA_CAIP2 },
     type: 'solana:data-account',
+    scopes: [],
   },
 ];
 
@@ -99,14 +103,14 @@ type MockOperationCallback = ({
   keyring,
 }: {
   keyring: MockSnapKeyring;
-}) => Promise<Json>;
+}) => Promise<any>;
 
 export const getMockWithSnapKeyring = (
   { submitRequest = jest.fn(), resolveAccountAddress = jest.fn() } = {
     submitRequest: jest.fn(),
     resolveAccountAddress: jest.fn(),
   },
-) => {
+): WithSnapKeyringFunction => {
   return async (callback: MockOperationCallback) =>
     callback({
       keyring: {
