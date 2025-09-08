@@ -4,7 +4,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import type { CaipAccountId, CaipChainId, Json } from '@metamask/utils';
 
-import type { WithSnapKeyringFunction } from '@metamask/snaps-controllers';
+import type { WithSnapKeyringFunction } from '../multichain';
 
 export const BTC_CAIP2 =
   'bip122:000000000019d6689c085ae165831e93' as CaipChainId;
