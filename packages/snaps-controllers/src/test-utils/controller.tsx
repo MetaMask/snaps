@@ -832,6 +832,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     });
   }
 
+  jest.spyOn(snapInterfaceControllerMessenger, 'call');
+
   return snapInterfaceControllerMessenger;
 };
 
