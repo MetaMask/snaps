@@ -1,16 +1,17 @@
-import { getPersistentState } from '@metamask/base-controller';
+import { getPersistentState } from '@metamask/base-controller/next';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
+  ContentType,
   form,
   image,
   input,
   panel,
   text,
-  ContentType,
 } from '@metamask/snaps-sdk';
 import {
-  AssetSelector,
   AccountSelector,
+  AssetSelector,
   Box,
   Field,
   FileInput,
@@ -28,10 +29,10 @@ import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
 import { SnapInterfaceController } from './SnapInterfaceController';
 import {
-  MOCK_ACCOUNT_ID,
-  MockApprovalController,
   getRestrictedSnapInterfaceControllerMessenger,
   getRootSnapInterfaceControllerMessenger,
+  MOCK_ACCOUNT_ID,
+  MockApprovalController,
 } from '../test-utils';
 
 jest.mock('@metamask/snaps-utils', () => ({
@@ -147,8 +148,8 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -183,8 +184,8 @@ describe('SnapInterfaceController', () => {
         components,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        2,
         'MultichainAssetsController:getState',
       );
 
@@ -238,8 +239,8 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -280,8 +281,8 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'AccountsController:getSelectedMultichainAccount',
       );
 
@@ -356,13 +357,13 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'AccountsController:getSelectedMultichainAccount',
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        2,
         'AccountsController:listMultichainAccounts',
       );
 
@@ -433,13 +434,13 @@ describe('SnapInterfaceController', () => {
         id,
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'AccountsController:getSelectedMultichainAccount',
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        2,
         'AccountsController:listMultichainAccounts',
       );
 
@@ -566,7 +567,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' }),
+        () => ({ result: true, type: PhishingDetectorResultType.All }),
       );
 
       // eslint-disable-next-line no-new
@@ -590,8 +591,8 @@ describe('SnapInterfaceController', () => {
         ),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -606,7 +607,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' }),
+        () => ({ result: true, type: PhishingDetectorResultType.All }),
       );
 
       // eslint-disable-next-line no-new
@@ -630,8 +631,8 @@ describe('SnapInterfaceController', () => {
         ),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -672,8 +673,8 @@ describe('SnapInterfaceController', () => {
         'Invalid URL: The Snap being navigated to is not installed.',
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'SnapController:get',
         MOCK_SNAP_ID,
       );
@@ -688,7 +689,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' }),
+        () => ({ result: true, type: PhishingDetectorResultType.All }),
       );
 
       rootMessenger.registerActionHandler(
@@ -730,8 +731,8 @@ describe('SnapInterfaceController', () => {
         'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        2,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'AccountsController:getAccountByAddress',
         '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
@@ -1103,7 +1104,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' }),
+        () => ({ result: true, type: PhishingDetectorResultType.All }),
       );
 
       // eslint-disable-next-line no-new
@@ -1139,8 +1140,8 @@ describe('SnapInterfaceController', () => {
         ),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );
@@ -1155,7 +1156,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' }),
+        () => ({ result: true, type: PhishingDetectorResultType.All }),
       );
 
       // eslint-disable-next-line no-new
@@ -1195,8 +1196,8 @@ describe('SnapInterfaceController', () => {
         ),
       ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
-        3,
+      expect(controllerMessenger.call).toHaveBeenNthCalledWith(
+        1,
         'PhishingController:testOrigin',
         'https://foo.bar/',
       );

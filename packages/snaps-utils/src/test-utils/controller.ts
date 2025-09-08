@@ -2,13 +2,18 @@ import type {
   ActionConstraint,
   ActionHandler,
   EventConstraint,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/base-controller';
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 export class MockControllerMessenger<
   Action extends ActionConstraint,
   Event extends EventConstraint,
-> extends Messenger<Action, Event> {
+> extends Messenger<MockAnyNamespace, Action, Event> {
+  constructor() {
+    super({ namespace: MOCK_ANY_NAMESPACE });
+  }
+
   /**
    * Registers an action handler for the given action type. If an action handler
    * already exists for the given action type, it will be overwritten.

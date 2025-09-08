@@ -1,39 +1,39 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
-import type { Messenger, RestrictedMessenger } from '@metamask/base-controller';
 import {
-  encryptWithKey,
   decryptWithKey,
-  keyFromPassword,
-  importKey,
+  encryptWithKey,
   exportKey,
   generateSalt,
+  importKey,
   isVaultUpdated,
+  keyFromPassword,
 } from '@metamask/browser-passworder';
+import { Messenger } from '@metamask/messenger';
 import type {
+  Caveat,
   PermissionConstraint,
+  SubjectMetadata,
   SubjectPermissions,
   ValidPermission,
-  Caveat,
-  SubjectMetadata,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { text } from '@metamask/snaps-sdk';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
-  MockControllerMessenger,
   getPersistedSnapObject,
-  getTruncatedSnap,
+  getSnapObject,
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
+  MockControllerMessenger,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
-  getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
@@ -59,7 +59,6 @@ import type {
   MultichainRouterAllowedActions,
   MultichainRouterEvents,
 } from '../multichain';
-import { SnapController } from '../snaps';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -70,6 +69,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
+import { SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -412,10 +412,6 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     asyncNoOp,
   );
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
-  messenger.registerActionHandler(
-    'ExecutionService:terminateAllSnaps',
-    asyncNoOp,
-  );
 
   messenger.registerActionHandler(
     'SnapsRegistry:get',
@@ -446,9 +442,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
       if (id !== MOCK_INTERFACE_ID) {
         throw new Error(`Interface with id '${id}' not found.`);
       }
+
       return {
         snapId,
-        content: text('foo bar'),
+        content: <Text>console.log('hello world');</Text>,
         state: {},
         context: null,
       } as StoredInterface;
@@ -465,31 +462,21 @@ export const getSnapControllerMessenger = (
     typeof getControllerMessenger
   > = getControllerMessenger(),
 ) => {
-  const snapControllerMessenger = messenger.getRestricted<
+  const snapControllerMessenger = new Messenger<
     'SnapController',
-    SnapControllerActions['type'] | AllowedActions['type'],
-    SnapControllerEvents['type'] | AllowedEvents['type']
+    SnapControllerActions | AllowedActions,
+    SnapControllerEvents | AllowedEvents,
+    any
   >({
-    name: 'SnapController',
-    allowedEvents: [
-      'ExecutionService:unhandledError',
-      'ExecutionService:outboundRequest',
-      'ExecutionService:outboundResponse',
-      'SnapController:snapAdded',
-      'SnapController:snapBlocked',
-      'SnapController:snapInstalled',
-      'SnapController:snapUninstalled',
-      'SnapController:snapUnblocked',
-      'SnapController:snapUpdated',
-      'SnapController:stateChange',
-      'SnapController:snapRolledback',
-      'KeyringController:lock',
-    ],
-    allowedActions: [
+    namespace: 'SnapController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:updateRequestState',
       'ExecutionService:executeSnap',
-      'ExecutionService:terminateAllSnaps',
       'ExecutionService:terminateSnap',
       'ExecutionService:handleRpcRequest',
       'NetworkController:getNetworkClientById',
@@ -503,37 +490,23 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissionForAllSubjects',
       'PermissionController:updateCaveat',
       'PermissionController:getSubjectNames',
-      'PhishingController:testOrigin',
       'SelectedNetworkController:getNetworkClientIdForDomain',
-      'SnapController:get',
-      'SnapController:handleRequest',
-      'SnapController:getSnapState',
-      'SnapController:has',
-      'SnapController:updateSnapState',
-      'SnapController:clearSnapState',
-      'SnapController:updateBlockedSnaps',
-      'SnapController:enable',
-      'SnapController:disable',
-      'SnapController:remove',
-      'SnapController:getAll',
-      'SnapController:getRunnableSnaps',
-      'SnapController:getPermitted',
-      'SnapController:install',
-      'SnapController:incrementActiveReferences',
-      'SnapController:decrementActiveReferences',
-      'SnapController:getRegistryMetadata',
       'SubjectMetadataController:getSubjectMetadata',
       'SubjectMetadataController:addSubjectMetadata',
       'SnapsRegistry:get',
       'SnapsRegistry:getMetadata',
       'SnapsRegistry:update',
-      'SnapController:disconnectOrigin',
-      'SnapController:revokeDynamicPermissions',
-      'SnapController:getFile',
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
     ],
+    events: [
+      'ExecutionService:unhandledError',
+      'ExecutionService:outboundRequest',
+      'ExecutionService:outboundResponse',
+      'KeyringController:lock',
+    ],
+    messenger: snapControllerMessenger,
   });
 
   jest.spyOn(snapControllerMessenger, 'call');
@@ -650,6 +623,7 @@ export const getSnapControllerWithEES = (
   service?: ReturnType<typeof getNodeEES>,
 ) => {
   const _service =
+    // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
   const controller = new SnapController(options);
@@ -685,28 +659,30 @@ export const getRestrictedCronjobControllerMessenger = (
   > = getRootCronjobControllerMessenger(),
   mocked = true,
 ) => {
-  const cronjobControllerMessenger = messenger.getRestricted<
+  const cronjobControllerMessenger = new Messenger<
     'CronjobController',
-    CronjobControllerActions['type'] | AllowedActions['type'],
-    CronjobControllerEvents['type'] | AllowedEvents['type']
+    CronjobControllerActions | AllowedActions,
+    CronjobControllerEvents | AllowedEvents,
+    any
   >({
-    name: 'CronjobController',
-    allowedEvents: [
+    namespace: 'CronjobController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    actions: [
+      'PermissionController:hasPermission',
+      'PermissionController:getPermissions',
+      'SnapController:handleRequest',
+    ],
+    events: [
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapUninstalled',
       'SnapController:snapEnabled',
       'SnapController:snapDisabled',
     ],
-    allowedActions: [
-      'PermissionController:hasPermission',
-      'PermissionController:getPermissions',
-      'SnapController:getAll',
-      'SnapController:handleRequest',
-      'CronjobController:scheduleBackgroundEvent',
-      'CronjobController:cancelBackgroundEvent',
-      'CronjobController:getBackgroundEvents',
-    ],
+    messenger: cronjobControllerMessenger,
   });
 
   if (mocked) {
@@ -724,12 +700,10 @@ export const getRestrictedCronjobControllerMessenger = (
       },
     );
 
-    messenger.registerActionHandler('SnapController:getAll', () => {
-      return [getTruncatedSnap()];
-    });
-
     messenger.registerActionHandler('SnapController:handleRequest', asyncNoOp);
   }
+
+  jest.spyOn(cronjobControllerMessenger, 'call');
 
   return cronjobControllerMessenger;
 };
@@ -751,22 +725,12 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
     typeof getRootSnapsRegistryControllerMessenger
   > = getRootSnapsRegistryControllerMessenger(),
 ) => {
-  const controllerMessenger = messenger.getRestricted<
+  return new Messenger<
     'SnapsRegistry',
-    SnapsRegistryActions['type'],
-    SnapsRegistryEvents['type']
-  >({
-    name: 'SnapsRegistry',
-    allowedEvents: [],
-    allowedActions: [
-      'SnapsRegistry:get',
-      'SnapsRegistry:getMetadata',
-      'SnapsRegistry:update',
-      'SnapsRegistry:resolveVersion',
-    ],
-  });
-
-  return controllerMessenger;
+    SnapsRegistryActions,
+    SnapsRegistryEvents,
+    any
+  >({ namespace: 'SnapsRegistry', parent: messenger });
 };
 
 // Mock controller messenger for Interface Controller
@@ -787,13 +751,15 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   > = getRootSnapInterfaceControllerMessenger(),
   mocked = true,
 ) => {
-  const snapInterfaceControllerMessenger = messenger.getRestricted<
+  const snapInterfaceControllerMessenger = new Messenger<
     'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions['type'],
-    SnapInterfaceControllerEvents['type']
-  >({
-    name: 'SnapInterfaceController',
-    allowedActions: [
+    SnapInterfaceControllerAllowedActions,
+    SnapInterfaceControllerEvents,
+    any
+  >({ namespace: 'SnapInterfaceController', parent: messenger });
+
+  messenger.delegate({
+    actions: [
       'PhishingController:testOrigin',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
@@ -803,16 +769,14 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
     ],
-    allowedEvents: [
-      'NotificationServicesController:notificationsListUpdated',
-      'SnapInterfaceController:stateChange',
-    ],
+    events: ['NotificationServicesController:notificationsListUpdated'],
+    messenger: snapInterfaceControllerMessenger,
   });
 
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: 'all',
+      type: PhishingDetectorResultType.All,
     }));
 
     messenger.registerActionHandler(
@@ -868,6 +832,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     });
   }
 
+  jest.spyOn(snapInterfaceControllerMessenger, 'call');
+
   return snapInterfaceControllerMessenger;
 };
 
@@ -888,24 +854,32 @@ export const getRestrictedSnapInsightsControllerMessenger = (
     typeof getRootSnapInsightsControllerMessenger
   > = getRootSnapInsightsControllerMessenger(),
 ) => {
-  const controllerMessenger = messenger.getRestricted<
+  const controllerMessenger = new Messenger<
     'SnapInsightsController',
-    SnapInsightsControllerAllowedActions['type'],
-    SnapInsightsControllerAllowedEvents['type']
+    SnapInsightsControllerAllowedActions,
+    SnapInsightsControllerAllowedEvents,
+    any
   >({
-    name: 'SnapInsightsController',
-    allowedEvents: [
-      'TransactionController:unapprovedTransactionAdded',
-      'TransactionController:transactionStatusUpdated',
-      'SignatureController:stateChange',
-    ],
-    allowedActions: [
+    namespace: 'SnapInsightsController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    actions: [
       'PermissionController:getPermissions',
       'SnapController:getAll',
       'SnapController:handleRequest',
       'SnapInterfaceController:deleteInterface',
     ],
+    events: [
+      'TransactionController:unapprovedTransactionAdded',
+      'TransactionController:transactionStatusUpdated',
+      'SignatureController:stateChange',
+    ],
+    messenger: controllerMessenger,
   });
+
+  jest.spyOn(controllerMessenger, 'call');
 
   return controllerMessenger;
 };
@@ -917,15 +891,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
  * @returns A promise that resolves when the state change event is emitted.
  */
 export async function waitForStateChange(
-  messenger:
-    | Messenger<any, SnapControllerStateChangeEvent>
-    | RestrictedMessenger<
-        'SnapController',
-        any,
-        SnapControllerStateChangeEvent,
-        any,
-        'SnapController:stateChange'
-      >,
+  messenger: Messenger<'SnapController', any, SnapControllerStateChangeEvent>,
 ) {
   return new Promise<void>((resolve) => {
     messenger.subscribe('SnapController:stateChange', () => {
@@ -951,19 +917,24 @@ export const getRestrictedMultichainRouterMessenger = (
     typeof getRootMultichainRouterMessenger
   > = getRootMultichainRouterMessenger(),
 ) => {
-  const controllerMessenger = messenger.getRestricted<
+  const controllerMessenger = new Messenger<
     'MultichainRouter',
-    MultichainRouterAllowedActions['type']
-  >({
-    name: 'MultichainRouter',
-    allowedEvents: [],
-    allowedActions: [
+    MultichainRouterActions | MultichainRouterAllowedActions,
+    never,
+    any
+  >({ namespace: 'MultichainRouter', parent: messenger });
+
+  messenger.delegate({
+    actions: [
       'PermissionController:getPermissions',
       'SnapController:getAll',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],
+    messenger: controllerMessenger,
   });
+
+  jest.spyOn(controllerMessenger, 'call');
 
   return controllerMessenger;
 };
@@ -985,19 +956,24 @@ export const getRestrictedWebSocketServiceMessenger = (
     typeof getRootWebSocketServiceMessenger
   > = getRootWebSocketServiceMessenger(),
 ) => {
-  const controllerMessenger = messenger.getRestricted<
+  const controllerMessenger = new Messenger<
     'WebSocketService',
-    WebSocketServiceAllowedActions['type'],
-    WebSocketServiceEvents['type']
-  >({
-    name: 'WebSocketService',
-    allowedEvents: [
+    WebSocketServiceActions | WebSocketServiceAllowedActions,
+    WebSocketServiceEvents,
+    any
+  >({ namespace: 'WebSocketService', parent: messenger });
+
+  messenger.delegate({
+    actions: ['SnapController:handleRequest'],
+    events: [
       'SnapController:snapInstalled',
       'SnapController:snapUpdated',
       'SnapController:snapUninstalled',
     ],
-    allowedActions: ['SnapController:handleRequest'],
+    messenger: controllerMessenger,
   });
+
+  jest.spyOn(controllerMessenger, 'call');
 
   return controllerMessenger;
 };

@@ -74,6 +74,7 @@
     "@jest/types": "^29.6.3",
     "@lavamoat/allow-scripts": "^3.3.5",
     "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/phishing-controller": "^13.1.0",
     "@metamask/snaps-utils": "workspace:^",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",

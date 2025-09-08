@@ -5,6 +5,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import { MultichainRouter } from './MultichainRouter';
+import { METAMASK_ORIGIN } from '../snaps/constants';
 import {
   getRootMultichainRouterMessenger,
   getRestrictedMultichainRouterMessenger,
@@ -51,9 +52,12 @@ describe('MultichainRouter', () => {
       );
 
       const result = await messenger.call('MultichainRouter:handleRequest', {
+        origin: METAMASK_ORIGIN,
         connectedAddresses: BTC_CONNECTED_ACCOUNTS,
         scope: BTC_CAIP2,
         request: {
+          jsonrpc: '2.0',
+          id: 1,
           method: 'sendBitcoin',
           params: {
             message: 'foo',
@@ -102,9 +106,12 @@ describe('MultichainRouter', () => {
       );
 
       const result = await messenger.call('MultichainRouter:handleRequest', {
+        origin: METAMASK_ORIGIN,
         connectedAddresses: SOLANA_CONNECTED_ACCOUNTS,
         scope: SOLANA_CAIP2,
         request: {
+          jsonrpc: '2.0',
+          id: 1,
           method: 'signAndSendTransaction',
           params: {
             message: 'foo',
@@ -149,10 +156,12 @@ describe('MultichainRouter', () => {
       );
 
       const result = await messenger.call('MultichainRouter:handleRequest', {
+        origin: METAMASK_ORIGIN,
         connectedAddresses: [],
         scope: SOLANA_CAIP2,
-        origin: 'metamask',
         request: {
+          jsonrpc: '2.0',
+          id: 1,
           method: 'getVersion',
         },
       });
@@ -162,7 +171,7 @@ describe('MultichainRouter', () => {
         'solana-core': '1.16.7',
       });
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      expect(messenger.call).toHaveBeenNthCalledWith(
         5,
         'SnapController:handleRequest',
         {
@@ -173,7 +182,7 @@ describe('MultichainRouter', () => {
             method: '',
             params: {
               request: {
-                id: expect.any(String),
+                id: 1,
                 jsonrpc: '2.0',
                 method: 'getVersion',
               },
@@ -206,9 +215,12 @@ describe('MultichainRouter', () => {
 
       await expect(
         messenger.call('MultichainRouter:handleRequest', {
+          origin: METAMASK_ORIGIN,
           connectedAddresses: [],
           scope: SOLANA_CAIP2,
           request: {
+            jsonrpc: '2.0',
+            id: 1,
             method: 'getVersion',
           },
         }),
@@ -241,9 +253,12 @@ describe('MultichainRouter', () => {
 
       await expect(
         messenger.call('MultichainRouter:handleRequest', {
+          origin: METAMASK_ORIGIN,
           connectedAddresses: SOLANA_CONNECTED_ACCOUNTS,
           scope: SOLANA_CAIP2,
           request: {
+            jsonrpc: '2.0',
+            id: 1,
             method: 'signAndSendTransaction',
             params: {
               message: 'foo',
@@ -282,9 +297,12 @@ describe('MultichainRouter', () => {
 
       await expect(
         messenger.call('MultichainRouter:handleRequest', {
+          origin: METAMASK_ORIGIN,
           connectedAddresses: SOLANA_CONNECTED_ACCOUNTS,
           scope: SOLANA_CAIP2,
           request: {
+            jsonrpc: '2.0',
+            id: 1,
             method: 'signAndSendTransaction',
             params: {
               message: 'foo',
@@ -322,9 +340,12 @@ describe('MultichainRouter', () => {
 
       await expect(
         messenger.call('MultichainRouter:handleRequest', {
+          origin: METAMASK_ORIGIN,
           connectedAddresses: SOLANA_CONNECTED_ACCOUNTS,
           scope: SOLANA_CAIP2,
           request: {
+            jsonrpc: '2.0',
+            id: 1,
             method: 'signAndSendTransaction',
             params: {
               message: 'foo',
