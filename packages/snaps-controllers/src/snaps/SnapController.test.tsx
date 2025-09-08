@@ -10170,12 +10170,13 @@ describe('SnapController', () => {
       expect(updatedSnap.version).toStrictEqual(updateVersion);
       expect(updatedSnap.preinstalled).toBe(true);
 
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+      expect(messenger.call).toHaveBeenNthCalledWith(
         7,
         'PermissionController:revokePermissions',
         { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
       );
-      expect(rootMessenger.call).toHaveBeenNthCalledWith(
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
         8,
         'PermissionController:grantPermissions',
         {

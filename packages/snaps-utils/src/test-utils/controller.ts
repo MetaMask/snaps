@@ -2,16 +2,16 @@ import type {
   ActionConstraint,
   ActionHandler,
   EventConstraint,
-  ExtractEventPayload,
+  MockAnyNamespace,
 } from '@metamask/messenger';
-import { Messenger } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 export class MockControllerMessenger<
   Action extends ActionConstraint,
   Event extends EventConstraint,
-> extends Messenger<'MockMessenger', Action, Event> {
+> extends Messenger<MockAnyNamespace, Action, Event> {
   constructor() {
-    super({ namespace: 'MockMessenger' });
+    super({ namespace: MOCK_ANY_NAMESPACE });
   }
 
   /**
@@ -25,23 +25,7 @@ export class MockControllerMessenger<
     actionType: ActionType,
     handler: ActionHandler<Action, ActionType>,
   ) {
-    // TODO: Undo this once you can unregister/register globally for tests
-    super._internalUnregisterDelegatedActionHandler(actionType);
-    super._internalRegisterDelegatedActionHandler(actionType, handler);
-  }
-
-  unregisterActionHandler<ActionType extends Action['type']>(
-    actionType: ActionType,
-  ) {
-    // TODO: Undo this once you can unregister/register globally for tests
-    super._internalUnregisterDelegatedActionHandler(actionType);
-  }
-
-  publish<EventType extends Event['type']>(
-    eventType: EventType,
-    ...payload: ExtractEventPayload<Event, EventType>
-  ): void {
-    // TODO: Undo this once you can publish globally for tests
-    super._internalPublishDelegated(eventType, ...payload);
+    super.unregisterActionHandler(actionType);
+    super.registerActionHandler(actionType, handler);
   }
 }
