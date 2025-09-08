@@ -142,9 +142,24 @@ export class JsonSnapsRegistry extends BaseController<
     super({
       messenger,
       metadata: {
-        database: { persist: true, anonymous: false },
-        lastUpdated: { persist: true, anonymous: false },
-        databaseUnavailable: { persist: true, anonymous: false },
+        database: {
+          includeInStateLogs: true,
+          persist: true,
+          anonymous: false,
+          usedInUi: true,
+        },
+        lastUpdated: {
+          includeInStateLogs: true,
+          persist: true,
+          anonymous: false,
+          usedInUi: false,
+        },
+        databaseUnavailable: {
+          includeInStateLogs: true,
+          persist: true,
+          anonymous: false,
+          usedInUi: false,
+        },
       },
       name: controllerName,
       state: {

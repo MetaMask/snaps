@@ -1,4 +1,7 @@
-import { getPersistentState } from '@metamask/base-controller';
+import {
+  deriveStateFromMetadata,
+  getPersistentState,
+} from '@metamask/base-controller';
 import { encrypt } from '@metamask/browser-passworder';
 import {
   createAsyncMiddleware,
@@ -72,6 +75,7 @@ import { sha512 } from '@noble/hashes/sha512';
 import { File } from 'buffer';
 import { createReadStream } from 'fs';
 import fetchMock from 'jest-fetch-mock';
+import { pick } from 'lodash';
 import path from 'path';
 import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
@@ -303,80 +307,6 @@ describe('SnapController', () => {
     );
 
     snapController.destroy();
-  });
-
-  it('can rehydrate state', async () => {
-    const id = 'npm:foo' as SnapId;
-    const firstSnapController = getSnapController(
-      getSnapControllerOptions({
-        state: {
-          snaps: getPersistedSnapsState(
-            getPersistedSnapObject({
-              version: '0.0.1',
-              sourceCode: DEFAULT_SNAP_BUNDLE,
-              id,
-              status: SnapStatus.Stopped,
-            }),
-          ),
-        },
-      }),
-    );
-
-    // persist the state somewhere
-    const persistedState = getPersistentState<SnapControllerState>(
-      firstSnapController.state,
-      firstSnapController.metadata,
-    );
-
-    // create a new controller
-    const secondSnapController = getSnapController(
-      getSnapControllerOptions({
-        state: persistedState,
-      }),
-    );
-
-    expect(secondSnapController.isRunning(id)).toBe(false);
-    await secondSnapController.startSnap(id);
-
-    expect(secondSnapController.state.snaps[id]).toBeDefined();
-    expect(secondSnapController.isRunning(id)).toBe(true);
-    firstSnapController.destroy();
-    secondSnapController.destroy();
-  });
-
-  it('does not persist snaps in the installing state', async () => {
-    const firstSnapController = getSnapController(
-      getSnapControllerOptions({
-        state: {
-          snaps: getPersistedSnapsState(
-            getPersistedSnapObject({
-              version: '0.0.1',
-              sourceCode: DEFAULT_SNAP_BUNDLE,
-              status: SnapStatus.Installing,
-            }),
-          ),
-        },
-      }),
-    );
-
-    expect(firstSnapController.state.snaps[MOCK_SNAP_ID]).toBeDefined();
-
-    // persist the state somewhere
-    const persistedState = getPersistentState<SnapControllerState>(
-      firstSnapController.state,
-      firstSnapController.metadata,
-    );
-
-    // create a new controller
-    const secondSnapController = getSnapController(
-      getSnapControllerOptions({
-        state: persistedState,
-      }),
-    );
-
-    expect(secondSnapController.state.snaps[MOCK_SNAP_ID]).toBeUndefined();
-    firstSnapController.destroy();
-    secondSnapController.destroy();
   });
 
   it('handles an error event on the controller messenger', async () => {
@@ -12733,6 +12663,214 @@ describe('SnapController', () => {
       );
 
       snapController.destroy();
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = getSnapController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    describe('includeInStateLogs', () => {
+      it('includes expected state in state logs', () => {
+        const controller = getSnapController();
+
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "snaps": {},
+          }
+        `);
+      });
+
+      it('strips out large state properties', () => {
+        const id = 'npm:foo' as SnapId;
+        const auxiliaryFile = new VirtualFile({
+          path: 'src/foo.json',
+          value: stringToBytes('{ "foo" : "bar" }'),
+        });
+        const controller = getSnapController(
+          getSnapControllerOptions({
+            state: {
+              snaps: getPersistedSnapsState(
+                getPersistedSnapObject({
+                  version: '0.0.1',
+                  sourceCode: DEFAULT_SNAP_BUNDLE,
+                  id,
+                  status: SnapStatus.Stopped,
+                  auxiliaryFiles: [
+                    {
+                      path: auxiliaryFile.path,
+                      value: auxiliaryFile.toString('base64'),
+                    },
+                  ],
+                }),
+              ),
+            },
+          }),
+        );
+        const largeProperties = ['sourceCode', 'auxiliaryFiles'];
+        const originalSnapState = controller.state.snaps[id];
+        const derivedControllerState = deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        );
+        const derivedSnapState =
+          // Lets assume snaps is an object here. If it's not, the snapshot will tell us.
+          (derivedControllerState.snaps as Record<string, Json>)[id];
+        const originalSnapLargeProperties = pick(
+          originalSnapState,
+          largeProperties,
+        );
+        const derivedSnapLargeProperties = pick(
+          derivedSnapState,
+          largeProperties,
+        );
+
+        expect(originalSnapLargeProperties).toMatchInlineSnapshot(`
+          {
+            "auxiliaryFiles": [
+              {
+                "path": "src/foo.json",
+                "value": "eyAiZm9vIiA6ICJiYXIiIH0=",
+              },
+            ],
+            "sourceCode": "
+            module.exports.onRpcRequest = ({ request }) => {
+              console.log("Hello, world!");
+
+              const { method, id } = request;
+              return method + id;
+            };
+          ",
+          }
+        `);
+        expect(derivedSnapLargeProperties).toMatchInlineSnapshot(`{}`);
+      });
+    });
+
+    describe('persist', () => {
+      it('persists expected state', () => {
+        const controller = getSnapController();
+
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "snapStates": {},
+            "snaps": {},
+            "unencryptedSnapStates": {},
+          }
+        `);
+      });
+
+      it('can rehydrate state', async () => {
+        const id = 'npm:foo' as SnapId;
+        const firstSnapController = getSnapController(
+          getSnapControllerOptions({
+            state: {
+              snaps: getPersistedSnapsState(
+                getPersistedSnapObject({
+                  version: '0.0.1',
+                  sourceCode: DEFAULT_SNAP_BUNDLE,
+                  id,
+                  status: SnapStatus.Stopped,
+                }),
+              ),
+            },
+          }),
+        );
+
+        // persist the state somewhere
+        const persistedState = getPersistentState<SnapControllerState>(
+          firstSnapController.state,
+          firstSnapController.metadata,
+        );
+
+        // create a new controller
+        const secondSnapController = getSnapController(
+          getSnapControllerOptions({
+            state: persistedState,
+          }),
+        );
+
+        expect(secondSnapController.isRunning(id)).toBe(false);
+        await secondSnapController.startSnap(id);
+
+        expect(secondSnapController.state.snaps[id]).toBeDefined();
+        expect(secondSnapController.isRunning(id)).toBe(true);
+        firstSnapController.destroy();
+        secondSnapController.destroy();
+      });
+
+      it('does not persist snaps in the installing state', async () => {
+        const firstSnapController = getSnapController(
+          getSnapControllerOptions({
+            state: {
+              snaps: getPersistedSnapsState(
+                getPersistedSnapObject({
+                  version: '0.0.1',
+                  sourceCode: DEFAULT_SNAP_BUNDLE,
+                  status: SnapStatus.Installing,
+                }),
+              ),
+            },
+          }),
+        );
+
+        expect(firstSnapController.state.snaps[MOCK_SNAP_ID]).toBeDefined();
+
+        // persist the state somewhere
+        const persistedState = getPersistentState<SnapControllerState>(
+          firstSnapController.state,
+          firstSnapController.metadata,
+        );
+
+        // create a new controller
+        const secondSnapController = getSnapController(
+          getSnapControllerOptions({
+            state: persistedState,
+          }),
+        );
+
+        expect(secondSnapController.state.snaps[MOCK_SNAP_ID]).toBeUndefined();
+        firstSnapController.destroy();
+        secondSnapController.destroy();
+      });
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = getSnapController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "snaps": {},
+        }
+      `);
     });
   });
 });
