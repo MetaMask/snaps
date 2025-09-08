@@ -65,6 +65,10 @@ export const getNodeEES = (
   });
 
 export class ExecutionEnvironmentStub implements ExecutionService {
+  name: 'ExecutionService' = 'ExecutionService' as const;
+
+  state = null;
+
   constructor(messenger: ReturnType<typeof getNodeEESMessenger>) {
     messenger.registerActionHandler(
       `ExecutionService:handleRpcRequest`,

@@ -1,38 +1,39 @@
 import type { ApprovalRequest } from '@metamask/approval-controller';
 import {
-  encryptWithKey,
   decryptWithKey,
-  keyFromPassword,
-  importKey,
+  encryptWithKey,
   exportKey,
   generateSalt,
+  importKey,
   isVaultUpdated,
+  keyFromPassword,
 } from '@metamask/browser-passworder';
 import { Messenger } from '@metamask/messenger';
 import type {
+  Caveat,
   PermissionConstraint,
+  SubjectMetadata,
   SubjectPermissions,
   ValidPermission,
-  Caveat,
-  SubjectMetadata,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { text } from '@metamask/snaps-sdk';
+import { Text } from '@metamask/snaps-sdk/jsx';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
-  MockControllerMessenger,
   getPersistedSnapObject,
+  getSnapObject,
   MOCK_LOCAL_SNAP_ID,
   MOCK_ORIGIN,
   MOCK_SNAP_ID,
+  MockControllerMessenger,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
-  getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { Json } from '@metamask/utils';
 
@@ -58,7 +59,6 @@ import type {
   MultichainRouterAllowedActions,
   MultichainRouterEvents,
 } from '../multichain';
-import { SnapController } from '../snaps';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -69,6 +69,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
+import { SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -441,9 +442,10 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
       if (id !== MOCK_INTERFACE_ID) {
         throw new Error(`Interface with id '${id}' not found.`);
       }
+
       return {
         snapId,
-        content: text('foo bar'),
+        content: <Text>console.log('hello world');</Text>,
         state: {},
         context: null,
       } as StoredInterface;
@@ -621,6 +623,7 @@ export const getSnapControllerWithEES = (
   service?: ReturnType<typeof getNodeEES>,
 ) => {
   const _service =
+    // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
   const controller = new SnapController(options);
@@ -773,7 +776,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: 'all',
+      type: PhishingDetectorResultType.All,
     }));
 
     messenger.registerActionHandler(
@@ -949,7 +952,7 @@ export const getRestrictedWebSocketServiceMessenger = (
 ) => {
   const controllerMessenger = new Messenger<
     'WebSocketService',
-    WebSocketServiceAllowedActions,
+    WebSocketServiceActions | WebSocketServiceAllowedActions,
     WebSocketServiceEvents,
     any
   >({ namespace: 'WebSocketService', parent: messenger });
@@ -963,6 +966,8 @@ export const getRestrictedWebSocketServiceMessenger = (
     ],
     messenger: controllerMessenger,
   });
+
+  jest.spyOn(controllerMessenger, 'call');
 
   return controllerMessenger;
 };
