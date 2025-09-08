@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/messenger';
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import {
   getSnapManifest,
   MOCK_SNAP_ID,
@@ -15,13 +16,10 @@ import type { RestrictedMiddlewareHooks } from '../simulation';
 import { getMockOptions } from '../test-utils/options';
 
 const MOCK_HOOKS: RestrictedMiddlewareHooks = {
+  getClientCryptography: jest.fn(),
   getMnemonic: jest.fn(),
-  getSnapFile: jest.fn(),
-  createInterface: jest.fn(),
-  updateInterface: jest.fn(),
-  getInterfaceState: jest.fn(),
+  getMnemonicSeed: jest.fn(),
   getIsLocked: jest.fn(),
-  resolveInterface: jest.fn(),
 };
 
 describe('resolve', () => {
@@ -45,7 +43,9 @@ describe('getPermissionSpecifications', () => {
         hooks: MOCK_HOOKS,
         runSaga: jest.fn(),
         options: getMockOptions(),
-        controllerMessenger: new Messenger(),
+        controllerMessenger: new Messenger<MockAnyNamespace>({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       }),
     ).toMatchInlineSnapshot(`
       {
@@ -324,7 +324,9 @@ describe('getPermissionSpecifications', () => {
 describe('getEndowments', () => {
   it('returns the endowments', async () => {
     const controllers = getControllers({
-      controllerMessenger: new Messenger(),
+      controllerMessenger: new Messenger<MockAnyNamespace>({
+        namespace: MOCK_ANY_NAMESPACE,
+      }),
       hooks: MOCK_HOOKS,
       runSaga: jest.fn(),
       options: getMockOptions(),

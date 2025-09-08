@@ -236,7 +236,11 @@ describe('getRestrictedHooks', () => {
 
 describe('getPermittedHooks', () => {
   const { runSaga, store } = createStore(getMockOptions());
-  const controllerMessenger = getRootControllerMessenger();
+  let controllerMessenger = getRootControllerMessenger();
+
+  beforeEach(() => {
+    controllerMessenger = getRootControllerMessenger();
+  });
 
   it('returns the `hasPermission` hook', async () => {
     const { snapId, close } = await getMockServer({

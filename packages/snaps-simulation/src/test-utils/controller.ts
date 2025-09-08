@@ -1,8 +1,6 @@
+import { Messenger } from '@metamask/messenger';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
-import type {
-  SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerEvents,
-} from '@metamask/snaps-controllers';
+import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 
 import type { RootControllerAllowedActions } from '../controllers';
@@ -43,13 +41,19 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     typeof getRootControllerMessenger
   > = getRootControllerMessenger(),
 ) => {
-  const snapInterfaceControllerMessenger = messenger.getRestricted<
+  const controllerMessenger = new Messenger<
     'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions['type'],
-    SnapInterfaceControllerEvents['type']
+    SnapInterfaceControllerAllowedActions,
+    never,
+    any
   >({
-    name: 'SnapInterfaceController',
-    allowedActions: [
+    namespace: 'SnapInterfaceController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'PhishingController:testOrigin',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
@@ -58,8 +62,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'AccountsController:listMultichainAccounts',
       'MultichainAssetsController:getState',
     ],
-    allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
+    events: ['NotificationServicesController:notificationsListUpdated'],
   });
 
-  return snapInterfaceControllerMessenger;
+  return controllerMessenger;
 };
