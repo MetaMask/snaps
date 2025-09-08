@@ -86,8 +86,8 @@ describe('SnapInsightsController', () => {
       },
     });
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(5);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -104,7 +104,7 @@ describe('SnapInsightsController', () => {
         },
       },
     );
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
@@ -133,8 +133,8 @@ describe('SnapInsightsController', () => {
     });
 
     expect(Object.values(controller.state.insights)).toHaveLength(0);
-    expect(rootMessenger.call).toHaveBeenCalledTimes(6);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(6);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       6,
       'SnapInterfaceController:deleteInterface',
       expect.any(String),
@@ -211,8 +211,8 @@ describe('SnapInsightsController', () => {
       },
     });
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(5);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -233,7 +233,7 @@ describe('SnapInsightsController', () => {
         },
       },
     );
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
@@ -268,8 +268,8 @@ describe('SnapInsightsController', () => {
     );
 
     expect(Object.values(controller.state.insights)).toHaveLength(0);
-    expect(rootMessenger.call).toHaveBeenCalledTimes(6);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(6);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       6,
       'SnapInterfaceController:deleteInterface',
       expect.any(String),
@@ -336,8 +336,8 @@ describe('SnapInsightsController', () => {
       },
     });
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(5);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -357,7 +357,7 @@ describe('SnapInsightsController', () => {
         },
       },
     );
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
@@ -450,7 +450,7 @@ describe('SnapInsightsController', () => {
       },
     });
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(8);
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(8);
   });
 
   it('ignores insight if transaction has already been signed', async () => {
@@ -510,8 +510,8 @@ describe('SnapInsightsController', () => {
 
     expect(Object.values(controller.state.insights)).toHaveLength(0);
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(5);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -528,7 +528,7 @@ describe('SnapInsightsController', () => {
         },
       },
     );
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
@@ -608,8 +608,8 @@ describe('SnapInsightsController', () => {
 
     expect(Object.values(controller.state.insights)).toHaveLength(0);
 
-    expect(rootMessenger.call).toHaveBeenCalledTimes(5);
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenCalledTimes(5);
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -629,7 +629,7 @@ describe('SnapInsightsController', () => {
         },
       },
     );
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {
