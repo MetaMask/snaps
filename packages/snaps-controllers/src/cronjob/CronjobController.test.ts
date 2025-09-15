@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { SnapEndowments } from '@metamask/snaps-rpc-methods';
 import type { TruncatedSnap } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
@@ -1124,6 +1125,68 @@ describe('CronjobController', () => {
       );
 
       cronjobController.destroy();
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = new CronjobController({
+        messenger: getRestrictedCronjobControllerMessenger(),
+        stateManager: getMockStateManager(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const controller = new CronjobController({
+        messenger: getRestrictedCronjobControllerMessenger(),
+        stateManager: getMockStateManager(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('persists expected state', () => {
+      const controller = new CronjobController({
+        messenger: getRestrictedCronjobControllerMessenger(),
+        stateManager: getMockStateManager(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = new CronjobController({
+        messenger: getRestrictedCronjobControllerMessenger(),
+        stateManager: getMockStateManager(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
     });
   });
 });

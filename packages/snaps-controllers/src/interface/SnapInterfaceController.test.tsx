@@ -1,4 +1,4 @@
-import { getPersistentState } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
   form,
@@ -79,40 +79,6 @@ describe('SnapInterfaceController', () => {
           contentType: ContentType.Notification,
         },
       },
-    });
-  });
-
-  describe('constructor', () => {
-    it('persists notification interfaces', () => {
-      const rootMessenger = getRootSnapInterfaceControllerMessenger();
-      const controllerMessenger =
-        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
-
-      const controller = new SnapInterfaceController({
-        messenger: controllerMessenger,
-        state: {
-          interfaces: {
-            // @ts-expect-error missing properties
-            '1': {
-              contentType: ContentType.Notification,
-            },
-            // @ts-expect-error missing properties
-            '2': {
-              contentType: ContentType.Dialog,
-            },
-          },
-        },
-      });
-
-      expect(
-        getPersistentState(controller.state, controller.metadata),
-      ).toStrictEqual({
-        interfaces: {
-          '1': {
-            contentType: ContentType.Notification,
-          },
-        },
-      });
     });
   });
 
@@ -1743,6 +1709,114 @@ describe('SnapInterfaceController', () => {
           'bar',
         ),
       ).rejects.toThrow(`Approval request with id '${id}' not found.`);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = new SnapInterfaceController({
+        messenger: getRestrictedSnapInterfaceControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const controller = new SnapInterfaceController({
+        messenger: getRestrictedSnapInterfaceControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "interfaces": {},
+        }
+      `);
+    });
+
+    describe('persist', () => {
+      it('persists expected state', () => {
+        const controller = new SnapInterfaceController({
+          messenger: getRestrictedSnapInterfaceControllerMessenger(),
+        });
+
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "interfaces": {},
+          }
+        `);
+      });
+
+      it('persists notification interfaces', () => {
+        const rootMessenger = getRootSnapInterfaceControllerMessenger();
+        const controllerMessenger =
+          getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+        const controller = new SnapInterfaceController({
+          messenger: controllerMessenger,
+          state: {
+            interfaces: {
+              // @ts-expect-error missing properties
+              '1': {
+                contentType: ContentType.Notification,
+              },
+              // @ts-expect-error missing properties
+              '2': {
+                contentType: ContentType.Dialog,
+              },
+            },
+          },
+        });
+
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toStrictEqual({
+          interfaces: {
+            '1': {
+              contentType: ContentType.Notification,
+            },
+          },
+        });
+      });
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = new SnapInterfaceController({
+        messenger: getRestrictedSnapInterfaceControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "interfaces": {},
+        }
+      `);
     });
   });
 });

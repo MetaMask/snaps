@@ -976,14 +976,31 @@ export class SnapController extends BaseController<
       messenger,
       metadata: {
         snapStates: {
+          includeInStateLogs: false,
           persist: true,
           anonymous: false,
+          usedInUi: false,
         },
         unencryptedSnapStates: {
+          includeInStateLogs: false,
           persist: true,
           anonymous: false,
+          usedInUi: false,
         },
         snaps: {
+          includeInStateLogs: (snaps) => {
+            // Delete larger snap properties
+            return Object.values(snaps).reduce<Record<SnapId, Partial<Snap>>>(
+              (acc, snap) => {
+                const snapCopy: Partial<Snap> = { ...snap };
+                delete snapCopy.sourceCode;
+                delete snapCopy.auxiliaryFiles;
+                acc[snap.id] = snapCopy;
+                return acc;
+              },
+              {},
+            );
+          },
           persist: (snaps) => {
             return (
               Object.values(snaps)
@@ -1004,6 +1021,9 @@ export class SnapController extends BaseController<
             );
           },
           anonymous: false,
+          // TODO: Ensure larger snap properties are not sent to the UI
+          // Currently these are stripped out manually in the extension
+          usedInUi: true,
         },
       },
       name: controllerName,
