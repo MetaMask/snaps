@@ -542,7 +542,10 @@ export function mergeStructs(...structs: Struct<any>[]): Struct<any> {
     ...mergedStruct,
     *refiner(value, ctx) {
       for (const struct of structs) {
-        yield* struct.refiner(value, ctx);
+        // Only yield if the struct has a refiner function
+        if (typeof struct.refiner === 'function') {
+          yield* struct.refiner(value, ctx);
+        }
       }
     },
   });
