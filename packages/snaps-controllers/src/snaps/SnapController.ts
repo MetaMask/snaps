@@ -1,6 +1,7 @@
-import type {
-  AddApprovalRequest,
-  UpdateRequestState,
+import {
+  ORIGIN_METAMASK,
+  type AddApprovalRequest,
+  type UpdateRequestState,
 } from '@metamask/approval-controller';
 import type {
   RestrictedMessenger,
@@ -58,6 +59,7 @@ import type {
   OnAssetsMarketDataResponse,
   AssetMarketData,
   AssetMetadata,
+  EmptyObject,
 } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
@@ -84,7 +86,6 @@ import {
   assertIsSnapManifest,
   assertIsValidSnapId,
   DEFAULT_ENDOWMENTS,
-  DEFAULT_REQUESTED_SNAP_VERSION,
   encodeAuxiliaryFile,
   HandlerType,
   isOriginAllowed,
@@ -131,7 +132,6 @@ import {
   hasProperty,
   inMilliseconds,
   isNonEmptyArray,
-  isValidSemVerRange,
   satisfiesVersionRange,
   timeSince,
   createDeferredPromise,
@@ -333,6 +333,8 @@ type RollbackSnapshot = {
     granted?: RequestedPermissions;
     requestData?: Record<string, unknown>;
   };
+  previousInitialConnections?: Record<string, EmptyObject> | null;
+  newInitialConnections?: Record<string, EmptyObject>;
   newVersion: string;
 };
 
@@ -403,9 +405,9 @@ export type ClearSnapState = {
 /**
  * Checks all installed snaps against the blocklist.
  */
-export type UpdateBlockedSnaps = {
-  type: `${typeof controllerName}:updateBlockedSnaps`;
-  handler: SnapController['updateBlockedSnaps'];
+export type UpdateRegistry = {
+  type: `${typeof controllerName}:updateRegistry`;
+  handler: SnapController['updateRegistry'];
 };
 
 export type EnableSnap = {
@@ -495,7 +497,7 @@ export type SnapControllerActions =
   | GetSnapState
   | HandleSnapRequest
   | HasSnap
-  | UpdateBlockedSnaps
+  | UpdateRegistry
   | UpdateSnapState
   | EnableSnap
   | DisableSnap
@@ -714,6 +716,12 @@ type FeatureFlags = {
    * any production builds (including beta and Flask).
    */
   forcePreinstalledSnaps?: boolean;
+
+  /**
+   * Automatically update preinstalled Snaps "over the air",
+   * when a new version of the Snap is added to the registry.
+   */
+  autoUpdatePreinstalledSnaps?: boolean;
 };
 
 type DynamicFeatureFlags = {
@@ -968,14 +976,31 @@ export class SnapController extends BaseController<
       messenger,
       metadata: {
         snapStates: {
+          includeInStateLogs: false,
           persist: true,
           anonymous: false,
+          usedInUi: false,
         },
         unencryptedSnapStates: {
+          includeInStateLogs: false,
           persist: true,
           anonymous: false,
+          usedInUi: false,
         },
         snaps: {
+          includeInStateLogs: (snaps) => {
+            // Delete larger snap properties
+            return Object.values(snaps).reduce<Record<SnapId, Partial<Snap>>>(
+              (acc, snap) => {
+                const snapCopy: Partial<Snap> = { ...snap };
+                delete snapCopy.sourceCode;
+                delete snapCopy.auxiliaryFiles;
+                acc[snap.id] = snapCopy;
+                return acc;
+              },
+              {},
+            );
+          },
           persist: (snaps) => {
             return (
               Object.values(snaps)
@@ -996,6 +1021,9 @@ export class SnapController extends BaseController<
             );
           },
           anonymous: false,
+          // TODO: Ensure larger snap properties are not sent to the UI
+          // Currently these are stripped out manually in the extension
+          usedInUi: true,
         },
       },
       name: controllerName,
@@ -1219,8 +1247,8 @@ export class SnapController extends BaseController<
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:updateBlockedSnaps`,
-      async () => this.updateBlockedSnaps(),
+      `${controllerName}:updateRegistry`,
+      async () => this.updateRegistry(),
     );
 
     this.messagingSystem.registerActionHandler(
@@ -1458,8 +1486,10 @@ export class SnapController extends BaseController<
    * Checks all installed snaps against the block list and
    * blocks/unblocks snaps as appropriate. See {@link SnapController.blockSnap}
    * for more information.
+   *
+   * Also updates any preinstalled Snaps to the latest allowlisted version.
    */
-  async updateBlockedSnaps(): Promise<void> {
+  async updateRegistry(): Promise<void> {
     this.#assertCanUsePlatform();
     await this.messagingSystem.call('SnapsRegistry:update');
 
@@ -1485,6 +1515,42 @@ export class SnapController extends BaseController<
 
         return this.#unblockSnap(snapId as SnapId);
       }),
+    );
+
+    if (!this.#featureFlags.autoUpdatePreinstalledSnaps) {
+      return;
+    }
+
+    const preinstalledVersionRange = '*' as SemVerRange;
+
+    await Promise.allSettled(
+      Object.values(this.state.snaps)
+        .filter((snap) => snap.preinstalled)
+        .map(async (snap) => {
+          const resolvedVersion = await this.#resolveAllowlistVersion(
+            snap.id,
+            preinstalledVersionRange,
+          );
+
+          if (
+            resolvedVersion !== preinstalledVersionRange &&
+            gtVersion(resolvedVersion as unknown as SemVerVersion, snap.version)
+          ) {
+            const location = this.#detectSnapLocation(snap.id, {
+              versionRange: resolvedVersion,
+              fetch: this.#fetchFunction,
+              allowLocal: false,
+            });
+
+            await this.#updateSnap({
+              origin: ORIGIN_METAMASK,
+              snapId: snap.id,
+              location,
+              versionRange: resolvedVersion,
+              automaticUpdate: true,
+            });
+          }
+        }),
     );
   }
 
@@ -2650,7 +2716,7 @@ export class SnapController extends BaseController<
           pendingInstalls.push(snapId);
         }
 
-        result[snapId] = await this.processRequestedSnap(
+        result[snapId] = await this.#processRequestedSnap(
           origin,
           snapId,
           location,
@@ -2704,10 +2770,7 @@ export class SnapController extends BaseController<
    * @param versionRange - The semver range of the snap to install.
    * @returns The resulting snap object, or an error if something went wrong.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private async processRequestedSnap(
+  async #processRequestedSnap(
     origin: string,
     snapId: SnapId,
     location: SnapLocation,
@@ -2721,18 +2784,12 @@ export class SnapController extends BaseController<
         return existingSnap;
       }
 
-      return await this.updateSnap(
+      return await this.#updateSnap({
         origin,
         snapId,
         location,
         versionRange,
-        // Since we are requesting an update from within processRequestedSnap,
-        // we disable the emitting of the snapUpdated event and rely on the caller
-        // to publish this event after the update is complete.
-        // This is necessary as installSnaps may be installing multiple snaps
-        // and we don't want to emit events prematurely.
-        false,
-      );
+      });
     }
 
     this.#assertCanInstallSnaps();
@@ -2768,7 +2825,7 @@ export class SnapController extends BaseController<
         versionRange,
       });
 
-      await this.authorize(snapId, pendingApproval);
+      await this.#authorize(snapId, pendingApproval);
 
       pendingApproval = this.#createApproval({
         origin,
@@ -2867,40 +2924,46 @@ export class SnapController extends BaseController<
    * If the original version of the snap was blocked and the update succeeded,
    * the snap will be unblocked and enabled before it is restarted.
    *
-   * @param origin - The origin requesting the snap update.
-   * @param snapId - The id of the Snap to be updated.
-   * @param location - The location implementation of the snap.
-   * @param newVersionRange - A semver version range in which the maximum version will be chosen.
-   * @param emitEvent - An optional boolean flag to indicate whether this update should emit an event.
+   * @param options - An options bag.
+   * @param options.origin - The origin requesting the snap update.
+   * @param options.snapId - The id of the Snap to be updated.
+   * @param options.location - The location implementation of the snap.
+   * @param options.versionRange - A semver version range in which the maximum version will be chosen.
+   * @param options.automaticUpdate - An optional boolean flag to indicate whether this update should be done
+   * automatically.
    * @returns The snap metadata if updated, `null` otherwise.
    */
-  async updateSnap(
-    origin: string,
-    snapId: SnapId,
-    location: SnapLocation,
-    newVersionRange: string = DEFAULT_REQUESTED_SNAP_VERSION,
-    emitEvent = true,
-  ): Promise<TruncatedSnap> {
+  async #updateSnap({
+    origin,
+    snapId,
+    location,
+    versionRange,
+    automaticUpdate = false,
+  }: {
+    origin: string;
+    snapId: SnapId;
+    location: SnapLocation;
+    versionRange: SemVerRange;
+    automaticUpdate?: boolean;
+  }): Promise<TruncatedSnap> {
     this.#assertCanInstallSnaps();
     this.#assertCanUsePlatform();
 
     const snap = this.getExpect(snapId);
 
-    if (snap.preinstalled) {
+    const { preinstalled, removable, hidden, hideSnapBranding } = snap;
+
+    if (preinstalled && !automaticUpdate) {
       throw new Error('Preinstalled Snaps cannot be manually updated.');
     }
 
-    if (!isValidSemVerRange(newVersionRange)) {
-      throw new Error(
-        `Received invalid snap version range: "${newVersionRange}".`,
-      );
-    }
-
-    let pendingApproval = this.#createApproval({
-      origin,
-      snapId,
-      type: SNAP_APPROVAL_UPDATE,
-    });
+    let pendingApproval = automaticUpdate
+      ? null
+      : this.#createApproval({
+          origin,
+          snapId,
+          type: SNAP_APPROVAL_UPDATE,
+        });
 
     try {
       this.messagingSystem.publish(
@@ -2920,13 +2983,13 @@ export class SnapController extends BaseController<
       const newVersion = manifest.version;
       if (!gtVersion(newVersion, snap.version)) {
         throw rpcErrors.invalidParams(
-          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${newVersionRange}" range.`,
+          `Snap "${snapId}@${snap.version}" is already installed. Couldn't update to a version inside requested "${versionRange}" range.`,
         );
       }
 
-      if (!satisfiesVersionRange(newVersion, newVersionRange)) {
+      if (!satisfiesVersionRange(newVersion, versionRange)) {
         throw new Error(
-          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${newVersionRange}".`,
+          `Version mismatch. Manifest for "${snapId}" specifies version "${newVersion}" which doesn't satisfy requested version range "${versionRange}".`,
         );
       }
 
@@ -2953,26 +3016,37 @@ export class SnapController extends BaseController<
           manifest.initialConnections ?? {},
         );
 
-      this.#updateApproval(pendingApproval.id, {
-        permissions: newPermissions,
-        newVersion: manifest.version,
-        newPermissions,
-        approvedPermissions,
-        unusedPermissions,
-        newConnections,
-        unusedConnections,
-        approvedConnections,
-        loading: false,
-      });
+      let approvedNewPermissions;
+      let requestData;
 
-      const { permissions: approvedNewPermissions, ...requestData } =
-        (await pendingApproval.promise) as PermissionsRequest;
+      if (pendingApproval) {
+        this.#updateApproval(pendingApproval.id, {
+          permissions: newPermissions,
+          newVersion: manifest.version,
+          newPermissions,
+          approvedPermissions,
+          unusedPermissions,
+          newConnections,
+          unusedConnections,
+          approvedConnections,
+          loading: false,
+        });
 
-      pendingApproval = this.#createApproval({
-        origin,
-        snapId,
-        type: SNAP_APPROVAL_RESULT,
-      });
+        const { permissions, ...rest } =
+          (await pendingApproval.promise) as PermissionsRequest;
+
+        approvedNewPermissions = permissions;
+        requestData = rest;
+
+        pendingApproval = this.#createApproval({
+          origin,
+          snapId,
+          type: SNAP_APPROVAL_RESULT,
+        });
+      } else {
+        assert(automaticUpdate);
+        approvedNewPermissions = newPermissions;
+      }
 
       if (this.isRunning(snapId)) {
         await this.stopSnap(snapId, SnapStatusEvents.Stop);
@@ -2984,6 +3058,10 @@ export class SnapController extends BaseController<
         origin,
         id: snapId,
         files: newSnap,
+        removable,
+        preinstalled,
+        hidden,
+        hideSnapBranding,
         isUpdate: true,
       });
 
@@ -2994,19 +3072,22 @@ export class SnapController extends BaseController<
         requestData,
       });
 
-      if (manifest.initialConnections) {
-        this.#handleInitialConnections(
-          snapId,
-          oldManifest.initialConnections ?? null,
-          manifest.initialConnections,
-        );
-      }
+      const previousInitialConnections = oldManifest.initialConnections ?? null;
+      const newInitialConnections = manifest.initialConnections ?? {};
+      this.#handleInitialConnections(
+        snapId,
+        previousInitialConnections,
+        newInitialConnections,
+      );
 
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.permissions.revoked = unusedPermissions;
         rollbackSnapshot.permissions.granted = approvedNewPermissions;
         rollbackSnapshot.permissions.requestData = requestData;
+        rollbackSnapshot.previousInitialConnections =
+          previousInitialConnections;
+        rollbackSnapshot.newInitialConnections = newInitialConnections;
       }
 
       const sourceCode = sourceCodeFile.toString();
@@ -3024,20 +3105,12 @@ export class SnapController extends BaseController<
 
       const truncatedSnap = this.getTruncatedExpect(snapId);
 
-      if (emitEvent) {
-        this.messagingSystem.publish(
-          'SnapController:snapUpdated',
-          truncatedSnap,
-          snap.version,
-          origin,
-          false,
-        );
+      if (pendingApproval) {
+        this.#updateApproval(pendingApproval.id, {
+          loading: false,
+          type: SNAP_APPROVAL_UPDATE,
+        });
       }
-
-      this.#updateApproval(pendingApproval.id, {
-        loading: false,
-        type: SNAP_APPROVAL_UPDATE,
-      });
 
       return truncatedSnap;
     } catch (error) {
@@ -3046,11 +3119,13 @@ export class SnapController extends BaseController<
       const errorString =
         error instanceof Error ? error.message : error.toString();
 
-      this.#updateApproval(pendingApproval.id, {
-        loading: false,
-        error: errorString,
-        type: SNAP_APPROVAL_UPDATE,
-      });
+      if (pendingApproval) {
+        this.#updateApproval(pendingApproval.id, {
+          loading: false,
+          error: errorString,
+          type: SNAP_APPROVAL_UPDATE,
+        });
+      }
 
       this.messagingSystem.publish(
         'SnapController:snapInstallFailed',
@@ -3419,14 +3494,11 @@ export class SnapController extends BaseController<
    * Initiates a request for the given snap's initial permissions.
    * Must be called in order. See processRequestedSnap.
    *
-   * This function is not hash private yet because of tests.
-   *
    * @param snapId - The id of the Snap.
    * @param pendingApproval - Pending approval to update.
    * @returns The snap's approvedPermissions.
    */
-  // eslint-disable-next-line no-restricted-syntax
-  private async authorize(
+  async #authorize(
     snapId: SnapId,
     pendingApproval: PendingApproval,
   ): Promise<void> {
@@ -4139,7 +4211,12 @@ export class SnapController extends BaseController<
       this.#transition(snapId, SnapStatusEvents.Stop);
     }
 
-    const { statePatches, permissions } = rollbackSnapshot;
+    const {
+      statePatches,
+      permissions,
+      previousInitialConnections,
+      newInitialConnections,
+    } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
@@ -4159,6 +4236,13 @@ export class SnapController extends BaseController<
       newPermissions: permissions.revoked,
       requestData: permissions.requestData,
     });
+
+    // Calling this in reverse order to undo the changes
+    this.#handleInitialConnections(
+      snapId,
+      newInitialConnections ?? null,
+      previousInitialConnections ?? {},
+    );
 
     const truncatedSnap = this.getTruncatedExpect(snapId);
 

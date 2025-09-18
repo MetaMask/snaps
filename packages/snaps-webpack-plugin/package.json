@@ -60,12 +60,13 @@
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^11.4.2",
+    "@metamask/utils": "^11.7.0",
     "chalk": "^4.1.2",
+    "prettier": "^3.3.3",
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.3.4",
+    "@lavamoat/allow-scripts": "^3.3.5",
     "@metamask/auto-changelog": "^5.0.2",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
@@ -79,7 +80,6 @@
     "jest-it-up": "^2.0.0",
     "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
-    "prettier": "^3.3.3",
     "typescript": "~5.3.3",
     "webpack": "^5.97.1"
   },

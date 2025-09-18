@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.5.1]
+
+### Fixed
+
+- Await `sendWebSocketMessage` promise ([#3608](https://github.com/MetaMask/snaps/pull/3608))
+  - Errors were not previously being thrown when calling `snap_sendWebSocketMessage`, this also fixes that.
+
 ## [13.5.0]
 
 ### Changed
@@ -493,7 +500,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.1...HEAD
+[13.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.0...@metamask/snaps-rpc-methods@13.5.1
 [13.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.4.0...@metamask/snaps-rpc-methods@13.5.0
 [13.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.3.0...@metamask/snaps-rpc-methods@13.4.0
 [13.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.2.0...@metamask/snaps-rpc-methods@13.3.0

@@ -178,7 +178,12 @@ export class CronjobController extends BaseController<
     super({
       messenger,
       metadata: {
-        events: { persist: false, anonymous: false },
+        events: {
+          includeInStateLogs: false,
+          persist: false,
+          anonymous: false,
+          usedInUi: false,
+        },
       },
       name: controllerName,
       state: {

@@ -239,6 +239,7 @@ const configs = ENTRY_POINTS.map(
               ...scuttleGlobalThisExceptions,
             ],
           },
+          skipRepairs: ['MessageEvent'],
         }),
 
         {

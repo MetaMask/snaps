@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { InternalError } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
@@ -648,5 +649,71 @@ describe('SnapInsightsController', () => {
         },
       },
     );
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = new SnapInsightsController({
+        messenger: getRestrictedSnapInsightsControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const controller = new SnapInsightsController({
+        messenger: getRestrictedSnapInsightsControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "insights": {},
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const controller = new SnapInsightsController({
+        messenger: getRestrictedSnapInsightsControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = new SnapInsightsController({
+        messenger: getRestrictedSnapInsightsControllerMessenger(),
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "insights": {},
+        }
+      `);
+    });
   });
 });

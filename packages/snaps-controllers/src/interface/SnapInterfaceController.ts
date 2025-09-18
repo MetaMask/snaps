@@ -202,6 +202,7 @@ export class SnapInterfaceController extends BaseController<
       messenger,
       metadata: {
         interfaces: {
+          includeInStateLogs: true,
           persist: (interfaces: Record<string, StoredInterface>) => {
             return Object.entries(interfaces).reduce<
               Record<string, StoredInterface>
@@ -216,6 +217,7 @@ export class SnapInterfaceController extends BaseController<
             }, {});
           },
           anonymous: false,
+          usedInUi: true,
         },
       },
       name: controllerName,

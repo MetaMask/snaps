@@ -64,7 +64,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-simulation": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.4.2",
+    "@metamask/utils": "^11.7.0",
     "express": "^5.1.0",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
@@ -72,7 +72,7 @@
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
-    "@lavamoat/allow-scripts": "^3.3.4",
+    "@lavamoat/allow-scripts": "^3.3.5",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-utils": "workspace:^",
     "@swc/core": "1.11.31",

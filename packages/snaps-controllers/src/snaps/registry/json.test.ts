@@ -1,3 +1,4 @@
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import {
   DEFAULT_SNAP_SHASUM,
@@ -527,6 +528,60 @@ describe('JsonSnapsRegistry', () => {
       ]);
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { registry } = getRegistry();
+
+      expect(
+        deriveStateFromMetadata(registry.state, registry.metadata, 'anonymous'),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { registry } = getRegistry();
+
+      expect(
+        deriveStateFromMetadata(
+          registry.state,
+          registry.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "database": null,
+          "databaseUnavailable": false,
+          "lastUpdated": null,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { registry } = getRegistry();
+
+      expect(
+        deriveStateFromMetadata(registry.state, registry.metadata, 'persist'),
+      ).toMatchInlineSnapshot(`
+        {
+          "database": null,
+          "databaseUnavailable": false,
+          "lastUpdated": null,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { registry } = getRegistry();
+
+      expect(
+        deriveStateFromMetadata(registry.state, registry.metadata, 'usedInUi'),
+      ).toMatchInlineSnapshot(`
+        {
+          "database": null,
+        }
+      `);
     });
   });
 });

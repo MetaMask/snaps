@@ -4,7 +4,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
-import { SNAP_STREAM_NAMES, logError } from '@metamask/snaps-utils';
+import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
 import type {
   Json,
   JsonRpcNotification,
@@ -180,12 +180,7 @@ export abstract class AbstractExecutionService<WorkerType>
       );
 
       if (result === hasTimedOut || result !== 'OK') {
-        // We tried to shutdown gracefully but failed. This probably means the Snap is in infinite loop and
-        // hogging down the whole JS process.
-        // TODO(ritave): It might be doing weird things such as posting a lot of setTimeouts. Add a test to ensure that this behaviour
-        //               doesn't leak into other workers. Especially important in IframeExecutionEnvironment since they all share the same
-        //               JS process.
-        logError(`Snap "${snapId}" failed to terminate gracefully.`, result);
+        logWarning(`Snap "${snapId}" failed to terminate gracefully.`);
       }
     } catch {
       // Ignore

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-rpc-methods",
-  "version": "13.5.0",
+  "version": "13.5.1",
   "description": "MetaMask Snaps JSON-RPC method implementations",
   "keywords": [
     "MetaMask",
@@ -61,11 +61,11 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.4.2",
+    "@metamask/utils": "^11.7.0",
     "@noble/hashes": "^1.7.1"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.3.4",
+    "@lavamoat/allow-scripts": "^3.3.5",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/json-rpc-engine": "^10.0.2",
     "@swc/core": "1.11.31",

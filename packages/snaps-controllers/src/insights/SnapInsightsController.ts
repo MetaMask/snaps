@@ -100,7 +100,12 @@ export class SnapInsightsController extends BaseController<
     super({
       messenger,
       metadata: {
-        insights: { persist: false, anonymous: false },
+        insights: {
+          includeInStateLogs: true,
+          persist: false,
+          anonymous: false,
+          usedInUi: true,
+        },
       },
       name: controllerName,
       state: { insights: {}, ...state },

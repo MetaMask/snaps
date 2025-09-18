@@ -615,11 +615,15 @@ export const FieldStruct: Describe<FieldElement> = element('Field', {
  */
 export const BoldStruct: Describe<BoldElement> = element('Bold', {
   children: children([
-    string(),
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    lazy(() => ItalicStruct) as unknown as Struct<
-      SnapElement<JsonObject, 'Italic'>
-    >,
+    selectiveUnion((value) => {
+      if (typeof value === 'string') {
+        return string();
+      }
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      return ItalicStruct as unknown as Struct<
+        SnapElement<JsonObject, 'Italic'>
+      >;
+    }),
   ]),
 });
 
@@ -628,10 +632,13 @@ export const BoldStruct: Describe<BoldElement> = element('Bold', {
  */
 export const ItalicStruct: Describe<ItalicElement> = element('Italic', {
   children: children([
-    string(),
-    lazy(() => BoldStruct) as unknown as Struct<
-      SnapElement<JsonObject, 'Bold'>
-    >,
+    selectiveUnion((value) => {
+      if (typeof value === 'string') {
+        return string();
+      }
+
+      return BoldStruct as unknown as Struct<SnapElement<JsonObject, 'Bold'>>;
+    }),
   ]),
 });
 
@@ -774,11 +781,18 @@ export const HeadingStruct: Describe<HeadingElement> = element('Heading', {
 export const LinkStruct: Describe<LinkElement> = element('Link', {
   href: string(),
   children: children([
-    FormattingStruct,
-    string(),
-    IconStruct,
-    ImageStruct,
-    AddressStruct,
+    selectiveUnion((value) => {
+      if (typeof value === 'string') {
+        return string();
+      }
+
+      return typedUnion([
+        FormattingStruct,
+        IconStruct,
+        ImageStruct,
+        AddressStruct,
+      ]);
+    }),
   ]),
 });
 
@@ -896,13 +910,15 @@ export const TooltipStruct: Describe<TooltipElement> = element('Tooltip', {
  */
 export const BannerStruct: Describe<BannerElement> = element('Banner', {
   children: children([
-    TextStruct,
-    LinkStruct,
-    IconStruct,
-    ButtonStruct,
-    BoldStruct,
-    ItalicStruct,
-    SkeletonStruct,
+    typedUnion([
+      TextStruct,
+      LinkStruct,
+      IconStruct,
+      ButtonStruct,
+      BoldStruct,
+      ItalicStruct,
+      SkeletonStruct,
+    ]),
   ]),
   title: string(),
   severity: union([
