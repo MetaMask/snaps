@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^3.3.5",
+    "@lavamoat/allow-scripts": "^3.3.6",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-webpack-plugin": "workspace:^",
