@@ -61,7 +61,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "@noble/hashes": "^1.7.1"
   },
   "devDependencies": {

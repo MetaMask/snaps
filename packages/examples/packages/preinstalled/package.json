@@ -53,7 +53,7 @@
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
     "@types/node": "18.14.2",
