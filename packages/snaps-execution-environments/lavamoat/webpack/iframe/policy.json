@@ -1,5 +1,38 @@
 {
   "resources": {
+    "@metamask/snaps-utils>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/base-controller>immer": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>cockatiel": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "depcheck>lodash": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit": {
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": true
+      }
+    },
     "@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/rpc-errors": true,
@@ -18,6 +51,27 @@
         "readable-stream": true
       }
     },
+    "@metamask/snaps-sdk>@metamask/key-tree": {
+      "globals": {
+        "crypto.subtle": true,
+        "ed25519": true,
+        "ed25519Bip32": true,
+        "secp256k1": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/scure-bip39": true,
+        "@metamask/utils": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn": {
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn>strip-hex-prefix": true
+      }
+    },
     "@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
@@ -25,6 +79,22 @@
       "packages": {
         "@metamask/object-multiplex>once": true,
         "readable-stream": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true,
+        "permissionRpcMethods": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/base-controller": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>deep-freeze-strict": true,
+        "@metamask/snaps-utils>@metamask/base-controller>immer": true,
+        "vite>postcss>nanoid": true
       }
     },
     "@metamask/post-message-stream": {
@@ -71,42 +141,130 @@
         "webpack>events": true
       }
     },
-    "@metamask/snaps-sdk": {
+    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/scure-bip39": {
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/scure-bip39>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
+      }
+    },
+    "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true,
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
     },
     "@metamask/snaps-utils": {
       "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
-        "console.warn": true
+        "console.warn": true,
+        "crypto": true,
+        "document.body.appendChild": true,
+        "document.createElement": true,
+        "fetch": true,
+        "navigator": true,
+        "type": true
       },
       "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/snaps-utils>@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "eslint>chalk": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>fast-xml-parser": true,
+        "@metamask/snaps-utils>luxon": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "depcheck>semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },
     "@metamask/utils": {
       "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
         "TextEncoder": true
       },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
         "eslint>debug": true,
         "depcheck>lodash": true,
         "@metamask/utils>pony-cause": true,
         "depcheck>semver": true
       }
     },
-    "@metamask/utils>@noble/hashes": {
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/curves": {
       "globals": {
         "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@noble/hashes": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/scure-bip39>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@spruceid/siwe-parser": {
+      "globals": {
+        "console.error": true,
+        "console.log": true
+      },
+      "packages": {
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@spruceid/siwe-parser>apg-js": true
+      }
+    },
+    "eslint>chalk>ansi-styles": {
+      "packages": {
+        "eslint>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": {
+      "globals": {
+        "Buffer": true
       }
     },
     "@metamask/providers>extension-port-stream>readable-stream>buffer": {
@@ -116,6 +274,44 @@
       "packages": {
         "@metamask/providers>extension-port-stream>readable-stream>buffer>base64-js": true,
         "@metamask/providers>extension-port-stream>readable-stream>buffer>ieee754": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name>builtins": {
+      "globals": {
+        "process.version": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>process": true,
+        "depcheck>semver": true
+      }
+    },
+    "eslint>chalk": {
+      "packages": {
+        "eslint>chalk>ansi-styles": true,
+        "eslint>chalk>supports-color": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>cockatiel": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "clearTimeout": true,
+        "performance": true,
+        "process.hrtime.bigint": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
+      }
+    },
+    "eslint>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser": {
+      "packages": {
+        "@metamask/snaps-utils>cron-parser>luxon": true
       }
     },
     "eslint>debug": {
@@ -131,14 +327,75 @@
         "@metamask/providers>extension-port-stream>readable-stream>process": true
       }
     },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash": {
+      "globals": {
+        "Buffer": true,
+        "name": "write"
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>idna-uts46-hx": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>js-sha3": true
+      }
+    },
     "webpack>events": {
       "globals": {
         "console": true
       }
     },
+    "@metamask/snaps-utils>fast-xml-parser": {
+      "globals": {
+        "entityName": true,
+        "val": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-xml-parser>strnum": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>idna-uts46-hx": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>idna-uts46-hx>punycode": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/base-controller>immer": {
+      "globals": {
+        "process.env.NODE_ENV": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>js-sha3": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>process": true
+      }
+    },
     "depcheck>lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/snaps-utils>luxon": {
+      "globals": {
+        "Intl": true
+      }
+    },
+    "@metamask/snaps-utils>cron-parser>luxon": {
+      "globals": {
+        "Intl": true
+      }
+    },
+    "@metamask/snaps-utils>marked": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "vite>postcss>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -167,6 +424,11 @@
         "readable-stream>util-deprecate": true
       }
     },
+    "@metamask/snaps-utils>rfdc": {
+      "globals": {
+        "Buffer": true
+      }
+    },
     "readable-stream>string_decoder>safe-buffer": {
       "packages": {
         "@metamask/providers>extension-port-stream>readable-stream>buffer": true
@@ -186,11 +448,21 @@
         "readable-stream>string_decoder>safe-buffer": true
       }
     },
+    "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn>strip-hex-prefix": {
+      "packages": {
+        "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit>@metamask/number-to-bn>strip-hex-prefix>is-hex-prefixed": true
+      }
+    },
     "readable-stream>util-deprecate": {
       "globals": {
         "console.trace": true,
         "console.warn": true,
         "localStorage": true
+      }
+    },
+    "@metamask/snaps-utils>validate-npm-package-name": {
+      "packages": {
+        "@metamask/snaps-utils>validate-npm-package-name>builtins": true
       }
     }
   }
