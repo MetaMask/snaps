@@ -184,6 +184,7 @@ const baseConfig = {
       // Used in the `crypto` endowment, but only as fallback, so we can
       // safely ignore it if it's not available.
       crypto: false,
+      buffer: require.resolve('buffer'),
 
       stream: require.resolve('stream-browserify'),
     },
@@ -240,6 +241,7 @@ const configs = ENTRY_POINTS.map(
               ...scuttleGlobalThisExceptions,
             ],
           },
+          readableResourceIds: true,
           skipRepairs: ['MessageEvent'],
         }),
 
