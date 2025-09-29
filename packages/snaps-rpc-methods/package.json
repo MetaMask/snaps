@@ -65,7 +65,7 @@
     "@noble/hashes": "^1.7.1"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.3.5",
+    "@lavamoat/allow-scripts": "^3.4.0",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/json-rpc-engine": "^10.1.0",
     "@swc/core": "1.11.31",
