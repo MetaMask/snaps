@@ -174,6 +174,7 @@ const baseConfig = {
   plugins: [
     new ProvidePlugin({
       process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
     }),
   ],
 

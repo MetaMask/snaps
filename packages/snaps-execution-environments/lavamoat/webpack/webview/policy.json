@@ -21,6 +21,7 @@
         "@metamask/utils": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>cockatiel": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
@@ -208,6 +209,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
         "eslint>debug": true,
         "depcheck>lodash": true,
         "@metamask/utils>pony-cause": true,
@@ -260,6 +262,9 @@
         "Buffer.alloc": true,
         "Buffer.from": true,
         "Buffer.isBuffer": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
       }
     },
     "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>bn.js": {
@@ -333,6 +338,7 @@
         "name": "write"
       },
       "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>idna-uts46-hx": true,
         "@metamask/snaps-utils>@metamask/permission-controller>@metamask/controller-utils>eth-ens-namehash>js-sha3": true
       }
@@ -427,6 +433,9 @@
     "@metamask/snaps-utils>rfdc": {
       "globals": {
         "Buffer": true
+      },
+      "packages": {
+        "@metamask/providers>extension-port-stream>readable-stream>buffer": true
       }
     },
     "readable-stream>string_decoder>safe-buffer": {
