@@ -154,7 +154,7 @@ async function main() {
       return target;
     },
     {
-      percentages: currentCoverage,
+      percentages: { ...currentCoverage },
       errors: [],
     },
   );
