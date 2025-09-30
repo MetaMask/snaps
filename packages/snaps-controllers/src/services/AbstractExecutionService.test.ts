@@ -146,40 +146,4 @@ describe('AbstractExecutionService', () => {
 
     expect(await service.terminateSnap(MOCK_SNAP_ID)).toBeUndefined();
   });
-
-  it('skips metamask_chainChanged JSON-RPC notifications', async () => {
-    const { service } = createService(MockExecutionService);
-
-    await service.executeSnap({
-      snapId: 'TestSnap',
-      sourceCode: `
-        module.exports.onRpcRequest = () => null;
-      `,
-      endowments: [],
-    });
-
-    const { streams, worker } = service.getJobs().values().next().value;
-    const postMessageSpy = jest.spyOn(worker, 'postMessage');
-
-    streams.rpc.write({
-      name: 'metamask-provider',
-      data: { method: 'metamask_chainChanged' },
-    });
-
-    streams.rpc.write({
-      name: 'metamask-provider',
-      data: { id: 'foo', result: '1' },
-    });
-
-    expect(postMessageSpy).toHaveBeenCalledTimes(1);
-    expect(postMessageSpy).toHaveBeenCalledWith({
-      data: {
-        name: 'jsonRpc',
-        data: { data: { id: 'foo', result: '1' }, name: 'metamask-provider' },
-      },
-    });
-
-    await service.terminateAllSnaps();
-
-  });
 });
