@@ -322,14 +322,14 @@ export abstract class AbstractExecutionService<WorkerType>
     rpcStream.write = (chunk, encoding, callback) => {
       // Ignore chain switching notifications as it doesn't matter for the SnapProvider.
       if (chunk?.data?.method === 'metamask_chainChanged') {
-        return;
+        return true;
       }
 
       if (chunk?.data && hasProperty(chunk?.data, 'id')) {
         this.#messenger.publish('ExecutionService:outboundResponse', snapId);
       }
 
-      originalWrite(chunk, encoding, callback);
+      return originalWrite(chunk, encoding, callback);
     };
 
     // Typecast: stream type mismatch
