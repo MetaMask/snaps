@@ -58,7 +58,7 @@ describe('getGetInterfaceImplementation', () => {
 
     const content = text('bar');
 
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
 
     const result = fn(MOCK_SNAP_ID, id);
 

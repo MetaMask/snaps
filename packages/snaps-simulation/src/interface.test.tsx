@@ -555,7 +555,7 @@ describe('clickElement', () => {
 
   it('sends a ButtonClickEvent to the snap', async () => {
     const content = button({ value: 'foo', name: 'bar' });
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -592,7 +592,7 @@ describe('clickElement', () => {
       button({ value: 'baz', name: 'baz', buttonType: ButtonType.Submit }),
     ]);
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -657,7 +657,7 @@ describe('clickElement', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -718,7 +718,7 @@ describe('clickElement', () => {
       </Form>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -781,7 +781,7 @@ describe('clickElement', () => {
   it('throws if there is no button with the given name in the interface', async () => {
     const content = button({ value: 'foo', name: 'foo' });
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -804,7 +804,7 @@ describe('clickElement', () => {
   it('throws if the element is not a button', async () => {
     const content = input({ value: 'foo', name: 'foo' });
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -827,7 +827,7 @@ describe('clickElement', () => {
   it('unwraps errors', async () => {
     const content = button({ value: 'foo', name: 'foo' });
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -889,7 +889,7 @@ describe('typeInField', () => {
 
     const content = input('bar');
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -938,7 +938,7 @@ describe('typeInField', () => {
       />
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -980,7 +980,7 @@ describe('typeInField', () => {
   it('throws if there is no inputs in the interface', async () => {
     const content = text('bar');
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1002,7 +1002,7 @@ describe('typeInField', () => {
   it('throws if the element is not an input', async () => {
     const content = button({ value: 'foo', name: 'foo' });
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1049,7 +1049,7 @@ describe('selectInDropdown', () => {
       </Dropdown>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1096,7 +1096,7 @@ describe('selectInDropdown', () => {
       </Dropdown>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1122,7 +1122,7 @@ describe('selectInDropdown', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1144,7 +1144,7 @@ describe('selectInDropdown', () => {
   it('throws if the element is not a dropdown', async () => {
     const content = <Input name="foo" />;
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1188,7 +1188,7 @@ describe('uploadFile', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1249,7 +1249,7 @@ describe('uploadFile', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1307,7 +1307,7 @@ describe('uploadFile', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1341,7 +1341,7 @@ describe('getInterface', () => {
     const { store, runSaga } = createStore(options);
 
     const content = text('foo');
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1382,7 +1382,7 @@ describe('getInterface', () => {
     ).toPromise();
 
     const content = text('foo');
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
     store.dispatch(setInterface(ui));
@@ -1409,7 +1409,7 @@ describe('getInterface', () => {
     const { store, runSaga } = createStore(options);
 
     const content = button({ value: 'foo', name: 'foo' });
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1453,7 +1453,7 @@ describe('getInterface', () => {
     const { store, runSaga } = createStore(options);
 
     const content = input('foo');
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1503,7 +1503,7 @@ describe('getInterface', () => {
         <Option value="option2">Option 2</Option>
       </Dropdown>
     );
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1552,7 +1552,7 @@ describe('getInterface', () => {
         <FileInput name="foo" />
       </Box>
     );
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1606,7 +1606,7 @@ describe('getInterface', () => {
         <Input name="foo" />
       </Box>
     );
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
 
@@ -1622,7 +1622,7 @@ describe('getInterface', () => {
 
     const promise = result.waitForUpdate();
 
-    await interfaceController.updateInterface(
+    interfaceController.updateInterface(
       MOCK_SNAP_ID,
       id,
       <Text>Hello world!</Text>,
@@ -1661,7 +1661,7 @@ describe('selectFromRadioGroup', () => {
       </RadioGroup>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1708,7 +1708,7 @@ describe('selectFromRadioGroup', () => {
       </RadioGroup>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1734,7 +1734,7 @@ describe('selectFromRadioGroup', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1756,7 +1756,7 @@ describe('selectFromRadioGroup', () => {
   it('throws if the element is not a RadioGroup', async () => {
     const content = <Input name="foo" />;
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1943,7 +1943,7 @@ describe('selectFromSelector', () => {
       </Selector>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -1997,7 +1997,7 @@ describe('selectFromSelector', () => {
       </Selector>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -2026,7 +2026,7 @@ describe('selectFromSelector', () => {
       </Box>
     );
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -2051,7 +2051,7 @@ describe('selectFromSelector', () => {
 
     const content = <Input name="foo" />;
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -2087,7 +2087,7 @@ describe('waitForUpdate', () => {
   it('waits for the interface content to update', async () => {
     const content = <Input name="foo" />;
 
-    const interfaceId = await interfaceController.createInterface(
+    const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
     );
@@ -2100,7 +2100,7 @@ describe('waitForUpdate', () => {
       content,
     );
 
-    await interfaceController.updateInterface(
+    interfaceController.updateInterface(
       MOCK_SNAP_ID,
       interfaceId,
       <Text>Hello world!</Text>,

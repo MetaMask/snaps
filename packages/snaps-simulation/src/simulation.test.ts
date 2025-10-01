@@ -629,10 +629,7 @@ describe('getPermittedHooks', () => {
 
     const snapFiles = await fetchSnap(snapId, location);
 
-    const id = await snapInterfaceController.createInterface(
-      snapId,
-      text('foo'),
-    );
+    const id = snapInterfaceController.createInterface(snapId, text('foo'));
 
     const { resolveInterface } = getPermittedHooks(
       snapId,
