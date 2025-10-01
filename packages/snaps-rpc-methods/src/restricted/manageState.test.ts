@@ -393,6 +393,44 @@ describe('snap_manageState', () => {
         true,
       );
     });
+
+    it('throws an error on update if the new state is too large', async () => {
+      const clearSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnapState = jest.fn().mockReturnValueOnce(true);
+      const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+
+      const manageStateImplementation = getManageStateImplementation({
+        clearSnapState,
+        getSnapState,
+        updateSnapState,
+        getUnlockPromise: jest.fn(),
+        getSnap,
+      });
+
+      const newState = {
+        foo: 'foo'.repeat(21_500_000),
+      };
+
+      await expect(
+        manageStateImplementation({
+          context: { origin: 'snap-origin' },
+          method: 'snap_manageState',
+          params: {
+            operation: ManageStateOperation.UpdateState,
+            newState,
+          },
+        }),
+      ).rejects.toThrow(
+        'Invalid snap_manageState "newState" parameter: The new state must not exceed 64 MB in size.',
+      );
+
+      expect(updateSnapState).not.toHaveBeenCalledWith(
+        'snap-origin',
+        newState,
+        true,
+      );
+    });
   });
 
   describe('getValidatedParams', () => {

@@ -234,6 +234,7 @@ export function getManageStateImplementation({
         return null;
       }
 
+      /* istanbul ignore next */
       default:
         throw rpcErrors.invalidParams(
           `Invalid ${method} operation: "${
