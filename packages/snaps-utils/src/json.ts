@@ -32,6 +32,6 @@ export function parseJson<Type extends Json = Json>(json: string) {
  */
 export function getJsonSizeUnsafe(value: Json, encode = false): number {
   const json = JSON.stringify(value);
-  // We intentionally don't use `TextEncoder` because of bad performance on React Native.
+  // We intentionally don't use `TextEncoder` by default because of bad performance on React Native.
   return encode ? new TextEncoder().encode(json).byteLength : json.length;
 }
