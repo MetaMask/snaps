@@ -8,9 +8,13 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { ManageStateParams, ManageStateResult } from '@metamask/snaps-sdk';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
-import { STATE_ENCRYPTION_MAGIC_VALUE } from '@metamask/snaps-utils';
+import type { Snap } from '@metamask/snaps-utils';
+import {
+  getJsonSizeUnsafe,
+  STATE_ENCRYPTION_MAGIC_VALUE,
+} from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { isObject, getJsonSize } from '@metamask/utils';
+import { isObject, isValidJson } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 import { deriveEntropyFromSeed } from '../utils';
@@ -53,6 +57,13 @@ export type ManageStateMethodHooks = {
     newState: Record<string, Json>,
     encrypted: boolean,
   ) => Promise<void>;
+
+  /**
+   * Get Snap metadata.
+   *
+   * @param snapId - The ID of a Snap.
+   */
+  getSnap: (snapId: string) => Snap | undefined;
 };
 
 type ManageStateSpecificationBuilderOptions = {
@@ -99,6 +110,7 @@ const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
   clearSnapState: true,
   getSnapState: true,
   updateSnapState: true,
+  getSnap: true,
 };
 
 export const manageStateBuilder = Object.freeze({
@@ -157,6 +169,7 @@ export async function getEncryptionEntropy({
  * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
  * locked.
+ * @param hooks.getSnap - The hook function to get Snap metadata.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
@@ -166,6 +179,7 @@ export function getManageStateImplementation({
   clearSnapState,
   getSnapState,
   updateSnapState,
+  getSnap,
 }: ManageStateMethodHooks) {
   return async function manageState(
     options: RestrictedMethodOptions<ManageStateParams>,
@@ -176,6 +190,23 @@ export function getManageStateImplementation({
       context: { origin },
     } = options;
     const validatedParams = getValidatedParams(params, method);
+
+    const snap = getSnap(origin);
+
+    if (
+      !snap?.preinstalled &&
+      validatedParams.operation === ManageStateOperation.UpdateState
+    ) {
+      const size = getJsonSizeUnsafe(validatedParams.newState, true);
+
+      if (size > STORAGE_SIZE_LIMIT) {
+        throw rpcErrors.invalidParams({
+          message: `Invalid ${method} "newState" parameter: The new state must not exceed ${
+            STORAGE_SIZE_LIMIT / 1_000_000
+          } MB in size.`,
+        });
+      }
+    }
 
     // If the encrypted param is undefined or null we default to true.
     const shouldEncrypt = validatedParams.encrypted ?? true;
@@ -219,13 +250,11 @@ export function getManageStateImplementation({
  *
  * @param params - The unvalidated params object from the method request.
  * @param method - RPC method name used for debugging errors.
- * @param storageSizeLimit - Maximum allowed size (in bytes) of a new state object.
  * @returns The validated method parameter object.
  */
 export function getValidatedParams(
   params: unknown,
   method: string,
-  storageSizeLimit = STORAGE_SIZE_LIMIT,
 ): ManageStateParams {
   if (!isObject(params)) {
     throw rpcErrors.invalidParams({
@@ -260,21 +289,9 @@ export function getValidatedParams(
       });
     }
 
-    let size;
-    try {
-      // `getJsonSize` will throw if the state is not JSON serializable.
-      size = getJsonSize(newState);
-    } catch {
+    if (!isValidJson(newState)) {
       throw rpcErrors.invalidParams({
         message: `Invalid ${method} "newState" parameter: The new state must be JSON serializable.`,
-      });
-    }
-
-    if (size > storageSizeLimit) {
-      throw rpcErrors.invalidParams({
-        message: `Invalid ${method} "newState" parameter: The new state must not exceed ${
-          storageSizeLimit / 1_000_000
-        } MB in size.`,
       });
     }
   }

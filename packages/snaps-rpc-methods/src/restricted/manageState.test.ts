@@ -38,8 +38,6 @@ describe('getEncryptionEntropy', () => {
 });
 
 describe('snap_manageState', () => {
-  const MOCK_SMALLER_STORAGE_SIZE_LIMIT = 10; // In bytes
-
   describe('specification', () => {
     it('builds specification', () => {
       const methodHooks = {
@@ -47,6 +45,7 @@ describe('snap_manageState', () => {
         getSnapState: jest.fn(),
         updateSnapState: jest.fn(),
         getUnlockPromise: jest.fn(),
+        getSnap: jest.fn(),
       };
 
       expect(
@@ -75,12 +74,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       const result = await manageStateImplementation({
@@ -104,12 +105,14 @@ describe('snap_manageState', () => {
       const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise,
+        getSnap,
       });
 
       const result = await manageStateImplementation({
@@ -127,12 +130,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(null);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       const result = await manageStateImplementation({
@@ -150,12 +155,14 @@ describe('snap_manageState', () => {
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise,
+        getSnap,
       });
 
       await manageStateImplementation({
@@ -173,12 +180,14 @@ describe('snap_manageState', () => {
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise,
+        getSnap,
       });
 
       await manageStateImplementation({
@@ -204,12 +213,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       await manageStateImplementation({
@@ -241,12 +252,14 @@ describe('snap_manageState', () => {
         .mockReturnValueOnce(JSON.stringify(mockSnapState));
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise,
+        getSnap,
       });
 
       await manageStateImplementation({
@@ -277,12 +290,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       expect(async () =>
@@ -301,12 +316,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       const newState = (a: unknown) => {
@@ -338,12 +355,14 @@ describe('snap_manageState', () => {
       const clearSnapState = jest.fn().mockReturnValueOnce(true);
       const getSnapState = jest.fn().mockReturnValueOnce(true);
       const updateSnapState = jest.fn().mockReturnValueOnce(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const manageStateImplementation = getManageStateImplementation({
         clearSnapState,
         getSnapState,
         updateSnapState,
         getUnlockPromise: jest.fn(),
+        getSnap,
       });
 
       const newState = {
@@ -469,28 +488,6 @@ describe('snap_manageState', () => {
         ),
       ).toThrow(
         'Invalid snap_manageState "newState" parameter: The new state must be JSON serializable.',
-      );
-    });
-
-    it('throws an error if the new state object is exceeding the JSON size limit', () => {
-      const mockInvalidNewStateObject = {
-        something: {
-          something: {
-            whatever: 'whatever',
-          },
-        },
-      };
-
-      expect(() =>
-        getValidatedParams(
-          { operation: 'update', newState: mockInvalidNewStateObject },
-          'snap_manageState',
-          MOCK_SMALLER_STORAGE_SIZE_LIMIT,
-        ),
-      ).toThrow(
-        `Invalid snap_manageState "newState" parameter: The new state must not exceed ${
-          MOCK_SMALLER_STORAGE_SIZE_LIMIT / 1_000_000
-        } MB in size.`,
       );
     });
   });
