@@ -101,7 +101,7 @@ describe('SnapInterfaceController', () => {
         }),
       ]);
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -143,7 +143,7 @@ describe('SnapInterfaceController', () => {
         />
       );
 
-      const interfaceId = await rootMessenger.call(
+      const interfaceId = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -192,7 +192,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -234,7 +234,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -310,7 +310,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -387,7 +387,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -438,7 +438,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -473,7 +473,7 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
@@ -513,14 +513,14 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
           { foo: 'a'.repeat(5_000_000) },
         ),
-      ).rejects.toThrow('A Snap interface context may not be larger than 5 MB');
+      ).toThrow('A Snap interface context may not be larger than 5 MB');
     });
 
     it('throws if a link is on the phishing list', async () => {
@@ -548,13 +548,13 @@ describe('SnapInterfaceController', () => {
         }),
       ]);
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+      ).toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
@@ -588,13 +588,13 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
         ),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+      ).toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
@@ -628,15 +628,13 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
         ),
-      ).rejects.toThrow(
-        'Invalid URL: The Snap being navigated to is not installed.',
-      );
+      ).toThrow('Invalid URL: The Snap being navigated to is not installed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         2,
@@ -686,13 +684,13 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
         ),
-      ).rejects.toThrow(
+      ).toThrow(
         'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
       );
 
@@ -719,13 +717,13 @@ describe('SnapInterfaceController', () => {
 
       const components = panel([image(`<svg />`)]);
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      ).toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if JSX UI content is too large', async () => {
@@ -748,13 +746,13 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           element,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      ).toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if text content is too large', async () => {
@@ -771,13 +769,13 @@ describe('SnapInterfaceController', () => {
 
       const components = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:createInterface',
           MOCK_SNAP_ID,
           components,
         ),
-      ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
+      ).toThrow('The text in a Snap UI may not be larger than 50 kB.');
     });
   });
 
@@ -797,7 +795,7 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -827,7 +825,7 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'bar' })],
       });
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -883,13 +881,13 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
       );
 
-      await rootMessenger.call(
+      rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -932,13 +930,13 @@ describe('SnapInterfaceController', () => {
         </Form>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
       );
 
-      await rootMessenger.call(
+      rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -977,7 +975,7 @@ describe('SnapInterfaceController', () => {
 
       const context = { foo: 'bar' };
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
@@ -986,7 +984,7 @@ describe('SnapInterfaceController', () => {
 
       const newContext = { foo: 'baz' };
 
-      await rootMessenger.call(
+      rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -1031,14 +1029,14 @@ describe('SnapInterfaceController', () => {
 
       const context = { foo: 'bar' };
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
         context,
       );
 
-      await rootMessenger.call(
+      rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -1090,20 +1088,20 @@ describe('SnapInterfaceController', () => {
         }),
       ]);
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           id,
           newContent,
         ),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+      ).toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
@@ -1146,20 +1144,20 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           id,
           newElement,
         ),
-      ).rejects.toThrow('Invalid URL: The specified URL is not allowed.');
+      ).toThrow('Invalid URL: The specified URL is not allowed.');
 
       expect(rootMessenger.call).toHaveBeenNthCalledWith(
         3,
@@ -1190,20 +1188,20 @@ describe('SnapInterfaceController', () => {
 
       const newContent = panel([image('<svg />')]);
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           id,
           newContent,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      ).toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if JSX UI content is too large', async () => {
@@ -1235,20 +1233,20 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           id,
           newElement,
         ),
-      ).rejects.toThrow('A Snap UI may not be larger than 10 MB.');
+      ).toThrow('A Snap UI may not be larger than 10 MB.');
     });
 
     it('throws if text content is too large', async () => {
@@ -1268,20 +1266,20 @@ describe('SnapInterfaceController', () => {
 
       const newContent = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         components,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           id,
           newContent,
         ),
-      ).rejects.toThrow('The text in a Snap UI may not be larger than 50 kB.');
+      ).toThrow('The text in a Snap UI may not be larger than 50 kB.');
     });
 
     it('throws if the interface does not exist', async () => {
@@ -1296,14 +1294,14 @@ describe('SnapInterfaceController', () => {
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           MOCK_SNAP_ID,
           'foo',
           content,
         ),
-      ).rejects.toThrow("Interface with id 'foo' not found.");
+      ).toThrow("Interface with id 'foo' not found.");
     });
 
     it('throws if the interface is updated by another snap', async () => {
@@ -1323,20 +1321,20 @@ describe('SnapInterfaceController', () => {
         children: [input({ name: 'baz' })],
       });
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
       );
 
-      await expect(
+      expect(() =>
         rootMessenger.call(
           'SnapInterfaceController:updateInterface',
           'foo' as SnapId,
           id,
           newContent,
         ),
-      ).rejects.toThrow('Interface not created by foo.');
+      ).toThrow('Interface not created by foo.');
     });
 
     it('can select an account owned by the snap', async () => {
@@ -1397,13 +1395,13 @@ describe('SnapInterfaceController', () => {
         </Box>
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         element,
       );
 
-      await rootMessenger.call(
+      rootMessenger.call(
         'SnapInterfaceController:updateInterface',
         MOCK_SNAP_ID,
         id,
@@ -1443,7 +1441,7 @@ describe('SnapInterfaceController', () => {
 
       const newState = { foo: { bar: 'baz' } };
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
@@ -1493,7 +1491,7 @@ describe('SnapInterfaceController', () => {
         },
       };
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
@@ -1528,7 +1526,7 @@ describe('SnapInterfaceController', () => {
 
       const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         content,
@@ -1569,7 +1567,7 @@ describe('SnapInterfaceController', () => {
         approvalControllerMock.acceptRequest.bind(approvalControllerMock),
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         <Box>
@@ -1648,7 +1646,7 @@ describe('SnapInterfaceController', () => {
         approvalControllerMock.acceptRequest.bind(approvalControllerMock),
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         <Box>
@@ -1693,7 +1691,7 @@ describe('SnapInterfaceController', () => {
         approvalControllerMock.acceptRequest.bind(approvalControllerMock),
       );
 
-      const id = await rootMessenger.call(
+      const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
         MOCK_SNAP_ID,
         <Box>
