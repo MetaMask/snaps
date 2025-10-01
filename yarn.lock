@@ -3294,9 +3294,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:17.0.1"
+"@metamask/eth-json-rpc-middleware@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/eth-json-rpc-middleware@npm:18.0.0"
   dependencies:
     "@metamask/eth-block-tracker": "npm:^12.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.7"
@@ -3304,13 +3304,13 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.0.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.7.0"
     "@types/bn.js": "npm:^5.1.5"
     bn.js: "npm:^5.2.1"
     klona: "npm:^2.0.6"
     pify: "npm:^5.0.0"
     safe-stable-stringify: "npm:^2.4.3"
-  checksum: 10/6a0709479f7187183f99bd76b2724cb72b4155ded506d939b7625ae17f63bff68bee9828e0d76af06e4d4009eecc87b63059e8796947442e96844a42af161e2f
+  checksum: 10/e25f7e4575d08a23070a46e1653e94b295f8b63816d7cd82f7f2bc8ed9777d4d16d6241016e9f8afe3c5b5e17b400de48e9751d64b3cc0478982f787ec2e586c
   languageName: node
   linkType: hard
 
@@ -4515,7 +4515,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.4.0"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
+    "@metamask/eth-json-rpc-middleware": "npm:^18.0.0"
     "@metamask/json-rpc-engine": "npm:^10.1.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.7"
     "@metamask/key-tree": "npm:^10.1.1"
@@ -4729,7 +4729,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.0, @metamask/utils@npm:^11.8.1":
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0, @metamask/utils@npm:^11.8.1":
   version: 11.8.1
   resolution: "@metamask/utils@npm:11.8.1"
   dependencies:
