@@ -52,7 +52,7 @@
     "@metamask/snaps-utils>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env": true
+        "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
         "@metamask/snaps-utils>@babel/types>@babel/helper-string-parser": true,
@@ -130,6 +130,7 @@
         "process._rawDebug": true
       },
       "packages": {
+        "depcheck>@babel/parser": true,
         "lavamoat>@lavamoat/aa": true,
         "@lavamoat/webpack>browser-resolve": true,
         "lavamoat>lavamoat-core": true,
