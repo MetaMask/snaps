@@ -707,7 +707,6 @@ type FeatureFlags = {
   allowLocalSnaps?: boolean;
   disableSnapInstallation?: boolean;
   rejectInvalidPlatformVersion?: boolean;
-  useCaip25Permission?: boolean;
 
   /**
    * Force any local Snap to be treated as a preinstalled Snap.
@@ -4414,10 +4413,7 @@ export class SnapController extends BaseController<
    * @returns The permissions to grant to the Snap.
    */
   #getPermissionsToGrant(snapId: SnapId, newPermissions: RequestedPermissions) {
-    if (
-      this.#featureFlags.useCaip25Permission &&
-      Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)
-    ) {
+    if (Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)) {
       // This will return the globally selected network if the Snap doesn't have
       // one set.
       const networkClientId = this.messagingSystem.call(
