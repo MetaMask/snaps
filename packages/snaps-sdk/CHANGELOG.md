@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
+- feat!: Sync icon list with extension ([#3656](https://github.com/MetaMask/snaps/pull/3656))
+- chore: Bump @metamask/providers from 22.1.0 to 22.1.1 ([#3634](https://github.com/MetaMask/snaps/pull/3634))
+- chore: Bump @metamask/utils from 11.7.0 to 11.8.1 ([#3648](https://github.com/MetaMask/snaps/pull/3648))
+- chore: Bump @metamask/utils from 11.6.0 to 11.7.0 ([#3628](https://github.com/MetaMask/snaps/pull/3628))
+- fix: Improve a couple of error messages for UI components ([#3625](https://github.com/MetaMask/snaps/pull/3625))
+- chore: Bump @metamask/utils from 11.4.2 to 11.5.0 ([#3623](https://github.com/MetaMask/snaps/pull/3623))
+- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
+- docs: Clarify `transactionOrigin` field ([#3568](https://github.com/MetaMask/snaps/pull/3568))
+
 ## [9.3.0]
 
 ### Added

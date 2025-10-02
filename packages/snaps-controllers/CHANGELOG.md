@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore!: Make interface actions synchronous ([#3361](https://github.com/MetaMask/snaps/pull/3361))
+- perf: Simplify JSON-RPC failure validation ([#3661](https://github.com/MetaMask/snaps/pull/3661))
+- feat!: Remove `useCaip25Permission` feature flag and enable behaviour by default ([#3413](https://github.com/MetaMask/snaps/pull/3413))
+- perf: Move request inspection outside of the executor ([#3356](https://github.com/MetaMask/snaps/pull/3356))
+- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
+- chore: Fix broken coverage script ([#3657](https://github.com/MetaMask/snaps/pull/3657))
+- chore: Bump @metamask/base-controller from 8.3.0 to 8.4.0 ([#3638](https://github.com/MetaMask/snaps/pull/3638))
+- chore: Bump @metamask/json-rpc-engine from 10.0.3 to 10.1.0 ([#3645](https://github.com/MetaMask/snaps/pull/3645))
+- chore: Bump @metamask/utils from 11.7.0 to 11.8.1 ([#3648](https://github.com/MetaMask/snaps/pull/3648))
+- chore: Bump @metamask/base-controller from 8.2.0 to 8.3.0 ([#3630](https://github.com/MetaMask/snaps/pull/3630))
+- chore: Bump @metamask/utils from 11.6.0 to 11.7.0 ([#3628](https://github.com/MetaMask/snaps/pull/3628))
+- feat!: Allow updating preinstalled Snaps via the registry ([#3616](https://github.com/MetaMask/snaps/pull/3616))
+- refactor!: Use hash private functions for updating internals ([#3601](https://github.com/MetaMask/snaps/pull/3601))
+- fix: Properly roll back `initialConnections` ([#3618](https://github.com/MetaMask/snaps/pull/3618))
+- chore: Bump @metamask/base-controller from 8.1.0 to 8.2.0 ([#3607](https://github.com/MetaMask/snaps/pull/3607))
+- fix: Reduce from error to warning for message when failing to terminate ([#3621](https://github.com/MetaMask/snaps/pull/3621))
+- chore: Bump @metamask/utils from 11.4.2 to 11.5.0 ([#3623](https://github.com/MetaMask/snaps/pull/3623))
+- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
+
 ### Added
 
 - Add two new controller state metadata properties: `includeInStateLogs` and `usedInUi` ([#3632](https://github.com/MetaMask/snaps/pull/3632))
