@@ -476,7 +476,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    await createInterface(content);
+    createInterface(content);
 
     expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:createInterface',
@@ -514,9 +514,9 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = await createInterface(text('foo'));
+    const id = createInterface(text('foo'));
 
-    await updateInterface(id, content);
+    updateInterface(id, content);
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
@@ -555,7 +555,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = await createInterface(text('foo'));
+    const id = createInterface(text('foo'));
 
     const result = getInterfaceState(id);
 
@@ -596,7 +596,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = await createInterface(text('foo'), { bar: 'baz' });
+    const id = createInterface(text('foo'), { bar: 'baz' });
 
     const result = getInterfaceContext(id);
 

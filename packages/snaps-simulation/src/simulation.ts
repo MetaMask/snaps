@@ -230,10 +230,7 @@ export type PermittedMiddlewareHooks = {
    * @param context - The context of the interface.
    * @returns The ID of the created interface.
    */
-  createInterface: (
-    content: Component,
-    context?: InterfaceContext,
-  ) => Promise<string>;
+  createInterface: (content: Component, context?: InterfaceContext) => string;
 
   /**
    * A hook that updates an interface for the Snap. This hook is bound to the
@@ -242,7 +239,7 @@ export type PermittedMiddlewareHooks = {
    * @param id - The ID of the interface to update.
    * @param content - The content of the interface.
    */
-  updateInterface: (id: string, content: Component) => Promise<void>;
+  updateInterface: (id: string, content: Component) => void;
 
   /**
    * A hook that gets the state of an interface for the Snap. This hook is bound
@@ -477,13 +474,13 @@ export function getPermittedHooks(
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
 
-    createInterface: async (...args) =>
+    createInterface: (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:createInterface',
         snapId,
         ...args,
       ),
-    updateInterface: async (...args) =>
+    updateInterface: (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:updateInterface',
         snapId,
