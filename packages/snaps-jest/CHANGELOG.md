@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.1]
+
 ### Uncategorized
 
 - chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
@@ -419,7 +421,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.1...HEAD
+[9.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.0...@metamask/snaps-jest@9.4.1
 [9.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.3.0...@metamask/snaps-jest@9.4.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.2.0...@metamask/snaps-jest@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.1.0...@metamask/snaps-jest@9.2.0
