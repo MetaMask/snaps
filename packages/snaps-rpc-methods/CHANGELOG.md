@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.5.2]
+
+### Changed
+
+- Reduce JSON validation during state updates ([#3660](https://github.com/MetaMask/snaps/pull/3660))
+  - As part of this change, JSON sizing limits are not longer enforced for preinstalled Snaps.
+- Adjust hooks after interface actions were made synchronous ([#3361](https://github.com/MetaMask/snaps/pull/3361))
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612))
+
 ## [13.5.1]
 
 ### Fixed
@@ -500,7 +509,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.2...HEAD
+[13.5.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.1...@metamask/snaps-rpc-methods@13.5.2
 [13.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.0...@metamask/snaps-rpc-methods@13.5.1
 [13.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.4.0...@metamask/snaps-rpc-methods@13.5.0
 [13.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.3.0...@metamask/snaps-rpc-methods@13.4.0

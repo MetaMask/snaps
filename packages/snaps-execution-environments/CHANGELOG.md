@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.2]
+
+### Changed
+
+- Move JSON-RPC request inspection outside of the executor ([#3356](https://github.com/MetaMask/snaps/pull/3356))
+  - This reduces the amount of messages being passed around when using the `snap.request` function.
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612), [#3659](https://github.com/MetaMask/snaps/pull/3659))
+
 ## [10.2.1]
 
 ### Changed
@@ -555,7 +563,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.2...HEAD
+[10.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...@metamask/snaps-execution-environments@10.2.2
 [10.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...@metamask/snaps-execution-environments@10.2.1
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.1.0...@metamask/snaps-execution-environments@10.2.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.0.0...@metamask/snaps-execution-environments@10.1.0

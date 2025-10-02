@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.2]
+
+### Changed
+
+- Adjust hooks after changes in RPC method imlementations ([#3361](https://github.com/MetaMask/snaps/pull/3361), [#3660](https://github.com/MetaMask/snaps/pull/3660))
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612))
+
 ## [3.4.1]
 
 ### Fixed
@@ -210,7 +217,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.2...HEAD
+[3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.1...@metamask/snaps-simulation@3.4.2
 [3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.0...@metamask/snaps-simulation@3.4.1
 [3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.3.0...@metamask/snaps-simulation@3.4.0
 [3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.2.0...@metamask/snaps-simulation@3.3.0
