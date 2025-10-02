@@ -213,7 +213,7 @@ export async function getInterfaceFromResult(
       'The Snap returned an invalid interface.',
     );
 
-    const id = await controllerMessenger.call(
+    const id = controllerMessenger.call(
       'SnapInterfaceController:createInterface',
       snapId,
       result.content as ComponentOrElement,

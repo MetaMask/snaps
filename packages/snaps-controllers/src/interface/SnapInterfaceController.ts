@@ -277,14 +277,14 @@ export class SnapInterfaceController extends BaseController<
    * @param contentType - The type of content.
    * @returns The newly interface id.
    */
-  async createInterface(
+  createInterface(
     snapId: SnapId,
     content: ComponentOrElement,
     context?: InterfaceContext,
     contentType?: ContentType,
   ) {
     const element = getJsxInterface(content);
-    await this.#validateContent(element);
+    this.#validateContent(element);
     validateInterfaceContext(context);
 
     const id = nanoid();
@@ -333,7 +333,7 @@ export class SnapInterfaceController extends BaseController<
    * @param content - The new content.
    * @param context - An optional interface context object.
    */
-  async updateInterface(
+  updateInterface(
     snapId: SnapId,
     id: string,
     content: ComponentOrElement,
@@ -341,7 +341,7 @@ export class SnapInterfaceController extends BaseController<
   ) {
     this.#validateArgs(snapId, id);
     const element = getJsxInterface(content);
-    await this.#validateContent(element);
+    this.#validateContent(element);
     validateInterfaceContext(context);
 
     const oldState = this.state.interfaces[id].state;
@@ -543,7 +543,7 @@ export class SnapInterfaceController extends BaseController<
    *
    * @param element - The JSX element to verify.
    */
-  async #validateContent(element: JSXElement) {
+  #validateContent(element: JSXElement) {
     // We assume the validity of this JSON to be validated by the caller.
     // E.g., in the RPC method implementation.
     const size = getJsonSizeUnsafe(element);

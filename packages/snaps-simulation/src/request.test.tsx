@@ -144,7 +144,7 @@ describe('handleRequest', () => {
     });
 
     const content = text('foo');
-    const id = await interfaceController.createInterface(
+    const id = interfaceController.createInterface(
       'local:http://localhost:4242' as SnapId,
       content,
     );
@@ -362,7 +362,7 @@ describe('getInterfaceApi', () => {
     });
     const content = text('foo');
 
-    const id = await interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
 
     const getInterface = await getInterfaceApi(
       { id },
