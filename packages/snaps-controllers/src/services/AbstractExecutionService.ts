@@ -7,6 +7,7 @@ import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
 import type {
   Json,
+  JsonRpcError as JsonRpcErrorType,
   JsonRpcNotification,
   JsonRpcRequest,
 } from '@metamask/utils';
@@ -15,7 +16,6 @@ import {
   assertIsJsonRpcRequest,
   hasProperty,
   inMilliseconds,
-  isJsonRpcFailure,
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
@@ -441,12 +441,10 @@ export abstract class AbstractExecutionService<WorkerType>
     log('Parent: Sending Command', message);
     const response = await job.rpcEngine.handle(message);
 
-    if (isJsonRpcFailure(response)) {
-      throw new JsonRpcError(
-        response.error.code,
-        response.error.message,
-        response.error.data,
-      );
+    // We don't need full validation of the response here because we control it.
+    if (hasProperty(response, 'error')) {
+      const error = response.error as JsonRpcErrorType;
+      throw new JsonRpcError(error.code, error.message, error.data);
     }
 
     return response.result;
