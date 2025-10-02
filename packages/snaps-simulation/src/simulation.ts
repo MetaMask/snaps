@@ -141,6 +141,14 @@ export type RestrictedMiddlewareHooks = {
    * @returns The cryptographic functions to use for the client.
    */
   getClientCryptography: () => CryptographicFunctions;
+
+  /**
+   * A hook that returns metadata about a given Snap.
+   *
+   * @param snapId - The ID of a Snap.
+   * @returns The metadata for the given Snap.
+   */
+  getSnap: (snapId: string) => Snap;
 };
 
 export type PermittedMiddlewareHooks = {
@@ -450,6 +458,7 @@ export function getRestrictedHooks(
     ),
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
+    getSnap: getGetSnapImplementation(true),
   };
 }
 
