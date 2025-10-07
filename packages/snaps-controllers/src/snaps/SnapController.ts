@@ -3588,6 +3588,13 @@ export class SnapController extends BaseController<
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     this.#assertCanUsePlatform();
 
+    const snap = this.get(snapId);
+
+    assert(
+      snap,
+      `The Snap "${snapId}" is not installed. Please install it before invoking it.`,
+    );
+
     assert(
       origin === METAMASK_ORIGIN || isValidUrl(origin),
       "'origin' must be a valid URL or 'metamask'.",
@@ -3666,11 +3673,11 @@ export class SnapController extends BaseController<
       throw new Error(`"${handlerType}" can only be invoked by MetaMask.`);
     }
 
-    if (!this.state.snaps[snapId].enabled) {
+    if (!snap.enabled) {
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
-    if (this.state.snaps[snapId].status === SnapStatus.Installing) {
+    if (snap.status === SnapStatus.Installing) {
       throw new Error(
         `Snap "${snapId}" is currently being installed. Please try again later.`,
       );
