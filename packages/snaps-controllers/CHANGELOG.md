@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- perf: Stop creating error before needing to throw ([#3664](https://github.com/MetaMask/snaps/pull/3664))
+
 ## [15.0.0]
 
 ### Added
