@@ -1952,7 +1952,7 @@ export class SnapController extends BaseController<
    */
   getExpect(snapId: SnapId): Snap {
     const snap = this.get(snapId);
-    assert(snap !== undefined, new Error(`Snap "${snapId}" not found.`));
+    assert(snap !== undefined, `Snap "${snapId}" not found.`);
     return snap;
   }
 
@@ -4169,7 +4169,7 @@ export class SnapController extends BaseController<
   #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
     assert(
       this.#rollbackSnapshots.get(snapId) === undefined,
-      new Error(`Snap "${snapId}" rollback snapshot already exists.`),
+      `Snap "${snapId}" rollback snapshot already exists.`,
     );
 
     this.#rollbackSnapshots.set(snapId, {
@@ -4182,7 +4182,7 @@ export class SnapController extends BaseController<
 
     assert(
       newRollbackSnapshot !== undefined,
-      new Error(`Snapshot creation failed for ${snapId}.`),
+      `Snapshot creation failed for ${snapId}.`,
     );
     return newRollbackSnapshot;
   }
@@ -4272,10 +4272,7 @@ export class SnapController extends BaseController<
 
   #getRuntimeExpect(snapId: SnapId): SnapRuntimeData {
     const runtime = this.#getRuntime(snapId);
-    assert(
-      runtime !== undefined,
-      new Error(`Snap "${snapId}" runtime data not found`),
-    );
+    assert(runtime !== undefined, `Snap "${snapId}" runtime data not found`);
     return runtime;
   }
 
