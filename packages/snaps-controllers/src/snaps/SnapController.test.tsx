@@ -2192,6 +2192,27 @@ describe('SnapController', () => {
   });
 
   describe('handleRequest', () => {
+    it('throws if the Snap is not installed', async () => {
+      const snapController = getSnapController();
+
+      await expect(
+        snapController.handleRequest({
+          snapId: 'npm:foo' as SnapId,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnUserInput,
+          request: {
+            jsonrpc: '2.0',
+            method: 'test',
+            params: { id: MOCK_INTERFACE_ID },
+          },
+        }),
+      ).rejects.toThrow(
+        'The Snap "npm:foo" is not installed. Please install it before invoking it.',
+      );
+
+      snapController.destroy();
+    });
+
     it.each(
       Object.keys(handlerEndowments).filter(
         (handler) => handlerEndowments[handler as HandlerType],
