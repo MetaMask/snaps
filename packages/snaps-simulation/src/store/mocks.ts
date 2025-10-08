@@ -7,10 +7,11 @@ import type { JsonRpcMockImplementation } from '../types';
 export type JsonRpcMock = {
   id: string;
   implementation: JsonRpcMockImplementation;
+  once?: boolean;
 };
 
 export type MocksState = {
-  jsonRpc: Record<string, JsonRpcMockImplementation>;
+  jsonRpc: Record<string, Omit<JsonRpcMock, 'id'>>;
 };
 
 /**
@@ -25,7 +26,10 @@ export const mocksSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     addJsonRpcMock: (state, action: PayloadAction<JsonRpcMock>) => {
-      state.jsonRpc[action.payload.id] = action.payload.implementation;
+      state.jsonRpc[action.payload.id] = {
+        implementation: action.payload.implementation,
+        once: action.payload.once,
+      };
     },
     removeJsonRpcMock: (state, action: PayloadAction<string>) => {
       delete state.jsonRpc[action.payload];

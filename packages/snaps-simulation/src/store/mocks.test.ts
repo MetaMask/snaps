@@ -1,6 +1,5 @@
 import {
   addJsonRpcMock,
-  getJsonRpcMock,
   getJsonRpcMocks,
   mocksSlice,
   removeJsonRpcMock,
@@ -14,14 +13,18 @@ describe('mocksSlice', () => {
           jsonRpc: {},
         },
         addJsonRpcMock({
-          method: 'foo',
-          result: 'bar',
+          id: 'foo',
+          implementation: () => 'bar',
+          once: false,
         }),
       );
 
       expect(state).toStrictEqual({
         jsonRpc: {
-          foo: 'bar',
+          foo: {
+            implementation: expect.any(Function),
+            once: false,
+          },
         },
       });
     });
@@ -32,7 +35,10 @@ describe('mocksSlice', () => {
       const state = mocksSlice.reducer(
         {
           jsonRpc: {
-            foo: 'bar',
+            foo: {
+              implementation: () => 'bar',
+              once: false,
+            },
           },
         },
         removeJsonRpcMock('foo'),
@@ -52,30 +58,18 @@ describe('getJsonRpcMocks', () => {
       getJsonRpcMocks({
         mocks: {
           jsonRpc: {
-            foo: 'bar',
+            foo: {
+              implementation: () => 'bar',
+              once: false,
+            },
           },
         },
       }),
     ).toStrictEqual({
-      foo: 'bar',
+      foo: {
+        implementation: expect.any(Function),
+        once: false,
+      },
     });
-  });
-});
-
-describe('getJsonRpcMock', () => {
-  it('gets a JSON-RPC mock from the state', () => {
-    expect(
-      getJsonRpcMock(
-        // @ts-expect-error - Partially defined state.
-        {
-          mocks: {
-            jsonRpc: {
-              foo: 'bar',
-            },
-          },
-        },
-        'foo',
-      ),
-    ).toBe('bar');
   });
 });
