@@ -1,7 +1,8 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { create } from '@metamask/superstruct';
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 import { createModuleLogger } from '@metamask/utils';
+import { nanoid } from '@reduxjs/toolkit';
 
 import { rootLogger } from './logger';
 import type { SimulationOptions } from './options';
@@ -557,14 +558,26 @@ export function getHelpers({
     mockJsonRpc(mock: JsonRpcMockOptions) {
       log('Mocking JSON-RPC request %o.', mock);
 
-      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
-      store.dispatch(addJsonRpcMock({ method, result }));
+      const id = nanoid();
+
+      if (typeof mock === 'function') {
+        store.dispatch(addJsonRpcMock({ id, implementation: mock }));
+      } else {
+        const { method, result } = create(mock, JsonRpcMockOptionsStruct);
+        const implementation = (request: JsonRpcRequest) => {
+          if (request.method === method) {
+            return result;
+          }
+          return undefined;
+        };
+        store.dispatch(addJsonRpcMock({ id, implementation }));
+      }
 
       return {
         unmock() {
           log('Unmocking JSON-RPC request %o.', mock);
 
-          store.dispatch(removeJsonRpcMock(method));
+          store.dispatch(removeJsonRpcMock(id));
         },
       };
     },

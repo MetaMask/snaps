@@ -12,6 +12,7 @@ import type {
   Json,
   JsonRpcId,
   JsonRpcParams,
+  JsonRpcRequest,
 } from '@metamask/utils';
 
 import type {
@@ -356,18 +357,24 @@ export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 /**
  * The options to use for mocking a JSON-RPC request.
  */
-export type JsonRpcMockOptions = {
-  /**
-   * The JSON-RPC request method.
-   */
-  method: string;
+export type JsonRpcMockOptions =
+  | {
+      /**
+       * The JSON-RPC request method.
+       */
+      method: string;
 
-  /**
-   * The JSON-RPC response, which will be returned when a request with the
-   * specified method is sent.
-   */
-  result: Json;
-};
+      /**
+       * The JSON-RPC response, which will be returned when a request with the
+       * specified method is sent.
+       */
+      result: Json;
+    }
+  | JsonRpcMockImplementation;
+
+export type JsonRpcMockImplementation = (
+  request: JsonRpcRequest,
+) => Promise<Json> | Json | undefined;
 
 /**
  * This is the main entry point to interact with the snap. It is returned by
