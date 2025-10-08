@@ -568,6 +568,35 @@ export type Snap = {
   };
 
   /**
+   * Mock a JSON-RPC request once. This will cause the snap to respond with the
+   * specified response when a request with the specified method is sent.
+   *
+   * @param mock - The mock options.
+   * @param mock.method - The JSON-RPC request method.
+   * @param mock.result - The JSON-RPC response, which will be returned when a
+   * request with the specified method is sent.
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   */
+  mockJsonRpcOnce(mock: JsonRpcMockOptions): {
+    /**
+     * Remove the mock.
+     */
+    unmock(): void;
+  };
+
+  /**
    * Close the page running the snap. This is mainly useful for cleaning up
    * the test environment, and calling it is not strictly necessary.
    *
