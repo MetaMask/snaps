@@ -372,6 +372,12 @@ export type JsonRpcMockOptions =
     }
   | JsonRpcMockImplementation;
 
+/**
+ * A function that can be used to mock a JSON-RPC implementation.
+ *
+ * @param request - The JSON-RPC request.
+ * @returns A valid JSON value, optionally as a promise or undefined.
+ */
 export type JsonRpcMockImplementation = (
   request: JsonRpcRequest,
 ) => Promise<Json> | Json | undefined;
@@ -559,6 +565,21 @@ export type Snap = {
    * // In the Snap
    * const response =
    *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
    */
   mockJsonRpc(mock: JsonRpcMockOptions): {
     /**
@@ -581,6 +602,24 @@ export type Snap = {
    * // In the test
    * const snap = await installSnap();
    * snap.mockJsonRpcOnce({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
    *
    * // In the Snap
    * const response =

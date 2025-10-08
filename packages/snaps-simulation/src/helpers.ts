@@ -214,6 +214,21 @@ export type SnapHelpers = {
    * // In the Snap
    * const response =
    *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
    */
   mockJsonRpc(mock: JsonRpcMockOptions): {
     /**
@@ -236,6 +251,24 @@ export type SnapHelpers = {
    * // In the test
    * const snap = await installSnap();
    * snap.mockJsonRpcOnce({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
    *
    * // In the Snap
    * const response =

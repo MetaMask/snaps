@@ -999,5 +999,81 @@ describe('helpers', () => {
       await close();
       await closeServer();
     });
+
+    it('supports queueing JSON-RPC mocks', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onRpcRequest = async () => {
+            return await ethereum.request({
+              method: 'foo',
+            });
+          };
+        `,
+        manifest: getSnapManifest({
+          initialPermissions: {
+            'endowment:ethereum-provider': {},
+          },
+        }),
+      });
+
+      const { request, close, mockJsonRpcOnce } = await installSnap(snapId);
+
+      mockJsonRpcOnce({
+        method: 'foo',
+        result: 'mock',
+      });
+
+      mockJsonRpcOnce({
+        method: 'foo',
+        result: 'mock2',
+      });
+
+      const response1 = await request({
+        method: 'foo',
+      });
+
+      expect(response1).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'mock',
+          },
+        }),
+      );
+
+      const response2 = await request({
+        method: 'foo',
+      });
+
+      expect(response2).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'mock2',
+          },
+        }),
+      );
+
+      const unmockedResponse = await request({
+        method: 'foo',
+      });
+
+      expect(unmockedResponse).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            error: expect.objectContaining({
+              code: -32601,
+              message: 'The method "foo" does not exist / is not available.',
+            }),
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
   });
 });
