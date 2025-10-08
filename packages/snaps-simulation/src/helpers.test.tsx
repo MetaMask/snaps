@@ -957,6 +957,11 @@ describe('helpers', () => {
 
       const { request, close, mockJsonRpcOnce } = await installSnap(snapId);
       mockJsonRpcOnce({
+        method: 'foo_2',
+        result: 'invalid_mock',
+      });
+
+      mockJsonRpcOnce({
         method: 'foo',
         result: 'mock',
       });
