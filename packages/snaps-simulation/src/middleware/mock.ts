@@ -23,11 +23,11 @@ export function createMockMiddleware(
       const { implementation, once } = mocks[key];
       const result = await implementation(request);
 
-      if (result !== undefined && once) {
-        store.dispatch(removeJsonRpcMock(key));
-      }
-
-      if (result) {
+      if (result !== undefined) {
+        if (once) {
+          store.dispatch(removeJsonRpcMock(key));
+        }
+      
         response.result = result;
         return;
       }
