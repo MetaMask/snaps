@@ -27,7 +27,7 @@ export function createMockMiddleware(
         if (once) {
           store.dispatch(removeJsonRpcMock(key));
         }
-      
+
         response.result = result;
         return;
       }
