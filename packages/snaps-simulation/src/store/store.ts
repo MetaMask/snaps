@@ -27,7 +27,9 @@ export function createStore({ state, unencryptedState }: SimulationOptions) {
       ui: uiSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(
+        sagaMiddleware,
+      ),
   });
 
   // Set initial state for the Snap.

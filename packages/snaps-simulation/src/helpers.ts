@@ -1,7 +1,8 @@
 import { HandlerType } from '@metamask/snaps-utils';
 import { create } from '@metamask/superstruct';
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 import { createModuleLogger } from '@metamask/utils';
+import { nanoid } from '@reduxjs/toolkit';
 
 import { rootLogger } from './logger';
 import type { SimulationOptions } from './options';
@@ -213,8 +214,70 @@ export type SnapHelpers = {
    * // In the Snap
    * const response =
    *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
    */
   mockJsonRpc(mock: JsonRpcMockOptions): {
+    /**
+     * Remove the mock.
+     */
+    unmock(): void;
+  };
+
+  /**
+   * Mock a JSON-RPC request once. This will cause the snap to respond with the
+   * specified response when a request with the specified method is sent.
+   *
+   * @param mock - The mock options.
+   * @param mock.method - The JSON-RPC request method.
+   * @param mock.result - The JSON-RPC response, which will be returned when a
+   * request with the specified method is sent.
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   */
+  mockJsonRpcOnce(mock: JsonRpcMockOptions): {
     /**
      * Remove the mock.
      */
@@ -316,6 +379,33 @@ export function getHelpers({
       handler: HandlerType.OnKeyringRequest,
       request,
     });
+  };
+
+  const mockJsonRpc = (mock: JsonRpcMockOptions, once: boolean) => {
+    log('Mocking JSON-RPC request %o.', mock);
+
+    const id = nanoid();
+
+    if (typeof mock === 'function') {
+      store.dispatch(addJsonRpcMock({ id, implementation: mock, once }));
+    } else {
+      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
+      const implementation = (request: JsonRpcRequest) => {
+        if (request.method === method) {
+          return result;
+        }
+        return undefined;
+      };
+      store.dispatch(addJsonRpcMock({ id, implementation, once }));
+    }
+
+    return {
+      unmock() {
+        log('Unmocking JSON-RPC request %o.', mock);
+
+        store.dispatch(removeJsonRpcMock(id));
+      },
+    };
   };
 
   return {
@@ -555,18 +645,11 @@ export function getHelpers({
     },
 
     mockJsonRpc(mock: JsonRpcMockOptions) {
-      log('Mocking JSON-RPC request %o.', mock);
+      return mockJsonRpc(mock, false);
+    },
 
-      const { method, result } = create(mock, JsonRpcMockOptionsStruct);
-      store.dispatch(addJsonRpcMock({ method, result }));
-
-      return {
-        unmock() {
-          log('Unmocking JSON-RPC request %o.', mock);
-
-          store.dispatch(removeJsonRpcMock(method));
-        },
-      };
+    mockJsonRpcOnce(mock: JsonRpcMockOptions) {
+      return mockJsonRpc(mock, true);
     },
 
     close: async () => {

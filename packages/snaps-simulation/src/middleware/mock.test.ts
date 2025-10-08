@@ -10,8 +10,9 @@ describe('createMockMiddleware', () => {
     const { store } = createStore(getMockOptions());
     store.dispatch(
       addJsonRpcMock({
-        method: 'foo',
-        result: 'bar',
+        id: 'foo',
+        implementation: () => 'bar',
+        once: false,
       }),
     );
 

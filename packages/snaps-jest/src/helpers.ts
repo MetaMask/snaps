@@ -211,6 +211,7 @@ export async function installSnap<
     onProtocolRequest,
     onClientRequest,
     mockJsonRpc,
+    mockJsonRpcOnce,
     close,
   } = await getEnvironment().installSnap(...resolvedOptions);
   /* eslint-enable @typescript-eslint/unbound-method */
@@ -233,6 +234,7 @@ export async function installSnap<
     onProtocolRequest,
     onClientRequest,
     mockJsonRpc,
+    mockJsonRpcOnce,
     close: async () => {
       log('Closing execution service.');
       logInfo(
