@@ -23,7 +23,6 @@ describe('builder', () => {
       targetName: WALLET_SNAP_PERMISSION_KEY,
       specificationBuilder: expect.any(Function),
       methodHooks: {
-        getSnap: true,
         handleSnapRpcRequest: true,
       },
     });
@@ -33,7 +32,6 @@ describe('builder', () => {
     expect(
       invokeSnapBuilder.specificationBuilder({
         methodHooks: {
-          getSnap: jest.fn(),
           handleSnapRpcRequest: jest.fn(),
         },
       }),
@@ -53,7 +51,6 @@ describe('builder', () => {
 describe('specificationBuilder', () => {
   const specification = invokeSnapBuilder.specificationBuilder({
     methodHooks: {
-      getSnap: jest.fn(),
       handleSnapRpcRequest: jest.fn(),
     },
   });
@@ -90,7 +87,6 @@ describe('implementation', () => {
     }) as any;
   it('calls handleSnapRpcRequest', async () => {
     const hooks = getMockHooks();
-    hooks.getSnap.mockImplementation(getTruncatedSnap);
     const implementation = getInvokeSnapImplementation(hooks);
     await implementation({
       context: { origin: MOCK_ORIGIN },
@@ -101,8 +97,6 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.getSnap).toHaveBeenCalledTimes(1);
-    expect(hooks.getSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
     expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
       handler: 'onRpcRequest',
       origin: MOCK_ORIGIN,
@@ -112,27 +106,6 @@ describe('implementation', () => {
       },
       snapId: MOCK_SNAP_ID,
     });
-  });
-
-  it('throws if snap is not installed', async () => {
-    const hooks = getMockHooks();
-    const implementation = getInvokeSnapImplementation(hooks);
-    await expect(
-      implementation({
-        context: { origin: MOCK_ORIGIN },
-        method: WALLET_SNAP_PERMISSION_KEY,
-        params: {
-          snapId: MOCK_SNAP_ID,
-          request: { method: 'hello', params: {} },
-        },
-      }),
-    ).rejects.toThrow(
-      `The snap "${MOCK_SNAP_ID}" is not installed. Please install it first, before invoking the snap.`,
-    );
-    expect(hooks.getSnap).toHaveBeenCalledTimes(1);
-    expect(hooks.getSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
-
-    expect(hooks.handleSnapRpcRequest).not.toHaveBeenCalled();
   });
 });
 

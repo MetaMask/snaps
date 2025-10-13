@@ -107,8 +107,9 @@ async function invokeKeyringImplementation(
 
   if (!getSnap(snapId)) {
     return end(
+      // Mirror error message from SnapController.
       rpcErrors.invalidRequest({
-        message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
+        message: `The Snap "${snapId}" is not installed. Please install it before invoking it.`,
       }),
     );
   }
