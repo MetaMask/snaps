@@ -12,7 +12,7 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
 } from '@metamask/snaps-sdk';
-import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
+import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
@@ -37,7 +37,6 @@ export type GetPermittedSnaps = {
 type AllowedActions = InstallSnaps | GetPermittedSnaps;
 
 export type InvokeSnapMethodHooks = {
-  getSnap: (snapId: string) => Snap | undefined;
   handleSnapRpcRequest: ({
     snapId,
     origin,
@@ -139,7 +138,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
-  getSnap: true,
   handleSnapRpcRequest: true,
 };
 
@@ -153,13 +151,11 @@ export const invokeSnapBuilder = Object.freeze({
  * Builds the method implementation for `wallet_snap_*`.
  *
  * @param hooks - The RPC method hooks.
- * @param hooks.getSnap - A function that retrieves all information stored about a snap.
  * @param hooks.handleSnapRpcRequest - A function that sends an RPC request to a snap's RPC handler or throws if that fails.
  * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
  * @throws If the params are invalid.
  */
 export function getInvokeSnapImplementation({
-  getSnap,
   handleSnapRpcRequest,
 }: InvokeSnapMethodHooks) {
   return async function invokeSnap(
@@ -168,12 +164,6 @@ export function getInvokeSnapImplementation({
     const { params = {}, context } = options;
 
     const { snapId, request } = params as InvokeSnapParams;
-
-    if (!getSnap(snapId)) {
-      throw rpcErrors.invalidRequest({
-        message: `The snap "${snapId}" is not installed. Please install it first, before invoking the snap.`,
-      });
-    }
 
     const { origin } = context;
 
