@@ -1,7 +1,6 @@
 {
   "name": "@metamask/test-snaps",
   "version": "2.28.1",
-  "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "keywords": [
     "MetaMask",
@@ -18,7 +17,12 @@
   },
   "license": "ISC",
   "sideEffects": false,
-  "files": [],
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "build:clean": "yarn clean && yarn build",
