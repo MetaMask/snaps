@@ -20,9 +20,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "build:clean": "yarn clean && yarn build",
@@ -123,5 +120,8 @@
   },
   "engines": {
     "node": "^20 || >=22"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
