@@ -32,6 +32,7 @@
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --parallel --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",
@@ -122,6 +123,7 @@
     "node": "^20 || >=22"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

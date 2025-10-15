@@ -109,7 +109,8 @@ module.exports = defineConfig({
         if (
           !isPrivate &&
           !isExample &&
-          workspace.cwd !== 'packages/snaps-sandbox'
+          workspace.cwd !== 'packages/snaps-sandbox' &&
+          workspace.cwd !== 'packages/test-snaps'
         ) {
           // All non-root, non-example packages must set up ESM- and
           // CommonJS-compatible exports correctly.
