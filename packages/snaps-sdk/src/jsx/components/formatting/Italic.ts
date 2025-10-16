@@ -23,7 +23,7 @@ export type ItalicProps = {
 const TYPE = 'Italic';
 
 /**
- * An italic component, which is used to display text in italic. This componen
+ * An italic component, which is used to display text in italic. This component
  * can only be used as a child of the {@link Text} component.
  *
  * @param props - The props of the component.
