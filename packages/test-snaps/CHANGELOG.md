@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0]
+
+### Changed
+
+- Make @metamask/test-snaps-site publishable ([#3679](https://github.com/MetaMask/snaps/pull/3679))
+
 ## [2.28.1]
 
 ### Fixed
