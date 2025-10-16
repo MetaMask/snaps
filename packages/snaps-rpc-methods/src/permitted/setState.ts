@@ -3,7 +3,11 @@ import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { SetStateParams, SetStateResult } from '@metamask/snaps-sdk';
 import type { JsonObject } from '@metamask/snaps-sdk/jsx';
-import { type InferMatching } from '@metamask/snaps-utils';
+import {
+  getJsonSizeUnsafe,
+  type InferMatching,
+  type Snap,
+} from '@metamask/snaps-utils';
 import {
   boolean,
   create,
@@ -16,13 +20,7 @@ import type {
   Json,
   JsonRpcRequest,
 } from '@metamask/utils';
-import {
-  getJsonSize,
-  hasProperty,
-  isObject,
-  assert,
-  JsonStruct,
-} from '@metamask/utils';
+import { hasProperty, isObject, assert, JsonStruct } from '@metamask/utils';
 
 import {
   manageStateBuilder,
@@ -36,6 +34,7 @@ const hookNames: MethodHooksObject<SetStateHooks> = {
   getSnapState: true,
   getUnlockPromise: true,
   updateSnapState: true,
+  getSnap: true,
 };
 
 /**
@@ -85,6 +84,13 @@ export type SetStateHooks = {
     newState: Record<string, Json>,
     encrypted: boolean,
   ) => Promise<void>;
+
+  /**
+   * Get Snap metadata.
+   *
+   * @param snapId - The ID of a Snap.
+   */
+  getSnap: (snapId: string) => Snap | undefined;
 };
 
 const SetStateParametersStruct = objectStruct({
@@ -112,6 +118,7 @@ export type SetStateParameters = InferMatching<
  * @param hooks.getSnapState - Get the state of the requesting Snap.
  * @param hooks.getUnlockPromise - Wait for the extension to be unlocked.
  * @param hooks.updateSnapState - Update the state of the requesting Snap.
+ * @param hooks.getSnap - The hook function to get Snap metadata.
  * @returns Nothing.
  */
 async function setStateImplementation(
@@ -124,6 +131,7 @@ async function setStateImplementation(
     getSnapState,
     getUnlockPromise,
     updateSnapState,
+    getSnap,
   }: SetStateHooks,
 ): Promise<void> {
   const { params } = request;
@@ -150,13 +158,20 @@ async function setStateImplementation(
 
     const newState = await getNewState(key, value, encrypted, getSnapState);
 
-    const size = getJsonSize(newState);
-    if (size > STORAGE_SIZE_LIMIT) {
-      throw rpcErrors.invalidParams({
-        message: `Invalid params: The new state must not exceed ${
-          STORAGE_SIZE_LIMIT / 1_000_000
-        } MB in size.`,
-      });
+    const snap = getSnap(
+      (request as JsonRpcRequest<SetStateParams> & { origin: string }).origin,
+    );
+
+    if (!snap?.preinstalled) {
+      // We know that the state is valid JSON as per previous validation.
+      const size = getJsonSizeUnsafe(newState, true);
+      if (size > STORAGE_SIZE_LIMIT) {
+        throw rpcErrors.invalidParams({
+          message: `Invalid params: The new state must not exceed ${
+            STORAGE_SIZE_LIMIT / 1_000_000
+          } MB in size.`,
+        });
+      }
     }
 
     await updateSnapState(newState, encrypted);

@@ -1,8 +1,11 @@
-import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import {
+  createAsyncMiddleware,
+  type JsonRpcMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 
 import type { Store } from '../store';
-import { getJsonRpcMock } from '../store/mocks';
+import { getJsonRpcMocks, removeJsonRpcMock } from '../store/mocks';
 
 /**
  * Create a middleware for handling JSON-RPC methods that have been mocked.
@@ -13,13 +16,23 @@ import { getJsonRpcMock } from '../store/mocks';
 export function createMockMiddleware(
   store: Store,
 ): JsonRpcMiddleware<JsonRpcParams, Json> {
-  return function mockMiddleware(request, response, next, end) {
-    const result = getJsonRpcMock(store.getState(), request.method);
-    if (result) {
-      response.result = result;
-      return end();
+  return createAsyncMiddleware(async (request, response, next) => {
+    const mocks = getJsonRpcMocks(store.getState());
+    const keys = Object.keys(mocks);
+    for (const key of keys) {
+      const { implementation, once } = mocks[key];
+      const result = await implementation(request);
+
+      if (result !== undefined) {
+        if (once) {
+          store.dispatch(removeJsonRpcMock(key));
+        }
+
+        response.result = result;
+        return;
+      }
     }
 
-    return next();
-  };
+    await next();
+  });
 }

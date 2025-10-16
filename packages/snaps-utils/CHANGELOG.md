@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.6.0]
+
+### Added
+
+- Add IOTA derivation path ([#3653](https://github.com/MetaMask/snaps/pull/3653))
+- Support byte encoding strings in `getJsonSizeUnsafe` ([#3660](https://github.com/MetaMask/snaps/pull/3660))
+
+### Changed
+
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612))
+
 ## [11.5.0]
 
 ### Added
@@ -704,7 +715,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.0...HEAD
+[11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.5.0...@metamask/snaps-utils@11.6.0
 [11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.4.0...@metamask/snaps-utils@11.5.0
 [11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...@metamask/snaps-utils@11.4.0
 [11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.2.0...@metamask/snaps-utils@11.3.0

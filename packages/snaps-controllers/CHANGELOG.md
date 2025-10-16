@@ -7,9 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [15.0.1]
+
+### Fixed
+
+- Stop creating errors before needing to throw ([#3664](https://github.com/MetaMask/snaps/pull/3664))
+
+## [15.0.0]
+
 ### Added
 
+- **BREAKING:** Allow updating preinstalled Snaps via the registry ([#3616](https://github.com/MetaMask/snaps/pull/3616))
+  - `SnapController:updateBlockedSnaps` has been renamed to `SnapController:updateRegistry`.
 - Add two new controller state metadata properties: `includeInStateLogs` and `usedInUi` ([#3632](https://github.com/MetaMask/snaps/pull/3632))
+
+### Changed
+
+- **BREAKING:** Make `SnapInterfaceController:createInterface` and `SnapInterfaceController:updateInterface` actions synchronous ([#3361](https://github.com/MetaMask/snaps/pull/3361))
+- **BREAKING:** Remove `useCaip25Permission` feature flag and enable behaviour by default ([#3413](https://github.com/MetaMask/snaps/pull/3413))
+- **BREAKING:** Use hash private functions for updating internals ([#3601](https://github.com/MetaMask/snaps/pull/3601))
+  - `updateSnap`, `processRequestedSnap` and `authorize` are no longer publicly available functions.
+- Move JSON-RPC request inspection outside of the executor ([#3356](https://github.com/MetaMask/snaps/pull/3356))
+- Simplify JSON-RPC failure validation ([#3661](https://github.com/MetaMask/snaps/pull/3661))
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612))
+
+### Fixed
+
+- Properly roll back `initialConnections` ([#3618](https://github.com/MetaMask/snaps/pull/3618))
+- Display a warning instead of an error when Snaps fail to terminate ([#3621](https://github.com/MetaMask/snaps/pull/3621))
 
 ## [14.2.2]
 
@@ -892,7 +917,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.1...HEAD
+[15.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.0...@metamask/snaps-controllers@15.0.1
+[15.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.2...@metamask/snaps-controllers@15.0.0
 [14.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.1...@metamask/snaps-controllers@14.2.2
 [14.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.2.0...@metamask/snaps-controllers@14.2.1
 [14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@14.1.0...@metamask/snaps-controllers@14.2.0

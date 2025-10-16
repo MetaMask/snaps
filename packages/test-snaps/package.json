@@ -1,7 +1,6 @@
 {
   "name": "@metamask/test-snaps",
   "version": "2.28.1",
-  "private": true,
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "keywords": [
     "MetaMask",
@@ -18,7 +17,9 @@
   },
   "license": "ISC",
   "sideEffects": false,
-  "files": [],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "build:clean": "yarn clean && yarn build",
@@ -31,6 +32,7 @@
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "start": "yarn workspaces foreach --parallel --interlaced --all --include \"@metamask/test-snaps\" --include \"@metamask/example-snaps\" run start:test",
     "start:test": "cross-env NODE_ENV=development webpack serve",
@@ -73,7 +75,7 @@
     "@metamask/signature-insights-example-snap": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "@metamask/wasm-example-snap": "workspace:^",
     "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^1.9.5",
@@ -85,7 +87,7 @@
   },
   "devDependencies": {
     "@metamask/auto-changelog": "^5.0.2",
-    "@metamask/providers": "^22.1.0",
+    "@metamask/providers": "^22.1.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
@@ -119,5 +121,9 @@
   },
   "engines": {
     "node": "^20 || >=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

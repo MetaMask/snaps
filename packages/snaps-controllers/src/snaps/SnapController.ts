@@ -707,7 +707,6 @@ type FeatureFlags = {
   allowLocalSnaps?: boolean;
   disableSnapInstallation?: boolean;
   rejectInvalidPlatformVersion?: boolean;
-  useCaip25Permission?: boolean;
 
   /**
    * Force any local Snap to be treated as a preinstalled Snap.
@@ -1953,7 +1952,7 @@ export class SnapController extends BaseController<
    */
   getExpect(snapId: SnapId): Snap {
     const snap = this.get(snapId);
-    assert(snap !== undefined, new Error(`Snap "${snapId}" not found.`));
+    assert(snap !== undefined, `Snap "${snapId}" not found.`);
     return snap;
   }
 
@@ -3589,6 +3588,13 @@ export class SnapController extends BaseController<
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     this.#assertCanUsePlatform();
 
+    const snap = this.get(snapId);
+
+    assert(
+      snap,
+      `The Snap "${snapId}" is not installed. Please install it before invoking it.`,
+    );
+
     assert(
       origin === METAMASK_ORIGIN || isValidUrl(origin),
       "'origin' must be a valid URL or 'metamask'.",
@@ -3667,11 +3673,11 @@ export class SnapController extends BaseController<
       throw new Error(`"${handlerType}" can only be invoked by MetaMask.`);
     }
 
-    if (!this.state.snaps[snapId].enabled) {
+    if (!snap.enabled) {
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
-    if (this.state.snaps[snapId].status === SnapStatus.Installing) {
+    if (snap.status === SnapStatus.Installing) {
       throw new Error(
         `Snap "${snapId}" is currently being installed. Please try again later.`,
       );
@@ -4170,7 +4176,7 @@ export class SnapController extends BaseController<
   #createRollbackSnapshot(snapId: SnapId): RollbackSnapshot {
     assert(
       this.#rollbackSnapshots.get(snapId) === undefined,
-      new Error(`Snap "${snapId}" rollback snapshot already exists.`),
+      `Snap "${snapId}" rollback snapshot already exists.`,
     );
 
     this.#rollbackSnapshots.set(snapId, {
@@ -4183,7 +4189,7 @@ export class SnapController extends BaseController<
 
     assert(
       newRollbackSnapshot !== undefined,
-      new Error(`Snapshot creation failed for ${snapId}.`),
+      `Snapshot creation failed for ${snapId}.`,
     );
     return newRollbackSnapshot;
   }
@@ -4273,10 +4279,7 @@ export class SnapController extends BaseController<
 
   #getRuntimeExpect(snapId: SnapId): SnapRuntimeData {
     const runtime = this.#getRuntime(snapId);
-    assert(
-      runtime !== undefined,
-      new Error(`Snap "${snapId}" runtime data not found`),
-    );
+    assert(runtime !== undefined, `Snap "${snapId}" runtime data not found`);
     return runtime;
   }
 
@@ -4414,10 +4417,7 @@ export class SnapController extends BaseController<
    * @returns The permissions to grant to the Snap.
    */
   #getPermissionsToGrant(snapId: SnapId, newPermissions: RequestedPermissions) {
-    if (
-      this.#featureFlags.useCaip25Permission &&
-      Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)
-    ) {
+    if (Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)) {
       // This will return the globally selected network if the Snap doesn't have
       // one set.
       const networkClientId = this.messagingSystem.call(

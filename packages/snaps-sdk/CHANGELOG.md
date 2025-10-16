@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+
+### Changed
+
+- **BREAKING:** Update `IconName` enum with latest icons ([#3656](https://github.com/MetaMask/snaps/pull/3656))
+  - Some icons have been removed as part of this, for a full list check: https://github.com/MetaMask/snaps/pull/3656/files#diff-2fa2f5fd71c64875ba655a470a6104a2ca5d01ecf3b12c91b79237d6f54e3c4c
+- Improve a couple of error messages for UI components ([#3625](https://github.com/MetaMask/snaps/pull/3625))
+- Improve documentation for `transactionOrigin` field ([#3568](https://github.com/MetaMask/snaps/pull/3568))
+- Bump MetaMask dependencies ([#3651](https://github.com/MetaMask/snaps/pull/3651), [#3638](https://github.com/MetaMask/snaps/pull/3638), [#3648](https://github.com/MetaMask/snaps/pull/3648), [#3630](https://github.com/MetaMask/snaps/pull/3630), [#3628](https://github.com/MetaMask/snaps/pull/3628), [#3629](https://github.com/MetaMask/snaps/pull/3629), [#3607](https://github.com/MetaMask/snaps/pull/3607), [#3623](https://github.com/MetaMask/snaps/pull/3623), [#3612](https://github.com/MetaMask/snaps/pull/3612))
+
 ## [9.3.0]
 
 ### Added
@@ -646,7 +656,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.3.0...@metamask/snaps-sdk@10.0.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.2.0...@metamask/snaps-sdk@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.1.0...@metamask/snaps-sdk@9.2.0
 [9.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.0.0...@metamask/snaps-sdk@9.1.0

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "11.5.0",
+  "version": "11.6.0",
   "description": "A collection of utilities for MetaMask Snaps",
   "keywords": [
     "MetaMask",
@@ -80,7 +80,7 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
-    "@metamask/base-controller": "^8.3.0",
+    "@metamask/base-controller": "^8.4.1",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/rpc-errors": "^7.0.3",
@@ -88,7 +88,7 @@
     "@metamask/snaps-registry": "^3.2.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "@noble/hashes": "^1.7.1",
     "@scure/base": "^1.1.1",
     "chalk": "^4.1.2",
@@ -104,7 +104,7 @@
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.3.5",
+    "@lavamoat/allow-scripts": "^3.4.0",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/post-message-stream": "^10.0.0",
     "@swc/core": "1.11.31",

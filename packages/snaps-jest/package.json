@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-jest",
-  "version": "9.4.0",
+  "version": "9.4.1",
   "description": "A Jest preset for end-to-end testing MetaMask Snaps, including a Jest environment, and a set of Jest matchers",
   "keywords": [
     "MetaMask",
@@ -64,7 +64,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-simulation": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "express": "^5.1.0",
     "jest-environment-node": "^29.5.0",
     "jest-matcher-utils": "^29.5.0",
@@ -72,7 +72,7 @@
   },
   "devDependencies": {
     "@jest/types": "^29.6.3",
-    "@lavamoat/allow-scripts": "^3.3.5",
+    "@lavamoat/allow-scripts": "^3.4.0",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-utils": "workspace:^",
     "@swc/core": "1.11.31",

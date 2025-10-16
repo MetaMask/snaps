@@ -23,14 +23,15 @@ export function parseJson<Type extends Json = Json>(json: string) {
  *
  * This may sometimes be preferred over `getJsonSize` for performance reasons.
  *
- * Note: This function does not encode the string to bytes, thus the input may
+ * Note: By default this function does not encode the string to bytes, thus the input may
  * be about 4x larger in practice. Use this function with caution.
  *
  * @param value - The JSON value to get the size of.
+ * @param encode - Whether the value should be encoded before measuring.
  * @returns The size of the JSON value in bytes.
  */
-export function getJsonSizeUnsafe(value: Json): number {
+export function getJsonSizeUnsafe(value: Json, encode = false): number {
   const json = JSON.stringify(value);
-  // We intentionally don't use `TextEncoder` because of bad performance on React Native.
-  return json.length;
+  // We intentionally don't use `TextEncoder` by default because of bad performance on React Native.
+  return encode ? new TextEncoder().encode(json).byteLength : json.length;
 }

@@ -12,6 +12,7 @@ import type {
   Json,
   JsonRpcId,
   JsonRpcParams,
+  JsonRpcRequest,
 } from '@metamask/utils';
 
 import type {
@@ -356,18 +357,30 @@ export type SnapRequest = Promise<SnapResponse> & SnapRequestObject;
 /**
  * The options to use for mocking a JSON-RPC request.
  */
-export type JsonRpcMockOptions = {
-  /**
-   * The JSON-RPC request method.
-   */
-  method: string;
+export type JsonRpcMockOptions =
+  | {
+      /**
+       * The JSON-RPC request method.
+       */
+      method: string;
 
-  /**
-   * The JSON-RPC response, which will be returned when a request with the
-   * specified method is sent.
-   */
-  result: Json;
-};
+      /**
+       * The JSON-RPC response, which will be returned when a request with the
+       * specified method is sent.
+       */
+      result: Json;
+    }
+  | JsonRpcMockImplementation;
+
+/**
+ * A function that can be used to mock a JSON-RPC implementation.
+ *
+ * @param request - The JSON-RPC request.
+ * @returns A valid JSON value, optionally as a promise or undefined.
+ */
+export type JsonRpcMockImplementation = (
+  request: JsonRpcRequest,
+) => Promise<Json> | Json | undefined;
 
 /**
  * This is the main entry point to interact with the snap. It is returned by
@@ -552,8 +565,70 @@ export type Snap = {
    * // In the Snap
    * const response =
    *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpc((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
    */
   mockJsonRpc(mock: JsonRpcMockOptions): {
+    /**
+     * Remove the mock.
+     */
+    unmock(): void;
+  };
+
+  /**
+   * Mock a JSON-RPC request once. This will cause the snap to respond with the
+   * specified response when a request with the specified method is sent.
+   *
+   * @param mock - The mock options.
+   * @param mock.method - The JSON-RPC request method.
+   * @param mock.result - The JSON-RPC response, which will be returned when a
+   * request with the specified method is sent.
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce({ method: 'eth_accounts', result: ['0x1234'] });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   *
+   * @example
+   * import { installSnap } from '@metamask/snaps-jest';
+   *
+   * // In the test
+   * const snap = await installSnap();
+   * snap.mockJsonRpcOnce((request) => {
+   *  if (request.method === 'eth_accounts') {
+   *    return ['0x1234'];
+   *  }
+   * });
+   *
+   * // In the Snap
+   * const response =
+   *   await ethereum.request({ method: 'eth_accounts' }); // ['0x1234']
+   *
+   * const response2 =
+   *   await ethereum.request({ method: 'eth_accounts' }); // Default behavior
+   */
+  mockJsonRpcOnce(mock: JsonRpcMockOptions): {
     /**
      * Remove the mock.
      */

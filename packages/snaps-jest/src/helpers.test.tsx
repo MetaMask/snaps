@@ -993,6 +993,125 @@ describe('installSnap', () => {
       await close();
       await closeServer();
     });
+
+    it('mocks a JSON-RPC implementation', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onRpcRequest = async () => {
+            return await ethereum.request({
+              method: 'foo',
+            });
+          };
+        `,
+        manifest: getSnapManifest({
+          initialPermissions: {
+            'endowment:ethereum-provider': {},
+          },
+        }),
+      });
+
+      const { request, close, mockJsonRpc } = await installSnap(snapId);
+      const { unmock } = mockJsonRpc(({ method }) => {
+        return `${method}_mocked`;
+      });
+
+      const response = await request({
+        method: 'foo',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'foo_mocked',
+          },
+        }),
+      );
+
+      unmock();
+
+      const unmockedResponse = await request({
+        method: 'foo',
+      });
+
+      expect(unmockedResponse).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            error: expect.objectContaining({
+              code: -32601,
+              message: 'The method "foo" does not exist / is not available.',
+            }),
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
+  });
+
+  describe('mockJsonRpcOnce', () => {
+    it('mocks a JSON-RPC method', async () => {
+      jest.spyOn(console, 'log').mockImplementation();
+
+      const { snapId, close: closeServer } = await getMockServer({
+        sourceCode: `
+          module.exports.onRpcRequest = async () => {
+            return await ethereum.request({
+              method: 'foo',
+            });
+          };
+        `,
+        manifest: getSnapManifest({
+          initialPermissions: {
+            'endowment:ethereum-provider': {},
+          },
+        }),
+      });
+
+      const { request, close, mockJsonRpcOnce } = await installSnap(snapId);
+      mockJsonRpcOnce({
+        method: 'foo',
+        result: 'mock',
+      });
+
+      const response = await request({
+        method: 'foo',
+      });
+
+      expect(response).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            result: 'mock',
+          },
+        }),
+      );
+
+      const unmockedResponse = await request({
+        method: 'foo',
+      });
+
+      expect(unmockedResponse).toStrictEqual(
+        expect.objectContaining({
+          response: {
+            error: expect.objectContaining({
+              code: -32601,
+              message: 'The method "foo" does not exist / is not available.',
+            }),
+          },
+        }),
+      );
+
+      // `close` is deprecated because the Jest environment will automatically
+      // close the Snap when the test finishes. However, we still need to close
+      // the Snap in this test because it's run outside the Jest environment.
+      await close();
+      await closeServer();
+    });
   });
 });
 

@@ -13,4 +13,9 @@ describe('getJsonSizeUnsafe', () => {
     const input = { foo: 'bar' };
     expect(getJsonSizeUnsafe(input)).toBe(13);
   });
+
+  it('calculates the size of the JSON input in bytes', () => {
+    const input = { foo: 'bar€' };
+    expect(getJsonSizeUnsafe(input, true)).toBe(16);
+  });
 });

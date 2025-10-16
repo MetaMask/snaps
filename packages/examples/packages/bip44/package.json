@@ -45,12 +45,12 @@
   "dependencies": {
     "@metamask/key-tree": "^10.1.1",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/utils": "^11.7.0",
+    "@metamask/utils": "^11.8.1",
     "@noble/bls12-381": "^1.2.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@lavamoat/allow-scripts": "^3.3.5",
+    "@lavamoat/allow-scripts": "^3.4.0",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",

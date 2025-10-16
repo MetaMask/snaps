@@ -303,7 +303,7 @@ describe('wallet_invokeKeyring', () => {
       expect(response.error).toStrictEqual({
         ...rpcErrors
           .invalidRequest({
-            message: `The snap "${MOCK_SNAP_ID}" is not installed. Please install it first, before invoking the snap.`,
+            message: `The Snap "${MOCK_SNAP_ID}" is not installed. Please install it before invoking it.`,
           })
           .serialize(),
         stack: expect.any(String),

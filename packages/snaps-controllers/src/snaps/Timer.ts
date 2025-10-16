@@ -54,7 +54,7 @@ export class Timer {
   cancel() {
     assert(
       this.status === 'paused' || this.status === 'running',
-      new Error('Tried to cancel a not running Timer'),
+      'Tried to cancel a not running Timer',
     );
     this.onFinish(false);
   }
@@ -65,10 +65,7 @@ export class Timer {
    * @throws {@link Error}. If it wasn't running or paused.
    */
   finish() {
-    assert(
-      this.status !== 'finished',
-      new Error('Tried to finish a finished Timer.'),
-    );
+    assert(this.status !== 'finished', 'Tried to finish a finished Timer.');
     this.onFinish(true);
   }
 
@@ -80,7 +77,7 @@ export class Timer {
   pause() {
     assert(
       this.state.value === 'running',
-      new Error('Tried to pause a not running Timer'),
+      'Tried to pause a not running Timer',
     );
 
     const { callback, start, timeout, remaining } = this.state;
@@ -102,7 +99,7 @@ export class Timer {
   start(callback: () => void) {
     assert(
       this.state.value === 'stopped',
-      new Error('Tried to start an already running Timer'),
+      'Tried to start an already running Timer',
     );
 
     const { remaining } = this.state;
@@ -116,10 +113,7 @@ export class Timer {
    * @throws {@link Error}. If it wasn't paused.
    */
   resume() {
-    assert(
-      this.state.value === 'paused',
-      new Error('Tried to resume not paused Timer'),
-    );
+    assert(this.state.value === 'paused', 'Tried to resume not paused Timer');
     const { remaining, callback } = this.state;
     const start = Date.now();
 

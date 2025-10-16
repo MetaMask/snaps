@@ -34,12 +34,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -87,12 +89,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -141,12 +145,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -200,12 +206,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(false);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -252,12 +260,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -303,12 +313,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -358,12 +370,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -408,12 +422,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();
@@ -461,12 +477,14 @@ describe('snap_setState', () => {
       const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
       const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
 
       const hooks = {
         getSnapState,
         updateSnapState,
         getUnlockPromise,
         hasPermission,
+        getSnap,
       };
 
       const engine = new JsonRpcEngine();

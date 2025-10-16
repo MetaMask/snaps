@@ -1,16 +1,17 @@
-import type { Json } from '@metamask/utils';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import type { ApplicationState } from './store';
+import type { JsonRpcMockImplementation } from '../types';
 
 export type JsonRpcMock = {
-  method: string;
-  result: Json;
+  id: string;
+  implementation: JsonRpcMockImplementation;
+  once?: boolean;
 };
 
 export type MocksState = {
-  jsonRpc: Record<string, Json>;
+  jsonRpc: Record<string, Omit<JsonRpcMock, 'id'>>;
 };
 
 /**
@@ -25,9 +26,10 @@ export const mocksSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     addJsonRpcMock: (state, action: PayloadAction<JsonRpcMock>) => {
-      // @ts-expect-error - TS2589: Type instantiation is excessively deep and
-      // possibly infinite.
-      state.jsonRpc[action.payload.method] = action.payload.result;
+      state.jsonRpc[action.payload.id] = {
+        implementation: action.payload.implementation,
+        once: action.payload.once,
+      };
     },
     removeJsonRpcMock: (state, action: PayloadAction<string>) => {
       delete state.jsonRpc[action.payload];
@@ -44,12 +46,3 @@ export const { addJsonRpcMock, removeJsonRpcMock } = mocksSlice.actions;
  * @returns The JSON-RPC mocks.
  */
 export const getJsonRpcMocks = (state: ApplicationState) => state.mocks.jsonRpc;
-
-/**
- * Get the JSON-RPC mock for a given method from the state.
- */
-export const getJsonRpcMock = createSelector(
-  getJsonRpcMocks,
-  (_: unknown, method: string) => method,
-  (jsonRpcMocks, method) => jsonRpcMocks[method],
-);

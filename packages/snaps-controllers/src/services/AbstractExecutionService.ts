@@ -7,6 +7,7 @@ import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
 import type {
   Json,
+  JsonRpcError as JsonRpcErrorType,
   JsonRpcNotification,
   JsonRpcRequest,
 } from '@metamask/utils';
@@ -15,7 +16,6 @@ import {
   assertIsJsonRpcRequest,
   hasProperty,
   inMilliseconds,
-  isJsonRpcFailure,
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 import { pipeline } from 'readable-stream';
@@ -307,7 +307,30 @@ export abstract class AbstractExecutionService<WorkerType>
     };
 
     commandStream.on('data', notificationHandler);
+
     const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
+
+    rpcStream.on('data', (chunk) => {
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundRequest', snapId);
+      }
+    });
+
+    const originalWrite = rpcStream.write.bind(rpcStream);
+
+    // @ts-expect-error Hack to inspect the messages being written to the stream.
+    rpcStream.write = (chunk, encoding, callback) => {
+      // Ignore chain switching notifications as it doesn't matter for the SnapProvider.
+      if (chunk?.data?.method === 'metamask_chainChanged') {
+        return true;
+      }
+
+      if (chunk?.data && hasProperty(chunk?.data, 'id')) {
+        this.#messenger.publish('ExecutionService:outboundResponse', snapId);
+      }
+
+      return originalWrite(chunk, encoding, callback);
+    };
 
     // Typecast: stream type mismatch
     return {
@@ -441,12 +464,10 @@ export abstract class AbstractExecutionService<WorkerType>
     log('Parent: Sending Command', message);
     const response = await job.rpcEngine.handle(message);
 
-    if (isJsonRpcFailure(response)) {
-      throw new JsonRpcError(
-        response.error.code,
-        response.error.message,
-        response.error.data,
-      );
+    // We don't need full validation of the response here because we control it.
+    if (hasProperty(response, 'error')) {
+      const error = response.error as JsonRpcErrorType;
+      throw new JsonRpcError(error.code, error.message, error.data);
     }
 
     return response.result;
