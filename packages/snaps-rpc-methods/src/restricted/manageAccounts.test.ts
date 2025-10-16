@@ -28,6 +28,7 @@ describe('specification', () => {
   it('builds specification', () => {
     const methodHooks = {
       getSnapKeyring: jest.fn(),
+      getUnlockPromise: jest.fn(),
     };
 
     expect(
@@ -61,6 +62,7 @@ describe('builder', () => {
       manageAccountsBuilder.specificationBuilder({
         methodHooks: {
           getSnapKeyring: jest.fn(),
+          getUnlockPromise: jest.fn(),
         },
       }),
     ).toMatchObject({
@@ -83,9 +85,11 @@ describe('manageAccountsImplementation', () => {
   it('should throw params are not set', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const getUnlockPromise = jest.fn();
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
+      getUnlockPromise,
     });
 
     await expect(
@@ -105,9 +109,11 @@ describe('manageAccountsImplementation', () => {
   it('should throw params accountId is not set', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const getUnlockPromise = jest.fn();
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
+      getUnlockPromise,
     });
 
     await expect(
@@ -127,6 +133,7 @@ describe('manageAccountsImplementation', () => {
   it('should route request to snap keyring', async () => {
     const mockKeyring = new SnapKeyringMock();
     const getSnapKeyring = jest.fn().mockResolvedValue(mockKeyring);
+    const getUnlockPromise = jest.fn();
 
     const createAccountSpy = jest
       .spyOn(mockKeyring, 'handleKeyringSnapMessage')
@@ -134,6 +141,7 @@ describe('manageAccountsImplementation', () => {
 
     const manageAccounts = manageAccountsImplementation({
       getSnapKeyring,
+      getUnlockPromise,
     });
 
     const requestResponse = await manageAccounts({

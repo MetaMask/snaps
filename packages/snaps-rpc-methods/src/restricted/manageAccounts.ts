@@ -44,6 +44,13 @@ export type ManageAccountsMethodHooks = {
       message: Message,
     ) => Promise<Json>;
   }>;
+
+  /**
+   * Wait for the client to be unlocked.
+   *
+   * @returns A promise that resolves once the client is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -89,12 +96,14 @@ export const specificationBuilder: PermissionSpecificationBuilder<
  *
  * @param hooks - The RPC method hooks.
  * @param hooks.getSnapKeyring - A function to get the snap keyring.
+ * @param hooks.getUnlockPromise - The function to get the unlock promise.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
  */
 export function manageAccountsImplementation({
   getSnapKeyring,
+  getUnlockPromise,
 }: ManageAccountsMethodHooks) {
   return async function manageAccounts(
     options: RestrictedMethodOptions<ManageAccountsParams>,
@@ -105,6 +114,9 @@ export function manageAccountsImplementation({
     } = options;
 
     assert(params, SnapMessageStruct);
+
+    await getUnlockPromise(true);
+
     const keyring = await getSnapKeyring(origin);
     return await keyring.handleKeyringSnapMessage(origin, params);
   };
@@ -115,5 +127,6 @@ export const manageAccountsBuilder = Object.freeze({
   specificationBuilder,
   methodHooks: {
     getSnapKeyring: true,
+    getUnlockPromise: true,
   },
 } as const);
