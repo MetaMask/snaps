@@ -133,7 +133,7 @@
         "depcheck>@babel/parser": true,
         "lavamoat>@lavamoat/aa": true,
         "@lavamoat/webpack>browser-resolve": true,
-        "lavamoat>lavamoat-core": true,
+        "@lavamoat/webpack>lavamoat-core": true,
         "webpack": true
       }
     },
@@ -738,11 +738,10 @@
         "lavamoat>lavamoat-core>merge-deep>kind-of>is-buffer": true
       }
     },
-    "lavamoat>lavamoat-core": {
+    "@lavamoat/webpack>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises.writeFile": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -754,16 +753,16 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
     },
-    "lavamoat>lavamoat-tofu": {
+    "@lavamoat/webpack>lavamoat-core>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "@lavamoat/webpack>lavamoat-core>lavamoat-tofu>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
