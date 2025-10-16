@@ -99,7 +99,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.4.0",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.1.0",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
     "deepmerge": "^4.2.2",

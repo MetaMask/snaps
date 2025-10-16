@@ -86,7 +86,7 @@
     "react-redux": "^8.0.5"
   },
   "devDependencies": {
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.1.0",
     "@metamask/providers": "^22.1.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@swc/core": "1.11.31",
