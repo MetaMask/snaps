@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Revert "release: 128.0.0 (#3685)" ([#3685](https://github.com/MetaMask/snaps/pull/3685))
-
 ## [2.28.1]
 
 ### Fixed

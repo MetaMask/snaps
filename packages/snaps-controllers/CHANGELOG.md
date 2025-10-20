@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/approval-controller from 7.1.3 to 7.2.0 ([#3671](https://github.com/MetaMask/snaps/pull/3671))
-- fix: Throw if Snap not installed ([#3666](https://github.com/MetaMask/snaps/pull/3666))
-- chore: Bump @metamask/json-rpc-middleware-stream from 8.0.7 to 8.0.8 ([#3670](https://github.com/MetaMask/snaps/pull/3670))
-- chore: Bump @metamask/base-controller from 8.4.0 to 8.4.1 ([#3675](https://github.com/MetaMask/snaps/pull/3675))
-
 ## [15.0.1]
 
 ### Fixed

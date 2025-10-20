@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/json-rpc-middleware-stream from 8.0.7 to 8.0.8 ([#3670](https://github.com/MetaMask/snaps/pull/3670))
@@ -223,7 +225,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.0...HEAD
+[3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.2...@metamask/snaps-simulation@3.5.0
 [3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.1...@metamask/snaps-simulation@3.4.2
 [3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.0...@metamask/snaps-simulation@3.4.1
 [3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.3.0...@metamask/snaps-simulation@3.4.0
