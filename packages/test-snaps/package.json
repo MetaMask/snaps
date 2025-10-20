@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "3.0.0",
+  "version": "2.28.1",
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "keywords": [
     "MetaMask",
