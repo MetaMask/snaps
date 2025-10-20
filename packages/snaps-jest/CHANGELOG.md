@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Allow mocking JSON-RPC implementations ([#3667](https://github.com/MetaMask/snaps/pull/3667))
+
 ## [9.4.1]
 
 ### Changed

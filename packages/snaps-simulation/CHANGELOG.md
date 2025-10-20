@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/json-rpc-middleware-stream from 8.0.7 to 8.0.8 ([#3670](https://github.com/MetaMask/snaps/pull/3670))
+- chore: Bump @metamask/base-controller from 8.4.0 to 8.4.1 ([#3675](https://github.com/MetaMask/snaps/pull/3675))
+- feat: Allow mocking JSON-RPC implementations ([#3667](https://github.com/MetaMask/snaps/pull/3667))
+
 ## [3.4.2]
 
 ### Changed

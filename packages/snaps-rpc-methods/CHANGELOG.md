@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Wait for unlock before handling `manageAccounts` requests ([#3686](https://github.com/MetaMask/snaps/pull/3686))
+- fix: Throw if Snap not installed ([#3666](https://github.com/MetaMask/snaps/pull/3666))
+
 ## [13.5.2]
 
 ### Changed
