@@ -818,7 +818,7 @@
       },
       "packages": {
         "ts-loader>micromatch>braces": true,
-        "ts-loader>micromatch>picomatch": true
+        "depcheck>readdirp>picomatch": true
       }
     },
     "webpack>mime-types": {
@@ -860,7 +860,7 @@
         "process": true
       }
     },
-    "ts-loader>micromatch>picomatch": {
+    "depcheck>readdirp>picomatch": {
       "builtin": {
         "path.basename": true,
         "path.sep": true
