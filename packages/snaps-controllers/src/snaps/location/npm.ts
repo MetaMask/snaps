@@ -28,6 +28,10 @@ import type { DetectSnapLocationOptions, SnapLocation } from './location';
 
 export const DEFAULT_NPM_REGISTRY = new URL('https://registry.npmjs.org');
 
+export const NPM_REGISTRY_PROXY = new URL(
+  'https://npm-ota.dev-api.cx.metamask.io',
+);
+
 type NpmMeta = {
   registry: URL;
   packageName: string;
@@ -48,6 +52,12 @@ export type NpmOptions = {
    * @default false
    */
   allowCustomRegistries?: boolean;
+  /**
+   * Whether to use a MetaMask-owned proxy when sending requests to NPM.
+   *
+   * @default false
+   */
+  useNpmProxy?: boolean;
 };
 
 // Base class for NPM implementation, useful for extending with custom NPM fetching logic
@@ -74,7 +84,7 @@ export abstract class BaseNpmLocation implements SnapLocation {
       url.username === '' &&
       url.password === ''
     ) {
-      registry = DEFAULT_NPM_REGISTRY;
+      registry = opts.useNpmProxy ? NPM_REGISTRY_PROXY : DEFAULT_NPM_REGISTRY;
     } else {
       registry = 'https://';
       if (url.username) {
