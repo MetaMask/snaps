@@ -351,7 +351,11 @@ export function getNpmCanonicalBasePath(registryUrl: URL, packageName: string) {
  * @returns True if the registry is the NPM registry, otherwise false.
  */
 function isNPM(registryUrl: URL) {
-  return registryUrl.toString() === DEFAULT_NPM_REGISTRY.toString();
+  const registryUrlString = registryUrl.toString();
+  return (
+    registryUrlString === DEFAULT_NPM_REGISTRY.toString() ||
+    registryUrlString === NPM_REGISTRY_PROXY.toString()
+  );
 }
 
 /**
