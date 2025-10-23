@@ -143,19 +143,19 @@ export class JsonSnapsRegistry extends BaseController<
         database: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: true,
         },
         lastUpdated: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: true,
           usedInUi: false,
         },
         databaseUnavailable: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: true,
           usedInUi: false,
         },
       },

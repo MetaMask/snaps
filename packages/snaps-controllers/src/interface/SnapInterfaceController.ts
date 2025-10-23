@@ -214,7 +214,7 @@ export class SnapInterfaceController extends BaseController<
               }
             }, {});
           },
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: true,
         },
       },

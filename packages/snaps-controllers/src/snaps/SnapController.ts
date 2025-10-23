@@ -975,13 +975,13 @@ export class SnapController extends BaseController<
         snapStates: {
           includeInStateLogs: false,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: false,
         },
         unencryptedSnapStates: {
           includeInStateLogs: false,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: false,
         },
         snaps: {
@@ -1017,7 +1017,7 @@ export class SnapController extends BaseController<
                 }, {})
             );
           },
-          anonymous: false,
+          includeInDebugSnapshot: false,
           // TODO: Ensure larger snap properties are not sent to the UI
           // Currently these are stripped out manually in the extension
           usedInUi: true,

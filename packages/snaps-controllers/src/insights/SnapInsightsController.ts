@@ -101,7 +101,7 @@ export class SnapInsightsController extends BaseController<
         insights: {
           includeInStateLogs: true,
           persist: false,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: true,
         },
       },
