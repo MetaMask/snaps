@@ -179,7 +179,7 @@ export class CronjobController extends BaseController<
         events: {
           includeInStateLogs: false,
           persist: false,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: false,
         },
       },
