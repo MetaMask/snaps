@@ -73,7 +73,6 @@ export type Controllers = {
 export function getControllers(options: GetControllersOptions): Controllers {
   const { controllerMessenger } = options;
   const subjectMetadataController = new SubjectMetadataController({
-    // @ts-expect-error Incompatible messenger types until migrated.
     messenger: new Messenger({
       namespace: 'SubjectMetadataController',
       parent: controllerMessenger,
@@ -143,7 +142,6 @@ function getPermissionController(options: GetControllersOptions) {
   });
 
   return new PermissionController({
-    // @ts-expect-error Incompatible messenger types until migrated.
     messenger,
     caveatSpecifications: {
       ...snapsCaveatsSpecifications,

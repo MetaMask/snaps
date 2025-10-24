@@ -71,17 +71,17 @@ export type InvokeSnapParams = {
  *
  * @param params - The side-effect params.
  * @param params.requestData - The request data associated to the requested permission.
- * @param params.messagingSystem - The messenger to call an action.
+ * @param params.messenger - The messenger to call an action.
  * @returns The result of the Snap installation.
  */
 export const handleSnapInstall: PermissionSideEffect<
   AllowedActions,
   never
->['onPermitted'] = async ({ requestData, messagingSystem }) => {
+>['onPermitted'] = async ({ requestData, messenger }) => {
   const snaps = requestData.permissions[WALLET_SNAP_PERMISSION_KEY].caveats?.[0]
     .value as RequestSnapsParams;
 
-  const permittedSnaps = messagingSystem.call(
+  const permittedSnaps = messenger.call(
     `SnapController:getPermitted`,
     requestData.metadata.origin,
   );
@@ -96,7 +96,7 @@ export const handleSnapInstall: PermissionSideEffect<
     {},
   );
 
-  return messagingSystem.call(
+  return messenger.call(
     `SnapController:install`,
     requestData.metadata.origin,
     dedupedSnaps,

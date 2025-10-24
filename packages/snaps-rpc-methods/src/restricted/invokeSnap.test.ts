@@ -119,7 +119,9 @@ describe('handleSnapInstall', () => {
 
     const sideEffectMessenger = new Messenger<
       'PermissionController',
-      InstallSnaps | GetPermittedSnaps
+      InstallSnaps | GetPermittedSnaps,
+      never,
+      any
     >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
@@ -160,7 +162,7 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      messagingSystem: sideEffectMessenger,
+      messenger: sideEffectMessenger,
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(
@@ -180,7 +182,9 @@ describe('handleSnapInstall', () => {
 
     const sideEffectMessenger = new Messenger<
       'PermissionController',
-      InstallSnaps | GetPermittedSnaps
+      InstallSnaps | GetPermittedSnaps,
+      never,
+      any
     >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
@@ -224,7 +228,7 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      messagingSystem: sideEffectMessenger,
+      messenger: sideEffectMessenger,
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(

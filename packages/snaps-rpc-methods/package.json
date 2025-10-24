@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@metamask/key-tree": "^10.1.1",
-    "@metamask/permission-controller": "^11.0.6",
+    "@metamask/permission-controller": "patch:@metamask/permission-controller@npm%3A11.0.6#~/.yarn/patches/@metamask-permission-controller-npm-11.0.6-5b7ce789d2.patch",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
