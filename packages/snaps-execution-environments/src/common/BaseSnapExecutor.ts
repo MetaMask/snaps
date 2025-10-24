@@ -174,7 +174,7 @@ export class BaseSnapExecutor {
 
         assert(
           !required || handler !== undefined,
-          `No ${handlerType} handler exported for snap "${target}`,
+          `No ${handlerType} handler exported for snap "${target}".`,
           rpcErrors.methodNotSupported,
         );
 
