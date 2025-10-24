@@ -38,6 +38,7 @@ import {
   AssetSelector,
   AddressInput,
   AccountSelector,
+  DateTimePicker,
 } from './components';
 import {
   AddressStruct,
@@ -80,6 +81,7 @@ import {
   AssetSelectorStruct,
   AddressInputStruct,
   AccountSelectorStruct,
+  DateTimePickerStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -380,6 +382,9 @@ describe('FieldStruct', () => {
     </Field>,
     <Field label="foo">
       <AccountSelector name="account" />
+    </Field>,
+    <Field label="foo">
+      <DateTimePicker name="foo" />
     </Field>,
   ])('validates a field element', (value) => {
     expect(is(value, FieldStruct)).toBe(true);
@@ -1005,6 +1010,54 @@ describe('CopyableStruct', () => {
     </Row>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, CopyableStruct)).toBe(false);
+  });
+});
+
+describe('DateTimePickerStruct', () => {
+  it.each([
+    <DateTimePicker name="foo" />,
+    <DateTimePicker name="foo" type="datetime" />,
+    <DateTimePicker name="foo" type="date" />,
+    <DateTimePicker name="foo" type="time" />,
+    <DateTimePicker name="foo" value={new Date().toISOString()} />,
+    <DateTimePicker name="foo" disabled={true} />,
+    <DateTimePicker
+      name="foo"
+      value={new Date().toISOString()}
+      placeholder="foobar"
+      type="datetime"
+      disabled={true}
+    />,
+  ])('validates a date time picker element', (value) => {
+    expect(is(value, DateTimePickerStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <DateTimePicker />,
+    // @ts-expect-error - Invalid props.
+    <DateTimePicker name={42} />,
+    // @ts-expect-error - Invalid props.
+    <DateTimePicker name="foo" type="foo" />,
+    // @ts-expect-error - Invalid props.
+    <DateTimePicker name="foo" value={42} />,
+    // @ts-expect-error - Invalid props.
+    <DateTimePicker name="foo" placeholder={32} />,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    <Row label="label">
+      <Image src="src" alt="alt" />
+    </Row>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, DateTimePickerStruct)).toBe(false);
   });
 });
 

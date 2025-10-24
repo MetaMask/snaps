@@ -16,6 +16,7 @@ import {
   Checkbox,
   Container,
   Footer,
+  DateTimePicker,
 } from '@metamask/snaps-sdk/jsx';
 
 /**
@@ -101,6 +102,9 @@ export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
                 <Card title="Option 3" value="option3" />
               </SelectorOption>
             </Selector>
+          </Field>
+          <Field label="Example DateTimePicker">
+            <DateTimePicker name="example-datetime" />
           </Field>
         </Form>
       </Box>
