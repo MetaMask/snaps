@@ -3,6 +3,7 @@ import type { AddressInputElement } from './AddressInput';
 import type { AssetSelectorElement } from './AssetSelector';
 import type { ButtonElement } from './Button';
 import type { CheckboxElement } from './Checkbox';
+import type { DateTimePickerElement } from './DateTimePicker';
 import type { DropdownElement } from './Dropdown';
 import type { FieldElement } from './Field';
 import type { FileInputElement } from './FileInput';
@@ -19,6 +20,7 @@ export * from './AddressInput';
 export * from './AssetSelector';
 export * from './Button';
 export * from './Checkbox';
+export * from './DateTimePicker';
 export * from './Dropdown';
 export * from './Option';
 export * from './Radio';
@@ -36,6 +38,7 @@ export type StandardFormElement =
   | AssetSelectorElement
   | ButtonElement
   | CheckboxElement
+  | DateTimePickerElement
   | FormElement
   | FieldElement
   | FileInputElement
