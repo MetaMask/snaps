@@ -1,10 +1,12 @@
+import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   ActionConstraint,
   EventConstraint,
-} from '@metamask/base-controller';
-import { Messenger } from '@metamask/base-controller';
-import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import type { CryptographicFunctions } from '@metamask/key-tree';
+  MockAnyNamespace,
+  NamespacedName,
+} from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -106,7 +108,11 @@ export type InstalledSnap = {
   snapId: SnapId;
   store: Store;
   executionService: InstanceType<typeof AbstractExecutionService>;
-  controllerMessenger: Messenger<ActionConstraint, EventConstraint>;
+  controllerMessenger: Messenger<
+    NamespacedName,
+    ActionConstraint,
+    EventConstraint
+  >;
   runSaga: RunSagaFunction;
 };
 
@@ -353,7 +359,9 @@ export async function installSnap<
   // Create Redux store.
   const { store, runSaga } = createStore(options);
 
-  const controllerMessenger = new Messenger<any, any>();
+  const controllerMessenger = new Messenger<MockAnyNamespace, any, any>({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   registerActions(controllerMessenger, runSaga, options, snapId);
 
@@ -386,10 +394,9 @@ export async function installSnap<
   const ExecutionService = executionService ?? NodeThreadExecutionService;
   const service = new ExecutionService({
     ...executionServiceOptions,
-    messenger: controllerMessenger.getRestricted({
-      name: 'ExecutionService',
-      allowedActions: [],
-      allowedEvents: [],
+    messenger: new Messenger({
+      namespace: 'ExecutionService',
+      parent: controllerMessenger,
     }),
     setupSnapProvider: (_snapId: string, rpcStream: Duplex) => {
       const mux = setupMultiplex(rpcStream, 'snapStream');

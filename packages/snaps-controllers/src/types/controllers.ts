@@ -1,4 +1,4 @@
-import type { ControllerStateChangeEvent } from '@metamask/base-controller';
+import type { ControllerStateChangeEvent } from '@metamask/base-controller/next';
 import type { Hex, Json } from '@metamask/utils';
 
 // Partial types that should overlap with types from controllers.

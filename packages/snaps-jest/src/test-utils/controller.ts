@@ -1,7 +1,6 @@
-import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
+import { PhishingDetectorResultType } from '@metamask/phishing-controller';
+import type { RootControllerAllowedActions } from '@metamask/snaps-simulation';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-
-import type { RootControllerAllowedActions } from '../internals/simulation/controllers';
 
 export const getRootControllerMessenger = (mocked = true) => {
   const messenger = new MockControllerMessenger<
@@ -12,7 +11,7 @@ export const getRootControllerMessenger = (mocked = true) => {
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: 'all',
+      type: PhishingDetectorResultType.All,
     }));
 
     messenger.registerActionHandler(
@@ -32,25 +31,4 @@ export const getRootControllerMessenger = (mocked = true) => {
   }
 
   return messenger;
-};
-
-export const getRestrictedSnapInterfaceControllerMessenger = (
-  messenger: ReturnType<
-    typeof getRootControllerMessenger
-  > = getRootControllerMessenger(),
-) => {
-  const snapInterfaceControllerMessenger = messenger.getRestricted<
-    'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions['type']
-  >({
-    name: 'SnapInterfaceController',
-    allowedActions: [
-      'PhishingController:testOrigin',
-      'ApprovalController:hasRequest',
-      'ApprovalController:acceptRequest',
-    ],
-    allowedEvents: [],
-  });
-
-  return snapInterfaceControllerMessenger;
 };
