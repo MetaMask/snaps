@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.6.1]
+
 ### Changed
 
 - Bump `@metamask/permission-controller` from `^11.0.6` to `^12.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
@@ -719,7 +721,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.1...HEAD
+[11.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.0...@metamask/snaps-utils@11.6.1
 [11.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.5.0...@metamask/snaps-utils@11.6.0
 [11.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.4.0...@metamask/snaps-utils@11.5.0
 [11.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.3.0...@metamask/snaps-utils@11.4.0
