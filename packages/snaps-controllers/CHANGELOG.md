@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **BREAKING:** Use new `Messenger` from `@metamask/messenger` ([#3611](https://github.com/MetaMask/snaps/pull/3611))
   - Previously, `SnapController`, `CronjobController`, `SnapInsightsController`, `SnapInterfaceController`, `MultichainRouter`, `ExecutionService` and `WebSocketService` accepted a `RestrictedMessenger` instance from `@metamask/base-controller`.
 - **BREAKING:** Metadata property `anonymous` renamed to `includeInDebugSnapshot` ([#3611](https://github.com/MetaMask/snaps/pull/3611))
-- Bump `@metamask/approval-controller` from `^7.2.0` to `^!.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
+- Bump `@metamask/approval-controller` from `^7.2.0` to `^8.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
 - Bump `@metamask/base-controller` from `^8.4.1` to `^9.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
 - Bump `@metamask/permission-controller` from `^11.0.6` to `^12.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
 
