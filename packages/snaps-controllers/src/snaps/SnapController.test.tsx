@@ -1,7 +1,4 @@
-import {
-  getPersistentState,
-  deriveStateFromMetadata,
-} from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { encrypt } from '@metamask/browser-passworder';
 import {
   createAsyncMiddleware,
@@ -88,7 +85,10 @@ import {
   STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
 import { SnapsRegistryStatus } from './registry';
-import type { SnapControllerState } from './SnapController';
+import type {
+  PersistedSnapControllerState,
+  SnapControllerState,
+} from './SnapController';
 import {
   SNAP_APPROVAL_INSTALL,
   SNAP_APPROVAL_RESULT,
@@ -12622,7 +12622,7 @@ describe('SnapController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });
@@ -12748,15 +12748,16 @@ describe('SnapController', () => {
         );
 
         // persist the state somewhere
-        const persistedState = getPersistentState<SnapControllerState>(
+        const persistedState = deriveStateFromMetadata<SnapControllerState>(
           firstSnapController.state,
           firstSnapController.metadata,
+          'persist',
         );
 
         // create a new controller
         const secondSnapController = getSnapController(
           getSnapControllerOptions({
-            state: persistedState,
+            state: persistedState as PersistedSnapControllerState,
           }),
         );
 
@@ -12787,15 +12788,16 @@ describe('SnapController', () => {
         expect(firstSnapController.state.snaps[MOCK_SNAP_ID]).toBeDefined();
 
         // persist the state somewhere
-        const persistedState = getPersistentState<SnapControllerState>(
+        const persistedState = deriveStateFromMetadata<SnapControllerState>(
           firstSnapController.state,
           firstSnapController.metadata,
+          'persist',
         );
 
         // create a new controller
         const secondSnapController = getSnapController(
           getSnapControllerOptions({
-            state: persistedState,
+            state: persistedState as PersistedSnapControllerState,
           }),
         );
 
