@@ -1,4 +1,4 @@
-import type { RestrictedMessenger } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { GetPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
@@ -60,7 +60,7 @@ type SnapKeyring = {
 };
 
 // Expecting a bound function that calls KeyringController.withKeyring selecting the Snap keyring
-type WithSnapKeyringFunction = <ReturnType>(
+export type WithSnapKeyringFunction = <ReturnType>(
   operation: ({ keyring }: { keyring: SnapKeyring }) => Promise<ReturnType>,
 ) => Promise<ReturnType>;
 
@@ -83,12 +83,9 @@ export type MultichainRouterAllowedActions =
 
 export type MultichainRouterEvents = never;
 
-export type MultichainRouterMessenger = RestrictedMessenger<
+export type MultichainRouterMessenger = Messenger<
   typeof name,
-  MultichainRouterActions | MultichainRouterAllowedActions,
-  never,
-  MultichainRouterAllowedActions['type'],
-  MultichainRouterEvents['type']
+  MultichainRouterActions | MultichainRouterAllowedActions
 >;
 
 export type MultichainRouterArgs = {

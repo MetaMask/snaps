@@ -18,9 +18,9 @@ const MOCK_WEBSOCKET_BROKEN_URI = 'wss://broken.metamask.io';
 class MockWebSocket {
   readonly #origin: string;
 
-  #closeListener: EventListener;
+  #closeListener?: EventListener;
 
-  #messageListener: EventListener;
+  #messageListener?: EventListener;
 
   constructor(url: string) {
     this.#origin = new URL(url).origin;
@@ -47,7 +47,7 @@ class MockWebSocket {
 
   send(data: string | Uint8Array) {
     if (data === 'Ping') {
-      this.#messageListener(
+      this.#messageListener?.(
         new MessageEvent('message', { origin: this.#origin, data: 'Pong' }),
       );
       return;
@@ -58,7 +58,7 @@ class MockWebSocket {
       isEqual(Array.from(data), Array.from(stringToBytes('Ping')))
     ) {
       const bytes = stringToBytes('Pong');
-      this.#messageListener(
+      this.#messageListener?.(
         new MessageEvent('message', {
           origin: this.#origin,
           data: bytes.buffer,
@@ -73,7 +73,7 @@ class MockWebSocket {
     event.code = code;
     event.reason = reason;
     event.wasClean = wasClean;
-    this.#closeListener(event);
+    this.#closeListener?.(event);
   }
 
   close() {
@@ -117,7 +117,7 @@ describe('WebSocketService', () => {
       'Ping',
     );
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -137,7 +137,7 @@ describe('WebSocketService', () => {
       },
     );
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -192,7 +192,7 @@ describe('WebSocketService', () => {
       Array.from(stringToBytes('Ping')),
     );
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       2,
       'SnapController:handleRequest',
       {
@@ -212,7 +212,7 @@ describe('WebSocketService', () => {
       },
     );
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       4,
       'SnapController:handleRequest',
       {
@@ -327,7 +327,7 @@ describe('WebSocketService', () => {
       messenger.call('WebSocketService:getAll', MOCK_SNAP_ID),
     ).toHaveLength(0);
 
-    expect(rootMessenger.call).toHaveBeenNthCalledWith(
+    expect(messenger.call).toHaveBeenNthCalledWith(
       5,
       'SnapController:handleRequest',
       {

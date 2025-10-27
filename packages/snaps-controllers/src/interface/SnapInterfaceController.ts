@@ -3,11 +3,11 @@ import type {
   HasApprovalRequest,
 } from '@metamask/approval-controller';
 import type {
-  RestrictedMessenger,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
@@ -164,12 +164,10 @@ export type SnapInterfaceControllerEvents =
   | SnapInterfaceControllerStateChangeEvent
   | NotificationListUpdatedEvent;
 
-export type SnapInterfaceControllerMessenger = RestrictedMessenger<
+export type SnapInterfaceControllerMessenger = Messenger<
   typeof controllerName,
   SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerEvents,
-  SnapInterfaceControllerAllowedActions['type'],
-  SnapInterfaceControllerEvents['type']
+  SnapInterfaceControllerEvents
 >;
 
 export type StoredInterface = {
@@ -216,7 +214,7 @@ export class SnapInterfaceController extends BaseController<
               }
             }, {});
           },
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: true,
         },
       },
@@ -224,7 +222,7 @@ export class SnapInterfaceController extends BaseController<
       state: { interfaces: {}, ...state },
     });
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NotificationServicesController:notificationsListUpdated',
       this.#onNotificationsListUpdated.bind(this),
     );
@@ -237,32 +235,32 @@ export class SnapInterfaceController extends BaseController<
    * actions.
    */
   #registerMessageHandlers() {
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:createInterface`,
       this.createInterface.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:getInterface`,
       this.getInterface.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:updateInterface`,
       this.updateInterface.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:deleteInterface`,
       this.deleteInterface.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:updateInterfaceState`,
       this.updateInterfaceState.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:resolveInterface`,
       this.resolveInterface.bind(this),
     );
@@ -441,8 +439,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns True if the origin is on the phishing list, otherwise false.
    */
   #checkPhishingList(origin: string) {
-    return this.messagingSystem.call('PhishingController:testOrigin', origin)
-      .result;
+    return this.messenger.call('PhishingController:testOrigin', origin).result;
   }
 
   /**
@@ -453,7 +450,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns True if an approval request exists, otherwise false.
    */
   #hasApprovalRequest(id: string) {
-    return this.messagingSystem.call('ApprovalController:hasRequest', {
+    return this.messenger.call('ApprovalController:hasRequest', {
       id,
     });
   }
@@ -465,11 +462,7 @@ export class SnapInterfaceController extends BaseController<
    * @param value - The value to resolve the promise with.
    */
   async #acceptApprovalRequest(id: string, value: Json) {
-    await this.messagingSystem.call(
-      'ApprovalController:acceptRequest',
-      id,
-      value,
-    );
+    await this.messenger.call('ApprovalController:acceptRequest', id, value);
   }
 
   /**
@@ -478,7 +471,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The selected account.
    */
   #getSelectedAccount() {
-    return this.messagingSystem.call(
+    return this.messenger.call(
       'AccountsController:getSelectedMultichainAccount',
     );
   }
@@ -490,7 +483,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The list of accounts.
    */
   #listAccounts(chainIds?: CaipChainId[]) {
-    const accounts = this.messagingSystem.call(
+    const accounts = this.messenger.call(
       'AccountsController:listMultichainAccounts',
     );
 
@@ -512,7 +505,7 @@ export class SnapInterfaceController extends BaseController<
   #getAccountByAddress(address: CaipAccountId) {
     const { address: parsedAddress } = parseCaipAccountId(address);
 
-    return this.messagingSystem.call(
+    return this.messenger.call(
       'AccountsController:getAccountByAddress',
       parsedAddress,
     );
@@ -524,7 +517,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The MultichainAssetsController state.
    */
   #getAssetsState() {
-    return this.messagingSystem.call('MultichainAssetsController:getState');
+    return this.messenger.call('MultichainAssetsController:getState');
   }
 
   /**
@@ -534,7 +527,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The snap.
    */
   #getSnap(id: string) {
-    return this.messagingSystem.call('SnapController:get', id);
+    return this.messenger.call('SnapController:get', id);
   }
 
   /**

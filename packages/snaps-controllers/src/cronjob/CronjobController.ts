@@ -1,9 +1,9 @@
 import type {
-  RestrictedMessenger,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { GetPermissions } from '@metamask/permission-controller';
 import {
   getCronjobCaveatJobs,
@@ -83,12 +83,10 @@ export type CronjobControllerEvents =
   | SnapEnabled
   | SnapDisabled;
 
-export type CronjobControllerMessenger = RestrictedMessenger<
+export type CronjobControllerMessenger = Messenger<
   typeof controllerName,
   CronjobControllerActions,
-  CronjobControllerEvents,
-  CronjobControllerActions['type'],
-  CronjobControllerEvents['type']
+  CronjobControllerEvents
 >;
 
 export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
@@ -181,7 +179,7 @@ export class CronjobController extends BaseController<
         events: {
           includeInStateLogs: false,
           persist: false,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: false,
         },
       },
@@ -196,49 +194,47 @@ export class CronjobController extends BaseController<
     this.#timers = new Map();
     this.#stateManager = stateManager;
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SnapController:snapInstalled',
       this.#handleSnapInstalledEvent,
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SnapController:snapUninstalled',
       this.#handleSnapUninstalledEvent,
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SnapController:snapEnabled',
       this.#handleSnapEnabledEvent,
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SnapController:snapDisabled',
       this.#handleSnapDisabledEvent,
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'SnapController:snapUpdated',
       this.#handleSnapUpdatedEvent,
     );
 
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:init`,
-      (...args) => this.init(...args),
+    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
+      this.init(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:schedule`,
       (...args) => this.schedule(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:cancel`,
       (...args) => this.cancel(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
-      `${controllerName}:get`,
-      (...args) => this.get(...args),
+    this.messenger.registerActionHandler(`${controllerName}:get`, (...args) =>
+      this.get(...args),
     );
   }
 
@@ -336,27 +332,27 @@ export class CronjobController extends BaseController<
   destroy() {
     super.destroy();
 
-    this.messagingSystem.unsubscribe(
+    this.messenger.unsubscribe(
       'SnapController:snapInstalled',
       this.#handleSnapInstalledEvent,
     );
 
-    this.messagingSystem.unsubscribe(
+    this.messenger.unsubscribe(
       'SnapController:snapUninstalled',
       this.#handleSnapUninstalledEvent,
     );
 
-    this.messagingSystem.unsubscribe(
+    this.messenger.unsubscribe(
       'SnapController:snapEnabled',
       this.#handleSnapEnabledEvent,
     );
 
-    this.messagingSystem.unsubscribe(
+    this.messenger.unsubscribe(
       'SnapController:snapDisabled',
       this.#handleSnapDisabledEvent,
     );
 
-    this.messagingSystem.unsubscribe(
+    this.messenger.unsubscribe(
       'SnapController:snapUpdated',
       this.#handleSnapUpdatedEvent,
     );
@@ -473,7 +469,7 @@ export class CronjobController extends BaseController<
    * @param event - The event to execute.
    */
   #execute(event: InternalBackgroundEvent) {
-    this.messagingSystem
+    this.messenger
       .call('SnapController:handleRequest', {
         snapId: event.snapId,
         origin: METAMASK_ORIGIN,
@@ -529,7 +525,7 @@ export class CronjobController extends BaseController<
    * @returns Array of cronjob specifications.
    */
   #getSnapCronjobs(snapId: SnapId): SchedulableBackgroundEvent[] {
-    const permissions = this.messagingSystem.call(
+    const permissions = this.messenger.call(
       'PermissionController:getPermissions',
       snapId,
     );

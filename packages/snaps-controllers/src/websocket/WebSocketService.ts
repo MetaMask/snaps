@@ -1,4 +1,4 @@
-import type { RestrictedMessenger } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetWebSocketsResult,
@@ -60,12 +60,10 @@ export type WebSocketServiceEvents =
   | SnapUpdated
   | SnapInstalled;
 
-export type WebSocketServiceMessenger = RestrictedMessenger<
+export type WebSocketServiceMessenger = Messenger<
   'WebSocketService',
   WebSocketServiceActions | WebSocketServiceAllowedActions,
-  WebSocketServiceEvents,
-  WebSocketServiceAllowedActions['type'],
-  WebSocketServiceEvents['type']
+  WebSocketServiceEvents
 >;
 
 type WebSocketServiceArgs = {

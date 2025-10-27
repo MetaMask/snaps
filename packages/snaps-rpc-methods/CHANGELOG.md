@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING**: `handleSnapInstall` now accepts a `messenger` parameter of type `Messenger` instead of a `messagingSystem` parameter of type `RestrictedMessenger` ([#3611](https://github.com/MetaMask/snaps/pull/3611))
+- **BREAKING**: `MockControllerMessenger` now extends `Messenger` from `@metamask/messenger` instead of from `@metamask/base-controller` ([#3611](https://github.com/MetaMask/snaps/pull/3611))
+- Bump `@metamask/permission-controller` from `^11.0.6` to `^12.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
+
+### Removed
+
+- Remove `@metamask/base-controller` dependency ([#3611](https://github.com/MetaMask/snaps/pull/3611))
+
 ## [13.5.3]
 
 ### Fixed

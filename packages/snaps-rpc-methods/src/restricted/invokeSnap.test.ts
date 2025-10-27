@@ -1,3 +1,4 @@
+import { Messenger } from '@metamask/messenger';
 import type { PermissionsRequest } from '@metamask/permission-controller';
 import { PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -116,9 +117,16 @@ describe('handleSnapInstall', () => {
       never
     >();
 
-    const sideEffectMessenger = messenger.getRestricted({
-      name: 'PermissionController',
-      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
+    const sideEffectMessenger = new Messenger<
+      'PermissionController',
+      InstallSnaps | GetPermittedSnaps,
+      never,
+      any
+    >({ namespace: 'PermissionController', parent: messenger });
+
+    messenger.delegate({
+      messenger: sideEffectMessenger,
+      actions: ['SnapController:install', 'SnapController:getPermitted'],
     });
 
     const expectedResult = {
@@ -154,7 +162,7 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      messagingSystem: sideEffectMessenger,
+      messenger: sideEffectMessenger,
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(
@@ -172,9 +180,16 @@ describe('handleSnapInstall', () => {
       never
     >();
 
-    const sideEffectMessenger = messenger.getRestricted({
-      name: 'PermissionController',
-      allowedActions: ['SnapController:install', 'SnapController:getPermitted'],
+    const sideEffectMessenger = new Messenger<
+      'PermissionController',
+      InstallSnaps | GetPermittedSnaps,
+      never,
+      any
+    >({ namespace: 'PermissionController', parent: messenger });
+
+    messenger.delegate({
+      messenger: sideEffectMessenger,
+      actions: ['SnapController:install', 'SnapController:getPermitted'],
     });
 
     const expectedResult = {
@@ -213,7 +228,7 @@ describe('handleSnapInstall', () => {
 
     const result = await handleSnapInstall({
       requestData,
-      messagingSystem: sideEffectMessenger,
+      messenger: sideEffectMessenger,
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(

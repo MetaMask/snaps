@@ -1,9 +1,9 @@
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import { getTargetVersion } from '@metamask/snaps-utils';
@@ -88,12 +88,10 @@ export type SnapsRegistryStateChangeEvent = ControllerStateChangeEvent<
 
 export type SnapsRegistryEvents = SnapsRegistryStateChangeEvent;
 
-export type SnapsRegistryMessenger = RestrictedMessenger<
+export type SnapsRegistryMessenger = Messenger<
   'SnapsRegistry',
   SnapsRegistryActions,
-  SnapsRegistryEvents,
-  SnapsRegistryActions['type'],
-  SnapsRegistryEvents['type']
+  SnapsRegistryEvents
 >;
 
 export type SnapsRegistryState = {
@@ -145,19 +143,19 @@ export class JsonSnapsRegistry extends BaseController<
         database: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: false,
           usedInUi: true,
         },
         lastUpdated: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: true,
           usedInUi: false,
         },
         databaseUnavailable: {
           includeInStateLogs: true,
           persist: true,
-          anonymous: false,
+          includeInDebugSnapshot: true,
           usedInUi: false,
         },
       },
@@ -174,24 +172,22 @@ export class JsonSnapsRegistry extends BaseController<
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#currentUpdate = null;
 
-    this.messagingSystem.registerActionHandler(
-      'SnapsRegistry:get',
-      async (...args) => this.#get(...args),
+    this.messenger.registerActionHandler('SnapsRegistry:get', async (...args) =>
+      this.#get(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:getMetadata',
       (...args) => this.#getMetadata(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'SnapsRegistry:resolveVersion',
       async (...args) => this.#resolveVersion(...args),
     );
 
-    this.messagingSystem.registerActionHandler(
-      'SnapsRegistry:update',
-      async () => this.#triggerUpdate(),
+    this.messenger.registerActionHandler('SnapsRegistry:update', async () =>
+      this.#triggerUpdate(),
     );
   }
 
