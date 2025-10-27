@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/base-controller from 8.4.0 to 8.4.1 ([#3675](https://github.com/MetaMask/snaps/pull/3675))
+
 ### Changed
 
 - Bump `@metamask/permission-controller` from `^11.0.6` to `^12.0.0`(([#3611](https://github.com/MetaMask/snaps/pull/3611))
