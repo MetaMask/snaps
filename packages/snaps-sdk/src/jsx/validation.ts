@@ -90,6 +90,7 @@ import {
   selectiveUnion,
   svg,
   typedUnion,
+  ISO8601DateStruct,
 } from '../internals';
 import {
   NonEip155AssetTypeStruct,
@@ -393,7 +394,7 @@ export const DateTimePickerStruct: Describe<DateTimePickerElement> = element(
     ),
     placeholder: optional(string()),
     disabled: optional(boolean()),
-    value: optional(string()),
+    value: optional(ISO8601DateStruct),
   },
 );
 
