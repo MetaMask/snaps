@@ -7,43 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- release: `126.0.0` ([#3662](https://github.com/MetaMask/snaps/pull/3662))
-- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
-- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
-- release: 120.0.0 ([#3543](https://github.com/MetaMask/snaps/pull/3543))
-- release: `119.0.0` ([#3533](https://github.com/MetaMask/snaps/pull/3533))
-- release: `118.0.0` ([#3524](https://github.com/MetaMask/snaps/pull/3524))
-- release: `116.0.0` ([#3509](https://github.com/MetaMask/snaps/pull/3509))
-- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- release: `114.0.0` ([#3463](https://github.com/MetaMask/snaps/pull/3463))
-- release: `113.0.0` ([#3448](https://github.com/MetaMask/snaps/pull/3448))
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- chore: Update TypeScript build target to ES2022 ([#3444](https://github.com/MetaMask/snaps/pull/3444))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
-- release: `110.0.0` ([#3425](https://github.com/MetaMask/snaps/pull/3425))
-- Release 109.0.0 ([#3412](https://github.com/MetaMask/snaps/pull/3412))
-- release: 107.0.0 ([#3400](https://github.com/MetaMask/snaps/pull/3400))
-- release: 104.0.0 ([#3384](https://github.com/MetaMask/snaps/pull/3384))
-- chore(deps-dev): bump @lavamoat/allow-scripts from 3.0.4 to 3.3.3 ([#3378](https://github.com/MetaMask/snaps/pull/3378))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.1 to 5.0.2 ([#3369](https://github.com/MetaMask/snaps/pull/3369))
-- release: 103.0.0 ([#3360](https://github.com/MetaMask/snaps/pull/3360))
-- Release 99.0.0 ([#3309](https://github.com/MetaMask/snaps/pull/3309))
-- chore(deps): bump @metamask/superstruct from 3.1.0 to 3.2.1 ([#3297](https://github.com/MetaMask/snaps/pull/3297))
-- chore(deps-dev): bump @metamask/auto-changelog from 5.0.0 to 5.0.1 ([#3283](https://github.com/MetaMask/snaps/pull/3283))
-- chore(deps-dev): bump @metamask/auto-changelog from 4.1.0 to 5.0.0 ([#3277](https://github.com/MetaMask/snaps/pull/3277))
-- Release 98.0.0 ([#3269](https://github.com/MetaMask/snaps/pull/3269))
-- Release 96.0.0 ([#3256](https://github.com/MetaMask/snaps/pull/3256))
-- Release 91.0.0 ([#3185](https://github.com/MetaMask/snaps/pull/3185))
-- Migrate to ESLint 9 ([#3118](https://github.com/MetaMask/snaps/pull/3118))
-- Release 90.0.0 ([#3123](https://github.com/MetaMask/snaps/pull/3123))
-- Release 88.0.0 ([#3061](https://github.com/MetaMask/snaps/pull/3061))
-- Release 87.0.0 ([#3055](https://github.com/MetaMask/snaps/pull/3055))
-- Release 85.0.0 ([#3038](https://github.com/MetaMask/snaps/pull/3038))
-- Fix typo in `test-snaps` ([#3020](https://github.com/MetaMask/snaps/pull/3020))
-
 ## [2.3.0]
 
 ### Added
