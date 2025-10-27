@@ -47,7 +47,7 @@ describe('DateTimePicker', () => {
         type="datetime"
         placeholder="Select date and time"
         disabled={true}
-        value="2024-01-01T12:00"
+        value="2024-01-01T12:00Z"
       />
     );
 
@@ -58,7 +58,7 @@ describe('DateTimePicker', () => {
         type: 'datetime',
         placeholder: 'Select date and time',
         disabled: true,
-        value: '2024-01-01T12:00',
+        value: '2024-01-01T12:00Z',
       },
       key: null,
     });

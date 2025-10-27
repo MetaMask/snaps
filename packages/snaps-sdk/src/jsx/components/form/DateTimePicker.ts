@@ -5,7 +5,8 @@ import { createSnapComponent } from '../../component';
  *
  * @property name - The name of the date/time picker field. This is used to identify the
  * date/time picker field in the form data.
- * @property value - The value of the date/time picker field.
+ * @property value - The value of the date/time picker field. Must be an ISO 8601 date string with
+ * timezone information.
  * @property type - The type of the date/time picker field. Can be 'date', 'time', or 'datetime'.
  * Defaults to 'datetime'.
  * @property placeholder - The placeholder text of the date/time picker field.
