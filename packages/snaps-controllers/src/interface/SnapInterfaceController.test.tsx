@@ -1,4 +1,4 @@
-import { deriveStateFromMetadata } from '@metamask/base-controller/next';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {

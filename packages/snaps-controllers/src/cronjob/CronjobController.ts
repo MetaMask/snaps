@@ -1,8 +1,8 @@
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-} from '@metamask/base-controller/next';
-import { BaseController } from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
+import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { GetPermissions } from '@metamask/permission-controller';
 import {
