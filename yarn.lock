@@ -2815,15 +2815,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/approval-controller@npm:7.2.0"
+"@metamask/approval-controller@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "@metamask/approval-controller@npm:7.2.1"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/base-controller": "npm:^8.4.2"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.8.1"
     nanoid: "npm:^3.3.8"
-  checksum: 10/717d0b6dee37b4ea0eaf4cc81840599a8e9466bdef9d29a2040379e9a346403c49dc27b749fdc66d48e7c24e762b7b36d9942ec78f2a38712d16001b37797a71
+  checksum: 10/037be80727f2c6d15c335c4ecd0eb029cdcb088f65682a3e80a4aca5a0556844a8240dae9c4390530ddf6aaab30b09942a42969a3e832733cd116a7dd4430a36
   languageName: node
   linkType: hard
 
@@ -2892,6 +2892,17 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     immer: "npm:^9.0.6"
   checksum: 10/d720638b6a640f43e06b37bd77b7291be20df2f3cc89ab571ee47c895313ba2521cd49e6dede02dd7e06971c351f88eec2c39b65d8f46ba09492d89131d640b9
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^8.4.2":
+  version: 8.4.2
+  resolution: "@metamask/base-controller@npm:8.4.2"
+  dependencies:
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    immer: "npm:^9.0.6"
+  checksum: 10/e5c4d97a35952072dc8e93c90a334ea60a8d9faa7c15584b5ce8f60b151cf56a7dd5304cb8549b183cdd61d53421b45e3c4688170fcd0a3e2c6a184aeb942067
   languageName: node
   linkType: hard
 
@@ -4243,7 +4254,7 @@ __metadata:
   resolution: "@metamask/snaps-controllers@workspace:packages/snaps-controllers"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.0"
-    "@metamask/approval-controller": "npm:^7.2.0"
+    "@metamask/approval-controller": "npm:^7.2.1"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
