@@ -4315,7 +4315,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.20.3"
     typescript: "npm:~5.3.3"
-    vite: "npm:^6.2.7"
+    vite: "npm:^6.4.1"
     vite-plugin-node-polyfills: "npm:^0.23.0"
     vite-tsconfig-paths: "npm:^4.0.5"
     vitest: "npm:^3.1.1"
@@ -4375,7 +4375,7 @@ __metadata:
     tsconfig-paths-webpack-plugin: "npm:^4.0.1"
     tsx: "npm:^4.20.3"
     typescript: "npm:~5.3.3"
-    vite: "npm:^6.2.7"
+    vite: "npm:^6.4.1"
     vite-tsconfig-paths: "npm:^4.0.5"
     vitest: "npm:^3.1.1"
     webpack: "npm:^5.97.1"
@@ -4516,7 +4516,7 @@ __metadata:
     react-dom: "npm:^19.1.0"
     react-icons: "npm:^5.5.0"
     typescript: "npm:~5.3.3"
-    vite: "npm:^6.2.7"
+    vite: "npm:^6.4.1"
     vitest: "npm:^3.1.1"
   languageName: unknown
   linkType: soft
@@ -4645,7 +4645,7 @@ __metadata:
     tsx: "npm:^4.20.3"
     typescript: "npm:~5.3.3"
     validate-npm-package-name: "npm:^5.0.0"
-    vite: "npm:^6.2.7"
+    vite: "npm:^6.4.1"
     vite-plugin-node-polyfills: "npm:^0.23.0"
     vite-tsconfig-paths: "npm:^4.0.5"
     vitest: "npm:^3.1.1"
@@ -16524,7 +16524,7 @@ __metadata:
     tsx: "npm:^4.20.3"
     typescript: "npm:~5.3.3"
     typescript-eslint: "npm:^8.6.0"
-    vite: "npm:^6.2.7"
+    vite: "npm:^6.4.1"
   languageName: unknown
   linkType: soft
 
@@ -18568,9 +18568,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0 || ^6.0.0, vite@npm:^6.2.7":
-  version: 6.3.4
-  resolution: "vite@npm:6.3.4"
+"vite@npm:^5.0.0 || ^6.0.0, vite@npm:^6.4.1":
+  version: 6.4.1
+  resolution: "vite@npm:6.4.1"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -18619,7 +18619,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10/347579b6571e591c1e4f54262e631f02e952e548171af09042aeffb40adfa5c9b43cf05cf115f0961cc553f6b7173fb9c2ee997a688007c01b6e13779d9a2bd4
+  checksum: 10/ea2083b6b1d1c9e85a13d6797ae989aa1dbc27a5c054319c71141934bf3f8dba8d54b510618040f95751148da63787f28f043df7458a194c81f8b6d8a2d32844
   languageName: node
   linkType: hard
 
