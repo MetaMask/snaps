@@ -107,6 +107,7 @@
     },
     "@metamask/utils>@noble/hashes": {
       "globals": {
+        "TextDecoder": true,
         "TextEncoder": true
       }
     },
