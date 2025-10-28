@@ -41,8 +41,8 @@
   "scripts": {
     "auto-changelog-init": "auto-changelog init",
     "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
-    "build:lavamoat": "lavamoat --policy lavamoat/build-system/policy.json  --override lavamoat/build-system/policy-override.json ./scripts/build.js",
-    "build:lavamoat:policy": "yarn build:lavamoat --writeAutoPolicy && LAVAMOAT_GENERATE_POLICY=true node scripts/build.js",
+    "build:lavamoat": "lavamoat run --policy lavamoat/build-system/policy.json --policy-override lavamoat/build-system/policy-override.json scripts/build.mjs",
+    "build:lavamoat:policy": "lavamoat generate --policy lavamoat/build-system/policy.json --policy-override lavamoat/build-system/policy-override.json scripts/build.mjs && LAVAMOAT_GENERATE_POLICY=true node scripts/build.mjs",
     "build:lavamoat:test": "NODE_ENV=test yarn build:lavamoat",
     "build:post": "yarn build:lavamoat",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-execution-environments",

@@ -1,6 +1,7 @@
-const webpack = require('webpack');
+import webpack from 'webpack';
 
-const config = require('../webpack.config');
+// eslint-disable-next-line import-x/extensions
+import config from '../webpack.config.mjs';
 
 /**
  * Indent a message by a given number of spaces.

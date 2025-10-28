@@ -2,6 +2,14 @@
 // have any declarations, and it currently makes using it from LavaMoat Node
 // more difficult.
 
+import { createRequire } from 'node:module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// TODO: Replace imports below with ESM imports.
+// eslint-disable-next-line no-shadow
+const require = createRequire(import.meta.url);
+
 const LavaMoatPlugin = require('@lavamoat/webpack');
 const { readFileSync } = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -53,6 +61,9 @@ const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
  * configuration for this entry point. This is merged with the base
  * configuration.
  */
+
+// eslint-disable-next-line no-shadow
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * The default Webpack configuration for web-based entry points.
@@ -276,4 +287,4 @@ const configs = ENTRY_POINTS.map(
     }),
 );
 
-module.exports = configs;
+export default configs;
