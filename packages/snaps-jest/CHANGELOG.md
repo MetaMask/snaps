@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump `@metamask/phishing-controller` from `^13.1.0` to `^15.0.0`(([#3705](https://github.com/MetaMask/snaps/pull/3705))
+
 ## [9.5.1]
 
 ### Changed
