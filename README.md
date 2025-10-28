@@ -21,6 +21,7 @@ This repository contains the following packages [^fn1]:
 - [`@metamask/snaps-simulation`](packages/snaps-simulation)
 - [`@metamask/snaps-utils`](packages/snaps-utils)
 - [`@metamask/snaps-webpack-plugin`](packages/snaps-webpack-plugin)
+- [`@metamask/test-snaps`](packages/test-snaps)
 
 <!-- end package list -->
 
@@ -44,6 +45,7 @@ linkStyle default opacity:0.5
   snaps_simulation(["@metamask/snaps-simulation"]);
   snaps_utils(["@metamask/snaps-utils"]);
   snaps_webpack_plugin(["@metamask/snaps-webpack-plugin"]);
+  test_snaps(["@metamask/test-snaps"]);
   create_snap --> snaps_utils;
   snaps_cli --> snaps_rpc_methods;
   snaps_cli --> snaps_sandbox;
@@ -71,6 +73,39 @@ linkStyle default opacity:0.5
   snaps_webpack_plugin --> snaps_rpc_methods;
   snaps_webpack_plugin --> snaps_sdk;
   snaps_webpack_plugin --> snaps_utils;
+  test_snaps --> examples/packages/background_events;
+  test_snaps --> examples/packages/bip32;
+  test_snaps --> examples/packages/bip44;
+  test_snaps --> examples/packages/client_status;
+  test_snaps --> examples/packages/cronjob_duration;
+  test_snaps --> examples/packages/cronjobs;
+  test_snaps --> examples/packages/dialogs;
+  test_snaps --> examples/packages/errors;
+  test_snaps --> examples/packages/ethereum_provider;
+  test_snaps --> examples/packages/ethers_js;
+  test_snaps --> examples/packages/file_upload;
+  test_snaps --> examples/packages/get_entropy;
+  test_snaps --> examples/packages/get_file;
+  test_snaps --> examples/packages/home_page;
+  test_snaps --> examples/packages/images;
+  test_snaps --> examples/packages/transaction_insights;
+  test_snaps --> examples/packages/interactive_ui;
+  test_snaps --> examples/packages/json_rpc;
+  test_snaps --> examples/packages/jsx;
+  test_snaps --> examples/packages/lifecycle_hooks;
+  test_snaps --> examples/packages/localization;
+  test_snaps --> examples/packages/manage_state;
+  test_snaps --> examples/packages/name_lookup;
+  test_snaps --> examples/packages/network_access;
+  test_snaps --> examples/packages/notifications;
+  test_snaps --> examples/packages/preferences;
+  test_snaps --> examples/packages/preinstalled;
+  test_snaps --> examples/packages/protocol;
+  test_snaps --> examples/packages/send_flow;
+  test_snaps --> examples/packages/signature_insights;
+  test_snaps --> snaps_sdk;
+  test_snaps --> snaps_utils;
+  test_snaps --> examples/packages/wasm;
 ```
 
 <!-- end dependency graph -->
