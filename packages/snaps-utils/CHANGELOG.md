@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump vite from 6.3.4 to 6.4.1 in the npm_and_yarn group across 1 directory ([#3633](https://github.com/MetaMask/snaps/pull/3633))
+
 ## [11.6.1]
 
 ### Changed
