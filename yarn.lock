@@ -2727,7 +2727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^4.3.3, @lavamoat/aa@npm:^4.3.4":
+"@lavamoat/aa@npm:^4.3.4":
   version: 4.3.4
   resolution: "@lavamoat/aa@npm:4.3.4"
   dependencies:
@@ -4363,7 +4363,7 @@ __metadata:
     jest-environment-node: "npm:^29.5.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
-    lavamoat: "npm:^9.0.10"
+    lavamoat: "npm:^10.0.0"
     prettier: "npm:^3.3.3"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
@@ -13672,22 +13672,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^16.5.0":
-  version: 16.7.1
-  resolution: "lavamoat-core@npm:16.7.1"
-  dependencies:
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^0.1.0"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^8.0.11"
-    merge-deep: "npm:3.0.3"
-    ses: "npm:1.14.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/e15b3d83f2b838942f65159460d5f7394ce0f41122ed682db61c6eb2ad0760814e58bce6e3f9037604bf16f4190c9f5328d75cb0f550e10729092534365f21e7
-  languageName: node
-  linkType: hard
-
 "lavamoat-core@npm:^17.0.0":
   version: 17.0.0
   resolution: "lavamoat-core@npm:17.0.0"
@@ -13704,7 +13688,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.0.11, lavamoat-tofu@npm:^8.0.8":
+"lavamoat-tofu@npm:^8.0.11":
   version: 8.0.11
   resolution: "lavamoat-tofu@npm:8.0.11"
   dependencies:
@@ -13720,25 +13704,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^9.0.10":
-  version: 9.0.10
-  resolution: "lavamoat@npm:9.0.10"
+"lavamoat@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "lavamoat@npm:10.0.0"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^4.3.3"
+    "@lavamoat/aa": "npm:^4.3.4"
     bindings: "npm:1.5.0"
     corepack: "npm:0.33.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^16.5.0"
-    lavamoat-tofu: "npm:^8.0.8"
+    lavamoat-core: "npm:^17.0.0"
+    lavamoat-tofu: "npm:^8.0.11"
     node-gyp-build: "npm:4.8.4"
     resolve: "npm:1.22.10"
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/ee1c325354a521ee432542089e1078e15c1e3ff1d6beffd28c7761b6cec6f844c2b9ffb0c4ac6535743ce230fa6aa40565b1eefc262e2fefba972f5c4b4b76b3
+  checksum: 10/3a6e995289a6fe5007f020b7288d22ea98c0eaee8d609cfc172c9a81ab7db1cec7fd7dffb84eb58ddbcefd73195e84a103df27ea76539eded5d77c4356454c5f
   languageName: node
   linkType: hard
 
