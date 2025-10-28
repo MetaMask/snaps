@@ -62,10 +62,12 @@ jobs:
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install dependencies
+        run: yarn install --immutable
       - name: Build
-        run: |
-          yarn install --immutable
-          yarn build
+        run: yarn build
+      - name: Build test-snaps
+        run: yarn workspace @metamask/test-snaps build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
