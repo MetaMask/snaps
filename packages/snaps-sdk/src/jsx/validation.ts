@@ -80,6 +80,7 @@ import type {
   SelectorElement,
   SelectorOptionElement,
   BannerElement,
+  DateTimePickerElement,
 } from './components';
 import { IconName } from './components';
 import type { Describe } from '../internals';
@@ -89,6 +90,7 @@ import {
   selectiveUnion,
   svg,
   typedUnion,
+  ISO8601DateStruct,
 } from '../internals';
 import {
   NonEip155AssetTypeStruct,
@@ -381,6 +383,22 @@ export const DropdownStruct: Describe<DropdownElement> = element('Dropdown', {
 });
 
 /**
+ * A struct for the {@link DateTimePickerElement} type.
+ */
+export const DateTimePickerStruct: Describe<DateTimePickerElement> = element(
+  'DateTimePicker',
+  {
+    name: string(),
+    type: optional(
+      nullUnion([literal('date'), literal('time'), literal('datetime')]),
+    ),
+    placeholder: optional(string()),
+    disabled: optional(boolean()),
+    value: optional(ISO8601DateStruct),
+  },
+);
+
+/**
  * A struct for the {@link AddressElement} type.
  */
 export const AddressStruct: Describe<AddressElement> = element('Address', {
@@ -546,6 +564,7 @@ const FIELD_CHILDREN_ARRAY = [
   FileInputStruct,
   CheckboxStruct,
   SelectorStruct,
+  DateTimePickerStruct,
 ] as [
   typeof AssetSelectorStruct,
   typeof AddressInputStruct,
@@ -556,6 +575,7 @@ const FIELD_CHILDREN_ARRAY = [
   typeof FileInputStruct,
   typeof CheckboxStruct,
   typeof SelectorStruct,
+  typeof DateTimePickerStruct,
 ];
 
 /**
@@ -595,6 +615,7 @@ const FieldChildStruct = selectiveUnion((value) => {
   | InputElement
   | CheckboxElement
   | SelectorElement
+  | DateTimePickerElement
   | AssetSelectorElement
   | AddressInputElement
   | AccountSelectorElement,
@@ -963,6 +984,7 @@ export const BoxChildStruct = typedUnion([
   BoxStruct,
   ButtonStruct,
   CopyableStruct,
+  DateTimePickerStruct,
   DividerStruct,
   DropdownStruct,
   RadioGroupStruct,
@@ -1035,6 +1057,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   AddressStruct,
   BoxStruct,
   CopyableStruct,
+  DateTimePickerStruct,
   DividerStruct,
   HeadingStruct,
   ImageStruct,
