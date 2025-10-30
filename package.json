@@ -108,7 +108,7 @@
     "lint-staged": "^12.4.1",
     "lodash": "^4.17.21",
     "minimatch": "^7.4.1",
-    "playwright": "~1.49.0",
+    "playwright": "~1.55.1",
     "prettier": "^3.3.3",
     "prettier-2": "npm:prettier@^2.8.8",
     "prettier-plugin-packagejson": "^2.5.8",
