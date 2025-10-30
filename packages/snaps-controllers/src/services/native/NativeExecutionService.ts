@@ -1,4 +1,3 @@
-import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { NativeSnapExecutor } from '@metamask/snaps-execution-environments';
 import type { Json } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
@@ -15,7 +14,7 @@ export class NativeExecutionService extends AbstractExecutionService<NativeSnapE
 
   protected async initEnvStream(
     _snapId: string,
-  ): Promise<{ worker: NativeSnapExecutor; stream: BasePostMessageStream }> {
+  ): Promise<{ worker: NativeSnapExecutor; stream: Duplex }> {
     // TODO: Sanity check this.
     const workerStream = new Duplex({
       objectMode: true,
@@ -37,7 +36,7 @@ export class NativeExecutionService extends AbstractExecutionService<NativeSnapE
         workerStream.push(chunk, encoding);
         callback();
       },
-    }) as unknown as BasePostMessageStream;
+    });
 
     // NOTE: Initializes a Snap executor that runs in the same JS thread as the execution service.
     // Does not provide process isolation.
