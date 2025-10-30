@@ -3906,9 +3906,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/permission-controller@npm:12.0.0"
+"@metamask/permission-controller@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@metamask/permission-controller@npm:12.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -3922,7 +3922,7 @@ __metadata:
     nanoid: "npm:^3.3.8"
   peerDependencies:
     "@metamask/approval-controller": ^8.0.0
-  checksum: 10/81ac553db8ab90d23161c5268d37728a0d0b263480dd9050a94efb64d3d317f00b8c00254b529ead823723c9eb7ae4efd3374da58440d4632411860753e1c94a
+  checksum: 10/c9a881bbeb477a9080653c6f8b57a326ce7e722d9b324bcd2613bc3caae595906a4759c49982be4bec6742390e2f03dcf8009ad3c8b5fceedadbf600a51597eb
   languageName: node
   linkType: hard
 
@@ -4257,7 +4257,7 @@ __metadata:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
@@ -4458,7 +4458,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.1.0"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4551,7 +4551,7 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
@@ -4594,7 +4594,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/slip44": "npm:^4.3.0"
