@@ -1534,6 +1534,7 @@ export class SnapController extends BaseController<
               versionRange: resolvedVersion,
               fetch: this.#fetchFunction,
               allowLocal: false,
+              useNpmProxy: true,
             });
 
             await this.#updateSnap({
