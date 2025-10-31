@@ -48,6 +48,8 @@ describe('DateTimePicker', () => {
         placeholder="Select date and time"
         disabled={true}
         value="2024-01-01T12:00Z"
+        disablePast={false}
+        disableFuture={true}
       />
     );
 
@@ -59,6 +61,8 @@ describe('DateTimePicker', () => {
         placeholder: 'Select date and time',
         disabled: true,
         value: '2024-01-01T12:00Z',
+        disablePast: false,
+        disableFuture: true,
       },
       key: null,
     });

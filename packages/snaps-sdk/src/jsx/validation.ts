@@ -394,6 +394,8 @@ export const DateTimePickerStruct: Describe<DateTimePickerElement> = element(
     ),
     placeholder: optional(string()),
     disabled: optional(boolean()),
+    disablePast: optional(boolean()),
+    disableFuture: optional(boolean()),
     value: optional(ISO8601DateStruct),
   },
 );

@@ -1021,12 +1021,15 @@ describe('DateTimePickerStruct', () => {
     <DateTimePicker name="foo" type="time" />,
     <DateTimePicker name="foo" value={new Date().toISOString()} />,
     <DateTimePicker name="foo" disabled={true} />,
+    <DateTimePicker name="foo" disablePast={false} />,
+    <DateTimePicker name="foo" disableFuture={true} />,
     <DateTimePicker
       name="foo"
       value={new Date().toISOString()}
       placeholder="foobar"
       type="datetime"
       disabled={true}
+      disablePast={true}
     />,
   ])('validates a date time picker element', (value) => {
     expect(is(value, DateTimePickerStruct)).toBe(true);
