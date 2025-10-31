@@ -260,9 +260,15 @@ export function set(
 
   for (let i = 0; i < keys.length; i++) {
     const currentKey = keys[i];
-    if (FORBIDDEN_KEYS.includes(currentKey)) {
+    // Explicitly block prototype pollution keys
+    if (
+      FORBIDDEN_KEYS.includes(currentKey) ||
+      currentKey === '__proto__' ||
+      currentKey === 'constructor' ||
+      currentKey === 'prototype'
+    ) {
       throw rpcErrors.invalidParams(
-        'Invalid params: Key contains forbidden characters.',
+        'Invalid params: Key contains forbidden characters or is potentially prototype polluting.',
       );
     }
 
