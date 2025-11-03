@@ -66,4 +66,17 @@ describe('InputChangeEventStruct', () => {
       ),
     ).toBe(true);
   });
+
+  it('accepts null values', () => {
+    expect(
+      is(
+        {
+          type: 'InputChangeEvent',
+          name: 'foo',
+          value: null,
+        },
+        InputChangeEventStruct,
+      ),
+    ).toBe(true);
+  });
 });

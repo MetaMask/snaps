@@ -141,12 +141,14 @@ export const InputChangeEventStruct = assign(
   object({
     type: literal(UserInputEventType.InputChangeEvent),
     name: string(),
-    value: union([
-      string(),
-      boolean(),
-      AccountSelectorStateStruct,
-      AssetSelectorStateStruct,
-    ]),
+    value: nullable(
+      union([
+        string(),
+        boolean(),
+        AccountSelectorStateStruct,
+        AssetSelectorStateStruct,
+      ]),
+    ),
   }),
 );
 
