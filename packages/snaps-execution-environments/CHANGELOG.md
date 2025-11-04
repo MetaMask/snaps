@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Input change events in `onUserInput` now accepts `null` values ([#3722](https://github.com/MetaMask/snaps/pull/3722))
+
 ## [10.2.2]
 
 ### Changed
