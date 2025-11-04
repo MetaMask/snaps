@@ -8,14 +8,14 @@ export const createCrypto = () => {
     'Crypto endowment requires `globalThis.crypto` to be defined.',
   );
 
-  assert(
+  /**assert(
     rootRealmGlobal.SubtleCrypto,
     'Crypto endowment requires `globalThis.SubtleCrypto` to be defined.',
-  );
+  );**/
 
   return {
     crypto: harden(rootRealmGlobal.crypto),
-    SubtleCrypto: harden(rootRealmGlobal.SubtleCrypto),
+    // SubtleCrypto: harden(rootRealmGlobal.SubtleCrypto),
   };
 };
 

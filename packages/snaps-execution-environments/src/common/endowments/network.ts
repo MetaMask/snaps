@@ -2,6 +2,7 @@ import { assert } from '@metamask/utils';
 
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import { withTeardown } from '../utils';
+import { rootRealmGlobal } from '../globalObject';
 
 /**
  * This class wraps a Response object.
@@ -177,10 +178,10 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
   const teardownRef = { lastTeardown: 0 };
 
   // Remove items from openConnections after they were garbage collected
-  const cleanup = new FinalizationRegistry<() => void>(
+  const cleanup = 'FinalizationRegistry' in rootRealmGlobal ? new FinalizationRegistry<() => void>(
     /* istanbul ignore next: can't test garbage collection without modifying node parameters */
     (callback) => callback(),
-  );
+  ) : undefined;
 
   const _fetch: typeof fetch = async (
     input: RequestInfo | URL,
@@ -279,7 +280,7 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
               },
           };
           openConnections.add(openBodyConnection);
-          cleanup.register(
+          cleanup?.register(
             res.body,
             /* istanbul ignore next: can't test garbage collection without modifying node parameters */
             () => openConnections.delete(openBodyConnection),
