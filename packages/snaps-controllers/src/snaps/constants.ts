@@ -55,6 +55,8 @@ export const CLIENT_ONLY_HANDLERS = Object.freeze([
  * This is primarily used to grant or revoke the permission if its dependencies
  * are granted or revoked.
  */
-export const DYNAMIC_PERMISSION_DEPENDENCIES = Object.freeze({
+export const DYNAMIC_PERMISSION_DEPENDENCIES: Readonly<
+  Record<string, string[]>
+> = Object.freeze({
   'endowment:caip25': ['endowment:ethereum-provider'],
 });

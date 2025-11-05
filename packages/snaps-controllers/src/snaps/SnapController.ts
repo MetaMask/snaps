@@ -4274,65 +4274,42 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Calculate changes to dynamic permissions based on the desired permissions
-   * set and their dependencies.
+   * Get the desired permissions including dynamic permissions. That is, if a
+   * dynamic permission was previously granted and at least one of its
+   * dependencies is still desired, it will be included in the desired
+   * permissions.
    *
-   * @param approvedPermissions - The permissions that are already approved.
-   * @param unusedPermissions - The permissions that are no longer used.
-   * @param newPermissions - The new permissions that are being requested.
-   * @returns The updated desired permissions set including dynamic permissions.
+   * @param oldPermissions - The old permissions.
+   * @param desiredPermissions - The desired permissions.
+   * @returns The desired permissions including dynamic permissions.
    */
-  #calculateDynamicPermissionsChange(
-    approvedPermissions: SubjectPermissions<
+  #getDesiredPermissions(
+    oldPermissions: SubjectPermissions<
       ValidPermission<string, Caveat<string, any>>
     >,
-    unusedPermissions: SubjectPermissions<
-      ValidPermission<string, Caveat<string, any>>
-    >,
-    newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+    desiredPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
   ) {
-    const groupedPermissions = new Set([
-      ...Object.keys(newPermissions),
-      ...Object.keys(approvedPermissions),
-    ]);
-
-    return Object.entries(DYNAMIC_PERMISSION_DEPENDENCIES).reduce<{
-      unusedPermissions: SubjectPermissions<
-        ValidPermission<string, Caveat<string, any>>
-      >;
-      approvedPermissions: SubjectPermissions<
-        ValidPermission<string, Caveat<string, any>>
-      >;
-      newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
-    }>(
-      (accumulator, [permission, dependencies]) => {
-        // If the Snap has a dynamic permission, it should always be in the
-        // unused permissions at this point, since it can't be requested
-        // directly in the manifest.
-        if (!accumulator.unusedPermissions[permission]) {
-          return accumulator;
-        }
+    return Object.keys(oldPermissions).reduce<
+      Record<string, Pick<PermissionConstraint, 'caveats'>>
+    >((accumulator, permissionName) => {
+      if (
+        this.#dynamicPermissions.includes(permissionName) &&
+        hasProperty(DYNAMIC_PERMISSION_DEPENDENCIES, permissionName)
+      ) {
+        const dependencies =
+          DYNAMIC_PERMISSION_DEPENDENCIES[permissionName] ?? [];
 
         const hasDependency = dependencies.some((dependency) =>
-          groupedPermissions.has(dependency),
+          hasProperty(desiredPermissions, dependency),
         );
 
-        // If a dependency exists, move the assumed unused dynamic permission
-        // back to approved permissions.
         if (hasDependency) {
-          accumulator.approvedPermissions[permission] =
-            accumulator.unusedPermissions[permission];
-          delete accumulator.unusedPermissions[permission];
+          accumulator[permissionName] = oldPermissions[permissionName];
         }
+      }
 
-        return accumulator;
-      },
-      {
-        approvedPermissions,
-        unusedPermissions,
-        newPermissions,
-      },
-    );
+      return accumulator;
+    }, desiredPermissions);
   }
 
   #calculatePermissionsChange(
@@ -4352,15 +4329,19 @@ export class SnapController extends BaseController<
   } {
     const oldPermissions =
       this.messenger.call('PermissionController:getPermissions', snapId) ?? {};
+    const desiredPermissionsSetWithDynamic = this.#getDesiredPermissions(
+      oldPermissions,
+      desiredPermissionsSet,
+    );
 
     const newPermissions = permissionsDiff(
-      desiredPermissionsSet,
+      desiredPermissionsSetWithDynamic,
       oldPermissions,
     );
 
     const unusedPermissions = permissionsDiff(
       oldPermissions,
-      desiredPermissionsSet,
+      desiredPermissionsSetWithDynamic,
     );
 
     // It's a Set Intersection of oldPermissions and desiredPermissionsSet
@@ -4370,11 +4351,7 @@ export class SnapController extends BaseController<
       unusedPermissions,
     );
 
-    return this.#calculateDynamicPermissionsChange(
-      approvedPermissions,
-      unusedPermissions,
-      newPermissions,
-    );
+    return { newPermissions, unusedPermissions, approvedPermissions };
   }
 
   #isSubjectConnectedToSnap(snapId: SnapId, origin: string) {
