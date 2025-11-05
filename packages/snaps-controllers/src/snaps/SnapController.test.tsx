@@ -11535,12 +11535,12 @@ describe('SnapController', () => {
       const callActionSpy = jest.spyOn(messenger, 'call');
 
       messenger.call('SnapController:revokeDynamicPermissions', MOCK_SNAP_ID, [
-        'eth_accounts',
+        'endowment:caip25',
       ]);
 
       expect(callActionSpy).toHaveBeenCalledWith(
         'PermissionController:revokePermissions',
-        { [MOCK_SNAP_ID]: ['eth_accounts'] },
+        { [MOCK_SNAP_ID]: ['endowment:caip25'] },
       );
 
       snapController.destroy();
