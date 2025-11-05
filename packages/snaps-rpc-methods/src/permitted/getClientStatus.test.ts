@@ -1,5 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import type { GetClientStatusResult } from '@metamask/snaps-sdk';
+import { getPlatformVersion } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { getClientStatusHandler } from './getClientStatus';
@@ -24,9 +25,11 @@ describe('snap_getClientStatus', () => {
 
       const getIsLocked = jest.fn().mockReturnValue(true);
       const getIsActive = jest.fn().mockReturnValue(false);
+      const getVersion = jest.fn().mockReturnValue('13.9.0');
       const hooks = {
         getIsLocked,
         getIsActive,
+        getVersion,
       };
 
       const engine = new JsonRpcEngine();
@@ -51,7 +54,12 @@ describe('snap_getClientStatus', () => {
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
-        result: { locked: true, active: false },
+        result: {
+          clientVersion: '13.9.0',
+          platformVersion: getPlatformVersion(),
+          locked: true,
+          active: false,
+        },
       });
     });
   });

@@ -10,4 +10,9 @@ export type GetClientStatusParams = never;
  *
  * It returns an object containing useful information about the client.
  */
-export type GetClientStatusResult = { locked: boolean; active: boolean };
+export type GetClientStatusResult = {
+  clientVersion: string;
+  platformVersion: string;
+  locked: boolean;
+  active: boolean;
+};
