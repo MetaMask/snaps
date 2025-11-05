@@ -144,6 +144,7 @@ import { gt, gte } from 'semver';
 import {
   ALLOWED_PERMISSIONS,
   CLIENT_ONLY_HANDLERS,
+  DYNAMIC_PERMISSION_DEPENDENCIES,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   METAMASK_ORIGIN,
   STATE_DEBOUNCE_TIMEOUT,
@@ -4272,6 +4273,68 @@ export class SnapController extends BaseController<
     });
   }
 
+  /**
+   * Calculate changes to dynamic permissions based on the desired permissions
+   * set and their dependencies.
+   *
+   * @param approvedPermissions - The permissions that are already approved.
+   * @param unusedPermissions - The permissions that are no longer used.
+   * @param newPermissions - The new permissions that are being requested.
+   * @returns The updated desired permissions set including dynamic permissions.
+   */
+  #calculateDynamicPermissionsChange(
+    approvedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >,
+    unusedPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >,
+    newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  ) {
+    const groupedPermissions = new Set([
+      ...Object.keys(newPermissions),
+      ...Object.keys(approvedPermissions),
+    ]);
+
+    return Object.entries(DYNAMIC_PERMISSION_DEPENDENCIES).reduce<{
+      unusedPermissions: SubjectPermissions<
+        ValidPermission<string, Caveat<string, any>>
+      >;
+      approvedPermissions: SubjectPermissions<
+        ValidPermission<string, Caveat<string, any>>
+      >;
+      newPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>;
+    }>(
+      (accumulator, [permission, dependencies]) => {
+        // If the Snap has a dynamic permission, it should always be in the
+        // unused permissions at this point, since it can't be requested
+        // directly in the manifest.
+        if (!accumulator.unusedPermissions[permission]) {
+          return accumulator;
+        }
+
+        const hasDependency = dependencies.some((dependency) =>
+          groupedPermissions.has(dependency),
+        );
+
+        // If a dependency exists, move the assumed unused dynamic permission
+        // back to approved permissions.
+        if (hasDependency) {
+          accumulator.approvedPermissions[permission] =
+            accumulator.unusedPermissions[permission];
+          delete accumulator.unusedPermissions[permission];
+        }
+
+        return accumulator;
+      },
+      {
+        approvedPermissions,
+        unusedPermissions,
+        newPermissions,
+      },
+    );
+  }
+
   #calculatePermissionsChange(
     snapId: SnapId,
     desiredPermissionsSet: Record<
@@ -4294,8 +4357,7 @@ export class SnapController extends BaseController<
       desiredPermissionsSet,
       oldPermissions,
     );
-    // TODO(ritave): The assumption that these are unused only holds so long as we do not
-    //               permit dynamic permission requests.
+
     const unusedPermissions = permissionsDiff(
       oldPermissions,
       desiredPermissionsSet,
@@ -4308,7 +4370,11 @@ export class SnapController extends BaseController<
       unusedPermissions,
     );
 
-    return { newPermissions, unusedPermissions, approvedPermissions };
+    return this.#calculateDynamicPermissionsChange(
+      approvedPermissions,
+      unusedPermissions,
+      newPermissions,
+    );
   }
 
   #isSubjectConnectedToSnap(snapId: SnapId, origin: string) {

@@ -46,3 +46,15 @@ export const CLIENT_ONLY_HANDLERS = Object.freeze([
   HandlerType.OnAssetsMarketData,
   HandlerType.OnWebSocketEvent,
 ]);
+
+/**
+ * A mapping of dynamic permission to their required dependencies, i.e., if the
+ * dynamic permission is requested, at least one of its dependencies should
+ * also be requested in order to use the dynamic permission.
+ *
+ * This is primarily used to grant or revoke the permission if its dependencies
+ * are granted or revoked.
+ */
+export const DYNAMIC_PERMISSION_DEPENDENCIES = Object.freeze({
+  'endowment:caip25': ['endowment:ethereum-provider'],
+});
