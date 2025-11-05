@@ -117,7 +117,6 @@ import type {
   SemVerRange,
   CaipAssetType,
   JsonRpcRequest,
-  Hex,
   SemVerVersion,
   CaipAssetTypeOrId,
 } from '@metamask/utils';
@@ -646,20 +645,6 @@ export type SnapControllerEvents =
   | SnapDisabled
   | SnapControllerStateChangeEvent;
 
-type NetworkControllerGetNetworkClientById = {
-  type: `NetworkController:getNetworkClientById`;
-  handler: (customNetworkClientId: string) => {
-    configuration: {
-      chainId: Hex;
-    };
-  };
-};
-
-type SelectedNetworkControllerGetNetworkClientIdForDomain = {
-  type: `SelectedNetworkController:getNetworkClientIdForDomain`;
-  handler: (domain: string) => string;
-};
-
 export type AllowedActions =
   | GetEndowments
   | GetPermissions
@@ -683,9 +668,7 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | CreateInterface
-  | GetInterface
-  | NetworkControllerGetNetworkClientById
-  | SelectedNetworkControllerGetNetworkClientIdForDomain;
+  | GetInterface;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -952,7 +935,7 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
-    dynamicPermissions = ['eth_accounts'],
+    dynamicPermissions = ['endowment:caip25'],
     environmentEndowmentPermissions = [],
     excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
