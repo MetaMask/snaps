@@ -122,7 +122,6 @@ import type {
   CaipAssetTypeOrId,
 } from '@metamask/utils';
 import {
-  hexToNumber,
   assert,
   assertIsJsonRpcRequest,
   assertStruct,
@@ -4381,58 +4380,6 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Get the permissions to grant to a Snap following an install, update or
-   * rollback.
-   *
-   * @param snapId - The snap ID.
-   * @param newPermissions - The new permissions to be granted.
-   * @returns The permissions to grant to the Snap.
-   */
-  #getPermissionsToGrant(snapId: SnapId, newPermissions: RequestedPermissions) {
-    if (Object.keys(newPermissions).includes(SnapEndowments.EthereumProvider)) {
-      // This will return the globally selected network if the Snap doesn't have
-      // one set.
-      const networkClientId = this.messenger.call(
-        'SelectedNetworkController:getNetworkClientIdForDomain',
-        snapId,
-      );
-
-      const { configuration } = this.messenger.call(
-        'NetworkController:getNetworkClientById',
-        networkClientId,
-      );
-
-      const chainId = hexToNumber(configuration.chainId);
-
-      // This needs to be assigned to have proper type inference.
-      const modifiedPermissions: RequestedPermissions = {
-        ...newPermissions,
-        'endowment:caip25': {
-          caveats: [
-            {
-              type: 'authorizedScopes',
-              value: {
-                requiredScopes: {},
-                optionalScopes: {
-                  [`eip155:${chainId}`]: {
-                    accounts: [],
-                  },
-                },
-                sessionProperties: {},
-                isMultichainOrigin: false,
-              },
-            },
-          ],
-        },
-      };
-
-      return modifiedPermissions;
-    }
-
-    return newPermissions;
-  }
-
-  /**
    * Update the permissions for a snap following an install, update or rollback.
    *
    * Grants newly requested permissions and revokes unused/revoked permissions.
@@ -4466,13 +4413,8 @@ export class SnapController extends BaseController<
     }
 
     if (isNonEmptyArray(Object.keys(newPermissions))) {
-      const approvedPermissions = this.#getPermissionsToGrant(
-        snapId,
-        newPermissions,
-      );
-
       this.messenger.call('PermissionController:grantPermissions', {
-        approvedPermissions,
+        approvedPermissions: newPermissions,
         subject: { origin: snapId },
         requestData,
       });
