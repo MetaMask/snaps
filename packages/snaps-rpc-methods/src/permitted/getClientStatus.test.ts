@@ -14,6 +14,7 @@ describe('snap_getClientStatus', () => {
         hookNames: {
           getIsLocked: true,
           getIsActive: true,
+          getVersion: true,
         },
       });
     });
