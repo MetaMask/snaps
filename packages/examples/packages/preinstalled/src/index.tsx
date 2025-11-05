@@ -190,23 +190,12 @@ export const onUserInput: OnUserInputHandler = async ({
       event.name === 'setting2' ||
       event.name === 'setting3')
   ) {
-    const state = await snap.request({
-      method: 'snap_manageState',
-      params: {
-        operation: 'get',
-        encrypted: false,
-      },
-    });
-
     await snap.request({
-      method: 'snap_manageState',
+      method: 'snap_setState',
       params: {
-        operation: 'update',
         encrypted: false,
-        newState: {
-          ...state,
-          [event.name]: event.value,
-        },
+        key: event.name,
+        value: event.value,
       },
     });
   }
