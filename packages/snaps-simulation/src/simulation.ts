@@ -196,6 +196,13 @@ export type PermittedMiddlewareHooks = {
   getIsActive: () => boolean;
 
   /**
+   * A hook that returns the client version.
+   *
+   * @returns A string that corresponds to the client version.
+   */
+  getVersion: () => string;
+
+  /**
    * A hook that returns the Snap's auxiliary file for the given path. This hook
    * is bound to the Snap ID.
    *
@@ -486,6 +493,7 @@ export function getPermittedHooks(
     getUnlockPromise: asyncResolve(),
     getIsLocked: () => false,
     getIsActive: () => true,
+    getVersion: () => '13.9.0',
 
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),

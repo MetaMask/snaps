@@ -334,6 +334,29 @@ describe('getPermittedHooks', () => {
     await close();
   });
 
+  it('returns the `getVersion` hook', async () => {
+    const { snapId, close } = await getMockServer({
+      manifest: getSnapManifest(),
+    });
+
+    const location = detectSnapLocation(snapId, {
+      allowLocal: true,
+    });
+
+    const snapFiles = await fetchSnap(snapId, location);
+
+    const { getVersion } = getPermittedHooks(
+      snapId,
+      snapFiles,
+      controllerMessenger,
+      runSaga,
+    );
+
+    expect(getVersion()).toBe('13.9.0');
+
+    await close();
+  });
+
   it('returns the `getSnapFile` hook', async () => {
     const value = JSON.stringify({ bar: 'baz' });
     const { snapId, close } = await getMockServer({
