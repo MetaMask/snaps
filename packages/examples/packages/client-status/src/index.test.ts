@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
+import { getPlatformVersion } from '@metamask/snaps-utils';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
@@ -31,6 +32,8 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith({
         locked: false,
         active: true,
+        clientVersion: '13.6.0-flask.0',
+        platformVersion: getPlatformVersion(),
       });
     });
   });

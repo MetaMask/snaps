@@ -1,6 +1,7 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import type { GetClientStatusResult } from '@metamask/snaps-sdk';
+import { getPlatformVersion } from '@metamask/snaps-utils';
 import type {
   JsonRpcParams,
   JsonRpcRequest,
@@ -12,6 +13,7 @@ import type { MethodHooksObject } from '../utils';
 const hookNames: MethodHooksObject<GetClientStatusHooks> = {
   getIsLocked: true,
   getIsActive: true,
+  getVersion: true,
 };
 
 /**
@@ -37,6 +39,11 @@ export type GetClientStatusHooks = {
    * @returns Whether the client is active or not.
    */
   getIsActive: () => boolean;
+
+  /**
+   * @returns The version string for the client.
+   */
+  getVersion: () => string;
 };
 
 /**
@@ -51,6 +58,7 @@ export type GetClientStatusHooks = {
  * @param hooks - The RPC method hooks.
  * @param hooks.getIsLocked - A function that returns whether the client is locked or not.
  * @param hooks.getIsActive - A function that returns whether the client is opened or not.
+ * @param hooks.getVersion - A function that returns the client version.
  * @returns Nothing.
  */
 async function getClientStatusImplementation(
@@ -58,8 +66,13 @@ async function getClientStatusImplementation(
   response: PendingJsonRpcResponse<GetClientStatusResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getIsLocked, getIsActive }: GetClientStatusHooks,
+  { getIsLocked, getIsActive, getVersion }: GetClientStatusHooks,
 ): Promise<void> {
-  response.result = { locked: getIsLocked(), active: getIsActive() };
+  response.result = {
+    locked: getIsLocked(),
+    active: getIsActive(),
+    clientVersion: getVersion(),
+    platformVersion: getPlatformVersion(),
+  };
   return end();
 }
