@@ -352,7 +352,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    expect(getVersion()).toBe('13.9.0');
+    expect(getVersion()).toBe('13.6.0-flask.0');
 
     await close();
   });

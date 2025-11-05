@@ -493,7 +493,7 @@ export function getPermittedHooks(
     getUnlockPromise: asyncResolve(),
     getIsLocked: () => false,
     getIsActive: () => true,
-    getVersion: () => '13.9.0',
+    getVersion: () => '13.6.0-flask.0',
 
     getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
       await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),

@@ -32,7 +32,7 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith({
         locked: false,
         active: true,
-        clientVersion: '13.9.0',
+        clientVersion: '13.6.0-flask.0',
         platformVersion: getPlatformVersion(),
       });
     });

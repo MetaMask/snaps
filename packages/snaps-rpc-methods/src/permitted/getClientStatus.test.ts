@@ -25,7 +25,7 @@ describe('snap_getClientStatus', () => {
 
       const getIsLocked = jest.fn().mockReturnValue(true);
       const getIsActive = jest.fn().mockReturnValue(false);
-      const getVersion = jest.fn().mockReturnValue('13.9.0');
+      const getVersion = jest.fn().mockReturnValue('13.6.0-flask.0');
       const hooks = {
         getIsLocked,
         getIsActive,
@@ -55,7 +55,7 @@ describe('snap_getClientStatus', () => {
         jsonrpc: '2.0',
         id: 1,
         result: {
-          clientVersion: '13.9.0',
+          clientVersion: '13.6.0-flask.0',
           platformVersion: getPlatformVersion(),
           locked: true,
           active: false,
