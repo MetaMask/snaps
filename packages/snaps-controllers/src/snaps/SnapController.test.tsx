@@ -8537,6 +8537,11 @@ describe('SnapController', () => {
         }),
       );
 
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        expect.anything(),
+      );
+
       controller.destroy();
     });
 
@@ -8647,6 +8652,14 @@ describe('SnapController', () => {
             approvedConnections: {},
           },
         }),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        18,
+        'PermissionController:revokePermissions',
+        {
+          [MOCK_SNAP_ID]: ['endowment:ethereum-provider', 'endowment:caip25'],
+        },
       );
 
       controller.destroy();
