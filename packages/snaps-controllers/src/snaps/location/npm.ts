@@ -28,9 +28,7 @@ import type { DetectSnapLocationOptions, SnapLocation } from './location';
 
 export const DEFAULT_NPM_REGISTRY = new URL('https://registry.npmjs.org');
 
-export const NPM_REGISTRY_PROXY = new URL(
-  'https://npm-ota.dev-api.cx.metamask.io',
-);
+export const NPM_REGISTRY_PROXY = new URL('https://npm-ota.api.cx.metamask.io');
 
 type NpmMeta = {
   registry: URL;
