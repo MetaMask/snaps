@@ -144,6 +144,7 @@ import { gt, gte } from 'semver';
 import {
   ALLOWED_PERMISSIONS,
   CLIENT_ONLY_HANDLERS,
+  DYNAMIC_PERMISSION_DEPENDENCIES,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   METAMASK_ORIGIN,
   STATE_DEBOUNCE_TIMEOUT,
@@ -4273,6 +4274,46 @@ export class SnapController extends BaseController<
     });
   }
 
+  /**
+   * Get the desired permissions including dynamic permissions. That is, if a
+   * dynamic permission was previously granted and at least one of its
+   * dependencies is still desired, it will be included in the desired
+   * permissions.
+   *
+   * @param oldPermissions - The old permissions.
+   * @param desiredPermissions - The desired permissions.
+   * @returns The desired permissions including dynamic permissions.
+   */
+  #getDesiredPermissions(
+    oldPermissions: SubjectPermissions<
+      ValidPermission<string, Caveat<string, any>>
+    >,
+    desiredPermissions: Record<string, Pick<PermissionConstraint, 'caveats'>>,
+  ) {
+    return Object.keys(oldPermissions).reduce<
+      Record<string, Pick<PermissionConstraint, 'caveats'>>
+    >((accumulator, permissionName) => {
+      if (this.#dynamicPermissions.includes(permissionName)) {
+        const hasDependencies = hasProperty(
+          DYNAMIC_PERMISSION_DEPENDENCIES,
+          permissionName,
+        );
+
+        const hasDependency = DYNAMIC_PERMISSION_DEPENDENCIES[
+          permissionName
+        ]?.some((dependency) => hasProperty(desiredPermissions, dependency));
+
+        // If the permission doesn't have dependencies, or if at least one of
+        // its dependencies is desired, include it in the desired permissions.
+        if (!hasDependencies || hasDependency) {
+          accumulator[permissionName] = oldPermissions[permissionName];
+        }
+      }
+
+      return accumulator;
+    }, desiredPermissions);
+  }
+
   #calculatePermissionsChange(
     snapId: SnapId,
     desiredPermissionsSet: Record<
@@ -4290,16 +4331,21 @@ export class SnapController extends BaseController<
   } {
     const oldPermissions =
       this.messenger.call('PermissionController:getPermissions', snapId) ?? {};
+    const desiredPermissionsSetWithDynamic = this.#getDesiredPermissions(
+      oldPermissions,
+      desiredPermissionsSet,
+    );
 
     const newPermissions = permissionsDiff(
-      desiredPermissionsSet,
+      desiredPermissionsSetWithDynamic,
       oldPermissions,
     );
-    // TODO(ritave): The assumption that these are unused only holds so long as we do not
-    //               permit dynamic permission requests.
+
+    // TODO: The assumption that these are unused only holds so long as we do
+    //  not permit dynamic permission requests.
     const unusedPermissions = permissionsDiff(
       oldPermissions,
-      desiredPermissionsSet,
+      desiredPermissionsSetWithDynamic,
     );
 
     // It's a Set Intersection of oldPermissions and desiredPermissionsSet

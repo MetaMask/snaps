@@ -58,6 +58,7 @@ import {
   DEFAULT_SOURCE_PATH,
   DEFAULT_ICON_PATH,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+  MOCK_INITIAL_PERMISSIONS,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
@@ -8422,6 +8423,243 @@ describe('SnapController', () => {
         '1.0.0',
         MOCK_ORIGIN,
         false,
+      );
+
+      controller.destroy();
+    });
+
+    it('updates a Snap with a dynamic permission, and keeps the dynamic permission if one of the dependent permissions is used', async () => {
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions: {
+            ...MOCK_INITIAL_PERMISSIONS,
+            'endowment:ethereum-provider': {},
+          },
+        }),
+      });
+
+      const detectSnapLocation = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: manifest.result,
+            }),
+        );
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          ...MOCK_SNAP_PERMISSIONS,
+          'endowment:ethereum-provider': {
+            caveats: null,
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: 'endowment:ethereum-provider',
+          },
+          'endowment:caip25': {
+            caveats: null,
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: 'endowment:caip25',
+          },
+        }),
+      );
+
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation,
+        }),
+      );
+      const callActionSpy = jest.spyOn(messenger, 'call');
+      const onSnapUpdated = jest.fn();
+
+      await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
+      await controller.stopSnap(MOCK_SNAP_ID);
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+
+      await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '1.1.0' },
+      });
+
+      expect(callActionSpy).toHaveBeenCalledTimes(21);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        12,
+        'ApprovalController:addRequest',
+        {
+          origin: MOCK_ORIGIN,
+          id: expect.any(String),
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+          requestState: {
+            loading: true,
+          },
+        },
+        true,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        15,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            loading: false,
+            permissions: {},
+            newVersion: '1.1.0',
+            newPermissions: {},
+            approvedPermissions: {
+              ...MOCK_SNAP_PERMISSIONS,
+              'endowment:ethereum-provider': expect.any(Object),
+              'endowment:caip25': expect.any(Object),
+            },
+            unusedPermissions: {},
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
+          },
+        }),
+      );
+
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        expect.anything(),
+      );
+
+      controller.destroy();
+    });
+
+    it('updates a Snap with a dynamic permission, and revokes the dynamic permission if none of the dependent permissions are used', async () => {
+      const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
+        manifest: getSnapManifest({
+          version: '1.1.0' as SemVerVersion,
+          initialPermissions: {
+            ...MOCK_INITIAL_PERMISSIONS,
+          },
+        }),
+      });
+
+      const detectSnapLocation = jest
+        .fn()
+        .mockImplementationOnce(() => new LoopbackLocation())
+        .mockImplementationOnce(
+          () =>
+            new LoopbackLocation({
+              manifest: manifest.result,
+            }),
+        );
+
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          ...MOCK_SNAP_PERMISSIONS,
+          'endowment:ethereum-provider': {
+            caveats: null,
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: 'endowment:ethereum-provider',
+          },
+          'endowment:caip25': {
+            caveats: null,
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: 'endowment:caip25',
+          },
+        }),
+      );
+
+      const controller = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          detectSnapLocation,
+        }),
+      );
+      const callActionSpy = jest.spyOn(messenger, 'call');
+      const onSnapUpdated = jest.fn();
+
+      await controller.installSnaps(MOCK_ORIGIN, { [MOCK_SNAP_ID]: {} });
+      await controller.stopSnap(MOCK_SNAP_ID);
+
+      messenger.subscribe('SnapController:snapUpdated', onSnapUpdated);
+
+      await controller.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: { version: '1.1.0' },
+      });
+
+      expect(callActionSpy).toHaveBeenCalledTimes(22);
+      expect(callActionSpy).toHaveBeenNthCalledWith(
+        12,
+        'ApprovalController:addRequest',
+        {
+          origin: MOCK_ORIGIN,
+          id: expect.any(String),
+          type: SNAP_APPROVAL_UPDATE,
+          requestData: {
+            metadata: {
+              id: expect.any(String),
+              dappOrigin: MOCK_ORIGIN,
+              origin: MOCK_SNAP_ID,
+            },
+            snapId: MOCK_SNAP_ID,
+          },
+          requestState: {
+            loading: true,
+          },
+        },
+        true,
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        15,
+        'ApprovalController:updateRequestState',
+        expect.objectContaining({
+          id: expect.any(String),
+          requestState: {
+            loading: false,
+            permissions: {},
+            newVersion: '1.1.0',
+            newPermissions: {},
+            approvedPermissions: {
+              ...MOCK_SNAP_PERMISSIONS,
+            },
+            unusedPermissions: {
+              'endowment:ethereum-provider': expect.any(Object),
+              'endowment:caip25': expect.any(Object),
+            },
+            newConnections: {},
+            unusedConnections: {},
+            approvedConnections: {},
+          },
+        }),
+      );
+
+      expect(messenger.call).toHaveBeenNthCalledWith(
+        18,
+        'PermissionController:revokePermissions',
+        {
+          [MOCK_SNAP_ID]: ['endowment:ethereum-provider', 'endowment:caip25'],
+        },
       );
 
       controller.destroy();
