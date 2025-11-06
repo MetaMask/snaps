@@ -61,7 +61,9 @@ async function retrieveWorkspaces(): Promise<Workspace[]> {
     .split('\n')
     .map((line) => JSON.parse(line))
     .filter(
-      (workspace) => !workspace.location.startsWith('packages/examples/'),
+      (workspace) =>
+        !workspace.location.startsWith('packages/examples/') &&
+        !workspace.location.startsWith('packages/test-snaps'),
     );
 }
 
