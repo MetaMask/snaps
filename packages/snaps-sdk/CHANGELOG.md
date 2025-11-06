@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Include versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
+- chore: fix some minor issues in the comments ([#3682](https://github.com/MetaMask/snaps/pull/3682))
+
 ### Fixed
 
 - Input change events in `onUserInput` now accepts `null` values ([#3722](https://github.com/MetaMask/snaps/pull/3722))

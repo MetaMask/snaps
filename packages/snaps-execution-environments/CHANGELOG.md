@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump lavamoat from 10.0.0 to 10.0.1 ([#3721](https://github.com/MetaMask/snaps/pull/3721))
+- chore: Bump @lavamoat/webpack from 1.5.2 to 1.5.3 ([#3720](https://github.com/MetaMask/snaps/pull/3720))
+- chore: Bump @metamask/phishing-controller from 13.1.0 to 15.0.0 ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+- chore: Bump lavamoat from 9.0.10 to 10.0.0 ([#3711](https://github.com/MetaMask/snaps/pull/3711))
+- chore: Bump @lavamoat/webpack from 1.5.0 to 1.5.2 ([#3706](https://github.com/MetaMask/snaps/pull/3706))
+- chore: Bump vite from 6.3.4 to 6.4.1 in the npm_and_yarn group across 1 directory ([#3633](https://github.com/MetaMask/snaps/pull/3633))
+- chore: fix some minor issues in the comments ([#3682](https://github.com/MetaMask/snaps/pull/3682))
+- chore: Bump Yarn to `4.10.3` and configure NPM age gate ([#3691](https://github.com/MetaMask/snaps/pull/3691))
+
 ### Fixed
 
 - Input change events in `onUserInput` now accepts `null` values ([#3722](https://github.com/MetaMask/snaps/pull/3722))

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Include versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
+- chore: Bump @metamask/permission-controller from 12.0.0 to 12.1.0 ([#3714](https://github.com/MetaMask/snaps/pull/3714))
+
 ## [14.0.0]
 
 ### Changed
