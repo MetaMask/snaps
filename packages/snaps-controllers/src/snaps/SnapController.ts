@@ -4305,6 +4305,10 @@ export class SnapController extends BaseController<
 
         // If the permission doesn't have dependencies, or if at least one of
         // its dependencies is desired, include it in the desired permissions.
+        // NOTE: This effectively means that any permissions granted in the manifest
+        // that are considered dynamic, will not be automatically revoked
+        // when the permission is removed from the manifest.
+        // TODO: Deal with this technical debt.
         if (!hasDependencies || hasDependency) {
           accumulator[permissionName] = oldPermissions[permissionName];
         }
