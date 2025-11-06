@@ -18,14 +18,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `@metamask/permission-controller` from `12.0.0` to `12.1.0` ([#3714](https://github.com/MetaMask/snaps/pull/3714))
 - Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
 
+### Removed
+
+- Remove logic for granting CAIP-25 permissions ([#3723](https://github.com/MetaMask/snaps/pull/3723))
+
 ### Fixed
 
 - Prevent initial connections from being revoked as unused on update ([#3729](https://github.com/MetaMask/snaps/pull/3729))
 - Keep dynamic permissions on update ([#3726](https://github.com/MetaMask/snaps/pull/3726))
-
-### Removed
-
-- Remove logic for granting CAIP-25 permissions ([#3723](https://github.com/MetaMask/snaps/pull/3723))
 
 ## [16.0.0]
 
