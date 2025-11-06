@@ -9,10 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.1.0]
 
-### Uncategorized
+### Changed
 
-- feat: Include versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
-- chore: fix some minor issues in the comments ([#3682](https://github.com/MetaMask/snaps/pull/3682))
+- Include client and platform versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
 
 ### Fixed
 
