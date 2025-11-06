@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.0]
+
+### Changed
+
+- Include client and platform versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
+
 ### Fixed
 
 - Input change events in `onUserInput` now accepts `null` values ([#3722](https://github.com/MetaMask/snaps/pull/3722))
@@ -660,7 +666,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.1.0...HEAD
+[10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.0.0...@metamask/snaps-sdk@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.3.0...@metamask/snaps-sdk@10.0.0
 [9.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.2.0...@metamask/snaps-sdk@9.3.0
 [9.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.1.0...@metamask/snaps-sdk@9.2.0

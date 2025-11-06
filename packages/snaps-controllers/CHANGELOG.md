@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.1.0]
+
+### Added
+
+- Add NPM proxy support ([#3695](https://github.com/MetaMask/snaps/pull/3695))
+
+### Changed
+
+- Bump `@metamask/permission-controller` from `12.0.0` to `12.1.0` ([#3714](https://github.com/MetaMask/snaps/pull/3714))
+- Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+
+### Removed
+
+- Remove logic for granting CAIP-25 permissions ([#3723](https://github.com/MetaMask/snaps/pull/3723))
+
+### Fixed
+
+- Prevent initial connections from being revoked as unused on update ([#3729](https://github.com/MetaMask/snaps/pull/3729))
+- Keep dynamic permissions on update ([#3726](https://github.com/MetaMask/snaps/pull/3726))
+
 ## [16.0.0]
 
 ### Changed
@@ -934,7 +954,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.0...HEAD
+[16.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.0.0...@metamask/snaps-controllers@16.1.0
 [16.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.2...@metamask/snaps-controllers@16.0.0
 [15.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.1...@metamask/snaps-controllers@15.0.2
 [15.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.0...@metamask/snaps-controllers@15.0.1

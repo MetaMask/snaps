@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.2]
+
+### Fixed
+
+- Prevent race condition ([#3725](https://github.com/MetaMask/snaps/pull/3725))
+
 ## [0.7.1]
 
 ### Fixed
@@ -55,7 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.2...HEAD
+[0.7.2]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.1...@metamask/preinstalled-example-snap@0.7.2
 [0.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.0...@metamask/preinstalled-example-snap@0.7.1
 [0.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.6.0...@metamask/preinstalled-example-snap@0.7.0
 [0.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.5.0...@metamask/preinstalled-example-snap@0.6.0
