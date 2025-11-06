@@ -4340,6 +4340,8 @@ export class SnapController extends BaseController<
       oldPermissions,
     );
 
+    // TODO: The assumption that these are unused only holds so long as we do
+    //  not permit dynamic permission requests.
     const unusedPermissions = permissionsDiff(
       oldPermissions,
       desiredPermissionsSetWithDynamic,
