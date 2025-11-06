@@ -4292,18 +4292,19 @@ export class SnapController extends BaseController<
     return Object.keys(oldPermissions).reduce<
       Record<string, Pick<PermissionConstraint, 'caveats'>>
     >((accumulator, permissionName) => {
-      if (
-        this.#dynamicPermissions.includes(permissionName) &&
-        hasProperty(DYNAMIC_PERMISSION_DEPENDENCIES, permissionName)
-      ) {
-        const dependencies =
-          DYNAMIC_PERMISSION_DEPENDENCIES[permissionName] ?? [];
-
-        const hasDependency = dependencies.some((dependency) =>
-          hasProperty(desiredPermissions, dependency),
+      if (this.#dynamicPermissions.includes(permissionName)) {
+        const hasDependencies = hasProperty(
+          DYNAMIC_PERMISSION_DEPENDENCIES,
+          permissionName,
         );
 
-        if (hasDependency) {
+        const hasDependency = DYNAMIC_PERMISSION_DEPENDENCIES[
+          permissionName
+        ]?.some((dependency) => hasProperty(desiredPermissions, dependency));
+
+        // If the permission doesn't have dependencies, or if at least one of
+        // its dependencies is desired, include it in the desired permissions.
+        if (!hasDependencies || hasDependency) {
           accumulator[permissionName] = oldPermissions[permissionName];
         }
       }
