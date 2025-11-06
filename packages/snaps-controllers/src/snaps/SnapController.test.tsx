@@ -6087,6 +6087,94 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('supports preinstalled snaps with two-way initial connections', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        (origin) => {
+          if (origin === `${MOCK_SNAP_ID}2`) {
+            return {
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                caveats: [
+                  {
+                    type: SnapCaveatType.SnapIds,
+                    value: {
+                      [MOCK_SNAP_ID]: {},
+                    },
+                  },
+                ],
+                date: 1664187844588,
+                id: 'izn0WGUO8cvq_jqvLQuQP',
+                invoker: MOCK_ORIGIN,
+                parentCapability: WALLET_SNAP_PERMISSION_KEY,
+              },
+            };
+          }
+
+          return {};
+        },
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest({
+            initialConnections: {
+              [`${MOCK_SNAP_ID}2`]: {},
+            },
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+        {
+          snapId: `${MOCK_SNAP_ID}2` as SnapId,
+          manifest: getSnapManifest({
+            initialConnections: {
+              [MOCK_SNAP_ID]: {},
+            },
+          }),
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(snapControllerOptions.messenger.call).not.toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        { [MOCK_SNAP_ID]: ['wallet_snap'] },
+      );
+
+      expect(snapControllerOptions.messenger.call).not.toHaveBeenCalledWith(
+        'PermissionController:revokePermissions',
+        { [`${MOCK_SNAP_ID}2`]: ['wallet_snap'] },
+      );
+
+      snapController.destroy();
+    });
+
     it('supports preinstalled snaps with initial connections', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
