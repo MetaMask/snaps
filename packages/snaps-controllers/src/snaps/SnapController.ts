@@ -936,7 +936,7 @@ export class SnapController extends BaseController<
     closeAllConnections,
     messenger,
     state,
-    dynamicPermissions = ['endowment:caip25'],
+    dynamicPermissions = ['endowment:caip25', 'wallet_snap'],
     environmentEndowmentPermissions = [],
     excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
