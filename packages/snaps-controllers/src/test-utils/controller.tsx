@@ -479,7 +479,6 @@ export const getSnapControllerMessenger = (
       'ExecutionService:executeSnap',
       'ExecutionService:terminateSnap',
       'ExecutionService:handleRpcRequest',
-      'NetworkController:getNetworkClientById',
       'PermissionController:getEndowments',
       'PermissionController:hasPermission',
       'PermissionController:hasPermissions',
@@ -490,7 +489,6 @@ export const getSnapControllerMessenger = (
       'PermissionController:revokePermissionForAllSubjects',
       'PermissionController:updateCaveat',
       'PermissionController:getSubjectNames',
-      'SelectedNetworkController:getNetworkClientIdForDomain',
       'SubjectMetadataController:getSubjectMetadata',
       'SubjectMetadataController:addSubjectMetadata',
       'SnapsRegistry:get',
@@ -574,6 +572,7 @@ export const getSnapControllerOptions = (
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     trackEvent: jest.fn(),
+    waitForOnboarding: jest.fn().mockResolvedValue(undefined),
     ...opts,
   } as SnapControllerConstructorParams;
 
@@ -608,6 +607,7 @@ export const getSnapControllerWithEESOptions = ({
     encryptor: getSnapControllerEncryptor(),
     fetchFunction: jest.fn(),
     trackEvent: jest.fn(),
+    waitForOnboarding: jest.fn().mockResolvedValue(undefined),
     ...options,
   } as SnapControllerConstructorParams & {
     rootMessenger: ReturnType<typeof getControllerMessenger>;
