@@ -815,6 +815,13 @@ type SnapControllerArgs = {
    * MetaMetrics event tracking hook.
    */
   trackEvent: TrackEventHook;
+
+  /**
+   * A hook that returns a promise that resolves when the onboarding has completed.
+   *
+   * @returns A promise that resolves when onboarding is complete.
+   */
+  waitForOnboarding: () => Promise<void>;
 };
 
 type AddSnapArgs = {
@@ -932,6 +939,8 @@ export class SnapController extends BaseController<
 
   readonly #trackSnapExport: ReturnType<typeof throttleTracking>;
 
+  readonly #waitForOnboarding: () => Promise<void>;
+
   constructor({
     closeAllConnections,
     messenger,
@@ -951,6 +960,7 @@ export class SnapController extends BaseController<
     getFeatureFlags = () => ({}),
     clientCryptography,
     trackEvent,
+    waitForOnboarding,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -1034,6 +1044,7 @@ export class SnapController extends BaseController<
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
     this.#trackEvent = trackEvent;
+    this.#waitForOnboarding = waitForOnboarding;
 
     this.#pollForLastRequestStatus();
 
@@ -1467,7 +1478,7 @@ export class SnapController extends BaseController<
    * Also updates any preinstalled Snaps to the latest allowlisted version.
    */
   async updateRegistry(): Promise<void> {
-    this.#assertCanUsePlatform();
+    await this.#assertCanUsePlatform();
     await this.messenger.call('SnapsRegistry:update');
 
     const blockedSnaps = await this.messenger.call(
@@ -1645,9 +1656,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Asserts whether the Snaps platform is allowed to run.
+   * Waits for onboarding and then asserts whether the Snaps platform is allowed to run.
    */
-  #assertCanUsePlatform() {
+  async #assertCanUsePlatform() {
+    // Ensure the user has onboarded before allowing access to Snaps.
+    await this.#waitForOnboarding();
+
     const flags = this.#getFeatureFlags();
     assert(
       flags.disableSnaps !== true,
@@ -1730,7 +1744,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to start.
    */
   async startSnap(snapId: SnapId): Promise<void> {
-    this.#assertCanUsePlatform();
+    await this.#assertCanUsePlatform();
     const snap = this.state.snaps[snapId];
 
     if (!snap.enabled) {
@@ -2630,7 +2644,7 @@ export class SnapController extends BaseController<
     origin: string,
     requestedSnaps: RequestSnapsParams,
   ): Promise<RequestSnapsResult> {
-    this.#assertCanUsePlatform();
+    await this.#assertCanUsePlatform();
 
     const result: RequestSnapsResult = {};
 
@@ -2916,7 +2930,7 @@ export class SnapController extends BaseController<
     if (!automaticUpdate) {
       this.#assertCanInstallSnaps();
     }
-    this.#assertCanUsePlatform();
+    await this.#assertCanUsePlatform();
 
     const snap = this.getExpect(snapId);
 
@@ -3551,7 +3565,7 @@ export class SnapController extends BaseController<
     handler: handlerType,
     request: rawRequest,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
-    this.#assertCanUsePlatform();
+    await this.#assertCanUsePlatform();
 
     const snap = this.get(snapId);
 
