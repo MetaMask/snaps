@@ -2913,7 +2913,9 @@ export class SnapController extends BaseController<
     versionRange: SemVerRange;
     automaticUpdate?: boolean;
   }): Promise<TruncatedSnap> {
-    this.#assertCanInstallSnaps();
+    if (!automaticUpdate) {
+      this.#assertCanInstallSnaps();
+    }
     this.#assertCanUsePlatform();
 
     const snap = this.getExpect(snapId);
