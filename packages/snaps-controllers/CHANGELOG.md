@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [16.1.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Override `disableSnapInstallation` feature flag when using automatic updates ([#3735](https://github.com/MetaMask/snaps/pull/3735))
+- Override `disableSnapInstallation` feature flag when using automatic updates ([#3735](https://github.com/MetaMask/snaps/pull/3735))
 
 ## [16.1.0]
 
