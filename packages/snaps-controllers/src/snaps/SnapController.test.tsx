@@ -1869,10 +1869,12 @@ describe('SnapController', () => {
       },
     });
 
-    const results = await Promise.allSettled([
-      snapController.removeSnap(snap.id),
-      promise,
-    ]);
+    const removeSnap = async () => {
+      await sleep(1);
+      return snapController.removeSnap(snap.id);
+    };
+
+    const results = await Promise.allSettled([removeSnap(), promise]);
 
     expect(results[0].status).toBe('fulfilled');
     expect(results[1].status).toBe('rejected');
