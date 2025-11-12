@@ -468,6 +468,23 @@ describe('JsonSnapsRegistry', () => {
       expect(result).toBe('1.0.0');
     });
 
+    it('resolves to the latest allowlisted version if compatible', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE_COMPATIBILITY))
+        .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry({
+        clientConfig: { type: 'extension', version: '15.0.0' as SemVerVersion },
+      });
+      const result = await messenger.call(
+        'SnapsRegistry:resolveVersion',
+        MOCK_SNAP_ID,
+        '^1.0.0' as SemVerRange,
+      );
+
+      expect(result).toBe('1.1.0');
+    });
+
     it('returns version range if snap is not on the allowlist', async () => {
       fetchMock
         .mockResponseOnce(
