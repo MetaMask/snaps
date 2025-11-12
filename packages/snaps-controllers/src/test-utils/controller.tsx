@@ -572,7 +572,7 @@ export const getSnapControllerOptions = (
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     trackEvent: jest.fn(),
-    waitForOnboarding: jest.fn().mockResolvedValue(undefined),
+    ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     ...opts,
   } as SnapControllerConstructorParams;
 
@@ -607,7 +607,7 @@ export const getSnapControllerWithEESOptions = ({
     encryptor: getSnapControllerEncryptor(),
     fetchFunction: jest.fn(),
     trackEvent: jest.fn(),
-    waitForOnboarding: jest.fn().mockResolvedValue(undefined),
+    ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     ...options,
   } as SnapControllerConstructorParams & {
     rootMessenger: ReturnType<typeof getControllerMessenger>;

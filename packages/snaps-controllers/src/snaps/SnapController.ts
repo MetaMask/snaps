@@ -821,7 +821,7 @@ type SnapControllerArgs = {
    *
    * @returns A promise that resolves when onboarding is complete.
    */
-  waitForOnboarding: () => Promise<void>;
+  ensureOnboardingComplete: () => Promise<void>;
 };
 
 type AddSnapArgs = {
@@ -939,7 +939,7 @@ export class SnapController extends BaseController<
 
   readonly #trackSnapExport: ReturnType<typeof throttleTracking>;
 
-  readonly #waitForOnboarding: () => Promise<void>;
+  readonly #ensureOnboardingComplete: () => Promise<void>;
 
   constructor({
     closeAllConnections,
@@ -960,7 +960,7 @@ export class SnapController extends BaseController<
     getFeatureFlags = () => ({}),
     clientCryptography,
     trackEvent,
-    waitForOnboarding,
+    ensureOnboardingComplete,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -1044,7 +1044,7 @@ export class SnapController extends BaseController<
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
     this.#trackEvent = trackEvent;
-    this.#waitForOnboarding = waitForOnboarding;
+    this.#ensureOnboardingComplete = ensureOnboardingComplete;
 
     this.#pollForLastRequestStatus();
 
@@ -1660,7 +1660,7 @@ export class SnapController extends BaseController<
    */
   async #assertCanUsePlatform() {
     // Ensure the user has onboarded before allowing access to Snaps.
-    await this.#waitForOnboarding();
+    await this.#ensureOnboardingComplete();
 
     const flags = this.#getFeatureFlags();
     assert(
