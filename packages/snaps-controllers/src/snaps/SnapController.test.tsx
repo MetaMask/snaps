@@ -795,7 +795,7 @@ describe('SnapController', () => {
       [MOCK_SNAP_ID]: expectedSnapObject,
     });
 
-    expect(messenger.call).toHaveBeenCalledTimes(10);
+    expect(messenger.call).toHaveBeenCalledTimes(9);
 
     expect(messenger.call).toHaveBeenNthCalledWith(
       1,
@@ -5497,7 +5497,7 @@ describe('SnapController', () => {
 
       expect(result).toStrictEqual({ [MOCK_LOCAL_SNAP_ID]: truncatedSnap });
 
-      expect(messenger.call).toHaveBeenCalledTimes(12);
+      expect(messenger.call).toHaveBeenCalledTimes(11);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -5647,7 +5647,7 @@ describe('SnapController', () => {
         [MOCK_LOCAL_SNAP_ID]: truncatedSnap,
       });
 
-      expect(messenger.call).toHaveBeenCalledTimes(23);
+      expect(messenger.call).toHaveBeenCalledTimes(22);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -6894,7 +6894,7 @@ describe('SnapController', () => {
       expect(result).toStrictEqual({
         [MOCK_SNAP_ID]: truncatedSnap,
       });
-      expect(messenger.call).toHaveBeenCalledTimes(10);
+      expect(messenger.call).toHaveBeenCalledTimes(9);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         1,
@@ -7587,7 +7587,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: newVersionRange },
       });
 
-      expect(messenger.call).toHaveBeenCalledTimes(21);
+      expect(messenger.call).toHaveBeenCalledTimes(20);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
         3,
@@ -8463,7 +8463,7 @@ describe('SnapController', () => {
           date: expect.any(Number),
         },
       ]);
-      expect(callActionSpy).toHaveBeenCalledTimes(21);
+      expect(callActionSpy).toHaveBeenCalledTimes(20);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
@@ -8628,7 +8628,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.1.0' },
       });
 
-      expect(callActionSpy).toHaveBeenCalledTimes(21);
+      expect(callActionSpy).toHaveBeenCalledTimes(20);
       expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
         'ApprovalController:addRequest',
@@ -8744,7 +8744,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.1.0' },
       });
 
-      expect(callActionSpy).toHaveBeenCalledTimes(22);
+      expect(callActionSpy).toHaveBeenCalledTimes(21);
       expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
         'ApprovalController:addRequest',
@@ -8885,7 +8885,7 @@ describe('SnapController', () => {
 
       const isRunning = controller.isRunning(MOCK_SNAP_ID);
 
-      expect(callActionSpy).toHaveBeenCalledTimes(12);
+      expect(callActionSpy).toHaveBeenCalledTimes(11);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         1,
@@ -9240,7 +9240,7 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.1.0' },
       });
 
-      expect(callActionSpy).toHaveBeenCalledTimes(23);
+      expect(callActionSpy).toHaveBeenCalledTimes(22);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         12,
