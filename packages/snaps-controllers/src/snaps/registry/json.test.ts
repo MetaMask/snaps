@@ -88,6 +88,43 @@ const MOCK_EMPTY_SIGNATURE_FILE = {
   format: 'DER',
 };
 
+const MOCK_DATABASE_COMPATIBILITY = {
+  verifiedSnaps: {
+    [MOCK_SNAP_ID]: {
+      id: MOCK_SNAP_ID,
+      metadata: {
+        name: 'Mock Snap',
+      },
+      versions: {
+        ['1.0.0' as SemVerVersion]: {
+          checksum: DEFAULT_SNAP_SHASUM,
+          clientVersions: {
+            extension: '>=13.9.0',
+          },
+        },
+        ['1.1.0' as SemVerVersion]: {
+          checksum: DEFAULT_SNAP_SHASUM,
+          clientVersions: {
+            extension: '>=15.0.0',
+          },
+        },
+      },
+    },
+  },
+  blockedSnaps: [],
+};
+
+/**
+ * To regenerate the signature, repeat the instructions above but with MOCK_DATABASE_COMPATIBILITY
+ */
+const MOCK_COMPATIBILITY_SIGNATURE =
+  '0x3045022100c0dd17483ac052b25a24c43a84de7b7b38194ac770cadb53a83ca950150631bd02204ed1f6b3359901199e2752d148079084cda13439150136055be5d4a3df205115';
+const MOCK_COMPATIBILITY_SIGNATURE_FILE = {
+  signature: MOCK_COMPATIBILITY_SIGNATURE,
+  curve: 'secp256k1',
+  format: 'DER',
+};
+
 describe('JsonSnapsRegistry', () => {
   fetchMock.enableMocks();
 
@@ -244,6 +281,46 @@ describe('JsonSnapsRegistry', () => {
     });
   });
 
+  it('returns verified for compatible Snaps', async () => {
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE_COMPATIBILITY))
+      .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
+
+    const { messenger } = getRegistry();
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.0.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Verified,
+      },
+    });
+  });
+
+  it('returns unverified for non compatible Snaps', async () => {
+    fetchMock
+      .mockResponseOnce(JSON.stringify(MOCK_DATABASE_COMPATIBILITY))
+      .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
+
+    const { messenger } = getRegistry();
+    const result = await messenger.call('SnapsRegistry:get', {
+      [MOCK_SNAP_ID]: {
+        version: '1.1.0' as SemVerVersion,
+        checksum: DEFAULT_SNAP_SHASUM,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      [MOCK_SNAP_ID]: {
+        status: SnapsRegistryStatus.Unverified,
+      },
+    });
+  });
+
   it('uses existing state if registry is unavailable', async () => {
     fetchMock.mockResponse('', { status: 404 });
 
@@ -378,39 +455,8 @@ describe('JsonSnapsRegistry', () => {
 
     it('resolves to a compatible allowlisted version', async () => {
       fetchMock
-        .mockResponseOnce(
-          JSON.stringify({
-            verifiedSnaps: {
-              [MOCK_SNAP_ID]: {
-                id: MOCK_SNAP_ID,
-                metadata: {
-                  name: 'Mock Snap',
-                },
-                versions: {
-                  ['1.0.0' as SemVerVersion]: {
-                    checksum: DEFAULT_SNAP_SHASUM,
-                    clientVersions: {
-                      extension: '>=13.9.0',
-                    },
-                  },
-                  ['1.1.0' as SemVerVersion]: {
-                    checksum: DEFAULT_SNAP_SHASUM,
-                    clientVersions: {
-                      extension: '>=15.0.0',
-                    },
-                  },
-                },
-              },
-            },
-          }),
-        )
-        .mockResponseOnce(
-          JSON.stringify({
-            ...MOCK_SIGNATURE_FILE,
-            signature:
-              '0x30440220337683880fa580d8eed89c37f9b6d5639a015d416d58afc50ff0602820ab8af3022008b6a5b37a028d8d632fb311ddd0e92fc2d98cff013da4e47b99a754638a8876',
-          }),
-        );
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE_COMPATIBILITY))
+        .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
       const result = await messenger.call(

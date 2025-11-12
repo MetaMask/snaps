@@ -294,7 +294,11 @@ export class JsonSnapsRegistry extends BaseController<
 
     const verified = database?.verifiedSnaps[snapId];
     const version = verified?.versions?.[snapInfo.version];
-    if (version && version.checksum === snapInfo.checksum) {
+    const clientRange = version?.clientVersions?.[this.#clientConfig.type];
+    const isCompatible =
+      !clientRange ||
+      satisfiesVersionRange(this.#clientConfig.version, clientRange);
+    if (version && version.checksum === snapInfo.checksum && isCompatible) {
       return { status: SnapsRegistryStatus.Verified };
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
