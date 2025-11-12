@@ -23,6 +23,10 @@ const getRegistry = (args?: Partial<JsonSnapsRegistryArgs>) => {
     registry: new JsonSnapsRegistry({
       messenger,
       publicKey: MOCK_PUBLIC_KEY,
+      clientConfig: {
+        type: 'extension',
+        version: '13.9.0' as SemVerVersion,
+      },
       ...args,
     }),
     messenger,

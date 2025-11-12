@@ -12,6 +12,7 @@ import {
   assert,
   assertIsSemVerRange,
   Duration,
+  gtRange,
   inMilliseconds,
   satisfiesVersionRange,
 } from '@metamask/utils';
@@ -39,6 +40,11 @@ type JsonSnapsRegistryUrl = {
   signature: string;
 };
 
+export type ClientConfig = {
+  type: 'extension' | 'mobile';
+  version: SemVerVersion;
+};
+
 export type JsonSnapsRegistryArgs = {
   messenger: SnapsRegistryMessenger;
   state?: SnapsRegistryState;
@@ -47,6 +53,7 @@ export type JsonSnapsRegistryArgs = {
   recentFetchThreshold?: number;
   refetchOnAllowlistMiss?: boolean;
   publicKey?: Hex;
+  clientConfig: ClientConfig;
 };
 
 export type GetResult = {
@@ -117,6 +124,8 @@ export class JsonSnapsRegistry extends BaseController<
 
   readonly #publicKey: Hex;
 
+  readonly #clientConfig: ClientConfig;
+
   readonly #fetchFunction: typeof fetch;
 
   readonly #recentFetchThreshold: number;
@@ -133,6 +142,7 @@ export class JsonSnapsRegistry extends BaseController<
       signature: SNAP_REGISTRY_SIGNATURE_URL,
     },
     publicKey = DEFAULT_PUBLIC_KEY,
+    clientConfig,
     fetchFunction = globalThis.fetch.bind(undefined),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     refetchOnAllowlistMiss = true,
@@ -167,6 +177,7 @@ export class JsonSnapsRegistry extends BaseController<
     });
     this.#url = url;
     this.#publicKey = publicKey;
+    this.#clientConfig = clientConfig;
     this.#fetchFunction = fetchFunction;
     this.#recentFetchThreshold = recentFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
@@ -338,10 +349,19 @@ export class JsonSnapsRegistry extends BaseController<
       return versionRange;
     }
 
-    const targetVersion = getTargetVersion(
-      Object.keys(versions) as SemVerVersion[],
-      versionRange,
+    const compatibleVersions = Object.entries(versions).reduce<SemVerVersion[]>(
+      (accumulator, [version, metadata]) => {
+        const clientRange = metadata.clientVersions?.[this.#clientConfig.type];
+        if (!clientRange || gtRange(this.#clientConfig.version, clientRange)) {
+          accumulator.push(version as SemVerVersion);
+        }
+
+        return accumulator;
+      },
+      [],
     );
+
+    const targetVersion = getTargetVersion(compatibleVersions, versionRange);
 
     if (!targetVersion && this.#refetchOnAllowlistMiss && !refetch) {
       await this.#triggerUpdate();
