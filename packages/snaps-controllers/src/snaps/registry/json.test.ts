@@ -389,6 +389,9 @@ describe('JsonSnapsRegistry', () => {
                 versions: {
                   ['1.0.0' as SemVerVersion]: {
                     checksum: DEFAULT_SNAP_SHASUM,
+                    clientVersions: {
+                      extension: '>=13.9.0',
+                    },
                   },
                   ['1.1.0' as SemVerVersion]: {
                     checksum: DEFAULT_SNAP_SHASUM,
@@ -405,7 +408,7 @@ describe('JsonSnapsRegistry', () => {
           JSON.stringify({
             ...MOCK_SIGNATURE_FILE,
             signature:
-              '0x3045022100e17cf0f34e4d521d984ed8f8492ce8a51b65178e7ba5508e01b179c5dd013c52022025e4a4008232a883048c8174e585cd89b9054eadc37330e00fd2f07a65c9bbb4',
+              '0x30440220337683880fa580d8eed89c37f9b6d5639a015d416d58afc50ff0602820ab8af3022008b6a5b37a028d8d632fb311ddd0e92fc2d98cff013da4e47b99a754638a8876',
           }),
         );
 

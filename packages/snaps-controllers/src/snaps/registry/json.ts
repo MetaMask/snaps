@@ -12,7 +12,6 @@ import {
   assert,
   assertIsSemVerRange,
   Duration,
-  gtRange,
   inMilliseconds,
   satisfiesVersionRange,
 } from '@metamask/utils';
@@ -352,7 +351,10 @@ export class JsonSnapsRegistry extends BaseController<
     const compatibleVersions = Object.entries(versions).reduce<SemVerVersion[]>(
       (accumulator, [version, metadata]) => {
         const clientRange = metadata.clientVersions?.[this.#clientConfig.type];
-        if (!clientRange || gtRange(this.#clientConfig.version, clientRange)) {
+        if (
+          !clientRange ||
+          satisfiesVersionRange(this.#clientConfig.version, clientRange)
+        ) {
           accumulator.push(version as SemVerVersion);
         }
 
