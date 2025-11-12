@@ -2681,6 +2681,55 @@ describe('SnapController', () => {
       },
     );
 
+    it('ensures onboarding has completed before processing requests', async () => {
+      const rootMessenger = getControllerMessenger();
+      const messenger = getSnapControllerMessenger(rootMessenger);
+
+      const callActionSpy = jest.spyOn(messenger, 'call');
+
+      const { promise, resolve } = createDeferredPromise();
+      const ensureOnboardingComplete = jest.fn().mockReturnValue(promise);
+      const snapController = getSnapController(
+        getSnapControllerOptions({
+          messenger,
+          state: {
+            snaps: getPersistedSnapsState(),
+          },
+          ensureOnboardingComplete,
+        }),
+      );
+
+      const snap = snapController.getExpect(MOCK_SNAP_ID);
+
+      const requestPromise = snapController.handleRequest({
+        snapId: snap.id,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+        },
+      });
+
+      await sleep(100);
+
+      expect(callActionSpy).not.toHaveBeenCalledWith(
+        'ExecutionService:executeSnap',
+        expect.objectContaining({ snapId: MOCK_SNAP_ID }),
+      );
+
+      resolve();
+      expect(await requestPromise).toBeUndefined();
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'ExecutionService:executeSnap',
+        expect.objectContaining({ snapId: MOCK_SNAP_ID }),
+      );
+
+      snapController.destroy();
+    });
+
     it('throws if the snap does not have permission to handle JSON-RPC requests from dapps', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
