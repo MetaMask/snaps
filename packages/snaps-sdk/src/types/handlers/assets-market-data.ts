@@ -30,7 +30,7 @@ export type FungibleAssetMarketData = {
  * An asset value, which includes the asset type and the amount.
  *
  * @property asset - The CAIP-19 asset type or ID of the asset.
- * @property amount - The pice represented as a number in string format.
+ * @property amount - The price represented as a number in string format.
  */
 export type AssetValue = {
   asset: CaipAssetTypeOrId;

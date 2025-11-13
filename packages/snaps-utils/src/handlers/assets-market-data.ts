@@ -53,7 +53,7 @@ export const FungibleAssetMarketDataStruct = object({
  * A struct representing an asset value, which includes the asset type and the amount.
  *
  * @property asset - The CAIP-19 asset type or ID of the asset.
- * @property amount - The pice represented as a number in string format.
+ * @property amount - The price represented as a number in string format.
  */
 export const AssetValueStruct = object({
   asset: CaipAssetTypeOrIdStruct,
@@ -64,7 +64,7 @@ export const AssetValueStruct = object({
  * A struct representing the market data for a non-fungible asset.
  *
  * @property asset - The CAIP-19 asset type or ID of the asset.
- * @property amount - The pice represented as a number in string format.
+ * @property amount - The price represented as a number in string format.
  * @property fungible - Indicates that this is a non-fungible asset.
  * This is always `false` for non-fungible assets.
  * @property lastSale - The last sale price of the asset, if available. See {@link AssetValueStruct}.
