@@ -182,6 +182,9 @@ async function setStateImplementation(
 
     const mutex = getMutex(snapId);
 
+    // The expectation when using `snap_setState` is for the operation to safe
+    // to do in parallel. The mutex ensures that and prevents a bug that was
+    // mostly prevalent on mobile and caused data loss.
     await mutex.runExclusive(async () => {
       const newState = await getNewState(key, value, encrypted, getSnapState);
 
