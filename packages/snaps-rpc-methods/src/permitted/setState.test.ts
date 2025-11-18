@@ -1,10 +1,11 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { SetStateResult } from '@metamask/snaps-sdk';
-import type {
-  Json,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
+import {
+  createDeferredPromise,
+  type Json,
+  type JsonRpcRequest,
+  type PendingJsonRpcResponse,
 } from '@metamask/utils';
 
 import { setStateHandler, type SetStateParameters, set } from './setState';
@@ -192,6 +193,93 @@ describe('snap_setState', () => {
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
+        result: null,
+      });
+    });
+
+    it('uses a mutex to protect state updates', async () => {
+      const { implementation } = setStateHandler;
+
+      const { promise: getStateCalled, resolve: resolveGetStateCalled } =
+        createDeferredPromise();
+      const getSnapState = jest.fn().mockImplementation(() => {
+        resolveGetStateCalled();
+        return {};
+      });
+
+      const { promise: updateSnapStatePromise, resolve } =
+        createDeferredPromise();
+
+      const updateSnapState = jest.fn().mockReturnValue(updateSnapStatePromise);
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hasPermission = jest.fn().mockReturnValue(true);
+      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+
+      const hooks = {
+        getSnapState,
+        updateSnapState,
+        getUnlockPromise,
+        hasPermission,
+        getSnap,
+      };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const responsePromise1 = engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          key: 'foo',
+          value: 'baz',
+          encrypted: false,
+        },
+      });
+
+      const responsePromise2 = engine.handle({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snap_setState',
+        params: {
+          key: 'foo',
+          value: 'bar',
+          encrypted: false,
+        },
+      });
+
+      await getStateCalled;
+
+      expect(getSnapState).toHaveBeenCalledTimes(1);
+
+      resolve();
+
+      const response1 = await responsePromise1;
+      const response2 = await responsePromise2;
+
+      expect(getSnapState).toHaveBeenCalledTimes(2);
+      expect(updateSnapState).toHaveBeenNthCalledWith(2, { foo: 'bar' }, false);
+
+      expect(response1).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: null,
+      });
+
+      expect(response2).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 2,
         result: null,
       });
     });
