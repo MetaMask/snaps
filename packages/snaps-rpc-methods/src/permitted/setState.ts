@@ -1,7 +1,11 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type { SetStateParams, SetStateResult } from '@metamask/snaps-sdk';
+import type {
+  SetStateParams,
+  SetStateResult,
+  SnapId,
+} from '@metamask/snaps-sdk';
 import type { JsonObject } from '@metamask/snaps-sdk/jsx';
 import {
   getJsonSizeUnsafe,
@@ -21,6 +25,7 @@ import type {
   JsonRpcRequest,
 } from '@metamask/utils';
 import { hasProperty, isObject, assert, JsonStruct } from '@metamask/utils';
+import { Mutex } from 'async-mutex';
 
 import {
   manageStateBuilder,
@@ -93,6 +98,21 @@ export type SetStateHooks = {
   getSnap: (snapId: string) => Snap | undefined;
 };
 
+const mutexes = new Map();
+
+/**
+ * Get the corresponding state modification mutex for a given Snap ID.
+ *
+ * @param snapId - The Snap ID.
+ * @returns A mutex for that specific Snap.
+ */
+function getMutex(snapId: SnapId) {
+  if (!mutexes.has(snapId)) {
+    mutexes.set(snapId, new Mutex());
+  }
+  return mutexes.get(snapId);
+}
+
 const SetStateParametersStruct = objectStruct({
   key: optional(StateKeyStruct),
   value: JsonStruct,
@@ -156,26 +176,32 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    const newState = await getNewState(key, value, encrypted, getSnapState);
+    const snapId = (
+      request as JsonRpcRequest<SetStateParams> & { origin: string }
+    ).origin as SnapId;
 
-    const snap = getSnap(
-      (request as JsonRpcRequest<SetStateParams> & { origin: string }).origin,
-    );
+    const mutex = getMutex(snapId);
 
-    if (!snap?.preinstalled) {
-      // We know that the state is valid JSON as per previous validation.
-      const size = getJsonSizeUnsafe(newState, true);
-      if (size > STORAGE_SIZE_LIMIT) {
-        throw rpcErrors.invalidParams({
-          message: `Invalid params: The new state must not exceed ${
-            STORAGE_SIZE_LIMIT / 1_000_000
-          } MB in size.`,
-        });
+    await mutex.runExclusive(async () => {
+      const newState = await getNewState(key, value, encrypted, getSnapState);
+
+      const snap = getSnap(snapId);
+
+      if (!snap?.preinstalled) {
+        // We know that the state is valid JSON as per previous validation.
+        const size = getJsonSizeUnsafe(newState, true);
+        if (size > STORAGE_SIZE_LIMIT) {
+          throw rpcErrors.invalidParams({
+            message: `Invalid params: The new state must not exceed ${
+              STORAGE_SIZE_LIMIT / 1_000_000
+            } MB in size.`,
+          });
+        }
       }
-    }
 
-    await updateSnapState(newState, encrypted);
-    response.result = null;
+      await updateSnapState(newState, encrypted);
+      response.result = null;
+    });
   } catch (error) {
     return end(error);
   }
