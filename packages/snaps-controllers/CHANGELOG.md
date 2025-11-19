@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [17.0.0]
 
-### Uncategorized
+### Added
 
-- feat!: Ensure user has onboarded before allowing usage of SnapController ([#3731](https://github.com/MetaMask/snaps/pull/3731))
-- feat!: Support specified `clientVersions` in the registry ([#3737](https://github.com/MetaMask/snaps/pull/3737))
+- **BREAKING:** Ensure user has onboarded before allowing usage of SnapController ([#3731](https://github.com/MetaMask/snaps/pull/3731))
+  - This is breaking as it adds a new required constructor argument to `SnapController` called `ensureOnboardingComplete`.
+- **BREAKING:** Support specified `clientVersions` in the registry ([#3737](https://github.com/MetaMask/snaps/pull/3737))
+  - This is breaking as it adds a new required constructor argument to `JsonSnapsRegistry` called `clientConfig`.
 
 ## [16.1.1]
 
