@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: Ensure user has onboarded before allowing usage of SnapController ([#3731](https://github.com/MetaMask/snaps/pull/3731))
+- feat!: Support specified `clientVersions` in the registry ([#3737](https://github.com/MetaMask/snaps/pull/3737))
+
 ## [16.1.1]
 
 ### Fixed
