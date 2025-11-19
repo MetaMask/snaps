@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [17.0.0]
+
 ### Uncategorized
 
 - feat!: Ensure user has onboarded before allowing usage of SnapController ([#3731](https://github.com/MetaMask/snaps/pull/3731))
@@ -965,7 +967,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.0.0...HEAD
+[17.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.1...@metamask/snaps-controllers@17.0.0
 [16.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.0...@metamask/snaps-controllers@16.1.1
 [16.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.0.0...@metamask/snaps-controllers@16.1.0
 [16.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@15.0.2...@metamask/snaps-controllers@16.0.0
