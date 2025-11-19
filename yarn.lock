@@ -4470,6 +4470,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.38"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/node": "npm:18.14.2"
+    async-mutex: "npm:^0.5.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"

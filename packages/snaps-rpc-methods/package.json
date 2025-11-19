@@ -62,7 +62,8 @@
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.8.1",
-    "@noble/hashes": "^1.7.1"
+    "@noble/hashes": "^1.7.1",
+    "async-mutex": "^0.5.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.4.0",
