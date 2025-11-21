@@ -1,7 +1,6 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createStreamMiddleware } from '@metamask/json-rpc-middleware-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
-import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
@@ -47,7 +46,7 @@ export type ExecutionServiceArgs = {
 export type JobStreams = {
   command: Duplex;
   rpc: Duplex;
-  _connection: BasePostMessageStream;
+  _connection: Duplex;
 };
 
 export type Job<WorkerType> = {
@@ -351,7 +350,7 @@ export abstract class AbstractExecutionService<WorkerType>
    */
   protected abstract initEnvStream(snapId: string): Promise<{
     worker: WorkerType;
-    stream: BasePostMessageStream;
+    stream: Duplex;
   }>;
 
   /**
