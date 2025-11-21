@@ -4376,6 +4376,7 @@ __metadata:
     vitest: "npm:^3.1.1"
     webpack: "npm:^5.97.1"
     webpack-merge: "npm:^5.9.0"
+    webpack-sources: "npm:^3.3.3"
   languageName: unknown
   linkType: soft
 
@@ -18875,10 +18876,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^3.2.3":
-  version: 3.2.3
-  resolution: "webpack-sources@npm:3.2.3"
-  checksum: 10/a661f41795d678b7526ae8a88cd1b3d8ce71a7d19b6503da8149b2e667fc7a12f9b899041c1665d39e38245ed3a59ab68de648ea31040c3829aa695a5a45211d
+"webpack-sources@npm:^3.2.3, webpack-sources@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "webpack-sources@npm:3.3.3"
+  checksum: 10/ec5d72607e8068467370abccbfff855c596c098baedbe9d198a557ccf198e8546a322836a6f74241492576adba06100286592993a62b63196832cdb53c8bae91
   languageName: node
   linkType: hard
 
