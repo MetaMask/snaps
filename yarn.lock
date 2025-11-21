@@ -3649,18 +3649,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "@metamask/json-rpc-engine@npm:10.1.1"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^11.8.1"
-  checksum: 10/ad28e430543ca93d4487ff3f9c2d2247013ed9bc1d73867b06f2cea09b0e864207c856cc90ef945e7323e3dacc03205ffdbaddce34fc6c9165cd96bd55dc7bd0
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^10.2.0":
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.0":
   version: 10.2.0
   resolution: "@metamask/json-rpc-engine@npm:10.2.0"
   dependencies:
