@@ -23,6 +23,7 @@ import type {
   AssetSelectorElement,
   AddressInputElement,
   AccountSelectorElement,
+  DateTimePickerElement,
 } from '@metamask/snaps-sdk/jsx';
 import { isJSXElementUnsafe } from '@metamask/snaps-sdk/jsx';
 import type { InternalAccount } from '@metamask/snaps-utils';
@@ -57,6 +58,7 @@ const STATEFUL_COMPONENT_TYPES = [
   'AssetSelector',
   'AddressInput',
   'AccountSelector',
+  'DateTimePicker',
 ] as const;
 
 /**
@@ -342,7 +344,8 @@ function constructComponentSpecificDefaultState(
     | SelectorElement
     | AssetSelectorElement
     | AddressInputElement
-    | AccountSelectorElement,
+    | AccountSelectorElement
+    | DateTimePickerElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -459,7 +462,8 @@ function getComponentStateValue(
     | SelectorElement
     | AssetSelectorElement
     | AddressInputElement
-    | AccountSelectorElement,
+    | AccountSelectorElement
+    | DateTimePickerElement,
   elementDataGetters: ElementDataGetters,
 ) {
   switch (element.type) {
@@ -510,7 +514,8 @@ function constructInputState(
     | SelectorElement
     | AssetSelectorElement
     | AddressInputElement
-    | AccountSelectorElement,
+    | AccountSelectorElement
+    | DateTimePickerElement,
   elementDataGetters: ElementDataGetters,
   form?: string,
 ) {
