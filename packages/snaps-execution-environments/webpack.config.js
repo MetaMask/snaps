@@ -10,6 +10,7 @@ const { resolve } = require('path');
 const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const { ProvidePlugin, Compilation } = require('webpack');
 const { merge } = require('webpack-merge');
+const { RawSource } = require('webpack-sources');
 
 /**
  * Whether to generate a policy file for the build.
@@ -64,11 +65,6 @@ const DEFAULT_WEB_CONFIG = {
   plugins: [
     new HtmlWebpackPlugin({
       template: './src/index.ejs',
-      templateParameters: () => {
-        return {
-          lockdownScript: SES_BUNDLE,
-        };
-      },
     }),
   ],
 };
@@ -269,6 +265,45 @@ const configs = ENTRY_POINTS.map(
                   }
                 },
               );
+            });
+          },
+        },
+
+        {
+          /**
+           * A custom plugin to add SES to the build.
+           *
+           * @param {import('webpack').Compiler} compiler - The Webpack compiler.
+           */
+          apply(compiler) {
+            const PLUGIN_NAME = 'AddSESPlugin';
+            compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
+              compilation.hooks.processAssets.tap(
+                {
+                  name: PLUGIN_NAME,
+                  stage: compilation.PROCESS_ASSETS_STAGE_REPORT,
+                },
+                () => {
+                  compilation.emitAsset('ses.js', new RawSource(SES_BUNDLE), {
+                    minimized: true,
+                  });
+                },
+              );
+
+              HtmlWebpackPlugin.getHooks(
+                compilation,
+              ).alterAssetTagGroups.tapAsync(PLUGIN_NAME, (data, callback) => {
+                // Add the SES script tag to the HTML files.
+                data.headTags.unshift({
+                  tagName: 'script',
+                  voidTag: false,
+                  attributes: {
+                    src: 'ses.js',
+                  },
+                });
+
+                callback(null, data);
+              });
             });
           },
         },

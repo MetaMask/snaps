@@ -4,7 +4,9 @@
   <meta charset="utf-8" />
 
   <title>MetaMask Snaps Execution Environment</title>
+  <% if (typeof lockdownScript !== 'undefined') { %>
   <script><%= lockdownScript %></script>
+  <% } %>
 </head>
 <body>
 <% if (typeof inlineSource !== 'undefined') { %>
