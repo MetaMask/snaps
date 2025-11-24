@@ -29,7 +29,8 @@
     },
     "@metamask/post-message-stream": {
       "builtin": {
-        "worker_threads": true
+        "worker_threads.Worker": true,
+        "worker_threads.parentPort": true
       },
       "globals": {
         "MessageEvent.prototype": true,
@@ -71,7 +72,7 @@
     },
     "@metamask/providers>@metamask/safe-event-emitter": {
       "builtin": {
-        "events": true
+        "events.EventEmitter": true
       },
       "globals": {
         "setTimeout": true
