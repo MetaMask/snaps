@@ -116,7 +116,8 @@
     "vite-tsconfig-paths": "^4.0.5",
     "vitest": "^3.1.1",
     "webpack": "^5.97.1",
-    "webpack-merge": "^5.9.0"
+    "webpack-merge": "^5.9.0",
+    "webpack-sources": "^3.3.3"
   },
   "engines": {
     "node": "^20 || >=22"
