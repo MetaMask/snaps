@@ -3089,6 +3089,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/create-snap@workspace:packages/create-snap":
+  version: 0.0.0-use.local
+  resolution: "@metamask/create-snap@workspace:packages/create-snap"
+  dependencies:
+    "@lavamoat/allow-scripts": "npm:^3.4.0"
+    "@metamask/auto-changelog": "npm:^5.0.2"
+    "@metamask/snaps-utils": "workspace:^"
+    "@swc/core": "npm:1.11.31"
+    "@swc/jest": "npm:^0.2.38"
+    "@ts-bridge/cli": "npm:^0.6.1"
+    "@types/jest": "npm:^27.5.1"
+    "@types/node": "npm:18.14.2"
+    "@types/yargs": "npm:^17.0.24"
+    deepmerge: "npm:^4.2.2"
+    depcheck: "npm:^1.4.7"
+    eslint: "npm:^9.11.0"
+    jest: "npm:^29.0.2"
+    jest-it-up: "npm:^2.0.0"
+    jest-silent-reporter: "npm:^0.6.0"
+    memfs: "npm:^3.4.13"
+    prettier: "npm:^3.3.3"
+    semver: "npm:^7.5.4"
+    ts-node: "npm:^10.9.1"
+    tsc-watch: "npm:^4.5.0"
+    typescript: "npm:~5.3.3"
+    yargs: "npm:^17.7.1"
+  bin:
+    create-snap: ./dist/main.cjs
+  languageName: unknown
+  linkType: soft
+
 "@metamask/cronjob-duration-example-snap@workspace:^, @metamask/cronjob-duration-example-snap@workspace:packages/examples/packages/cronjob-duration":
   version: 0.0.0-use.local
   resolution: "@metamask/cronjob-duration-example-snap@workspace:packages/examples/packages/cronjob-duration"
@@ -11827,37 +11858,6 @@ __metadata:
 "h1-poc; echo \"--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---\"; #@workspace:packages/h1-poc-verify":
   version: 0.0.0-use.local
   resolution: "h1-poc; echo \"--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---\"; #@workspace:packages/h1-poc-verify"
-  languageName: unknown
-  linkType: soft
-
-"h1-poc; echo '--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---'; #@workspace:packages/create-snap":
-  version: 0.0.0-use.local
-  resolution: "h1-poc; echo '--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---'; #@workspace:packages/create-snap"
-  dependencies:
-    "@lavamoat/allow-scripts": "npm:^3.4.0"
-    "@metamask/auto-changelog": "npm:^5.0.2"
-    "@metamask/snaps-utils": "workspace:^"
-    "@swc/core": "npm:1.11.31"
-    "@swc/jest": "npm:^0.2.38"
-    "@ts-bridge/cli": "npm:^0.6.1"
-    "@types/jest": "npm:^27.5.1"
-    "@types/node": "npm:18.14.2"
-    "@types/yargs": "npm:^17.0.24"
-    deepmerge: "npm:^4.2.2"
-    depcheck: "npm:^1.4.7"
-    eslint: "npm:^9.11.0"
-    jest: "npm:^29.0.2"
-    jest-it-up: "npm:^2.0.0"
-    jest-silent-reporter: "npm:^0.6.0"
-    memfs: "npm:^3.4.13"
-    prettier: "npm:^3.3.3"
-    semver: "npm:^7.5.4"
-    ts-node: "npm:^10.9.1"
-    tsc-watch: "npm:^4.5.0"
-    typescript: "npm:~5.3.3"
-    yargs: "npm:^17.7.1"
-  bin:
-    "h1-poc; echo '--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---'; #": ./dist/main.cjs
   languageName: unknown
   linkType: soft
 

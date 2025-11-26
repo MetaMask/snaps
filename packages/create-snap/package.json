@@ -1,5 +1,5 @@
 {
-  "name": "h1-poc; echo '--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---'; #",
+  "name": "@metamask/create-snap",
   "version": "4.0.4",
   "description": "A CLI for creating MetaMask Snaps",
   "keywords": [
