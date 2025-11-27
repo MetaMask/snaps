@@ -132,6 +132,14 @@ export type SnapInterfaceActions = {
   clickElement(name: string): Promise<void>;
 
   /**
+   * Pick a date and/or time in a DateTimePicker.
+   *
+   * @param name - The element name to pick the date/time in.
+   * @param value - The date/time value to pick.
+   */
+  pickDateTime(name: string, value: Date): Promise<void>;
+
+  /**
    * Type a value in a interface field.
    *
    * @param name - The element name to type in.

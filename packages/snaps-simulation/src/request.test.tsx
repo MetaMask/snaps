@@ -123,6 +123,7 @@ describe('handleRequest', () => {
       },
       id: expect.any(String),
       ok: expect.any(Function),
+      pickDateTime: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
       selectFromSelector: expect.any(Function),
       selectInDropdown: expect.any(Function),
@@ -379,6 +380,7 @@ describe('getInterfaceApi', () => {
     expect(result).toStrictEqual({
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -415,6 +417,7 @@ describe('getInterfaceApi', () => {
     expect(result).toStrictEqual({
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),

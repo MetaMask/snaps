@@ -57,6 +57,7 @@ export function getMockInterfaceResponse(
   return {
     content,
     clickElement: jest.fn(),
+    pickDateTime: jest.fn(),
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
     selectFromRadioGroup: jest.fn(),

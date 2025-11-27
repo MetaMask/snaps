@@ -35,6 +35,14 @@ describe('onRpcRequest', () => {
         method: 'dialog',
       });
 
+      const presentDate = new Date();
+
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 1);
+
+      const pastDate = new Date();
+      pastDate.setFullYear(pastDate.getFullYear() - 1);
+
       const formScreen = await response.getInterface();
 
       expect(formScreen).toRender(<InteractiveForm />);
@@ -49,6 +57,12 @@ describe('onRpcRequest', () => {
 
       await formScreen.clickElement('example-checkbox');
 
+      await formScreen.pickDateTime('example-datetime', presentDate);
+
+      await formScreen.pickDateTime('example-date', pastDate);
+
+      await formScreen.pickDateTime('example-time', futureDate);
+
       await formScreen.clickElement('submit');
 
       const resultScreen = await response.getInterface();
@@ -62,6 +76,9 @@ describe('onRpcRequest', () => {
             'example-radiogroup': 'option3',
             'example-checkbox': true,
             'example-selector': 'option2',
+            'example-datetime': presentDate.toISOString(),
+            'example-date': pastDate.toISOString(),
+            'example-time': futureDate.toISOString(),
           }}
         />,
       );
@@ -94,6 +111,9 @@ describe('onRpcRequest', () => {
             'example-radiogroup': 'option1',
             'example-checkbox': false,
             'example-selector': 'option1',
+            'example-datetime': '',
+            'example-date': '',
+            'example-time': '',
           }}
         />,
       );
@@ -106,6 +126,14 @@ describe('onRpcRequest', () => {
 
 describe('onHomePage', () => {
   it('returns custom UI', async () => {
+    const presentDate = new Date();
+
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+
+    const pastDate = new Date();
+    pastDate.setFullYear(pastDate.getFullYear() - 1);
+
     const { onHomePage } = await installSnap();
 
     const response = await onHomePage();
@@ -122,6 +150,12 @@ describe('onHomePage', () => {
 
     await formScreen.selectFromSelector('example-selector', 'option2');
 
+    await formScreen.pickDateTime('example-datetime', presentDate);
+
+    await formScreen.pickDateTime('example-date', pastDate);
+
+    await formScreen.pickDateTime('example-time', futureDate);
+
     await formScreen.clickElement('submit');
 
     const resultScreen = response.getInterface();
@@ -134,6 +168,9 @@ describe('onHomePage', () => {
           'example-radiogroup': 'option3',
           'example-checkbox': false,
           'example-selector': 'option2',
+          'example-datetime': presentDate.toISOString(),
+          'example-date': pastDate.toISOString(),
+          'example-time': futureDate.toISOString(),
         }}
       />,
     );

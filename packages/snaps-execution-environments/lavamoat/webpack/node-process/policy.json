@@ -81,7 +81,8 @@
     "@metamask/snaps-sdk": {
       "packages": {
         "@metamask/superstruct": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "@metamask/snaps-sdk>luxon": true
       }
     },
     "@metamask/snaps-utils": {
@@ -154,6 +155,11 @@
     "depcheck>lodash": {
       "globals": {
         "define": true
+      }
+    },
+    "@metamask/snaps-sdk>luxon": {
+      "globals": {
+        "Intl": true
       }
     },
     "@metamask/object-multiplex>once": {

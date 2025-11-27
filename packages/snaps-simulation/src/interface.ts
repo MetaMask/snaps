@@ -889,6 +889,85 @@ export async function selectFromSelector(
 }
 
 /**
+ * Pick a date or time in a DateTimePicker interface element.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @param id - The interface ID.
+ * @param content - The interface Components.
+ * @param snapId - The Snap ID.
+ * @param name - The element name.
+ * @param value - The value to pick in the element.
+ */
+export async function pickDateTime(
+  controllerMessenger: RootControllerMessenger,
+  id: string,
+  content: JSXElement,
+  snapId: SnapId,
+  name: string,
+  value: Date,
+) {
+  const result = getElement(content, name);
+
+  assert(
+    result !== undefined,
+    `Could not find an element in the interface with the name "${name}".`,
+  );
+
+  assert(
+    result.element.type === 'DateTimePicker',
+    `Expected an element of type "DateTimePicker", but found "${result.element.type}".`,
+  );
+
+  const parsedDate = value.toISOString();
+
+  if (result.element.props.disableFuture) {
+    assert(
+      value < new Date(),
+      `The selected date "${parsedDate}" is in the future, but the DateTimePicker with the name "${name}" has future dates disabled.`,
+    );
+  }
+
+  if (result.element.props.disablePast) {
+    assert(
+      value > new Date(),
+      `The selected date "${parsedDate}" is in the past, but the DateTimePicker with the name "${name}" has past dates disabled.`,
+    );
+  }
+
+  const { state, context } = controllerMessenger.call(
+    'SnapInterfaceController:getInterface',
+    snapId,
+    id,
+  );
+
+  const newState = mergeValue(state, name, parsedDate, result.form);
+
+  controllerMessenger.call(
+    'SnapInterfaceController:updateInterfaceState',
+    id,
+    newState,
+  );
+
+  await controllerMessenger.call('ExecutionService:handleRpcRequest', snapId, {
+    origin: 'metamask',
+    handler: HandlerType.OnUserInput,
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: {
+        event: {
+          type: UserInputEventType.InputChangeEvent,
+          name: result.element.props.name,
+          value: parsedDate,
+        },
+        id,
+        context,
+      },
+    },
+  });
+}
+
+/**
  * Wait for an interface to be updated.
  *
  * @param controllerMessenger - The controller messenger used to call actions.
@@ -1056,6 +1135,10 @@ export function getInterfaceActions(
   return {
     clickElement: async (name: string) => {
       await clickElement(controllerMessenger, id, content, snapId, name);
+    },
+
+    pickDateTime: async (name: string, value: Date) => {
+      await pickDateTime(controllerMessenger, id, content, snapId, name, value);
     },
 
     typeInField: async (name: string, value: string) => {
