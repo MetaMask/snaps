@@ -89,9 +89,14 @@ async function getMetaMaskEIP6963Provider() {
      * Resolves the promise if a MetaMask provider is found.
      *
      * @param event - The EIP6963 announceProvider event.
+     * @param event.detail - The details of the EIP6963 announceProvider event.
      */
-    function onAnnounceProvider(event: EIP6963AnnounceProviderEvent) {
-      const { info, provider } = event.detail;
+    function onAnnounceProvider({ detail }: EIP6963AnnounceProviderEvent) {
+      if (!detail) {
+        return;
+      }
+
+      const { info, provider } = detail;
 
       if (info.rdns.includes('io.metamask')) {
         resolveWithCleanup(provider);
