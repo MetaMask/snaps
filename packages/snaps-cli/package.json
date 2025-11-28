@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.4.0",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.2.0",
     "@swc/jest": "^0.2.38",
     "@ts-bridge/cli": "^0.6.1",
     "@types/express": "^5.0.1",
