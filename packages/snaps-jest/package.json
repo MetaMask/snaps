@@ -73,7 +73,7 @@
   "devDependencies": {
     "@jest/types": "^29.6.3",
     "@lavamoat/allow-scripts": "^3.4.0",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.2.0",
     "@metamask/phishing-controller": "^15.0.0",
     "@metamask/snaps-utils": "workspace:^",
     "@swc/core": "1.11.31",
