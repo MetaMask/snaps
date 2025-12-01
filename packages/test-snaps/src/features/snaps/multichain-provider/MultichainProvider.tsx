@@ -52,34 +52,38 @@ export const MultichainProvider: FunctionComponent = () => {
         Create Session
       </Button>
       <SwitchChain onChange={setScope} />
-      <ButtonGroup>
-        <Button
-          variant="secondary"
-          id="sendMultichainChainId"
-          className="mb-3"
-          disabled={isLoading}
-          onClick={handleGetChainId}
-        >
-          Get Chain ID
-        </Button>
-        <Button
-          variant="primary"
-          id="sendMultichainAccounts"
-          className="mb-3"
-          disabled={isLoading}
-          onClick={handleGetAccounts}
-        >
-          Get Accounts
-        </Button>
-      </ButtonGroup>
       <Result className="mb-3">
         <span id="multichainProviderResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
       </Result>
+      {scope.startsWith('eip155') && (
+        <>
+          <ButtonGroup>
+            <Button
+              variant="secondary"
+              id="sendMultichainChainId"
+              className="mb-3"
+              disabled={isLoading}
+              onClick={handleGetChainId}
+            >
+              Get Chain ID
+            </Button>
+            <Button
+              variant="primary"
+              id="sendMultichainAccounts"
+              className="mb-3"
+              disabled={isLoading}
+              onClick={handleGetAccounts}
+            >
+              Get Accounts
+            </Button>
+          </ButtonGroup>
+          <SignTypedData scope={scope} />
+        </>
+      )}
       <SignMessage scope={scope} />
-      <SignTypedData scope={scope} />
     </Snap>
   );
 };

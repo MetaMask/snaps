@@ -16,9 +16,7 @@ export type SignMessageProps = {
   scope: CaipChainId;
 };
 
-export const SignMessage: FunctionComponent<SignMessageProps> = ({
-  scope,
-}) => {
+export const SignMessage: FunctionComponent<SignMessageProps> = ({ scope }) => {
   const [message, setMessage] = useState('');
   const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
 
@@ -34,7 +32,7 @@ export const SignMessage: FunctionComponent<SignMessageProps> = ({
         MULTICHAIN_PROVIDER_SNAP_ID,
         MULTICHAIN_PROVIDER_SNAP_PORT,
       ),
-      method: 'personalSign',
+      method: 'signMessage',
       params: {
         message,
         scope,
@@ -52,16 +50,20 @@ export const SignMessage: FunctionComponent<SignMessageProps> = ({
           placeholder="Message"
           value={message}
           onChange={handleChange}
-          id="personalSignMessage"
+          id="signMessageMultichain"
           className="mb-3"
         />
 
-        <Button type="submit" id="signPersonalSignMessage" disabled={isLoading}>
+        <Button
+          type="submit"
+          id="signMessageMultichainButton"
+          disabled={isLoading}
+        >
           Sign Message
         </Button>
       </Form>
       <Result className="mb-3">
-        <span id="personalSignResult">
+        <span id="signMessageMultichainResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>

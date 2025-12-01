@@ -23,7 +23,6 @@ export const SwitchChain: FunctionComponent<SwitchChainProps> = ({
         <option value="eip155:1">Ethereum</option>
         <option value="eip155:59144">Linea</option>
         <option value="eip155:11155111">Sepolia</option>
-        <option value="bip122:000000000019d6689c085ae165831e93">Bitcoin</option>
         <option value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp">Solana</option>
       </select>
     </>

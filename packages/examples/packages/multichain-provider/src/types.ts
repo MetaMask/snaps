@@ -4,7 +4,7 @@ export type BaseParams = {
   scope: CaipChainId;
 };
 
-export type PersonalSignParams = BaseParams & {
+export type SignMessageParams = BaseParams & {
   message: string;
 };
 
