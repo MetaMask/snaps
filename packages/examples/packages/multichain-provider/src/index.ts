@@ -2,16 +2,9 @@ import {
   MethodNotFoundError,
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
-import type {
-  CaipAccountId,
-  CaipChainId,
-  Hex,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { CaipAccountId, CaipChainId, Hex } from '@metamask/utils';
 import {
   assert,
-  stringToBytes,
-  bytesToHex,
   hexToNumber,
   parseCaipChainId,
   parseCaipAccountId,
@@ -19,9 +12,12 @@ import {
 
 import type {
   BaseParams,
-  PersonalSignParams,
+  SignMessageParams,
   SignTypedDataParams,
 } from './types';
+import { invokeMethod } from './modules/base';
+import { Evm } from './modules/evm';
+import { Solana } from './modules/sol';
 
 // TODO: Consider letting the permission create the "session"
 async function createSession() {
@@ -31,6 +27,13 @@ async function createSession() {
       notifications: [],
       accounts: [],
     },
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+      methods: ['signMessage'],
+      notifications: [],
+      accounts: [
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
+      ],
+    },
   };
   // TODO: Fix snap.request types
   return await (snap as any).request({
@@ -39,20 +42,6 @@ async function createSession() {
       optionalScopes,
     },
   });
-}
-
-async function invokeMethod<ReturnType>(
-  scope: CaipChainId,
-  request: Omit<JsonRpcRequest, 'id' | 'jsonrpc'>,
-): Promise<ReturnType> {
-  // TODO: Fix snap.request types
-  return (await (snap as any).request({
-    method: 'wallet_invokeMethod',
-    params: {
-      scope,
-      request,
-    },
-  })) as ReturnType;
 }
 
 /**
@@ -82,38 +71,6 @@ async function getAccounts(scope: CaipChainId) {
   });
 
   return session.sessionScopes[scope]?.accounts ?? [];
-}
-
-/**
- * Sign a message using the `personal_sign` JSON-RPC method.
- *
- * @param message - The message to sign as a string.
- * @param from - The account to sign the message with as a string.
- * @returns A signature for the proposed message and account.
- * @throws If the user rejects the prompt.
- * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
- * @see https://docs.metamask.io/wallet/concepts/signing-methods/#personal_sign
- */
-async function personalSign(
-  scope: CaipChainId,
-  message: string,
-  from: CaipAccountId,
-) {
-  const { namespace } = parseCaipChainId(scope);
-  assert(
-    namespace === 'eip155',
-    'personal_sign only available for eip155 namespace.',
-  );
-
-  const { address } = parseCaipAccountId(from);
-
-  const signature = await invokeMethod<Hex>(scope, {
-    method: 'personal_sign',
-    params: [bytesToHex(stringToBytes(message)), address],
-  });
-  assert(signature, 'Multichain provider did not return a signature.');
-
-  return signature;
 }
 
 /**
@@ -216,6 +173,21 @@ async function signTypedData(
   return signature;
 }
 
+function getModule(scope: CaipChainId) {
+  const { namespace } = parseCaipChainId(scope);
+
+  switch (namespace) {
+    case 'eip155':
+      return new Evm(scope);
+
+    case 'solana':
+      return new Solana(scope);
+
+    default:
+      throw new Error(`${namespace} not supported.`);
+  }
+}
+
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles six methods:
@@ -234,6 +206,8 @@ async function signTypedData(
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   const { scope = 'eip155:1' } = (request.params as BaseParams) ?? {};
 
+  const scopeModule = getModule(scope);
+
   switch (request.method) {
     case 'createSession':
       return await createSession();
@@ -244,10 +218,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'getAccounts':
       return await getAccounts(scope);
 
-    case 'personalSign': {
-      const params = request.params as PersonalSignParams;
+    case 'signMessage': {
+      const params = request.params as SignMessageParams;
       const accounts = await getAccounts(scope);
-      return await personalSign(scope, params.message, accounts[0]);
+      return await scopeModule.signMessage(accounts[0], params.message);
     }
 
     case 'signTypedData': {
