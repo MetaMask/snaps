@@ -30,7 +30,10 @@ export const SignTypedData: FunctionComponent<SignTypedDataProps> = ({
     event.preventDefault();
 
     invokeSnap({
-      snapId: getSnapId(MULTICHAIN_PROVIDER_SNAP_ID, MULTICHAIN_PROVIDER_SNAP_PORT),
+      snapId: getSnapId(
+        MULTICHAIN_PROVIDER_SNAP_ID,
+        MULTICHAIN_PROVIDER_SNAP_PORT,
+      ),
       method: 'signTypedData',
       params: {
         message,
@@ -49,16 +52,20 @@ export const SignTypedData: FunctionComponent<SignTypedDataProps> = ({
           placeholder="Message"
           value={message}
           onChange={handleChange}
-          id="signTypedData"
+          id="signTypedDataMultichain"
           className="mb-3"
         />
 
-        <Button type="submit" id="signTypedDataButton" disabled={isLoading}>
+        <Button
+          type="submit"
+          id="signTypedDataMultichainButton"
+          disabled={isLoading}
+        >
           Sign Typed Data
         </Button>
       </Form>
       <Result>
-        <span id="signTypedDataResult">
+        <span id="signTypedDataMultichainResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
