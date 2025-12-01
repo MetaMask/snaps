@@ -19,6 +19,7 @@ export * from './jsx';
 export * from './lifecycle-hooks';
 export * from './legacy-state';
 export * from './multi-install';
+export * from './multichain-provider';
 export * from './name-lookup';
 export * from './network-access';
 export * from './notifications';
