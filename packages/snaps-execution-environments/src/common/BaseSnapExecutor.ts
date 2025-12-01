@@ -48,6 +48,7 @@ import {
   sanitizeRequestArguments,
   withTeardown,
   isValidResponse,
+  isMultichainRequest,
 } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
@@ -417,7 +418,16 @@ export class BaseSnapExecutor {
 
     provider.initializeSync();
 
-    const snap = this.createSnapGlobal(provider);
+    const multichainProvider = new SnapProvider(
+      multiplex.createStream('metamask-multichain-provider'),
+      {
+        rpcMiddleware: [createIdRemapMiddleware()],
+      },
+    );
+
+    multichainProvider.initializeSync();
+
+    const snap = this.createSnapGlobal(provider, multichainProvider);
     const ethereum = this.createEIP1193Provider(provider);
     // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
@@ -516,19 +526,33 @@ export class BaseSnapExecutor {
   /**
    * Instantiates a snap API object (i.e. `globalThis.snap`).
    *
-   * @param provider - A StreamProvider connected to MetaMask.
+   * @param provider - A StreamProvider connected to the EIP-1193 client stream.
+   * @param multichainProvider - A StreamProvider connected to the CAIP-27 client stream.
    * @returns The snap provider object.
    */
   // TODO: Either fix this lint violation or explain why it's necessary to
   //  ignore.
   // eslint-disable-next-line no-restricted-syntax
-  private createSnapGlobal(provider: StreamProvider): SnapsProvider {
+  private createSnapGlobal(
+    provider: StreamProvider,
+    multichainProvider: StreamProvider,
+  ): SnapsProvider {
     const originalRequest = provider.request.bind(provider);
+    const originalMultichainRequest =
+      multichainProvider.request.bind(multichainProvider);
 
     const request = async (args: RequestArguments) => {
       // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertSnapOutboundRequest(sanitizedArgs);
+
+      if (isMultichainRequest(sanitizedArgs)) {
+        return await withTeardown(
+          originalMultichainRequest(sanitizedArgs),
+          this as any,
+        );
+      }
+
       return await withTeardown(originalRequest(sanitizedArgs), this as any);
     };
 
