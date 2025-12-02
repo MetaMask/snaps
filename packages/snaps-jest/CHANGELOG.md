@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.6.0]
+
+### Added
+
+- Add support for the `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+  - The `pickDateTime` function can be used to interact with the component in tests.
+
+### Changed
+
+- Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+
 ## [9.5.1]
 
 ### Changed
@@ -433,7 +444,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.6.0...HEAD
+[9.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.1...@metamask/snaps-jest@9.6.0
 [9.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.0...@metamask/snaps-jest@9.5.1
 [9.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.1...@metamask/snaps-jest@9.5.0
 [9.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.0...@metamask/snaps-jest@9.4.1

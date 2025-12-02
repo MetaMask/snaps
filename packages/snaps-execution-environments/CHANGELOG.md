@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.3.0]
+
+### Added
+
+- Add support for `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+
+### Changed
+
+- Bump `@lavamoat/webpack` from `1.5.3` to `1.5.4` ([#3751](https://github.com/MetaMask/snaps/pull/3751))
+- Bump `lavamoat` from `10.0.1` to `10.0.2` ([#3752](https://github.com/MetaMask/snaps/pull/3752))
+
 ## [10.2.3]
 
 ### Fixed
@@ -569,7 +580,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.3.0...HEAD
+[10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.3...@metamask/snaps-execution-environments@10.3.0
 [10.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.2...@metamask/snaps-execution-environments@10.2.3
 [10.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...@metamask/snaps-execution-environments@10.2.2
 [10.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.0...@metamask/snaps-execution-environments@10.2.1

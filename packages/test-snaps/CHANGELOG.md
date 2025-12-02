@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0]
+
+### Added
+
+- Use EIP-6963 for `test-snaps` ([#3757](https://github.com/MetaMask/snaps/pull/3757))
+
+### Fixed
+
+- Move `test-snaps` dependencies to devDependencies ([#3758](https://github.com/MetaMask/snaps/pull/3758))
+
 ## [3.0.0]
 
 ### Changed
@@ -394,7 +404,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.1.0...HEAD
+[3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.0.0...@metamask/test-snaps@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.1...@metamask/test-snaps@3.0.0
 [2.28.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.0...@metamask/test-snaps@2.28.1
 [2.28.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.27.0...@metamask/test-snaps@2.28.0

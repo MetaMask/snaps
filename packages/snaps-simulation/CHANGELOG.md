@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0]
+
+### Added
+
+- Add support for the `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+  - The `pickDateTime` function can be used to interact with the component in tests.
+- Include client versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
+
+## Changed
+
+- Bump `@metamask/permission-controller` from `12.0.0` to `12.1.1` ([#3746](https://github.com/MetaMask/snaps/pull/3746)), ([#3714](https://github.com/MetaMask/snaps/pull/3714))
+- Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+
 ## [3.5.1]
 
 ### Changed
@@ -233,7 +246,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.6.0...HEAD
+[3.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.1...@metamask/snaps-simulation@3.6.0
 [3.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.0...@metamask/snaps-simulation@3.5.1
 [3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.2...@metamask/snaps-simulation@3.5.0
 [3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.4.1...@metamask/snaps-simulation@3.4.2
