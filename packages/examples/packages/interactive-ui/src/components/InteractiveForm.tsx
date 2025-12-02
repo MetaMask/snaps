@@ -122,6 +122,7 @@ export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
             <DateTimePicker
               name="example-datetime"
               placeholder="Select a date and time"
+              disabled={disabled}
             />
           </Field>
           <Field label="Example DatePicker">
@@ -130,6 +131,7 @@ export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
               type="date"
               placeholder="Select a date"
               disableFuture={true}
+              disabled={disabled}
             />
           </Field>
           <Field label="Example TimePicker">
@@ -138,6 +140,7 @@ export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
               type="time"
               placeholder="Select a time"
               disablePast={true}
+              disabled={disabled}
             />
           </Field>
         </Form>

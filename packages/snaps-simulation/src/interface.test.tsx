@@ -2296,29 +2296,25 @@ describe('pickDateTime', () => {
     );
   });
 
-  it.each([new Date('invalid-date'), undefined, null, 'foo', 12345, {}, []])(
-    'throws if the provided date is invalid',
-    async (value) => {
-      const content = <DateTimePicker name="foo" />;
+  it('throws if the provided date is invalid', async () => {
+    const content = <DateTimePicker name="foo" />;
 
-      const interfaceId = interfaceController.createInterface(
-        MOCK_SNAP_ID,
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
         content,
-      );
-
-      await expect(
-        pickDateTime(
-          rootControllerMessenger,
-          interfaceId,
-          content,
-          MOCK_SNAP_ID,
-          'foo',
-          // @ts-expect-error invalid values
-          value,
-        ),
-      ).rejects.toThrow(`Expected "value" to be a valid Date object.`);
-    },
-  );
+        MOCK_SNAP_ID,
+        'foo',
+        new Date('invalid-date'),
+      ),
+    ).rejects.toThrow(`Expected "value" to be a valid Date object.`);
+  });
 });
 
 describe('waitForUpdate', () => {

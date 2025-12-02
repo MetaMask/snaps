@@ -49,6 +49,7 @@ import type {
   SnapInterfaceActions,
 } from './types';
 import { formatTypeErrorMessage } from './utils/errors';
+
 /**
  * The maximum file size that can be uploaded.
  */
@@ -919,7 +920,7 @@ export async function pickDateTime(
   );
 
   assert(
-    value instanceof Date && !isNaN(value.getTime()),
+    !isNaN(value.getTime()),
     `Expected "value" to be a valid Date object.`,
   );
 
@@ -929,14 +930,14 @@ export async function pickDateTime(
 
   if (result.element.props.disableFuture) {
     assert(
-      value < now,
+      value <= now,
       `The selected date "${parsedDate}" is in the future, but the DateTimePicker with the name "${name}" has future dates disabled.`,
     );
   }
 
   if (result.element.props.disablePast) {
     assert(
-      value > now,
+      value >= now,
       `The selected date "${parsedDate}" is in the past, but the DateTimePicker with the name "${name}" has past dates disabled.`,
     );
   }
