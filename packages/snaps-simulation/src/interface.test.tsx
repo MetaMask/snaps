@@ -31,6 +31,7 @@ import {
   Field,
   AccountSelector,
   AssetSelector,
+  DateTimePicker,
 } from '@metamask/snaps-sdk/jsx';
 import {
   getJsxElementFromComponent,
@@ -55,6 +56,7 @@ import {
   selectFromSelector,
   waitForUpdate,
   getValueFromSelector,
+  pickDateTime,
 } from './interface';
 import type { RunSagaFunction } from './store';
 import { createStore, resolveInterface, setInterface } from './store';
@@ -90,6 +92,7 @@ async function getResolve(runSaga: RunSagaFunction) {
 describe('getInterfaceResponse', () => {
   const interfaceActions = {
     clickElement: jest.fn(),
+    pickDateTime: jest.fn(),
     typeInField: jest.fn(),
     selectInDropdown: jest.fn(),
     selectFromRadioGroup: jest.fn(),
@@ -114,6 +117,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -144,6 +148,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -175,6 +180,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -206,6 +212,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -237,6 +244,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -268,6 +276,7 @@ describe('getInterfaceResponse', () => {
       id: 'foo',
       content: <Text>foo</Text>,
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -318,6 +327,7 @@ describe('getInterfaceResponse', () => {
         </Container>
       ),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -360,6 +370,7 @@ describe('getInterfaceResponse', () => {
         </Container>
       ),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -397,6 +408,7 @@ describe('getInterfaceResponse', () => {
         </Container>
       ),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -428,6 +440,7 @@ describe('getInterfaceResponse', () => {
         </Box>
       ),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -1359,6 +1372,7 @@ describe('getInterface', () => {
       type,
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -1393,6 +1407,7 @@ describe('getInterface', () => {
       type,
       content: getJsxElementFromComponent(content),
       clickElement: expect.any(Function),
+      pickDateTime: expect.any(Function),
       typeInField: expect.any(Function),
       selectInDropdown: expect.any(Function),
       selectFromRadioGroup: expect.any(Function),
@@ -1533,6 +1548,54 @@ describe('getInterface', () => {
               type: UserInputEventType.InputChangeEvent,
               name: 'foo',
               value: 'option2',
+            },
+            id,
+            context: null,
+          },
+        },
+      },
+    );
+  });
+
+  it('sends a request to the Snap when `pickDateTime` is called', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+    const options = getMockOptions();
+    const { store, runSaga } = createStore(options);
+
+    const content = <DateTimePicker name="foo" />;
+
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
+    const type = DialogType.Alert;
+    const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
+
+    const date = new Date();
+
+    store.dispatch(setInterface(ui));
+
+    const result = await runSaga(
+      getInterface,
+      runSaga,
+      MOCK_SNAP_ID,
+      rootControllerMessenger,
+      options,
+    ).toPromise();
+
+    await result.pickDateTime('foo', date);
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'ExecutionService:handleRpcRequest',
+      MOCK_SNAP_ID,
+      {
+        origin: 'metamask',
+        handler: HandlerType.OnUserInput,
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            event: {
+              type: UserInputEventType.InputChangeEvent,
+              name: 'foo',
+              value: date.toISOString(),
             },
             id,
             context: null,
@@ -2069,6 +2132,188 @@ describe('selectFromSelector', () => {
     ).rejects.toThrow(
       'Expected an element of type "Selector", "AccountSelector" or "AssetSelector", but found "Input".',
     );
+  });
+});
+
+describe('pickDateTime', () => {
+  const rootControllerMessenger = getRootControllerMessenger();
+  const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(
+    rootControllerMessenger,
+  );
+
+  const interfaceController = new SnapInterfaceController({
+    messenger: controllerMessenger,
+  });
+
+  const handleRpcRequestMock = jest.fn();
+
+  rootControllerMessenger.registerActionHandler(
+    'ExecutionService:handleRpcRequest',
+    handleRpcRequestMock,
+  );
+
+  it('updates the interface state and sends an InputChangeEvent', async () => {
+    jest.spyOn(rootControllerMessenger, 'call');
+
+    const content = <DateTimePicker name="foo" />;
+
+    const valueToPick = new Date('2024-01-01T12:00:00Z');
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await pickDateTime(
+      rootControllerMessenger,
+      interfaceId,
+      content,
+      MOCK_SNAP_ID,
+      'foo',
+      valueToPick,
+    );
+
+    expect(rootControllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:updateInterfaceState',
+      interfaceId,
+      { foo: valueToPick.toISOString() },
+    );
+
+    expect(handleRpcRequestMock).toHaveBeenCalledWith(MOCK_SNAP_ID, {
+      origin: 'metamask',
+      handler: HandlerType.OnUserInput,
+      request: {
+        jsonrpc: '2.0',
+        method: ' ',
+        params: {
+          event: {
+            type: UserInputEventType.InputChangeEvent,
+            name: 'foo',
+            value: valueToPick.toISOString(),
+          },
+          id: interfaceId,
+          context: null,
+        },
+      },
+    });
+  });
+
+  it('throws if there is no DateTimePicker in the interface', async () => {
+    const content = (
+      <Box>
+        <Text>Foo</Text>
+      </Box>
+    );
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'bar',
+        new Date(),
+      ),
+    ).rejects.toThrow(
+      'Could not find an element in the interface with the name "bar".',
+    );
+  });
+
+  it('throws if the element is not a DateTimePicker', async () => {
+    const content = <Input name="foo" />;
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        new Date(),
+      ),
+    ).rejects.toThrow(
+      'Expected an element of type "DateTimePicker", but found "Input".',
+    );
+  });
+
+  it('throws if the provided date is the future and the component does not allow it', async () => {
+    const content = <DateTimePicker name="foo" disableFuture={true} />;
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    const futureDate = new Date();
+    futureDate.setMonth(futureDate.getMonth() + 1);
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        futureDate,
+      ),
+    ).rejects.toThrow(
+      `The selected date "${futureDate.toISOString()}" is in the future, but the DateTimePicker with the name "foo" has future dates disabled.`,
+    );
+  });
+
+  it('throws if the provided date is the past and the component does not allow it', async () => {
+    const content = <DateTimePicker name="foo" disablePast={true} />;
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    const pastDate = new Date();
+    pastDate.setMonth(pastDate.getMonth() - 1);
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        pastDate,
+      ),
+    ).rejects.toThrow(
+      `The selected date "${pastDate.toISOString()}" is in the past, but the DateTimePicker with the name "foo" has past dates disabled.`,
+    );
+  });
+
+  it('throws if the provided date is invalid', async () => {
+    const content = <DateTimePicker name="foo" />;
+
+    const interfaceId = interfaceController.createInterface(
+      MOCK_SNAP_ID,
+      content,
+    );
+
+    await expect(
+      pickDateTime(
+        rootControllerMessenger,
+        interfaceId,
+        content,
+        MOCK_SNAP_ID,
+        'foo',
+        new Date('invalid-date'),
+      ),
+    ).rejects.toThrow(`Expected "value" to be a valid Date object.`);
   });
 });
 

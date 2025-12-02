@@ -16,6 +16,7 @@ import {
   Checkbox,
   Container,
   Footer,
+  DateTimePicker,
 } from '@metamask/snaps-sdk/jsx';
 
 /**
@@ -46,6 +47,21 @@ export type InteractiveFormState = {
    * The value of the example Selector.
    */
   'example-selector': string;
+
+  /**
+   * The value of the example DateTimePicker.
+   */
+  'example-datetime'?: string;
+
+  /**
+   * The value of the example DatePicker.
+   */
+  'example-date'?: string;
+
+  /**
+   * The value of the example TimePicker.
+   */
+  'example-time'?: string;
 };
 
 export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
@@ -101,6 +117,31 @@ export const InteractiveForm: SnapComponent<{ disabled?: boolean }> = ({
                 <Card title="Option 3" value="option3" />
               </SelectorOption>
             </Selector>
+          </Field>
+          <Field label="Example DateTimePicker">
+            <DateTimePicker
+              name="example-datetime"
+              placeholder="Select a date and time"
+              disabled={disabled}
+            />
+          </Field>
+          <Field label="Example DatePicker">
+            <DateTimePicker
+              name="example-date"
+              type="date"
+              placeholder="Select a date"
+              disableFuture={true}
+              disabled={disabled}
+            />
+          </Field>
+          <Field label="Example TimePicker">
+            <DateTimePicker
+              name="example-time"
+              type="time"
+              placeholder="Select a time"
+              disablePast={true}
+              disabled={disabled}
+            />
           </Field>
         </Form>
       </Box>

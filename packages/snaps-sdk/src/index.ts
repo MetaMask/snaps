@@ -12,6 +12,7 @@ export {
   typedUnion,
   selectiveUnion,
   nonEmptyRecord,
+  ISO8601DateStruct,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.

@@ -95,13 +95,15 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.8.1"
+    "@metamask/utils": "^11.8.1",
+    "luxon": "^3.5.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.4.0",
     "@metamask/auto-changelog": "^5.0.2",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
+    "@types/luxon": "^3",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",

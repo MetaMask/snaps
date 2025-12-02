@@ -18,6 +18,7 @@ import {
   AssetSelector,
   AddressInput,
   AccountSelector,
+  DateTimePicker,
 } from '@metamask/snaps-sdk/jsx';
 import type { CaipAccountId } from '@metamask/utils';
 import { parseCaipAccountId } from '@metamask/utils';
@@ -349,6 +350,66 @@ describe('constructState', () => {
     const result = constructState({}, element, elementDataGetters);
     expect(result).toStrictEqual({
       form: { foo: null },
+    });
+  });
+
+  it('sets default value for root level DateTimePicker', () => {
+    const element = (
+      <Box>
+        <DateTimePicker name="foo" />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: null,
+    });
+  });
+
+  it('supports root level DateTimePicker', () => {
+    const element = (
+      <Box>
+        <DateTimePicker name="foo" value="2022-01-01T00:00:00Z" />
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      foo: '2022-01-01T00:00:00Z',
+    });
+  });
+
+  it('sets default value for DateTimePicker in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <DateTimePicker name="foo" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: { foo: null },
+    });
+  });
+
+  it('supports DateTimePicker in forms', () => {
+    const element = (
+      <Box>
+        <Form name="form">
+          <Field label="foo">
+            <DateTimePicker name="foo" value="2022-01-01T00:00:00Z" />
+          </Field>
+        </Form>
+      </Box>
+    );
+
+    const result = constructState({}, element, elementDataGetters);
+    expect(result).toStrictEqual({
+      form: { foo: '2022-01-01T00:00:00Z' },
     });
   });
 

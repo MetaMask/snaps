@@ -18,29 +18,6 @@ export const ISO8601DurationStruct = refine(
 );
 
 /**
- * Regex to match the offset part of an ISO 8601 date.
- */
-const offsetRegex = /Z|([+-]\d{2}:?\d{2})$/u;
-
-/**
- * Refines a string as an ISO 8601 date.
- */
-export const ISO8601DateStruct = refine(string(), 'ISO 8601 date', (value) => {
-  const parsedDate = DateTime.fromISO(value);
-
-  if (!parsedDate.isValid) {
-    return 'Not a valid ISO 8601 date';
-  }
-
-  if (!offsetRegex.test(value)) {
-    // Luxon doesn't have a reliable way to check if timezone info was not provided
-    return 'ISO 8601 date must have timezone information';
-  }
-
-  return true;
-});
-
-/**
  * Remove millisecond precision from an ISO 8601 string.
  *
  * @param value - A valid ISO 8601 date.
@@ -54,3 +31,5 @@ export function toCensoredISO8601String(value: string) {
     suppressMilliseconds: true,
   }) as string;
 }
+
+export { ISO8601DateStruct } from '@metamask/snaps-sdk';

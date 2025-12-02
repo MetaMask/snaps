@@ -2,6 +2,7 @@ import type { AccountSelectorElement } from './AccountSelector';
 import type { AddressInputElement } from './AddressInput';
 import type { AssetSelectorElement } from './AssetSelector';
 import type { CheckboxElement } from './Checkbox';
+import type { DateTimePickerElement } from './DateTimePicker';
 import type { DropdownElement } from './Dropdown';
 import type { FileInputElement } from './FileInput';
 import type { InputElement } from './Input';
@@ -25,6 +26,7 @@ export type FieldProps = {
     | [GenericSnapChildren, InputElement]
     | [GenericSnapChildren, InputElement, GenericSnapChildren]
     | DropdownElement
+    | DateTimePickerElement
     | RadioGroupElement
     | FileInputElement
     | InputElement
