@@ -920,16 +920,18 @@ export async function pickDateTime(
 
   const parsedDate = value.toISOString();
 
+  const now = new Date();
+  
   if (result.element.props.disableFuture) {
     assert(
-      value < new Date(),
+      value < now,
       `The selected date "${parsedDate}" is in the future, but the DateTimePicker with the name "${name}" has future dates disabled.`,
     );
   }
 
   if (result.element.props.disablePast) {
     assert(
-      value > new Date(),
+      value > now,
       `The selected date "${parsedDate}" is in the past, but the DateTimePicker with the name "${name}" has past dates disabled.`,
     );
   }
