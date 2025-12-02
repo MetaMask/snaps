@@ -12,9 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-  - Add the `DateTimePicker` component to the SDK, allowing Snaps to
-    prompt users to select a date and time.
-  - Move `ISO8601DateStruct` from `@metamask/snaps-utils` to `@metamask/snaps-sdk`.
+- Move `ISO8601DateStruct` from `@metamask/snaps-utils` to `@metamask/snaps-sdk` ([#3698](https://github.com/MetaMask/snaps/pull/3698))
 
 ## [10.1.0]
 
