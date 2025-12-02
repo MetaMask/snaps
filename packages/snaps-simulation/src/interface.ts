@@ -918,6 +918,11 @@ export async function pickDateTime(
     `Expected an element of type "DateTimePicker", but found "${result.element.type}".`,
   );
 
+  assert(
+    value instanceof Date && !isNaN(value.getTime()),
+    `Expected "value" to be a valid Date object.`,
+  );
+
   const parsedDate = value.toISOString();
 
   const now = new Date();

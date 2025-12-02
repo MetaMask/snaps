@@ -2295,6 +2295,30 @@ describe('pickDateTime', () => {
       `The selected date "${pastDate.toISOString()}" is in the past, but the DateTimePicker with the name "foo" has past dates disabled.`,
     );
   });
+
+  it.each([new Date('invalid-date'), undefined, null, 'foo', 12345, {}, []])(
+    'throws if the provided date is invalid',
+    async (value) => {
+      const content = <DateTimePicker name="foo" />;
+
+      const interfaceId = interfaceController.createInterface(
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      await expect(
+        pickDateTime(
+          rootControllerMessenger,
+          interfaceId,
+          content,
+          MOCK_SNAP_ID,
+          'foo',
+          // @ts-expect-error invalid values
+          value,
+        ),
+      ).rejects.toThrow(`Expected "value" to be a valid Date object.`);
+    },
+  );
 });
 
 describe('waitForUpdate', () => {
