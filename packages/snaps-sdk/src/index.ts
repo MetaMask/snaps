@@ -13,8 +13,6 @@ export {
   selectiveUnion,
   nonEmptyRecord,
   ISO8601DateStruct,
-  ISO8601DurationStruct,
-  toCensoredISO8601String,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.

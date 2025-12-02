@@ -1,4 +1,4 @@
-import { selectiveUnion, ISO8601DurationStruct } from '@metamask/snaps-sdk';
+import { selectiveUnion } from '@metamask/snaps-sdk';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
@@ -16,6 +16,8 @@ import {
   JsonRpcVersionStruct,
 } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
+
+import { ISO8601DurationStruct } from './time';
 
 export const CronjobRpcRequestStruct = object({
   jsonrpc: optional(JsonRpcVersionStruct),

@@ -25,6 +25,7 @@ export * from './platform-version';
 export * from './snaps';
 export * from './strings';
 export * from './structs';
+export * from './time';
 export * from './types';
 export * from './ui';
 export * from './url';
@@ -32,9 +33,3 @@ export * from './validation';
 export * from './versions';
 export * from './virtual-file';
 export type * from './promise';
-
-export {
-  ISO8601DateStruct,
-  ISO8601DurationStruct,
-  toCensoredISO8601String,
-} from '@metamask/snaps-sdk';

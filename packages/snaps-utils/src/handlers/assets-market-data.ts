@@ -1,8 +1,4 @@
-import {
-  nonEmptyRecord,
-  selectiveUnion,
-  ISO8601DurationStruct,
-} from '@metamask/snaps-sdk';
+import { nonEmptyRecord, selectiveUnion } from '@metamask/snaps-sdk';
 import {
   literal,
   nullable,
@@ -18,6 +14,8 @@ import {
   CaipAssetTypeStruct,
   isObject,
 } from '@metamask/utils';
+
+import { ISO8601DurationStruct } from '../time';
 
 /**
  * A struct representing the market data for an asset.
