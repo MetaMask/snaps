@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Move `ISO8601DateStruct` to `@metamask/snaps-sdk` and re-export it for backwards compatibility. ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+- Move `ISO8601DateStruct` to `@metamask/snaps-sdk` and re-export it for backwards compatibility ([#3698](https://github.com/MetaMask/snaps/pull/3698))
 - Bump `@metamask/snaps-registry` from `3.2.3` to `3.3.0` ([#3737](https://github.com/MetaMask/snaps/pull/3737))
 - Bump `@metamask/permission-controller` from `12.1.0` to `12.1.1` ([#3746](https://github.com/MetaMask/snaps/pull/3746))
 - Bump `@metamask/permission-controller` from `12.0.0` to `12.1.0` ([#3714](https://github.com/MetaMask/snaps/pull/3714))
