@@ -921,7 +921,7 @@ export async function pickDateTime(
   const parsedDate = value.toISOString();
 
   const now = new Date();
-  
+
   if (result.element.props.disableFuture) {
     assert(
       value < now,
