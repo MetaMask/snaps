@@ -2,6 +2,7 @@ import {
   bytesToHex,
   CaipAccountId,
   Hex,
+  hexToNumber,
   parseCaipAccountId,
   stringToBytes,
 } from '@metamask/utils';
@@ -14,6 +15,87 @@ export class Evm extends Module {
     return await invokeMethod<Hex>(this.scope, {
       method: 'personal_sign',
       params: [bytesToHex(stringToBytes(message)), address],
+    });
+  }
+
+  async signTypedData(
+    account: CaipAccountId,
+    message: string,
+  ): Promise<string> {
+    const {
+      chain: { reference },
+      address,
+    } = parseCaipAccountId(account);
+
+    return await invokeMethod<Hex>(this.scope, {
+      method: 'eth_signTypedData_v4',
+      params: [
+        address,
+        {
+          types: {
+            EIP712Domain: [
+              {
+                name: 'name',
+                type: 'string',
+              },
+              {
+                name: 'version',
+                type: 'string',
+              },
+              {
+                name: 'chainId',
+                type: 'uint256',
+              },
+              {
+                name: 'verifyingContract',
+                type: 'address',
+              },
+            ],
+            Person: [
+              {
+                name: 'name',
+                type: 'string',
+              },
+              {
+                name: 'wallet',
+                type: 'address',
+              },
+            ],
+            Mail: [
+              {
+                name: 'from',
+                type: 'Person',
+              },
+              {
+                name: 'to',
+                type: 'Person',
+              },
+              {
+                name: 'contents',
+                type: 'string',
+              },
+            ],
+          },
+          primaryType: 'Mail',
+          domain: {
+            name: 'Ether Mail',
+            version: '1',
+            chainId: hexToNumber(reference),
+            verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+          },
+          message: {
+            from: {
+              name: 'Snap',
+              wallet: address,
+            },
+            to: {
+              name: 'Bob',
+              wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            },
+            contents: message,
+          },
+        },
+      ],
     });
   }
 }
