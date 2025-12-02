@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+- Add support for `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
 
 ### Changed
 
