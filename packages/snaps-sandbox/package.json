@@ -45,7 +45,7 @@
   "devDependencies": {
     "@chakra-ui/react": "^3.15.0",
     "@emotion/react": "^11.14.0",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.2.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/utils": "^11.8.1",
     "@monaco-editor/react": "^4.7.0",
