@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [9.6.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-- chore: Bump @metamask/phishing-controller from 13.1.0 to 15.0.0 ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+- Add support for the `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+  - The `pickDateTime` function can be used to interact with the component in tests.
+
+### Changed
+
+- Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
 
 ## [9.5.1]
 

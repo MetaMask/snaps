@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.3.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-- chore: Bump @lavamoat/webpack from 1.5.3 to 1.5.4 ([#3751](https://github.com/MetaMask/snaps/pull/3751))
-- chore: Bump lavamoat from 10.0.1 to 10.0.2 ([#3752](https://github.com/MetaMask/snaps/pull/3752))
+- Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+
+### Changed
+
+- Bump `@lavamoat/webpack` from `1.5.3` to `1.5.4` ([#3751](https://github.com/MetaMask/snaps/pull/3751))
+- Bump `lavamoat` from `10.0.1` to `10.0.2` ([#3752](https://github.com/MetaMask/snaps/pull/3752))
 
 ## [10.2.3]
 

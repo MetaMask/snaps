@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.7.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-- chore: Bump @metamask/permission-controller from 12.1.0 to 12.1.1 ([#3746](https://github.com/MetaMask/snaps/pull/3746))
-- feat!: Support specified `clientVersions` in the registry ([#3737](https://github.com/MetaMask/snaps/pull/3737))
-- chore: Bump @metamask/permission-controller from 12.0.0 to 12.1.0 ([#3714](https://github.com/MetaMask/snaps/pull/3714))
-- chore: Bump vite from 6.3.4 to 6.4.1 in the npm_and_yarn group across 1 directory ([#3633](https://github.com/MetaMask/snaps/pull/3633))
+- Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+  - Moves `ISO8601DateStruct` to `@metamask/snaps-utils` and re-export it for backwards compatibility.
+
+### Changed
+
+- Bump `@metamask/snaps-registry` from `3.2.3` to `3.3.0` ([#3737](https://github.com/MetaMask/snaps/pull/3737))
+- Bump `@metamask/permission-controller` from `12.1.0` to `12.1.1` ([#3746](https://github.com/MetaMask/snaps/pull/3746))
+- Bump `@metamask/permission-controller` from `12.0.0` to `12.1.0` ([#3714](https://github.com/MetaMask/snaps/pull/3714))
+- Bump `vite` from `6.3.4` to `6.4.1` ([#3633](https://github.com/MetaMask/snaps/pull/3633))
 
 ## [11.6.1]
 
