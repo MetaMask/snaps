@@ -1557,7 +1557,7 @@ describe('getInterface', () => {
     );
   });
 
-  it('sends a request to the snap when `pickDateTime` is called', async () => {
+  it('sends a request to the Snap when `pickDateTime` is called', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
     const options = getMockOptions();
     const { store, runSaga } = createStore(options);
