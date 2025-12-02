@@ -20,41 +20,6 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('getGasPrice', () => {
-    const MOCK_GAS_PRICE = '0x387c64b64';
-
-    it('returns the current gas price', async () => {
-      const { request, mockJsonRpc } = await installSnap();
-
-      // To avoid relying on the network, we mock the response from the Ethereum
-      // provider.
-      mockJsonRpc({
-        method: 'eth_gasPrice',
-        result: MOCK_GAS_PRICE,
-      });
-
-      const response = await request({
-        method: 'getGasPrice',
-      });
-
-      expect(response).toRespondWith(MOCK_GAS_PRICE);
-    });
-  });
-
-  describe('getVersion', () => {
-    const MOCK_VERSION = '1'; // Ethereum Mainnet
-
-    it('returns the current network version', async () => {
-      const { request } = await installSnap();
-
-      const response = await request({
-        method: 'getVersion',
-      });
-
-      expect(response).toRespondWith(MOCK_VERSION);
-    });
-  });
-
   describe('getChainId', () => {
     const MOCK_CHAIN_ID = '0x01'; // Ethereum Mainnet
 
@@ -84,7 +49,7 @@ describe('onRpcRequest', () => {
     });
   });
 
-  describe('personalSign', () => {
+  describe('signMessage', () => {
     const MOCK_SIGNATURE =
       '0x16f672a12220dc4d9e27671ef580cfc1397a9a4d5ee19eadea46c0f350b2f72a4922be7c1f16ed9b03ef1d3351eac469e33accf5a36194b1d88923701c2b163f1b';
 
@@ -98,7 +63,7 @@ describe('onRpcRequest', () => {
       });
 
       const response = await request({
-        method: 'personalSign',
+        method: 'signMessage',
         params: { message: 'foo' },
       });
 

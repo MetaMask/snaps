@@ -1,9 +1,4 @@
-import {
-  CaipAccountId,
-  CaipChainId,
-  Hex,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import { CaipAccountId, CaipChainId, JsonRpcRequest } from '@metamask/utils';
 
 export abstract class Module {
   scope: CaipChainId;
@@ -11,7 +6,15 @@ export abstract class Module {
     this.scope = scope;
   }
 
-  abstract signMessage(account: CaipAccountId, message: string): Promise<string>;
+  abstract signMessage(
+    account: CaipAccountId,
+    message: string,
+  ): Promise<string>;
+
+  abstract signTypedData(
+    account: CaipAccountId,
+    message: string,
+  ): Promise<string>;
 }
 
 export async function invokeMethod<ReturnType>(
