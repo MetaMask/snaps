@@ -1,4 +1,4 @@
-import { nonEmptyRecord } from '@metamask/snaps-sdk';
+import { nonEmptyRecord, ISO8601DurationStruct } from '@metamask/snaps-sdk';
 import {
   array,
   literal,
@@ -10,8 +10,6 @@ import {
   tuple,
   union,
 } from '@metamask/superstruct';
-
-import { ISO8601DurationStruct } from '../time';
 
 /**
  * A struct representing a historical price.
