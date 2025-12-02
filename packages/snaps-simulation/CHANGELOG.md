@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+- chore: Bump @metamask/permission-controller from 12.1.0 to 12.1.1 ([#3746](https://github.com/MetaMask/snaps/pull/3746))
+- feat: Include versions in `snap_getClientStatus` ([#3724](https://github.com/MetaMask/snaps/pull/3724))
+- chore: Bump @metamask/permission-controller from 12.0.0 to 12.1.0 ([#3714](https://github.com/MetaMask/snaps/pull/3714))
+- chore: Bump @metamask/phishing-controller from 13.1.0 to 15.0.0 ([#3707](https://github.com/MetaMask/snaps/pull/3707))
+
 ## [3.5.1]
 
 ### Changed

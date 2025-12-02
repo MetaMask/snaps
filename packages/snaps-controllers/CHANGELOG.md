@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
+- fix: Use `no-cache` for fetching registry ([#3760](https://github.com/MetaMask/snaps/pull/3760))
+- chore: Bump @metamask/permission-controller from 12.1.0 to 12.1.1 ([#3746](https://github.com/MetaMask/snaps/pull/3746))
+
 ## [17.0.0]
 
 ### Added

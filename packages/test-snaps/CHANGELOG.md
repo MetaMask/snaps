@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Move `test-snaps` dependencies to devDependencies ([#3758](https://github.com/MetaMask/snaps/pull/3758))
+- feat: Use EIP-6963 for `test-snaps` ([#3757](https://github.com/MetaMask/snaps/pull/3757))
+
 ## [3.0.0]
 
 ### Changed
