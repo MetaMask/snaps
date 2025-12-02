@@ -19,7 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `@metamask/snaps-registry` from `3.2.3` to `3.3.0` ([#3737](https://github.com/MetaMask/snaps/pull/3737))
 - Bump `@metamask/permission-controller` from `12.1.0` to `12.1.1` ([#3746](https://github.com/MetaMask/snaps/pull/3746))
 - Bump `@metamask/permission-controller` from `12.0.0` to `12.1.0` ([#3714](https://github.com/MetaMask/snaps/pull/3714))
-- Bump `vite` from `6.3.4` to `6.4.1` ([#3633](https://github.com/MetaMask/snaps/pull/3633))
 
 ## [11.6.1]
 
