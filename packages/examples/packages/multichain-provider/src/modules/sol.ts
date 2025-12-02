@@ -5,6 +5,7 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { invokeMethod, Module } from './base';
+import { MethodNotSupportedError } from '@metamask/snaps-sdk';
 
 export class Solana extends Module {
   async signMessage(account: CaipAccountId, message: string): Promise<string> {
@@ -18,5 +19,9 @@ export class Solana extends Module {
     });
 
     return result.signature;
+  }
+
+  signTypedData(_account: CaipAccountId, _message: string): Promise<string> {
+    throw new MethodNotSupportedError();
   }
 }
