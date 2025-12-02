@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-  - Moves `ISO8601DateStruct` to `@metamask/snaps-utils` and re-export it for backwards compatibility.
+  - Move `ISO8601DateStruct` to `@metamask/snaps-utils` and re-export it for backwards compatibility.
 
 ### Changed
 
