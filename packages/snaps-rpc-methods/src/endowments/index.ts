@@ -21,6 +21,7 @@ import {
   keyringEndowmentBuilder,
 } from './keyring';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
+import { multichainProviderEndowmentBuilder } from './multichain-provider';
 import {
   getNameLookupCaveatMapper,
   nameLookupCaveatSpecifications,
@@ -57,6 +58,8 @@ export const endowmentPermissionBuilders = {
   [cronjobEndowmentBuilder.targetName]: cronjobEndowmentBuilder,
   [ethereumProviderEndowmentBuilder.targetName]:
     ethereumProviderEndowmentBuilder,
+  [multichainProviderEndowmentBuilder.targetName]:
+    multichainProviderEndowmentBuilder,
   [rpcEndowmentBuilder.targetName]: rpcEndowmentBuilder,
   [webAssemblyEndowmentBuilder.targetName]: webAssemblyEndowmentBuilder,
   [nameLookupEndowmentBuilder.targetName]: nameLookupEndowmentBuilder,
