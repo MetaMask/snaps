@@ -1,11 +1,11 @@
+import type { CaipAccountId, Hex } from '@metamask/utils';
 import {
   bytesToHex,
-  CaipAccountId,
-  Hex,
   hexToNumber,
   parseCaipAccountId,
   stringToBytes,
 } from '@metamask/utils';
+
 import { invokeMethod, Module } from './base';
 
 export class Evm extends Module {

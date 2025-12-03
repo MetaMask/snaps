@@ -1,7 +1,12 @@
-import { CaipAccountId, CaipChainId, JsonRpcRequest } from '@metamask/utils';
+import type {
+  CaipAccountId,
+  CaipChainId,
+  JsonRpcRequest,
+} from '@metamask/utils';
 
 export abstract class Module {
   scope: CaipChainId;
+
   constructor(scope: CaipChainId) {
     this.scope = scope;
   }
