@@ -4,6 +4,7 @@ export enum SnapEndowments {
   TransactionInsight = 'endowment:transaction-insight',
   Cronjob = 'endowment:cronjob',
   EthereumProvider = 'endowment:ethereum-provider',
+  MultichainProvider = 'endowment:multichain-provider',
   Rpc = 'endowment:rpc',
   WebAssemblyAccess = 'endowment:webassembly',
   NameLookup = 'endowment:name-lookup',
