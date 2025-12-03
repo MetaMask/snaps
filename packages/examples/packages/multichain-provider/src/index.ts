@@ -5,14 +5,12 @@ import {
 import type { CaipChainId } from '@metamask/utils';
 import { parseCaipChainId } from '@metamask/utils';
 
+import { invokeMethod, Evm, Solana } from './modules';
 import type {
   BaseParams,
   SignMessageParams,
   SignTypedDataParams,
 } from './types';
-import { invokeMethod } from './modules/base';
-import { Evm } from './modules/evm';
-import { Solana } from './modules/sol';
 
 // TODO: Consider letting the permission create the "session"
 async function createSession() {
