@@ -63,6 +63,15 @@ describe('buildSnapEndowmentSpecifications', () => {
           ],
           "targetName": "endowment:lifecycle-hooks",
         },
+        "endowment:multichain-provider": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:multichain-provider",
+        },
         "endowment:name-lookup": {
           "allowedCaveats": [
             "chainIds",
