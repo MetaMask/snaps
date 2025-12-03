@@ -612,6 +612,65 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('supports the multichain API using the snap global', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_invokeMethod', params: { scope: 'eip155:1', request: { method: 'eth_chainId' } } });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    const multichainRequest = await executor.readRpc();
+    expect(multichainRequest).toStrictEqual({
+      name: 'metamask-multichain-provider',
+      data: {
+        id: expect.any(Number),
+        jsonrpc: '2.0',
+        method: 'wallet_invokeMethod',
+        params: {
+          scope: 'eip155:1',
+          request: {
+            method: 'eth_chainId',
+          },
+        },
+      },
+    });
+
+    await executor.writeRpc({
+      name: 'metamask-multichain-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: multichainRequest.data.id!,
+        result: '0x1',
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: '0x1',
+    });
+  });
+
   it('sanitizes JSON before checking for blocked methods using snap global', async () => {
     const CODE = `
     const badToJSON = () => {
