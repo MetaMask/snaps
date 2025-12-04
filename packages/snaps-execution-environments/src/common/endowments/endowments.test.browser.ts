@@ -163,6 +163,10 @@ describe('endowments', () => {
         endowments: { DateAttenuated },
         factory: () => new DateAttenuated(),
       },
+      OffscreenCanvas: {
+        endowments: { OffscreenCanvas },
+        factory: () => new OffscreenCanvas(100, 100),
+      },
 
       // Objects.
       consoleAttenuated: {
@@ -246,6 +250,12 @@ describe('endowments', () => {
             async () => undefined,
           ),
       },
+      /**
+         createImageBitmap: {
+        endowments: { createImageBitmap },
+        factory: () => createImageBitmap(new Blob()),
+      }*
+       */
     };
 
     Object.entries(TEST_ENDOWMENTS).forEach(
@@ -349,6 +359,7 @@ describe('endowments', () => {
           factory: expect.any(Function),
           names: ['btoa'],
         },
+        { factory: expect.any(Function), names: ['createImageBitmap'] },
         {
           factory: expect.any(Function),
           names: ['DataView'],
@@ -381,6 +392,7 @@ describe('endowments', () => {
           factory: expect.any(Function),
           names: ['isSecureContext'],
         },
+        { factory: expect.any(Function), names: ['OffscreenCanvas'] },
         {
           factory: expect.any(Function),
           names: ['Uint8Array'],
