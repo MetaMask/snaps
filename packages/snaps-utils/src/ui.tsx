@@ -3,6 +3,7 @@ import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
   GenericSnapElement,
+  ImageElement,
   ItalicChildren,
   JSXElement,
   LinkElement,
@@ -42,6 +43,7 @@ import type { Token, Tokens } from 'marked';
 import type { InternalAccount } from './account';
 import type { Snap } from './snaps';
 import { parseMetaMaskUrl } from './url';
+import { isValidUrl } from './types';
 
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'metamask:'];
@@ -433,6 +435,7 @@ export function validateAssetSelector(
  * phishing list.
  * @param hooks.getSnap - The function that returns a snap if installed, undefined otherwise.
  * @param hooks.getAccountByAddress - The function that returns an account by address.
+ * @param hooks.hasPermission - A function that checks whether the Snap has a given permission.
  */
 export function validateJsxElements(
   node: JSXElement,
@@ -440,12 +443,14 @@ export function validateJsxElements(
     isOnPhishingList,
     getSnap,
     getAccountByAddress,
+    hasPermission,
   }: {
     isOnPhishingList: (url: string) => boolean;
     getSnap: (id: string) => Snap | undefined;
     getAccountByAddress: (
       address: CaipAccountId,
     ) => InternalAccount | undefined;
+    hasPermission: (permission: string) => boolean;
   },
 ) {
   walkJsx(node, (childNode) => {
@@ -461,6 +466,15 @@ export function validateJsxElements(
           getAccountByAddress,
         );
         break;
+      case 'Image': {
+        const { src } = (childNode as ImageElement).props;
+        const isUrl = isValidUrl(src);
+        assert(
+          !isUrl || (isUrl && hasPermission('endowment:network-access')),
+          'Using external images is only permitted with the network access endowment.',
+        );
+        break;
+      }
       default:
         break;
     }
