@@ -1305,6 +1305,7 @@ describe('ImageStruct', () => {
     <Image src="<svg />" alt="alt" />,
     <Image src="<svg />" />,
     <Image src="<svg />" alt="alt" borderRadius="medium" />,
+    <Image src="https://example.com/foo.png" />,
   ])('validates an image element', (value) => {
     expect(is(value, ImageStruct)).toBe(true);
   });
@@ -1322,6 +1323,7 @@ describe('ImageStruct', () => {
     <Image src="<svg />" alt={42} />,
     // @ts-expect-error - Invalid props.
     <Image src="<svg />" borderRadius="52px" />,
+    <Image src="http://example.com/foo.png" />,
     <Text>foo</Text>,
     <Box>
       <Text>foo</Text>
