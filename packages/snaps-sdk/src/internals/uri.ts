@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@metamask/snaps-sdk';
 import {
   refine,
   string,
@@ -6,8 +7,6 @@ import {
   StructError,
 } from '@metamask/superstruct';
 import type { Struct } from '@metamask/superstruct';
-
-import { getErrorMessage } from '@metamask/snaps-sdk';
 
 export type UriOptions<Type extends string> = {
   protocol?: Struct<Type>;
