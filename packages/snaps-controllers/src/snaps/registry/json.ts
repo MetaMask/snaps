@@ -244,7 +244,7 @@ export class JsonSnapsRegistry extends BaseController<
         this.#safeFetch(this.#url.signature),
       ]);
 
-      this.#verifySignature(database, signature);
+      await this.#verifySignature(database, signature);
 
       this.update((state) => {
         state.database = JSON.parse(database);
@@ -401,12 +401,11 @@ export class JsonSnapsRegistry extends BaseController<
    * @param database - The registry database.
    * @param signature - The signature of the registry.
    * @throws If the signature is invalid.
-   * @private
    */
-  #verifySignature(database: string, signature: string) {
+  async #verifySignature(database: string, signature: string) {
     assert(this.#publicKey, 'No public key provided.');
 
-    const valid = verify({
+    const valid = await verify({
       registry: database,
       signature: JSON.parse(signature),
       publicKey: this.#publicKey,
