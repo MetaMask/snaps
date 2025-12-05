@@ -26,6 +26,8 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   'Int32Array',
   'isSecureContext',
   'Intl',
+  'OffscreenCanvas',
+  'createImageBitmap',
   'Uint32Array',
   'Float32Array',
   'Float64Array',

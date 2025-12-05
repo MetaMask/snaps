@@ -79,6 +79,58 @@ export type ImageOptions = {
 };
 
 /**
+ * Get image data as data-string from a URL. This is useful for embedding images
+ * inside of SVGs. Only JPEG and PNG images are supported.
+ *
+ * Additionally, this function resizes the image data before serializing.
+ *
+ * Note: This function uses `fetch` to get the image data. This means that using
+ * it requires the `endowment:network-access` permission.
+ *
+ * @example
+ * const imageData = await getResizedImageData('https://cataas.com/cat', { width: 100 });
+ * const svg = `
+ *   <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+ *     <image href="${imageData}" />
+ *   </svg>
+ * `;
+ *
+ * // Render the SVG in a Snap UI.
+ * const ui = image(svg);
+ * @param url - The URL to get the image data from.
+ * @param options - The options to use when fetching and rendering the image.
+ * @param options.width - The width of the image.
+ * @param options.height - The height of the image. If this is not provided, the
+ * width will be used as the height.
+ * @param options.request - The options to use when fetching the image data.
+ * This is passed directly to `fetch`.
+ * @returns A promise that resolves to the image data as a data-string.
+ */
+async function getResizedImageData(
+  url: string,
+  { height, width, request }: ImageOptions & { height: number },
+) {
+  const blob = await getRawImageData(url, request);
+
+  // eslint-disable-next-line no-restricted-globals
+  const bitmap = await createImageBitmap(blob);
+
+  // eslint-disable-next-line no-restricted-globals
+  const canvas = new OffscreenCanvas(width, height);
+  const context = canvas.getContext('2d');
+
+  assert(context);
+
+  context.drawImage(bitmap, 0, 0, width, height);
+
+  const resizedBlob = await canvas.convertToBlob();
+
+  const bytes = new Uint8Array(await resizedBlob.arrayBuffer());
+
+  return `data:${resizedBlob.type};base64,${bytesToBase64(bytes)}`;
+}
+
+/**
  * Get an image component from a URL. This is useful for embedding images inside
  * Snap UIs. Only JPEG and PNG images are supported.
  *
@@ -120,7 +172,13 @@ export async function getImageComponent(
     'Expected height to be a number greater than 0.',
   );
 
-  const imageData = await getImageData(url, request);
+  const canResize =
+    'OffscreenCanvas' in globalThis && 'createImageBitmap' in globalThis;
+
+  const imageData = canResize
+    ? await getResizedImageData(url, { width, height, request })
+    : await getImageData(url, request);
+
   const size = `width="${width}" height="${height}"`;
 
   return image(
