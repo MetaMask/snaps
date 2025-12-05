@@ -66,6 +66,7 @@
     "@metamask/lifecycle-hooks-example-snap": "workspace:^",
     "@metamask/localization-example-snap": "workspace:^",
     "@metamask/manage-state-example-snap": "workspace:^",
+    "@metamask/multichain-provider-example-snap": "workspace:^",
     "@metamask/name-lookup-example-snap": "workspace:^",
     "@metamask/network-example-snap": "workspace:^",
     "@metamask/notification-example-snap": "workspace:^",
