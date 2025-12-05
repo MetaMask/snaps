@@ -2,11 +2,9 @@ import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
   getImageComponent,
-  image,
-  panel,
-  text,
   MethodNotFoundError,
 } from '@metamask/snaps-sdk';
+import { Box, Text, Image } from '@metamask/snaps-sdk/jsx';
 import { renderSVG } from 'uqr';
 
 import pngIcon from './images/icon.png';
@@ -51,10 +49,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          content: panel([
-            text(`The following is a QR code for the data "${data}":`),
-            image(qr),
-          ]),
+          content: (
+            <Box>
+              <Text>The following is a QR code for the data "{data}":</Text>
+              <Image src={qr} />
+            </Box>
+          ),
         },
       });
     }
@@ -64,15 +64,38 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          content: panel([
-            text('Enjoy your cat!'),
-
+          content: (
             // The `getImageComponent` helper can also be used to fetch an image
-            // from a URL and render it using the `image` component.
-            await getImageComponent('https://cataas.com/cat', {
-              width: 400,
-            }),
-          ]),
+            // from a URL and render it using the `Image` component.
+            <Box>
+              <Text>Enjoy your cat!</Text>
+              <Image
+                src={
+                  (
+                    await getImageComponent('https://cataas.com/cat', {
+                      width: 400,
+                    })
+                  ).value
+                }
+              />
+            </Box>
+          ),
+        },
+      });
+    }
+
+    case 'getCatExternal': {
+      return await snap.request({
+        method: 'snap_dialog',
+        params: {
+          type: DialogType.Alert,
+          // TODO: Figure out how to support width
+          content: (
+            <Box>
+              <Text>Enjoy your cat!</Text>
+              <Image src="https://cataas.com/cat" />
+            </Box>
+          ),
         },
       });
     }
@@ -84,8 +107,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Alert,
 
           // `.svg` files are imported as strings, so they can be used directly
-          // with the `image` component.
-          content: panel([text('Here is an SVG icon:'), image(svgIcon)]),
+          // with the `Image` component.
+          content: (
+            <Box>
+              <Text>Here is an SVG icon:</Text>
+              <Image src={svgIcon} />
+            </Box>
+          ),
         },
       });
     }
@@ -97,8 +125,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Alert,
 
           // `.png` files are imported as SVGs containing an `<image>` tag,
-          // so they can be used directly with the `image` component.
-          content: panel([text('Here is a PNG icon:'), image(pngIcon)]),
+          // so they can be used directly with the `Image` component.
+          content: (
+            <Box>
+              <Text>Here is a PNG icon:</Text>
+              <Image src={pngIcon} />
+            </Box>
+          ),
         },
       });
     }

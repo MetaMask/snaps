@@ -1,11 +1,12 @@
 import { expect } from '@jest/globals';
-import { installSnap } from '@metamask/snaps-jest';
-import { DialogType, image, panel, text } from '@metamask/snaps-sdk';
+import { installSnap, assertIsAlertDialog } from '@metamask/snaps-jest';
+import { DialogType } from '@metamask/snaps-sdk';
+import { Box, Text, Image } from '@metamask/snaps-sdk/jsx';
 import { renderSVG } from 'uqr';
 
 describe('onRpcRequest', () => {
   it('throws an error if the requested method does not exist', async () => {
-    const { request, close } = await installSnap();
+    const { request } = await installSnap();
 
     const response = await request({
       method: 'foo',
@@ -20,8 +21,6 @@ describe('onRpcRequest', () => {
         cause: null,
       },
     });
-
-    await close();
   });
 
   describe('getQrCode', () => {
@@ -36,15 +35,16 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
+
       expect(ui).toRender(
-        panel([
-          text(`The following is a QR code for the data "Hello, world!":`),
-          image(renderSVG('Hello, world!')),
-        ]),
+        <Box>
+          <Text>The following is a QR code for the data "Hello, world!":</Text>
+          <Image src={renderSVG('Hello, world!')} />
+        </Box>,
       );
 
-      // TODO(ritave): Fix types in SnapInterface
-      await (ui as any).ok();
+      await ui.ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -61,6 +61,8 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
+
       expect(ui).toStrictEqual(
         expect.objectContaining({
           type: DialogType.Alert,
@@ -80,8 +82,31 @@ describe('onRpcRequest', () => {
         }),
       );
 
-      // TODO(ritave): Fix types in SnapInterface
-      await (ui as any).ok();
+      await ui.ok();
+
+      expect(await response).toRespondWith(null);
+    });
+  });
+
+  describe('getCatExternal', () => {
+    it('shows a cat using an external URL', async () => {
+      const { request } = await installSnap();
+
+      const response = request({
+        method: 'getCatExternal',
+      });
+
+      const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
+
+      expect(ui).toRender(
+        <Box>
+          <Text>Enjoy your cat!</Text>
+          <Image src="https://cataas.com/cat" />
+        </Box>,
+      );
+
+      await ui.ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -96,6 +121,8 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
+
       // eslint-disable-next-line jest/prefer-strict-equal
       expect(ui.content).toEqual({
         type: 'Box',
@@ -120,8 +147,7 @@ describe('onRpcRequest', () => {
         key: null,
       });
 
-      // TODO(ritave): Fix types in SnapInterface
-      await (ui as any).ok();
+      await ui.ok();
 
       expect(await response).toRespondWith(null);
     });
@@ -136,6 +162,8 @@ describe('onRpcRequest', () => {
       });
 
       const ui = await response.getInterface();
+      assertIsAlertDialog(ui);
+
       // eslint-disable-next-line jest/prefer-strict-equal
       expect(ui.content).toEqual({
         type: 'Box',
@@ -160,8 +188,7 @@ describe('onRpcRequest', () => {
         key: null,
       });
 
-      // TODO(ritave): Fix types in SnapInterface
-      await (ui as any).ok();
+      await ui.ok();
 
       expect(await response).toRespondWith(null);
     });
