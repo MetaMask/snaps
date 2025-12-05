@@ -95,6 +95,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
       'MultichainAssetsController:getState',
+      'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
   });
