@@ -8,6 +8,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { HasPermission } from '@metamask/permission-controller';
 import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
@@ -41,7 +42,6 @@ import {
   validateInterfaceContext,
 } from './utils';
 import type { GetSnap } from '../snaps';
-import { HasPermission } from '@metamask/permission-controller';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
