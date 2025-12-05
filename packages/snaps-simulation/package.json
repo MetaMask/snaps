@@ -61,7 +61,7 @@
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^0.3.0",
     "@metamask/permission-controller": "^12.1.1",
-    "@metamask/phishing-controller": "^15.0.0",
+    "@metamask/phishing-controller": "^16.1.0",
     "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-execution-environments": "workspace:^",
     "@metamask/snaps-rpc-methods": "workspace:^",
