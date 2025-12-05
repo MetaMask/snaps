@@ -72,6 +72,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -81,7 +84,6 @@
     "@metamask/snaps-utils": {
       "globals": {
         "TextEncoder": true,
-        "URL": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true
