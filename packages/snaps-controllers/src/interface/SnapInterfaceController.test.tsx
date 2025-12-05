@@ -524,6 +524,39 @@ describe('SnapInterfaceController', () => {
       ).toThrow('A Snap interface context may not be larger than 5 MB');
     });
 
+    it('throws if the Snap attempts to use external images without permission', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const element = (
+        <Box>
+          <Image src="https://metamask.io/foo.png" />
+        </Box>
+      );
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:createInterface',
+          MOCK_SNAP_ID,
+          element,
+          {},
+        ),
+      ).toThrow(
+        'Using external images is only permitted with the network access endowment',
+      );
+    });
+
     it('throws if a link is on the phishing list', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger = getRestrictedSnapInterfaceControllerMessenger(

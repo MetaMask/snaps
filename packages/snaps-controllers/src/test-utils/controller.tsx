@@ -768,6 +768,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'SnapController:get',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
+      'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
     messenger: snapInterfaceControllerMessenger,

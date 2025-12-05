@@ -3,7 +3,6 @@ import { NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
   GenericSnapElement,
-  ImageElement,
   ItalicChildren,
   JSXElement,
   LinkElement,
@@ -42,8 +41,8 @@ import type { Token, Tokens } from 'marked';
 
 import type { InternalAccount } from './account';
 import type { Snap } from './snaps';
-import { parseMetaMaskUrl } from './url';
 import { isValidUrl } from './types';
+import { parseMetaMaskUrl } from './url';
 
 const MAX_TEXT_LENGTH = 50_000; // 50 kb
 const ALLOWED_PROTOCOLS = ['https:', 'mailto:', 'metamask:'];
@@ -467,7 +466,7 @@ export function validateJsxElements(
         );
         break;
       case 'Image': {
-        const { src } = (childNode as ImageElement).props;
+        const { src } = childNode.props;
         const isUrl = isValidUrl(src);
         assert(
           !isUrl || (isUrl && hasPermission('endowment:network-access')),
