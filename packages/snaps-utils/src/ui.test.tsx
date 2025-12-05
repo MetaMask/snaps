@@ -851,6 +851,7 @@ describe('validateJsxElements', () => {
         isOnPhishingList,
         getSnap: jest.fn(),
         getAccountByAddress: jest.fn(),
+        hasPermission: jest.fn(),
       }),
     ).not.toThrow();
   });
@@ -868,6 +869,7 @@ describe('validateJsxElements', () => {
           isOnPhishingList,
           getSnap: jest.fn(),
           getAccountByAddress: jest.fn(),
+          hasPermission: jest.fn(),
         },
       ),
     ).not.toThrow();
@@ -892,6 +894,7 @@ describe('validateJsxElements', () => {
         isOnPhishingList,
         getSnap: jest.fn(),
         getAccountByAddress: jest.fn(),
+        hasPermission: jest.fn(),
       }),
     ).toThrow('Invalid URL: The specified URL is not allowed.');
   });
@@ -904,6 +907,7 @@ describe('validateJsxElements', () => {
         isOnPhishingList,
         getSnap: jest.fn(),
         getAccountByAddress: jest.fn(),
+        hasPermission: jest.fn(),
       }),
     ).toThrow(
       'Invalid URL: Protocol must be one of: https:, mailto:, metamask:.',
@@ -918,6 +922,7 @@ describe('validateJsxElements', () => {
         isOnPhishingList,
         getSnap: jest.fn(),
         getAccountByAddress: jest.fn(),
+        hasPermission: jest.fn(),
       }),
     ).toThrow('Invalid URL: Unable to parse URL.');
   });
@@ -939,6 +944,7 @@ describe('validateJsxElements', () => {
           getAccountByAddress,
           isOnPhishingList: jest.fn(),
           getSnap: jest.fn(),
+          hasPermission: jest.fn(),
         },
       ),
     ).not.toThrow();
@@ -959,10 +965,24 @@ describe('validateJsxElements', () => {
           getAccountByAddress,
           isOnPhishingList: jest.fn(),
           getSnap: jest.fn(),
+          hasPermission: jest.fn(),
         },
       ),
     ).toThrow(
       'Could not find account for address: solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+    );
+  });
+
+  it('throws if the Snap tries to use external images without permission', () => {
+    expect(() =>
+      validateJsxElements(<Image src="https://metamask.io/foo.png" />, {
+        getAccountByAddress: jest.fn(),
+        isOnPhishingList: jest.fn(),
+        getSnap: jest.fn(),
+        hasPermission: jest.fn().mockReturnValue(false),
+      }),
+    ).toThrow(
+      'Using external images is only permitted with the network access endowment.',
     );
   });
 });
