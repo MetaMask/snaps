@@ -38,7 +38,9 @@ describe('AbstractExecutionService', () => {
   });
 
   it('throws an error if execution environment fails to respond to ping', async () => {
-    const { service } = createService(MockExecutionService);
+    const { service } = createService(MockExecutionService, {
+      pingTimeout: inMilliseconds(1, Duration.Second),
+    });
 
     class MockStream extends BasePostMessageStream {
       protected _postMessage(_data?: unknown): void {
