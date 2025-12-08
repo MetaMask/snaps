@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.6.3]
 
-### Uncategorized
+### Changed
 
-- perf: Use faster registry verification ([#3770](https://github.com/MetaMask/snaps/pull/3770))
+- Bump `@metamask/snaps-registry` from `3.3.0` to `4.0.0` ([#3770](https://github.com/MetaMask/snaps/pull/3770))
 
 ## [11.6.2]
 
