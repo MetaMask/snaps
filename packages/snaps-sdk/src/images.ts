@@ -105,6 +105,7 @@ export type ImageOptions = {
  * @param options.request - The options to use when fetching the image data.
  * This is passed directly to `fetch`.
  * @returns A promise that resolves to the image data as an image component.
+ * @deprecated Use `<Image src="external_url" />` instead. This function will be removed in a future release.
  */
 export async function getImageComponent(
   url: string,

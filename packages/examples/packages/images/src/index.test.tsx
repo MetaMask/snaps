@@ -1,6 +1,5 @@
 import { expect } from '@jest/globals';
 import { installSnap, assertIsAlertDialog } from '@metamask/snaps-jest';
-import { DialogType } from '@metamask/snaps-sdk';
 import { Box, Text, Image } from '@metamask/snaps-sdk/jsx';
 import { renderSVG } from 'uqr';
 
@@ -53,49 +52,11 @@ describe('onRpcRequest', () => {
   });
 
   describe('getCat', () => {
-    // This test is flaky, so we disable it for now.
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('shows a cat', async () => {
-      const { request } = await installSnap();
-
-      const response = request({
-        method: 'getCat',
-      });
-
-      const ui = await response.getInterface();
-      assertIsAlertDialog(ui);
-
-      expect(ui).toStrictEqual(
-        expect.objectContaining({
-          type: DialogType.Alert,
-          content: {
-            type: 'panel',
-            children: [
-              {
-                type: 'text',
-                value: 'Enjoy your cat!',
-              },
-              {
-                type: 'image',
-                value: expect.any(String),
-              },
-            ],
-          },
-        }),
-      );
-
-      await ui.ok();
-
-      expect(await response).toRespondWith(null);
-    });
-  });
-
-  describe('getCatExternal', () => {
     it('shows a cat using an external URL', async () => {
       const { request } = await installSnap();
 
       const response = request({
-        method: 'getCatExternal',
+        method: 'getCat',
       });
 
       const ui = await response.getInterface();

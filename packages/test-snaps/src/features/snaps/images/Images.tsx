@@ -14,7 +14,6 @@ export const Images: FunctionComponent = () => {
       testId="images"
     >
       <ShowImage name="Cat" method="getCat" />
-      <ShowImage name="External Cat" method="getCatExternal" />
       <ShowImage name="SVG" method="getSvgIcon" />
       <ShowImage name="PNG" method="getPngIcon" />
       <ShowQr />

@@ -1,9 +1,5 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import {
-  DialogType,
-  getImageComponent,
-  MethodNotFoundError,
-} from '@metamask/snaps-sdk';
+import { DialogType, MethodNotFoundError } from '@metamask/snaps-sdk';
 import { Box, Text, Image } from '@metamask/snaps-sdk/jsx';
 import { renderSVG } from 'uqr';
 
@@ -24,10 +20,8 @@ type GetQrCodeParams = {
  * `wallet_invokeSnap` method. This handler handles two methods:
  *
  * - `getQrCode`: Show a QR code to the user. The QR code is generated using
- * the `uqr` library, and rendered using the `image` component.
- * - `getCat`: Show a cat to the user. The cat image is fetched using the
- * `getImageComponent` helper. The helper returns an `image` component, which
- * can be rendered in a Snap dialog, for example.
+ * the `uqr` library, and rendered using the `Image` component.
+ * - `getCat`: Show a cat to the user using an external image.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -42,7 +36,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const { data } = request.params as GetQrCodeParams;
 
       // `renderSVG` returns a `<svg>` element as a string, which can be
-      // rendered using the `image` component.
+      // rendered using the `Image` component.
       const qr = renderSVG(data);
 
       return await snap.request({
@@ -60,31 +54,6 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     case 'getCat': {
-      return await snap.request({
-        method: 'snap_dialog',
-        params: {
-          type: DialogType.Alert,
-          content: (
-            // The `getImageComponent` helper can also be used to fetch an image
-            // from a URL and render it using the `Image` component.
-            <Box>
-              <Text>Enjoy your cat!</Text>
-              <Image
-                src={
-                  (
-                    await getImageComponent('https://cataas.com/cat', {
-                      width: 400,
-                    })
-                  ).value
-                }
-              />
-            </Box>
-          ),
-        },
-      });
-    }
-
-    case 'getCatExternal': {
       return await snap.request({
         method: 'snap_dialog',
         params: {
