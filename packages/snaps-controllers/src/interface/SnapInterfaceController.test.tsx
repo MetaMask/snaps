@@ -553,7 +553,7 @@ describe('SnapInterfaceController', () => {
           {},
         ),
       ).toThrow(
-        'Using external images is only permitted with the network access endowment',
+        'Using external images is only permitted with the `endowment:network-access` permission.',
       );
     });
 
