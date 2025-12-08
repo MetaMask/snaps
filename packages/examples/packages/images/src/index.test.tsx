@@ -39,7 +39,9 @@ describe('onRpcRequest', () => {
 
       expect(ui).toRender(
         <Box>
-          <Text>The following is a QR code for the data "Hello, world!":</Text>
+          <Text>
+            The following is a QR code for the data "{'Hello, world!'}":
+          </Text>
           <Image src={renderSVG('Hello, world!')} />
         </Box>,
       );
