@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump lavamoat from 10.0.2 to 10.0.5 ([#3771](https://github.com/MetaMask/snaps/pull/3771))
+
 ## [10.3.0]
 
 ### Added
