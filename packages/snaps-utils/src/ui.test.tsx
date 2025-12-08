@@ -843,7 +843,8 @@ describe('validateJsxElements', () => {
         <Link href="https://foo.bar">Bar</Link>
       </Text>
     </Box>,
-  ])('does not throw for a safe JSX text component', async (element) => {
+    <Image src="https://metamask.io/foo.png" />,
+  ])('does not throw for a safe JSX component', async (element) => {
     const isOnPhishingList = () => false;
 
     expect(() =>
@@ -851,7 +852,7 @@ describe('validateJsxElements', () => {
         isOnPhishingList,
         getSnap: jest.fn(),
         getAccountByAddress: jest.fn(),
-        hasPermission: jest.fn(),
+        hasPermission: jest.fn().mockReturnValue(true),
       }),
     ).not.toThrow();
   });
