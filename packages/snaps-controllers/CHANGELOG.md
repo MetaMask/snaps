@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [17.1.1]
+
 ### Uncategorized
 
 - perf: Use faster registry verification ([#3770](https://github.com/MetaMask/snaps/pull/3770))
@@ -987,7 +989,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.1...HEAD
+[17.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.0...@metamask/snaps-controllers@17.1.1
 [17.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.0.0...@metamask/snaps-controllers@17.1.0
 [17.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.1...@metamask/snaps-controllers@17.0.0
 [16.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@16.1.0...@metamask/snaps-controllers@16.1.1

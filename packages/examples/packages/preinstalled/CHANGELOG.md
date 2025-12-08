@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- release: `134.0.0` ([#3761](https://github.com/MetaMask/snaps/pull/3761))
-
 ## [0.7.2]
 
 ### Fixed
