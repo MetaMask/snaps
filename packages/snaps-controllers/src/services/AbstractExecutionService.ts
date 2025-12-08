@@ -102,7 +102,7 @@ export abstract class AbstractExecutionService<WorkerType>
     setupSnapProvider,
     messenger,
     initTimeout = inMilliseconds(60, Duration.Second),
-    pingTimeout = inMilliseconds(2, Duration.Second),
+    pingTimeout = inMilliseconds(10, Duration.Second),
     terminationTimeout = inMilliseconds(1, Duration.Second),
     usePing = true,
   }: ExecutionServiceArgs) {
