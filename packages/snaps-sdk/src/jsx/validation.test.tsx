@@ -1306,6 +1306,7 @@ describe('ImageStruct', () => {
     <Image src="<svg />" />,
     <Image src="<svg />" alt="alt" borderRadius="medium" />,
     <Image src="https://example.com/foo.png" />,
+    <Image src="https://example.com/foo.png" width={200} height={100} />,
   ])('validates an image element', (value) => {
     expect(is(value, ImageStruct)).toBe(true);
   });

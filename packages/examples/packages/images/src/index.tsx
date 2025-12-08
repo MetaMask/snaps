@@ -89,11 +89,10 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          // TODO: Figure out how to support width
           content: (
             <Box>
               <Text>Enjoy your cat!</Text>
-              <Image src="https://cataas.com/cat" />
+              <Image src="https://cataas.com/cat" width={400} height={400} />
             </Box>
           ),
         },

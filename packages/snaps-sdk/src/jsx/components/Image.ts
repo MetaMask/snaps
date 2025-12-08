@@ -14,6 +14,8 @@ type ImageProps = {
   src: string;
   alt?: string | undefined;
   borderRadius?: BorderRadius | undefined;
+  height?: number | undefined;
+  width?: number | undefined;
 };
 
 const TYPE = 'Image';
@@ -30,6 +32,8 @@ const TYPE = 'Image';
  * @param props.alt - The alternative text of the image, which describes the
  * image for users who cannot see it.
  * @param props.borderRadius - The border radius applied to the image.
+ * @param props.width - The width of the image.
+ * @param props.height - The height of the image.
  * @returns An image element.
  * @example
  * <Image src="<svg>...</svg>" alt="An example image" />

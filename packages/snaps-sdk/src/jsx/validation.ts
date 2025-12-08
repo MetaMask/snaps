@@ -242,6 +242,8 @@ export const ImageStruct: Describe<ImageElement> = element('Image', {
   src: nullUnion([svg(), uri({ protocol: literal('https:') })]),
   alt: optional(string()),
   borderRadius: optional(BorderRadiusStruct),
+  width: optional(number()),
+  height: optional(number()),
 });
 
 const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
