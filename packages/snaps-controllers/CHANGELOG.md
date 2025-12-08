@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Improve registry verification speed ([#3770](https://github.com/MetaMask/snaps/pull/3770))
+- Increase default ping timeout ([#3773](https://github.com/MetaMask/snaps/pull/3773))
 
 ## [17.1.0]
 
