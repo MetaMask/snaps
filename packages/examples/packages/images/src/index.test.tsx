@@ -104,7 +104,7 @@ describe('onRpcRequest', () => {
       expect(ui).toRender(
         <Box>
           <Text>Enjoy your cat!</Text>
-          <Image src="https://cataas.com/cat" />
+          <Image src="https://cataas.com/cat" height={400} width={400} />
         </Box>,
       );
 
