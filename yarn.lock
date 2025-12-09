@@ -2770,20 +2770,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^1.5.4":
-  version: 1.5.4
-  resolution: "@lavamoat/webpack@npm:1.5.4"
+"@lavamoat/webpack@npm:^1.5.6":
+  version: 1.5.6
+  resolution: "@lavamoat/webpack@npm:1.5.6"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^4.3.4"
     "@lavamoat/types": "npm:^0.1.0"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^17.1.0"
+    lavamoat-core: "npm:^17.1.2"
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/ef589ad30463c4b9f9f5758256d157d498c8efc9fd3c15fd15d1b160999eaba463e023a196b49f5f56f69ec063d04ca08f7c5e37292fee213a651791029654b2
+  checksum: 10/eb3f84a6ce143f154e430fc37ad757e594f3e1d5987398b59ddcf86d0371f23b2c671d5339ad63cd2d7e3e2305956c65bebfc5eb31d91fad994939a906bcb1be
   languageName: node
   linkType: hard
 
@@ -4331,7 +4331,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^3.4.0"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": "npm:^1.5.4"
+    "@lavamoat/webpack": "npm:^1.5.6"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/json-rpc-engine": "npm:^10.1.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -13678,7 +13678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.1.0, lavamoat-core@npm:^17.1.2":
+"lavamoat-core@npm:^17.1.2":
   version: 17.1.2
   resolution: "lavamoat-core@npm:17.1.2"
   dependencies:
