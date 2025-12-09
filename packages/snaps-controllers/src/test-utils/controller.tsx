@@ -831,6 +831,13 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
       return getSnapObject({ id: snapId as SnapId });
     });
+
+    messenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => {
+        return true;
+      },
+    );
   }
 
   jest.spyOn(snapInterfaceControllerMessenger, 'call');
