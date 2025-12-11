@@ -1457,6 +1457,34 @@ export class SnapController extends BaseController<
         );
       }
     }
+
+    // Ensure all preinstalled Snaps have their expected permissions.
+    for (const snap of Object.values(this.state.snaps).filter(
+      ({ preinstalled }) => preinstalled,
+    )) {
+      const processedPermissions = processSnapPermissions(
+        snap.manifest.initialPermissions,
+      );
+
+      this.#validateSnapPermissions(processedPermissions);
+
+      const { newPermissions, unusedPermissions } =
+        this.#calculatePermissionsChange(snap.id, processedPermissions);
+
+      if (
+        isNonEmptyArray(Object.keys(newPermissions)) ||
+        isNonEmptyArray(Object.keys(unusedPermissions))
+      ) {
+        this.#updatePermissions({
+          snapId: snap.id,
+          newPermissions,
+          unusedPermissions,
+        });
+        logWarning(
+          `The permissions for "${snap.id}" were out of sync and have been automatically restored. If you see this message, please file a bug report.`,
+        );
+      }
+    }
   }
 
   #pollForLastRequestStatus() {
