@@ -1483,6 +1483,11 @@ export class SnapController extends BaseController<
         logWarning(
           `The permissions for "${snap.id}" were out of sync and have been automatically restored. If you see this message, please file a bug report.`,
         );
+        this.messenger.captureException?.(
+          new Error(
+            `The permissions for "${snap.id}" were out of sync and have been automatically restored. This could indicate persistence issues.`,
+          ),
+        );
       }
     }
   }
