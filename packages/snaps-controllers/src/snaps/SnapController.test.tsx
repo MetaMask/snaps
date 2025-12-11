@@ -6842,6 +6842,41 @@ describe('SnapController', () => {
         'The permissions for "npm:@metamask/example-snap" were out of sync and have been automatically restored. If you see this message, please file a bug report.',
       );
 
+      // We expect two calls as we mock the PermissionController to always return an empty set.
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
       snapController.destroy();
     });
 
