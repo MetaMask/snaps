@@ -6861,7 +6861,7 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {

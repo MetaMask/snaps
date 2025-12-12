@@ -1475,6 +1475,32 @@ export class SnapController extends BaseController<
         isNonEmptyArray(Object.keys(newPermissions)) ||
         isNonEmptyArray(Object.keys(unusedPermissions))
       ) {
+        const { proposedName } = getLocalizedSnapManifest(
+          snap.manifest,
+          'en',
+          snap.localizationFiles ?? [],
+        );
+
+        // Recover the SVG icon from the constructor argument.
+        // Theoretically this may be out of date, but this is the best we can do.
+        const preinstalledSnap = preinstalledSnaps.find(
+          (potentialSnap) => potentialSnap.snapId === snap.id,
+        );
+        const { iconPath } = snap.manifest.source.location.npm;
+        const svgIcon =
+          iconPath && preinstalledSnap
+            ? preinstalledSnap.files.find((file) => file.path === iconPath)
+            : undefined;
+
+        // If the permissions are out of sync, it is possible that the SubjectMetadataController also is.
+        this.messenger.call('SubjectMetadataController:addSubjectMetadata', {
+          subjectType: SubjectType.Snap,
+          name: proposedName,
+          origin: snap.id,
+          version: snap.version,
+          svgIcon: svgIcon ? new VirtualFile(svgIcon).toString() : null,
+        });
+
         this.#updatePermissions({
           snapId: snap.id,
           newPermissions,
