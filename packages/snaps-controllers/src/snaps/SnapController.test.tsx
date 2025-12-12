@@ -6861,6 +6861,18 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.0',
+          svgIcon: DEFAULT_SNAP_ICON,
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
         7,
         'PermissionController:grantPermissions',
         {
