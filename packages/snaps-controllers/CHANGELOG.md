@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Recover missing permissions for preinstalled Snaps ([#3775](https://github.com/MetaMask/snaps/pull/3775))
+
 ## [17.1.1]
 
 ### Fixed
