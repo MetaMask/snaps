@@ -6074,6 +6074,19 @@ describe('SnapController', () => {
         () => ({}),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const preinstalledSnaps = [
         {
           snapId: MOCK_SNAP_ID,
@@ -6118,12 +6131,6 @@ describe('SnapController', () => {
         getTruncatedSnap(),
         METAMASK_ORIGIN,
         true,
-      );
-
-      // After install the snap should have permissions
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => MOCK_SNAP_PERMISSIONS,
       );
 
       const result = await snapController.handleRequest({
@@ -6236,6 +6243,19 @@ describe('SnapController', () => {
         () => ({}),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const initialConnections = {
         'npm:filsnap': {},
         'https://snaps.metamask.io': {},
@@ -6279,12 +6299,6 @@ describe('SnapController', () => {
         },
       };
 
-      // After install the snap should have permissions
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => MOCK_SNAP_PERMISSIONS,
-      );
-
       expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         { approvedPermissions, subject: { origin: 'npm:filsnap' } },
@@ -6309,6 +6323,19 @@ describe('SnapController', () => {
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
         () => ({}),
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
       );
 
       const preinstalledSnaps = [
@@ -6348,12 +6375,6 @@ describe('SnapController', () => {
           },
           subject: { origin: MOCK_SNAP_ID },
         },
-      );
-
-      // After install the snap should have permissions
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => MOCK_SNAP_PERMISSIONS,
       );
 
       expect(
@@ -6403,6 +6424,29 @@ describe('SnapController', () => {
         },
       ];
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => ({
+              [SnapEndowments.Rpc]: MOCK_SNAP_PERMISSIONS[SnapEndowments.Rpc],
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_getEntropy: {
+                caveats: null,
+                date: 1664187844588,
+                id: 'izn0WGUO8cvq_jqvLQuQP',
+                invoker: MOCK_SNAP_ID,
+                parentCapability: 'snap_getEntropy',
+              },
+            }),
+          );
+
+          return {};
+        },
+      );
+
       const snapControllerOptions = getSnapControllerWithEESOptions({
         preinstalledSnaps,
         rootMessenger,
@@ -6445,22 +6489,6 @@ describe('SnapController', () => {
         '1.0.0',
         METAMASK_ORIGIN,
         true,
-      );
-
-      // After install the snap should have permissions
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => ({
-          [SnapEndowments.Rpc]: MOCK_SNAP_PERMISSIONS[SnapEndowments.Rpc],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          snap_getEntropy: {
-            caveats: null,
-            date: 1664187844588,
-            id: 'izn0WGUO8cvq_jqvLQuQP',
-            invoker: MOCK_SNAP_ID,
-            parentCapability: 'snap_getEntropy',
-          },
-        }),
       );
 
       const result = await snapController.handleRequest({
@@ -6516,6 +6544,19 @@ describe('SnapController', () => {
         () => ({}),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
           proposedName: '{{ proposedName }}',
@@ -6565,12 +6606,6 @@ describe('SnapController', () => {
           },
           subject: { origin: MOCK_SNAP_ID },
         },
-      );
-
-      // After install the snap should have permissions
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => MOCK_SNAP_PERMISSIONS,
       );
 
       const result = await snapController.handleRequest({
@@ -6674,6 +6709,19 @@ describe('SnapController', () => {
         () => ({}),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const preinstalledSnaps = [
         {
           snapId: MOCK_SNAP_ID,
@@ -6713,6 +6761,19 @@ describe('SnapController', () => {
         () => ({}),
       );
 
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const preinstalledSnaps = [
         {
           snapId: MOCK_SNAP_ID,
@@ -6738,6 +6799,183 @@ describe('SnapController', () => {
       const [snapController] = getSnapControllerWithEES(snapControllerOptions);
 
       expect(snapController.get(MOCK_SNAP_ID)?.hideSnapBranding).toBe(true);
+
+      snapController.destroy();
+    });
+
+    it('recovers if preinstalled permissions are out of sync', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      // Never persist any granted permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          hidden: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(log).toHaveBeenCalledWith(
+        'The permissions for "npm:@metamask/example-snap" were out of sync and have been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      // We expect two calls as we mock the PermissionController to always return an empty set.
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.0',
+          svgIcon: DEFAULT_SNAP_ICON,
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('recovers if preinstalled permissions are out of sync when Snap has limited information', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      // Never persist any granted permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const manifest = getSnapManifest();
+      delete manifest.source.location.npm.iconPath;
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest,
+          hidden: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(log).toHaveBeenCalledWith(
+        'The permissions for "npm:@metamask/example-snap" were out of sync and have been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      // We expect two calls as we mock the PermissionController to always return an empty set.
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.0',
+          svgIcon: null,
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
 
       snapController.destroy();
     });
@@ -6782,7 +7020,7 @@ describe('SnapController', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
@@ -6848,7 +7086,7 @@ describe('SnapController', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        7,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
@@ -10438,6 +10676,33 @@ describe('SnapController', () => {
       ];
 
       const rootMessenger = getControllerMessenger();
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:revokeAllPermissions',
+        () => {
+          // After revoking the snap should have no permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => ({}),
+          );
+
+          return {};
+        },
+      );
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:grantPermissions',
+        () => {
+          // After install the snap should have permissions
+          rootMessenger.registerActionHandler(
+            'PermissionController:getPermissions',
+            () => MOCK_SNAP_PERMISSIONS,
+          );
+
+          return {};
+        },
+      );
+
       const messenger = getSnapControllerMessenger(rootMessenger);
       const snapController = getSnapController(
         getSnapControllerOptions({

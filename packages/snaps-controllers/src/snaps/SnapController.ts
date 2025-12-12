@@ -1457,6 +1457,65 @@ export class SnapController extends BaseController<
         );
       }
     }
+
+    // Ensure all preinstalled Snaps have their expected permissions.
+    for (const snap of Object.values(this.state.snaps).filter(
+      ({ preinstalled }) => preinstalled,
+    )) {
+      const processedPermissions = processSnapPermissions(
+        snap.manifest.initialPermissions,
+      );
+
+      this.#validateSnapPermissions(processedPermissions);
+
+      const { newPermissions, unusedPermissions } =
+        this.#calculatePermissionsChange(snap.id, processedPermissions);
+
+      if (
+        isNonEmptyArray(Object.keys(newPermissions)) ||
+        isNonEmptyArray(Object.keys(unusedPermissions))
+      ) {
+        const { proposedName } = getLocalizedSnapManifest(
+          snap.manifest,
+          'en',
+          snap.localizationFiles ?? [],
+        );
+
+        // Recover the SVG icon from the constructor argument.
+        // Theoretically this may be out of date, but this is the best we can do.
+        const preinstalledSnap = preinstalledSnaps.find(
+          (potentialSnap) => potentialSnap.snapId === snap.id,
+        );
+        const { iconPath } = snap.manifest.source.location.npm;
+        const svgIcon =
+          iconPath && preinstalledSnap
+            ? preinstalledSnap.files.find((file) => file.path === iconPath)
+            : undefined;
+
+        // If the permissions are out of sync, it is possible that the SubjectMetadataController also is.
+        this.messenger.call('SubjectMetadataController:addSubjectMetadata', {
+          subjectType: SubjectType.Snap,
+          name: proposedName,
+          origin: snap.id,
+          version: snap.version,
+          svgIcon: svgIcon ? new VirtualFile(svgIcon).toString() : null,
+        });
+
+        this.#updatePermissions({
+          snapId: snap.id,
+          newPermissions,
+          unusedPermissions,
+        });
+        logWarning(
+          `The permissions for "${snap.id}" were out of sync and have been automatically restored. If you see this message, please file a bug report.`,
+        );
+        this.messenger.captureException?.(
+          new Error(
+            `The permissions for "${snap.id}" were out of sync and have been automatically restored. This could indicate persistence issues.`,
+          ),
+        );
+      }
+    }
   }
 
   #pollForLastRequestStatus() {
