@@ -6892,6 +6892,94 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('recovers if preinstalled permissions are out of sync when Snap has limited information', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      // Never persist any granted permissions
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({}),
+      );
+
+      const manifest = getSnapManifest();
+      delete manifest.source.location.npm.iconPath;
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest,
+          hidden: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerWithEESOptions({
+        preinstalledSnaps,
+        rootMessenger,
+      });
+      const [snapController] = getSnapControllerWithEES(snapControllerOptions);
+
+      expect(log).toHaveBeenCalledWith(
+        'The permissions for "npm:@metamask/example-snap" were out of sync and have been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      // We expect two calls as we mock the PermissionController to always return an empty set.
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        3,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        6,
+        'SubjectMetadataController:addSubjectMetadata',
+        {
+          subjectType: SubjectType.Snap,
+          name: MOCK_SNAP_NAME,
+          origin: MOCK_SNAP_ID,
+          version: '1.0.0',
+          svgIcon: null,
+        },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        7,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            [SnapEndowments.Rpc]: {
+              caveats: [
+                { type: 'rpcOrigin', value: { dapps: false, snaps: true } },
+              ],
+            },
+          },
+          subject: { origin: MOCK_SNAP_ID },
+        },
+      );
+
+      snapController.destroy();
+    });
+
     it('supports onInstall for preinstalled Snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
