@@ -1,3 +1,6 @@
+// @ts-expect-error No types.
+import { endowmentsToolkit } from 'lavamoat-core/src/endowmentsToolkit'
+
 enum GlobalObjectNames {
   // The globalThis entry is incorrectly identified as shadowing the global
   // globalThis.
@@ -33,10 +36,12 @@ if (typeof globalThis !== 'undefined') {
 }
 /* eslint-enable no-negated-condition */
 
+const { copyWrappedGlobals } = endowmentsToolkit();
+
 /**
  * A platform-agnostic alias for the root realm global object.
  */
-const rootRealmGlobal = _rootRealmGlobal;
+const rootRealmGlobal = copyWrappedGlobals(_rootRealmGlobal, {}, ['globalThis', 'global', 'self', 'window']);
 
 /**
  * The string literal corresponding to the name of the root realm global object.

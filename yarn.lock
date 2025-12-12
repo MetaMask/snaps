@@ -4307,6 +4307,7 @@ __metadata:
     readable-web-to-node-stream: "npm:^3.0.2"
     rimraf: "npm:^4.1.2"
     semver: "npm:^7.5.4"
+    ses: "npm:^1.14.0"
     tar-stream: "npm:^3.1.7"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.20.3"
