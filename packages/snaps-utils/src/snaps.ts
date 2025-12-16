@@ -91,7 +91,9 @@ export type SnapAuxiliaryFile = {
  */
 export type SnapAuxilaryFile = SnapAuxiliaryFile;
 
-export type PersistedSnap = Snap;
+export type PersistedSnap = Snap & {
+  sourceCode: string;
+};
 
 /**
  * A Snap as it exists in {@link SnapController} state.
@@ -106,11 +108,6 @@ export type Snap = TruncatedSnap & {
    * installed.
    */
   initialPermissions: SnapPermissions;
-
-  /**
-   * The source code of the Snap.
-   */
-  sourceCode: string;
 
   /**
    * The Snap's manifest file.

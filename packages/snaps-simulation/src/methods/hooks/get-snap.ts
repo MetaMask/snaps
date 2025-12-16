@@ -23,7 +23,6 @@ export function getGetSnapImplementation(preinstalled: boolean = true) {
       status: SnapStatus.Running,
       versionHistory: [],
       initialPermissions: {},
-      sourceCode: '',
       manifest: {
         version: '0.1.0' as SemVerVersion,
         proposedName: 'Test Snap',
