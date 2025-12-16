@@ -10624,6 +10624,8 @@ describe('SnapController', () => {
 
       await waitForStateChange(messenger);
 
+      await waitForStateChange(messenger);
+
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(true);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -10647,6 +10649,7 @@ describe('SnapController', () => {
       );
 
       expect(snapController.state).toStrictEqual({
+        isReady: false,
         snaps: {},
         snapStates: {},
         unencryptedSnapStates: {},
@@ -12997,7 +13000,11 @@ describe('SnapController', () => {
           controller.metadata,
           'includeInDebugSnapshot',
         ),
-      ).toMatchInlineSnapshot(`{}`);
+      ).toMatchInlineSnapshot(`
+        {
+          "isReady": false,
+        }
+      `);
     });
 
     describe('includeInStateLogs', () => {
@@ -13012,6 +13019,7 @@ describe('SnapController', () => {
           ),
         ).toMatchInlineSnapshot(`
           {
+            "isReady": false,
             "snaps": {},
           }
         `);

@@ -318,6 +318,7 @@ export type SnapControllerState = {
   snaps: StoredSnaps;
   snapStates: Record<SnapId, string | null>;
   unencryptedSnapStates: Record<SnapId, string | null>;
+  isReady: boolean;
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
@@ -854,6 +855,7 @@ const defaultState: SnapControllerState = {
   snaps: {},
   snapStates: {},
   unencryptedSnapStates: {},
+  isReady: false,
 };
 
 /**
@@ -965,6 +967,12 @@ export class SnapController extends BaseController<
     super({
       messenger,
       metadata: {
+        isReady: {
+          includeInStateLogs: true,
+          includeInDebugSnapshot: true,
+          persist: false,
+          usedInUi: false,
+        },
         snapStates: {
           includeInStateLogs: false,
           persist: true,
@@ -1722,8 +1730,16 @@ export class SnapController extends BaseController<
     await this.#ensureOnboardingComplete();
 
     const flags = this.#getFeatureFlags();
+
+    const isReady = flags.disableSnaps !== true;
+    if (this.state.isReady !== isReady) {
+      this.update((state) => {
+        state.isReady = isReady;
+      });
+    }
+
     assert(
-      flags.disableSnaps !== true,
+      isReady,
       'The Snaps platform requires basic functionality to be used. Enable basic functionality in the settings to use the Snaps platform.',
     );
   }
@@ -2387,6 +2403,7 @@ export class SnapController extends BaseController<
     snapIds.forEach((snapId) => this.#revokeAllSnapPermissions(snapId));
 
     this.update((state) => {
+      state.isReady = false;
       state.snaps = {};
       state.snapStates = {};
       state.unencryptedSnapStates = {};
