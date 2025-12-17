@@ -91,6 +91,7 @@ import {
   svg,
   typedUnion,
   ISO8601DateStruct,
+  uri,
 } from '../internals';
 import {
   NonEip155AssetTypeStruct,
@@ -238,9 +239,11 @@ export const BorderRadiusStruct = nullUnion([
  * A struct for the {@link ImageElement} type.
  */
 export const ImageStruct: Describe<ImageElement> = element('Image', {
-  src: svg(),
+  src: nullUnion([svg(), uri({ protocol: literal('https:') })]),
   alt: optional(string()),
   borderRadius: optional(BorderRadiusStruct),
+  width: optional(number()),
+  height: optional(number()),
 });
 
 const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(

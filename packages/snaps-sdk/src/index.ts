@@ -1,5 +1,6 @@
 // Only internals that are used by other Snaps packages should be exported here.
 export type { EnumToUnion } from './internals';
+export type { UriOptions } from './internals';
 export {
   getErrorData,
   getErrorMessage,
@@ -13,6 +14,7 @@ export {
   selectiveUnion,
   nonEmptyRecord,
   ISO8601DateStruct,
+  uri,
 } from './internals';
 
 // Re-exported from `@metamask/utils` for convenience.

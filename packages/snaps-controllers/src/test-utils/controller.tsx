@@ -768,6 +768,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'SnapController:get',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
+      'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
     messenger: snapInterfaceControllerMessenger,
@@ -830,6 +831,13 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
       return getSnapObject({ id: snapId as SnapId });
     });
+
+    messenger.registerActionHandler(
+      'PermissionController:hasPermission',
+      () => {
+        return true;
+      },
+    );
   }
 
   jest.spyOn(snapInterfaceControllerMessenger, 'call');

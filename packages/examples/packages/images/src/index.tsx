@@ -1,12 +1,6 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
-import {
-  DialogType,
-  getImageComponent,
-  image,
-  panel,
-  text,
-  MethodNotFoundError,
-} from '@metamask/snaps-sdk';
+import { DialogType, MethodNotFoundError } from '@metamask/snaps-sdk';
+import { Box, Text, Image } from '@metamask/snaps-sdk/jsx';
 import { renderSVG } from 'uqr';
 
 import pngIcon from './images/icon.png';
@@ -26,10 +20,8 @@ type GetQrCodeParams = {
  * `wallet_invokeSnap` method. This handler handles two methods:
  *
  * - `getQrCode`: Show a QR code to the user. The QR code is generated using
- * the `uqr` library, and rendered using the `image` component.
- * - `getCat`: Show a cat to the user. The cat image is fetched using the
- * `getImageComponent` helper. The helper returns an `image` component, which
- * can be rendered in a Snap dialog, for example.
+ * the `uqr` library, and rendered using the `Image` component.
+ * - `getCat`: Show a cat to the user using an external image.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.
@@ -44,17 +36,19 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       const { data } = request.params as GetQrCodeParams;
 
       // `renderSVG` returns a `<svg>` element as a string, which can be
-      // rendered using the `image` component.
+      // rendered using the `Image` component.
       const qr = renderSVG(data);
 
       return await snap.request({
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          content: panel([
-            text(`The following is a QR code for the data "${data}":`),
-            image(qr),
-          ]),
+          content: (
+            <Box>
+              <Text>The following is a QR code for the data "{data}":</Text>
+              <Image src={qr} />
+            </Box>
+          ),
         },
       });
     }
@@ -64,15 +58,12 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          content: panel([
-            text('Enjoy your cat!'),
-
-            // The `getImageComponent` helper can also be used to fetch an image
-            // from a URL and render it using the `image` component.
-            await getImageComponent('https://cataas.com/cat', {
-              width: 400,
-            }),
-          ]),
+          content: (
+            <Box>
+              <Text>Enjoy your cat!</Text>
+              <Image src="https://cataas.com/cat" width={400} height={400} />
+            </Box>
+          ),
         },
       });
     }
@@ -84,8 +75,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Alert,
 
           // `.svg` files are imported as strings, so they can be used directly
-          // with the `image` component.
-          content: panel([text('Here is an SVG icon:'), image(svgIcon)]),
+          // with the `Image` component.
+          content: (
+            <Box>
+              <Text>Here is an SVG icon:</Text>
+              <Image src={svgIcon} />
+            </Box>
+          ),
         },
       });
     }
@@ -97,8 +93,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           type: DialogType.Alert,
 
           // `.png` files are imported as SVGs containing an `<image>` tag,
-          // so they can be used directly with the `image` component.
-          content: panel([text('Here is a PNG icon:'), image(pngIcon)]),
+          // so they can be used directly with the `Image` component.
+          content: (
+            <Box>
+              <Text>Here is a PNG icon:</Text>
+              <Image src={pngIcon} />
+            </Box>
+          ),
         },
       });
     }

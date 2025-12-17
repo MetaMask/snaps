@@ -1,15 +1,7 @@
-import { getErrorMessage } from '@metamask/snaps-sdk';
-import {
-  is,
-  optional,
-  refine,
-  size,
-  string,
-  type,
-  assert as assertSuperstruct,
-  StructError,
-} from '@metamask/superstruct';
-import type { Infer, Struct } from '@metamask/superstruct';
+import type { UriOptions } from '@metamask/snaps-sdk';
+import { uri } from '@metamask/snaps-sdk';
+import { is, optional, size, string, type } from '@metamask/superstruct';
+import type { Infer } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
 import { definePattern, VersionStruct } from '@metamask/utils';
 
@@ -109,30 +101,7 @@ type ObjectParameters<
 
 export type SnapExportsParameters = ObjectParameters<SnapFunctionExports>;
 
-type UriOptions<Type extends string> = {
-  protocol?: Struct<Type>;
-  hash?: Struct<Type>;
-  port?: Struct<Type>;
-  hostname?: Struct<Type>;
-  pathname?: Struct<Type>;
-  search?: Struct<Type>;
-};
-
-export const uri = (opts: UriOptions<any> = {}) =>
-  refine(string(), 'uri', (value) => {
-    try {
-      const url = new URL(value);
-
-      const UrlStruct = type(opts);
-      assertSuperstruct(url, UrlStruct);
-      return true;
-    } catch (error) {
-      if (error instanceof StructError) {
-        return getErrorMessage(error);
-      }
-      return `Expected URL, got "${value.toString()}"`;
-    }
-  });
+export { uri } from '@metamask/snaps-sdk';
 
 /**
  * Returns whether a given value is a valid URL.

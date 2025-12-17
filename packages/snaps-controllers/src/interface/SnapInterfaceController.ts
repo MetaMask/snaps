@@ -8,6 +8,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
+import type { HasPermission } from '@metamask/permission-controller';
 import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
@@ -114,7 +115,8 @@ export type SnapInterfaceControllerAllowedActions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerListMultichainAccountsAction;
+  | AccountsControllerListMultichainAccountsAction
+  | HasPermission;
 
 export type SnapInterfaceControllerActions =
   | CreateInterface
@@ -282,7 +284,7 @@ export class SnapInterfaceController extends BaseController<
     contentType?: ContentType,
   ) {
     const element = getJsxInterface(content);
-    this.#validateContent(element);
+    this.#validateContent(snapId, element);
     validateInterfaceContext(context);
 
     const id = nanoid();
@@ -339,7 +341,7 @@ export class SnapInterfaceController extends BaseController<
   ) {
     this.#validateArgs(snapId, id);
     const element = getJsxInterface(content);
-    this.#validateContent(element);
+    this.#validateContent(snapId, element);
     validateInterfaceContext(context);
 
     const oldState = this.state.interfaces[id].state;
@@ -530,13 +532,22 @@ export class SnapInterfaceController extends BaseController<
     return this.messenger.call('SnapController:get', id);
   }
 
+  #hasPermission(snapId: SnapId, permission: string) {
+    return this.messenger.call(
+      'PermissionController:hasPermission',
+      snapId,
+      permission,
+    );
+  }
+
   /**
    * Utility function to validate the components of an interface.
    * Throws if something is invalid.
    *
+   * @param snapId - The Snap ID.
    * @param element - The JSX element to verify.
    */
-  #validateContent(element: JSXElement) {
+  #validateContent(snapId: SnapId, element: JSXElement) {
     // We assume the validity of this JSON to be validated by the caller.
     // E.g., in the RPC method implementation.
     const size = getJsonSizeUnsafe(element);
@@ -549,6 +560,7 @@ export class SnapInterfaceController extends BaseController<
       isOnPhishingList: this.#checkPhishingList.bind(this),
       getSnap: this.#getSnap.bind(this),
       getAccountByAddress: this.#getAccountByAddress.bind(this),
+      hasPermission: this.#hasPermission.bind(this, snapId),
     });
   }
 

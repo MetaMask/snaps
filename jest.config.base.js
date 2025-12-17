@@ -29,6 +29,7 @@ module.exports = {
     '!./src/**/*.test.tsx',
     '!./src/**/*.test.browser.ts',
     '!./src/test-utils/**/*.ts',
+    '!./src/test-utils/**/*.tsx',
     '!./src/**/*.d.ts',
     '!./src/**/__test__/**',
     '!./src/**/__mocks__/**',

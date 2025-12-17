@@ -5,3 +5,4 @@ export * from './structs';
 export * from './jsx';
 export * from './svg';
 export * from './time';
+export * from './uri';
