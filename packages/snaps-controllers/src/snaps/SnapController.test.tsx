@@ -10624,6 +10624,8 @@ describe('SnapController', () => {
 
       await waitForStateChange(messenger);
 
+      await waitForStateChange(messenger);
+
       expect(snapController.isRunning(MOCK_SNAP_ID)).toBe(true);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -10647,6 +10649,7 @@ describe('SnapController', () => {
       );
 
       expect(snapController.state).toStrictEqual({
+        isReady: false,
         snaps: {},
         snapStates: {},
         unencryptedSnapStates: {},
@@ -10769,6 +10772,23 @@ describe('SnapController', () => {
 
   describe('SnapController actions', () => {
     describe('SnapController:init', () => {
+      it('populates `isReady`', async () => {
+        const rootMessenger = getControllerMessenger();
+        const messenger = getSnapControllerMessenger(rootMessenger);
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({ messenger }),
+        );
+
+        expect(snapController.state.isReady).toBe(false);
+        messenger.call('SnapController:init');
+
+        await waitForStateChange(messenger);
+        expect(snapController.state.isReady).toBe(true);
+
+        snapController.destroy();
+      });
+
       it('calls `onStart` for all Snaps with the `endowment:lifecycle-hooks` permission', async () => {
         const rootMessenger = getControllerMessenger();
         const messenger = getSnapControllerMessenger(rootMessenger);
@@ -12997,7 +13017,11 @@ describe('SnapController', () => {
           controller.metadata,
           'includeInDebugSnapshot',
         ),
-      ).toMatchInlineSnapshot(`{}`);
+      ).toMatchInlineSnapshot(`
+        {
+          "isReady": false,
+        }
+      `);
     });
 
     describe('includeInStateLogs', () => {
@@ -13012,6 +13036,7 @@ describe('SnapController', () => {
           ),
         ).toMatchInlineSnapshot(`
           {
+            "isReady": false,
             "snaps": {},
           }
         `);
