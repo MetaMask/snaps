@@ -273,6 +273,7 @@ export class JsonSnapsRegistry extends BaseController<
         state.database = JSON.parse(database);
         state.lastUpdated = Date.now();
         state.databaseUnavailable = false;
+        state.signature = signatureJson.signature;
       });
     } catch {
       // Ignore

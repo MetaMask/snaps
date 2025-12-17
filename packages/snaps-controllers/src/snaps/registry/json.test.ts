@@ -617,6 +617,27 @@ describe('JsonSnapsRegistry', () => {
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
+    it('skips update if the signature matches the existing one', async () => {
+      const spy = jest.spyOn(globalThis.crypto.subtle, 'digest');
+
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { messenger } = getRegistry({
+        state: {
+          database: MOCK_DATABASE,
+          signature: MOCK_SIGNATURE,
+          lastUpdated: 0,
+          databaseUnavailable: false,
+        },
+      });
+      await messenger.call('SnapsRegistry:update');
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(spy).not.toHaveBeenCalled();
+    });
+
     it('does not fetch if a second call is made under the threshold', async () => {
       fetchMock
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
