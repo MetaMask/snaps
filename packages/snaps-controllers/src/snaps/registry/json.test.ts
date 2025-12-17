@@ -667,6 +667,7 @@ describe('JsonSnapsRegistry', () => {
           "database": null,
           "databaseUnavailable": false,
           "lastUpdated": null,
+          "signature": null,
         }
       `);
     });
@@ -681,6 +682,7 @@ describe('JsonSnapsRegistry', () => {
           "database": null,
           "databaseUnavailable": false,
           "lastUpdated": null,
+          "signature": null,
         }
       `);
     });

@@ -4,9 +4,13 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { SnapsRegistryDatabase } from '@metamask/snaps-registry';
+import type {
+  SnapsRegistryDatabase,
+  SignatureStruct,
+} from '@metamask/snaps-registry';
 import { verify } from '@metamask/snaps-registry';
 import { getTargetVersion } from '@metamask/snaps-utils';
+import type { Infer } from '@metamask/superstruct';
 import type { Hex, SemVerRange, SemVerVersion } from '@metamask/utils';
 import {
   assert,
@@ -102,6 +106,7 @@ export type SnapsRegistryMessenger = Messenger<
 
 export type SnapsRegistryState = {
   database: SnapsRegistryDatabase | null;
+  signature: string | null;
   lastUpdated: number | null;
   databaseUnavailable: boolean;
 };
@@ -110,6 +115,7 @@ const controllerName = 'SnapsRegistry';
 
 const defaultState = {
   database: null,
+  signature: null,
   lastUpdated: null,
   databaseUnavailable: false,
 };
@@ -154,6 +160,12 @@ export class JsonSnapsRegistry extends BaseController<
           persist: true,
           includeInDebugSnapshot: false,
           usedInUi: true,
+        },
+        signature: {
+          includeInStateLogs: true,
+          persist: true,
+          includeInDebugSnapshot: true,
+          usedInUi: false,
         },
         lastUpdated: {
           includeInStateLogs: true,
@@ -244,7 +256,18 @@ export class JsonSnapsRegistry extends BaseController<
         this.#safeFetch(this.#url.signature),
       ]);
 
-      await this.#verifySignature(database, signature);
+      const signatureJson = JSON.parse(signature);
+
+      // If the signature matches the existing state, we can skip verification and don't need to update the database.
+      if (signatureJson.signature === this.state.signature) {
+        this.update((state) => {
+          state.lastUpdated = Date.now();
+          state.databaseUnavailable = false;
+        });
+        return;
+      }
+
+      await this.#verifySignature(database, signatureJson);
 
       this.update((state) => {
         state.database = JSON.parse(database);
@@ -402,12 +425,15 @@ export class JsonSnapsRegistry extends BaseController<
    * @param signature - The signature of the registry.
    * @throws If the signature is invalid.
    */
-  async #verifySignature(database: string, signature: string) {
+  async #verifySignature(
+    database: string,
+    signature: Infer<typeof SignatureStruct>,
+  ) {
     assert(this.#publicKey, 'No public key provided.');
 
     const valid = await verify({
       registry: database,
-      signature: JSON.parse(signature),
+      signature,
       publicKey: this.#publicKey,
     });
 
