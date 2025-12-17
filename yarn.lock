@@ -4269,6 +4269,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
+    "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.8.1"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
