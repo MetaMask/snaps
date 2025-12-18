@@ -77,7 +77,7 @@
     "@metamask/signature-insights-example-snap": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^11.8.1",
+    "@metamask/utils": "^11.9.0",
     "@metamask/wasm-example-snap": "workspace:^",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@popperjs/core": "^2.11.8",

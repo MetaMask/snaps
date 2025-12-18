@@ -1,6 +1,4 @@
-import * as nobleHashes from '@noble/hashes/sha256';
 import { base64 } from '@scure/base';
-import { webcrypto } from 'crypto';
 
 import { checksum, checksumFiles } from './checksum';
 import { VirtualFile } from './virtual-file';
@@ -36,30 +34,6 @@ describe('checksum', () => {
   it('works on empty string', async () => {
     expect(base64.encode(await checksum(''))).toBe(EMPTY_SHA256);
     expect(base64.encode(await checksum(new Uint8Array()))).toBe(EMPTY_SHA256);
-  });
-
-  it('uses crypto.subtle when it is available', async () => {
-    const cryptoSpy = jest.spyOn(webcrypto.subtle, 'digest');
-
-    Object.defineProperty(globalThis, 'crypto', {
-      value: webcrypto,
-      writable: true,
-    });
-
-    expect(base64.encode(await checksum(FOO_BAR_UINT8))).toBe(FOO_BAR_SHA256);
-    expect(cryptoSpy).toHaveBeenCalled();
-  });
-
-  it('uses noble-hashes when crypto.subtle is unavailable', async () => {
-    const nobleSpy = jest.spyOn(nobleHashes, 'sha256');
-
-    Object.defineProperty(globalThis, 'crypto', {
-      value: undefined,
-      writable: true,
-    });
-
-    expect(base64.encode(await checksum(FOO_BAR_UINT8))).toBe(FOO_BAR_SHA256);
-    expect(nobleSpy).toHaveBeenCalled();
   });
 });
 

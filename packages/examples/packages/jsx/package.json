@@ -52,7 +52,7 @@
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",
-    "@metamask/utils": "^11.8.1",
+    "@metamask/utils": "^11.9.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
     "@types/node": "18.14.2",
