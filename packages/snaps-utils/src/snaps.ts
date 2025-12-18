@@ -91,9 +91,16 @@ export type SnapAuxiliaryFile = {
  */
 export type SnapAuxilaryFile = SnapAuxiliaryFile;
 
-export type PersistedSnap = Snap & {
+/**
+ * A Snap's data as stored in the StorageService.
+ */
+export type StorageServiceSnapData = {
   sourceCode: string;
 };
+
+export type PersistedSnap = Snap;
+
+export type StoredSnap = PersistedSnap & StorageServiceSnapData;
 
 /**
  * A Snap as it exists in {@link SnapController} state.
