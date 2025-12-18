@@ -1351,9 +1351,6 @@ export class SnapController extends BaseController<
    * runnable Snaps.
    */
   init() {
-    // Lazily populate the `isReady` state.
-    this.#ensureCanUsePlatform().catch(logWarning);
-
     this.#setup().catch((error) => {
       logError('Error during SnapController initialization.', error);
     });
@@ -1373,6 +1370,8 @@ export class SnapController extends BaseController<
       if (this.#preinstalledSnaps) {
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
       }
+
+      await this.#platformIsReady();
 
       this.#controllerSetup.resolve();
     } catch (error) {
@@ -1777,11 +1776,15 @@ export class SnapController extends BaseController<
    * Waits for onboarding and then asserts whether the Snaps platform is allowed to run.
    */
   async #ensureCanUsePlatform() {
-    // Ensure the user has onboarded before allowing access to Snaps.
-    await this.#ensureOnboardingComplete();
+    await this.#platformIsReady();
 
     // Ensure the controller has finished setting up.
     await this.#controllerSetup.promise;
+  }
+
+  async #platformIsReady() {
+    // Ensure the user has onboarded before allowing access to Snaps.
+    await this.#ensureOnboardingComplete();
 
     const flags = this.#getFeatureFlags();
 
