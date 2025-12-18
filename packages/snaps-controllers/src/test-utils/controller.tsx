@@ -25,6 +25,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
+import type { PersistedSnap, Snap } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
@@ -35,6 +36,7 @@ import {
   MockControllerMessenger,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import { InMemoryStorageAdapter } from '@metamask/storage-service';
 import type { Json } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
@@ -69,7 +71,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
-import { SnapController } from '../snaps';
+import { controllerName, SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -152,6 +154,8 @@ export class MockApprovalController {
 }
 
 export const approvalControllerMock = new MockApprovalController();
+
+export const storageAdapter = new InMemoryStorageAdapter();
 
 export const snapDialogPermissionKey = 'snap_dialog';
 
@@ -437,6 +441,26 @@ export const getControllerMessenger = () => {
     },
   );
 
+  messenger.registerActionHandler(
+    'StorageService:setItem',
+    storageAdapter.setItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:getItem',
+    storageAdapter.getItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:removeItem',
+    storageAdapter.removeItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:clear',
+    storageAdapter.clear.bind(storageAdapter),
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -482,6 +506,10 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'StorageService:setItem',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:clear',
     ],
     events: [
       'ExecutionService:unhandledError',
@@ -598,19 +626,94 @@ export const getSnapControllerWithEESOptions = ({
   };
 };
 
-export const getSnapController = (options = getSnapControllerOptions()) => {
-  return new SnapController(options);
+export const hydrateStorageService = async (
+  sourceCodes: Record<SnapId, string>,
+) => {
+  await Promise.all(
+    Object.entries(sourceCodes).map(async ([snapId, sourceCode]) => {
+      await storageAdapter.setItem(controllerName, snapId, { sourceCode });
+    }),
+  );
 };
 
-export const getSnapControllerWithEES = (
+export const extractSourceCodeFromState = (
+  state: PersistedSnapControllerState | undefined,
+) => {
+  if (!state) {
+    return { state: undefined, sourceCodes: undefined };
+  }
+
+  const { snaps: snapControllerState, ...stateRest } = state;
+
+  const { snaps, sourceCodes } = Object.entries(snapControllerState).reduce<{
+    snaps: Record<SnapId, PersistedSnap>;
+    sourceCodes: Record<SnapId, string>;
+  }>(
+    (acc, [snapId, snap]) => {
+      const { sourceCode, ...rest } = snap;
+
+      acc.snaps[snapId as SnapId] = rest;
+      acc.sourceCodes[snapId as SnapId] = sourceCode;
+
+      return acc;
+    },
+    {
+      snaps: {},
+      sourceCodes: {},
+    },
+  );
+
+  const newState = {
+    snaps,
+    ...stateRest,
+  };
+
+  return { state: newState, sourceCodes };
+};
+
+export const getSnapController = async (
+  options = getSnapControllerOptions(),
+  init = true,
+) => {
+  const { state, ...restOptions } = options;
+  const { state: snapControllerState, sourceCodes } =
+    extractSourceCodeFromState(state);
+
+  const controller = new SnapController({
+    state: snapControllerState,
+    ...restOptions,
+  });
+
+  if (sourceCodes) {
+    await hydrateStorageService(sourceCodes);
+  }
+
+  if (init) {
+    controller.init();
+  }
+
+  return controller;
+};
+
+export const getSnapControllerWithEES = async (
   options = getSnapControllerWithEESOptions(),
   service?: ReturnType<typeof getNodeEES>,
+  init = true,
 ) => {
   const _service =
     // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
+  if (options.state?.snaps) {
+    await hydrateStorageService(options.state.snaps);
+  }
+
   const controller = new SnapController(options);
+
+  if (init) {
+    controller.init();
+  }
+
   return [controller, _service] as const;
 };
 
