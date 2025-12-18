@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.7.0]
 
-### Uncategorized
+### Added
 
-- feat: Allow external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
+- Add support for external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
 
 ## [11.6.3]
 

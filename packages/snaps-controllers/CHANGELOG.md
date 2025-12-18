@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [17.2.0]
 
-### Uncategorized
+### Added
 
-- perf: Skip updating registry if signature has not changed ([#3779](https://github.com/MetaMask/snaps/pull/3779))
-- feat: Add `isReady` state property ([#3778](https://github.com/MetaMask/snaps/pull/3778))
-- feat: Allow external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
+- Add `isReady` state property ([#3778](https://github.com/MetaMask/snaps/pull/3778))
+- Add support for external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
+
+### Changed
+
+- Skip updating registry if signature has not changed ([#3779](https://github.com/MetaMask/snaps/pull/3779))
 
 ## [17.1.2]
 
