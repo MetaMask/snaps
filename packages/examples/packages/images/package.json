@@ -1,6 +1,6 @@
 {
   "name": "@metamask/images-example-snap",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "MetaMask example Snap demonstrating how to render images in Snaps UI",
   "keywords": [
     "MetaMask",

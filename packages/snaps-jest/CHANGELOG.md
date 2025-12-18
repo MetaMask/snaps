@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.7.0]
+
 ## [9.6.0]
 
 ### Added
@@ -444,7 +446,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.7.0...HEAD
+[9.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.6.0...@metamask/snaps-jest@9.7.0
 [9.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.1...@metamask/snaps-jest@9.6.0
 [9.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.0...@metamask/snaps-jest@9.5.1
 [9.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.4.1...@metamask/snaps-jest@9.5.0

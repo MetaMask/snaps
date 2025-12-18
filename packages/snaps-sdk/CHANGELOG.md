@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.3.0]
+
 ### Uncategorized
 
 - feat: Allow external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
@@ -677,7 +679,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...HEAD
+[10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...@metamask/snaps-sdk@10.3.0
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.1.0...@metamask/snaps-sdk@10.2.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.0.0...@metamask/snaps-sdk@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@9.3.0...@metamask/snaps-sdk@10.0.0
