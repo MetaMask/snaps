@@ -77,6 +77,8 @@ import type {
   StatusContext,
   StatusEvents,
   StatusStates,
+  StorageServiceSnapData,
+  StoredSnap,
   TruncatedSnap,
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
@@ -238,7 +240,7 @@ export type SnapRuntimeData = {
   /**
    * A promise that resolves when the Snap has finished installing
    */
-  installPromise: null | Promise<PersistedSnap>;
+  installPromise: null | Promise<StoredSnap>;
 
   /**
    * A promise that resolves when the Snap has finished booting
@@ -338,6 +340,7 @@ type RollbackSnapshot = {
     granted?: RequestedPermissions;
     requestData?: Record<string, unknown>;
   };
+  previousSourceCode: string;
   previousInitialConnections?: Record<string, EmptyObject> | null;
   newInitialConnections?: Record<string, EmptyObject>;
   newVersion: string;
@@ -1328,20 +1331,39 @@ export class SnapController extends BaseController<
   /**
    * Initialise the SnapController.
    *
-   * Currently this method sets up the preinstalled snaps and calls the `onStart` lifecycle hook for all
+   * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
    * runnable Snaps.
    */
-  async init() {
+  init() {
     // Lazily populate the `isReady` state.
     this.#ensureCanUsePlatform().catch(logWarning);
 
-    if (this.#preinstalledSnaps) {
-      await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-    }
+    this.#setup().catch((error) => {
+      logError('Error during SnapController initialization.', error);
+    });
 
     this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
+  }
 
-    this.#controllerSetup.resolve();
+  /**
+   * Sets up the SnapController by handling preinstalled snaps.
+   * This method will resolve the controller setup promise when complete
+   * or reject the promise if there is an error.
+   *
+   * @throws If there is an error during setup.
+   */
+  async #setup() {
+    try {
+      if (this.#preinstalledSnaps) {
+        await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+      }
+
+      this.#controllerSetup.resolve();
+    } catch (error) {
+      this.#controllerSetup.reject(error);
+
+      throw error;
+    }
   }
 
   async #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
@@ -3234,7 +3256,7 @@ export class SnapController extends BaseController<
    * version.
    * @returns The resulting snap object.
    */
-  async #add(args: AddSnapArgs): Promise<PersistedSnap> {
+  async #add(args: AddSnapArgs): Promise<StoredSnap> {
     const { id: snapId, location, versionRange } = args;
 
     this.#setupRuntime(snapId);
@@ -3384,7 +3406,7 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  async #set(args: SetSnapArgs): Promise<PersistedSnap> {
+  async #set(args: SetSnapArgs): Promise<StoredSnap> {
     const {
       id: snapId,
       origin,
@@ -3466,8 +3488,6 @@ export class SnapController extends BaseController<
     // If the snap was blocked, it isn't any longer
     delete snap.blockInformation;
 
-    await this.#setSourceCode(snapId, sourceCode);
-
     // store the snap back in state
     const { inversePatches } = this.update((state: any) => {
       state.snaps[snapId] = snap;
@@ -3475,13 +3495,17 @@ export class SnapController extends BaseController<
 
     // checking for isUpdate here as this function is also used in
     // the install flow, we do not care to create snapshots for installs
-    // @TODO (guillaumerx): Find a way to add the sourceCode to the rollback snapshot
     if (isUpdate) {
+      const previousSourceCode = await this.#getSourceCode(snapId);
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+
       if (rollbackSnapshot !== undefined) {
         rollbackSnapshot.statePatches = inversePatches;
+        rollbackSnapshot.previousSourceCode = previousSourceCode;
       }
     }
+
+    await this.#setSourceCode(snapId, sourceCode);
 
     // In case the Snap uses a localized manifest, we need to get the
     // proposed name from the localized manifest.
@@ -4250,6 +4274,7 @@ export class SnapController extends BaseController<
 
     this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
+      previousSourceCode: '',
       permissions: {},
       newVersion: '',
     });
@@ -4291,11 +4316,14 @@ export class SnapController extends BaseController<
       permissions,
       previousInitialConnections,
       newInitialConnections,
+      previousSourceCode,
     } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
     }
+
+    await this.#setSourceCode(snapId, previousSourceCode);
 
     // Reset snap status, as we may have been in another state when we stored state patches
     // But now we are 100% in a stopped state
@@ -4684,46 +4712,55 @@ export class SnapController extends BaseController<
    * @param snapId - The snap ID.
    * @returns The source code for the snap.
    */
-  async #getSourceCode(snapId: SnapId) {
-    const { result } = await this.messenger.call(
+  async #getSourceCode(snapId: SnapId): Promise<string> {
+    const storage = await this.#getStorage(snapId);
+
+    assert(storage?.sourceCode, `Source code for snap "${snapId}" not found.`);
+
+    return storage?.sourceCode;
+  }
+
+  async #getStorage(snapId: SnapId): Promise<StorageServiceSnapData | null> {
+    const { result, error } = await this.messenger.call(
       'StorageService:getItem',
       this.name,
       snapId,
     );
 
-    assert(result, `Source code for snap "${snapId}" not found.`);
+    assert(!error, `Error retrieving storage for snap "${snapId}": ${error}`);
 
-    return result as string;
+    return result as StorageServiceSnapData | null;
   }
 
   /**
    * Store the source code for a snap in storage.
+   * For now we call the StorageService with just the source code
+   * since that's all we store.
    *
    * @param snapId - The snap ID.
    * @param sourceCode - The source code for the snap.
    */
-  async #setSourceCode(snapId: SnapId, sourceCode: string) {
-    await this.messenger.call(
-      'StorageService:setItem',
-      this.name,
-      snapId,
+  async #setSourceCode(snapId: SnapId, sourceCode: string): Promise<void> {
+    await this.messenger.call('StorageService:setItem', this.name, snapId, {
       sourceCode,
-    );
+    });
   }
 
   /**
    * Remove the source code for a snap from storage.
+   * Since we only store source code, this effectively
+   * removes all data for the snap for now.
    *
    * @param snapId - The snap ID.
    */
-  async #removeSourceCode(snapId: SnapId) {
+  async #removeSourceCode(snapId: SnapId): Promise<void> {
     await this.messenger.call('StorageService:removeItem', this.name, snapId);
   }
 
   /**
-   * Clear all snap source code from storage.
+   * Clear all snap data from the storage service.
    */
-  async #clearStorageService() {
+  async #clearStorageService(): Promise<void> {
     await this.messenger.call('StorageService:clear', this.name);
   }
 }
