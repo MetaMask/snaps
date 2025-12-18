@@ -4527,7 +4527,6 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/utils": "npm:^11.9.0"
-    "@noble/hashes": "npm:^1.7.1"
     "@scure/base": "npm:^1.1.1"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"

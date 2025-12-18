@@ -89,7 +89,6 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.9.0",
-    "@noble/hashes": "^1.7.1",
     "@scure/base": "^1.1.1",
     "chalk": "^4.1.2",
     "cron-parser": "^4.5.0",
