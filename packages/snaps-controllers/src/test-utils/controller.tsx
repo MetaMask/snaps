@@ -25,7 +25,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
-import type { PersistedSnap, Snap } from '@metamask/snaps-utils';
+import type { PersistedSnap } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
