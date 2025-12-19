@@ -1,6 +1,6 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import { logError } from '@metamask/snaps-utils';
-import type { Json, JsonRpcParams } from '@metamask/utils';
+import type { Hex, Json, JsonRpcParams } from '@metamask/utils';
 
 import { getAccountsHandler } from './accounts';
 import { getChainIdHandler } from './chain-id';
@@ -15,6 +15,13 @@ export type InternalMethodsMiddlewareHooks = {
    * @returns The user's secret recovery phrase.
    */
   getMnemonic: () => Promise<Uint8Array>;
+
+  /**
+   * A hook that sets the current chain ID.
+   *
+   * @param chainId - The chain ID.
+   */
+  setCurrentChain: (chainId: Hex) => Promise<void>;
 };
 
 const methodHandlers = {
