@@ -79,7 +79,7 @@
     "@metamask/eslint-config": "^14.0.0",
     "@metamask/eslint-config-browser": "^14.0.0",
     "@metamask/eslint-config-jest": "^14.0.0",
-    "@metamask/eslint-config-nodejs": "^14.0.0",
+    "@metamask/eslint-config-nodejs": "^15.0.0",
     "@metamask/eslint-config-typescript": "^14.0.0",
     "@metamask/utils": "^11.9.0",
     "@swc/core": "1.11.31",
