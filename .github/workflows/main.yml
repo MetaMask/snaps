@@ -45,6 +45,7 @@ jobs:
         **/jest.config.js
         **/jest.environment.js
         **/mocks/
+        **/__mocks__/
         **/test*/
         docs/
         e2e/
