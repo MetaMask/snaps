@@ -30,7 +30,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
-import type { CaipAssetType, Json } from '@metamask/utils';
+import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 import type { SagaIterator } from 'redux-saga';
@@ -54,6 +54,7 @@ import {
   getTrackErrorImplementation,
   getEndTraceImplementation,
   getStartTraceImplementation,
+  getSetCurrentChainImplementation,
 } from './methods/hooks';
 import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
@@ -155,6 +156,13 @@ export type RestrictedMiddlewareHooks = {
    * @returns The metadata for the given Snap.
    */
   getSnap: (snapId: string) => Snap;
+
+  /**
+   * A hook that sets the current chain ID.
+   *
+   * @param chainId - The chain ID.
+   */
+  setCurrentChain: (chainId: Hex) => Promise<void>;
 };
 
 export type PermittedMiddlewareHooks = {
@@ -373,7 +381,7 @@ export async function installSnap<
   registerActions(controllerMessenger, runSaga, options, snapId);
 
   // Set up controllers and JSON-RPC stack.
-  const restrictedHooks = getRestrictedHooks(options);
+  const restrictedHooks = getRestrictedHooks(options, runSaga);
   const permittedHooks = getPermittedHooks(
     snapId,
     snapFiles,
@@ -457,10 +465,12 @@ export async function installSnap<
  * Get the hooks for the simulation.
  *
  * @param options - The simulation options.
+ * @param runSaga - The run saga function.
  * @returns The hooks for the simulation.
  */
 export function getRestrictedHooks(
   options: SimulationOptions,
+  runSaga: RunSagaFunction,
 ): RestrictedMiddlewareHooks {
   return {
     getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
@@ -470,6 +480,7 @@ export function getRestrictedHooks(
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
     getSnap: getGetSnapImplementation(true),
+    setCurrentChain: getSetCurrentChainImplementation(runSaga),
   };
 }
 

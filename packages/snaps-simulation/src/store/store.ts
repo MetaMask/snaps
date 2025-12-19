@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
+import { chainSlice } from './chain';
 import { mocksSlice } from './mocks';
 import { notificationsSlice } from './notifications';
 import { setState, stateSlice } from './state';
@@ -25,6 +26,7 @@ export function createStore({ state, unencryptedState }: SimulationOptions) {
       state: stateSlice.reducer,
       trackables: trackablesSlice.reducer,
       ui: uiSlice.reducer,
+      chain: chainSlice.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ thunk: false, serializableCheck: false }).concat(

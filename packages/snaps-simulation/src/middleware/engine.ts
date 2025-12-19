@@ -1,4 +1,3 @@
-import { createFetchMiddleware } from '@metamask/eth-json-rpc-middleware';
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import type { RestrictedMethodParameters } from '@metamask/permission-controller';
@@ -7,7 +6,7 @@ import type { Json } from '@metamask/utils';
 
 import { createInternalMethodsMiddleware } from './internal-methods';
 import { createMockMiddleware } from './mock';
-import { DEFAULT_JSON_RPC_ENDPOINT } from '../constants';
+import { createProviderMiddleware } from './provider';
 import type {
   PermittedMiddlewareHooks,
   RestrictedMiddlewareHooks,
@@ -33,7 +32,6 @@ export type CreateJsonRpcEngineOptions = {
  * @param options.restrictedHooks - Any hooks used by the middleware handlers.
  * @param options.permittedHooks - Any hooks used by the middleware handlers.
  * @param options.permissionMiddleware - The permission middleware to use.
- * @param options.endpoint - The JSON-RPC endpoint to use for Ethereum requests.
  * @returns A JSON-RPC engine.
  */
 export function createJsonRpcEngine({
@@ -41,7 +39,6 @@ export function createJsonRpcEngine({
   restrictedHooks,
   permittedHooks,
   permissionMiddleware,
-  endpoint = DEFAULT_JSON_RPC_ENDPOINT,
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
   engine.push(createMockMiddleware(store));
@@ -52,13 +49,7 @@ export function createJsonRpcEngine({
   engine.push(createSnapsMethodMiddleware(true, permittedHooks));
 
   engine.push(permissionMiddleware);
-  engine.push(
-    createFetchMiddleware({
-      btoa: globalThis.btoa,
-      fetch: globalThis.fetch,
-      rpcUrl: endpoint,
-    }),
-  );
+  engine.push(createProviderMiddleware(store));
 
   return engine;
 }
