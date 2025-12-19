@@ -4476,6 +4476,7 @@ __metadata:
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/permission-controller": "npm:^12.1.1"
     "@metamask/phishing-controller": "npm:^16.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-execution-environments": "workspace:^"
     "@metamask/snaps-rpc-methods": "workspace:^"
