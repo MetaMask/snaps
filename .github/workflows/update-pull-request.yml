@@ -31,7 +31,7 @@ jobs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -48,7 +48,7 @@ jobs:
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: React to the comment
         run: |
           gh api \
@@ -73,14 +73,14 @@ jobs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
           cache-node-modules: true
@@ -96,14 +96,14 @@ jobs:
       YARN_LOCK_CHANGED: ${{ steps.check-yarn-lock.outputs.YARN_LOCK_CHANGED }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
       - name: Deduplicate yarn.lock
@@ -113,7 +113,7 @@ jobs:
         run: |
           git diff --exit-code yarn.lock || echo "YARN_LOCK_CHANGED=true" >> "$GITHUB_OUTPUT"
       - name: Save yarn.lock
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: yarn.lock
@@ -126,25 +126,25 @@ jobs:
       - dedupe-yarn-lock
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Build packages
         run: yarn build:ci
       - name: Save packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -160,29 +160,29 @@ jobs:
       - build
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Restore packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
       - name: Save LavaMoat policies
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -198,29 +198,29 @@ jobs:
       - build
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Restore packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Update examples
         run: yarn build:examples
       - name: Save examples
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -239,7 +239,7 @@ jobs:
       - update-examples
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check
           # workflows.
@@ -257,7 +257,7 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Set commit prefix
@@ -268,7 +268,7 @@ jobs:
           git add yarn.lock
           git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit LavaMoat policies
@@ -276,7 +276,7 @@ jobs:
           git add packages/snaps-execution-environments/lavamoat
           git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
       - name: Restore examples
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit examples
