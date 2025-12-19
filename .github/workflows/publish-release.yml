@@ -251,7 +251,9 @@ jobs:
 
   publish-test-snaps-latest:
     name: Publish test snaps to `latest` folder
-    needs: is-test-snaps-release
+    needs:
+      - is-test-snaps-release
+      - publish-test-snaps
     if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
       contents: write
