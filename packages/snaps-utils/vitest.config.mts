@@ -4,7 +4,10 @@ import { nodePolyfills } from 'vite-plugin-node-polyfills';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
-const IFRAME_PATH = join(import.meta.dirname, '../snaps-execution-environments/dist/webpack/iframe');
+const IFRAME_PATH = join(
+  import.meta.dirname,
+  '../snaps-execution-environments/dist/webpack/iframe',
+);
 
 export default defineConfig({
   plugins: [tsconfigPaths(), nodePolyfills()],
