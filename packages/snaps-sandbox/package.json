@@ -58,7 +58,7 @@
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
     "fast-deep-equal": "^3.1.3",
-    "happy-dom": "^17.4.4",
+    "happy-dom": "^20.0.11",
     "jotai": "^2.12.2",
     "monaco-editor": "patch:monaco-editor@npm%3A0.52.2#~/.yarn/patches/monaco-editor-npm-0.52.2-584d16bfa6.patch",
     "nanoid": "^3.3.10",
