@@ -8,6 +8,7 @@ import {
   stringToBytes,
   bytesToHex,
   hexToNumber,
+  numberToHex,
 } from '@metamask/utils';
 
 import type {
@@ -29,42 +30,6 @@ async function switchChain(chainId: Hex) {
 }
 
 /**
- * Get the current gas price using the `ethereum` global. This is essentially
- * the same as the `window.ethereum` global, but does not have access to all
- * methods.
- *
- * Note that using the `ethereum` global requires the
- * `endowment:ethereum-provider` permission.
- *
- * @returns The current gas price as a hexadecimal string.
- * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
- */
-async function getGasPrice() {
-  const gasPrice = await ethereum.request<Hex>({ method: 'eth_gasPrice' });
-  assert(gasPrice, 'Ethereum provider did not return a gas price.');
-
-  return gasPrice;
-}
-
-/**
- * Get the current network version using the `ethereum` global. This is
- * essentially the same as the `window.ethereum` global, but does not have
- * access to all methods.
- *
- * Note that using the `ethereum` global requires the
- * `endowment:ethereum-provider` permission.
- *
- * @returns The current network version as a string.
- * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
- */
-async function getVersion() {
-  const version = await ethereum.request<string>({ method: 'net_version' });
-  assert(version, 'Ethereum provider did not return a version.');
-
-  return version;
-}
-
-/**
  * Get the current chain ID using the `ethereum` global. This is essentially
  * the same as the `window.ethereum` global, but does not have access to all
  * methods.
@@ -83,6 +48,29 @@ async function getChainId() {
   assert(chainId, 'Ethereum provider did not return a chain ID.');
 
   return chainId;
+}
+
+/**
+ * Get a block by number using the `ethereum` global. This is essentially
+ * the same as the `window.ethereum` global, but does not have access to all
+ * methods.
+ *
+ * Note that using the `ethereum` global requires the
+ * `endowment:ethereum-provider` permission.
+ *
+ * @param blockNumber - The block number.
+ * @returns Information about the requested block.
+ * @see https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider
+ */
+async function getBlock(blockNumber: number) {
+  const block = await ethereum.request<string>({
+    method: 'eth_getBlockByNumber',
+    params: [numberToHex(blockNumber), false],
+  });
+
+  assert(block, 'Ethereum provider did not return a block.');
+
+  return block;
 }
 
 /**
@@ -249,17 +237,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   await switchChain(chainId);
 
   switch (request.method) {
-    case 'getGasPrice':
-      return await getGasPrice();
-
-    case 'getVersion':
-      return await getVersion();
-
     case 'getChainId':
       return await getChainId();
 
     case 'getAccounts':
       return await getAccounts();
+
+    case 'getGenesisBlock':
+      return await getBlock(0);
 
     case 'personalSign': {
       const params = request.params as PersonalSignParams;
