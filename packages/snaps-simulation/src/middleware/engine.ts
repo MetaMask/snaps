@@ -13,6 +13,7 @@ import type {
   RestrictedMiddlewareHooks,
 } from '../simulation';
 import type { Store } from '../store';
+import { createMultichainMiddleware } from './multichain';
 
 export type CreateJsonRpcEngineOptions = {
   store: Store;
@@ -20,6 +21,7 @@ export type CreateJsonRpcEngineOptions = {
   permittedHooks: PermittedMiddlewareHooks;
   permissionMiddleware: JsonRpcMiddleware<RestrictedMethodParameters, Json>;
   endpoint?: string;
+  isMultichain: boolean;
 };
 
 /**
@@ -42,9 +44,12 @@ export function createJsonRpcEngine({
   permittedHooks,
   permissionMiddleware,
   endpoint = DEFAULT_JSON_RPC_ENDPOINT,
+  isMultichain,
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
   engine.push(createMockMiddleware(store));
+
+  engine.push(createMultichainMiddleware(isMultichain));
 
   // The hooks here do not match the hooks used by the clients, so this
   // middleware should not be used outside of the simulation environment.

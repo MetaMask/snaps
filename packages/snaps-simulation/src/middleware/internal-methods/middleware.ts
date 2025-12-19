@@ -7,6 +7,7 @@ import { getChainIdHandler } from './chain-id';
 import { getNetworkVersionHandler } from './net-version';
 import { getProviderStateHandler } from './provider-state';
 import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
+import { getSessionHandler } from './multichain';
 
 export type InternalMethodsMiddlewareHooks = {
   /**
@@ -25,6 +26,7 @@ const methodHandlers = {
   eth_chainId: getChainIdHandler,
   net_version: getNetworkVersionHandler,
   wallet_switchEthereumChain: getSwitchEthereumChainHandler,
+  wallet_getSession: getSessionHandler,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
@@ -50,7 +52,7 @@ export function createInternalMethodsMiddleware(
     if (handler) {
       try {
         // Implementations may or may not be async, so we must await them.
-        return await handler(request, response, next, end, hooks);
+        return await handler(request as any, response as any, next, end, hooks as any);
       } catch (error: any) {
         logError(error);
         return end(error);
