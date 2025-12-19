@@ -20,7 +20,7 @@ jobs:
         node-version: [20.x, 22.x]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -29,7 +29,7 @@ jobs:
         run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat:test
       - name: Save "@metamask/snaps-execution-environments" build
         id: cache-snaps-execution-environments-build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
           retention-days: 1
@@ -52,13 +52,13 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
       - name: Build
         run: yarn build:ci
       - name: Save build files
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
           retention-days: 1
@@ -79,7 +79,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
       - name: Build
@@ -98,11 +98,11 @@ jobs:
     needs: build
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
       - name: Restore build files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Generate LavaMoat policy
@@ -121,7 +121,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
       - name: Lint
@@ -149,16 +149,16 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Install browsers
@@ -183,7 +183,7 @@ jobs:
         shell: bash
       - name: Upload coverage artifact
         if: ${{ matrix.node-version == '22.x' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-${{ steps.get-coverage-folder.outputs.artifact-name }}
           path: |
@@ -204,9 +204,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download coverage artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: coverage-*
           merge-multiple: true
@@ -229,16 +229,16 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Build snap
@@ -264,7 +264,7 @@ jobs:
         os: [macOS-latest, windows-latest]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
           platform-specific-caching: true

@@ -16,7 +16,8 @@ jobs:
     name: Check workflows
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v6
       - name: Download actionlint
         id: download-actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.7.7
@@ -26,16 +27,40 @@ jobs:
         shell: bash
 
   analyse-code:
-    name: Code scanner
+    name: Analyse code
     needs: check-workflows
-    uses: ./.github/workflows/security-code-scanner.yml
+    uses: MetaMask/action-security-code-scanner/.github/workflows/security-scan.yml@v2
+    with:
+      scanner-ref: v2
+      paths-ignored: |
+        .storybook/
+        **/__snapshots__/
+        **/*.snap
+        **/*.stories.js
+        **/*.stories.tsx
+        **/*.test.browser.ts*
+        **/*.test.js*
+        **/*.test.ts*
+        **/fixtures/
+        **/__fixtures__/
+        **/jest.config.js
+        **/jest.environment.js
+        **/mocks/
+        **/__mocks__/
+        **/test*/
+        docs/
+        e2e/
+        merged-packages/
+        node_modules/
+        storybook/
+        test*/
+    secrets:
+      project-metrics-token: ${{ secrets.SECURITY_SCAN_METRICS_TOKEN }}
+      slack-webhook: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}
     permissions:
       actions: read
       contents: read
       security-events: write
-    secrets:
-      SECURITY_SCAN_METRICS_TOKEN: ${{ secrets.SECURITY_SCAN_METRICS_TOKEN }}
-      APPSEC_BOT_SLACK_WEBHOOK: ${{ secrets.APPSEC_BOT_SLACK_WEBHOOK }}
 
   update-pull-request:
     name: Update pull request

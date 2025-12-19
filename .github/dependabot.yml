@@ -16,3 +16,14 @@ updates:
     target-branch: 'main'
     versioning-strategy: 'increase'
     open-pull-requests-limit: 10
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'daily'
+      time: '06:00'
+    allow:
+      - dependency-name: 'MetaMask/*'
+      - dependency-name: 'actions/*'
+    target-branch: 'main'
+    open-pull-requests-limit: 10
