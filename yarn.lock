@@ -3335,7 +3335,7 @@ __metadata:
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
-    ethers: "npm:^6.3.0"
+    ethers: "npm:^6.16.0"
     jest: "npm:^29.0.2"
     jest-silent-reporter: "npm:^0.6.0"
     prettier: "npm:^3.3.3"
@@ -10846,7 +10846,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^6.16.0, ethers@npm:^6.3.0":
+"ethers@npm:^6.16.0":
   version: 6.16.0
   resolution: "ethers@npm:6.16.0"
   dependencies:
