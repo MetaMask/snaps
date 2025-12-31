@@ -30,7 +30,17 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
   }
 
   protected terminateJob(jobWrapper: TerminateJobArgs<Window>): void {
-    document.getElementById(jobWrapper.id)?.remove();
+    const iframe = document.getElementById(
+      jobWrapper.id,
+    ) as HTMLIFrameElement | null;
+    if (iframe) {
+      // Navigate to about:blank before removing to ensure the browser
+      // unloads the previous document and cleans up its event listeners.
+      // Without this, Firefox may keep the detached iframe's document alive
+      // with all its event listeners, causing a memory leak.
+      iframe.src = 'about:blank';
+      iframe.remove();
+    }
   }
 
   protected async initEnvStream(snapId: string): Promise<{

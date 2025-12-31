@@ -486,6 +486,38 @@ export class BaseSnapExecutor {
       data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
     );
     this.snapData.clear();
+
+    // Clean up global error handlers to prevent memory leaks.
+    // Without this, the event listeners keep references to the executor
+    // and prevent the iframe from being garbage collected.
+    if (this.snapPromiseErrorHandler) {
+      removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+      this.snapPromiseErrorHandler = undefined;
+    }
+
+    if (this.snapErrorHandler) {
+      removeEventListener('error', this.snapErrorHandler);
+      this.snapErrorHandler = undefined;
+    }
+
+    // Destroy streams to clean up their internal event listeners.
+    // This is important for Firefox where detached iframes with active
+    // listeners are not garbage collected.
+    try {
+      if (!this.commandStream.destroyed) {
+        this.commandStream.destroy();
+      }
+    } catch {
+      // Ignore errors during cleanup
+    }
+
+    try {
+      if (!this.rpcStream.destroyed) {
+        this.rpcStream.destroy();
+      }
+    } catch {
+      // Ignore errors during cleanup
+    }
   }
 
   // TODO: Either fix this lint violation or explain why it's necessary to
