@@ -499,25 +499,6 @@ export class BaseSnapExecutor {
       removeEventListener('error', this.snapErrorHandler);
       this.snapErrorHandler = undefined;
     }
-
-    // Destroy streams to clean up their internal event listeners.
-    // This is important for Firefox where detached iframes with active
-    // listeners are not garbage collected.
-    try {
-      if (!this.commandStream.destroyed) {
-        this.commandStream.destroy();
-      }
-    } catch {
-      // Ignore errors during cleanup
-    }
-
-    try {
-      if (!this.rpcStream.destroyed) {
-        this.rpcStream.destroy();
-      }
-    } catch {
-      // Ignore errors during cleanup
-    }
   }
 
   // TODO: Either fix this lint violation or explain why it's necessary to
