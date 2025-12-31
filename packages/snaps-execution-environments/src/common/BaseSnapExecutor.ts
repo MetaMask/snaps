@@ -486,6 +486,19 @@ export class BaseSnapExecutor {
       data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
     );
     this.snapData.clear();
+
+    // Clean up global error handlers to prevent memory leaks.
+    // Without this, the event listeners keep references to the executor
+    // and prevent the iframe from being garbage collected.
+    if (this.snapPromiseErrorHandler) {
+      removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+      this.snapPromiseErrorHandler = undefined;
+    }
+
+    if (this.snapErrorHandler) {
+      removeEventListener('error', this.snapErrorHandler);
+      this.snapErrorHandler = undefined;
+    }
   }
 
   // TODO: Either fix this lint violation or explain why it's necessary to
