@@ -2,6 +2,7 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { hexToBigInt } from '@metamask/utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { InternalMethodsMiddlewareHooks } from './middleware';
@@ -27,7 +28,7 @@ export async function getNetworkVersionHandler(
   hooks: Pick<InternalMethodsMiddlewareHooks, 'getSimulationState'>,
 ) {
   const hexChainId = hooks.getSimulationState().chain.chainId;
-  response.result = BigInt(hexChainId).toString(10);
+  response.result = hexToBigInt(hexChainId).toString(10);
 
   return end();
 }
