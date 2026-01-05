@@ -10,7 +10,7 @@ import {
 } from '@metamask/utils';
 
 export type SwitchEthereumChainHooks = {
-  setCurrentChain: (chain: Hex) => Promise<void>;
+  setCurrentChain: (chain: Hex) => null;
 };
 
 /**
@@ -35,7 +35,7 @@ export async function getSwitchEthereumChainHandler(
   const castRequest = request as JsonRpcRequest<[{ chainId: Hex }]>;
 
   assert(castRequest.params?.[0].chainId, 'No chain ID passed.');
-  await hooks.setCurrentChain(castRequest.params[0].chainId);
+  hooks.setCurrentChain(castRequest.params[0].chainId);
 
   response.result = null;
   return end();

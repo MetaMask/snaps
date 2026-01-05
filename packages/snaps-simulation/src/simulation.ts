@@ -162,7 +162,7 @@ export type RestrictedMiddlewareHooks = {
    *
    * @param chainId - The chain ID.
    */
-  setCurrentChain: (chainId: Hex) => Promise<void>;
+  setCurrentChain: (chainId: Hex) => null;
 };
 
 export type PermittedMiddlewareHooks = {

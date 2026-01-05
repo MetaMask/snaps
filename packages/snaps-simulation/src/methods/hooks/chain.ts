@@ -12,8 +12,9 @@ import type { RunSagaFunction } from '../../store';
  * @yields Puts the chain ID in the store.
  * @returns `null`.
  */
-function* setCurrentChainImplementation(chainId: Hex): SagaIterator<void> {
+function* setCurrentChainImplementation(chainId: Hex): SagaIterator {
   yield put(setChain(chainId));
+  return null;
 }
 
 /**
@@ -23,7 +24,7 @@ function* setCurrentChainImplementation(chainId: Hex): SagaIterator<void> {
  * @returns A method that can be used to set the current chain.
  */
 export function getSetCurrentChainImplementation(runSaga: RunSagaFunction) {
-  return async (...args: Parameters<typeof setCurrentChainImplementation>) => {
-    await runSaga(setCurrentChainImplementation, ...args).toPromise();
+  return (...args: Parameters<typeof setCurrentChainImplementation>) => {
+    return runSaga(setCurrentChainImplementation, ...args).result();
   };
 }

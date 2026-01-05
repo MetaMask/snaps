@@ -21,7 +21,7 @@ export type InternalMethodsMiddlewareHooks = {
    *
    * @param chainId - The chain ID.
    */
-  setCurrentChain: (chainId: Hex) => Promise<void>;
+  setCurrentChain: (chainId: Hex) => null;
 };
 
 const methodHandlers = {
