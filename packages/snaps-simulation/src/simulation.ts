@@ -60,7 +60,12 @@ import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-s
 import { createJsonRpcEngine } from './middleware';
 import type { SimulationOptions, SimulationUserOptions } from './options';
 import { getOptions } from './options';
-import type { Interface, RunSagaFunction, Store } from './store';
+import type {
+  ApplicationState,
+  Interface,
+  RunSagaFunction,
+  Store,
+} from './store';
 import { createStore, getCurrentInterface } from './store';
 import { addSnapMetadataToAccount } from './utils/account';
 
@@ -163,6 +168,13 @@ export type RestrictedMiddlewareHooks = {
    * @param chainId - The chain ID.
    */
   setCurrentChain: (chainId: Hex) => null;
+
+  /**
+   * A hook that gets the current simulation state.
+   *
+   * @returns The simulation state.
+   */
+  getSimulationState: () => ApplicationState;
 };
 
 export type PermittedMiddlewareHooks = {
@@ -381,7 +393,7 @@ export async function installSnap<
   registerActions(controllerMessenger, runSaga, options, snapId);
 
   // Set up controllers and JSON-RPC stack.
-  const restrictedHooks = getRestrictedHooks(options, runSaga);
+  const restrictedHooks = getRestrictedHooks(options, store, runSaga);
   const permittedHooks = getPermittedHooks(
     snapId,
     snapFiles,
@@ -465,11 +477,13 @@ export async function installSnap<
  * Get the hooks for the simulation.
  *
  * @param options - The simulation options.
+ * @param store - The Redux store.
  * @param runSaga - The run saga function.
  * @returns The hooks for the simulation.
  */
 export function getRestrictedHooks(
   options: SimulationOptions,
+  store: Store,
   runSaga: RunSagaFunction,
 ): RestrictedMiddlewareHooks {
   return {
@@ -481,6 +495,7 @@ export function getRestrictedHooks(
     getClientCryptography: () => ({}),
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
+    getSimulationState: store.getState.bind(store),
   };
 }
 
