@@ -1,9 +1,12 @@
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { getChainIdHandler } from './chain-id';
+import { createStore } from '../../store';
+import { getMockOptions } from '../../test-utils';
 
 describe('getChainIdHandler', () => {
   it('returns the chain id', async () => {
+    const { store } = createStore(getMockOptions());
     const end = jest.fn();
     const result: PendingJsonRpcResponse = {
       jsonrpc: '2.0' as const,
@@ -20,9 +23,10 @@ describe('getChainIdHandler', () => {
       result,
       jest.fn(),
       end,
+      { getSimulationState: store.getState },
     );
 
     expect(end).toHaveBeenCalled();
-    expect(result.result).toBe('0x01');
+    expect(result.result).toBe('0x1');
   });
 });

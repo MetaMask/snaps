@@ -5,8 +5,8 @@ import type { Hex, Json, JsonRpcParams } from '@metamask/utils';
 import { getAccountsHandler } from './accounts';
 import { getChainIdHandler } from './chain-id';
 import { getNetworkVersionHandler } from './net-version';
-import { getProviderStateHandler } from './provider-state';
 import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
+import type { ApplicationState } from '../../store';
 
 export type InternalMethodsMiddlewareHooks = {
   /**
@@ -15,6 +15,13 @@ export type InternalMethodsMiddlewareHooks = {
    * @returns The user's secret recovery phrase.
    */
   getMnemonic: () => Promise<Uint8Array>;
+
+  /**
+   * A hook that returns the simulation state.
+   *
+   * @returns The simulation state.
+   */
+  getSimulationState: () => ApplicationState;
 
   /**
    * A hook that sets the current chain ID.
@@ -26,7 +33,6 @@ export type InternalMethodsMiddlewareHooks = {
 
 const methodHandlers = {
   /* eslint-disable @typescript-eslint/naming-convention */
-  metamask_getProviderState: getProviderStateHandler,
   eth_requestAccounts: getAccountsHandler,
   eth_accounts: getAccountsHandler,
   eth_chainId: getChainIdHandler,
