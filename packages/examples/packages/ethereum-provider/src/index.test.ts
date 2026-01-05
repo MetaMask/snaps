@@ -71,7 +71,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('getChainId', () => {
-    const MOCK_CHAIN_ID = '0x01'; // Ethereum Mainnet
+    const MOCK_CHAIN_ID = '0x1'; // Ethereum Mainnet
 
     it('returns the current network version', async () => {
       const { request } = await installSnap();

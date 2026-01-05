@@ -8,6 +8,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "chain": {
+          "chainId": "0x1",
+        },
         "mocks": {
           "jsonRpc": {},
         },
@@ -43,6 +46,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "chain": {
+          "chainId": "0x1",
+        },
         "mocks": {
           "jsonRpc": {},
         },
@@ -78,6 +84,9 @@ describe('createStore', () => {
     expect(store).toBeDefined();
     expect(store.getState()).toMatchInlineSnapshot(`
       {
+        "chain": {
+          "chainId": "0x1",
+        },
         "mocks": {
           "jsonRpc": {},
         },

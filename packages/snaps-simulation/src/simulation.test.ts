@@ -215,22 +215,35 @@ describe('installSnap', () => {
 });
 
 describe('getRestrictedHooks', () => {
+  const options = getMockOptions();
+  const { runSaga, store } = createStore(getMockOptions());
+
   it('returns the `getMnemonic` hook', async () => {
-    const { getMnemonic } = getRestrictedHooks(getMockOptions());
+    const { getMnemonic } = getRestrictedHooks(options, store, runSaga);
     expect(await getMnemonic()).toStrictEqual(
       mnemonicPhraseToBytes(DEFAULT_SRP),
     );
   });
 
   it('returns the `getIsLocked` hook', async () => {
-    const { getIsLocked } = getRestrictedHooks(getMockOptions());
+    const { getIsLocked } = getRestrictedHooks(options, store, runSaga);
     expect(getIsLocked()).toBe(false);
   });
 
   it('returns the `getClientCryptography` hook', async () => {
-    const { getClientCryptography } = getRestrictedHooks(getMockOptions());
+    const { getClientCryptography } = getRestrictedHooks(
+      options,
+      store,
+      runSaga,
+    );
 
     expect(getClientCryptography()).toStrictEqual({});
+  });
+
+  it('returns the `getSimulationState` hook', async () => {
+    const { getSimulationState } = getRestrictedHooks(options, store, runSaga);
+
+    expect(getSimulationState()).toStrictEqual(store.getState());
   });
 });
 

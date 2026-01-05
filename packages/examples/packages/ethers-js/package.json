@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@metamask/snaps-sdk": "workspace:^",
-    "ethers": "^6.3.0"
+    "ethers": "^6.16.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",

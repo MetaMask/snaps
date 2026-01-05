@@ -2,7 +2,10 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
+import { hexToBigInt } from '@metamask/utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+
+import type { InternalMethodsMiddlewareHooks } from './middleware';
 
 /**
  * A mock handler for net_version that always returns a specific
@@ -14,6 +17,7 @@ import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
  * result.
  * @param _next - The `json-rpc-engine` middleware next handler.
  * @param end - The `json-rpc-engine` middleware end handler.
+ * @param hooks - The method hooks.
  * @returns The JSON-RPC response.
  */
 export async function getNetworkVersionHandler(
@@ -21,10 +25,10 @@ export async function getNetworkVersionHandler(
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
+  hooks: Pick<InternalMethodsMiddlewareHooks, 'getSimulationState'>,
 ) {
-  // For now this will return a mocked result, this should probably match
-  // whatever network the simulation is using.
-  response.result = '1';
+  const hexChainId = hooks.getSimulationState().chain.chainId;
+  response.result = hexToBigInt(hexChainId).toString(10);
 
   return end();
 }
