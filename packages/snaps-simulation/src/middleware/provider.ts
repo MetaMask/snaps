@@ -1,6 +1,6 @@
 import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import { createAsyncMiddleware } from '@metamask/json-rpc-engine';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { rpcErrors, serializeCause } from '@metamask/rpc-errors';
 import type { Json, JsonRpcParams } from '@metamask/utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 import { InfuraProvider } from 'ethers';
@@ -33,7 +33,9 @@ export function createProviderMiddleware(
         response.error = error.error;
         return;
       }
-      response.error = rpcErrors.internal();
+      response.error = rpcErrors.internal({
+        data: { cause: serializeCause(error) },
+      });
     }
   });
 }
