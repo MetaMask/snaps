@@ -3763,7 +3763,7 @@ __metadata:
   resolution: "@metamask/multichain-provider-example-snap@workspace:packages/examples/packages/multichain-provider"
   dependencies:
     "@jest/globals": "npm:^29.5.0"
-    "@lavamoat/allow-scripts": "npm:^3.4.0"
+    "@lavamoat/allow-scripts": "npm:^3.4.1"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
