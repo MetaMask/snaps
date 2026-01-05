@@ -34,7 +34,7 @@ export async function getSwitchEthereumChainHandler(
 ) {
   const castRequest = request as JsonRpcRequest<[{ chainId: Hex }]>;
 
-  assert(castRequest.params?.[0].chainId, 'No chain ID passed.');
+  assert(castRequest.params?.[0]?.chainId, 'No chain ID passed.');
   hooks.setCurrentChain(castRequest.params[0].chainId);
 
   response.result = null;
