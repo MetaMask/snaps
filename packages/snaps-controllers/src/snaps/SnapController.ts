@@ -1352,7 +1352,7 @@ export class SnapController extends BaseController<
    */
   init() {
     this.#setup().catch((error) => {
-      logError('Error during SnapController initialization.', error);
+      logWarning('Error during SnapController initialization.', error);
     });
 
     this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
@@ -1371,9 +1371,9 @@ export class SnapController extends BaseController<
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
       }
 
-      await this.#platformIsReady();
-
       this.#controllerSetup.resolve();
+
+      await this.#platformIsReady();
     } catch (error) {
       this.#controllerSetup.reject(error);
 
@@ -1776,10 +1776,10 @@ export class SnapController extends BaseController<
    * Waits for onboarding and then asserts whether the Snaps platform is allowed to run.
    */
   async #ensureCanUsePlatform() {
-    await this.#platformIsReady();
-
     // Ensure the controller has finished setting up.
     await this.#controllerSetup.promise;
+
+    await this.#platformIsReady();
   }
 
   async #platformIsReady() {
