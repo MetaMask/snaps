@@ -12,7 +12,11 @@ import type {
   SignTypedDataParams,
 } from './types';
 
-// TODO: Consider letting the permission create the "session"
+/**
+ * Create the multichain API session.
+ *
+ * @returns The session.
+ */
 async function createSession() {
   const optionalScopes = {
     'eip155:1': {
@@ -35,6 +39,12 @@ async function createSession() {
   });
 }
 
+/**
+ * Retrieve the currently permissioned accounts in the active session for a given scope.
+ *
+ * @param scope - The CAIP-2 scope.
+ * @returns A list of CAIP-10 addresses.
+ */
 async function getAccounts(scope: CaipChainId) {
   const session = await await (snap as any).request({
     method: 'wallet_getSession',
@@ -43,6 +53,12 @@ async function getAccounts(scope: CaipChainId) {
   return session.sessionScopes[scope]?.accounts ?? [];
 }
 
+/**
+ * Get the Snap sub-module for the given scope.
+ *
+ * @param scope - The CAIP-2 scope.
+ * @returns The module.
+ */
 function getModule(scope: CaipChainId) {
   const { namespace } = parseCaipChainId(scope);
 
@@ -62,9 +78,10 @@ function getModule(scope: CaipChainId) {
  * Handle incoming JSON-RPC requests from the dapp, sent through the
  * `wallet_invokeSnap` method. This handler handles six methods:
  *
+ * - `createSession`: Create the multichain API session.
  * - `getChainId`: Get the current Ethereum chain ID as a string.
  * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
- * - `personalSign`: Sign a message using an Ethereum account.
+ * - `signMessage`: Sign a message using an Ethereum or Solana account.
  * - `signTypedData` Sign a struct using an Ethereum account.
  *
  * @param params - The request parameters.
