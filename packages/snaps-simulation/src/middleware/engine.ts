@@ -6,13 +6,13 @@ import type { Json } from '@metamask/utils';
 
 import { createInternalMethodsMiddleware } from './internal-methods';
 import { createMockMiddleware } from './mock';
+import { createMultichainMiddleware } from './multichain';
 import { createProviderMiddleware } from './provider';
 import type {
   PermittedMiddlewareHooks,
   RestrictedMiddlewareHooks,
 } from '../simulation';
 import type { Store } from '../store';
-import { createMultichainMiddleware } from './multichain';
 
 export type CreateJsonRpcEngineOptions = {
   store: Store;

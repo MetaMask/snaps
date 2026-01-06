@@ -4,10 +4,10 @@ import type { Hex, Json, JsonRpcParams } from '@metamask/utils';
 
 import { getAccountsHandler } from './accounts';
 import { getChainIdHandler } from './chain-id';
+import { getSessionHandler } from './multichain';
 import { getNetworkVersionHandler } from './net-version';
 import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
 import type { ApplicationState } from '../../store';
-import { getSessionHandler } from './multichain';
 
 export type InternalMethodsMiddlewareHooks = {
   /**
@@ -65,7 +65,13 @@ export function createInternalMethodsMiddleware(
     if (handler) {
       try {
         // Implementations may or may not be async, so we must await them.
-        return await handler(request as any, response as any, next, end, hooks as any);
+        return await handler(
+          request as any,
+          response as any,
+          next,
+          end,
+          hooks as any,
+        );
       } catch (error: any) {
         logError(error);
         return end(error);

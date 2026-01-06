@@ -7,6 +7,7 @@ import type {
   NamespacedName,
 } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import type { Caveat } from '@metamask/permission-controller';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -68,7 +69,6 @@ import type {
 } from './store';
 import { createStore, getCurrentInterface } from './store';
 import { addSnapMetadataToAccount } from './utils/account';
-import { Caveat } from '@metamask/permission-controller';
 
 /**
  * Options for the execution service, without the options that are shared
@@ -100,16 +100,16 @@ export type InstallSnapOptions<
   ) => InstanceType<typeof AbstractExecutionService<unknown>>,
 > =
   ExecutionServiceOptions<Service> extends Record<string, never>
-  ? {
-    executionService: Service;
-    executionServiceOptions?: ExecutionServiceOptions<Service>;
-    options?: SimulationUserOptions;
-  }
-  : {
-    executionService: Service;
-    executionServiceOptions: ExecutionServiceOptions<Service>;
-    options?: SimulationUserOptions;
-  };
+    ? {
+        executionService: Service;
+        executionServiceOptions?: ExecutionServiceOptions<Service>;
+        options?: SimulationUserOptions;
+      }
+    : {
+        executionService: Service;
+        executionServiceOptions: ExecutionServiceOptions<Service>;
+        options?: SimulationUserOptions;
+      };
 
 export type InstalledSnap = {
   snapId: SnapId;
@@ -395,7 +395,14 @@ export async function installSnap<
   registerActions(controllerMessenger, runSaga, options, snapId);
 
   // Set up controllers and JSON-RPC stack.
-  const restrictedHooks = getRestrictedHooks(snapId, options, controllerMessenger);
+  const restrictedHooks = getRestrictedHooks(
+    snapId,
+    options,
+    store,
+    runSaga,
+    controllerMessenger,
+  );
+
   const permittedHooks = getPermittedHooks(
     snapId,
     snapFiles,
@@ -452,14 +459,21 @@ export async function installSnap<
       });
 
       const multichainStream = mux.createStream('metamask-multichain-provider');
-      const multichainProviderStream = createEngineStream({ engine: multichainEngine });
+      const multichainProviderStream = createEngineStream({
+        engine: multichainEngine,
+      });
 
       /* istanbul ignore next 2 */
-      pipeline(multichainStream, multichainProviderStream, multichainStream, (error) => {
-        if (error && !error.message?.match('Premature close')) {
-          logError(`Provider stream failure.`, error);
-        }
-      });
+      pipeline(
+        multichainStream,
+        multichainProviderStream,
+        multichainStream,
+        (error) => {
+          if (error && !error.message?.match('Premature close')) {
+            logError(`Provider stream failure.`, error);
+          }
+        },
+      );
     },
   });
 
@@ -499,9 +513,11 @@ export async function installSnap<
 /**
  * Get the hooks for the simulation.
  *
+ * @param snapId - The Snap ID.
  * @param options - The simulation options.
  * @param store - The Redux store.
  * @param runSaga - The run saga function.
+ * @param controllerMessenger - The controller messenger.
  * @returns The hooks for the simulation.
  */
 export function getRestrictedHooks(
@@ -521,7 +537,13 @@ export function getRestrictedHooks(
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
     getSimulationState: store.getState.bind(store),
-    getCaveat: (permission: string, caveatType: string) => controllerMessenger.call('PermissionController:getCaveat', snapId, permission, caveatType),
+    getCaveat: async (permission: string, caveatType: string) =>
+      controllerMessenger.call(
+        'PermissionController:getCaveat',
+        snapId,
+        permission,
+        caveatType,
+      ),
   };
 }
 
