@@ -28,4 +28,8 @@ export class Solana extends Module {
   ): Promise<string> {
     throw new MethodNotSupportedError();
   }
+
+  async getGenesisHash(): Promise<string> {
+    return await invokeMethod(this.scope, { method: 'getGenesisHash' });
+  }
 }
