@@ -20,6 +20,8 @@ export abstract class Module {
     account: CaipAccountId,
     message: string,
   ): Promise<string>;
+
+  abstract getGenesisHash(): Promise<string>;
 }
 
 /**

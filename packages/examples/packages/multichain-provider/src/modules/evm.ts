@@ -1,5 +1,6 @@
 import type { CaipAccountId, Hex } from '@metamask/utils';
 import {
+  assert,
   bytesToHex,
   hexToNumber,
   parseCaipAccountId,
@@ -97,5 +98,16 @@ export class Evm extends Module {
         },
       ],
     });
+  }
+
+  async getGenesisHash(): Promise<string> {
+    const block = await invokeMethod<{ hash: string }>(this.scope, {
+      method: 'eth_getBlockByNumber',
+      params: ['0x0', false],
+    });
+
+    assert(block, 'Multichain API did not return a valid block.');
+
+    return block.hash;
   }
 }
