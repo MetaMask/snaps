@@ -51,7 +51,7 @@ async function createSession() {
  * @returns A list of CAIP-10 addresses.
  */
 async function getAccounts(scope: CaipChainId) {
-  const session = await await (snap as any).request({
+  const session = await (snap as any).request({
     method: 'wallet_getSession',
   });
 
@@ -121,7 +121,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'signTypedData': {
       const params = request.params as SignTypedDataParams;
       const accounts = await getAccounts(scope);
-      return await scopeModule.signMessage(accounts[0], params.message);
+      return await scopeModule.signTypedData(accounts[0], params.message);
     }
 
     case 'getGenesisHash':
