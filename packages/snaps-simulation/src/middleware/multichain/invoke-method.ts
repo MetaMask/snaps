@@ -31,7 +31,7 @@ export type InvokeMethodHandlerHooks = {
  * @param hooks - The method hooks.
  * @returns The JSON-RPC response.
  */
-export async function invokeMethodHandler(
+export function invokeMethodHandler(
   request: JsonRpcRequest & { scope: CaipChainId },
   _response: PendingJsonRpcResponse,
   next: JsonRpcEngineNextCallback,

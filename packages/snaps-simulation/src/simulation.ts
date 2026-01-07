@@ -180,25 +180,6 @@ export type RestrictedMiddlewareHooks = {
    * @returns The simulation state.
    */
   getSimulationState: () => ApplicationState;
-
-  /**
-   * A hook that retrieves a caveat for a given permission.
-   *
-   * @param permission - The permission name.
-   * @param caveatType - The caveat type.
-   * @returns The caveat, if it exists.
-   */
-  getCaveat: (
-    permission: string,
-    caveatType: string,
-  ) => Caveat<string, Json> | undefined;
-
-  /**
-   * A hook that grants permissions to the origin.
-   *
-   * @param permissions - The permissions.
-   */
-  grantPermissions: (permissions: RequestedPermissions) => void;
 };
 
 export type PermittedMiddlewareHooks = {
@@ -371,6 +352,27 @@ export type PermittedMiddlewareHooks = {
   endTrace(request: EndTraceRequest): void;
 };
 
+export type MultichainMiddlewareHooks = {
+  /**
+   * A hook that retrieves a caveat for a given permission.
+   *
+   * @param permission - The permission name.
+   * @param caveatType - The caveat type.
+   * @returns The caveat, if it exists.
+   */
+  getCaveat: (
+    permission: string,
+    caveatType: string,
+  ) => Caveat<string, Json> | undefined;
+
+  /**
+   * A hook that grants permissions to the origin.
+   *
+   * @param permissions - The permissions.
+   */
+  grantPermissions: (permissions: RequestedPermissions) => void;
+};
+
 /**
  * Install a Snap in a simulated environment. This will fetch the Snap files,
  * create a Redux store, set up the controllers and JSON-RPC stack, register the
@@ -417,13 +419,7 @@ export async function installSnap<
   registerActions(controllerMessenger, runSaga, options, snapId);
 
   // Set up controllers and JSON-RPC stack.
-  const restrictedHooks = getRestrictedHooks(
-    snapId,
-    options,
-    store,
-    runSaga,
-    controllerMessenger,
-  );
+  const restrictedHooks = getRestrictedHooks(options, store, runSaga);
 
   const permittedHooks = getPermittedHooks(
     snapId,
@@ -431,6 +427,8 @@ export async function installSnap<
     controllerMessenger,
     runSaga,
   );
+
+  const multichainHooks = getMultichainHooks(snapId, controllerMessenger);
 
   const { subjectMetadataController, permissionController } = getControllers({
     controllerMessenger,
@@ -448,6 +446,7 @@ export async function installSnap<
     restrictedHooks,
     permittedHooks,
     permissionMiddleware,
+    multichainHooks,
     isMultichain: false,
   });
 
@@ -456,6 +455,7 @@ export async function installSnap<
     restrictedHooks,
     permittedHooks,
     permissionMiddleware,
+    multichainHooks,
     isMultichain: true,
   });
 
@@ -535,19 +535,15 @@ export async function installSnap<
 /**
  * Get the hooks for the simulation.
  *
- * @param snapId - The Snap ID.
  * @param options - The simulation options.
  * @param store - The Redux store.
  * @param runSaga - The run saga function.
- * @param controllerMessenger - The controller messenger.
  * @returns The hooks for the simulation.
  */
 export function getRestrictedHooks(
-  snapId: SnapId,
   options: SimulationOptions,
   store: Store,
   runSaga: RunSagaFunction,
-  controllerMessenger: RootControllerMessenger,
 ): RestrictedMiddlewareHooks {
   return {
     getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
@@ -559,27 +555,6 @@ export function getRestrictedHooks(
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
     getSimulationState: store.getState.bind(store),
-    getCaveat: (permission: string, caveatType: string) => {
-      try {
-        return controllerMessenger.call(
-          'PermissionController:getCaveat',
-          snapId,
-          permission,
-          caveatType,
-        );
-      } catch (error) {
-        if (error instanceof PermissionDoesNotExistError) {
-          return undefined;
-        }
-        throw error;
-      }
-    },
-    grantPermissions: (approvedPermissions: RequestedPermissions) => {
-      controllerMessenger.call('PermissionController:grantPermissions', {
-        subject: { origin: snapId },
-        approvedPermissions,
-      });
-    },
   };
 }
 
@@ -649,6 +624,42 @@ export function getPermittedHooks(
     trackEvent: getTrackEventImplementation(runSaga),
     startTrace: getStartTraceImplementation(runSaga),
     endTrace: getEndTraceImplementation(runSaga),
+  };
+}
+
+/**
+ * Get the hooks for the multichain middleware simulation.
+ *
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
+ * @returns The hooks for the middleware.
+ */
+export function getMultichainHooks(
+  snapId: SnapId,
+  controllerMessenger: RootControllerMessenger,
+) {
+  return {
+    getCaveat: (permission: string, caveatType: string) => {
+      try {
+        return controllerMessenger.call(
+          'PermissionController:getCaveat',
+          snapId,
+          permission,
+          caveatType,
+        );
+      } catch (error) {
+        if (error instanceof PermissionDoesNotExistError) {
+          return undefined;
+        }
+        throw error;
+      }
+    },
+    grantPermissions: (approvedPermissions: RequestedPermissions) => {
+      controllerMessenger.call('PermissionController:grantPermissions', {
+        subject: { origin: snapId },
+        approvedPermissions,
+      });
+    },
   };
 }
 
