@@ -187,27 +187,24 @@ export default class SnapsWebpackPlugin {
       }
 
       if (this.options.manifestPath) {
-        const { reports } = await checkManifest(
-          pathUtils.dirname(this.options.manifestPath),
-          {
-            updateAndWriteManifest: this.options.writeManifest,
-            sourceCode: bundleContent,
-            exports,
-            handlerEndowments,
-            watchMode: compiler.watchMode,
-            writeFileFn: async (path, data) => {
-              assert(
-                compiler.outputFileSystem,
-                'Expected compiler to have an output file system.',
-              );
-              return writeManifest(
-                path,
-                data,
-                promisify(compiler.outputFileSystem.writeFile),
-              );
-            },
+        const { reports } = await checkManifest(this.options.manifestPath, {
+          updateAndWriteManifest: this.options.writeManifest,
+          sourceCode: bundleContent,
+          exports,
+          handlerEndowments,
+          watchMode: compiler.watchMode,
+          writeFileFn: async (path, data) => {
+            assert(
+              compiler.outputFileSystem,
+              'Expected compiler to have an output file system.',
+            );
+            return writeManifest(
+              path,
+              data,
+              promisify(compiler.outputFileSystem.writeFile),
+            );
           },
-        );
+        });
 
         const errors = reports
           .filter((report) => report.severity === 'error' && !report.wasFixed)

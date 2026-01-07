@@ -36,6 +36,13 @@ const builders = {
     normalize: true,
   },
 
+  manifest: {
+    alias: 'm',
+    describe: 'Path to snap.manifest.json file',
+    type: 'string',
+    normalize: true,
+  },
+
   port: {
     alias: 'p',
     describe: 'Local server port for testing',
