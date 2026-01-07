@@ -61,6 +61,15 @@ describe('getPermissionSpecifications', () => {
           "targetName": "endowment:assets",
           "validator": [Function],
         },
+        "endowment:caip25": {
+          "allowedCaveats": [
+            "authorizedScopes",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "targetName": "endowment:caip25",
+          "validator": [Function],
+        },
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",

@@ -7,9 +7,10 @@ import type {
   NamespacedName,
 } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
-import type {
-  Caveat,
-  RequestedPermissions,
+import {
+  PermissionDoesNotExistError,
+  type Caveat,
+  type RequestedPermissions,
 } from '@metamask/permission-controller';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
@@ -558,13 +559,21 @@ export function getRestrictedHooks(
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
     getSimulationState: store.getState.bind(store),
-    getCaveat: (permission: string, caveatType: string) =>
-      controllerMessenger.call(
-        'PermissionController:getCaveat',
-        snapId,
-        permission,
-        caveatType,
-      ),
+    getCaveat: (permission: string, caveatType: string) => {
+      try {
+        return controllerMessenger.call(
+          'PermissionController:getCaveat',
+          snapId,
+          permission,
+          caveatType,
+        );
+      } catch (error) {
+        if (error instanceof PermissionDoesNotExistError) {
+          return undefined;
+        }
+        throw error;
+      }
+    },
     grantPermissions: (approvedPermissions: RequestedPermissions) => {
       controllerMessenger.call('PermissionController:grantPermissions', {
         subject: { origin: snapId },

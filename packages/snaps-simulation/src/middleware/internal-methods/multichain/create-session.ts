@@ -37,6 +37,7 @@ export async function createSessionHandler(
     return end(rpcErrors.invalidParams({ data: { request } }));
   }
 
+  // TODO: Inject accounts
   const caveat = {
     requiredScopes: request.params.requiredScopes ?? {},
     optionalScopes: request.params.optionalScopes ?? {},

@@ -215,33 +215,54 @@ describe('installSnap', () => {
 });
 
 describe('getRestrictedHooks', () => {
+  const controllerMessenger = getRootControllerMessenger();
   const options = getMockOptions();
   const { runSaga, store } = createStore(getMockOptions());
 
   it('returns the `getMnemonic` hook', async () => {
-    const { getMnemonic } = getRestrictedHooks(options, store, runSaga);
+    const { getMnemonic } = getRestrictedHooks(
+      MOCK_SNAP_ID,
+      options,
+      store,
+      runSaga,
+      controllerMessenger,
+    );
     expect(await getMnemonic()).toStrictEqual(
       mnemonicPhraseToBytes(DEFAULT_SRP),
     );
   });
 
   it('returns the `getIsLocked` hook', async () => {
-    const { getIsLocked } = getRestrictedHooks(options, store, runSaga);
+    const { getIsLocked } = getRestrictedHooks(
+      MOCK_SNAP_ID,
+      options,
+      store,
+      runSaga,
+      controllerMessenger,
+    );
     expect(getIsLocked()).toBe(false);
   });
 
   it('returns the `getClientCryptography` hook', async () => {
     const { getClientCryptography } = getRestrictedHooks(
+      MOCK_SNAP_ID,
       options,
       store,
       runSaga,
+      controllerMessenger,
     );
 
     expect(getClientCryptography()).toStrictEqual({});
   });
 
   it('returns the `getSimulationState` hook', async () => {
-    const { getSimulationState } = getRestrictedHooks(options, store, runSaga);
+    const { getSimulationState } = getRestrictedHooks(
+      MOCK_SNAP_ID,
+      options,
+      store,
+      runSaga,
+      controllerMessenger,
+    );
 
     expect(getSimulationState()).toStrictEqual(store.getState());
   });
