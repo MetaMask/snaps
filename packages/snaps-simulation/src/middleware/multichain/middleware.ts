@@ -1,8 +1,8 @@
 import type {
   AsyncJsonRpcEngineNextCallback,
-  createAsyncMiddleware,
-  type JsonRpcMiddleware,
+  JsonRpcMiddleware,
 } from '@metamask/json-rpc-engine';
+import { createAsyncMiddleware } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   Json,
