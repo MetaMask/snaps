@@ -29,7 +29,7 @@ export type GetSessionHandlerHooks = {
  * @param hooks - The method hooks.
  * @returns The JSON-RPC response.
  */
-export async function getSessionHandler(
+export function getSessionHandler(
   _request: JsonRpcRequest,
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
