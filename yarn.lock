@@ -3789,7 +3789,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/utils": "npm:^11.9.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
