@@ -21,7 +21,6 @@ export const SwitchChain: FunctionComponent<SwitchChainProps> = ({
         onChange={handleChange}
       >
         <option value="eip155:1">Ethereum</option>
-        <option value="eip155:59144">Linea</option>
         <option value="eip155:11155111">Sepolia</option>
         <option value="solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp">Solana</option>
       </select>
