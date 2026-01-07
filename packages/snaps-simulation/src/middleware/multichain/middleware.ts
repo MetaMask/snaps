@@ -1,7 +1,15 @@
-import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
+import type {
+  AsyncJsonRpcEngineNextCallback,
+  createAsyncMiddleware,
+  type JsonRpcMiddleware,
+} from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { logError } from '@metamask/snaps-utils';
-import type { Json, JsonRpcParams } from '@metamask/utils';
+import type {
+  Json,
+  JsonRpcParams,
+  JsonRpcRequest,
+  PendingJsonRpcResponse,
+} from '@metamask/utils';
 
 import { createSessionHandler } from './create-session';
 import { getSessionHandler } from './get-session';
@@ -27,33 +35,43 @@ export function createMultichainMiddleware(
   isMultichain: boolean,
   hooks: MultichainMiddlewareHooks,
 ): JsonRpcMiddleware<JsonRpcParams, Json> {
-  return (request, response, next, end) => {
-    const isMultichainRequest = [
-      'wallet_createSession',
-      'wallet_invokeMethod',
-      'wallet_getSession',
-      'wallet_revokeSession',
-    ].includes(request.method);
+  return createAsyncMiddleware(
+    async (
+      request: JsonRpcRequest,
+      response: PendingJsonRpcResponse,
+      next: AsyncJsonRpcEngineNextCallback,
+    ) => {
+      const isMultichainRequest = [
+        'wallet_createSession',
+        'wallet_invokeMethod',
+        'wallet_getSession',
+        'wallet_revokeSession',
+      ].includes(request.method);
 
-    if (!isMultichain && isMultichainRequest) {
-      throw rpcErrors.methodNotFound();
-    }
-
-    if (isMultichain && !isMultichainRequest) {
-      throw rpcErrors.methodNotFound();
-    }
-
-    const handler =
-      multichainHandlers[request.method as keyof typeof multichainHandlers];
-    if (handler) {
-      try {
-        return handler(request as any, response, next, end, hooks as any);
-      } catch (error) {
-        logError(error);
-        return end(error);
+      if (!isMultichain && isMultichainRequest) {
+        throw rpcErrors.methodNotFound();
       }
-    }
 
-    return next();
-  };
+      if (isMultichain && !isMultichainRequest) {
+        throw rpcErrors.methodNotFound();
+      }
+
+      const handler =
+        multichainHandlers[request.method as keyof typeof multichainHandlers];
+
+      if (!handler) {
+        await next();
+        return;
+      }
+
+      const result = await handler(request as any, hooks);
+
+      if (result) {
+        response.result = result;
+        return;
+      }
+
+      await next();
+    },
+  );
 }

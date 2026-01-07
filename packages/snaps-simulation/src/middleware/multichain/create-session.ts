@@ -1,43 +1,33 @@
-import { getSessionScopes } from '@metamask/chain-agnostic-permission';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
+import {
+  getSessionScopes,
+  setEthAccounts,
+} from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import {
-  isObject,
-  type JsonRpcRequest,
-  type PendingJsonRpcResponse,
-} from '@metamask/utils';
+import { isObject, type JsonRpcRequest } from '@metamask/utils';
+
+import { getSimulationAccount } from '../internal-methods/accounts';
 
 export type CreateSessionHandlerHooks = {
   grantPermissions: (permissions: RequestedPermissions) => void;
+  getMnemonic: () => Promise<Uint8Array>;
 };
 
 /**
  * A handler that implements a simplified version of `wallet_createSession`.
  *
  * @param request - Incoming JSON-RPC request.
- * @param response - The outgoing JSON-RPC response, modified to return the
- * result.
- * @param _next - The `json-rpc-engine` middleware next handler.
- * @param end - The `json-rpc-engine` middleware end handler.
  * @param hooks - The method hooks.
  * @returns The JSON-RPC response.
  */
-export function createSessionHandler(
+export async function createSessionHandler(
   request: JsonRpcRequest,
-  response: PendingJsonRpcResponse,
-  _next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
   hooks: CreateSessionHandlerHooks,
 ) {
   if (!isObject(request.params)) {
-    return end(rpcErrors.invalidParams({ data: { request } }));
+    throw rpcErrors.invalidParams({ data: { request } });
   }
 
-  // TODO: Inject accounts
   const caveat = {
     requiredScopes: request.params.requiredScopes ?? {},
     optionalScopes: request.params.optionalScopes ?? {},
@@ -45,25 +35,28 @@ export function createSessionHandler(
     isMultichainOrigin: true,
   };
 
+  const mnemonic = await hooks.getMnemonic();
+  const ethereumAccounts = [await getSimulationAccount(mnemonic)];
+
+  // @ts-expect-error Ignore for now.
+  const caveatWithAccounts = setEthAccounts(caveat, ethereumAccounts);
+
   const permissions = {
     'endowment:caip25': {
       caveats: [
         {
           type: 'authorizedScopes',
-          value: caveat,
+          value: caveatWithAccounts,
         },
       ],
     },
-  };
+  } as RequestedPermissions;
 
-  // @ts-expect-error Ignore for now.
   hooks.grantPermissions(permissions);
 
-  // @ts-expect-error Ignore for now.
-  const sessionScopes = getSessionScopes(caveat, {
+  const sessionScopes = getSessionScopes(caveatWithAccounts, {
     getNonEvmSupportedMethods: () => [],
   });
 
-  response.result = { sessionScopes };
-  return end();
+  return { sessionScopes };
 }

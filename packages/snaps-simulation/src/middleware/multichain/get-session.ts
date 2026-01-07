@@ -1,20 +1,17 @@
+import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
+  getSessionScopes,
 } from '@metamask/chain-agnostic-permission';
-import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
 import type { Caveat } from '@metamask/permission-controller';
-import type {
-  Json,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { Json, JsonRpcRequest } from '@metamask/utils';
 
 export type GetSessionHandlerHooks = {
-  getCaveat: (permission: string, caveatType: string) => Caveat<string, Json>;
+  getCaveat: (
+    permission: string,
+    caveatType: string,
+  ) => Caveat<string, Json> | undefined;
 };
 
 /**
@@ -22,25 +19,23 @@ export type GetSessionHandlerHooks = {
  *
  * @param _request - Incoming JSON-RPC request. Ignored for this specific
  * handler.
- * @param response - The outgoing JSON-RPC response, modified to return the
- * result.
- * @param _next - The `json-rpc-engine` middleware next handler.
- * @param end - The `json-rpc-engine` middleware end handler.
  * @param hooks - The method hooks.
  * @returns The JSON-RPC response.
  */
 export function getSessionHandler(
   _request: JsonRpcRequest,
-  response: PendingJsonRpcResponse,
-  _next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
   hooks: GetSessionHandlerHooks,
 ) {
   const caveat = hooks.getCaveat(
     Caip25EndowmentPermissionName,
     Caip25CaveatType,
-  );
-  response.result = { sessionScopes: caveat?.value ?? {} };
+  ) as Caveat<string, Caip25CaveatValue>;
 
-  return end();
+  const sessionScopes = caveat
+    ? getSessionScopes(caveat.value, {
+        getNonEvmSupportedMethods: () => [],
+      })
+    : {};
+
+  return { sessionScopes };
 }

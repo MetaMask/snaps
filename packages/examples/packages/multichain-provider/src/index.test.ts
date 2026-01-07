@@ -31,12 +31,14 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith({
         sessionScopes: {
           'eip155:1': {
-            accounts: [],
+            accounts: ['eip155:10xc6d5a3c98ec9073b54fa0969957bd582e8d874bf'],
             methods: expect.any(Array),
             notifications: expect.any(Array),
           },
           'eip155:11155111': {
-            accounts: [],
+            accounts: [
+              'eip155:11155111:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
+            ],
             methods: expect.any(Array),
             notifications: expect.any(Array),
           },
@@ -92,9 +94,8 @@ describe('onRpcRequest', () => {
         method: 'getAccounts',
       });
 
-      // Currently, snaps-jest will always return this account.
       expect(response).toRespondWith([
-        '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
+        'eip155:1:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
       ]);
     });
   });

@@ -7,4 +7,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/multichain-provider-example-snap@HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/

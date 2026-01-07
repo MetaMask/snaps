@@ -354,6 +354,12 @@ export type PermittedMiddlewareHooks = {
 
 export type MultichainMiddlewareHooks = {
   /**
+   * A hook that returns the user's secret recovery phrase.
+   *
+   * @returns The user's secret recovery phrase.
+   */
+  getMnemonic: () => Promise<Uint8Array>;
+  /**
    * A hook that retrieves a caveat for a given permission.
    *
    * @param permission - The permission name.
@@ -428,14 +434,19 @@ export async function installSnap<
     runSaga,
   );
 
-  const multichainHooks = getMultichainHooks(snapId, controllerMessenger);
-
-  const { subjectMetadataController, permissionController } = getControllers({
-    controllerMessenger,
-    hooks: restrictedHooks,
-    runSaga,
+  const multichainHooks = getMultichainHooks(
+    snapId,
     options,
-  });
+    controllerMessenger,
+  );
+
+  const { subjectMetadataController, permissionController } =
+    await getControllers({
+      controllerMessenger,
+      hooks: restrictedHooks,
+      runSaga,
+      options,
+    });
 
   const permissionMiddleware = permissionController.createPermissionMiddleware({
     origin: snapId,
@@ -631,14 +642,17 @@ export function getPermittedHooks(
  * Get the hooks for the multichain middleware simulation.
  *
  * @param snapId - The Snap ID.
+ * @param options - The simulation options.
  * @param controllerMessenger - The controller messenger.
  * @returns The hooks for the middleware.
  */
 export function getMultichainHooks(
   snapId: SnapId,
+  options: SimulationOptions,
   controllerMessenger: RootControllerMessenger,
-) {
+): MultichainMiddlewareHooks {
   return {
+    getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
     getCaveat: (permission: string, caveatType: string) => {
       try {
         return controllerMessenger.call(
