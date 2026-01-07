@@ -9,6 +9,11 @@ import { getServer } from '../../webpack';
 
 type WatchOptions = {
   /**
+   * The path to the manifest file.
+   */
+  manifestPath?: string;
+
+  /**
    * The port to listen on.
    */
   port?: number;
@@ -36,7 +41,7 @@ const steps: Steps<WatchContext> = [
     name: 'Starting the development server.',
     condition: ({ config }) => config.server.enabled,
     task: async ({ config, options, spinner }) => {
-      const server = getServer(config);
+      const server = getServer(config, options);
       const { port } = await server.listen(options.port ?? config.server.port);
 
       info(`The server is listening on http://localhost:${port}.`, spinner);
@@ -44,8 +49,18 @@ const steps: Steps<WatchContext> = [
   },
   {
     name: 'Building the Snap bundle.',
-    task: async ({ config, spinner }) => {
-      await watch(config, { spinner });
+    task: async ({ config, options, spinner }) => {
+      const configWithManifest = options.manifestPath
+        ? {
+            ...config,
+            manifest: {
+              ...config.manifest,
+              path: options.manifestPath,
+            },
+          }
+        : config;
+
+      await watch(configWithManifest, { spinner });
     },
   },
 ];

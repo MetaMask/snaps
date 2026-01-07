@@ -9,6 +9,16 @@ import { join, relative, resolve as resolvePath, sep, posix } from 'path';
 import type { ProcessedConfig } from '../config';
 
 /**
+ * Options for the {@link getServer} function.
+ */
+type ServerOptions = {
+  /**
+   * The path to the manifest file to serve as `/snap.manifest.json`.
+   */
+  manifestPath?: string;
+};
+
+/**
  * Get the relative path from one path to another.
  *
  * Note: This is a modified version of `path.relative` that uses Posix
@@ -87,11 +97,20 @@ export function getAllowedPaths(
  *
  * @param request - The request object.
  * @param config - The config object.
+ * @param options - The server options.
+ * @param options.manifestPath - The path to the manifest file to serve as
+ * `/snap.manifest.json`.
  * @returns A promise that resolves to `true` if the path is allowed, or
  * `false` if it is not.
  */
-async function isAllowedPath(request: Request, config: ProcessedConfig) {
-  const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
+async function isAllowedPath(
+  request: Request,
+  config: ProcessedConfig,
+  options: ServerOptions,
+) {
+  const { manifestPath = join(config.server.root, NpmSnapFileNames.Manifest) } =
+    options;
+
   const { result } = await readJsonFile<SnapManifest>(manifestPath);
   const allowedPaths = getAllowedPaths(config, result);
 
@@ -109,6 +128,9 @@ type Middleware = (app: Express) => void;
  * difficult to customize.
  *
  * @param config - The config object.
+ * @param options - The server options.
+ * @param options.manifestPath - The path to the manifest file to serve as
+ * `/snap.manifest.json`.
  * @param middleware - An array of middleware functions to run before serving
  * the static files.
  * @returns An object with a `listen` method that returns a promise that
@@ -116,8 +138,12 @@ type Middleware = (app: Express) => void;
  */
 export function getServer(
   config: ProcessedConfig,
+  options: ServerOptions = {},
   middleware: Middleware[] = [],
 ) {
+  const { manifestPath = join(config.server.root, NpmSnapFileNames.Manifest) } =
+    options;
+
   const app = express();
 
   // Run "middleware" functions before serving the static files.
@@ -125,7 +151,7 @@ export function getServer(
 
   // Check for allowed paths in the request URL.
   app.use((request, response, next) => {
-    isAllowedPath(request, config)
+    isAllowedPath(request, config, options)
       .then((allowed) => {
         if (allowed) {
           // eslint-disable-next-line promise/no-callback-in-promise
@@ -138,6 +164,14 @@ export function getServer(
       })
       // eslint-disable-next-line promise/no-callback-in-promise
       .catch(next);
+  });
+
+  app.get('/snap.manifest.json', (_request, response, next) => {
+    response.sendFile(manifestPath, (error) => {
+      if (error) {
+        next(error);
+      }
+    });
   });
 
   // Serve the static files.

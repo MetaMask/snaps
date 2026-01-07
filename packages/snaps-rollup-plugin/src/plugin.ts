@@ -74,13 +74,10 @@ export default function snaps(options?: Partial<Options>): Plugin {
       }
 
       if (defaultOptions.manifestPath) {
-        const { reports } = await checkManifest(
-          pathUtils.dirname(defaultOptions.manifestPath),
-          {
-            updateAndWriteManifest: defaultOptions.writeManifest,
-            sourceCode: await fs.readFile(output.file, 'utf8'),
-          },
-        );
+        const { reports } = await checkManifest(defaultOptions.manifestPath, {
+          updateAndWriteManifest: defaultOptions.writeManifest,
+          sourceCode: await fs.readFile(output.file, 'utf8'),
+        });
 
         const errorsUnfixed = reports
           .filter((report) => report.severity === 'error' && !report.wasFixed)

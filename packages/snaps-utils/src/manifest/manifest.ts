@@ -2,7 +2,7 @@ import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
 import { assert, isPlainObject } from '@metamask/utils';
 import { promises as fs } from 'fs';
-import pathUtils from 'path';
+import pathUtils, { dirname } from 'path';
 
 import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
@@ -92,7 +92,7 @@ export type WriteFileFunction = (path: string, data: string) => Promise<void>;
  * the fixed version to disk if `writeManifest` is true. Throws if validation
  * fails.
  *
- * @param basePath - The path to the folder with the manifest files.
+ * @param manifestPath - The path to the manifest file.
  * @param options - Additional options for the function.
  * @param options.sourceCode - The source code of the Snap.
  * @param options.writeFileFn - The function to use to write the manifest to
@@ -111,7 +111,7 @@ export type WriteFileFunction = (path: string, data: string) => Promise<void>;
  * were encountered during processing of the manifest files.
  */
 export async function checkManifest(
-  basePath: string,
+  manifestPath: string,
   {
     updateAndWriteManifest = true,
     sourceCode,
@@ -121,7 +121,7 @@ export async function checkManifest(
     watchMode = false,
   }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
-  const manifestPath = pathUtils.join(basePath, NpmSnapFileNames.Manifest);
+  const basePath = dirname(manifestPath);
   const manifestFile = await readJsonFile(manifestPath);
   const unvalidatedManifest = manifestFile.result;
 
@@ -188,7 +188,7 @@ export async function checkManifest(
 
       try {
         await writeFileFn(
-          pathUtils.join(basePath, NpmSnapFileNames.Manifest),
+          manifestPath,
           manifestResults.files.manifest.toString(),
         );
       } catch (error) {
