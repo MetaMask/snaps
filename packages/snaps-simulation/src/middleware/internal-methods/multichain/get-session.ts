@@ -1,3 +1,7 @@
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
@@ -14,7 +18,7 @@ export type GetSessionHandlerHooks = {
 };
 
 /**
- * A handler that implements `wallet_getSession`.
+ * A handler that implements a simplified version of `wallet_getSession`.
  *
  * @param _request - Incoming JSON-RPC request. Ignored for this specific
  * handler.
@@ -32,6 +36,14 @@ export async function getSessionHandler(
   end: JsonRpcEngineEndCallback,
   hooks: GetSessionHandlerHooks,
 ) {
-  response.result = hooks.getCaveat('endowment:caip25', 'authorizedScopes');
+  try {
+    const caveat = hooks.getCaveat(
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
+    response.result = { sessionScopes: caveat?.value ?? {} };
+  } catch {
+    response.result = { sessionScopes: {} };
+  }
   return end();
 }

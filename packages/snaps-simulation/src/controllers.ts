@@ -1,3 +1,7 @@
+import {
+  caip25CaveatBuilder,
+  Caip25CaveatType,
+} from '@metamask/chain-agnostic-permission';
 import { Messenger } from '@metamask/messenger';
 import type {
   CaveatSpecificationConstraint,
@@ -145,6 +149,11 @@ function getPermissionController(options: GetControllersOptions) {
   return new PermissionController({
     messenger,
     caveatSpecifications: {
+      // @ts-expect-error Missing args temporarily.
+      [Caip25CaveatType]: caip25CaveatBuilder({
+        findNetworkClientIdByChainId: (chainId) => chainId,
+        isNonEvmScopeSupported: (_scope) => true,
+      }),
       ...snapsCaveatsSpecifications,
       ...snapsEndowmentCaveatSpecifications,
     },

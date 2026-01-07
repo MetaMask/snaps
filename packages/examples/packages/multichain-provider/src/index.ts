@@ -119,6 +119,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await scopeModule.signMessage(accounts[0], params.message);
     }
 
+    case 'getGenesisHash':
+      return await scopeModule.getGenesisHash();
+
     default:
       throw new MethodNotFoundError({ method: request.method });
   }
