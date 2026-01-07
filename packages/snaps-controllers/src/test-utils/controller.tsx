@@ -25,8 +25,10 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
+import type { StorageServiceSnapData } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
+  DEFAULT_SNAP_BUNDLE,
   getPersistedSnapObject,
   getSnapObject,
   MOCK_LOCAL_SNAP_ID,
@@ -35,6 +37,7 @@ import {
   MockControllerMessenger,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import { InMemoryStorageAdapter } from '@metamask/storage-service';
 import type { Json } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
@@ -69,7 +72,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
-import { SnapController } from '../snaps';
+import { controllerName, SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -152,6 +155,8 @@ export class MockApprovalController {
 }
 
 export const approvalControllerMock = new MockApprovalController();
+
+export const storageAdapter = new InMemoryStorageAdapter();
 
 export const snapDialogPermissionKey = 'snap_dialog';
 
@@ -325,9 +330,12 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     SnapControllerEvents | AllowedEvents
   >();
 
-  messenger.registerActionHandler('PermissionController:hasPermission', () => {
-    return true;
-  });
+  messenger.registerActionHandler(
+    'PermissionController:hasPermission',
+    (_id, permission) => {
+      return permission !== SnapEndowments.LifecycleHooks;
+    },
+  );
 
   messenger.registerActionHandler('PermissionController:hasPermissions', () => {
     return true;
@@ -452,6 +460,26 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
     },
   );
 
+  messenger.registerActionHandler(
+    'StorageService:setItem',
+    storageAdapter.setItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:getItem',
+    storageAdapter.getItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:removeItem',
+    storageAdapter.removeItem.bind(storageAdapter),
+  );
+
+  messenger.registerActionHandler(
+    'StorageService:clear',
+    storageAdapter.clear.bind(storageAdapter),
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -497,6 +525,10 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'StorageService:setItem',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:clear',
     ],
     events: [
       'ExecutionService:unhandledError',
@@ -614,19 +646,44 @@ export const getSnapControllerWithEESOptions = ({
   };
 };
 
-export const getSnapController = (options = getSnapControllerOptions()) => {
-  return new SnapController(options);
+export const getSnapController = (
+  options = getSnapControllerOptions(),
+  init = true,
+) => {
+  const controller = new SnapController(options);
+  if (init) {
+    controller.init();
+  }
+  return controller;
+};
+
+export const hydrateStorageService = async (
+  snapsData: Record<SnapId, StorageServiceSnapData> = {
+    [MOCK_SNAP_ID]: { sourceCode: DEFAULT_SNAP_BUNDLE },
+  },
+) => {
+  await Promise.all(
+    Object.entries(snapsData).map(async ([snapId, snapData]) => {
+      await storageAdapter.setItem(controllerName, snapId, snapData);
+    }),
+  );
 };
 
 export const getSnapControllerWithEES = (
   options = getSnapControllerWithEESOptions(),
   service?: ReturnType<typeof getNodeEES>,
+  init = true,
 ) => {
   const _service =
     // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
   const controller = new SnapController(options);
+
+  if (init) {
+    controller.init();
+  }
+
   return [controller, _service] as const;
 };
 
@@ -768,7 +825,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'SnapController:get',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
-      'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
     messenger: snapInterfaceControllerMessenger,
@@ -831,13 +887,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
       return getSnapObject({ id: snapId as SnapId });
     });
-
-    messenger.registerActionHandler(
-      'PermissionController:hasPermission',
-      () => {
-        return true;
-      },
-    );
   }
 
   jest.spyOn(snapInterfaceControllerMessenger, 'call');
@@ -904,6 +953,24 @@ export async function waitForStateChange(
   return new Promise<void>((resolve) => {
     messenger.subscribe('SnapController:stateChange', () => {
       resolve();
+    });
+  });
+}
+
+/**
+ * Wait for the controller to be ready by listening for the state change event.
+ *
+ * @param messenger - The messenger to listen to.
+ * @returns A promise that resolves when the controller is ready.
+ */
+export async function waitForControllerToBeReady(
+  messenger: Messenger<'SnapController', any, SnapControllerStateChangeEvent>,
+) {
+  return new Promise<void>((resolve) => {
+    messenger.subscribe('SnapController:stateChange', (snapControllerState) => {
+      if (snapControllerState.isReady) {
+        resolve();
+      }
     });
   });
 }
