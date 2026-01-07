@@ -1,3 +1,4 @@
+import { caip25EndowmentBuilder } from '@metamask/chain-agnostic-permission';
 import type { GenericPermissionController } from '@metamask/permission-controller';
 import {
   endowmentPermissionBuilders,
@@ -81,6 +82,8 @@ export function getPermissionSpecifications({
   options,
 }: GetPermissionSpecificationsOptions) {
   return {
+    [caip25EndowmentBuilder.targetName]:
+      caip25EndowmentBuilder.specificationBuilder({}),
     ...buildSnapEndowmentSpecifications(EXCLUDED_SNAP_ENDOWMENTS),
     ...buildSnapRestrictedMethodSpecifications(EXCLUDED_SNAP_PERMISSIONS, {
       // Shared hooks.

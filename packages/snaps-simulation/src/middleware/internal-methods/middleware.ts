@@ -4,7 +4,11 @@ import type { Hex, Json, JsonRpcParams } from '@metamask/utils';
 
 import { getAccountsHandler } from './accounts';
 import { getChainIdHandler } from './chain-id';
-import { getSessionHandler } from './multichain';
+import {
+  createSessionHandler,
+  getSessionHandler,
+  invokeMethodHandler,
+} from './multichain';
 import { getNetworkVersionHandler } from './net-version';
 import { getSwitchEthereumChainHandler } from './switch-ethereum-chain';
 import type { ApplicationState } from '../../store';
@@ -39,7 +43,9 @@ const methodHandlers = {
   eth_chainId: getChainIdHandler,
   net_version: getNetworkVersionHandler,
   wallet_switchEthereumChain: getSwitchEthereumChainHandler,
+  wallet_createSession: createSessionHandler,
   wallet_getSession: getSessionHandler,
+  wallet_invokeMethod: invokeMethodHandler,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 

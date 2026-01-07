@@ -7,7 +7,10 @@ import type {
   NamespacedName,
 } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
-import type { Caveat } from '@metamask/permission-controller';
+import type {
+  Caveat,
+  RequestedPermissions,
+} from '@metamask/permission-controller';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -176,7 +179,25 @@ export type RestrictedMiddlewareHooks = {
    * @returns The simulation state.
    */
   getSimulationState: () => ApplicationState;
-  getCaveat: (permission: string, caveatType: string) => Caveat<string, Json>;
+
+  /**
+   * A hook that retrieves a caveat for a given permission.
+   *
+   * @param permission - The permission name.
+   * @param caveatType - The caveat type.
+   * @returns The caveat, if it exists.
+   */
+  getCaveat: (
+    permission: string,
+    caveatType: string,
+  ) => Caveat<string, Json> | undefined;
+
+  /**
+   * A hook that grants permissions to the origin.
+   *
+   * @param permissions - The permissions.
+   */
+  grantPermissions: (permissions: RequestedPermissions) => void;
 };
 
 export type PermittedMiddlewareHooks = {
@@ -537,13 +558,19 @@ export function getRestrictedHooks(
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
     getSimulationState: store.getState.bind(store),
-    getCaveat: async (permission: string, caveatType: string) =>
+    getCaveat: (permission: string, caveatType: string) =>
       controllerMessenger.call(
         'PermissionController:getCaveat',
         snapId,
         permission,
         caveatType,
       ),
+    grantPermissions: (approvedPermissions: RequestedPermissions) => {
+      controllerMessenger.call('PermissionController:grantPermissions', {
+        subject: { origin: snapId },
+        approvedPermissions,
+      });
+    },
   };
 }
 
