@@ -34,6 +34,7 @@ export const MultichainProvider: FunctionComponent = () => {
   const handleCreateSession = () => handleSubmit('createSession');
   const handleGetChainId = () => handleSubmit('getChainId');
   const handleGetAccounts = () => handleSubmit('getAccounts');
+  const handleGetGenesisHash = () => handleSubmit('getGenesisHash');
 
   return (
     <Snap
@@ -52,38 +53,44 @@ export const MultichainProvider: FunctionComponent = () => {
         Create Session
       </Button>
       <SwitchChain onChange={setScope} />
+      <ButtonGroup>
+        {scope.startsWith('eip155') && (
+          <Button
+            variant="primary"
+            id="sendMultichainChainId"
+            className="mb-3"
+            disabled={isLoading}
+            onClick={handleGetChainId}
+          >
+            Get Chain ID
+          </Button>
+        )}
+        <Button
+          id="sendMultichainGetGenesisHash"
+          className="mb-3"
+          disabled={isLoading}
+          onClick={handleGetGenesisHash}
+        >
+          Get Genesis Hash
+        </Button>
+        <Button
+          variant="primary"
+          id="sendMultichainAccounts"
+          className="mb-3"
+          disabled={isLoading}
+          onClick={handleGetAccounts}
+        >
+          Get Accounts
+        </Button>
+      </ButtonGroup>
       <Result className="mb-3">
         <span id="multichainProviderResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
       </Result>
-      {scope.startsWith('eip155') && (
-        <>
-          <ButtonGroup>
-            <Button
-              variant="secondary"
-              id="sendMultichainChainId"
-              className="mb-3"
-              disabled={isLoading}
-              onClick={handleGetChainId}
-            >
-              Get Chain ID
-            </Button>
-            <Button
-              variant="primary"
-              id="sendMultichainAccounts"
-              className="mb-3"
-              disabled={isLoading}
-              onClick={handleGetAccounts}
-            >
-              Get Accounts
-            </Button>
-          </ButtonGroup>
-          <SignTypedData scope={scope} />
-        </>
-      )}
       <SignMessage scope={scope} />
+      {scope.startsWith('eip155') && <SignTypedData scope={scope} />}
     </Snap>
   );
 };

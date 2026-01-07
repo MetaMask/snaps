@@ -42,7 +42,7 @@ export const SignMessage: FunctionComponent<SignMessageProps> = ({ scope }) => {
 
   return (
     <>
-      <h3 className="h5">Personal Sign</h3>
+      <h3 className="h5">Message Signing</h3>
       <Form onSubmit={handleSubmit} className="mb-3">
         <Form.Label>Message</Form.Label>
         <Form.Control

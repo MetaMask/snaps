@@ -64,7 +64,7 @@ export const SignTypedData: FunctionComponent<SignTypedDataProps> = ({
           Sign Typed Data
         </Button>
       </Form>
-      <Result>
+      <Result className="mb-3">
         <span id="signTypedDataMultichainResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
