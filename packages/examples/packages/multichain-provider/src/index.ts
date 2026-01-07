@@ -24,8 +24,13 @@ async function createSession() {
       notifications: [],
       accounts: [],
     },
+    'eip155:11155111': {
+      methods: ['personal_sign', 'eth_signTypedData_v4'],
+      notifications: [],
+      accounts: [],
+    },
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-      methods: ['signMessage'],
+      methods: ['signMessage', 'getGenesisHash'],
       notifications: [],
       accounts: [],
     },

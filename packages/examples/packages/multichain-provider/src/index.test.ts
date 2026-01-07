@@ -35,6 +35,11 @@ describe('onRpcRequest', () => {
             methods: expect.any(Array),
             notifications: expect.any(Array),
           },
+          'eip155:11155111': {
+            accounts: [],
+            methods: expect.any(Array),
+            notifications: expect.any(Array),
+          },
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
             accounts: [],
             methods: expect.any(Array),
@@ -46,16 +51,34 @@ describe('onRpcRequest', () => {
   });
 
   describe('getChainId', () => {
-    const MOCK_CHAIN_ID = '0x01'; // Ethereum Mainnet
+    const ETHEREUM_CHAIN_ID = '0x1';
+    const SEPOLIA_CHAIN_ID = '0xaa36a7';
 
-    it('returns the current network version', async () => {
+    it('returns the Ethereum Mainnet chain ID', async () => {
       const { request } = await installSnap();
+
+      await request({ method: 'createSession' });
 
       const response = await request({
         method: 'getChainId',
       });
 
-      expect(response).toRespondWith(MOCK_CHAIN_ID);
+      expect(response).toRespondWith(ETHEREUM_CHAIN_ID);
+    });
+
+    it('returns the Sepolia chain ID', async () => {
+      const { request } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      const response = await request({
+        method: 'getChainId',
+        params: {
+          scope: 'eip155:11155111',
+        },
+      });
+
+      expect(response).toRespondWith(SEPOLIA_CHAIN_ID);
     });
   });
 
@@ -125,7 +148,7 @@ describe('onRpcRequest', () => {
   });
 
   describe('getGenesisHash', () => {
-    it('returns a hash', async () => {
+    it('returns the Ethereum Mainnet hash', async () => {
       const { request } = await installSnap();
 
       await request({ method: 'createSession' });
@@ -138,6 +161,22 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith(
         '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
       );
+    });
+
+    it('returns the Solana Mainnet hash', async () => {
+      const SOLANA_GENESIS_HASH = 'abc';
+      const { request, mockJsonRpc } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      mockJsonRpc({ method: 'getGenesisHash', result: SOLANA_GENESIS_HASH });
+
+      const response = await request({
+        method: 'getGenesisHash',
+        params: { scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' },
+      });
+
+      expect(response).toRespondWith(SOLANA_GENESIS_HASH);
     });
   });
 });

@@ -36,14 +36,11 @@ export async function getSessionHandler(
   end: JsonRpcEngineEndCallback,
   hooks: GetSessionHandlerHooks,
 ) {
-  try {
-    const caveat = hooks.getCaveat(
-      Caip25EndowmentPermissionName,
-      Caip25CaveatType,
-    );
-    response.result = { sessionScopes: caveat?.value ?? {} };
-  } catch {
-    response.result = { sessionScopes: {} };
-  }
+  const caveat = hooks.getCaveat(
+    Caip25EndowmentPermissionName,
+    Caip25CaveatType,
+  );
+  response.result = { sessionScopes: caveat?.value ?? {} };
+
   return end();
 }
