@@ -35,8 +35,7 @@ export async function invokeMethod<ReturnType>(
   scope: CaipChainId,
   request: Omit<JsonRpcRequest, 'id' | 'jsonrpc'>,
 ): Promise<ReturnType> {
-  // TODO: Fix snap.request types
-  return (await (snap as any).request({
+  return (await snap.request({
     method: 'wallet_invokeMethod',
     params: {
       scope,

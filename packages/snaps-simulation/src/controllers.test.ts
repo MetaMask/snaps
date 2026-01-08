@@ -10,18 +10,20 @@ import { getControllers } from './controllers';
 import type { RestrictedMiddlewareHooks } from './simulation';
 import { getMockOptions } from './test-utils';
 
-const MOCK_HOOKS: RestrictedMiddlewareHooks = {
-  getIsLocked: jest.fn(),
-  getMnemonic: jest.fn().mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
-  getSnapFile: jest.fn(),
-  createInterface: jest.fn(),
-  updateInterface: jest.fn(),
-  getInterfaceState: jest.fn(),
-  resolveInterface: jest.fn(),
-};
-
 describe('getControllers', () => {
   it('returns the controllers', async () => {
+    const MOCK_HOOKS: RestrictedMiddlewareHooks = {
+      getIsLocked: jest.fn(),
+      getMnemonic: jest
+        .fn()
+        .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
+      getSnapFile: jest.fn(),
+      createInterface: jest.fn(),
+      updateInterface: jest.fn(),
+      getInterfaceState: jest.fn(),
+      resolveInterface: jest.fn(),
+    };
+
     const { permissionController, subjectMetadataController } =
       await getControllers({
         controllerMessenger: new Messenger({ namespace: 'Root' }),

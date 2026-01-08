@@ -35,8 +35,7 @@ async function createSession() {
       accounts: [],
     },
   };
-  // TODO: Fix snap.request types
-  return await (snap as any).request({
+  return await snap.request({
     method: 'wallet_createSession',
     params: {
       optionalScopes,
@@ -51,7 +50,7 @@ async function createSession() {
  * @returns A list of CAIP-10 addresses.
  */
 async function getAccounts(scope: CaipChainId) {
-  const session = await (snap as any).request({
+  const session = await snap.request({
     method: 'wallet_getSession',
   });
 

@@ -17,6 +17,7 @@ export function getSessionScopes(value: Caip25CaveatValue) {
     ...value.requiredScopes,
     ...value.optionalScopes,
   } as Record<CaipChainId, InternalScopeObject & { methods: string[] }>;
+
   const nonEvmMethods = Object.keys(mergedScopes).reduce<
     Record<CaipChainId, string[]>
   >((accumulator, scope) => {
