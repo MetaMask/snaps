@@ -63,13 +63,7 @@ export function createInternalMethodsMiddleware(
     if (handler) {
       try {
         // Implementations may or may not be async, so we must await them.
-        return await handler(
-          request as any,
-          response as any,
-          next,
-          end,
-          hooks as any,
-        );
+        return await handler(request, response, next, end, hooks);
       } catch (error: any) {
         logError(error);
         return end(error);

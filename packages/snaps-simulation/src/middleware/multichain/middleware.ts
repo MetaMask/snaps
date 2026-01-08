@@ -64,7 +64,7 @@ export function createMultichainMiddleware(
         return;
       }
 
-      const result = await handler(request as any, hooks);
+      const result = await handler(request, hooks);
 
       if (result) {
         response.result = result;
