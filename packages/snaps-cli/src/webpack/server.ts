@@ -91,7 +91,10 @@ export function getAllowedPaths(
  * `false` if it is not.
  */
 async function isAllowedPath(request: Request, config: ProcessedConfig) {
-  const { result } = await readJsonFile<SnapManifest>(config.manifest.path);
+  const { result } = await readJsonFile<SnapManifest>(
+    resolvePath(config.server.root, config.manifest.path),
+  );
+
   const allowedPaths = getAllowedPaths(config, result);
 
   const path = request.path.slice(1);
@@ -142,7 +145,7 @@ export function getServer(
   // Serve the manifest file at the expected URL.
   app.get('/snap.manifest.json', (_request, response, next) => {
     response.sendFile(
-      config.manifest.path,
+      resolvePath(config.server.root, config.manifest.path),
       {
         headers: {
           'Cache-Control': 'no-cache',

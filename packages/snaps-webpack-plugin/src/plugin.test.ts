@@ -276,7 +276,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', {
+    expect(mock).toHaveBeenCalledWith('/snap.manifest.json', {
       exports: undefined,
       handlerEndowments,
       updateAndWriteManifest: true,
@@ -320,7 +320,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(checkManifestMock).toHaveBeenCalledTimes(1);
-    expect(checkManifestMock).toHaveBeenCalledWith('/', {
+    expect(checkManifestMock).toHaveBeenCalledWith('/snap.manifest.json', {
       exports: ['foo'],
       handlerEndowments,
       updateAndWriteManifest: true,
@@ -347,7 +347,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', {
+    expect(mock).toHaveBeenCalledWith('/snap.manifest.json', {
       exports: undefined,
       handlerEndowments,
       updateAndWriteManifest: false,
@@ -377,7 +377,7 @@ describe('SnapsWebpackPlugin', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', {
+    expect(mock).toHaveBeenCalledWith('/snap.manifest.json', {
       exports: undefined,
       handlerEndowments,
       updateAndWriteManifest: false,

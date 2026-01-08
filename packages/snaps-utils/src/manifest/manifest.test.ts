@@ -103,7 +103,7 @@ describe('checkManifest', () => {
   });
 
   it('returns the status and warnings after processing', async () => {
-    const { updated, reports } = await checkManifest(BASE_PATH);
+    const { updated, reports } = await checkManifest(MANIFEST_PATH);
     expect(reports).toHaveLength(0);
     expect(updated).toBe(false);
   });
@@ -119,7 +119,7 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const { files, updated, reports } = await checkManifest(MANIFEST_PATH);
     const unfixed = reports.filter((report) => !report.wasFixed);
     const fixed = reports.filter((report) => report.wasFixed);
 
@@ -147,7 +147,7 @@ describe('checkManifest', () => {
       ),
     );
 
-    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const { files, updated, reports } = await checkManifest(MANIFEST_PATH);
     const unfixed = reports.filter((report) => !report.wasFixed);
     const fixed = reports.filter((report) => report.wasFixed);
 
@@ -180,7 +180,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { files, updated, reports } = await checkManifest(BASE_PATH);
+    const { files, updated, reports } = await checkManifest(MANIFEST_PATH);
     const unfixed = reports.filter((report) => !report.wasFixed);
     const fixed = reports.filter((report) => report.wasFixed);
 
@@ -228,7 +228,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(PACKAGE_JSON_PATH, JSON.stringify(packageJson));
 
-    const { updated, reports } = await checkManifest(BASE_PATH);
+    const { updated, reports } = await checkManifest(MANIFEST_PATH);
 
     const warnings = reports.filter(({ severity }) => severity === 'warning');
 
@@ -247,7 +247,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { reports } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(MANIFEST_PATH);
     const warnings = reports.filter(({ severity }) => severity === 'warning');
     expect(warnings).toHaveLength(1);
     expect(warnings[0].message).toMatch(
@@ -255,7 +255,7 @@ describe('checkManifest', () => {
     );
   });
 
-  it('returns a warning if manifest has with a non 1:1 ratio', async () => {
+  it('returns a warning if manifest has icon with a non 1:1 ratio', async () => {
     const manifest = getSnapManifest({
       platformVersion: getPlatformVersion(),
     });
@@ -266,7 +266,7 @@ describe('checkManifest', () => {
     );
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { reports } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(MANIFEST_PATH);
     const warnings = reports.filter(({ severity }) => severity === 'warning');
     expect(warnings).toHaveLength(1);
     expect(warnings[0].message).toMatch(
@@ -283,7 +283,7 @@ describe('checkManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(manifest));
 
-    const { reports } = await checkManifest(BASE_PATH, {
+    const { reports } = await checkManifest(MANIFEST_PATH, {
       updateAndWriteManifest: false,
     });
 
@@ -315,7 +315,7 @@ describe('checkManifest', () => {
       ),
     );
 
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+    await expect(checkManifest(MANIFEST_PATH)).rejects.toThrow(
       "Failed to read snap files: ENOENT: no such file or directory, open '/snap/foo.json'",
     );
   });
@@ -342,7 +342,7 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { reports } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(MANIFEST_PATH);
     expect(reports.map(({ message }) => message)).toStrictEqual([
       'Failed to validate localization file "/snap/locales/en.json": At path: messages — Expected a value of type record, but received: "foo".',
     ]);
@@ -370,7 +370,7 @@ describe('checkManifest', () => {
       JSON.stringify(localizationFile),
     );
 
-    const { reports } = await checkManifest(BASE_PATH);
+    const { reports } = await checkManifest(MANIFEST_PATH);
     expect(reports.map(({ message }) => message)).toStrictEqual([
       'Failed to localize Snap manifest: Failed to translate "{{ name }}": No translation found for "name" in "en" file.',
     ]);
@@ -388,7 +388,7 @@ describe('checkManifest', () => {
     await fs.mkdir(join(BASE_PATH, 'locales'));
     await fs.writeFile(join(BASE_PATH, '/locales/en.json'), ',');
 
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+    await expect(checkManifest(MANIFEST_PATH)).rejects.toThrow(
       'Failed to parse localization file "/snap/locales/en.json" as JSON.',
     );
   });
@@ -401,7 +401,7 @@ describe('checkManifest', () => {
       throw new Error('foo');
     });
 
-    await expect(checkManifest(BASE_PATH)).rejects.toThrow(
+    await expect(checkManifest(MANIFEST_PATH)).rejects.toThrow(
       'Failed to update "snap.manifest.json": foo',
     );
   });
