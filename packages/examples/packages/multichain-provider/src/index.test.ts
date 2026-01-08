@@ -31,7 +31,7 @@ describe('onRpcRequest', () => {
       expect(response).toRespondWith({
         sessionScopes: {
           'eip155:1': {
-            accounts: ['eip155:10xc6d5a3c98ec9073b54fa0969957bd582e8d874bf'],
+            accounts: ['eip155:1:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf'],
             methods: expect.any(Array),
             notifications: expect.any(Array),
           },

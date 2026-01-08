@@ -1,15 +1,18 @@
+import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
 import type { Caveat } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   type CaipChainId,
   isObject,
   type Json,
   type JsonRpcRequest,
 } from '@metamask/utils';
+
+import { getSessionScopes } from './utils';
 
 export type InvokeMethodHandlerHooks = {
   getCaveat: (
@@ -36,8 +39,16 @@ export async function invokeMethodHandler(
   // TODO: Struct?
   const { request: wrappedRequest, scope } = request.params as any;
 
-  hooks.getCaveat(Caip25EndowmentPermissionName, Caip25CaveatType);
-  // TODO: Validate
+  const caveat = hooks.getCaveat(
+    Caip25EndowmentPermissionName,
+    Caip25CaveatType,
+  ) as Caveat<string, Caip25CaveatValue>;
+
+  const sessionScopes = getSessionScopes(caveat.value);
+
+  if (!sessionScopes[scope]?.methods.includes(wrappedRequest.method)) {
+    throw providerErrors.unauthorized();
+  }
 
   request.method = wrappedRequest.method;
   request.params = wrappedRequest.params;
