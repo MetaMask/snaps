@@ -207,6 +207,9 @@ describe('getServer', () => {
         root: '/foo',
         port: 0,
       },
+      manifest: {
+        path: '/foo/snap.manifest.json',
+      },
     });
 
     const server = getServer(config);
@@ -228,6 +231,9 @@ describe('getServer', () => {
       server: {
         root: '/foo',
         port: 0,
+      },
+      manifest: {
+        path: '/foo/snap.manifest.json',
       },
     });
 

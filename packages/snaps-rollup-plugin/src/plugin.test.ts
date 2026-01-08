@@ -237,7 +237,7 @@ describe('snaps', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', {
+    expect(mock).toHaveBeenCalledWith('/snap.manifest.json', {
       updateAndWriteManifest: true,
       sourceCode: expect.any(String),
     });
@@ -260,7 +260,7 @@ describe('snaps', () => {
     });
 
     expect(mock).toHaveBeenCalledTimes(1);
-    expect(mock).toHaveBeenCalledWith('/', {
+    expect(mock).toHaveBeenCalledWith('/snap.manifest.json', {
       updateAndWriteManifest: false,
       sourceCode: expect.any(String),
     });
