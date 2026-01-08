@@ -167,11 +167,20 @@ export function getServer(
   });
 
   app.get('/snap.manifest.json', (_request, response, next) => {
-    response.sendFile(manifestPath, (error) => {
-      if (error) {
-        next(error);
-      }
-    });
+    response.sendFile(
+      manifestPath,
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*',
+        },
+      },
+      (error) => {
+        if (error) {
+          next(error);
+        }
+      },
+    );
   });
 
   // Serve the static files.
