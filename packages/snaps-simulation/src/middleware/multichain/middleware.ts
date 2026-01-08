@@ -41,27 +41,23 @@ export function createMultichainMiddleware(
       response: PendingJsonRpcResponse,
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
-      const isMultichainRequest = [
-        'wallet_createSession',
-        'wallet_invokeMethod',
-        'wallet_getSession',
-        'wallet_revokeSession',
-      ].includes(request.method);
+      const handler =
+        multichainHandlers[request.method as keyof typeof multichainHandlers];
+
+      const isMultichainRequest = handler !== undefined;
 
       if (!isMultichain && isMultichainRequest) {
         throw rpcErrors.methodNotFound();
       }
 
-      if (isMultichain && !isMultichainRequest) {
-        throw rpcErrors.methodNotFound();
-      }
-
-      const handler =
-        multichainHandlers[request.method as keyof typeof multichainHandlers];
-
-      if (!handler) {
+      // If disabled, this middleware functions as a passthrough.
+      if (!isMultichain && !isMultichainRequest) {
         await next();
         return;
+      }
+
+      if (isMultichain && !isMultichainRequest) {
+        throw rpcErrors.methodNotFound();
       }
 
       const result = await handler(request, hooks);
