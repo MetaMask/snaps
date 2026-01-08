@@ -1,11 +1,9 @@
-import {
-  getSessionScopes,
-  setEthAccounts,
-} from '@metamask/chain-agnostic-permission';
+import { setEthAccounts } from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { isObject, type JsonRpcRequest } from '@metamask/utils';
 
+import { getSessionScopes } from './utils';
 import { getSimulationAccount } from '../internal-methods/accounts';
 
 export type CreateSessionHandlerHooks = {
@@ -54,9 +52,7 @@ export async function createSessionHandler(
 
   hooks.grantPermissions(permissions);
 
-  const sessionScopes = getSessionScopes(caveatWithAccounts, {
-    getNonEvmSupportedMethods: () => [],
-  });
+  const sessionScopes = getSessionScopes(caveatWithAccounts);
 
   return { sessionScopes };
 }

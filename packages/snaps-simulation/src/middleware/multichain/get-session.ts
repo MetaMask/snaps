@@ -2,10 +2,11 @@ import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  getSessionScopes,
 } from '@metamask/chain-agnostic-permission';
 import type { Caveat } from '@metamask/permission-controller';
 import type { Json, JsonRpcRequest } from '@metamask/utils';
+
+import { getSessionScopes } from './utils';
 
 export type GetSessionHandlerHooks = {
   getCaveat: (
@@ -31,11 +32,7 @@ export function getSessionHandler(
     Caip25CaveatType,
   ) as Caveat<string, Caip25CaveatValue>;
 
-  const sessionScopes = caveat
-    ? getSessionScopes(caveat.value, {
-        getNonEvmSupportedMethods: () => [],
-      })
-    : {};
+  const sessionScopes = caveat ? getSessionScopes(caveat.value) : {};
 
   return { sessionScopes };
 }
