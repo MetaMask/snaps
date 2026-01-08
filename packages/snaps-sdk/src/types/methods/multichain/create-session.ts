@@ -1,11 +1,11 @@
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipAccountId, CaipChainId } from '@metamask/utils';
 
 export type SessionScopes = Record<
   CaipChainId,
   {
     methods: string[];
     notifications: string[];
-    accounts: string[];
+    accounts: CaipAccountId[];
   }
 >;
 

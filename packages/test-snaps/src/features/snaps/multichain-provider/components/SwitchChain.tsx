@@ -16,7 +16,7 @@ export const SwitchChain: FunctionComponent<SwitchChainProps> = ({
     <>
       <h3 className="h5">Select chain</h3>
       <select
-        id="select-chain"
+        id="select-multichain-chain"
         className="form-select mb-3"
         onChange={handleChange}
       >

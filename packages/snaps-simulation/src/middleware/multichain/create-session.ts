@@ -1,3 +1,4 @@
+import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { setEthAccounts } from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
@@ -31,12 +32,11 @@ export async function createSessionHandler(
     optionalScopes: request.params.optionalScopes ?? {},
     sessionProperties: {},
     isMultichainOrigin: true,
-  };
+  } as Caip25CaveatValue;
 
   const mnemonic = await hooks.getMnemonic();
   const ethereumAccounts = [await getSimulationAccount(mnemonic)];
 
-  // @ts-expect-error Ignore for now.
   const caveatWithAccounts = setEthAccounts(caveat, ethereumAccounts);
 
   const permissions = {

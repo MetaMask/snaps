@@ -84,9 +84,10 @@ function getModule(scope: CaipChainId) {
  *
  * - `createSession`: Create the multichain API session.
  * - `getChainId`: Get the current Ethereum chain ID as a string.
- * - `getAccounts`: Get the Ethereum accounts that the snap has access to.
+ * - `getAccounts`: Get the accounts for the selected scope.
  * - `signMessage`: Sign a message using an Ethereum or Solana account.
- * - `signTypedData` Sign a struct using an Ethereum account.
+ * - `signTypedData`: Sign a struct using an Ethereum account.
+ * - `getGenesisHash`: Get the genesis hash for the selected scope.
  *
  * @param params - The request parameters.
  * @param params.request - The JSON-RPC request object.

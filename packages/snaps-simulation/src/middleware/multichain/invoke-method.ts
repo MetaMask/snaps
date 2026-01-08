@@ -29,7 +29,7 @@ export type InvokeMethodHandlerHooks = {
  * @returns Nothing.
  */
 export async function invokeMethodHandler(
-  request: JsonRpcRequest & { scope: CaipChainId },
+  request: JsonRpcRequest & { scope?: CaipChainId },
   hooks: InvokeMethodHandlerHooks,
 ) {
   if (!isObject(request.params)) {
