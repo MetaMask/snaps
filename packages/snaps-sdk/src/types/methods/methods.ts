@@ -72,6 +72,13 @@ import type {
   ManageAccountsResult,
 } from './manage-accounts';
 import type { ManageStateParams, ManageStateResult } from './manage-state';
+import type {
+  CreateSessionParams,
+  CreateSessionResult,
+  GetSessionParams,
+  GetSessionResult,
+  InvokeMethodParams,
+} from './multichain';
 import type { NotifyParams, NotifyResult } from './notify';
 import type {
   OpenWebSocketParams,
@@ -154,8 +161,11 @@ export type SnapMethods = {
     SendWebSocketMessageParams,
     SendWebSocketMessageResult,
   ];
+  wallet_createSession: [CreateSessionParams, CreateSessionResult];
+  wallet_getSession: [GetSessionParams, GetSessionResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
+  wallet_invokeMethod: [InvokeMethodParams, InvokeKeyringResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
   wallet_snap: [InvokeSnapParams, InvokeSnapResult];
   wallet_requestSnaps: [RequestSnapsParams, RequestSnapsResult];

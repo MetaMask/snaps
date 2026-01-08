@@ -341,7 +341,7 @@ describe('getPermissionSpecifications', () => {
 
 describe('getEndowments', () => {
   it('returns the endowments', async () => {
-    const controllers = getControllers({
+    const controllers = await getControllers({
       controllerMessenger: new Messenger<MockAnyNamespace>({
         namespace: MOCK_ANY_NAMESPACE,
       }),
