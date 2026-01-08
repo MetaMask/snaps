@@ -32,20 +32,20 @@ describe('onRpcRequest', () => {
         sessionScopes: {
           'eip155:1': {
             accounts: ['eip155:1:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf'],
-            methods: expect.any(Array),
-            notifications: expect.any(Array),
+            methods: expect.arrayContaining(['personal_sign']),
+            notifications: expect.arrayContaining(['eth_subscription']),
           },
           'eip155:11155111': {
             accounts: [
               'eip155:11155111:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
             ],
-            methods: expect.any(Array),
-            notifications: expect.any(Array),
+            methods: expect.arrayContaining(['personal_sign']),
+            notifications: expect.arrayContaining(['eth_subscription']),
           },
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
             accounts: [],
-            methods: expect.any(Array),
-            notifications: expect.any(Array),
+            methods: expect.arrayContaining(['signMessage']),
+            notifications: [],
           },
         },
       });
