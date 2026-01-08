@@ -11,7 +11,7 @@ import { getServer } from '../../webpack';
  * @returns The server instance.
  */
 export async function startSandbox(config: ProcessedConfig) {
-  const server = getServer(config, {}, [
+  const server = getServer(config, [
     (app) => {
       app.use(
         '/__sandbox__',
