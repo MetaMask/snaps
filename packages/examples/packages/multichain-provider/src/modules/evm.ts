@@ -7,13 +7,13 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 
-import { invokeMethod, Module } from './base';
+import { Module } from './base';
 
 export class Evm extends Module {
   async signMessage(account: CaipAccountId, message: string): Promise<string> {
     const { address } = parseCaipAccountId(account);
 
-    return await invokeMethod<Hex>(this.scope, {
+    return await this.invokeMethod<Hex>({
       method: 'personal_sign',
       params: [bytesToHex(stringToBytes(message)), address],
     });
@@ -28,7 +28,7 @@ export class Evm extends Module {
       address,
     } = parseCaipAccountId(account);
 
-    return await invokeMethod<Hex>(this.scope, {
+    return await this.invokeMethod<Hex>({
       method: 'eth_signTypedData_v4',
       params: [
         address,
@@ -101,7 +101,7 @@ export class Evm extends Module {
   }
 
   async getGenesisHash(): Promise<string> {
-    const block = await invokeMethod<{ hash: string }>(this.scope, {
+    const block = await this.invokeMethod<{ hash: string }>({
       method: 'eth_getBlockByNumber',
       params: ['0x0', false],
     });

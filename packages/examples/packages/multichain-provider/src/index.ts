@@ -5,7 +5,7 @@ import {
 import type { CaipChainId } from '@metamask/utils';
 import { parseCaipChainId } from '@metamask/utils';
 
-import { invokeMethod, Evm, Solana } from './modules';
+import { Evm, Solana } from './modules';
 import type {
   BaseParams,
   SignMessageParams,
@@ -105,7 +105,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
       return await createSession();
 
     case 'getChainId':
-      return await invokeMethod<string>(scope, {
+      return await scopeModule.invokeMethod<string>({
         method: 'eth_chainId',
       });
 
