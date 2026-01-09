@@ -7,6 +7,11 @@ import type {
   NamespacedName,
 } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import {
+  PermissionDoesNotExistError,
+  type Caveat,
+  type RequestedPermissions,
+} from '@metamask/permission-controller';
 import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -347,6 +352,33 @@ export type PermittedMiddlewareHooks = {
   endTrace(request: EndTraceRequest): void;
 };
 
+export type MultichainMiddlewareHooks = {
+  /**
+   * A hook that returns the user's secret recovery phrase.
+   *
+   * @returns The user's secret recovery phrase.
+   */
+  getMnemonic: () => Promise<Uint8Array>;
+  /**
+   * A hook that retrieves a caveat for a given permission.
+   *
+   * @param permission - The permission name.
+   * @param caveatType - The caveat type.
+   * @returns The caveat, if it exists.
+   */
+  getCaveat: (
+    permission: string,
+    caveatType: string,
+  ) => Caveat<string, Json> | undefined;
+
+  /**
+   * A hook that grants permissions to the origin.
+   *
+   * @param permissions - The permissions.
+   */
+  grantPermissions: (permissions: RequestedPermissions) => void;
+};
+
 /**
  * Install a Snap in a simulated environment. This will fetch the Snap files,
  * create a Redux store, set up the controllers and JSON-RPC stack, register the
@@ -394,6 +426,7 @@ export async function installSnap<
 
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options, store, runSaga);
+
   const permittedHooks = getPermittedHooks(
     snapId,
     snapFiles,
@@ -401,20 +434,40 @@ export async function installSnap<
     runSaga,
   );
 
-  const { subjectMetadataController, permissionController } = getControllers({
-    controllerMessenger,
-    hooks: restrictedHooks,
-    runSaga,
+  const multichainHooks = getMultichainHooks(
+    snapId,
     options,
+    controllerMessenger,
+  );
+
+  const { subjectMetadataController, permissionController } =
+    await getControllers({
+      controllerMessenger,
+      hooks: restrictedHooks,
+      runSaga,
+      options,
+    });
+
+  const permissionMiddleware = permissionController.createPermissionMiddleware({
+    origin: snapId,
   });
 
   const engine = createJsonRpcEngine({
     store,
     restrictedHooks,
     permittedHooks,
-    permissionMiddleware: permissionController.createPermissionMiddleware({
-      origin: snapId,
-    }),
+    permissionMiddleware,
+    multichainHooks,
+    isMultichain: false,
+  });
+
+  const multichainEngine = createJsonRpcEngine({
+    store,
+    restrictedHooks,
+    permittedHooks,
+    permissionMiddleware,
+    multichainHooks,
+    isMultichain: true,
   });
 
   // Create execution service.
@@ -437,6 +490,23 @@ export async function installSnap<
           logError(`Provider stream failure.`, error);
         }
       });
+
+      const multichainStream = mux.createStream('metamask-multichain-provider');
+      const multichainProviderStream = createEngineStream({
+        engine: multichainEngine,
+      });
+
+      /* istanbul ignore next 2 */
+      pipeline(
+        multichainStream,
+        multichainProviderStream,
+        multichainStream,
+        (error) => {
+          if (error && !error.message?.match('Premature close')) {
+            logError(`Provider stream failure.`, error);
+          }
+        },
+      );
     },
   });
 
@@ -565,6 +635,45 @@ export function getPermittedHooks(
     trackEvent: getTrackEventImplementation(runSaga),
     startTrace: getStartTraceImplementation(runSaga),
     endTrace: getEndTraceImplementation(runSaga),
+  };
+}
+
+/**
+ * Get the hooks for the multichain middleware simulation.
+ *
+ * @param snapId - The Snap ID.
+ * @param options - The simulation options.
+ * @param controllerMessenger - The controller messenger.
+ * @returns The hooks for the middleware.
+ */
+export function getMultichainHooks(
+  snapId: SnapId,
+  options: SimulationOptions,
+  controllerMessenger: RootControllerMessenger,
+): MultichainMiddlewareHooks {
+  return {
+    getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
+    getCaveat: (permission: string, caveatType: string) => {
+      try {
+        return controllerMessenger.call(
+          'PermissionController:getCaveat',
+          snapId,
+          permission,
+          caveatType,
+        );
+      } catch (error) {
+        if (error instanceof PermissionDoesNotExistError) {
+          return undefined;
+        }
+        throw error;
+      }
+    },
+    grantPermissions: (approvedPermissions: RequestedPermissions) => {
+      controllerMessenger.call('PermissionController:grantPermissions', {
+        subject: { origin: snapId },
+        approvedPermissions,
+      });
+    },
   };
 }
 

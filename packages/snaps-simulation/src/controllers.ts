@@ -1,3 +1,7 @@
+import {
+  caip25CaveatBuilder,
+  Caip25CaveatType,
+} from '@metamask/chain-agnostic-permission';
 import { Messenger } from '@metamask/messenger';
 import type {
   CaveatSpecificationConstraint,
@@ -28,6 +32,7 @@ import { getSafeJson } from '@metamask/utils';
 
 import { getPermissionSpecifications } from './methods';
 import { UNRESTRICTED_METHODS } from './methods/constants';
+import { getSimulationAccount } from './middleware/internal-methods/accounts';
 import type { SimulationOptions } from './options';
 import type { RestrictedMiddlewareHooks } from './simulation';
 import type { RunSagaFunction } from './store';
@@ -70,7 +75,9 @@ export type Controllers = {
  * @param options - The options.
  * @returns The controllers for the Snap.
  */
-export function getControllers(options: GetControllersOptions): Controllers {
+export async function getControllers(
+  options: GetControllersOptions,
+): Promise<Controllers> {
   const { controllerMessenger } = options;
   const subjectMetadataController = new SubjectMetadataController({
     messenger: new Messenger({
@@ -104,7 +111,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
     messenger: interfaceControllerMessenger,
   });
 
-  const permissionController = getPermissionController(options);
+  const permissionController = await getPermissionController(options);
 
   return {
     permissionController,
@@ -121,7 +128,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
  * @param options.options - Miscellaneous options.
  * @returns The permission controller for the Snap.
  */
-function getPermissionController(options: GetControllersOptions) {
+async function getPermissionController(options: GetControllersOptions) {
   const { controllerMessenger } = options;
   const permissionSpecifications = getPermissionSpecifications(options);
   const messenger = new Messenger({
@@ -142,9 +149,18 @@ function getPermissionController(options: GetControllersOptions) {
     ],
   });
 
+  const mnemonic = await options.hooks.getMnemonic();
+  const defaultAddress = await getSimulationAccount(mnemonic);
+
   return new PermissionController({
     messenger,
     caveatSpecifications: {
+      [Caip25CaveatType]: caip25CaveatBuilder({
+        findNetworkClientIdByChainId: (chainId) => chainId,
+        isNonEvmScopeSupported: (_scope) => true,
+        getNonEvmAccountAddresses: () => [],
+        listAccounts: () => [{ type: 'eip155:eoa', address: defaultAddress }],
+      }),
       ...snapsCaveatsSpecifications,
       ...snapsEndowmentCaveatSpecifications,
     },
