@@ -1,6 +1,7 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
+import { withTimeout } from 'src/utils';
 
 import type {
   ExecutionServiceArgs,
@@ -41,9 +42,14 @@ export class IframeExecutionService extends AbstractExecutionService<Window> {
     }
 
     iframe.id = '';
-    iframe.src = 'about:blank';
 
-    await new Promise((resolve) => setTimeout(resolve, 10));
+    await withTimeout(
+      new Promise<void>((resolve) => {
+        iframe.addEventListener('load', () => resolve(), { once: true });
+        iframe.src = 'about:blank';
+      }),
+      10,
+    );
 
     iframe.remove();
   }
