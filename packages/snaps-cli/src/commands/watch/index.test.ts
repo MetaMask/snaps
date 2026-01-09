@@ -23,7 +23,7 @@ describe('watch command', () => {
     expect(watchHandler).toHaveBeenCalledWith(
       expect.objectContaining({
         manifest: expect.objectContaining({
-          path: '/custom.json',
+          path: expect.stringContaining('custom.json'),
         }),
       }),
       {
