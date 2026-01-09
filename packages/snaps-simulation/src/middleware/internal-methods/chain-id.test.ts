@@ -29,4 +29,30 @@ describe('getChainIdHandler', () => {
     expect(end).toHaveBeenCalled();
     expect(result.result).toBe('0x1');
   });
+
+  it('returns the chain id from the request if specified', async () => {
+    const { store } = createStore(getMockOptions());
+    const end = jest.fn();
+    const result: PendingJsonRpcResponse = {
+      jsonrpc: '2.0' as const,
+      id: 1,
+    };
+
+    await getChainIdHandler(
+      {
+        scope: 'eip155:2',
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_chainId',
+        params: [],
+      },
+      result,
+      jest.fn(),
+      end,
+      { getSimulationState: store.getState },
+    );
+
+    expect(end).toHaveBeenCalled();
+    expect(result.result).toBe('0x2');
+  });
 });
