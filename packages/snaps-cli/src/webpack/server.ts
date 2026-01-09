@@ -152,6 +152,10 @@ export function getServer(
           'Access-Control-Allow-Origin': '*',
         },
       },
+
+      // This is complicated to test, since this middleware is only called if
+      // the file exists in the first place.
+      /* istanbul ignore next */
       (error) => {
         if (error) {
           next(error);
