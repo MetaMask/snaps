@@ -26,7 +26,12 @@ export async function manifest(
   exports?: string[],
   spinner?: Ora,
 ): Promise<boolean> {
-  const { reports, updated } = await checkManifest(dirname(path), {
+  /* eslint-disable no-console */
+  console.log('Checking manifest at path:', path);
+  console.log('Dirname:', dirname(path));
+  /* eslint-enable no-console */
+
+  const { reports, updated } = await checkManifest(path, {
     exports,
     handlerEndowments,
     updateAndWriteManifest: write,

@@ -4,7 +4,7 @@ import type { Express, Request } from 'express';
 import express, { static as expressStatic } from 'express';
 import type { Server } from 'http';
 import type { AddressInfo } from 'net';
-import { join, relative, resolve as resolvePath, sep, posix } from 'path';
+import { relative, resolve as resolvePath, sep, posix } from 'path';
 
 import type { ProcessedConfig } from '../config';
 
@@ -91,8 +91,10 @@ export function getAllowedPaths(
  * `false` if it is not.
  */
 async function isAllowedPath(request: Request, config: ProcessedConfig) {
-  const manifestPath = join(config.server.root, NpmSnapFileNames.Manifest);
-  const { result } = await readJsonFile<SnapManifest>(manifestPath);
+  const { result } = await readJsonFile<SnapManifest>(
+    resolvePath(config.server.root, config.manifest.path),
+  );
+
   const allowedPaths = getAllowedPaths(config, result);
 
   const path = request.path.slice(1);
@@ -138,6 +140,28 @@ export function getServer(
       })
       // eslint-disable-next-line promise/no-callback-in-promise
       .catch(next);
+  });
+
+  // Serve the manifest file at the expected URL.
+  app.get('/snap.manifest.json', (_request, response, next) => {
+    response.sendFile(
+      resolvePath(config.server.root, config.manifest.path),
+      {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Access-Control-Allow-Origin': '*',
+        },
+      },
+
+      // This is complicated to test, since this middleware is only called if
+      // the file exists in the first place.
+      /* istanbul ignore next */
+      (error) => {
+        if (error) {
+          next(error);
+        }
+      },
+    );
   });
 
   // Serve the static files.
