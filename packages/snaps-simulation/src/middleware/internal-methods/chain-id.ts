@@ -5,12 +5,11 @@ import type {
 import {
   bigIntToHex,
   parseCaipChainId,
-  type CaipChainId,
-  type JsonRpcRequest,
   type PendingJsonRpcResponse,
 } from '@metamask/utils';
 
 import type { InternalMethodsMiddlewareHooks } from './middleware';
+import type { ScopedJsonRpcRequest } from '../multichain';
 
 /**
  * A mock handler for eth_chainId that always returns a specific
@@ -25,7 +24,7 @@ import type { InternalMethodsMiddlewareHooks } from './middleware';
  * @returns The JSON-RPC response.
  */
 export async function getChainIdHandler(
-  request: JsonRpcRequest & { scope?: CaipChainId },
+  request: ScopedJsonRpcRequest,
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
