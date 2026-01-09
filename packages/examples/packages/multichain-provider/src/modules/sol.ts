@@ -6,7 +6,7 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 
-import { invokeMethod, Module } from './base';
+import { Module } from './base';
 
 export class Solana extends Module {
   async signMessage(account: CaipAccountId, message: string): Promise<string> {
@@ -14,7 +14,7 @@ export class Solana extends Module {
 
     const bytes = stringToBytes(message);
 
-    const result = await invokeMethod<{ signature: string }>(this.scope, {
+    const result = await this.invokeMethod<{ signature: string }>({
       method: 'signMessage',
       params: { account: { address }, message: bytesToBase64(bytes) },
     });
@@ -30,6 +30,6 @@ export class Solana extends Module {
   }
 
   async getGenesisHash(): Promise<string> {
-    return await invokeMethod(this.scope, { method: 'getGenesisHash' });
+    return await this.invokeMethod({ method: 'getGenesisHash' });
   }
 }
