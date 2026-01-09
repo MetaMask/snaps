@@ -8,6 +8,7 @@ import {
 import type { SemVerVersion } from '@metamask/utils';
 import normalFs from 'fs';
 import ora from 'ora';
+import { join } from 'path';
 
 import { manifest } from './implementation';
 import type * as webpack from '../../webpack';
@@ -74,7 +75,7 @@ describe('manifest', () => {
 
     const spinner = ora();
     const result = await manifest(
-      '/snap/snap.manifest.json',
+      join('/snap', 'snap.manifest.json'),
       false,
       undefined,
       spinner,
@@ -97,7 +98,7 @@ describe('manifest', () => {
 
     const spinner = ora();
     const result = await manifest(
-      '/snap/snap.manifest.json',
+      join('/snap', 'snap.manifest.json'),
       false,
       undefined,
       spinner,
@@ -132,7 +133,7 @@ describe('manifest', () => {
 
     const spinner = ora();
     const result = await manifest(
-      '/snap/snap.manifest.json',
+      join('/snap', 'snap.manifest.json'),
       true,
       undefined,
       spinner,
@@ -155,7 +156,7 @@ describe('manifest', () => {
     const log = jest.spyOn(console, 'log').mockImplementation();
 
     await fs.writeFile(
-      '/snap/snap.manifest.json',
+      join('/snap', 'snap.manifest.json'),
       JSON.stringify(
         getSnapManifest({
           shasum: 'G/W5b2JZVv+epgNX9pkN63X6Lye9EJVJ4NLSgAw/afd=',
