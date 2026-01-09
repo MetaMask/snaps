@@ -1,8 +1,8 @@
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { createWindow } from '@metamask/snaps-utils';
-import { withTimeout } from 'src/utils';
 
+import { withTimeout } from '../../utils';
 import type {
   ExecutionServiceArgs,
   TerminateJobArgs,
