@@ -50,18 +50,22 @@ export async function createWindow({
     iframe.setAttribute('src', uri);
     document.body.appendChild(iframe);
 
-    iframe.addEventListener('load', () => {
-      if (iframe.contentWindow) {
-        resolve(iframe.contentWindow);
-      } else {
-        // We don't know of a case when this would happen, but better to fail
-        // fast if it does.
-        reject(
-          new Error(
-            `iframe.contentWindow not present on load for job "${id}".`,
-          ),
-        );
-      }
-    });
+    iframe.addEventListener(
+      'load',
+      () => {
+        if (iframe.contentWindow) {
+          resolve(iframe.contentWindow);
+        } else {
+          // We don't know of a case when this would happen, but better to fail
+          // fast if it does.
+          reject(
+            new Error(
+              `iframe.contentWindow not present on load for job "${id}".`,
+            ),
+          );
+        }
+      },
+      { once: true },
+    );
   });
 }
