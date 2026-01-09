@@ -3,13 +3,10 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { hexToBigInt, parseCaipChainId } from '@metamask/utils';
-import type {
-  CaipChainId,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { InternalMethodsMiddlewareHooks } from './middleware';
+import type { ScopedJsonRpcRequest } from '../multichain';
 
 /**
  * A mock handler for net_version that always returns a specific
@@ -24,7 +21,7 @@ import type { InternalMethodsMiddlewareHooks } from './middleware';
  * @returns The JSON-RPC response.
  */
 export async function getNetworkVersionHandler(
-  request: JsonRpcRequest & { scope?: CaipChainId },
+  request: ScopedJsonRpcRequest,
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,

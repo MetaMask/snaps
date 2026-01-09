@@ -5,13 +5,9 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import type { Caveat } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import {
-  type CaipChainId,
-  isObject,
-  type Json,
-  type JsonRpcRequest,
-} from '@metamask/utils';
+import { isObject, type Json } from '@metamask/utils';
 
+import type { ScopedJsonRpcRequest } from './utils';
 import { getSessionScopes } from './utils';
 
 export type InvokeMethodHandlerHooks = {
@@ -29,7 +25,7 @@ export type InvokeMethodHandlerHooks = {
  * @returns Nothing.
  */
 export async function invokeMethodHandler(
-  request: JsonRpcRequest & { scope?: CaipChainId },
+  request: ScopedJsonRpcRequest,
   hooks: InvokeMethodHandlerHooks,
 ) {
   if (!isObject(request.params)) {

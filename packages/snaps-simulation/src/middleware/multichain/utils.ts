@@ -3,7 +3,9 @@ import type {
   InternalScopeObject,
 } from '@metamask/chain-agnostic-permission';
 import { getSessionScopes as getMergedSessionScopes } from '@metamask/chain-agnostic-permission';
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
+
+export type ScopedJsonRpcRequest = JsonRpcRequest & { scope?: CaipChainId };
 
 /**
  * Get a session scopes value that can be used for simulation, by injecting non-EVM methods into the returned session scopes
