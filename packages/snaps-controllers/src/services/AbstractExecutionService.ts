@@ -47,7 +47,8 @@ export type ExecutionServiceArgs = {
 export type JobStreams = {
   command: Duplex;
   rpc: Duplex;
-  _connection: BasePostMessageStream;
+  connection: BasePostMessageStream;
+  mux: ObjectMultiplex;
 };
 
 export type Job<WorkerType> = {
@@ -332,13 +333,12 @@ export abstract class AbstractExecutionService<WorkerType>
       return originalWrite(chunk, encoding, callback);
     };
 
-    // Typecast: stream type mismatch
     return {
       streams: {
         command: commandStream,
         rpc: rpcStream,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _connection: envStream,
+        connection: envStream,
+        mux,
       },
       worker,
     };
