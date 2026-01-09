@@ -152,7 +152,9 @@ export abstract class AbstractExecutionService<WorkerType>
    *
    * @param job - The object corresponding to the job to be terminated.
    */
-  protected abstract terminateJob(job: TerminateJobArgs<WorkerType>): void;
+  protected abstract terminateJob(
+    job: TerminateJobArgs<WorkerType>,
+  ): Promise<void>;
 
   /**
    * Terminates the Snap with the specified ID and deletes all its associated
@@ -196,7 +198,7 @@ export abstract class AbstractExecutionService<WorkerType>
       }
     });
 
-    this.terminateJob(job);
+    await this.terminateJob(job);
 
     this.#jobs.delete(snapId);
     this.#status.delete(snapId);
@@ -257,7 +259,7 @@ export abstract class AbstractExecutionService<WorkerType>
 
     if (result === hasTimedOut) {
       // For certain environments, such as the iframe we may have already created the worker and wish to terminate it.
-      this.terminateJob({ id: snapId });
+      await this.terminateJob({ id: snapId });
 
       const status = this.#status.get(snapId);
       if (status === 'created') {
