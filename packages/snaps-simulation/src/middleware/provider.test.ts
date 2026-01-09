@@ -1,4 +1,5 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import type { JsonRpcRequest } from '@metamask/utils';
 import { stringToBytes } from '@metamask/utils';
 import { FetchRequest } from 'ethers';
 
@@ -68,6 +69,25 @@ describe('createProviderMiddleware', () => {
     store.dispatch(setChain('0xaa36a7'));
 
     const result = await engine.handle(request);
+    expect(result).toStrictEqual({ id: 1, jsonrpc: '2.0', result: '11155111' });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('https://sepolia.infura.io'),
+    );
+  });
+
+  it('uses the chain ID from the request if specified', async () => {
+    fetchMock.mockResolvedValue({
+      statusCode: 200,
+      result: { id: 1, jsonrpc: '2.0', result: '11155111' },
+    });
+
+    const { engine } = createMiddleware();
+
+    const result = await engine.handle({
+      ...request,
+      scope: 'eip155:11155111',
+    } as unknown as JsonRpcRequest);
     expect(result).toStrictEqual({ id: 1, jsonrpc: '2.0', result: '11155111' });
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -148,6 +168,25 @@ describe('createProviderMiddleware', () => {
       error: expect.objectContaining({
         code: -32603,
         message: 'Internal JSON-RPC error.',
+      }),
+    });
+  });
+
+  it('ignores non-EVM requests', async () => {
+    const { engine } = createMiddleware();
+
+    const result = await engine.handle({
+      ...request,
+      scope: 'solana:foo',
+    } as unknown as JsonRpcRequest);
+    expect(result).toStrictEqual({
+      id: 1,
+      jsonrpc: '2.0',
+      error: expect.objectContaining({
+        code: -32603,
+        message: expect.stringContaining(
+          'JsonRpcEngine: Response has no error or result for request:',
+        ),
       }),
     });
   });
