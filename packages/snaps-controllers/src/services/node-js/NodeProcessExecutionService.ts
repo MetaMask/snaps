@@ -36,7 +36,9 @@ export class NodeProcessExecutionService extends AbstractExecutionService<ChildP
     return Promise.resolve({ worker, stream });
   }
 
-  protected terminateJob(jobWrapper: TerminateJobArgs<ChildProcess>): void {
+  protected async terminateJob(
+    jobWrapper: TerminateJobArgs<ChildProcess>,
+  ): Promise<void> {
     jobWrapper.worker?.kill();
   }
 }

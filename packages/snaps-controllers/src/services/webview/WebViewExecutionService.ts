@@ -53,7 +53,9 @@ export class WebViewExecutionService extends AbstractExecutionService<WebViewInt
     return { worker: webView, stream };
   }
 
-  protected terminateJob(jobWrapper: TerminateJobArgs<WebViewInterface>): void {
+  protected async terminateJob(
+    jobWrapper: TerminateJobArgs<WebViewInterface>,
+  ): Promise<void> {
     this.#removeWebView(jobWrapper.id);
   }
 }
