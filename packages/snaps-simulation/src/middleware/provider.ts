@@ -25,6 +25,7 @@ export function createProviderMiddleware(
 
       if (!isEvm) {
         await next();
+        /* istanbul ignore next */
         return;
       }
 

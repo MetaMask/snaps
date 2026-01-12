@@ -1,5 +1,9 @@
 import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
-import { setEthAccounts } from '@metamask/chain-agnostic-permission';
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+  setEthAccounts,
+} from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import { isObject, type JsonRpcRequest } from '@metamask/utils';
@@ -40,10 +44,10 @@ export async function createSessionHandler(
   const caveatWithAccounts = setEthAccounts(caveat, ethereumAccounts);
 
   const permissions = {
-    'endowment:caip25': {
+    [Caip25EndowmentPermissionName]: {
       caveats: [
         {
-          type: 'authorizedScopes',
+          type: Caip25CaveatType,
           value: caveatWithAccounts,
         },
       ],
@@ -54,5 +58,5 @@ export async function createSessionHandler(
 
   const sessionScopes = getSessionScopes(caveatWithAccounts);
 
-  return { sessionScopes };
+  return { sessionScopes, sessionProperties: caveat.sessionProperties };
 }
