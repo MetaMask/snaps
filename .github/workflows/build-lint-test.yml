@@ -267,7 +267,6 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v2
         with:
           is-high-risk-environment: false
-          platform-specific-caching: true
       - name: Build dependencies
         run: yarn build:ci
       - name: Run tests
