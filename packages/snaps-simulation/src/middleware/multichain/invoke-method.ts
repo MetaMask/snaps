@@ -5,7 +5,12 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import type { Caveat } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import { isObject, type Json } from '@metamask/utils';
+import { is, object, pick } from '@metamask/superstruct';
+import {
+  CaipChainIdStruct,
+  JsonRpcRequestStruct,
+  type Json,
+} from '@metamask/utils';
 
 import type { ScopedJsonRpcRequest } from './utils';
 import { getSessionScopes } from './utils';
@@ -16,6 +21,12 @@ export type InvokeMethodHandlerHooks = {
     caveatType: string,
   ) => Caveat<string, Json> | undefined;
 };
+
+const InvokeMethodParamsStruct = object({
+  scope: CaipChainIdStruct,
+  // @ts-expect-error Unsure why this type doesn't work.
+  request: pick(JsonRpcRequestStruct, ['method', 'params']),
+});
 
 /**
  * A handler that implements a simplified version of `wallet_invokeMethod`.
@@ -28,12 +39,11 @@ export async function invokeMethodHandler(
   request: ScopedJsonRpcRequest,
   hooks: InvokeMethodHandlerHooks,
 ) {
-  if (!isObject(request.params)) {
+  if (!is(request.params, InvokeMethodParamsStruct)) {
     throw rpcErrors.invalidParams({ data: { request } });
   }
 
-  // TODO: Struct?
-  const { request: wrappedRequest, scope } = request.params as any;
+  const { request: wrappedRequest, scope } = request.params;
 
   const caveat = hooks.getCaveat(
     Caip25EndowmentPermissionName,
