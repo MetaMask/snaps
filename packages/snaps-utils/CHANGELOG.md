@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.1]
+
 ### Uncategorized
 
 - fix: Ensure iframe load listener is removed ([#3797](https://github.com/MetaMask/snaps/pull/3797))
@@ -752,7 +754,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.1...HEAD
+[11.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.0...@metamask/snaps-utils@11.7.1
 [11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.3...@metamask/snaps-utils@11.7.0
 [11.6.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.2...@metamask/snaps-utils@11.6.3
 [11.6.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.1...@metamask/snaps-utils@11.6.2

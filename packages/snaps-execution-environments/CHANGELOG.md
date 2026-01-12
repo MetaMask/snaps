@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
-- chore: Bump @lavamoat/webpack from 1.5.4 to 1.5.6 ([#3774](https://github.com/MetaMask/snaps/pull/3774))
-- feat: Allow external images ([#3769](https://github.com/MetaMask/snaps/pull/3769))
-- chore: Bump lavamoat from 10.0.2 to 10.0.5 ([#3771](https://github.com/MetaMask/snaps/pull/3771))
-
 ## [10.3.0]
 
 ### Added

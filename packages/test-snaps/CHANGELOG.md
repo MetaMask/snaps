@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0]
+
 ### Uncategorized
 
 - feat!: Add method for getting genesis block ([#3788](https://github.com/MetaMask/snaps/pull/3788))
@@ -415,7 +417,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.3.0...HEAD
+[3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.2.0...@metamask/test-snaps@3.3.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.1.0...@metamask/test-snaps@3.2.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.0.0...@metamask/test-snaps@3.1.0
 [3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@2.28.1...@metamask/test-snaps@3.0.0

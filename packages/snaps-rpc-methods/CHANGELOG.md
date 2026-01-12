@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/permission-controller from 12.1.1 to 12.2.0 ([#3791](https://github.com/MetaMask/snaps/pull/3791))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
-- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-- chore: Bump @metamask/permission-controller from 12.1.0 to 12.1.1 ([#3746](https://github.com/MetaMask/snaps/pull/3746))
-
 ## [14.1.1]
 
 ### Fixed
