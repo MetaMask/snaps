@@ -32,6 +32,7 @@ export const MultichainProvider: FunctionComponent = () => {
   };
 
   const handleCreateSession = () => handleSubmit('createSession');
+  const handleRevokeSession = () => handleSubmit('revokeSession');
   const handleGetChainId = () => handleSubmit('getChainId');
   const handleGetAccounts = () => handleSubmit('getAccounts');
   const handleGetGenesisHash = () => handleSubmit('getGenesisHash');
@@ -44,14 +45,22 @@ export const MultichainProvider: FunctionComponent = () => {
       version={MULTICHAIN_PROVIDER_VERSION}
       testId="multichain-provider"
     >
-      <Button
-        id="sendCreateSession"
-        className="mb-3"
-        disabled={isLoading}
-        onClick={handleCreateSession}
-      >
-        Create Session
-      </Button>
+      <ButtonGroup className="mb-3">
+        <Button
+          id="sendCreateSession"
+          disabled={isLoading}
+          onClick={handleCreateSession}
+        >
+          Create Session
+        </Button>
+        <Button
+          id="sendRevokeSession"
+          disabled={isLoading}
+          onClick={handleRevokeSession}
+        >
+          Revoke Session
+        </Button>
+      </ButtonGroup>
       <SwitchChain onChange={setScope} />
       <ButtonGroup>
         {scope.startsWith('eip155') && (

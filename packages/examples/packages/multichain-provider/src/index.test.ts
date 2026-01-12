@@ -48,7 +48,28 @@ describe('onRpcRequest', () => {
             notifications: [],
           },
         },
+        sessionProperties: {},
       });
+    });
+  });
+
+  describe('revokeSession', () => {
+    it('revokes the established session', async () => {
+      const { request } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      expect(await request({ method: 'getAccounts' })).toRespondWith([
+        'eip155:1:0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
+      ]);
+
+      const response = await request({
+        method: 'revokeSession',
+      });
+
+      expect(response).toRespondWith(true);
+
+      expect(await request({ method: 'getAccounts' })).toRespondWith([]);
     });
   });
 

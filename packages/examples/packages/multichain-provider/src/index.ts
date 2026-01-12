@@ -44,6 +44,18 @@ async function createSession() {
 }
 
 /**
+ * Revokes the multichain API session.
+ *
+ * @returns True.
+ */
+async function revokeSession() {
+  return await snap.request({
+    method: 'wallet_revokeSession',
+    params: {},
+  });
+}
+
+/**
  * Retrieve the currently permissioned accounts in the active session for a given scope.
  *
  * @param scope - The CAIP-2 scope.
@@ -103,6 +115,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'createSession':
       return await createSession();
+
+    case 'revokeSession':
+      return await revokeSession();
 
     case 'getChainId':
       return await scopeModule.invokeMethod<string>({

@@ -14,6 +14,7 @@ import type {
 import { createSessionHandler } from './create-session';
 import { getSessionHandler } from './get-session';
 import { invokeMethodHandler } from './invoke-method';
+import { revokeSessionHandler } from './revoke-session';
 import type { MultichainMiddlewareHooks } from '../../simulation';
 
 const multichainHandlers = {
@@ -21,6 +22,7 @@ const multichainHandlers = {
   wallet_createSession: createSessionHandler,
   wallet_invokeMethod: invokeMethodHandler,
   wallet_getSession: getSessionHandler,
+  wallet_revokeSession: revokeSessionHandler,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 

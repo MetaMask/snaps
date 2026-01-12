@@ -377,6 +377,13 @@ export type MultichainMiddlewareHooks = {
    * @param permissions - The permissions.
    */
   grantPermissions: (permissions: RequestedPermissions) => void;
+
+  /**
+   * A hook that revokes a permission for the origin.
+   *
+   * @param permission - The permission name.
+   */
+  revokePermission: (permission: string) => void;
 };
 
 /**
@@ -673,6 +680,18 @@ export function getMultichainHooks(
         subject: { origin: snapId },
         approvedPermissions,
       });
+    },
+    revokePermission: (permission: string) => {
+      try {
+        controllerMessenger.call('PermissionController:revokePermissions', {
+          [snapId]: [permission],
+        });
+      } catch (error) {
+        if (error instanceof PermissionDoesNotExistError) {
+          return;
+        }
+        throw error;
+      }
     },
   };
 }

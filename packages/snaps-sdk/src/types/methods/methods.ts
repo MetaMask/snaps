@@ -78,6 +78,9 @@ import type {
   GetSessionParams,
   GetSessionResult,
   InvokeMethodParams,
+  InvokeMethodResult,
+  RevokeSessionParams,
+  RevokeSessionResult,
 } from './multichain';
 import type { NotifyParams, NotifyResult } from './notify';
 import type {
@@ -165,10 +168,11 @@ export type SnapMethods = {
   wallet_getSession: [GetSessionParams, GetSessionResult];
   wallet_getSnaps: [GetSnapsParams, GetSnapsResult];
   wallet_invokeKeyring: [InvokeKeyringParams, InvokeKeyringResult];
-  wallet_invokeMethod: [InvokeMethodParams, InvokeKeyringResult];
+  wallet_invokeMethod: [InvokeMethodParams, InvokeMethodResult];
   wallet_invokeSnap: [InvokeSnapParams, InvokeSnapResult];
   wallet_snap: [InvokeSnapParams, InvokeSnapResult];
   wallet_requestSnaps: [RequestSnapsParams, RequestSnapsResult];
+  wallet_revokeSession: [RevokeSessionParams, RevokeSessionResult];
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
