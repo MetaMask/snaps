@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.3.0]
 
-### Uncategorized
+### Added
 
-- feat!: Add method for getting genesis block ([#3788](https://github.com/MetaMask/snaps/pull/3788))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+- Add `getGenesisBlock` RPC method button ([#3788](https://github.com/MetaMask/snaps/pull/3788))
+
+### Changed
+
+- Use latest versions of example Snaps ([#3798](https://github.com/MetaMask/snaps/pull/3798))
 
 ## [3.2.0]
 
