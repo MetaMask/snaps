@@ -9,18 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.7.1]
 
-### Uncategorized
-
-### Fixed
-
-- Ensure iframe load listener is removed ([#3797](https://github.com/MetaMask/snaps/pull/3797))
-
 ### Changed
 
 - Use `sha256` utility from `@metamask/utils` ([#3781](https://github.com/MetaMask/snaps/pull/3781))
 - Bump MetaMask dependencies ([#3783](https://github.com/MetaMask/snaps/pull/3783), [#3748](https://github.com/MetaMask/snaps/pull/3748), [#3791](https://github.com/MetaMask/snaps/pull/3791))
 - Fix some typos in the documentation ([#3739](https://github.com/MetaMask/snaps/pull/3739))
 
+### Fixed
+
+- Ensure iframe load listener is removed ([#3797](https://github.com/MetaMask/snaps/pull/3797))
 
 ## [11.7.0]
 
