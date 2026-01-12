@@ -1,0 +1,51 @@
+{
+  "version": "2.3.0",
+  "description": "MetaMask example snap demonstrating the use of `snap_getBip32Entropy`.",
+  "proposedName": "BIP-32 Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "yW/4a7WQ2dCmZHAaX6P2tihFF7azVPkpQ0iJlb/v61A=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/bip32-example-snap",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialConnections": {
+    "http://localhost:9000": {}
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true,
+      "snaps": true
+    },
+    "snap_dialog": {},
+    "snap_getBip32Entropy": [
+      {
+        "path": ["m", "44'", "0'"],
+        "curve": "secp256k1"
+      },
+      {
+        "path": ["m", "44'", "0'"],
+        "curve": "ed25519"
+      },
+      {
+        "path": ["m", "44'", "0'"],
+        "curve": "ed25519Bip32"
+      }
+    ],
+    "snap_getBip32PublicKey": [
+      {
+        "path": ["m", "44'", "0'"],
+        "curve": "secp256k1"
+      }
+    ]
+  },
+  "platformVersion": "10.3.0",
+  "manifestVersion": "0.1"
+}

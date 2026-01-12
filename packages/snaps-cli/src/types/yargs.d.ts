@@ -33,6 +33,7 @@ type YargsArgs = {
   dist: string;
   src: string;
   eval: boolean;
+  manifest?: string;
   outfileName: string;
   serve: boolean;
   directory?: string;

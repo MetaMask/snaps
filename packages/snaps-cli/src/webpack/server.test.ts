@@ -139,7 +139,8 @@ describe('getAllowedPaths', () => {
 
 describe('getServer', () => {
   beforeEach(async () => {
-    await fs.mkdir('/foo', { recursive: true });
+    await fs.mkdir('/foo/dist', { recursive: true });
+    await fs.writeFile('/foo/dist/bundle.js', 'console.log("Hello, world!");');
     await fs.writeFile(
       '/foo/snap.manifest.json',
       JSON.stringify(getSnapManifest()),
@@ -207,17 +208,53 @@ describe('getServer', () => {
         root: '/foo',
         port: 0,
       },
+      output: {
+        path: '/foo/dist',
+      },
+      manifest: {
+        path: '/foo/snap.manifest.json',
+      },
     });
 
     const server = getServer(config);
     const { port, close } = await server.listen();
 
     const response = await fetch(
-      `http://localhost:${port}/snap.manifest.json?_=1731493314736`,
+      `http://localhost:${port}/dist/bundle.js?_=1731493314736`,
     );
 
     expect(response.status).toBe(200);
-    expect(await response.text()).toBe(JSON.stringify(getSnapManifest()));
+    expect(await response.text()).toBe('console.log("Hello, world!");');
+
+    await close();
+  });
+
+  it('responds with a custom manifest file', async () => {
+    const config = getMockConfig({
+      input: 'src/index.js',
+      server: {
+        root: '/foo',
+        port: 0,
+      },
+      manifest: {
+        path: '/foo/snap.manifest.dev.json',
+      },
+    });
+
+    const server = getServer(config);
+    const { port, close } = await server.listen();
+
+    // Create a custom manifest file in the /foo/dist directory
+    const customManifest = getSnapManifest({ proposedName: 'Dev Snap' });
+    await fs.writeFile(
+      '/foo/snap.manifest.dev.json',
+      JSON.stringify(customManifest),
+    );
+
+    const response = await fetch(`http://localhost:${port}/snap.manifest.json`);
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toBe(JSON.stringify(customManifest));
 
     await close();
   });
@@ -228,6 +265,9 @@ describe('getServer', () => {
       server: {
         root: '/foo',
         port: 0,
+      },
+      manifest: {
+        path: '/foo/snap.manifest.json',
       },
     });
 
