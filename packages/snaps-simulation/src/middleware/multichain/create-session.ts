@@ -1,4 +1,3 @@
-import type { Caip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -6,7 +5,20 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { isObject, type JsonRpcRequest } from '@metamask/utils';
+import {
+  array,
+  is,
+  object,
+  string,
+  optional,
+  record,
+} from '@metamask/superstruct';
+import {
+  CaipAccountIdStruct,
+  CaipChainIdStruct,
+  JsonStruct,
+  type JsonRpcRequest,
+} from '@metamask/utils';
 
 import { getSessionScopes } from './utils';
 import { getSimulationAccount } from '../internal-methods/accounts';
@@ -15,6 +27,21 @@ export type CreateSessionHandlerHooks = {
   grantPermissions: (permissions: RequestedPermissions) => void;
   getMnemonic: () => Promise<Uint8Array>;
 };
+
+const ScopesStruct = record(
+  CaipChainIdStruct,
+  object({
+    methods: array(string()),
+    accounts: array(CaipAccountIdStruct),
+    notifications: array(string()),
+  }),
+);
+
+const CreateSessionParamsStruct = object({
+  requiredScopes: optional(ScopesStruct),
+  optionalScopes: optional(ScopesStruct),
+  sessionProperties: optional(record(string(), JsonStruct)),
+});
 
 /**
  * A handler that implements a simplified version of `wallet_createSession`.
@@ -27,16 +54,16 @@ export async function createSessionHandler(
   request: JsonRpcRequest,
   hooks: CreateSessionHandlerHooks,
 ) {
-  if (!isObject(request.params)) {
+  if (!is(request.params, CreateSessionParamsStruct)) {
     throw rpcErrors.invalidParams({ data: { request } });
   }
 
   const caveat = {
     requiredScopes: request.params.requiredScopes ?? {},
     optionalScopes: request.params.optionalScopes ?? {},
-    sessionProperties: {},
+    sessionProperties: request.params.sessionProperties ?? {},
     isMultichainOrigin: true,
-  } as Caip25CaveatValue;
+  };
 
   const mnemonic = await hooks.getMnemonic();
   const ethereumAccounts = [await getSimulationAccount(mnemonic)];

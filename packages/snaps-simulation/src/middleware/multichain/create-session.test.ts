@@ -112,7 +112,7 @@ describe('createSessionHandler', () => {
           jsonrpc: '2.0',
           id: 1,
           method: 'wallet_createSession',
-          params: [],
+          params: { optionalScopes: { foo: {} } },
         },
         { grantPermissions, getMnemonic },
       ),
