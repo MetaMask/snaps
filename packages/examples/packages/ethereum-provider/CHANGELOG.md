@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0]
+
+### Added
+
+- Add `getGenesisBlock` method for getting genesis block ([#3788](https://github.com/MetaMask/snaps/pull/3788))
+
+### Removed
+
+- Remove unused RPC methods: `getGasPrice` and `getVersion` ([#3788](https://github.com/MetaMask/snaps/pull/3788))
+
 ## [2.4.0]
 
 ### Added
@@ -104,7 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@3.0.0...HEAD
+[3.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.4.0...@metamask/ethereum-provider-example-snap@3.0.0
 [2.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.3.0...@metamask/ethereum-provider-example-snap@2.4.0
 [2.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.2.1...@metamask/ethereum-provider-example-snap@2.3.0
 [2.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/ethereum-provider-example-snap@2.2.0...@metamask/ethereum-provider-example-snap@2.2.1

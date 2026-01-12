@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [17.2.1]
+
+### Changed
+
+- Bump MetaMask dependencies ([#3783](https://github.com/MetaMask/snaps/pull/3783), [#3748](https://github.com/MetaMask/snaps/pull/3748), [#3791](https://github.com/MetaMask/snaps/pull/3791))
+
+### Fixed
+
+- Unload iframe before removing ([#3796](https://github.com/MetaMask/snaps/pull/3796))
+- Ensure stream multiplex is destroyed ([#3795](https://github.com/MetaMask/snaps/pull/3795))
+
 ## [17.2.0]
 
 ### Added
@@ -1007,7 +1018,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.1...HEAD
+[17.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.0...@metamask/snaps-controllers@17.2.1
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.2...@metamask/snaps-controllers@17.2.0
 [17.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.1...@metamask/snaps-controllers@17.1.2
 [17.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.0...@metamask/snaps-controllers@17.1.1
