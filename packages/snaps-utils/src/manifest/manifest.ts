@@ -121,9 +121,8 @@ export async function checkManifest(
     watchMode = false,
   }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
-  const normalizedManifestPath = pathUtils.normalize(manifestPath);
-  const basePath = dirname(normalizedManifestPath);
-  const manifestFile = await readJsonFile(normalizedManifestPath);
+  const basePath = dirname(manifestPath);
+  const manifestFile = await readJsonFile(manifestPath);
   const unvalidatedManifest = manifestFile.result;
 
   const packageFile = await readJsonFile(
@@ -189,7 +188,7 @@ export async function checkManifest(
 
       try {
         await writeFileFn(
-          normalizedManifestPath,
+          manifestPath,
           manifestResults.files.manifest.toString(),
         );
       } catch (error) {

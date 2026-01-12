@@ -171,7 +171,7 @@ describe('manifest', () => {
 
     const spinner = ora();
     const result = await manifest(
-      '/snap/snap.manifest.json',
+      join('/snap', 'snap.manifest.json'),
       true,
       undefined,
       spinner,
