@@ -2,6 +2,7 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 
 import { createMultichainMiddleware } from './middleware';
+import { MOCK_CAVEAT } from './test-utils';
 import { DEFAULT_SRP } from '../../constants';
 
 /**
@@ -15,7 +16,7 @@ function createMiddleware(isMultichain: boolean = true) {
     getMnemonic: jest
       .fn()
       .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
-    getCaveat: jest.fn(),
+    getCaveat: jest.fn().mockReturnValue(MOCK_CAVEAT),
     grantPermissions: jest.fn(),
   };
   const middleware = createMultichainMiddleware(isMultichain, hooks);
@@ -34,7 +35,9 @@ describe('Multichain Middleware', () => {
     });
 
     expect(result).toStrictEqual(
-      expect.objectContaining({ result: { sessionScopes: {} } }),
+      expect.objectContaining({
+        result: { sessionScopes: expect.any(Object) },
+      }),
     );
   });
 
@@ -82,6 +85,32 @@ describe('Multichain Middleware', () => {
       jsonrpc: '2.0',
       id: 1,
       method: 'eth_call',
+    });
+
+    expect(result).toStrictEqual(
+      expect.objectContaining({
+        error: expect.objectContaining({
+          message: expect.stringContaining(
+            'JsonRpcEngine: Response has no error or result for request:',
+          ),
+          stack: expect.any(String),
+        }),
+      }),
+    );
+  });
+
+  it('passes wallet_invokeMethod requests to the next middleware', async () => {
+    const { engine } = createMiddleware(true);
+    const result = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'wallet_invokeMethod',
+      params: {
+        scope: 'eip155:1',
+        request: {
+          method: 'eth_chainId',
+        },
+      },
     });
 
     expect(result).toStrictEqual(

@@ -40,7 +40,7 @@ export async function invokeMethodHandler(
     Caip25CaveatType,
   ) as Caveat<string, Caip25CaveatValue>;
 
-  const sessionScopes = getSessionScopes(caveat.value);
+  const sessionScopes = caveat ? getSessionScopes(caveat.value) : {};
 
   if (!sessionScopes[scope]?.methods.includes(wrappedRequest.method)) {
     throw providerErrors.unauthorized();

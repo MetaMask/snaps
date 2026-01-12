@@ -31,6 +31,6 @@ export function getSessionScopes(value: Caip25CaveatValue) {
   }, {});
 
   return getMergedSessionScopes(value, {
-    getNonEvmSupportedMethods: (scope) => nonEvmMethods[scope] ?? [],
+    getNonEvmSupportedMethods: (scope) => nonEvmMethods[scope],
   });
 }
