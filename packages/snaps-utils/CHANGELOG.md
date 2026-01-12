@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Ensure iframe load listener is removed ([#3797](https://github.com/MetaMask/snaps/pull/3797))
+- chore: Bump @metamask/permission-controller from 12.1.1 to 12.2.0 ([#3791](https://github.com/MetaMask/snaps/pull/3791))
+- chore: fix some typos in comments ([#3739](https://github.com/MetaMask/snaps/pull/3739))
+- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
+- chore: Use SHA-256 utility ([#3781](https://github.com/MetaMask/snaps/pull/3781))
+- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+- chore: Bump Playwright ([#3703](https://github.com/MetaMask/snaps/pull/3703))
+
 ## [11.7.0]
 
 ### Added

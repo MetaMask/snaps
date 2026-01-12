@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/permission-controller from 12.1.1 to 12.2.0 ([#3791](https://github.com/MetaMask/snaps/pull/3791))
+- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
+- feat: Support more chains when simulating Ethereum provider ([#3789](https://github.com/MetaMask/snaps/pull/3789))
+- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+- chore: Bump @metamask/phishing-controller from 15.0.0 to 16.1.0 ([#3748](https://github.com/MetaMask/snaps/pull/3748))
+
 ## [3.7.0]
 
 ### Added
