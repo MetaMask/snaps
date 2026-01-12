@@ -4,7 +4,6 @@ import { writeManifest } from '@metamask/snaps-webpack-plugin';
 import { assert } from '@metamask/utils';
 import { red, yellow, green } from 'chalk';
 import type { Ora } from 'ora';
-import { dirname } from 'path';
 
 import { error, info, warn } from '../../utils';
 
@@ -26,11 +25,6 @@ export async function manifest(
   exports?: string[],
   spinner?: Ora,
 ): Promise<boolean> {
-  /* eslint-disable no-console */
-  console.log('Checking manifest at path:', path);
-  console.log('Dirname:', dirname(path));
-  /* eslint-enable no-console */
-
   const { reports, updated } = await checkManifest(path, {
     exports,
     handlerEndowments,
