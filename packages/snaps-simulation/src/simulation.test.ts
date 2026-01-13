@@ -1,4 +1,9 @@
+import {
+  Caip25CaveatType,
+  Caip25EndowmentPermissionName,
+} from '@metamask/chain-agnostic-permission';
 import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import {
   detectSnapLocation,
   fetchSnap,
@@ -16,7 +21,9 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import { DEFAULT_SRP } from './constants';
+import { MOCK_CAVEAT } from './middleware/multichain/test-utils';
 import {
+  getMultichainHooks,
   getPermittedHooks,
   getRestrictedHooks,
   installSnap,
@@ -689,6 +696,107 @@ describe('getPermittedHooks', () => {
     );
 
     await close();
+  });
+});
+
+describe('getMultichainHooks', () => {
+  let controllerMessenger = getRootControllerMessenger();
+
+  beforeEach(() => {
+    controllerMessenger = getRootControllerMessenger();
+  });
+
+  it('returns `getMnemonic`', async () => {
+    const options = getMockOptions();
+    const hooks = getMultichainHooks(
+      MOCK_SNAP_ID,
+      options,
+      controllerMessenger,
+    );
+
+    const result = await hooks.getMnemonic();
+    expect(result).toStrictEqual(
+      mnemonicPhraseToBytes(options.secretRecoveryPhrase),
+    );
+  });
+
+  it('returns `grantPermissions`', () => {
+    const grantPermissions = jest.fn();
+    controllerMessenger.registerActionHandler(
+      'PermissionController:grantPermissions',
+      grantPermissions,
+    );
+
+    const hooks = getMultichainHooks(
+      MOCK_SNAP_ID,
+      getMockOptions(),
+      controllerMessenger,
+    );
+
+    hooks.grantPermissions({
+      [Caip25EndowmentPermissionName]: { caveats: [MOCK_CAVEAT] },
+    });
+
+    expect(grantPermissions).toHaveBeenCalledWith({
+      subject: { origin: MOCK_SNAP_ID },
+      approvedPermissions: {
+        [Caip25EndowmentPermissionName]: { caveats: [MOCK_CAVEAT] },
+      },
+    });
+  });
+
+  it('returns `revokePermission`', () => {
+    const revokePermissions = jest.fn().mockImplementation((permissions) => {
+      throw new PermissionDoesNotExistError(
+        MOCK_SNAP_ID,
+        permissions[MOCK_SNAP_ID],
+      );
+    });
+    controllerMessenger.registerActionHandler(
+      'PermissionController:revokePermissions',
+      revokePermissions,
+    );
+
+    const hooks = getMultichainHooks(
+      MOCK_SNAP_ID,
+      getMockOptions(),
+      controllerMessenger,
+    );
+
+    hooks.revokePermission(Caip25EndowmentPermissionName);
+
+    expect(revokePermissions).toHaveBeenCalledWith({
+      [MOCK_SNAP_ID]: [Caip25EndowmentPermissionName],
+    });
+  });
+
+  it('returns `getCaveat`', () => {
+    const getCaveat = jest.fn().mockImplementation((permissions) => {
+      throw new PermissionDoesNotExistError(
+        MOCK_SNAP_ID,
+        permissions[MOCK_SNAP_ID],
+      );
+    });
+    controllerMessenger.registerActionHandler(
+      'PermissionController:getCaveat',
+      getCaveat,
+    );
+
+    const hooks = getMultichainHooks(
+      MOCK_SNAP_ID,
+      getMockOptions(),
+      controllerMessenger,
+    );
+
+    expect(
+      hooks.getCaveat(Caip25EndowmentPermissionName, Caip25CaveatType),
+    ).toBeUndefined();
+
+    expect(getCaveat).toHaveBeenCalledWith(
+      MOCK_SNAP_ID,
+      Caip25EndowmentPermissionName,
+      Caip25CaveatType,
+    );
   });
 });
 

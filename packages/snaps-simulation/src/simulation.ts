@@ -672,6 +672,7 @@ export function getMultichainHooks(
         if (error instanceof PermissionDoesNotExistError) {
           return undefined;
         }
+        /* istanbul ignore next */
         throw error;
       }
     },
@@ -690,6 +691,7 @@ export function getMultichainHooks(
         if (error instanceof PermissionDoesNotExistError) {
           return;
         }
+        /* istanbul ignore next */
         throw error;
       }
     },
