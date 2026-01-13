@@ -21,6 +21,7 @@ import type {
   Json,
 } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
+import { Mutex } from 'async-mutex';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import type { MethodHooksObject } from '../utils';
@@ -151,6 +152,21 @@ export function getSnapPermissionsRequest(
   return requestedPermissions;
 }
 
+const mutexes = new Map();
+
+/**
+ * Get the corresponding Snap installation mutex for a given origin.
+ *
+ * @param origin - The origin of the request.
+ * @returns A mutex for that specific origin.
+ */
+function getMutex(origin: string) {
+  if (!mutexes.has(origin)) {
+    mutexes.set(origin, new Mutex());
+  }
+  return mutexes.get(origin);
+}
+
 /**
  * The `wallet_requestSnaps` method implementation.
  * Tries to install the requested snaps and adds them to the JSON-RPC response.
@@ -184,43 +200,52 @@ async function requestSnapsImplementation(
     );
   }
 
-  try {
-    if (Object.keys(requestedSnaps).length === 0) {
-      return end(
-        rpcErrors.invalidParams({
-          message: 'Request must have at least one requested snap.',
-        }),
-      );
-    }
-
-    const requestedPermissions = {
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
-      },
-    } as RequestedPermissions;
-    const existingPermissions = await getPermissions();
-
-    if (!existingPermissions) {
-      const [, metadata] = await requestPermissions(requestedPermissions);
-      res.result = metadata.data[
-        WALLET_SNAP_PERMISSION_KEY
-      ] as RequestSnapsResult;
-    } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
-      res.result = await installSnaps(requestedSnaps);
-    } else {
-      const mergedPermissionsRequest = getSnapPermissionsRequest(
-        existingPermissions,
-        requestedPermissions,
-      );
-
-      const [, metadata] = await requestPermissions(mergedPermissionsRequest);
-      res.result = metadata.data[
-        WALLET_SNAP_PERMISSION_KEY
-      ] as RequestSnapsResult;
-    }
-  } catch (error) {
-    res.error = error;
+  if (Object.keys(requestedSnaps).length === 0) {
+    return end(
+      rpcErrors.invalidParams({
+        message: 'Request must have at least one requested snap.',
+      }),
+    );
   }
+
+  // We expect the MM middleware stack to always add the origin to requests
+  const { origin } = req as JsonRpcRequest & { origin: string };
+
+  const mutex = getMutex(origin);
+
+  // Process requests sequentially for each origin as permissions need to be merged
+  // for every request.
+  await mutex.runExclusive(async () => {
+    try {
+      const requestedPermissions = {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
+        },
+      } as RequestedPermissions;
+      const existingPermissions = await getPermissions();
+
+      if (!existingPermissions) {
+        const [, metadata] = await requestPermissions(requestedPermissions);
+        res.result = metadata.data[
+          WALLET_SNAP_PERMISSION_KEY
+        ] as RequestSnapsResult;
+      } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
+        res.result = await installSnaps(requestedSnaps);
+      } else {
+        const mergedPermissionsRequest = getSnapPermissionsRequest(
+          existingPermissions,
+          requestedPermissions,
+        );
+
+        const [, metadata] = await requestPermissions(mergedPermissionsRequest);
+        res.result = metadata.data[
+          WALLET_SNAP_PERMISSION_KEY
+        ] as RequestSnapsResult;
+      }
+    } catch (error) {
+      res.error = error;
+    }
+  });
 
   return end();
 }
