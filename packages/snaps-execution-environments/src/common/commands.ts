@@ -1,4 +1,8 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { HandlerType } from '@metamask/snaps-utils';
+import type { Struct } from '@metamask/superstruct';
+import { validate } from '@metamask/superstruct';
+import type { Json } from '@metamask/utils';
 import { assertExhaustive } from '@metamask/utils';
 
 import type { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
@@ -29,6 +33,30 @@ export type CommandMethodsMapping = {
   executeSnap: ExecuteSnap;
   snapRpc: SnapRpc;
 };
+
+/**
+ * Assert that the params match the provided struct.
+ *
+ * @param method - The RPC method being validated.
+ * @param params - The RPC parameters being validated.
+ * @param struct - The struct to validate the parameters against.
+ */
+export function assertCommandParams<Type extends Json | undefined, Schema>(
+  method: string,
+  params: Json | undefined,
+  struct: Struct<Type, Schema>,
+): asserts params is Type {
+  const [error] = validate(params, struct);
+  if (error) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid parameters for method "${method}": ${error.message}.`,
+      data: {
+        method,
+        params,
+      },
+    });
+  }
+}
 
 /**
  * Formats the arguments for the given handler.
