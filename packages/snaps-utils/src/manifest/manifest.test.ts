@@ -9,6 +9,7 @@ import {
   getSnapIcon,
   getSnapSourceCode,
   getWritableManifest,
+  loadManifest,
   runFixes,
 } from './manifest';
 import type { SnapManifest } from './validation';
@@ -26,6 +27,8 @@ import {
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
   getMockSnapFiles,
+  MOCK_ORIGIN,
+  getMockExtendableSnapFiles,
 } from '../test-utils';
 import { NpmSnapFileNames } from '../types';
 
@@ -418,7 +421,7 @@ describe('runFixes', () => {
       },
     };
 
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const validatorResults = await runValidators(files, [rule]);
     const fixesResults = await runFixes(validatorResults, [rule]);
@@ -577,5 +580,63 @@ describe('getWritableManifest', () => {
     expect(Object.keys(writableManifest)).toStrictEqual(
       Object.keys(getSnapManifest()),
     );
+  });
+});
+
+describe('loadManifest', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
+  it('loads and parses the manifest file', async () => {
+    const manifest = await loadManifest(MANIFEST_PATH);
+    expect(manifest.mergedManifest).toBe(manifest.baseManifest.result);
+    expect(manifest.baseManifest.result).toStrictEqual(
+      await getDefaultManifest(),
+    );
+  });
+
+  it('loads a manifest with extended manifest and merges them', async () => {
+    const extendedManifest = getSnapManifest({
+      proposedName: 'Base Snap',
+      platformVersion: getPlatformVersion(),
+    });
+
+    const baseManifest = {
+      extends: './snap.manifest.json',
+      proposedName: 'Extended Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+      initialPermissions: {
+        'endowment:network-access': {},
+      },
+    };
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+
+    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
+
+    const manifest = await loadManifest(baseManifestPath);
+    expect(manifest.baseManifest.result).toStrictEqual(baseManifest);
+    expect(manifest.extendedManifest?.result).toStrictEqual(extendedManifest);
+    expect(manifest.mergedManifest).toStrictEqual({
+      ...extendedManifest,
+      proposedName: 'Extended Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+      initialPermissions: {
+        'endowment:network-access': {},
+        'endowment:rpc': {
+          dapps: false,
+          snaps: true,
+        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_dialog: {},
+      },
+      extends: undefined,
+    });
   });
 });

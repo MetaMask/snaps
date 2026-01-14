@@ -2,6 +2,7 @@ import { getSnapChecksum } from '../../snaps';
 import type { FetchedSnapFiles } from '../../types';
 import { NpmSnapFileNames } from '../../types';
 import type { ValidatorMeta } from '../validator-types';
+import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 
 /**
  * Check if the checksum in manifest matches computed value.
@@ -9,15 +10,26 @@ import type { ValidatorMeta } from '../validator-types';
 export const checksum: ValidatorMeta = {
   severity: 'error',
   async semanticCheck(files, context) {
-    const fetchedFiles: FetchedSnapFiles = files;
-    const gotChecksum = files.manifest.result.source.shasum;
+    const mergedManifest =
+      files.manifest.baseManifest.clone() as VirtualFile<SnapManifest>;
+    mergedManifest.result = files.manifest.mergedManifest;
+    mergedManifest.value = JSON.stringify(files.manifest.mergedManifest);
+
+    const fetchedFiles: FetchedSnapFiles = {
+      ...files,
+      manifest: mergedManifest,
+    };
+
+    const gotChecksum = files.manifest.mergedManifest.source.shasum;
     const expectedChecksum = await getSnapChecksum(fetchedFiles);
     if (gotChecksum !== expectedChecksum) {
       context.report(
         'checksum',
         `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum. Got "${gotChecksum}", expected "${expectedChecksum}".`,
         async ({ manifest }) => {
-          manifest.source.shasum = expectedChecksum;
+          manifest.baseManifest.result ??= {};
+          manifest.baseManifest.result.source ??= {};
+          manifest.baseManifest.result.source.shasum = expectedChecksum;
           return { manifest };
         },
       );

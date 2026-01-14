@@ -1,33 +1,90 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
 import { assert, isPlainObject } from '@metamask/utils';
+import deepmerge from 'deepmerge';
 import { promises as fs } from 'fs';
 import pathUtils, { dirname } from 'path';
 
 import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
-import { isReportFixable, hasFixes, runValidators } from './validator';
+import { hasFixes, isReportFixable, runValidators } from './validator';
 import type { ValidatorMeta, ValidatorReport } from './validator-types';
 import * as defaultValidators from './validators';
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
 import { parseJson } from '../json';
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import type {
+  ExtendableManifest,
+  ExtendableSnapFiles,
+  UnvalidatedSnapFiles,
+} from '../types';
 import { NpmSnapFileNames } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,
-  version: 2,
-  description: 3,
-  proposedName: 4,
-  repository: 5,
-  source: 6,
-  initialConnections: 7,
-  initialPermissions: 8,
-  platformVersion: 9,
-  manifestVersion: 10,
+  extends: 2,
+  version: 3,
+  description: 4,
+  proposedName: 5,
+  repository: 6,
+  source: 7,
+  initialConnections: 8,
+  initialPermissions: 9,
+  platformVersion: 10,
+  manifestVersion: 11,
 };
+
+/**
+ * Load a manifest and its extended manifest if it has one.
+ *
+ * Note: This function does not validate the manifests.
+ *
+ * @param manifestPath - The path to the manifest file.
+ * @returns The base and extended manifests.
+ */
+export async function loadManifest(
+  manifestPath: string,
+): Promise<ExtendableManifest> {
+  try {
+    const baseManifest = await readJsonFile<SnapManifest>(manifestPath);
+    if (baseManifest.result.extends) {
+      const fileName = pathUtils.basename(manifestPath);
+      if (fileName === 'snap.manifest.json') {
+        throw new Error(
+          `The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
+        );
+      }
+
+      const extendedManifestPath = pathUtils.resolve(
+        pathUtils.dirname(manifestPath),
+        baseManifest.result.extends,
+      );
+
+      const extendedManifest = await loadManifest(extendedManifestPath);
+
+      return {
+        baseManifest,
+        extendedManifest: extendedManifest.baseManifest,
+        mergedManifest: {
+          ...deepmerge(extendedManifest.mergedManifest, baseManifest.result),
+          extends: undefined,
+        },
+      };
+    }
+
+    return {
+      baseManifest,
+      extendedManifest: baseManifest,
+      mergedManifest: {
+        ...baseManifest.result,
+        extends: undefined,
+      },
+    };
+  } catch (error) {
+    throw new Error(`Failed to load Snap manifest: ${getErrorMessage(error)}`);
+  }
+}
 
 export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {
   wasFixed?: boolean;
@@ -80,7 +137,7 @@ export type CheckManifestOptions = {
  * @property updated - Whether the manifest was written and updated.
  */
 export type CheckManifestResult = {
-  files?: SnapFiles;
+  files?: ExtendableSnapFiles;
   updated: boolean;
   reports: CheckManifestReport[];
 };
@@ -122,8 +179,8 @@ export async function checkManifest(
   }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
   const basePath = dirname(manifestPath);
-  const manifestFile = await readJsonFile(manifestPath);
-  const unvalidatedManifest = manifestFile.result;
+  const extendableManifest = await loadManifest(manifestPath);
+  const unvalidatedManifest = extendableManifest.mergedManifest;
 
   const packageFile = await readJsonFile(
     pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
@@ -152,7 +209,7 @@ export async function checkManifest(
   }
 
   const snapFiles: UnvalidatedSnapFiles = {
-    manifest: manifestFile,
+    manifest: extendableManifest,
     packageJson: packageFile,
     sourceCode: await getSnapSourceCode(
       basePath,
@@ -189,7 +246,7 @@ export async function checkManifest(
       try {
         await writeFileFn(
           manifestPath,
-          manifestResults.files.manifest.toString(),
+          manifestResults.files.manifest.baseManifest.toString(),
         );
       } catch (error) {
         // Note: This error isn't pushed to the errors array, because it's not an
@@ -230,7 +287,9 @@ export async function runFixes(
 
   let fixResults: ValidatorResults = results;
   assert(fixResults.files);
-  fixResults.files.manifest = fixResults.files.manifest.clone();
+
+  fixResults.files.manifest.baseManifest =
+    fixResults.files.manifest.baseManifest.clone();
 
   const mergedReports: ValidatorReport[] = deepClone(fixResults.reports);
 
@@ -241,23 +300,22 @@ export async function runFixes(
   ) {
     assert(fixResults.files);
 
-    let manifest = fixResults.files.manifest.result;
-
     const fixable = fixResults.reports.filter((report) =>
       isReportFixable(report, errorsOnly),
     );
 
+    let { manifest } = fixResults.files;
     for (const report of fixable) {
       assert(report.fix);
       ({ manifest } = await report.fix({ manifest }));
     }
 
-    fixResults.files.manifest.value = `${JSON.stringify(
-      getWritableManifest(manifest),
+    fixResults.files.manifest.baseManifest.value = `${JSON.stringify(
+      getWritableManifest(manifest.baseManifest.result),
       null,
       2,
     )}\n`;
-    fixResults.files.manifest.result = manifest;
+    fixResults.files.manifest = manifest;
 
     fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults, errorsOnly);
@@ -440,14 +498,16 @@ export async function getSnapFiles(
  * @param manifest - The manifest to sort and modify.
  * @returns The disk-ready manifest.
  */
-export function getWritableManifest(manifest: SnapManifest): SnapManifest {
+export function getWritableManifest(
+  manifest: Partial<SnapManifest>,
+): Partial<SnapManifest> {
   const { repository, ...remaining } = manifest;
 
   const keys = Object.keys(
     repository ? { ...remaining, repository } : remaining,
   ) as (keyof SnapManifest)[];
 
-  const writableManifest = keys
+  return keys
     .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
     .reduce<Partial<SnapManifest>>(
       (result, key) => ({
@@ -456,6 +516,4 @@ export function getWritableManifest(manifest: SnapManifest): SnapManifest {
       }),
       {},
     );
-
-  return writableManifest as SnapManifest;
 }

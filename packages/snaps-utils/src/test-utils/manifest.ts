@@ -5,7 +5,11 @@ import type { LocalizationFile } from '../localization';
 import type { SnapManifest } from '../manifest/validation';
 import type { Chain, Namespace } from '../namespace';
 import { getSnapChecksum } from '../snaps';
-import type { NpmSnapPackageJson, SnapFiles } from '../types';
+import type {
+  ExtendableSnapFiles,
+  NpmSnapPackageJson,
+  SnapFiles,
+} from '../types';
 import { VirtualFile } from '../virtual-file';
 
 type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
@@ -188,6 +192,69 @@ export const getMockSnapFiles = ({
             result: manifest,
             path: manifestPath,
           }),
+    packageJson: new VirtualFile({
+      value: JSON.stringify(packageJson),
+      result: packageJson,
+      path: DEFAULT_PACKAGE_JSON_PATH,
+    }),
+    sourceCode:
+      sourceCode instanceof VirtualFile
+        ? sourceCode
+        : new VirtualFile({
+            value: sourceCode,
+            path: DEFAULT_SOURCE_PATH,
+          }),
+    localizationFiles: localizationFiles.map((file) => {
+      return new VirtualFile({
+        value: JSON.stringify(file),
+        result: file,
+        path: `locales/${file.locale}.json`,
+      });
+    }),
+    // eslint-disable-next-line no-nested-ternary
+    svgIcon: svgIcon
+      ? svgIcon instanceof VirtualFile
+        ? svgIcon
+        : new VirtualFile({
+            value: svgIcon,
+            path: DEFAULT_ICON_PATH,
+          })
+      : undefined,
+    auxiliaryFiles,
+  };
+};
+
+export const getMockExtendableSnapFiles = ({
+  manifest = getSnapManifest(),
+  manifestPath = DEFAULT_MANIFEST_PATH,
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
+  localizationFiles = [],
+}: {
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  manifestPath?: string;
+  sourceCode?: string | VirtualFile;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
+} = {}): ExtendableSnapFiles => {
+  const baseManifest =
+    manifest instanceof VirtualFile
+      ? manifest
+      : new VirtualFile({
+          value: JSON.stringify(manifest),
+          result: manifest,
+          path: manifestPath,
+        });
+
+  return {
+    manifest: {
+      baseManifest,
+      mergedManifest: baseManifest.result,
+    },
     packageJson: new VirtualFile({
       value: JSON.stringify(packageJson),
       result: packageJson,
