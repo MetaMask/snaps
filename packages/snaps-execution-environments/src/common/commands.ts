@@ -1,14 +1,14 @@
+import { rpcErrors } from '@metamask/rpc-errors';
 import { HandlerType } from '@metamask/snaps-utils';
+import type { Struct } from '@metamask/superstruct';
+import { validate } from '@metamask/superstruct';
+import type { Json } from '@metamask/utils';
 import { assertExhaustive } from '@metamask/utils';
 
-import type { InvokeSnap, InvokeSnapArgs } from './BaseSnapExecutor';
+import type { InvokeSnapArgs } from './BaseSnapExecutor';
 import type {
-  ExecuteSnap,
   JsonRpcRequestWithoutId,
-  Ping,
   PossibleLookupRequestArgs,
-  SnapRpc,
-  Terminate,
 } from './validation';
 import {
   assertIsOnTransactionRequestArguments,
@@ -22,13 +22,29 @@ import {
   assertIsOnWebSocketEventArguments,
   assertIsOnAssetsMarketDataRequestArguments,
 } from './validation';
-
-export type CommandMethodsMapping = {
-  ping: Ping;
-  terminate: Terminate;
-  executeSnap: ExecuteSnap;
-  snapRpc: SnapRpc;
-};
+/**
+ * Assert that the params match the provided struct.
+ *
+ * @param method - The RPC method being validated.
+ * @param params - The RPC parameters being validated.
+ * @param struct - The struct to validate the parameters against.
+ */
+export function assertCommandParams<Type extends Json | undefined, Schema>(
+  method: string,
+  params: Json | undefined,
+  struct: Struct<Type, Schema>,
+): asserts params is Type {
+  const [error] = validate(params, struct);
+  if (error) {
+    throw rpcErrors.invalidParams({
+      message: `Invalid parameters for method "${method}": ${error.message}.`,
+      data: {
+        method,
+        params,
+      },
+    });
+  }
+}
 
 /**
  * Formats the arguments for the given handler.
@@ -146,44 +162,4 @@ export function getHandlerArguments(
     default:
       return assertExhaustive(handler);
   }
-}
-
-/**
- * Gets an object mapping internal, "command" JSON-RPC method names to their
- * implementations.
- *
- * @param startSnap - A function that starts a snap.
- * @param invokeSnap - A function that invokes the RPC method handler of a
- * snap.
- * @param onTerminate - A function that will be called when this executor is
- * terminated in order to handle cleanup tasks.
- * @returns An object containing the "command" method implementations.
- */
-export function getCommandMethodImplementations(
-  startSnap: (...args: Parameters<ExecuteSnap>) => Promise<void>,
-  invokeSnap: InvokeSnap,
-  onTerminate: () => void,
-): CommandMethodsMapping {
-  return {
-    ping: async () => Promise.resolve('OK'),
-    terminate: async () => {
-      onTerminate();
-      return Promise.resolve('OK');
-    },
-
-    executeSnap: async (snapId, sourceCode, endowments) => {
-      await startSnap(snapId, sourceCode, endowments);
-      return 'OK';
-    },
-
-    snapRpc: async (target, handler, origin, request) => {
-      return (
-        (await invokeSnap(
-          target,
-          handler,
-          getHandlerArguments(origin, handler, request),
-        )) ?? null
-      );
-    },
-  };
 }

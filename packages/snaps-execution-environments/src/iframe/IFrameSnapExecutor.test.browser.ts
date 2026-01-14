@@ -81,7 +81,11 @@ describe('IFrameSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'executeSnap',
-        params: [MOCK_SNAP_ID, CODE, []],
+        params: {
+          snapId: MOCK_SNAP_ID,
+          sourceCode: CODE,
+          endowments: [],
+        },
       },
     });
 
@@ -97,12 +101,12 @@ describe('IFrameSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 3,
         method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnRpcRequest,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: '' },
-        ],
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '' },
+        },
       },
     });
 
