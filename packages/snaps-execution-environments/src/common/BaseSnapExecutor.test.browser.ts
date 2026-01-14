@@ -156,7 +156,7 @@ describe('BaseSnapExecutor', () => {
         data: {
           cause: expect.objectContaining({
             code: -32603,
-            message: `The snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
+            message: `The Snap "${MOCK_SNAP_ID}" has been terminated during execution.`,
           }),
         },
       },

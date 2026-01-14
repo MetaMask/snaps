@@ -32,6 +32,7 @@ import {
   hasProperty,
   getSafeJson,
   JsonRpcIdStruct,
+  createDeferredPromise,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
@@ -577,20 +578,16 @@ export class BaseSnapExecutor {
       );
     }
 
-    let stop: () => void;
-    const stopPromise = new Promise<never>(
-      (_resolve, reject) =>
-      (stop = () =>
-        reject(
-          // TODO(rekmarks): Specify / standardize error code for this case.
-          rpcErrors.internal(
-            `The snap "${snapId}" has been terminated during execution.`,
-          ),
-        )),
-    );
+    const { promise: stopPromise, reject } = createDeferredPromise<Result>();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const evaluationData = { stop: stop! };
+    const stop = () =>
+      reject(
+        rpcErrors.internal(
+          `The Snap "${snapId}" has been terminated during execution.`,
+        ),
+      );
+
+    const evaluationData = { stop };
 
     try {
       data.runningEvaluations.add(evaluationData);
