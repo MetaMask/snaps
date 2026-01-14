@@ -458,13 +458,10 @@ export type SnapRpcResponse = Infer<typeof SnapRpcResponse>;
 
 export type Response = OkResponse | SnapRpcResponse;
 
-type RequestParams<Params extends unknown[] | undefined> =
-  Params extends undefined ? [] : Params;
-
 type RequestFunction<
   Args extends RequestArguments,
   ResponseType extends JsonRpcSuccess,
-> = (...args: RequestParams<Args>) => Promise<ResponseType['result']>;
+> = (args: Args) => Promise<ResponseType['result']>;
 
 export type Ping = RequestFunction<PingRequestArguments, OkResponse>;
 export type Terminate = RequestFunction<TerminateRequestArguments, OkResponse>;
