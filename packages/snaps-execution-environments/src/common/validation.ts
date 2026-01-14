@@ -21,7 +21,6 @@ import {
   record,
   size,
   string,
-  tuple,
   union,
   literal,
 } from '@metamask/superstruct';
@@ -88,17 +87,17 @@ export const TerminateRequestArgumentsStruct = union([
   array(),
 ]);
 
-export const ExecuteSnapRequestArgumentsStruct = tuple([
-  string(),
-  string(),
-  array(EndowmentStruct),
-]);
+export const ExecuteSnapRequestArgumentsStruct = object({
+  snapId: string(),
+  sourceCode: string(),
+  endowments: array(EndowmentStruct),
+});
 
-export const SnapRpcRequestArgumentsStruct = tuple([
-  string(),
-  enums(Object.values(HandlerType)),
-  string(),
-  assign(
+export const SnapRpcRequestArgumentsStruct = object({
+  snapId: string(),
+  handler: enums(Object.values(HandlerType)),
+  origin: string(),
+  request: assign(
     JsonRpcRequestWithoutIdStruct,
     object({
       // Previously this would validate that the parameters were valid JSON.
@@ -107,7 +106,7 @@ export const SnapRpcRequestArgumentsStruct = tuple([
       params: optional(record(string(), any())),
     }),
   ),
-]);
+});
 
 export type PingRequestArguments = Infer<typeof PingRequestArgumentsStruct>;
 export type TerminateRequestArguments = Infer<
