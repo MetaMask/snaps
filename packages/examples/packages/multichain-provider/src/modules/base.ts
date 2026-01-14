@@ -5,6 +5,9 @@ import type {
   JsonRpcRequest,
 } from '@metamask/utils';
 
+/**
+ * Abstract base class for scope-specific modules.
+ */
 export abstract class Module {
   scope: CaipChainId;
 

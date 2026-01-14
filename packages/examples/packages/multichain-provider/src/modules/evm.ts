@@ -9,7 +9,17 @@ import {
 
 import { Module } from './base';
 
+/**
+ * The EVM module implementing the base-spec for Ethereum-like scopes.
+ */
 export class Evm extends Module {
+  /**
+   * Sign a message using `personal_sign`.
+   *
+   * @param account - The CAIP-10 account ID.
+   * @param message - The message to sign.
+   * @returns The signature as a hexadecimal string.
+   */
   async signMessage(account: CaipAccountId, message: string): Promise<string> {
     const { address } = parseCaipAccountId(account);
 
@@ -19,6 +29,13 @@ export class Evm extends Module {
     });
   }
 
+  /**
+   * Sign a message using `eth_signTypedData_v4`.
+   *
+   * @param account - The CAIP-10 account ID.
+   * @param message - The message to sign.
+   * @returns The signature as a hexadecimal string.
+   */
   async signTypedData(
     account: CaipAccountId,
     message: string,
@@ -100,6 +117,11 @@ export class Evm extends Module {
     });
   }
 
+  /**
+   * Get the genesis hash of the selected scope.
+   *
+   * @returns The genesis hash as a hexadecimal string.
+   */
   async getGenesisHash(): Promise<string> {
     const block = await this.invokeMethod<{ hash: string }>({
       method: 'eth_getBlockByNumber',
