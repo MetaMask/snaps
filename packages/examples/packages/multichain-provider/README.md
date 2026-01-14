@@ -1,22 +1,18 @@
-# `@metamask/ethereum-provider-example-snap`
+# `@metamask/multichain-provider-example-snap`
 
-This snap demonstrates the use of the `endowment:ethereum-provider` permission
-and the corresponding `ethereum` global. This is similar to the
-`window.ethereum` API, but it does not have access to all methods.
+This Snap demonstrates the use of the `endowment:multichain-provider` permission.
+
+The permission grants the Snap access to CAIP-25 provider methods via `snap.request`.
 
 ## Snap manifest
 
-> **Note**: Using `ethereum` requires the `endowment:ethereum-provider`
-> permissions. Refer to [the documentation](https://docs.metamask.io/snaps/reference/permissions/#endowmentethereum-provider)
-> for more information.
-
 Along with other permissions, the manifest of this snap includes the
-`endowment:ethereum-provider` permission:
+`endowment:multichain-provider` permission:
 
 ```json
 {
   "initialPermissions": {
-    "endowment:ethereum-provider": {}
+    "endowment:mulitchain-provider": {}
   }
 }
 ```
@@ -28,13 +24,13 @@ This permission does not require any additional configuration.
 This snap exposes an `onRpcRequest` handler, which supports the following
 JSON-RPC methods:
 
-- `getGasPrice`: Get the current recommended gas price from an Ethereum
-  provider.
-- `getVersion`: Get the Ethereum network version from an Ethereum provider.
-- `getAccounts`: Get the Ethereum accounts made available to the snap from an
-  Ethereum provider.
-- `personalSign`: Sign a message using an Ethereum account made available to the Snap.
-- `signTypedData`: Sign a struct using an Ethereum account made available to the Snap.
+- `createSession`: Create the multichain API session.
+- `revokeSession`: Revoke the current multichain API session.
+- `getChainId`: Get the current Ethereum chain ID as a string.
+- `getAccounts`: Get the accounts for the selected scope.
+- `signMessage`: Sign a message using an Ethereum or Solana account.
+- `signTypedData`: Sign a struct using an Ethereum account.
+- `getGenesisHash`: Get the genesis hash for the selected scope.
 
 For more information, you can refer to
 [the end-to-end tests](./src/index.test.ts).
