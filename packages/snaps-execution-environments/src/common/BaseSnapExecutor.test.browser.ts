@@ -86,12 +86,12 @@ describe('BaseSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnRpcRequest,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: '' },
-        ],
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '' },
+        },
       });
 
       expect(await executor.readCommand()).toStrictEqual({
@@ -125,12 +125,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     await executor.writeCommand({
@@ -181,12 +181,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -235,12 +235,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const walletRequest = await executor.readRpc();
@@ -289,12 +289,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -337,12 +337,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -393,12 +393,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const getSnapsRequest = await executor.readRpc();
@@ -455,12 +455,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -498,12 +498,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -541,12 +541,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -584,12 +584,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -645,12 +645,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -706,12 +706,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -752,12 +752,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const request = await executor.readRpc();
@@ -817,12 +817,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const request = await executor.readRpc();
@@ -885,12 +885,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -948,12 +948,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -995,12 +995,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1062,12 +1062,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1179,12 +1179,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnTransaction,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnTransaction,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1212,12 +1212,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnCronjob,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnCronjob,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1243,16 +1243,16 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnNameLookup,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnNameLookup,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: 'foo',
           params: { chainId: 'eip155:1', domain: 'foo.lens' },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1278,11 +1278,11 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnNameLookup,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnNameLookup,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: 'foo',
           params: {
@@ -1290,7 +1290,7 @@ describe('BaseSnapExecutor', () => {
             address: '0xab16a96D359eC26a11e2C2b3d8f8B8942d5Bfcdb',
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1318,12 +1318,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnKeyringRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnKeyringRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1351,12 +1351,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnHomePage,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '' },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnHomePage,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1384,12 +1384,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnSettingsPage,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '' },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnSettingsPage,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1424,11 +1424,11 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnAssetHistoricalPrice,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnAssetHistoricalPrice,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: '',
           params: {
@@ -1436,7 +1436,7 @@ describe('BaseSnapExecutor', () => {
             to: 'swift:0/iso4217:USD',
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1471,18 +1471,18 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnAssetsLookup,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnAssetsLookup,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: '',
           params: {
             assets: ['bip122:000000000019d6689c085ae165831e93/slip44:0'],
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1510,11 +1510,11 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnAssetsConversion,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnAssetsConversion,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: '',
           params: {
@@ -1526,7 +1526,7 @@ describe('BaseSnapExecutor', () => {
             ],
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1554,11 +1554,11 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnAssetsMarketData,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnAssetsMarketData,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: '',
           params: {
@@ -1570,7 +1570,7 @@ describe('BaseSnapExecutor', () => {
             ],
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1609,12 +1609,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnSignature,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnSignature,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1650,12 +1650,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnUserInput,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnUserInput,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1691,12 +1691,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnUserInput,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnUserInput,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1733,12 +1733,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnProtocolRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnProtocolRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1766,12 +1766,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnClientRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnClientRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params: [] },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1799,18 +1799,18 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnWebSocketEvent,
-        MOCK_ORIGIN,
-        {
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnWebSocketEvent,
+        origin: MOCK_ORIGIN,
+        request: {
           jsonrpc: '2.0',
           method: '',
           params: {
             event: { type: 'open', id: 'foo', origin: 'wss://metamask.io' },
           },
         },
-      ],
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1850,12 +1850,12 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 2,
           method: 'snapRpc',
-          params: [
-            MOCK_SNAP_ID,
+          params: {
+            snapId: MOCK_SNAP_ID,
             handler,
-            MOCK_ORIGIN,
-            { jsonrpc: '2.0', method: handler },
-          ],
+            origin: MOCK_ORIGIN,
+            request: { jsonrpc: '2.0', method: handler },
+          },
         });
 
         expect(await executor.readCommand()).toStrictEqual({
@@ -1883,12 +1883,12 @@ describe('BaseSnapExecutor', () => {
           jsonrpc: '2.0',
           id: 2,
           method: 'snapRpc',
-          params: [
-            MOCK_SNAP_ID,
+          params: {
+            snapId: MOCK_SNAP_ID,
             handler,
-            MOCK_ORIGIN,
-            { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
-          ],
+            origin: MOCK_ORIGIN,
+            request: { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+          },
         });
 
         expect(await executor.readCommand()).toStrictEqual({
@@ -1927,12 +1927,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -1995,12 +1995,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'first', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'first', params: [] },
+      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -2024,12 +2024,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 3,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'second', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'second', params: [] },
+      },
     });
 
     await executor.writeRpc({
@@ -2092,12 +2092,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'first', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'first', params: [] },
+      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -2121,12 +2121,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 3,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'second', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'second', params: [] },
+      },
     });
 
     await executor.writeRpc({
@@ -2174,12 +2174,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     const blockNumRequest = await executor.readRpc();
@@ -2231,12 +2231,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2269,12 +2269,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2357,12 +2357,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2407,12 +2407,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: 'foo', params: {} },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: 'foo', params: {} },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2454,9 +2454,6 @@ describe('BaseSnapExecutor', () => {
         code: 'module.exports.onRpcRequest = () => 1;',
         endowments: ['foo', 1],
       },
-      [1, 'module.exports.onRpcRequest = () => 1;', []],
-      [MOCK_SNAP_ID, 1, []],
-      [MOCK_SNAP_ID, 'module.exports.onRpcRequest = () => 1;', ['foo', 1]],
     ].forEach((params) => {
       it('throws an error if the request arguments are invalid', async () => {
         const executor = new TestSnapExecutor();
@@ -2508,25 +2505,6 @@ describe('BaseSnapExecutor', () => {
         origin: MOCK_ORIGIN,
         request: 1,
       },
-      [
-        1,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [
-        MOCK_SNAP_ID,
-        1,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        1,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
-      [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, 1],
     ].forEach((params) => {
       it('throws an error if the request arguments are invalid', async () => {
         const executor = new TestSnapExecutor();
@@ -2576,7 +2554,7 @@ describe('BaseSnapExecutor', () => {
           code: -32602,
           data: expect.any(Object),
           message:
-            'Invalid parameters for method "snapRpc": At path: 0 -- Expected a string, but received: 1.',
+            'Invalid parameters for method "snapRpc": At path: snapId -- Expected a string, but received: 1.',
           stack: expect.any(String),
         },
       });
@@ -2643,12 +2621,12 @@ describe('BaseSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnRpcRequest,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: '', params: [] },
-        ],
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '', params: [] },
+        },
       });
 
       expect(await executor.readCommand()).toStrictEqual({
@@ -2720,12 +2698,12 @@ describe('BaseSnapExecutor', () => {
         jsonrpc: '2.0',
         id: 2,
         method: 'snapRpc',
-        params: [
-          MOCK_SNAP_ID,
-          HandlerType.OnRpcRequest,
-          MOCK_ORIGIN,
-          { jsonrpc: '2.0', method: '', params: [] },
-        ],
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '', params: [] },
+        },
       });
 
       const command = await executor.readCommand();

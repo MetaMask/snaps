@@ -107,15 +107,15 @@ export class TestSnapExecutor extends BaseSnapExecutor {
   // Utility function for executing snaps
   public async executeSnap(
     id: number,
-    name: string,
-    code: string,
+    snapId: string,
+    sourceCode: string,
     endowments: string[],
   ) {
     await this.writeCommand({
       jsonrpc: '2.0',
       id,
       method: 'executeSnap',
-      params: [name, code, endowments],
+      params: { snapId, sourceCode, endowments },
     });
 
     // In case we are running fake timers, execute a tiny step that forces
