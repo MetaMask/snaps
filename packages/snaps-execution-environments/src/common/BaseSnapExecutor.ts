@@ -199,9 +199,6 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
-    // TODO: Either fix this lint violation or explain why it's necessary to
-    //  ignore.
-    // eslint-disable-next-line promise/no-promise-in-callback
     this.#notify({
       method: 'UnhandledError',
       params: {
@@ -280,7 +277,7 @@ export class BaseSnapExecutor {
     }
 
     try {
-      const result = await (this.#methods as any)[method](...paramsAsArray);
+      const result = await this.#methods[method as keyof Methods](...params);
       await this.#respond(id, { result });
     } catch (rpcError) {
       await this.#respond(id, {
@@ -349,12 +346,12 @@ export class BaseSnapExecutor {
    *
    * @param snapId - The id of the snap.
    * @param sourceCode - The source code of the snap, in IIFE format.
-   * @param _endowments - An array of the names of the endowments.
+   * @param endowmentKeys - An array of the names of the endowments.
    */
   async #startSnap(
     snapId: string,
     sourceCode: string,
-    _endowments: string[],
+    endowmentKeys: string[],
   ): Promise<void> {
     log(`Starting snap '${snapId}' in worker.`);
     if (this.#snapPromiseErrorHandler) {
@@ -410,7 +407,7 @@ export class BaseSnapExecutor {
         snap,
         ethereum,
         snapId,
-        endowments: _endowments,
+        endowments: endowmentKeys,
         notify: this.#notify.bind(this),
       });
 
