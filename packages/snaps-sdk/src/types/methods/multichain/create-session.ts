@@ -1,5 +1,10 @@
 import type { CaipAccountId, CaipChainId, Json } from '@metamask/utils';
 
+/**
+ * The scopes object for a given session.
+ *
+ * Each key contains the methods, notifications and accounts made available for a given scope.
+ */
 export type SessionScopes = Record<
   CaipChainId,
   {

@@ -1,6 +1,7 @@
 import type {
   CaipAccountId,
   CaipChainId,
+  Json,
   JsonRpcRequest,
 } from '@metamask/utils';
 
@@ -17,7 +18,7 @@ export abstract class Module {
    * @param request - The JSON-RPC request.
    * @returns The JSON-RPC response.
    */
-  async invokeMethod<ReturnType>(
+  async invokeMethod<ReturnType extends Json>(
     request: Omit<JsonRpcRequest, 'id' | 'jsonrpc'>,
   ): Promise<ReturnType> {
     return (await snap.request({

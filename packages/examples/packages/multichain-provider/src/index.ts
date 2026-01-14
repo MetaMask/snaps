@@ -18,27 +18,26 @@ import type {
  * @returns The session.
  */
 async function createSession() {
-  const optionalScopes = {
-    'eip155:1': {
-      methods: ['personal_sign', 'eth_signTypedData_v4'],
-      notifications: [],
-      accounts: [],
-    },
-    'eip155:11155111': {
-      methods: ['personal_sign', 'eth_signTypedData_v4'],
-      notifications: [],
-      accounts: [],
-    },
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-      methods: ['signMessage', 'getGenesisHash'],
-      notifications: [],
-      accounts: [],
-    },
-  };
   return await snap.request({
     method: 'wallet_createSession',
     params: {
-      optionalScopes,
+      optionalScopes: {
+        'eip155:1': {
+          methods: ['personal_sign', 'eth_signTypedData_v4'],
+          notifications: [],
+          accounts: [],
+        },
+        'eip155:11155111': {
+          methods: ['personal_sign', 'eth_signTypedData_v4'],
+          notifications: [],
+          accounts: [],
+        },
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+          methods: ['signMessage', 'getGenesisHash'],
+          notifications: [],
+          accounts: [],
+        },
+      },
     },
   });
 }
@@ -92,9 +91,10 @@ function getModule(scope: CaipChainId) {
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
- * `wallet_invokeSnap` method. This handler handles six methods:
+ * `wallet_invokeSnap` method. This handler handles the following methods:
  *
  * - `createSession`: Create the multichain API session.
+ * - `revokeSession`: Revoke the current multichain API session.
  * - `getChainId`: Get the current Ethereum chain ID as a string.
  * - `getAccounts`: Get the accounts for the selected scope.
  * - `signMessage`: Sign a message using an Ethereum or Solana account.

@@ -1,7 +1,7 @@
 {
   "name": "@metamask/multichain-provider-example-snap",
   "version": "0.0.0",
-  "description": "MetaMask example snap demonstrating the use of the Multichain Provider API and `endowment:multichain-provider` permission",
+  "description": "MetaMask example Snap demonstrating the use of the Multichain Provider API and `endowment:multichain-provider` permission",
   "keywords": [
     "MetaMask",
     "Snaps",

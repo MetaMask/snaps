@@ -359,6 +359,7 @@ export type MultichainMiddlewareHooks = {
    * @returns The user's secret recovery phrase.
    */
   getMnemonic: () => Promise<Uint8Array>;
+
   /**
    * A hook that retrieves a caveat for a given permission.
    *

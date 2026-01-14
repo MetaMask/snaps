@@ -5,7 +5,7 @@ const baseConfig = require('../../../../jest.config.base');
 module.exports = deepmerge(baseConfig, {
   preset: '@metamask/snaps-jest',
 
-  // Since `@metamask/snaps-jest` runs in the browser, we can't collect
+  // `@metamask/snaps-jest` currently doesn't support collecting
   // coverage information.
   collectCoverage: false,
 
