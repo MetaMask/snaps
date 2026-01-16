@@ -31,10 +31,9 @@ export async function getAccountsHandler(
 ) {
   const { getMnemonic } = hooks;
 
-  const mnemonic = await getMnemonic();
-  const { address } = await BIP44Node.fromDerivationPath({
+  const node = await BIP44Node.fromDerivationPath({
     derivationPath: [
-      mnemonic,
+      await getMnemonic(),
       `bip32:44'`,
       `bip32:60'`,
       `bip32:0'`,
@@ -43,6 +42,6 @@ export async function getAccountsHandler(
     ],
   });
 
-  response.result = [address];
+  response.result = [node.address];
   return end();
 }
