@@ -96,6 +96,7 @@ export const DEFAULT_SNAP_SHASUM =
  * @param manifest.locales - Localization files of the snap.
  * @param manifest.initialConnections - Initial connections for the snap.
  * @param manifest.platformVersion - The platform version of the snap.
+ * @param manifest.extends - The base manifest that this manifest extends.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -112,8 +113,10 @@ export const getSnapManifest = ({
   locales = undefined,
   initialConnections = undefined,
   platformVersion = '1.0.0' as SemVerVersion,
+  extends: _extends = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
+    ...(_extends ? { extends: _extends } : {}),
     version: version as SemVerVersion,
     description,
     proposedName,

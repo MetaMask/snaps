@@ -64,6 +64,12 @@ export type UnvalidatedExtendableManifest = {
    * always be a complete manifest.
    */
   mergedManifest: Json;
+
+  /**
+   * The set of file paths that were involved in creating this extendable
+   * manifest, including the base and extended manifests.
+   */
+  files: Set<string>;
 };
 
 /**
@@ -103,6 +109,12 @@ export type ExtendableManifest = {
    * always be a complete manifest.
    */
   mergedManifest: SnapManifest;
+
+  /**
+   * The set of file paths that were involved in creating this extendable
+   * manifest, including the base and extended manifests.
+   */
+  files: Set<string>;
 };
 
 /**

@@ -55,9 +55,8 @@ function mergeManifests<Type>(
     return baseManifest as MergedManifest<Type>;
   }
 
-  if (!isPlainObject(baseManifest) || !isPlainObject(extendedManifest)) {
-    throw new Error('Both manifests must be plain objects to be merged.');
-  }
+  assert(isPlainObject(baseManifest));
+  assert(isPlainObject(extendedManifest));
 
   const mergedManifest = deepmerge(extendedManifest, baseManifest);
   delete mergedManifest.extends;
@@ -71,61 +70,63 @@ function mergeManifests<Type>(
  * Note: This function does not validate the manifests.
  *
  * @param manifestPath - The path to the manifest file.
+ * @param files - A set of already loaded manifest file paths to prevent
+ * circular dependencies.
  * @returns The base and extended manifests.
  */
 export async function loadManifest(
   manifestPath: string,
+  files = new Set<string>(),
 ): Promise<UnvalidatedExtendableManifest> {
-  try {
-    const baseManifest = await readJsonFile(manifestPath);
+  if (files.has(manifestPath)) {
+    throw new Error(
+      `Failed to load Snap manifest: Circular dependency detected when loading "${manifestPath}".`,
+    );
+  }
 
-    if (!isPlainObject(baseManifest.result)) {
+  const baseManifest = await readJsonFile(manifestPath);
+  files.add(manifestPath);
+
+  if (!isPlainObject(baseManifest.result)) {
+    throw new Error(
+      `Failed to load Snap manifest: The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
+    );
+  }
+
+  if (
+    baseManifest.result.extends &&
+    typeof baseManifest.result.extends === 'string'
+  ) {
+    const fileName = pathUtils.basename(manifestPath);
+    if (fileName === 'snap.manifest.json') {
       throw new Error(
-        `The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
+        `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
       );
     }
 
-    if (
-      baseManifest.result.extends &&
-      typeof baseManifest.result.extends === 'string'
-    ) {
-      const fileName = pathUtils.basename(manifestPath);
-      if (fileName === 'snap.manifest.json') {
-        throw new Error(
-          `The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
-        );
-      }
+    const extendedManifestPath = pathUtils.resolve(
+      pathUtils.dirname(manifestPath),
+      baseManifest.result.extends,
+    );
 
-      const extendedManifestPath = pathUtils.resolve(
-        pathUtils.dirname(manifestPath),
-        baseManifest.result.extends,
-      );
-
-      const extendedManifest = await loadManifest(extendedManifestPath);
-      if (!isPlainObject(extendedManifest.mergedManifest)) {
-        throw new Error(
-          `The extended Snap manifest file at "${extendedManifestPath}" must contain a JSON object.`,
-        );
-      }
-
-      return {
-        baseManifest,
-        extendedManifest: extendedManifest.baseManifest,
-        mergedManifest: mergeManifests(
-          baseManifest.result,
-          extendedManifest.mergedManifest,
-        ),
-      };
-    }
-
+    const extendedManifest = await loadManifest(extendedManifestPath, files);
     return {
       baseManifest,
-      extendedManifest: baseManifest,
-      mergedManifest: baseManifest.result,
+      extendedManifest: extendedManifest.baseManifest,
+      mergedManifest: mergeManifests(
+        baseManifest.result,
+        extendedManifest.mergedManifest,
+      ),
+      files,
     };
-  } catch (error) {
-    throw new Error(`Failed to load Snap manifest: ${getErrorMessage(error)}`);
   }
+
+  return {
+    baseManifest,
+    extendedManifest: baseManifest,
+    mergedManifest: baseManifest.result,
+    files,
+  };
 }
 
 export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {
