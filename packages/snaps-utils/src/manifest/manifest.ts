@@ -61,7 +61,7 @@ function mergeManifests<Type>(
   const mergedManifest = deepmerge(extendedManifest, baseManifest);
   delete mergedManifest.extends;
 
-  return mergedManifest as MergedManifest<Type>;
+  return getWritableManifest(mergedManifest) as MergedManifest<Type>;
 }
 
 /**
@@ -552,7 +552,7 @@ export async function getSnapFiles(
  */
 export function getWritableManifest(
   manifest: DeepPartial<SnapManifest>,
-): Partial<SnapManifest> {
+): DeepPartial<SnapManifest> {
   const { repository, ...remaining } = manifest;
 
   const keys = Object.keys(
@@ -561,7 +561,7 @@ export function getWritableManifest(
 
   return keys
     .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
-    .reduce<Partial<SnapManifest>>(
+    .reduce<DeepPartial<SnapManifest>>(
       (result, key) => ({
         ...result,
         [key]: manifest[key],
