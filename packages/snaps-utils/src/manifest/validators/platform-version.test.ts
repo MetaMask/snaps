@@ -3,7 +3,7 @@ import assert from 'assert';
 import { createRequire } from 'module';
 
 import { platformVersion } from './platform-version';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('platformVersion', () => {
   const require = createRequire(__filename);
@@ -16,7 +16,7 @@ describe('platformVersion', () => {
     assert(platformVersion.semanticCheck);
 
     await platformVersion.semanticCheck(
-      getMockSnapFiles({
+      getMockExtendableSnapFiles({
         manifest: getSnapManifest({ platformVersion: sdkVersion }),
         manifestPath: __filename,
       }),
@@ -33,7 +33,7 @@ describe('platformVersion', () => {
     const rawManifest = getSnapManifest();
     delete rawManifest.platformVersion;
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: rawManifest,
       manifestPath: __filename,
     });
@@ -54,14 +54,14 @@ describe('platformVersion', () => {
     assert(fix);
 
     const { manifest } = await fix(files);
-    expect(manifest.platformVersion).toStrictEqual(sdkVersion);
+    expect(manifest.mergedManifest.platformVersion).toStrictEqual(sdkVersion);
   });
 
   it('reports if the version does not match', async () => {
     const report = jest.fn();
     assert(platformVersion.semanticCheck);
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: getSnapManifest({
         platformVersion: '1.2.3' as SemVerVersion,
       }),
@@ -84,6 +84,6 @@ describe('platformVersion', () => {
     assert(fix);
 
     const { manifest } = await fix(files);
-    expect(manifest.platformVersion).toStrictEqual(sdkVersion);
+    expect(manifest.mergedManifest.platformVersion).toStrictEqual(sdkVersion);
   });
 });

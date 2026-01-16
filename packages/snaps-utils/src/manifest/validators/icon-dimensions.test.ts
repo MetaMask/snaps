@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { iconDimensions } from './icon-dimensions';
-import { getMockSnapFiles } from '../../test-utils';
+import { getMockExtendableSnapFiles } from '../../test-utils';
 
 describe('iconDimensions', () => {
   it('does nothing if icon is square', async () => {
@@ -10,9 +10,12 @@ describe('iconDimensions', () => {
     const report = jest.fn();
 
     assert(iconDimensions.semanticCheck);
-    await iconDimensions.semanticCheck(getMockSnapFiles({ svgIcon }), {
-      report,
-    });
+    await iconDimensions.semanticCheck(
+      getMockExtendableSnapFiles({ svgIcon }),
+      {
+        report,
+      },
+    );
 
     expect(report).toHaveBeenCalledTimes(0);
   });
@@ -23,9 +26,12 @@ describe('iconDimensions', () => {
     const report = jest.fn();
 
     assert(iconDimensions.semanticCheck);
-    await iconDimensions.semanticCheck(getMockSnapFiles({ svgIcon }), {
-      report,
-    });
+    await iconDimensions.semanticCheck(
+      getMockExtendableSnapFiles({ svgIcon }),
+      {
+        report,
+      },
+    );
 
     expect(report).toHaveBeenCalledWith(
       'icon-dimensions',

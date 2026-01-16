@@ -9,10 +9,10 @@ import type {
   ValidatorSeverity,
 } from './validator-types';
 import * as defaultValidators from './validators';
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import type { UnvalidatedSnapFiles, ExtendableSnapFiles } from '../types';
 
 export type ValidatorResults = {
-  files?: SnapFiles;
+  files?: ExtendableSnapFiles;
   reports: ValidatorReport[];
 };
 
@@ -105,11 +105,11 @@ export async function runValidators(
       severity: rule.severity,
     });
 
-    await rule.semanticCheck?.(files as SnapFiles, context);
+    await rule.semanticCheck?.(files as ExtendableSnapFiles, context);
   }
 
   return {
-    files: files as SnapFiles,
+    files: files as ExtendableSnapFiles,
     reports: context.reports,
   };
 }
@@ -126,7 +126,7 @@ export function isReportFixable(report: ValidatorReport, errorsOnly?: boolean) {
 }
 
 /**
- * Get whether any reports has pending fixes.
+ * Get whether any reports have pending fixes.
  *
  * @param results - Results of the validation run.
  * @param errorsOnly - Whether to only consider errors for pending fixes.

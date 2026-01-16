@@ -1,10 +1,13 @@
-import type { SnapManifest } from './validation';
 import type { Promisable } from '../promise';
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import type {
+  ExtendableManifest,
+  ExtendableSnapFiles,
+  UnvalidatedSnapFiles,
+} from '../types';
 
 export type ValidatorFix = (files: {
-  manifest: SnapManifest;
-}) => Promisable<{ manifest: SnapManifest }>;
+  manifest: ExtendableManifest;
+}) => Promisable<{ manifest: ExtendableManifest }>;
 
 /**
  * The options for the validator context.
@@ -60,7 +63,7 @@ export type ValidatorMeta = {
    * @param context - Validator context to report errors
    */
   semanticCheck?: (
-    files: SnapFiles,
+    files: ExtendableSnapFiles,
     context: ValidatorContext,
   ) => void | Promise<void>;
 };

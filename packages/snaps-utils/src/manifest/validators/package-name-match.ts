@@ -9,13 +9,18 @@ export const packageNameMatch: ValidatorMeta = {
   semanticCheck(files, context) {
     const packageJsonName = files.packageJson.result.name;
     const manifestPackageName =
-      files.manifest.result.source.location.npm.packageName;
+      files.manifest.mergedManifest.source?.location?.npm?.packageName;
     if (packageJsonName !== manifestPackageName) {
       context.report(
         'package-name-match',
         `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
         ({ manifest }) => {
-          manifest.source.location.npm.packageName = packageJsonName;
+          manifest.baseManifest.result.source ??= {};
+          manifest.baseManifest.result.source.location ??= {};
+          manifest.baseManifest.result.source.location.npm ??= {};
+          manifest.baseManifest.result.source.location.npm.packageName =
+            packageJsonName;
+
           return { manifest };
         },
       );

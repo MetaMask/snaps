@@ -1,13 +1,13 @@
 import assert from 'assert';
 
 import { iconDeclared } from './icon-declared';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('iconDeclared', () => {
   it('does nothing if icon is declared', async () => {
     const report = jest.fn();
     assert(iconDeclared.semanticCheck);
-    await iconDeclared.semanticCheck(getMockSnapFiles(), { report });
+    await iconDeclared.semanticCheck(getMockExtendableSnapFiles(), { report });
     expect(report).toHaveBeenCalledTimes(0);
   });
 
@@ -18,7 +18,7 @@ describe('iconDeclared', () => {
     const manifest = getSnapManifest();
     delete manifest.source.location.npm.iconPath;
 
-    await iconDeclared.semanticCheck(getMockSnapFiles({ manifest }), {
+    await iconDeclared.semanticCheck(getMockExtendableSnapFiles({ manifest }), {
       report,
     });
 

@@ -354,7 +354,7 @@ export async function getDefaultConfiguration(
       options.watch &&
         new SnapsWatchPlugin(
           {
-            files: [config.manifest.path],
+            manifestPath: config.manifest.path,
           },
           options.spinner,
         ),

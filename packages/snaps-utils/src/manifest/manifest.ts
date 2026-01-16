@@ -1,33 +1,133 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
 import { assert, isPlainObject } from '@metamask/utils';
+import deepmerge from 'deepmerge';
 import { promises as fs } from 'fs';
 import pathUtils, { dirname } from 'path';
 
 import type { SnapManifest } from './validation';
 import type { ValidatorResults } from './validator';
-import { isReportFixable, hasFixes, runValidators } from './validator';
+import { hasFixes, isReportFixable, runValidators } from './validator';
 import type { ValidatorMeta, ValidatorReport } from './validator-types';
 import * as defaultValidators from './validators';
 import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
 import { parseJson } from '../json';
-import type { SnapFiles, UnvalidatedSnapFiles } from '../types';
+import type {
+  DeepPartial,
+  ExtendableSnapFiles,
+  UnvalidatedExtendableManifest,
+  UnvalidatedSnapFiles,
+} from '../types';
 import { NpmSnapFileNames } from '../types';
 import { readVirtualFile, VirtualFile } from '../virtual-file/node';
 
 const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   $schema: 1,
-  version: 2,
-  description: 3,
-  proposedName: 4,
-  repository: 5,
-  source: 6,
-  initialConnections: 7,
-  initialPermissions: 8,
-  platformVersion: 9,
-  manifestVersion: 10,
+  extends: 2,
+  version: 3,
+  description: 4,
+  proposedName: 5,
+  repository: 6,
+  source: 7,
+  initialConnections: 8,
+  initialPermissions: 9,
+  platformVersion: 10,
+  manifestVersion: 11,
 };
+
+type MergedManifest<Type> =
+  Type extends DeepPartial<SnapManifest> ? SnapManifest : Json;
+
+/**
+ * Merge two Snap manifests, with the extended manifest taking precedence
+ * over the base manifest.
+ *
+ * @param baseManifest - The base manifest.
+ * @param extendedManifest - The extended manifest.
+ * @returns The merged manifest.
+ */
+function mergeManifests<Type>(
+  baseManifest: Type,
+  extendedManifest?: Type,
+): MergedManifest<Type> {
+  if (!extendedManifest) {
+    return baseManifest as MergedManifest<Type>;
+  }
+
+  assert(isPlainObject(baseManifest));
+  assert(isPlainObject(extendedManifest));
+
+  const mergedManifest = deepmerge(extendedManifest, baseManifest);
+  delete mergedManifest.extends;
+
+  return getWritableManifest(mergedManifest) as MergedManifest<Type>;
+}
+
+/**
+ * Load a manifest and its extended manifest if it has one.
+ *
+ * Note: This function does not validate the manifests.
+ *
+ * @param manifestPath - The path to the manifest file.
+ * @param files - A set of already loaded manifest file paths to prevent
+ * circular dependencies.
+ * @returns The base and extended manifests.
+ */
+export async function loadManifest(
+  manifestPath: string,
+  files = new Set<string>(),
+): Promise<UnvalidatedExtendableManifest> {
+  if (files.has(manifestPath)) {
+    throw new Error(
+      `Failed to load Snap manifest: Circular dependency detected when loading "${manifestPath}".`,
+    );
+  }
+
+  const baseManifest = await readJsonFile(manifestPath);
+  files.add(manifestPath);
+
+  if (!isPlainObject(baseManifest.result)) {
+    throw new Error(
+      `Failed to load Snap manifest: The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
+    );
+  }
+
+  if (
+    baseManifest.result.extends &&
+    typeof baseManifest.result.extends === 'string'
+  ) {
+    const fileName = pathUtils.basename(manifestPath);
+    if (fileName === 'snap.manifest.json') {
+      throw new Error(
+        `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
+      );
+    }
+
+    const extendedManifestPath = pathUtils.resolve(
+      pathUtils.dirname(manifestPath),
+      baseManifest.result.extends,
+    );
+
+    const extendedManifest = await loadManifest(extendedManifestPath, files);
+    return {
+      baseManifest,
+      extendedManifest: extendedManifest.baseManifest,
+      mergedManifest: mergeManifests(
+        baseManifest.result,
+        extendedManifest.mergedManifest,
+      ),
+      files,
+    };
+  }
+
+  return {
+    baseManifest,
+    extendedManifest: baseManifest,
+    mergedManifest: baseManifest.result,
+    files,
+  };
+}
 
 export type CheckManifestReport = Omit<ValidatorReport, 'fix'> & {
   wasFixed?: boolean;
@@ -80,7 +180,7 @@ export type CheckManifestOptions = {
  * @property updated - Whether the manifest was written and updated.
  */
 export type CheckManifestResult = {
-  files?: SnapFiles;
+  files?: ExtendableSnapFiles;
   updated: boolean;
   reports: CheckManifestReport[];
 };
@@ -122,8 +222,8 @@ export async function checkManifest(
   }: CheckManifestOptions = {},
 ): Promise<CheckManifestResult> {
   const basePath = dirname(manifestPath);
-  const manifestFile = await readJsonFile(manifestPath);
-  const unvalidatedManifest = manifestFile.result;
+  const extendableManifest = await loadManifest(manifestPath);
+  const unvalidatedManifest = extendableManifest.mergedManifest;
 
   const packageFile = await readJsonFile(
     pathUtils.join(basePath, NpmSnapFileNames.PackageJson),
@@ -152,7 +252,7 @@ export async function checkManifest(
   }
 
   const snapFiles: UnvalidatedSnapFiles = {
-    manifest: manifestFile,
+    manifest: extendableManifest,
     packageJson: packageFile,
     sourceCode: await getSnapSourceCode(
       basePath,
@@ -189,7 +289,7 @@ export async function checkManifest(
       try {
         await writeFileFn(
           manifestPath,
-          manifestResults.files.manifest.toString(),
+          manifestResults.files.manifest.baseManifest.toString(),
         );
       } catch (error) {
         // Note: This error isn't pushed to the errors array, because it's not an
@@ -230,7 +330,9 @@ export async function runFixes(
 
   let fixResults: ValidatorResults = results;
   assert(fixResults.files);
-  fixResults.files.manifest = fixResults.files.manifest.clone();
+
+  fixResults.files.manifest.baseManifest =
+    fixResults.files.manifest.baseManifest.clone();
 
   const mergedReports: ValidatorReport[] = deepClone(fixResults.reports);
 
@@ -241,23 +343,31 @@ export async function runFixes(
   ) {
     assert(fixResults.files);
 
-    let manifest = fixResults.files.manifest.result;
-
     const fixable = fixResults.reports.filter((report) =>
       isReportFixable(report, errorsOnly),
     );
 
+    let { manifest } = fixResults.files;
     for (const report of fixable) {
       assert(report.fix);
       ({ manifest } = await report.fix({ manifest }));
+
+      manifest.mergedManifest = mergeManifests(
+        manifest.baseManifest.result,
+        manifest.extendedManifest?.result,
+      );
     }
 
-    fixResults.files.manifest.value = `${JSON.stringify(
-      getWritableManifest(manifest),
+    fixResults.files.manifest.baseManifest.value = `${JSON.stringify(
+      getWritableManifest(manifest.baseManifest.result),
       null,
       2,
     )}\n`;
-    fixResults.files.manifest.result = manifest;
+    fixResults.files.manifest = manifest;
+    fixResults.files.manifest.mergedManifest = mergeManifests(
+      fixResults.files.manifest.baseManifest.result,
+      fixResults.files.manifest.extendedManifest?.result,
+    );
 
     fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults, errorsOnly);
@@ -440,22 +550,22 @@ export async function getSnapFiles(
  * @param manifest - The manifest to sort and modify.
  * @returns The disk-ready manifest.
  */
-export function getWritableManifest(manifest: SnapManifest): SnapManifest {
+export function getWritableManifest(
+  manifest: DeepPartial<SnapManifest>,
+): DeepPartial<SnapManifest> {
   const { repository, ...remaining } = manifest;
 
   const keys = Object.keys(
     repository ? { ...remaining, repository } : remaining,
   ) as (keyof SnapManifest)[];
 
-  const writableManifest = keys
+  return keys
     .sort((a, b) => MANIFEST_SORT_ORDER[a] - MANIFEST_SORT_ORDER[b])
-    .reduce<Partial<SnapManifest>>(
+    .reduce<DeepPartial<SnapManifest>>(
       (result, key) => ({
         ...result,
         [key]: manifest[key],
       }),
       {},
     );
-
-  return writableManifest as SnapManifest;
 }

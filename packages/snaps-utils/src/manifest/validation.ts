@@ -283,6 +283,7 @@ export const InitialConnectionsStruct = record(
 export type InitialConnections = Infer<typeof InitialConnectionsStruct>;
 
 export const SnapManifestStruct = object({
+  extends: optional(size(string(), 1, Infinity)),
   version: VersionStruct,
   description: size(string(), 1, 280),
   proposedName: size(string(), 1, 214),

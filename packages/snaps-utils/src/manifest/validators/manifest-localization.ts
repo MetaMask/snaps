@@ -10,7 +10,7 @@ import type { ValidatorMeta } from '../validator-types';
 export const manifestLocalization: ValidatorMeta = {
   severity: 'error',
   semanticCheck(files, context) {
-    const manifest = files.manifest.result;
+    const manifest = files.manifest.mergedManifest;
     const localizations: LocalizationFile[] = files.localizationFiles.map(
       (file) => file.result,
     );

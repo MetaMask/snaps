@@ -14,6 +14,12 @@ import { compile, getCompiler } from '../test-utils';
 
 jest.dontMock('fs');
 jest.mock('../commands/eval/implementation');
+jest.mock('@metamask/snaps-utils/node', () => ({
+  ...jest.requireActual('@metamask/snaps-utils/node'),
+  loadManifest: jest.fn().mockResolvedValue({
+    files: new Set(['/snap.manifest.json']),
+  }),
+}));
 
 describe('SnapsStatsPlugin', () => {
   it('logs the compilation stats', async () => {
@@ -184,7 +190,7 @@ describe('SnapsWatchPlugin', () => {
       config: {
         plugins: [
           new SnapsWatchPlugin({
-            files: [],
+            manifestPath: '/snap.manifest.json',
           }),
         ],
       },
@@ -226,7 +232,7 @@ describe('SnapsWatchPlugin', () => {
       config: {
         plugins: [
           new SnapsWatchPlugin({
-            files: ['/snap.manifest.json'],
+            manifestPath: '/snap.manifest.json',
           }),
         ],
       },

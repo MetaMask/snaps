@@ -1,11 +1,11 @@
 import assert from 'assert';
 
 import { packageJsonRecommendedFields } from './package-json-recommended-fields';
-import { getMockSnapFiles, getPackageJson } from '../../test-utils';
+import { getMockExtendableSnapFiles, getPackageJson } from '../../test-utils';
 
 describe('packageJsonRecommendedFields', () => {
   it('does nothing if fields exist', async () => {
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const report = jest.fn();
 
@@ -18,7 +18,7 @@ describe('packageJsonRecommendedFields', () => {
   it('reports if "repository" is missing', async () => {
     const packageJson = getPackageJson();
     delete packageJson.repository;
-    const files = getMockSnapFiles({ packageJson });
+    const files = getMockExtendableSnapFiles({ packageJson });
 
     const report = jest.fn();
 

@@ -5,7 +5,7 @@ import fetchMock from 'jest-fetch-mock';
 import { join } from 'path';
 
 import { productionPlatformVersion } from './production-platform-version';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 jest.mock('fs');
 
@@ -44,7 +44,7 @@ describe('productionPlatformVersion', () => {
     assert(productionPlatformVersion.semanticCheck);
 
     await productionPlatformVersion.semanticCheck(
-      getMockSnapFiles({
+      getMockExtendableSnapFiles({
         manifest: getSnapManifest({
           platformVersion: '6.5.0' as SemVerVersion,
         }),
@@ -68,7 +68,7 @@ describe('productionPlatformVersion', () => {
     assert(productionPlatformVersion.semanticCheck);
 
     await productionPlatformVersion.semanticCheck(
-      getMockSnapFiles({
+      getMockExtendableSnapFiles({
         manifest: getSnapManifest({
           platformVersion: '6.0.0' as SemVerVersion,
         }),
@@ -86,7 +86,7 @@ describe('productionPlatformVersion', () => {
     assert(productionPlatformVersion.semanticCheck);
 
     await productionPlatformVersion.semanticCheck(
-      getMockSnapFiles({
+      getMockExtendableSnapFiles({
         manifest: getSnapManifest({
           platformVersion: '6.1.0' as SemVerVersion,
         }),
@@ -104,7 +104,7 @@ describe('productionPlatformVersion', () => {
     const rawManifest = getSnapManifest();
     delete rawManifest.platformVersion;
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: rawManifest,
     });
 
@@ -119,7 +119,7 @@ describe('productionPlatformVersion', () => {
     const report = jest.fn();
     assert(productionPlatformVersion.semanticCheck);
 
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     await productionPlatformVersion.semanticCheck(files, { report });
 

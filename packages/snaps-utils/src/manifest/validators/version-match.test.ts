@@ -2,11 +2,11 @@ import assert from 'assert';
 
 import { versionMatch } from './version-match';
 import { deepClone } from '../../deep-clone';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('versionMatch', () => {
   it('does nothing if versions match', async () => {
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const report = jest.fn();
 
@@ -18,7 +18,7 @@ describe('versionMatch', () => {
 
   it('reports if versions mismatch', async () => {
     const manifest = getSnapManifest({ version: 'foo' });
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest,
     });
 
@@ -34,9 +34,9 @@ describe('versionMatch', () => {
     );
 
     const { manifest: newManifest } = await report.mock.calls[0][2]({
-      manifest: deepClone(manifest),
+      manifest: deepClone(files.manifest),
     });
     expect(manifest.version).toBe('foo');
-    expect(newManifest.version).toBe('1.0.0');
+    expect(newManifest.baseManifest.result.version).toBe('1.0.0');
   });
 });
