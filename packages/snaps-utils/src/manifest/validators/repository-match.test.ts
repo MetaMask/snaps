@@ -33,10 +33,10 @@ describe('repositoryMatch', () => {
     );
 
     const { manifest: newManifest } = await report.mock.calls[0][2]({
-      manifest: deepClone(manifest),
+      manifest: deepClone(files.manifest),
     });
     expect(manifest.repository).toBeUndefined();
-    expect(newManifest.repository).toStrictEqual({
+    expect(newManifest.baseManifest.result.repository).toStrictEqual({
       type: 'git',
       url: 'https://github.com/MetaMask/example-snap.git',
     });

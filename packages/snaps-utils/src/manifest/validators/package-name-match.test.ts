@@ -32,11 +32,11 @@ describe('packageNameMatch', () => {
     );
 
     const { manifest: newManifest } = await report.mock.calls[0][2]({
-      manifest: deepClone(manifest),
+      manifest: deepClone(files.manifest),
     });
     expect(manifest.source.location.npm.packageName).toBe('foobar');
-    expect(newManifest.source.location.npm.packageName).toBe(
-      '@metamask/example-snap',
-    );
+    expect(
+      newManifest.baseManifest.result.source.location.npm.packageName,
+    ).toBe('@metamask/example-snap');
   });
 });

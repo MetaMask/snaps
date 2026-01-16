@@ -1,8 +1,9 @@
 import { getSnapChecksum } from '../../snaps';
 import type { FetchedSnapFiles } from '../../types';
 import { NpmSnapFileNames } from '../../types';
+import type { VirtualFile } from '../../virtual-file';
+import type { SnapManifest } from '../validation';
 import type { ValidatorMeta } from '../validator-types';
-import type { SnapManifest, VirtualFile } from '@metamask/snaps-utils';
 
 /**
  * Check if the checksum in manifest matches computed value.
