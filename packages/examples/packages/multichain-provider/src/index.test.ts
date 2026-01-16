@@ -43,7 +43,9 @@ describe('onRpcRequest', () => {
             notifications: expect.arrayContaining(['eth_subscription']),
           },
           'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-            accounts: [],
+            accounts: [
+              'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            ],
             methods: expect.arrayContaining(['signMessage']),
             notifications: [],
           },
@@ -139,6 +141,29 @@ describe('onRpcRequest', () => {
       const response = await request({
         method: 'signMessage',
         params: { scope: 'eip155:1', message: 'foo' },
+      });
+
+      expect(response).toRespondWith(MOCK_SIGNATURE);
+    });
+
+    it('returns a signature for Solana', async () => {
+      const { request, mockJsonRpc } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      // We can mock the signature request with the response we want.
+      // Note: This signature is not a valid Solana signature.
+      mockJsonRpc({
+        method: 'signMessage',
+        result: { signature: MOCK_SIGNATURE },
+      });
+
+      const response = await request({
+        method: 'signMessage',
+        params: {
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          message: 'foo',
+        },
       });
 
       expect(response).toRespondWith(MOCK_SIGNATURE);
