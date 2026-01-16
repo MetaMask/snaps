@@ -12,4 +12,4 @@ export type GetSessionParams = never;
  *
  * @property sessionScopes - The scopes granted for the session.
  */
-export type GetSessionResult = CreateSessionResult;
+export type GetSessionResult = Pick<CreateSessionResult, 'sessionScopes'>;
