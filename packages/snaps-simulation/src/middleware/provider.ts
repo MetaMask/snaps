@@ -2,9 +2,10 @@ import type { JsonRpcMiddleware } from '@metamask/json-rpc-engine';
 import { createAsyncMiddleware } from '@metamask/json-rpc-engine';
 import { rpcErrors, serializeCause } from '@metamask/rpc-errors';
 import type { Json, JsonRpcParams } from '@metamask/utils';
-import { hasProperty, hexToBigInt } from '@metamask/utils';
+import { hasProperty, hexToBigInt, parseCaipChainId } from '@metamask/utils';
 import { InfuraProvider } from 'ethers';
 
+import type { ScopedJsonRpcRequest } from './multichain';
 import type { Store } from '../store';
 import { getChainId } from '../store';
 
@@ -17,25 +18,42 @@ import { getChainId } from '../store';
 export function createProviderMiddleware(
   store: Store,
 ): JsonRpcMiddleware<JsonRpcParams, Json> {
-  return createAsyncMiddleware(async (request, response) => {
-    try {
-      const chainId = getChainId(store.getState());
-      const provider = new InfuraProvider(hexToBigInt(chainId));
+  return createAsyncMiddleware(
+    async (request: ScopedJsonRpcRequest, response, next) => {
+      const requestScope = request.scope && parseCaipChainId(request.scope);
+      const isEvm = requestScope ? requestScope.namespace === 'eip155' : true;
 
-      const result = await provider.send(request.method, request.params ?? []);
-      response.result = result;
-    } catch (error) {
-      if (hasProperty(error, 'info') && hasProperty(error.info, 'error')) {
-        response.error = error.info.error;
+      if (!isEvm) {
+        await next();
+        /* istanbul ignore next */
         return;
       }
-      if (hasProperty(error, 'error')) {
-        response.error = error.error;
-        return;
+
+      const chainId = requestScope
+        ? BigInt(requestScope.reference)
+        : hexToBigInt(getChainId(store.getState()));
+
+      try {
+        const provider = new InfuraProvider(chainId);
+
+        const result = await provider.send(
+          request.method,
+          request.params ?? [],
+        );
+        response.result = result;
+      } catch (error) {
+        if (hasProperty(error, 'info') && hasProperty(error.info, 'error')) {
+          response.error = error.info.error;
+          return;
+        }
+        if (hasProperty(error, 'error')) {
+          response.error = error.error;
+          return;
+        }
+        response.error = rpcErrors.internal({
+          data: { cause: serializeCause(error) },
+        });
       }
-      response.error = rpcErrors.internal({
-        data: { cause: serializeCause(error) },
-      });
-    }
-  });
+    },
+  );
 }

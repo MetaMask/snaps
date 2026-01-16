@@ -21,6 +21,7 @@ export type * from './list-entropy-sources';
 export type * from './manage-accounts';
 export * from './manage-state';
 export type * from './methods';
+export type * from './multichain';
 export * from './notify';
 export type * from './provider-request';
 export type * from './request-snaps';

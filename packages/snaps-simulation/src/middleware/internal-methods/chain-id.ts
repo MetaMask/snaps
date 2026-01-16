@@ -2,16 +2,20 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  bigIntToHex,
+  parseCaipChainId,
+  type PendingJsonRpcResponse,
+} from '@metamask/utils';
 
 import type { InternalMethodsMiddlewareHooks } from './middleware';
+import type { ScopedJsonRpcRequest } from '../multichain';
 
 /**
  * A mock handler for eth_chainId that always returns a specific
  * hardcoded result.
  *
- * @param _request - Incoming JSON-RPC request. Ignored for this specific
- * handler.
+ * @param request - Incoming JSON-RPC request.
  * @param response - The outgoing JSON-RPC response, modified to return the
  * result.
  * @param _next - The `json-rpc-engine` middleware next handler.
@@ -20,13 +24,16 @@ import type { InternalMethodsMiddlewareHooks } from './middleware';
  * @returns The JSON-RPC response.
  */
 export async function getChainIdHandler(
-  _request: JsonRpcRequest,
+  request: ScopedJsonRpcRequest,
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: Pick<InternalMethodsMiddlewareHooks, 'getSimulationState'>,
 ) {
-  response.result = hooks.getSimulationState().chain.chainId;
+  const requestScope = request.scope && parseCaipChainId(request.scope);
+  response.result = requestScope
+    ? bigIntToHex(BigInt(requestScope.reference))
+    : hooks.getSimulationState().chain.chainId;
 
   return end();
 }

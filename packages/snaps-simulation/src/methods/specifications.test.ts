@@ -1,3 +1,4 @@
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
 import type { MockAnyNamespace } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import {
@@ -11,11 +12,11 @@ import {
   getPermissionSpecifications,
   resolve,
 } from './specifications';
+import { DEFAULT_SRP } from '../constants';
 import { getControllers, registerSnap } from '../controllers';
-import type { RestrictedMiddlewareHooks } from '../simulation';
 import { getMockOptions } from '../test-utils/options';
 
-const MOCK_HOOKS: RestrictedMiddlewareHooks = {
+const MOCK_HOOKS = {
   getClientCryptography: jest.fn(),
   getMnemonic: jest.fn(),
   getMnemonicSeed: jest.fn(),
@@ -61,6 +62,15 @@ describe('getPermissionSpecifications', () => {
           "targetName": "endowment:assets",
           "validator": [Function],
         },
+        "endowment:caip25": {
+          "allowedCaveats": [
+            "authorizedScopes",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "targetName": "endowment:caip25",
+          "validator": [Function],
+        },
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",
@@ -103,6 +113,15 @@ describe('getPermissionSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:lifecycle-hooks",
+        },
+        "endowment:multichain-provider": {
+          "allowedCaveats": null,
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:multichain-provider",
         },
         "endowment:name-lookup": {
           "allowedCaveats": [
@@ -323,6 +342,10 @@ describe('getPermissionSpecifications', () => {
 
 describe('getEndowments', () => {
   it('returns the endowments', async () => {
+    MOCK_HOOKS.getMnemonic.mockResolvedValue(
+      mnemonicPhraseToBytes(DEFAULT_SRP),
+    );
+
     const controllers = getControllers({
       controllerMessenger: new Messenger<MockAnyNamespace>({
         namespace: MOCK_ANY_NAMESPACE,
