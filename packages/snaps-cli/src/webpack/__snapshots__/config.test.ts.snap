@@ -2225,9 +2225,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "files": [
-          "/bar/snap.manifest.json",
-        ],
+        "manifestPath": "/bar/snap.manifest.json",
       },
     },
   ],
@@ -2748,9 +2746,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "files": [
-          "/bar/snap.manifest.json",
-        ],
+        "manifestPath": "/bar/snap.manifest.json",
       },
     },
   ],
@@ -2927,9 +2923,7 @@ exports[`getDefaultConfiguration returns the default Webpack configuration for t
     },
     SnapsWatchPlugin {
       "options": {
-        "files": [
-          "/bar/snap.manifest.json",
-        ],
+        "manifestPath": "/bar/snap.manifest.json",
       },
     },
   ],
