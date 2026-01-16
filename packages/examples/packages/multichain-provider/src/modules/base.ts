@@ -33,15 +33,34 @@ export abstract class Module {
     })) as ReturnType;
   }
 
+  /**
+   * Sign a message using a module.
+   *
+   * @param account - The CAIP-10 account ID.
+   * @param message - The message to sign.
+   * @returns The signature as defined by the module.
+   */
   abstract signMessage(
     account: CaipAccountId,
     message: string,
   ): Promise<string>;
 
+  /**
+   * Sign a struct using a module.
+   *
+   * @param account - The CAIP-10 account ID.
+   * @param message - The message to sign.
+   * @returns The signature as defined by the module.
+   */
   abstract signTypedData(
     account: CaipAccountId,
     message: string,
   ): Promise<string>;
 
+  /**
+   * Get the genesis hash of the selected scope.
+   *
+   * @returns The genesis hash as defined by the module.
+   */
   abstract getGenesisHash(): Promise<string>;
 }

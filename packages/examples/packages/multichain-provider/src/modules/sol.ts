@@ -32,6 +32,13 @@ export class Solana extends Module {
     return result.signature;
   }
 
+  /**
+   * This method is not supported by the Solana module.
+   *
+   * @param _account - The CAIP-10 account ID.
+   * @param _message - The message to sign.
+   * @throws A method not supported error.
+   */
   async signTypedData(
     _account: CaipAccountId,
     _message: string,
