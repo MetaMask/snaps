@@ -28,11 +28,11 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import type { SnapManifest } from '@metamask/snaps-utils';
+import type { Hex } from '@metamask/utils';
 import { getSafeJson } from '@metamask/utils';
 
 import { getPermissionSpecifications } from './methods';
 import { UNRESTRICTED_METHODS } from './methods/constants';
-import { getSimulationAccount } from './middleware/internal-methods/accounts';
 import type { SimulationOptions } from './options';
 import type { RestrictedMiddlewareHooks } from './simulation';
 import type { RunSagaFunction } from './store';
@@ -75,9 +75,7 @@ export type Controllers = {
  * @param options - The options.
  * @returns The controllers for the Snap.
  */
-export async function getControllers(
-  options: GetControllersOptions,
-): Promise<Controllers> {
+export function getControllers(options: GetControllersOptions): Controllers {
   const { controllerMessenger } = options;
   const subjectMetadataController = new SubjectMetadataController({
     messenger: new Messenger({
@@ -111,7 +109,7 @@ export async function getControllers(
     messenger: interfaceControllerMessenger,
   });
 
-  const permissionController = await getPermissionController(options);
+  const permissionController = getPermissionController(options);
 
   return {
     permissionController,
@@ -128,7 +126,7 @@ export async function getControllers(
  * @param options.options - Miscellaneous options.
  * @returns The permission controller for the Snap.
  */
-async function getPermissionController(options: GetControllersOptions) {
+function getPermissionController(options: GetControllersOptions) {
   const { controllerMessenger } = options;
   const permissionSpecifications = getPermissionSpecifications(options);
   const messenger = new Messenger({
@@ -149,8 +147,15 @@ async function getPermissionController(options: GetControllersOptions) {
     ],
   });
 
-  const mnemonic = await options.hooks.getMnemonic();
-  const defaultAddress = await getSimulationAccount(mnemonic);
+  const simulatedAccounts = options.options.accounts;
+  const ethereumAccounts = simulatedAccounts
+    .filter((account) =>
+      account.scopes.some((scope) => scope.startsWith('eip155')),
+    )
+    .map((account) => ({
+      type: 'eip155:eoa',
+      address: account.address as Hex,
+    }));
 
   return new PermissionController({
     messenger,
@@ -158,8 +163,11 @@ async function getPermissionController(options: GetControllersOptions) {
       [Caip25CaveatType]: caip25CaveatBuilder({
         findNetworkClientIdByChainId: (chainId) => chainId,
         isNonEvmScopeSupported: (_scope) => true,
-        getNonEvmAccountAddresses: () => [],
-        listAccounts: () => [{ type: 'eip155:eoa', address: defaultAddress }],
+        getNonEvmAccountAddresses: (scope) =>
+          simulatedAccounts
+            .filter((account) => account.scopes.includes(scope))
+            .map((account) => `${scope}:${account.address}`),
+        listAccounts: () => ethereumAccounts,
       }),
       ...snapsCaveatsSpecifications,
       ...snapsEndowmentCaveatSpecifications,

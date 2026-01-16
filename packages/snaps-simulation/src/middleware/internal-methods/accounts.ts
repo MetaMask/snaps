@@ -3,36 +3,11 @@ import type {
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
 import { BIP44Node } from '@metamask/key-tree';
-import type {
-  Hex,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
 export type GetAccountsHandlerHooks = {
   getMnemonic: () => Promise<Uint8Array>;
 };
-
-/**
- * Derive the account returned by the Snaps simulation.
- *
- * @param mnemonic - The mnemonic.
- * @returns An account address.
- */
-export async function getSimulationAccount(mnemonic: Uint8Array): Promise<Hex> {
-  const { address } = await BIP44Node.fromDerivationPath({
-    derivationPath: [
-      mnemonic,
-      `bip32:44'`,
-      `bip32:60'`,
-      `bip32:0'`,
-      `bip32:0`,
-      `bip32:0`,
-    ],
-  });
-
-  return address as Hex;
-}
 
 /**
  * A mock handler for account related methods that always returns the first
@@ -57,7 +32,16 @@ export async function getAccountsHandler(
   const { getMnemonic } = hooks;
 
   const mnemonic = await getMnemonic();
-  const address = await getSimulationAccount(mnemonic);
+  const { address } = await BIP44Node.fromDerivationPath({
+    derivationPath: [
+      mnemonic,
+      `bip32:44'`,
+      `bip32:60'`,
+      `bip32:0'`,
+      `bip32:0`,
+      `bip32:0`,
+    ],
+  });
 
   response.result = [address];
   return end();

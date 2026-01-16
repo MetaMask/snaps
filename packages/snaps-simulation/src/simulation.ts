@@ -63,7 +63,11 @@ import {
 } from './methods/hooks';
 import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
-import type { SimulationOptions, SimulationUserOptions } from './options';
+import type {
+  SimulationAccount,
+  SimulationOptions,
+  SimulationUserOptions,
+} from './options';
 import { getOptions } from './options';
 import type {
   ApplicationState,
@@ -354,11 +358,11 @@ export type PermittedMiddlewareHooks = {
 
 export type MultichainMiddlewareHooks = {
   /**
-   * A hook that returns the user's secret recovery phrase.
+   * A hook that returns the simulated accounts.
    *
-   * @returns The user's secret recovery phrase.
+   * @returns The simulated accounts.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getAccounts: () => SimulationAccount[];
 
   /**
    * A hook that retrieves a caveat for a given permission.
@@ -448,13 +452,12 @@ export async function installSnap<
     controllerMessenger,
   );
 
-  const { subjectMetadataController, permissionController } =
-    await getControllers({
-      controllerMessenger,
-      hooks: restrictedHooks,
-      runSaga,
-      options,
-    });
+  const { subjectMetadataController, permissionController } = getControllers({
+    controllerMessenger,
+    hooks: restrictedHooks,
+    runSaga,
+    options,
+  });
 
   const permissionMiddleware = permissionController.createPermissionMiddleware({
     origin: snapId,
@@ -660,7 +663,7 @@ export function getMultichainHooks(
   controllerMessenger: RootControllerMessenger,
 ): MultichainMiddlewareHooks {
   return {
-    getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
+    getAccounts: () => options.accounts,
     getCaveat: (permission: string, caveatType: string) => {
       try {
         return controllerMessenger.call(

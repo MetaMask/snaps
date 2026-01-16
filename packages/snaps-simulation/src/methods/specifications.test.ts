@@ -346,7 +346,7 @@ describe('getEndowments', () => {
       mnemonicPhraseToBytes(DEFAULT_SRP),
     );
 
-    const controllers = await getControllers({
+    const controllers = getControllers({
       controllerMessenger: new Messenger<MockAnyNamespace>({
         namespace: MOCK_ANY_NAMESPACE,
       }),

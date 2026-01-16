@@ -706,7 +706,7 @@ describe('getMultichainHooks', () => {
     controllerMessenger = getRootControllerMessenger();
   });
 
-  it('returns `getMnemonic`', async () => {
+  it('returns `getMnemonic`', () => {
     const options = getMockOptions();
     const hooks = getMultichainHooks(
       MOCK_SNAP_ID,
@@ -714,10 +714,8 @@ describe('getMultichainHooks', () => {
       controllerMessenger,
     );
 
-    const result = await hooks.getMnemonic();
-    expect(result).toStrictEqual(
-      mnemonicPhraseToBytes(options.secretRecoveryPhrase),
-    );
+    const result = hooks.getAccounts();
+    expect(result).toStrictEqual(options.accounts);
   });
 
   it('returns `grantPermissions`', () => {

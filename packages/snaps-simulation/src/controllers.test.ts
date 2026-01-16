@@ -14,7 +14,7 @@ import type { RestrictedMiddlewareHooks } from './simulation';
 import { getMockOptions } from './test-utils';
 
 describe('getControllers', () => {
-  it('returns the controllers', async () => {
+  it('returns the controllers', () => {
     const MOCK_HOOKS: RestrictedMiddlewareHooks = {
       getIsLocked: jest.fn(),
       getMnemonic: jest
@@ -27,20 +27,19 @@ describe('getControllers', () => {
       setCurrentChain: jest.fn(),
     };
 
-    const { permissionController, subjectMetadataController } =
-      await getControllers({
-        controllerMessenger: new Messenger({ namespace: 'Root' }),
-        hooks: MOCK_HOOKS,
-        runSaga: jest.fn(),
-        options: getMockOptions(),
-      });
+    const { permissionController, subjectMetadataController } = getControllers({
+      controllerMessenger: new Messenger({ namespace: 'Root' }),
+      hooks: MOCK_HOOKS,
+      runSaga: jest.fn(),
+      options: getMockOptions(),
+    });
 
     expect(permissionController).toBeInstanceOf(PermissionController);
     expect(subjectMetadataController).toBeInstanceOf(SubjectMetadataController);
   });
 
   describe('PermissionController', () => {
-    it('can grant the CAIP-25 endowment', async () => {
+    it('can grant the CAIP-25 endowment', () => {
       const MOCK_HOOKS: RestrictedMiddlewareHooks = {
         getIsLocked: jest.fn(),
         getMnemonic: jest
@@ -53,7 +52,7 @@ describe('getControllers', () => {
         setCurrentChain: jest.fn(),
       };
 
-      const { permissionController } = await getControllers({
+      const { permissionController } = getControllers({
         controllerMessenger: new Messenger({ namespace: 'Root' }),
         hooks: MOCK_HOOKS,
         runSaga: jest.fn(),
@@ -76,7 +75,7 @@ describe('getControllers', () => {
       });
     });
 
-    it('throws when granting CAIP-25 endowment with non-EVM addresses', async () => {
+    it('throws when granting CAIP-25 endowment with invalid non-EVM addresses', () => {
       const MOCK_HOOKS: RestrictedMiddlewareHooks = {
         getIsLocked: jest.fn(),
         getMnemonic: jest
@@ -89,7 +88,7 @@ describe('getControllers', () => {
         setCurrentChain: jest.fn(),
       };
 
-      const { permissionController } = await getControllers({
+      const { permissionController } = getControllers({
         controllerMessenger: new Messenger({ namespace: 'Root' }),
         hooks: MOCK_HOOKS,
         runSaga: jest.fn(),
@@ -105,7 +104,7 @@ describe('getControllers', () => {
               methods: ['signMessage', 'getGenesisHash'],
               notifications: [],
               accounts: [
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKV',
               ],
             },
           },

@@ -1,14 +1,10 @@
-import { mnemonicPhraseToBytes } from '@metamask/key-tree';
-
 import { createSessionHandler } from './create-session';
-import { DEFAULT_SRP } from '../../constants';
+import { DEFAULT_ACCOUNTS } from '../../constants';
 
 describe('createSessionHandler', () => {
   it('returns granted session', async () => {
     const grantPermissions = jest.fn();
-    const getMnemonic = jest
-      .fn()
-      .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP));
+    const getAccounts = jest.fn().mockReturnValue(DEFAULT_ACCOUNTS);
 
     const result = await createSessionHandler(
       {
@@ -25,12 +21,14 @@ describe('createSessionHandler', () => {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
               methods: ['signMessage', 'getGenesisHash'],
               notifications: [],
-              accounts: [],
+              accounts: [
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+              ],
             },
           },
         },
       },
-      { grantPermissions, getMnemonic },
+      { grantPermissions, getAccounts },
     );
 
     expect(result).toStrictEqual({
@@ -44,7 +42,9 @@ describe('createSessionHandler', () => {
           notifications: ['eth_subscription'],
         },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-          accounts: [],
+          accounts: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ],
           methods: expect.arrayContaining(['signMessage', 'getGenesisHash']),
           notifications: [],
         },
@@ -55,9 +55,7 @@ describe('createSessionHandler', () => {
 
   it('returns granted session using requiredScopes', async () => {
     const grantPermissions = jest.fn();
-    const getMnemonic = jest
-      .fn()
-      .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP));
+    const getAccounts = jest.fn().mockReturnValue(DEFAULT_ACCOUNTS);
 
     const result = await createSessionHandler(
       {
@@ -79,7 +77,7 @@ describe('createSessionHandler', () => {
           },
         },
       },
-      { grantPermissions, getMnemonic },
+      { grantPermissions, getAccounts },
     );
 
     expect(result).toStrictEqual({
@@ -93,7 +91,9 @@ describe('createSessionHandler', () => {
           notifications: ['eth_subscription'],
         },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-          accounts: [],
+          accounts: [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          ],
           methods: expect.arrayContaining(['signMessage', 'getGenesisHash']),
           notifications: [],
         },
@@ -104,7 +104,7 @@ describe('createSessionHandler', () => {
 
   it('throws if invalid params are passed', async () => {
     const grantPermissions = jest.fn();
-    const getMnemonic = jest.fn();
+    const getAccounts = jest.fn();
 
     await expect(
       createSessionHandler(
@@ -114,7 +114,7 @@ describe('createSessionHandler', () => {
           method: 'wallet_createSession',
           params: { optionalScopes: { foo: {} } },
         },
-        { grantPermissions, getMnemonic },
+        { grantPermissions, getAccounts },
       ),
     ).rejects.toThrow('Invalid method parameter(s).');
   });

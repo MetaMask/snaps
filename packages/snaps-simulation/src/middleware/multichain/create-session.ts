@@ -1,7 +1,7 @@
 import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
-  setEthAccounts,
+  setNonSCACaipAccountIdsInCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import type { RequestedPermissions } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
@@ -14,6 +14,7 @@ import {
   record,
 } from '@metamask/superstruct';
 import {
+  type CaipAccountId,
   CaipAccountIdStruct,
   CaipChainIdStruct,
   JsonStruct,
@@ -21,11 +22,11 @@ import {
 } from '@metamask/utils';
 
 import { getSessionScopes } from './utils';
-import { getSimulationAccount } from '../internal-methods/accounts';
+import type { SimulationAccount } from '../../options';
 
 export type CreateSessionHandlerHooks = {
   grantPermissions: (permissions: RequestedPermissions) => void;
-  getMnemonic: () => Promise<Uint8Array>;
+  getAccounts: () => SimulationAccount[];
 };
 
 const ScopesStruct = record(
@@ -65,10 +66,16 @@ export async function createSessionHandler(
     isMultichainOrigin: true,
   };
 
-  const mnemonic = await hooks.getMnemonic();
-  const ethereumAccounts = [await getSimulationAccount(mnemonic)];
+  const accounts = hooks
+    .getAccounts()
+    .flatMap((account) =>
+      account.scopes.map((scope) => `${scope}:${account.address}`),
+    );
 
-  const caveatWithAccounts = setEthAccounts(caveat, ethereumAccounts);
+  const caveatWithAccounts = setNonSCACaipAccountIdsInCaip25CaveatValue(
+    caveat,
+    accounts as CaipAccountId[],
+  );
 
   const permissions = {
     [Caip25EndowmentPermissionName]: {

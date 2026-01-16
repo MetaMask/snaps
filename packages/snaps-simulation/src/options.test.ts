@@ -8,7 +8,7 @@ describe('getOptions', () => {
       {
         "accounts": [
           {
-            "address": "0x1234567890abcdef1234567890abcdef12345678",
+            "address": "0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
             "owned": false,
@@ -71,7 +71,7 @@ describe('getOptions', () => {
       {
         "accounts": [
           {
-            "address": "0x1234567890abcdef1234567890abcdef12345678",
+            "address": "0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
             "owned": false,
