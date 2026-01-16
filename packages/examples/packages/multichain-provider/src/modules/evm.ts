@@ -2,7 +2,6 @@ import type { CaipAccountId, Hex } from '@metamask/utils';
 import {
   assert,
   bytesToHex,
-  hexToNumber,
   parseCaipAccountId,
   stringToBytes,
 } from '@metamask/utils';
@@ -98,7 +97,7 @@ export class Evm extends Module {
           domain: {
             name: 'Ether Mail',
             version: '1',
-            chainId: hexToNumber(reference),
+            chainId: BigInt(reference).toString(10),
             verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
           },
           message: {
