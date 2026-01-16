@@ -128,7 +128,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(1);
@@ -156,7 +156,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(2);
@@ -189,7 +189,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
 
     expect(unfixed).toHaveLength(1);
@@ -591,6 +591,7 @@ describe('loadManifest', () => {
   it('loads and parses the manifest file', async () => {
     const manifest = await loadManifest(MANIFEST_PATH);
     expect(manifest.mergedManifest).toBe(manifest.baseManifest.result);
+    expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.baseManifest.result).toStrictEqual(
       await getDefaultManifest(),
     );
@@ -621,6 +622,7 @@ describe('loadManifest', () => {
     const manifest = await loadManifest(baseManifestPath);
     expect(manifest.baseManifest.result).toStrictEqual(baseManifest);
     expect(manifest.extendedManifest?.result).toStrictEqual(extendedManifest);
+    expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.mergedManifest).toStrictEqual({
       ...extendedManifest,
       proposedName: 'Extended Snap',
@@ -636,7 +638,6 @@ describe('loadManifest', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         snap_dialog: {},
       },
-      extends: undefined,
     });
   });
 });

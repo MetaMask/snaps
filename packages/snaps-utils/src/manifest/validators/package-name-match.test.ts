@@ -2,11 +2,11 @@ import assert from 'assert';
 
 import { packageNameMatch } from './package-name-match';
 import { deepClone } from '../../deep-clone';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('packageNameMatch', () => {
   it('does nothing if name matches', async () => {
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const report = jest.fn();
 
@@ -18,7 +18,7 @@ describe('packageNameMatch', () => {
 
   it('reports if name mismatches', async () => {
     const manifest = getSnapManifest({ packageName: 'foobar' });
-    const files = getMockSnapFiles({ manifest });
+    const files = getMockExtendableSnapFiles({ manifest });
 
     const report = jest.fn();
 

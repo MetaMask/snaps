@@ -7,6 +7,7 @@ import type { Chain, Namespace } from '../namespace';
 import { getSnapChecksum } from '../snaps';
 import type {
   ExtendableSnapFiles,
+  FetchedSnapFiles,
   NpmSnapPackageJson,
   SnapFiles,
 } from '../types';
@@ -313,6 +314,51 @@ export const getMockSnapFilesWithUpdatedChecksum = async ({
 
   files.manifest.result.source.shasum = await getSnapChecksum(files);
   files.manifest.value = JSON.stringify(files.manifest.result);
+
+  return files;
+};
+
+export const getMockExtendableSnapFilesWithUpdatedChecksum = async ({
+  manifest = getSnapManifest(),
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
+  localizationFiles = [],
+}: {
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  sourceCode?: string | VirtualFile;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
+} = {}) => {
+  const files = getMockExtendableSnapFiles({
+    manifest,
+    packageJson,
+    sourceCode,
+    svgIcon,
+    auxiliaryFiles,
+    localizationFiles,
+  });
+
+  const mergedManifest =
+    files.manifest.baseManifest.clone() as VirtualFile<SnapManifest>;
+  mergedManifest.result = files.manifest.mergedManifest;
+  mergedManifest.value = JSON.stringify(files.manifest.mergedManifest);
+
+  const fetchedFiles: FetchedSnapFiles = {
+    ...files,
+    manifest: mergedManifest,
+  };
+
+  files.manifest.baseManifest.result.source ??= {};
+  files.manifest.baseManifest.result.source.shasum =
+    await getSnapChecksum(fetchedFiles);
+
+  files.manifest.baseManifest.value = JSON.stringify(
+    files.manifest.baseManifest.result,
+  );
 
   return files;
 };

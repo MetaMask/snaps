@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { unusedExports } from './unused-exports';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('unusedExports', () => {
   it('does nothing if `exports` or `handlerEndowments` are not provided', async () => {
@@ -9,7 +9,7 @@ describe('unusedExports', () => {
     assert(unusedExports.semanticCheck);
 
     await unusedExports.semanticCheck(
-      getMockSnapFiles({
+      getMockExtendableSnapFiles({
         manifest: getSnapManifest(),
         manifestPath: __filename,
       }),
@@ -23,7 +23,7 @@ describe('unusedExports', () => {
     const report = jest.fn();
     assert(unusedExports.semanticCheck);
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: getSnapManifest({
         initialPermissions: {
           'endowment:page-home': {},
@@ -56,15 +56,15 @@ describe('unusedExports', () => {
     const fix = report.mock.calls[0][2];
     assert(fix);
 
-    const { manifest } = await fix({ manifest: files.manifest.result });
-    expect(manifest.initialPermissions).toStrictEqual({});
+    const { manifest } = await fix({ manifest: files.manifest });
+    expect(manifest.mergedManifest.initialPermissions).toStrictEqual({});
   });
 
   it('reports if the Snap exports a handler but does not request permission for it in the manifest', async () => {
     const report = jest.fn();
     assert(unusedExports.semanticCheck);
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: getSnapManifest({
         initialPermissions: {
           'endowment:page-home': {},
@@ -98,7 +98,7 @@ describe('unusedExports', () => {
     const report = jest.fn();
     assert(unusedExports.semanticCheck);
 
-    const files = getMockSnapFiles({
+    const files = getMockExtendableSnapFiles({
       manifest: getSnapManifest({
         initialPermissions: {
           'endowment:page-home': {},

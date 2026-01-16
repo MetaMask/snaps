@@ -9,11 +9,12 @@ import type { ValidatorMeta } from '../validator-types';
 export const platformVersion: ValidatorMeta = {
   severity: 'error',
   async semanticCheck(files, context) {
-    const manifestPlatformVersion = files.manifest.result.platformVersion;
+    const manifestPlatformVersion =
+      files.manifest.mergedManifest.platformVersion;
 
     // Create a require function in the context of the location of the manifest
     // file to avoid potentially loading the wrong version of the Snaps SDK.
-    const require = createRequire(files.manifest.path);
+    const require = createRequire(files.manifest.baseManifest.path);
 
     const packageJson = require.resolve('@metamask/snaps-sdk/package.json');
     // eslint-disable-next-line import-x/no-dynamic-require
@@ -24,7 +25,7 @@ export const platformVersion: ValidatorMeta = {
         'platform-version-missing',
         'The "platformVersion" field is missing from the manifest.',
         ({ manifest }) => {
-          manifest.platformVersion = actualVersion;
+          manifest.baseManifest.result.platformVersion = actualVersion;
           return { manifest };
         },
       );
@@ -37,7 +38,7 @@ export const platformVersion: ValidatorMeta = {
         'platform-version-mismatch',
         `The "platformVersion" field in the manifest must match the version of the Snaps SDK. Got "${manifestPlatformVersion}", expected "${actualVersion}".`,
         async ({ manifest }) => {
-          manifest.platformVersion = actualVersion;
+          manifest.baseManifest.result.platformVersion = actualVersion;
           return { manifest };
         },
       );

@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { isSnapManifest } from './is-snap-manifest';
-import { getMockSnapFiles } from '../../test-utils';
+import { getMockExtendableSnapFiles } from '../../test-utils';
 import { VirtualFile } from '../../virtual-file';
 
 describe('isSnapManifest', () => {
@@ -18,7 +18,7 @@ describe('isSnapManifest', () => {
   });
 
   it('does nothing on valid snap.manifest.json', async () => {
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
     const report = jest.fn();
 
     assert(isSnapManifest.structureCheck);
@@ -33,11 +33,19 @@ describe('isSnapManifest', () => {
       result: 'foo',
       path: './snap.manifest.json',
     });
+
     const report = jest.fn();
 
     assert(isSnapManifest.structureCheck);
     await isSnapManifest.structureCheck(
-      { manifest, localizationFiles: [], auxiliaryFiles: [] },
+      {
+        manifest: {
+          baseManifest: manifest,
+          mergedManifest: manifest.result,
+        },
+        localizationFiles: [],
+        auxiliaryFiles: [],
+      },
       { report },
     );
 

@@ -2,11 +2,11 @@ import assert from 'assert';
 
 import { repositoryMatch } from './repository-match';
 import { deepClone } from '../../deep-clone';
-import { getMockSnapFiles, getSnapManifest } from '../../test-utils';
+import { getMockExtendableSnapFiles, getSnapManifest } from '../../test-utils';
 
 describe('repositoryMatch', () => {
   it('does nothing if repositories match', async () => {
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const report = jest.fn();
 
@@ -19,7 +19,7 @@ describe('repositoryMatch', () => {
   it('reports if manifest is missing repository', async () => {
     const manifest = getSnapManifest();
     delete manifest.repository;
-    const files = getMockSnapFiles({ manifest });
+    const files = getMockExtendableSnapFiles({ manifest });
 
     const report = jest.fn();
 

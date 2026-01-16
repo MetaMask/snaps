@@ -14,7 +14,7 @@ export const isSnapManifest: ValidatorMeta = {
     if (!files.manifest) {
       return;
     }
-    const [error] = validate(files.manifest.result, SnapManifestStruct);
+    const [error] = validate(files.manifest.mergedManifest, SnapManifestStruct);
     if (error) {
       for (const failure of error.failures()) {
         context.report(

@@ -1,14 +1,14 @@
 import assert from 'assert';
 
 import { iconMissing } from './icon-missing';
-import { getMockSnapFiles } from '../../test-utils';
+import { getMockExtendableSnapFiles } from '../../test-utils';
 
 describe('iconMissing', () => {
   it('does nothing if icon exists', async () => {
     const report = jest.fn();
 
     assert(iconMissing.semanticCheck);
-    await iconMissing.semanticCheck(getMockSnapFiles(), { report });
+    await iconMissing.semanticCheck(getMockExtendableSnapFiles(), { report });
 
     expect(report).toHaveBeenCalledTimes(0);
   });
@@ -16,7 +16,7 @@ describe('iconMissing', () => {
   it('reports if icon is missing', async () => {
     const report = jest.fn();
 
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
     delete files.svgIcon;
 
     assert(iconMissing.semanticCheck);

@@ -14,8 +14,9 @@ import { deepClone } from '../deep-clone';
 import { readJsonFile } from '../fs';
 import { parseJson } from '../json';
 import type {
-  ExtendableManifest,
+  DeepPartial,
   ExtendableSnapFiles,
+  UnvalidatedExtendableManifest,
   UnvalidatedSnapFiles,
 } from '../types';
 import { NpmSnapFileNames } from '../types';
@@ -35,6 +36,35 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
   manifestVersion: 11,
 };
 
+type MergedManifest<Type> =
+  Type extends DeepPartial<SnapManifest> ? SnapManifest : Json;
+
+/**
+ * Merge two Snap manifests, with the extended manifest taking precedence
+ * over the base manifest.
+ *
+ * @param baseManifest - The base manifest.
+ * @param extendedManifest - The extended manifest.
+ * @returns The merged manifest.
+ */
+function mergeManifests<Type>(
+  baseManifest: Type,
+  extendedManifest?: Type,
+): MergedManifest<Type> {
+  if (!extendedManifest) {
+    return baseManifest as MergedManifest<Type>;
+  }
+
+  if (!isPlainObject(baseManifest) || !isPlainObject(extendedManifest)) {
+    throw new Error('Both manifests must be plain objects to be merged.');
+  }
+
+  const mergedManifest = deepmerge(extendedManifest, baseManifest);
+  delete mergedManifest.extends;
+
+  return mergedManifest as MergedManifest<Type>;
+}
+
 /**
  * Load a manifest and its extended manifest if it has one.
  *
@@ -45,10 +75,20 @@ const MANIFEST_SORT_ORDER: Record<keyof SnapManifest, number> = {
  */
 export async function loadManifest(
   manifestPath: string,
-): Promise<ExtendableManifest> {
+): Promise<UnvalidatedExtendableManifest> {
   try {
-    const baseManifest = await readJsonFile<SnapManifest>(manifestPath);
-    if (baseManifest.result.extends) {
+    const baseManifest = await readJsonFile(manifestPath);
+
+    if (!isPlainObject(baseManifest.result)) {
+      throw new Error(
+        `The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
+      );
+    }
+
+    if (
+      baseManifest.result.extends &&
+      typeof baseManifest.result.extends === 'string'
+    ) {
       const fileName = pathUtils.basename(manifestPath);
       if (fileName === 'snap.manifest.json') {
         throw new Error(
@@ -62,24 +102,26 @@ export async function loadManifest(
       );
 
       const extendedManifest = await loadManifest(extendedManifestPath);
+      if (!isPlainObject(extendedManifest.mergedManifest)) {
+        throw new Error(
+          `The extended Snap manifest file at "${extendedManifestPath}" must contain a JSON object.`,
+        );
+      }
 
       return {
         baseManifest,
         extendedManifest: extendedManifest.baseManifest,
-        mergedManifest: {
-          ...deepmerge(extendedManifest.mergedManifest, baseManifest.result),
-          extends: undefined,
-        },
+        mergedManifest: mergeManifests(
+          baseManifest.result,
+          extendedManifest.mergedManifest,
+        ),
       };
     }
 
     return {
       baseManifest,
       extendedManifest: baseManifest,
-      mergedManifest: {
-        ...baseManifest.result,
-        extends: undefined,
-      },
+      mergedManifest: baseManifest.result,
     };
   } catch (error) {
     throw new Error(`Failed to load Snap manifest: ${getErrorMessage(error)}`);
@@ -308,6 +350,11 @@ export async function runFixes(
     for (const report of fixable) {
       assert(report.fix);
       ({ manifest } = await report.fix({ manifest }));
+
+      manifest.mergedManifest = mergeManifests(
+        manifest.baseManifest.result,
+        manifest.extendedManifest?.result,
+      );
     }
 
     fixResults.files.manifest.baseManifest.value = `${JSON.stringify(
@@ -316,6 +363,10 @@ export async function runFixes(
       2,
     )}\n`;
     fixResults.files.manifest = manifest;
+    fixResults.files.manifest.mergedManifest = mergeManifests(
+      fixResults.files.manifest.baseManifest.result,
+      fixResults.files.manifest.extendedManifest?.result,
+    );
 
     fixResults = await runValidators(fixResults.files, rules);
     shouldRunFixes = hasFixes(fixResults, errorsOnly);
@@ -499,7 +550,7 @@ export async function getSnapFiles(
  * @returns The disk-ready manifest.
  */
 export function getWritableManifest(
-  manifest: Partial<SnapManifest>,
+  manifest: DeepPartial<SnapManifest>,
 ): Partial<SnapManifest> {
   const { repository, ...remaining } = manifest;
 

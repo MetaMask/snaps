@@ -57,7 +57,7 @@ export type UnvalidatedExtendableManifest = {
    * The extended manifest, if any. This is the manifest that the base manifest
    * extends. This can be partial.
    */
-  extendedManifest?: VirtualFile<Partial<SnapManifest>>;
+  extendedManifest?: VirtualFile<Json>;
 
   /**
    * The result of deep merging the base and extended manifests. This should
@@ -69,15 +69,17 @@ export type UnvalidatedExtendableManifest = {
 /**
  * A utility type that makes all properties of a type optional, recursively.
  */
-type DeepPartial<Type> = {
-  [Property in keyof Type]?: Type[Property] extends (infer Value)[]
-    ? DeepPartial<Value>[]
-    : Type[Property] extends readonly (infer Value)[]
-      ? readonly DeepPartial<Value>[]
-      : Type[Property] extends object
-        ? DeepPartial<Type[Property]>
-        : Type[Property];
-};
+export type DeepPartial<Type> = Type extends string
+  ? Type
+  : {
+      [Property in keyof Type]?: Type[Property] extends (infer Value)[]
+        ? DeepPartial<Value>[]
+        : Type[Property] extends readonly (infer Value)[]
+          ? readonly DeepPartial<Value>[]
+          : Type[Property] extends object
+            ? DeepPartial<Type[Property]>
+            : Type[Property];
+    };
 
 /**
  * An extendable manifest, which consists of a base manifest, an optional
@@ -94,7 +96,7 @@ export type ExtendableManifest = {
    * The extended manifest, if any. This is the manifest that the base manifest
    * extends. This can be partial.
    */
-  extendedManifest?: VirtualFile<Partial<SnapManifest>>;
+  extendedManifest?: VirtualFile<DeepPartial<SnapManifest>>;
 
   /**
    * The result of deep merging the base and extended manifests. This should
