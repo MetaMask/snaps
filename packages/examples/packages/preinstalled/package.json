@@ -23,7 +23,7 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build && yarn build:manifest",
+    "build": "mm-snap build --preinstalled",
     "build:clean": "yarn clean && yarn build",
     "build:manifest": "tsx scripts/generate-json.mts",
     "changelog:update": "../../../../scripts/update-changelog.sh @metamask/preinstalled-example-snap",

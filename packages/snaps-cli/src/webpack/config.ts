@@ -8,6 +8,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 import { getFunctionLoader, wasm } from './loaders';
 import {
+  PreinstalledSnapsBundlePlugin,
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,
   SnapsStatsPlugin,
@@ -31,20 +32,34 @@ export type WebpackOptions = {
   analyze?: boolean;
 
   /**
-   * Whether to watch for changes.
-   */
-  watch?: boolean;
-
-  /**
    * Whether to evaluate the bundle. If this is set, it will override the
    * `evaluate` option in the config object.
    */
   evaluate?: boolean;
 
   /**
+   * Whether to build the Snap as a preinstalled Snap. If this is set, it will
+   * output a `preinstalled-snap.json` instead of a regular bundle.
+   */
+  preinstalled?: boolean;
+
+  /**
+   * The preinstalled Snap options to use. See {@link SnapConfig.preinstalled}
+   * for more details.
+   *
+   * This is ignored if `preinstalled` is not set to `true`.
+   */
+  preinstalledOptions?: ProcessedConfig['preinstalled'];
+
+  /**
    * The spinner to use for logging.
    */
   spinner?: Ora;
+
+  /**
+   * Whether to watch for changes.
+   */
+  watch?: boolean;
 };
 
 /**
@@ -365,6 +380,15 @@ export async function getDefaultConfiguration(
           logLevel: 'silent',
           openAnalyzer: false,
         }),
+
+      options.preinstalled &&
+        new PreinstalledSnapsBundlePlugin(
+          {
+            manifestPath: config.manifest.path,
+            preinstalledOptions: options.preinstalledOptions,
+          },
+          options.spinner,
+        ),
 
       /**
        * The `ProviderPlugin` is a Webpack plugin that automatically load

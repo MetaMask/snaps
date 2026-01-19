@@ -9,11 +9,26 @@ import type { Steps } from '../../utils';
 import { success, executeSteps } from '../../utils';
 
 export type BuildContext = {
-  analyze: boolean;
   build: boolean;
   config: ProcessedConfig;
   exports?: string[];
+  options: BuildOptions;
   port?: number;
+};
+
+/**
+ * The options for {@link buildHandler}.
+ */
+export type BuildOptions = {
+  /**
+   * Whether to analyze the bundle.
+   */
+  analyze?: boolean;
+
+  /**
+   * Whether to build the Snap as a preinstalled Snap.
+   */
+  preinstalled?: boolean;
 };
 
 export const steps: Steps<BuildContext> = [
@@ -34,15 +49,17 @@ export const steps: Steps<BuildContext> = [
     name: 'Building the Snap bundle.',
     condition: ({ build: enableBuild }) => enableBuild,
     task: async (context) => {
-      const { analyze, config, spinner } = context;
+      const { options, config, spinner } = context;
 
       const compiler = await build(config, {
-        analyze,
+        analyze: options.analyze,
         evaluate: config.evaluate,
+        preinstalled: options.preinstalled,
+        preinstalledOptions: config.preinstalled,
         spinner,
       });
 
-      if (analyze) {
+      if (options.analyze) {
         return {
           ...context,
           port: await getBundleAnalyzerPort(compiler),
@@ -54,7 +71,7 @@ export const steps: Steps<BuildContext> = [
   },
   {
     name: 'Running analyser.',
-    condition: ({ analyze }) => analyze,
+    condition: ({ options }) => options.analyze === true,
     task: async ({ spinner, port }) => {
       assert(port, 'Port is not defined.');
       success(`Bundle analyzer running at http://localhost:${port}.`, spinner);
@@ -71,16 +88,19 @@ export const steps: Steps<BuildContext> = [
  * This creates the destination directory if it doesn't exist.
  *
  * @param config - The config object.
- * @param analyze - Whether to analyze the bundle.
+ * @param options - The build options.
+ * @param options.analyze - Whether to analyze the bundle.
+ * @param options.preinstalled - Whether to build the Snap as a preinstalled
+ * Snap.
  * @returns Nothing.
  */
 export async function buildHandler(
   config: ProcessedConfig,
-  analyze = false,
+  options: BuildOptions = {},
 ): Promise<void> {
   return await executeSteps(steps, {
     build: true,
     config,
-    analyze,
+    options,
   });
 }

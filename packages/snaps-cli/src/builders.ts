@@ -56,6 +56,12 @@ const builders = {
       return port;
     },
   },
+
+  preinstalled: {
+    describe: 'Build the Snap as a preinstalled Snap',
+    type: 'boolean',
+    default: false,
+  },
 } as const satisfies Record<string, Readonly<Options>>;
 
 export default builders;
