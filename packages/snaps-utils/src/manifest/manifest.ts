@@ -78,6 +78,11 @@ export async function loadManifest(
   manifestPath: string,
   files = new Set<string>(),
 ): Promise<UnvalidatedExtendableManifest> {
+  assert(
+    pathUtils.isAbsolute(manifestPath),
+    'The `loadManifest` function must be called with an absolute path.',
+  );
+
   if (files.has(manifestPath)) {
     throw new Error(
       `Failed to load Snap manifest: Circular dependency detected when loading "${manifestPath}".`,

@@ -713,6 +713,12 @@ describe('loadManifest', () => {
     );
   });
 
+  it('throws if called with a relative path', async () => {
+    await expect(loadManifest('./snap.manifest.json')).rejects.toThrow(
+      'The `loadManifest` function must be called with an absolute path.',
+    );
+  });
+
   it('throws if the base manifest is not a plain object', async () => {
     const baseManifest = ['not', 'a', 'plain', 'object'];
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(baseManifest));
