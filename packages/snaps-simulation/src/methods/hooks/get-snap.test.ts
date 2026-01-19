@@ -34,7 +34,6 @@ describe('getGetSnapImplementation', () => {
           "version": "0.1.0",
         },
         "preinstalled": false,
-        "sourceCode": "",
         "status": "running",
         "version": "0.1.0",
         "versionHistory": [],
