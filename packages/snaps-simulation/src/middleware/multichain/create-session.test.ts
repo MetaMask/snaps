@@ -43,7 +43,7 @@ describe('createSessionHandler', () => {
         },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
           accounts: [
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
           ],
           methods: expect.arrayContaining(['signMessage', 'getGenesisHash']),
           notifications: [],
@@ -92,7 +92,7 @@ describe('createSessionHandler', () => {
         },
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
           accounts: [
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
           ],
           methods: expect.arrayContaining(['signMessage', 'getGenesisHash']),
           notifications: [],

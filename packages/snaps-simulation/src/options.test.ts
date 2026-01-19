@@ -18,7 +18,7 @@ describe('getOptions', () => {
             "selected": false,
           },
           {
-            "address": "7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv",
+            "address": "CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e",
             "assets": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -81,7 +81,7 @@ describe('getOptions', () => {
             "selected": false,
           },
           {
-            "address": "7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv",
+            "address": "CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e",
             "assets": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",

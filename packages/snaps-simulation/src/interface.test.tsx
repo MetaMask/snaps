@@ -1890,9 +1890,9 @@ describe('getValueFromSelector', () => {
     ).toStrictEqual({
       accountId: options.accounts[1].id,
       addresses: [
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
-        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
+        'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
+        'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
       ],
     });
   });
@@ -1920,7 +1920,7 @@ describe('getValueFromSelector', () => {
       <AssetSelector
         name="assets"
         addresses={[
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
         ]}
       />
     );

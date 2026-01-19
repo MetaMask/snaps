@@ -40,7 +40,7 @@ export const DEFAULT_ACCOUNTS: SimulationAccount[] = [
     assets: [],
   },
   {
-    address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+    address: 'CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
     id: 'e051723c-85d0-43a3-b9bf-568a90d3f378',
     scopes: [
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
