@@ -147,6 +147,13 @@ describe('onRpcRequest', () => {
     });
 
     it('returns a signature for Solana', async () => {
+      const MOCK_SOLANA_SIGNATURE = {
+        signature:
+          '5VUGEynUv9MPhZ5ou2hW6NVC7c9dUPrY5ujwMJsEA3Qf9Y5YzUkeJgHZ1YfpctSN4LW3zrwzPkQvkiqL18Xf4BUj',
+        signedMessage: 'Zm9v',
+        signatureType: 'ed25519',
+      };
+
       const { request, mockJsonRpc } = await installSnap();
 
       await request({ method: 'createSession' });
@@ -155,7 +162,7 @@ describe('onRpcRequest', () => {
       // Note: This signature is not a valid Solana signature.
       mockJsonRpc({
         method: 'signMessage',
-        result: { signature: MOCK_SIGNATURE },
+        result: MOCK_SOLANA_SIGNATURE,
       });
 
       const response = await request({
@@ -166,7 +173,7 @@ describe('onRpcRequest', () => {
         },
       });
 
-      expect(response).toRespondWith(MOCK_SIGNATURE);
+      expect(response).toRespondWith(MOCK_SOLANA_SIGNATURE.signature);
     });
   });
 
@@ -191,6 +198,26 @@ describe('onRpcRequest', () => {
       });
 
       expect(response).toRespondWith(MOCK_SIGNATURE);
+    });
+
+    it('throws when requesting a signature for Solana', async () => {
+      const { request } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      const response = await request({
+        method: 'signTypedData',
+        params: {
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          message: 'foo',
+        },
+      });
+
+      expect(response).toRespondWithError({
+        code: -32004,
+        message: 'Method not supported.',
+        stack: expect.any(String),
+      });
     });
   });
 
