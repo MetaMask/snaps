@@ -1,9 +1,10 @@
 import {
   MethodNotFoundError,
+  MethodNotSupportedError,
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 import type { CaipChainId } from '@metamask/utils';
-import { parseCaipChainId } from '@metamask/utils';
+import { assert, parseCaipChainId } from '@metamask/utils';
 
 import { Evm, Solana } from './modules';
 import type {
@@ -119,10 +120,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     case 'revokeSession':
       return await revokeSession();
 
-    case 'getChainId':
+    case 'getChainId': {
+      assert(
+        scope.startsWith('eip155'),
+        new MethodNotSupportedError({ method: request.method }),
+      );
       return await scopeModule.invokeMethod<string>({
         method: 'eth_chainId',
       });
+    }
 
     case 'getAccounts':
       return await getAccounts(scope);

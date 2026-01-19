@@ -105,6 +105,29 @@ describe('onRpcRequest', () => {
 
       expect(response).toRespondWith(SEPOLIA_CHAIN_ID);
     });
+
+    it('throws when requesting for non-Ethereum scope', async () => {
+      const { request } = await installSnap();
+
+      await request({ method: 'createSession' });
+
+      const response = await request({
+        method: 'getChainId',
+        params: {
+          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        },
+      });
+
+      expect(response).toRespondWithError({
+        code: -32004,
+        message: 'Method not supported.',
+        stack: expect.any(String),
+        data: {
+          method: 'getChainId',
+          cause: null,
+        },
+      });
+    });
   });
 
   describe('getAccounts', () => {
