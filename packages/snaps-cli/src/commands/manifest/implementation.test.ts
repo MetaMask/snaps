@@ -194,7 +194,7 @@ describe('manifest', () => {
           "url": "https://github.com/MetaMask/example-snap.git"
         },
         "source": {
-          "shasum": "8AecENJ4N6t8SI9kpaaWrMG2zmFxrVWYU61IVskKMmc=",
+          "shasum": "itjh0enng42nO6BxNCEhDH8wm3yl4xlVclfd5LsZ2wA=",
           "location": {
             "npm": {
               "filePath": "dist/bundle.js",
