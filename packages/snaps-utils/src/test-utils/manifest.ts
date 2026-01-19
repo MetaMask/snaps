@@ -258,6 +258,7 @@ export const getMockExtendableSnapFiles = ({
     manifest: {
       baseManifest,
       mergedManifest: baseManifest.result,
+      files: new Set([baseManifest.path]),
     },
     packageJson: new VirtualFile({
       value: JSON.stringify(packageJson),
