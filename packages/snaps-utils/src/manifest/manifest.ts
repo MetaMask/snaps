@@ -123,7 +123,6 @@ export async function loadManifest(
 
   return {
     baseManifest,
-    extendedManifest: baseManifest,
     mergedManifest: baseManifest.result,
     files,
   };

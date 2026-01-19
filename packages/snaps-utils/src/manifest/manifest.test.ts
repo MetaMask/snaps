@@ -596,6 +596,7 @@ describe('loadManifest', () => {
       await getDefaultManifest(),
     );
     expect(manifest.files).toStrictEqual(new Set(['/snap/snap.manifest.json']));
+    expect(manifest.extendedManifest).toBeUndefined();
   });
 
   it('loads a manifest with extended manifest and merges them', async () => {
