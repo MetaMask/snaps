@@ -57,7 +57,7 @@ export type UnvalidatedExtendableManifest = {
    * The extended manifest, if any. This is the manifest that the base manifest
    * extends. This can be partial.
    */
-  extendedManifest?: VirtualFile<Json>;
+  extendedManifest?: Json;
 
   /**
    * The result of deep merging the base and extended manifests. This should
@@ -88,12 +88,12 @@ export type DeepPartial<Type> = Type extends string
     };
 
 /**
- * An extendable manifest, which consists of a base manifest, an optional
+ * An extendable manifest, which consists of a main manifest, an optional
  * extended manifest, and the merged manifest.
  */
 export type ExtendableManifest = {
   /**
-   * The base manifest, i.e., the manifest at the given path. This may extend
+   * The main manifest, i.e., the manifest at the given path. This may extend
    * another manifest, and can be partial.
    */
   mainManifest: VirtualFile<DeepPartial<SnapManifest>>;
@@ -102,17 +102,17 @@ export type ExtendableManifest = {
    * The extended manifest, if any. This is the manifest that the base manifest
    * extends. This can be partial.
    */
-  extendedManifest?: VirtualFile<DeepPartial<SnapManifest>>;
+  extendedManifest?: DeepPartial<SnapManifest>;
 
   /**
-   * The result of deep merging the base and extended manifests. This should
+   * The result of deep merging the main and extended manifests. This should
    * always be a complete manifest.
    */
   mergedManifest: SnapManifest;
 
   /**
    * The set of file paths that were involved in creating this extendable
-   * manifest, including the base and extended manifests.
+   * manifest, including the main and extended manifests.
    */
   files: Set<string>;
 };

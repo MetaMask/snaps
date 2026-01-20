@@ -677,7 +677,7 @@ describe('loadManifest', () => {
 
     const manifest = await loadManifest(mainManifestPath);
     expect(manifest.mainManifest.result).toStrictEqual(mainManifest);
-    expect(manifest.extendedManifest?.result).toStrictEqual(extendedManifest);
+    expect(manifest.extendedManifest).toStrictEqual(extendedManifest);
     expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.mergedManifest).toStrictEqual({
       ...extendedManifest,
@@ -740,7 +740,13 @@ describe('loadManifest', () => {
 
     const manifest = await loadManifest(level3ManifestPath);
     expect(manifest.mainManifest.result).toStrictEqual(manifestLevel3);
-    expect(manifest.extendedManifest?.result).toStrictEqual(manifestLevel2);
+
+    const { extends: _, ...level2WithoutExtends } = manifestLevel2;
+    expect(manifest.extendedManifest).toStrictEqual({
+      ...manifestLevel1,
+      ...level2WithoutExtends,
+    });
+
     expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.mergedManifest).toStrictEqual({
       ...manifestLevel1,
