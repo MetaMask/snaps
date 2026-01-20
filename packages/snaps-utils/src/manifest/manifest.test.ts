@@ -713,6 +713,32 @@ describe('loadManifest', () => {
     );
   });
 
+  it('allows loading a manifest at "snap.manifest.json" which extends another manifest, if it is not the root manifest', async () => {
+    const extendedManifest = getSnapManifest({
+      extends: './other.manifest.json',
+      proposedName: 'Extended Snap',
+    });
+
+    const otherManifest = {
+      proposedName: 'Base Snap',
+    };
+
+    const baseManifest = {
+      extends: './snap.manifest.json',
+    };
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+    await fs.writeFile(
+      join(BASE_PATH, 'other.manifest.json'),
+      JSON.stringify(otherManifest),
+    );
+
+    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
+
+    expect(await loadManifest(baseManifestPath)).toBeDefined();
+  });
+
   it('throws if called with a relative path', async () => {
     await expect(loadManifest('./snap.manifest.json')).rejects.toThrow(
       'The `loadManifest` function must be called with an absolute path.',
@@ -746,21 +772,13 @@ describe('loadManifest', () => {
   });
 
   it('throws if the manifest at "snap.manifest.json" extends another manifest', async () => {
-    const extendedManifest = getSnapManifest({
+    const baseManifest = getSnapManifest({
       extends: './another.manifest.json',
     });
 
-    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(baseManifest));
 
-    const baseManifest = {
-      extends: './snap.manifest.json',
-      proposedName: 'Extended Snap',
-    };
-
-    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
-    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
-
-    await expect(loadManifest(baseManifestPath)).rejects.toThrow(
+    await expect(loadManifest(MANIFEST_PATH)).rejects.toThrow(
       `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
     );
   });

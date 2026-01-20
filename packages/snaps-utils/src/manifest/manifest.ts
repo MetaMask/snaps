@@ -72,11 +72,14 @@ function mergeManifests<Type>(
  * @param manifestPath - The path to the manifest file.
  * @param files - A set of already loaded manifest file paths to prevent
  * circular dependencies.
+ * @param root - Whether this is the root manifest being loaded. Used for
+ * recursive calls, and should not be set by callers.
  * @returns The base and extended manifests.
  */
 export async function loadManifest(
   manifestPath: string,
   files = new Set<string>(),
+  root = true,
 ): Promise<UnvalidatedExtendableManifest> {
   assert(
     pathUtils.isAbsolute(manifestPath),
@@ -103,7 +106,7 @@ export async function loadManifest(
     typeof baseManifest.result.extends === 'string'
   ) {
     const fileName = pathUtils.basename(manifestPath);
-    if (fileName === 'snap.manifest.json') {
+    if (root && fileName === 'snap.manifest.json') {
       throw new Error(
         `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
       );
@@ -114,7 +117,12 @@ export async function loadManifest(
       baseManifest.result.extends,
     );
 
-    const extendedManifest = await loadManifest(extendedManifestPath, files);
+    const extendedManifest = await loadManifest(
+      extendedManifestPath,
+      files,
+      false,
+    );
+
     return {
       baseManifest,
       extendedManifest: extendedManifest.baseManifest,
