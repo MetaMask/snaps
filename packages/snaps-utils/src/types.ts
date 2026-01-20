@@ -60,7 +60,7 @@ export type UnvalidatedExtendableManifest = {
   extendedManifest?: Json;
 
   /**
-   * The result of deep merging the base and extended manifests. This should
+   * The result of deep merging the main and extended manifests. This should
    * always be a complete manifest.
    */
   mergedManifest: Json;
