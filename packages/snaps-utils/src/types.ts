@@ -48,13 +48,13 @@ export type NpmSnapPackageJson = Infer<typeof NpmSnapPackageJsonStruct> &
  */
 export type UnvalidatedExtendableManifest = {
   /**
-   * The base manifest, i.e., the manifest at the given path. This may extend
+   * The main manifest, i.e., the manifest at the given path. This may extend
    * another manifest, and can be partial.
    */
   mainManifest: VirtualFile<Json>;
 
   /**
-   * The extended manifest, if any. This is the manifest that the base manifest
+   * The extended manifest, if any. This is the manifest that the main manifest
    * extends. This can be partial.
    */
   extendedManifest?: Json;
@@ -67,7 +67,7 @@ export type UnvalidatedExtendableManifest = {
 
   /**
    * The set of file paths that were involved in creating this extendable
-   * manifest, including the base and extended manifests.
+   * manifest, including the main and extended manifests.
    */
   files: Set<string>;
 };
@@ -99,7 +99,7 @@ export type ExtendableManifest = {
   mainManifest: VirtualFile<DeepPartial<SnapManifest>>;
 
   /**
-   * The extended manifest, if any. This is the manifest that the base manifest
+   * The extended manifest, if any. This is the manifest that the main manifest
    * extends. This can be partial.
    */
   extendedManifest?: DeepPartial<SnapManifest>;
