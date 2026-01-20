@@ -43,10 +43,85 @@ export type NpmSnapPackageJson = Infer<typeof NpmSnapPackageJsonStruct> &
   Record<string, any>;
 
 /**
+ * An extendable manifest, which consists of a base manifest, an optional
+ * extended manifest, and the merged manifest, all unvalidated.
+ */
+export type UnvalidatedExtendableManifest = {
+  /**
+   * The main manifest, i.e., the manifest at the given path. This may extend
+   * another manifest, and can be partial.
+   */
+  mainManifest: VirtualFile<Json>;
+
+  /**
+   * The extended manifest, if any. This is the manifest that the main manifest
+   * extends. This can be partial.
+   */
+  extendedManifest?: Json;
+
+  /**
+   * The result of deep merging the main and extended manifests. This should
+   * always be a complete manifest.
+   */
+  mergedManifest: Json;
+
+  /**
+   * The set of file paths that were involved in creating this extendable
+   * manifest, including the main and extended manifests.
+   */
+  files: Set<string>;
+};
+
+/**
+ * A utility type that makes all properties of a type optional, recursively.
+ */
+export type DeepPartial<Type> = Type extends string
+  ? Type
+  : {
+      [Property in keyof Type]?: Type[Property] extends (infer Value)[]
+        ? DeepPartial<Value>[]
+        : Type[Property] extends readonly (infer Value)[]
+          ? readonly DeepPartial<Value>[]
+          : Type[Property] extends object
+            ? DeepPartial<Type[Property]>
+            : Type[Property];
+    };
+
+/**
+ * An extendable manifest, which consists of a main manifest, an optional
+ * extended manifest, and the merged manifest.
+ */
+export type ExtendableManifest = {
+  /**
+   * The main manifest, i.e., the manifest at the given path. This may extend
+   * another manifest, and can be partial.
+   */
+  mainManifest: VirtualFile<DeepPartial<SnapManifest>>;
+
+  /**
+   * The extended manifest, if any. This is the manifest that the main manifest
+   * extends. This can be partial.
+   */
+  extendedManifest?: DeepPartial<SnapManifest>;
+
+  /**
+   * The result of deep merging the main and extended manifests. This should
+   * always be a complete manifest.
+   */
+  mergedManifest: SnapManifest;
+
+  /**
+   * The set of file paths that were involved in creating this extendable
+   * manifest, including the main and extended manifests.
+   */
+  files: Set<string>;
+};
+
+/**
  * An object for storing parsed but unvalidated Snap file contents.
  */
 export type UnvalidatedSnapFiles = {
-  manifest?: VirtualFile<Json>;
+  manifest?: UnvalidatedExtendableManifest;
   packageJson?: VirtualFile<Json>;
   sourceCode?: VirtualFile;
   svgIcon?: VirtualFile;
@@ -65,6 +140,14 @@ export type SnapFiles = {
   svgIcon?: VirtualFile;
   auxiliaryFiles: VirtualFile[];
   localizationFiles: VirtualFile<LocalizationFile>[];
+};
+
+/**
+ * The same as {@link SnapFiles} except that the manifest is an
+ * {@link ExtendableManifest}.
+ */
+export type ExtendableSnapFiles = Omit<SnapFiles, 'manifest'> & {
+  manifest: ExtendableManifest;
 };
 
 /**

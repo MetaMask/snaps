@@ -1,3 +1,4 @@
+import { loadManifest } from '@metamask/snaps-utils/node';
 import { assert, hasProperty, isObject } from '@metamask/utils';
 import { bold, dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
@@ -151,9 +152,9 @@ export class SnapsStatsPlugin implements WebpackPluginInstance {
  */
 export type SnapsWatchPluginOptions = {
   /**
-   * The extra files to watch.
+   * The path to the manifest, to determine which files to watch.
    */
-  files?: string[];
+  manifestPath: string;
 };
 
 /**
@@ -191,9 +192,9 @@ export class SnapsWatchPlugin implements WebpackPluginInstance {
     compiler.hooks.afterEmit.tapPromise(
       this.constructor.name,
       async ({ fileDependencies }) => {
-        this.options.files?.forEach(
-          fileDependencies.add.bind(fileDependencies),
-        );
+        const { files } = await loadManifest(this.options.manifestPath);
+
+        files.forEach(fileDependencies.add.bind(fileDependencies));
       },
     );
   }

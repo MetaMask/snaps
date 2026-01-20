@@ -3,7 +3,7 @@ import assert from 'assert';
 import { checksum } from './checksum';
 import {
   DEFAULT_SNAP_SHASUM,
-  getMockSnapFiles,
+  getMockExtendableSnapFiles,
   getSnapManifest,
 } from '../../test-utils';
 import type { ValidatorFix } from '../validator-types';
@@ -12,7 +12,7 @@ describe('checksum', () => {
   it('does nothing on valid checksum', async () => {
     const report = jest.fn();
     assert(checksum.semanticCheck);
-    await checksum.semanticCheck?.(getMockSnapFiles(), { report });
+    await checksum.semanticCheck?.(getMockExtendableSnapFiles(), { report });
 
     expect(report).toHaveBeenCalledTimes(0);
   });
@@ -21,7 +21,9 @@ describe('checksum', () => {
     const report = jest.fn();
     assert(checksum.semanticCheck);
     await checksum.semanticCheck?.(
-      getMockSnapFiles({ manifest: getSnapManifest({ shasum: 'foobar' }) }),
+      getMockExtendableSnapFiles({
+        manifest: getSnapManifest({ shasum: 'foobar' }),
+      }),
       { report },
     );
 
@@ -36,7 +38,11 @@ describe('checksum', () => {
   });
 
   it('fixes checksum', async () => {
-    const manifest = getSnapManifest({ shasum: 'foobar' });
+    const files = getMockExtendableSnapFiles({
+      manifest: getSnapManifest({ shasum: 'foobar' }),
+    });
+
+    const { manifest } = files;
 
     let fix: ValidatorFix | undefined;
     const report = (_id: string, _message: string, fixer?: ValidatorFix) => {
@@ -45,10 +51,14 @@ describe('checksum', () => {
     };
 
     assert(checksum.semanticCheck);
-    await checksum.semanticCheck?.(getMockSnapFiles({ manifest }), { report });
+    await checksum.semanticCheck?.(files, {
+      report,
+    });
     assert(fix !== undefined);
     const { manifest: newManifest } = await fix({ manifest });
 
-    expect(newManifest.source.shasum).toStrictEqual(DEFAULT_SNAP_SHASUM);
+    expect(newManifest.mainManifest.result.source?.shasum).toStrictEqual(
+      DEFAULT_SNAP_SHASUM,
+    );
   });
 });

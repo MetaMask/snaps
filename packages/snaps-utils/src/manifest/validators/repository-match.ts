@@ -11,7 +11,8 @@ export const repositoryMatch: ValidatorMeta = {
   severity: 'error',
   semanticCheck(files, context) {
     const packageJsonRepository = files.packageJson.result.repository;
-    const manifestRepository = files.manifest.result.repository;
+    const manifestRepository = files.manifest.mergedManifest.repository;
+
     if (
       (packageJsonRepository || manifestRepository) &&
       !deepEqual(packageJsonRepository, manifestRepository)
@@ -20,9 +21,10 @@ export const repositoryMatch: ValidatorMeta = {
         'repository-match',
         `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
         ({ manifest }) => {
-          manifest.repository = packageJsonRepository
+          manifest.mainManifest.result.repository = packageJsonRepository
             ? deepClone(packageJsonRepository)
             : undefined;
+
           return { manifest };
         },
       );

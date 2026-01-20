@@ -2,15 +2,15 @@ import assert from 'assert';
 
 import { manifestLocalization } from './manifest-localization';
 import {
+  getMockExtendableSnapFilesWithUpdatedChecksum,
   getMockLocalizationFile,
-  getMockSnapFilesWithUpdatedChecksum,
   getSnapManifest,
 } from '../../test-utils';
 
 describe('manifestLocalization', () => {
   it('does nothing on valid localization', async () => {
     const localization = getMockLocalizationFile({ locale: 'en' });
-    const files = await getMockSnapFilesWithUpdatedChecksum({
+    const files = await getMockExtendableSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({ locales: ['locales/en.json'] }),
       localizationFiles: [localization],
     });
@@ -29,7 +29,7 @@ describe('manifestLocalization', () => {
       messages: {},
     });
 
-    const files = await getMockSnapFilesWithUpdatedChecksum({
+    const files = await getMockExtendableSnapFilesWithUpdatedChecksum({
       manifest: getSnapManifest({
         proposedName: '{{ name }}',
         locales: ['locales/en.json'],

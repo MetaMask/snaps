@@ -9,6 +9,7 @@ import {
   getSnapIcon,
   getSnapSourceCode,
   getWritableManifest,
+  loadManifest,
   runFixes,
 } from './manifest';
 import type { SnapManifest } from './validation';
@@ -26,7 +27,10 @@ import {
   getMockLocalizationFile,
   getMockSnapFilesWithUpdatedChecksum,
   getMockSnapFiles,
+  MOCK_ORIGIN,
+  getMockExtendableSnapFiles,
 } from '../test-utils';
+import type { DeepPartial } from '../types';
 import { NpmSnapFileNames } from '../types';
 
 jest.mock('fs');
@@ -125,7 +129,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(1);
@@ -153,7 +157,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
     expect(unfixed).toHaveLength(0);
     expect(fixed).toHaveLength(2);
@@ -161,6 +165,59 @@ describe('checkManifest', () => {
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
     expect(source.shasum).toBe(defaultManifest.source.shasum);
+    expect(version).toBe('1.0.0');
+  });
+
+  it('fixes problems in a manifest extending another manifest', async () => {
+    const extendedManifest: DeepPartial<SnapManifest> = {
+      extends: './other.manifest.json',
+      source: {
+        shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+      },
+    };
+
+    const otherManifest = getSnapManifest({
+      proposedName: 'Base Snap',
+      version: '0.0.1',
+    });
+
+    await fs.writeFile(
+      join(BASE_PATH, 'extended.manifest.json'),
+      JSON.stringify(extendedManifest),
+    );
+
+    await fs.writeFile(
+      join(BASE_PATH, 'other.manifest.json'),
+      JSON.stringify(otherManifest),
+    );
+
+    const mainManifestPath = join(BASE_PATH, 'main.manifest.json');
+    await fs.writeFile(
+      mainManifestPath,
+      JSON.stringify({
+        extends: './extended.manifest.json',
+        proposedName: 'Main Snap',
+      }),
+    );
+
+    const { files, updated, reports } = await checkManifest(mainManifestPath);
+    const unfixed = reports.filter((report) => !report.wasFixed);
+    const fixed = reports.filter((report) => report.wasFixed);
+
+    const newManifest = getSnapManifest({
+      proposedName: 'Main Snap',
+      shasum: 'Dc6De3HrrTRD7UPozSYDYx6CZu3cEv/kyFtJnLupSx4=',
+      platformVersion: getPlatformVersion(),
+    });
+
+    expect(files?.manifest.mergedManifest).toStrictEqual(newManifest);
+    expect(updated).toBe(true);
+    expect(unfixed).toHaveLength(0);
+    expect(fixed).toHaveLength(3);
+
+    const file = await readJsonFile<SnapManifest>(mainManifestPath);
+    const { source, version } = file.result;
+    expect(source.shasum).toBe(newManifest.source.shasum);
     expect(version).toBe('1.0.0');
   });
 
@@ -186,7 +243,7 @@ describe('checkManifest', () => {
 
     const defaultManifest = await getDefaultManifest();
 
-    expect(files?.manifest.result).toStrictEqual(defaultManifest);
+    expect(files?.manifest.mergedManifest).toStrictEqual(defaultManifest);
     expect(updated).toBe(true);
 
     expect(unfixed).toHaveLength(1);
@@ -418,7 +475,7 @@ describe('runFixes', () => {
       },
     };
 
-    const files = getMockSnapFiles();
+    const files = getMockExtendableSnapFiles();
 
     const validatorResults = await runValidators(files, [rule]);
     const fixesResults = await runFixes(validatorResults, [rule]);
@@ -576,6 +633,247 @@ describe('getWritableManifest', () => {
     const writableManifest = getWritableManifest(manifest as SnapManifest);
     expect(Object.keys(writableManifest)).toStrictEqual(
       Object.keys(getSnapManifest()),
+    );
+  });
+});
+
+describe('loadManifest', () => {
+  beforeEach(async () => {
+    await resetFileSystem();
+  });
+
+  it('loads and parses the manifest file', async () => {
+    const manifest = await loadManifest(MANIFEST_PATH);
+    expect(manifest.mergedManifest).toBe(manifest.mainManifest.result);
+    expect(manifest.mergedManifest).not.toHaveProperty('extends');
+    expect(manifest.mainManifest.result).toStrictEqual(
+      await getDefaultManifest(),
+    );
+    expect(manifest.files).toStrictEqual(new Set(['/snap/snap.manifest.json']));
+    expect(manifest.extendedManifest).toBeUndefined();
+  });
+
+  it('loads a manifest with extended manifest and merges them', async () => {
+    const extendedManifest = getSnapManifest({
+      proposedName: 'Base Snap',
+      platformVersion: getPlatformVersion(),
+    });
+
+    const mainManifest = {
+      extends: './snap.manifest.json',
+      proposedName: 'Extended Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+      initialPermissions: {
+        'endowment:network-access': {},
+      },
+    };
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
+
+    const manifest = await loadManifest(mainManifestPath);
+    expect(manifest.mainManifest.result).toStrictEqual(mainManifest);
+    expect(manifest.extendedManifest).toStrictEqual(extendedManifest);
+    expect(manifest.mergedManifest).not.toHaveProperty('extends');
+    expect(manifest.mergedManifest).toStrictEqual({
+      ...extendedManifest,
+      proposedName: 'Extended Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+      initialPermissions: {
+        'endowment:network-access': {},
+        'endowment:rpc': {
+          dapps: false,
+          snaps: true,
+        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_dialog: {},
+      },
+    });
+    expect(manifest.files).toStrictEqual(
+      new Set([
+        '/snap/snap.extension.manifest.json',
+        '/snap/snap.manifest.json',
+      ]),
+    );
+  });
+
+  it('recursively loads and merges multiple extended manifests', async () => {
+    const manifestLevel1 = getSnapManifest({
+      proposedName: 'Level 1 Snap',
+      platformVersion: getPlatformVersion(),
+    });
+
+    const manifestLevel2 = {
+      extends: './level1.manifest.json',
+      proposedName: 'Level 2 Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+    };
+
+    const manifestLevel3 = {
+      extends: './level2.manifest.json',
+      proposedName: 'Level 3 Snap',
+      initialPermissions: {
+        'endowment:network-access': {},
+      },
+    };
+
+    await fs.writeFile(
+      join(BASE_PATH, 'level1.manifest.json'),
+      JSON.stringify(manifestLevel1),
+    );
+
+    await fs.writeFile(
+      join(BASE_PATH, 'level2.manifest.json'),
+      JSON.stringify(manifestLevel2),
+    );
+
+    const level3ManifestPath = join(BASE_PATH, 'level3.manifest.json');
+    await fs.writeFile(level3ManifestPath, JSON.stringify(manifestLevel3));
+
+    const manifest = await loadManifest(level3ManifestPath);
+    expect(manifest.mainManifest.result).toStrictEqual(manifestLevel3);
+
+    const { extends: _, ...level2WithoutExtends } = manifestLevel2;
+    expect(manifest.extendedManifest).toStrictEqual({
+      ...manifestLevel1,
+      ...level2WithoutExtends,
+    });
+
+    expect(manifest.mergedManifest).not.toHaveProperty('extends');
+    expect(manifest.mergedManifest).toStrictEqual({
+      ...manifestLevel1,
+      proposedName: 'Level 3 Snap',
+      initialConnections: {
+        [MOCK_ORIGIN]: {},
+      },
+      initialPermissions: {
+        'endowment:network-access': {},
+        'endowment:rpc': {
+          dapps: false,
+          snaps: true,
+        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        snap_dialog: {},
+      },
+    });
+    expect(manifest.files).toStrictEqual(
+      new Set([
+        '/snap/level3.manifest.json',
+        '/snap/level2.manifest.json',
+        '/snap/level1.manifest.json',
+      ]),
+    );
+  });
+
+  it('allows loading a manifest at "snap.manifest.json" which extends another manifest, if it is not the root manifest', async () => {
+    const extendedManifest = getSnapManifest({
+      extends: './other.manifest.json',
+      proposedName: 'Extended Snap',
+    });
+
+    const otherManifest = {
+      proposedName: 'Base Snap',
+    };
+
+    const mainManifest = {
+      extends: './snap.manifest.json',
+    };
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+    await fs.writeFile(
+      join(BASE_PATH, 'other.manifest.json'),
+      JSON.stringify(otherManifest),
+    );
+
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
+
+    expect(await loadManifest(mainManifestPath)).toBeDefined();
+  });
+
+  it('throws if called with a relative path', async () => {
+    await expect(loadManifest('./snap.manifest.json')).rejects.toThrow(
+      'The `loadManifest` function must be called with an absolute path.',
+    );
+  });
+
+  it('throws if the base manifest is not a plain object', async () => {
+    const mainManifest = ['not', 'a', 'plain', 'object'];
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(mainManifest));
+
+    await expect(loadManifest(MANIFEST_PATH)).rejects.toThrow(
+      `Failed to load Snap manifest: The Snap manifest file at "/snap/snap.manifest.json" must contain a JSON object.`,
+    );
+  });
+
+  it('throws if the extended manifest is not a plain object', async () => {
+    const extendedManifest = ['not', 'a', 'plain', 'object'];
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
+
+    const mainManifest = {
+      extends: './snap.manifest.json',
+      proposedName: 'Extended Snap',
+    };
+
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
+
+    await expect(loadManifest(mainManifestPath)).rejects.toThrow(
+      `Failed to load Snap manifest: The Snap manifest file at "/snap/snap.manifest.json" must contain a JSON object.`,
+    );
+  });
+
+  it('throws if the manifest at "snap.manifest.json" extends another manifest', async () => {
+    const mainManifest = getSnapManifest({
+      extends: './another.manifest.json',
+    });
+
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(mainManifest));
+
+    await expect(loadManifest(MANIFEST_PATH)).rejects.toThrow(
+      `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,
+    );
+  });
+
+  it('throws if the manifest contains a circular reference', async () => {
+    const manifestLevel1 = {
+      extends: './level3.manifest.json',
+      proposedName: 'Level 1 Snap',
+    };
+
+    const manifestLevel2 = {
+      extends: './level1.manifest.json',
+      proposedName: 'Level 2 Snap',
+    };
+
+    const manifestLevel3 = {
+      extends: './level2.manifest.json',
+      proposedName: 'Level 3 Snap',
+    };
+
+    await fs.writeFile(
+      join(BASE_PATH, 'level1.manifest.json'),
+      JSON.stringify(manifestLevel1),
+    );
+
+    await fs.writeFile(
+      join(BASE_PATH, 'level2.manifest.json'),
+      JSON.stringify(manifestLevel2),
+    );
+
+    const level3ManifestPath = join(BASE_PATH, 'level3.manifest.json');
+    await fs.writeFile(level3ManifestPath, JSON.stringify(manifestLevel3));
+
+    await expect(loadManifest(level3ManifestPath)).rejects.toThrow(
+      `Failed to load Snap manifest: Circular dependency detected when loading "/snap/level3.manifest.json".`,
     );
   });
 });

@@ -5,7 +5,12 @@ import type { LocalizationFile } from '../localization';
 import type { SnapManifest } from '../manifest/validation';
 import type { Chain, Namespace } from '../namespace';
 import { getSnapChecksum } from '../snaps';
-import type { NpmSnapPackageJson, SnapFiles } from '../types';
+import type {
+  ExtendableSnapFiles,
+  FetchedSnapFiles,
+  NpmSnapPackageJson,
+  SnapFiles,
+} from '../types';
 import { VirtualFile } from '../virtual-file';
 
 type GetSnapManifestOptions = Partial<MakeSemVer<SnapManifest>> & {
@@ -91,6 +96,7 @@ export const DEFAULT_SNAP_SHASUM =
  * @param manifest.locales - Localization files of the snap.
  * @param manifest.initialConnections - Initial connections for the snap.
  * @param manifest.platformVersion - The platform version of the snap.
+ * @param manifest.extends - The base manifest that this manifest extends.
  * @returns The snap manifest.
  */
 export const getSnapManifest = ({
@@ -107,8 +113,10 @@ export const getSnapManifest = ({
   locales = undefined,
   initialConnections = undefined,
   platformVersion = '1.0.0' as SemVerVersion,
+  extends: _extends = undefined,
 }: GetSnapManifestOptions = {}): SnapManifest => {
   return {
+    ...(_extends ? { extends: _extends } : {}),
     version: version as SemVerVersion,
     description,
     proposedName,
@@ -220,6 +228,70 @@ export const getMockSnapFiles = ({
   };
 };
 
+export const getMockExtendableSnapFiles = ({
+  manifest = getSnapManifest(),
+  manifestPath = DEFAULT_MANIFEST_PATH,
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
+  localizationFiles = [],
+}: {
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  manifestPath?: string;
+  sourceCode?: string | VirtualFile;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
+} = {}): ExtendableSnapFiles => {
+  const mainManifest =
+    manifest instanceof VirtualFile
+      ? manifest
+      : new VirtualFile({
+          value: JSON.stringify(manifest),
+          result: manifest,
+          path: manifestPath,
+        });
+
+  return {
+    manifest: {
+      mainManifest,
+      mergedManifest: mainManifest.result,
+      files: new Set([mainManifest.path]),
+    },
+    packageJson: new VirtualFile({
+      value: JSON.stringify(packageJson),
+      result: packageJson,
+      path: DEFAULT_PACKAGE_JSON_PATH,
+    }),
+    sourceCode:
+      sourceCode instanceof VirtualFile
+        ? sourceCode
+        : new VirtualFile({
+            value: sourceCode,
+            path: DEFAULT_SOURCE_PATH,
+          }),
+    localizationFiles: localizationFiles.map((file) => {
+      return new VirtualFile({
+        value: JSON.stringify(file),
+        result: file,
+        path: `locales/${file.locale}.json`,
+      });
+    }),
+    // eslint-disable-next-line no-nested-ternary
+    svgIcon: svgIcon
+      ? svgIcon instanceof VirtualFile
+        ? svgIcon
+        : new VirtualFile({
+            value: svgIcon,
+            path: DEFAULT_ICON_PATH,
+          })
+      : undefined,
+    auxiliaryFiles,
+  };
+};
+
 export const getMockSnapFilesWithUpdatedChecksum = async ({
   manifest = getSnapManifest(),
   packageJson = getPackageJson(),
@@ -246,6 +318,51 @@ export const getMockSnapFilesWithUpdatedChecksum = async ({
 
   files.manifest.result.source.shasum = await getSnapChecksum(files);
   files.manifest.value = JSON.stringify(files.manifest.result);
+
+  return files;
+};
+
+export const getMockExtendableSnapFilesWithUpdatedChecksum = async ({
+  manifest = getSnapManifest(),
+  packageJson = getPackageJson(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
+  svgIcon = DEFAULT_SNAP_ICON,
+  auxiliaryFiles = [],
+  localizationFiles = [],
+}: {
+  manifest?: SnapManifest | VirtualFile<SnapManifest>;
+  sourceCode?: string | VirtualFile;
+  packageJson?: NpmSnapPackageJson;
+  svgIcon?: string | VirtualFile;
+  auxiliaryFiles?: VirtualFile[];
+  localizationFiles?: LocalizationFile[];
+} = {}) => {
+  const files = getMockExtendableSnapFiles({
+    manifest,
+    packageJson,
+    sourceCode,
+    svgIcon,
+    auxiliaryFiles,
+    localizationFiles,
+  });
+
+  const mergedManifest =
+    files.manifest.mainManifest.clone() as VirtualFile<SnapManifest>;
+  mergedManifest.result = files.manifest.mergedManifest;
+  mergedManifest.value = JSON.stringify(files.manifest.mergedManifest);
+
+  const fetchedFiles: FetchedSnapFiles = {
+    ...files,
+    manifest: mergedManifest,
+  };
+
+  files.manifest.mainManifest.result.source ??= {};
+  files.manifest.mainManifest.result.source.shasum =
+    await getSnapChecksum(fetchedFiles);
+
+  files.manifest.mainManifest.value = JSON.stringify(
+    files.manifest.mainManifest.result,
+  );
 
   return files;
 };

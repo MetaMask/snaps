@@ -46,7 +46,8 @@ const determineProductionVersion = useFileSystemCache(
 export const productionPlatformVersion: ValidatorMeta = {
   severity: 'warning',
   async semanticCheck(files, context) {
-    const manifestPlatformVersion = files.manifest.result.platformVersion;
+    const manifestPlatformVersion =
+      files.manifest.mergedManifest.platformVersion;
 
     if (!manifestPlatformVersion) {
       return;
