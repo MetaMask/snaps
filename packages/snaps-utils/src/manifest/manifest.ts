@@ -371,7 +371,7 @@ export async function runFixes(
     }
 
     // The `mainManifest` is always the first manifest loaded, and is the one
-    // that should be updated with fixes. Any manifests that the base manifest
+    // that should be updated with fixes. Any manifests that the main manifest
     // extends will not be updated.
     // We can revisit this in the future if we want to support fixing extended
     // manifests as well, but it adds complexity, as we'd need to track which
