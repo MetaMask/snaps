@@ -533,7 +533,6 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
             2,
           );
 
-          compilation.deleteAsset('bundle.js');
           compilation.emitAsset(
             'preinstalled-snap.json',
             new sources.RawSource(preinstalledSnapBundleJson),
