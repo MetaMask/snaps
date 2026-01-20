@@ -370,6 +370,12 @@ export async function runFixes(
       );
     }
 
+    // The `baseManifest` is always the first manifest loaded, and is the one
+    // that should be updated with fixes. Any manifests that the base manifest
+    // extends will not be updated.
+    // We can revisit this in the future if we want to support fixing extended
+    // manifests as well, but it adds complexity, as we'd need to track which
+    // fixes apply to which manifest.
     fixResults.files.manifest.baseManifest.value = `${JSON.stringify(
       getWritableManifest(manifest.baseManifest.result),
       null,
