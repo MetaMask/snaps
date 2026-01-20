@@ -21,7 +21,7 @@ export const repositoryMatch: ValidatorMeta = {
         'repository-match',
         `"${NpmSnapFileNames.Manifest}" "repository" field does not match the "${NpmSnapFileNames.PackageJson}" "repository" field.`,
         ({ manifest }) => {
-          manifest.baseManifest.result.repository = packageJsonRepository
+          manifest.mainManifest.result.repository = packageJsonRepository
             ? deepClone(packageJsonRepository)
             : undefined;
 

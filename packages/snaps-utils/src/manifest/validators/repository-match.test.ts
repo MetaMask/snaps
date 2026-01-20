@@ -36,7 +36,7 @@ describe('repositoryMatch', () => {
       manifest: deepClone(files.manifest),
     });
     expect(manifest.repository).toBeUndefined();
-    expect(newManifest.baseManifest.result.repository).toStrictEqual({
+    expect(newManifest.mainManifest.result.repository).toStrictEqual({
       type: 'git',
       url: 'https://github.com/MetaMask/example-snap.git',
     });

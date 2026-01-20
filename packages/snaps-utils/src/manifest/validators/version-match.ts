@@ -14,7 +14,7 @@ export const versionMatch: ValidatorMeta = {
         'version-match',
         `"${NpmSnapFileNames.Manifest}" npm package version ("${manifestPackageVersion}") does not match the "${NpmSnapFileNames.PackageJson}" "version" field ("${packageJsonVersion}").`,
         ({ manifest }) => {
-          manifest.baseManifest.result.version = packageJsonVersion;
+          manifest.mainManifest.result.version = packageJsonVersion;
           return { manifest };
         },
       );

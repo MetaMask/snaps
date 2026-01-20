@@ -245,7 +245,7 @@ export const getMockExtendableSnapFiles = ({
   auxiliaryFiles?: VirtualFile[];
   localizationFiles?: LocalizationFile[];
 } = {}): ExtendableSnapFiles => {
-  const baseManifest =
+  const mainManifest =
     manifest instanceof VirtualFile
       ? manifest
       : new VirtualFile({
@@ -256,9 +256,9 @@ export const getMockExtendableSnapFiles = ({
 
   return {
     manifest: {
-      baseManifest,
-      mergedManifest: baseManifest.result,
-      files: new Set([baseManifest.path]),
+      mainManifest,
+      mergedManifest: mainManifest.result,
+      files: new Set([mainManifest.path]),
     },
     packageJson: new VirtualFile({
       value: JSON.stringify(packageJson),
@@ -347,7 +347,7 @@ export const getMockExtendableSnapFilesWithUpdatedChecksum = async ({
   });
 
   const mergedManifest =
-    files.manifest.baseManifest.clone() as VirtualFile<SnapManifest>;
+    files.manifest.mainManifest.clone() as VirtualFile<SnapManifest>;
   mergedManifest.result = files.manifest.mergedManifest;
   mergedManifest.value = JSON.stringify(files.manifest.mergedManifest);
 
@@ -356,12 +356,12 @@ export const getMockExtendableSnapFilesWithUpdatedChecksum = async ({
     manifest: mergedManifest,
   };
 
-  files.manifest.baseManifest.result.source ??= {};
-  files.manifest.baseManifest.result.source.shasum =
+  files.manifest.mainManifest.result.source ??= {};
+  files.manifest.mainManifest.result.source.shasum =
     await getSnapChecksum(fetchedFiles);
 
-  files.manifest.baseManifest.value = JSON.stringify(
-    files.manifest.baseManifest.result,
+  files.manifest.mainManifest.value = JSON.stringify(
+    files.manifest.mainManifest.result,
   );
 
   return files;

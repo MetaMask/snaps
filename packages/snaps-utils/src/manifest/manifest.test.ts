@@ -644,9 +644,9 @@ describe('loadManifest', () => {
 
   it('loads and parses the manifest file', async () => {
     const manifest = await loadManifest(MANIFEST_PATH);
-    expect(manifest.mergedManifest).toBe(manifest.baseManifest.result);
+    expect(manifest.mergedManifest).toBe(manifest.mainManifest.result);
     expect(manifest.mergedManifest).not.toHaveProperty('extends');
-    expect(manifest.baseManifest.result).toStrictEqual(
+    expect(manifest.mainManifest.result).toStrictEqual(
       await getDefaultManifest(),
     );
     expect(manifest.files).toStrictEqual(new Set(['/snap/snap.manifest.json']));
@@ -659,7 +659,7 @@ describe('loadManifest', () => {
       platformVersion: getPlatformVersion(),
     });
 
-    const baseManifest = {
+    const mainManifest = {
       extends: './snap.manifest.json',
       proposedName: 'Extended Snap',
       initialConnections: {
@@ -672,11 +672,11 @@ describe('loadManifest', () => {
 
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
 
-    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
-    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
 
-    const manifest = await loadManifest(baseManifestPath);
-    expect(manifest.baseManifest.result).toStrictEqual(baseManifest);
+    const manifest = await loadManifest(mainManifestPath);
+    expect(manifest.mainManifest.result).toStrictEqual(mainManifest);
     expect(manifest.extendedManifest?.result).toStrictEqual(extendedManifest);
     expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.mergedManifest).toStrictEqual({
@@ -739,7 +739,7 @@ describe('loadManifest', () => {
     await fs.writeFile(level3ManifestPath, JSON.stringify(manifestLevel3));
 
     const manifest = await loadManifest(level3ManifestPath);
-    expect(manifest.baseManifest.result).toStrictEqual(manifestLevel3);
+    expect(manifest.mainManifest.result).toStrictEqual(manifestLevel3);
     expect(manifest.extendedManifest?.result).toStrictEqual(manifestLevel2);
     expect(manifest.mergedManifest).not.toHaveProperty('extends');
     expect(manifest.mergedManifest).toStrictEqual({
@@ -777,7 +777,7 @@ describe('loadManifest', () => {
       proposedName: 'Base Snap',
     };
 
-    const baseManifest = {
+    const mainManifest = {
       extends: './snap.manifest.json',
     };
 
@@ -787,10 +787,10 @@ describe('loadManifest', () => {
       JSON.stringify(otherManifest),
     );
 
-    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
-    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
 
-    expect(await loadManifest(baseManifestPath)).toBeDefined();
+    expect(await loadManifest(mainManifestPath)).toBeDefined();
   });
 
   it('throws if called with a relative path', async () => {
@@ -800,8 +800,8 @@ describe('loadManifest', () => {
   });
 
   it('throws if the base manifest is not a plain object', async () => {
-    const baseManifest = ['not', 'a', 'plain', 'object'];
-    await fs.writeFile(MANIFEST_PATH, JSON.stringify(baseManifest));
+    const mainManifest = ['not', 'a', 'plain', 'object'];
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(mainManifest));
 
     await expect(loadManifest(MANIFEST_PATH)).rejects.toThrow(
       `Failed to load Snap manifest: The Snap manifest file at "/snap/snap.manifest.json" must contain a JSON object.`,
@@ -812,25 +812,25 @@ describe('loadManifest', () => {
     const extendedManifest = ['not', 'a', 'plain', 'object'];
     await fs.writeFile(MANIFEST_PATH, JSON.stringify(extendedManifest));
 
-    const baseManifest = {
+    const mainManifest = {
       extends: './snap.manifest.json',
       proposedName: 'Extended Snap',
     };
 
-    const baseManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
-    await fs.writeFile(baseManifestPath, JSON.stringify(baseManifest));
+    const mainManifestPath = join(BASE_PATH, 'snap.extension.manifest.json');
+    await fs.writeFile(mainManifestPath, JSON.stringify(mainManifest));
 
-    await expect(loadManifest(baseManifestPath)).rejects.toThrow(
+    await expect(loadManifest(mainManifestPath)).rejects.toThrow(
       `Failed to load Snap manifest: The Snap manifest file at "/snap/snap.manifest.json" must contain a JSON object.`,
     );
   });
 
   it('throws if the manifest at "snap.manifest.json" extends another manifest', async () => {
-    const baseManifest = getSnapManifest({
+    const mainManifest = getSnapManifest({
       extends: './another.manifest.json',
     });
 
-    await fs.writeFile(MANIFEST_PATH, JSON.stringify(baseManifest));
+    await fs.writeFile(MANIFEST_PATH, JSON.stringify(mainManifest));
 
     await expect(loadManifest(MANIFEST_PATH)).rejects.toThrow(
       `Failed to load Snap manifest: The Snap manifest file at "snap.manifest.json" cannot extend another manifest.`,

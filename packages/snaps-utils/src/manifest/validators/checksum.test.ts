@@ -57,7 +57,7 @@ describe('checksum', () => {
     assert(fix !== undefined);
     const { manifest: newManifest } = await fix({ manifest });
 
-    expect(newManifest.baseManifest.result.source?.shasum).toStrictEqual(
+    expect(newManifest.mainManifest.result.source?.shasum).toStrictEqual(
       DEFAULT_SNAP_SHASUM,
     );
   });

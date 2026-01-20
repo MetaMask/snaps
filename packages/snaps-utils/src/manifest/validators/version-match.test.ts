@@ -37,6 +37,6 @@ describe('versionMatch', () => {
       manifest: deepClone(files.manifest),
     });
     expect(manifest.version).toBe('foo');
-    expect(newManifest.baseManifest.result.version).toBe('1.0.0');
+    expect(newManifest.mainManifest.result.version).toBe('1.0.0');
   });
 });

@@ -43,22 +43,22 @@ type MergedManifest<Type> =
  * Merge two Snap manifests, with the extended manifest taking precedence
  * over the base manifest.
  *
- * @param baseManifest - The base manifest.
+ * @param mainManifest - The main manifest.
  * @param extendedManifest - The extended manifest.
  * @returns The merged manifest.
  */
 function mergeManifests<Type>(
-  baseManifest: Type,
+  mainManifest: Type,
   extendedManifest?: Type,
 ): MergedManifest<Type> {
   if (!extendedManifest) {
-    return baseManifest as MergedManifest<Type>;
+    return mainManifest as MergedManifest<Type>;
   }
 
-  assert(isPlainObject(baseManifest));
+  assert(isPlainObject(mainManifest));
   assert(isPlainObject(extendedManifest));
 
-  const mergedManifest = deepmerge(extendedManifest, baseManifest);
+  const mergedManifest = deepmerge(extendedManifest, mainManifest);
   delete mergedManifest.extends;
 
   return getWritableManifest(mergedManifest) as MergedManifest<Type>;
@@ -92,18 +92,18 @@ export async function loadManifest(
     );
   }
 
-  const baseManifest = await readJsonFile(manifestPath);
+  const mainManifest = await readJsonFile(manifestPath);
   files.add(manifestPath);
 
-  if (!isPlainObject(baseManifest.result)) {
+  if (!isPlainObject(mainManifest.result)) {
     throw new Error(
       `Failed to load Snap manifest: The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
     );
   }
 
   if (
-    baseManifest.result.extends &&
-    typeof baseManifest.result.extends === 'string'
+    mainManifest.result.extends &&
+    typeof mainManifest.result.extends === 'string'
   ) {
     const fileName = pathUtils.basename(manifestPath);
     if (root && fileName === 'snap.manifest.json') {
@@ -114,7 +114,7 @@ export async function loadManifest(
 
     const extendedManifestPath = pathUtils.resolve(
       pathUtils.dirname(manifestPath),
-      baseManifest.result.extends,
+      mainManifest.result.extends,
     );
 
     const extendedManifest = await loadManifest(
@@ -124,10 +124,10 @@ export async function loadManifest(
     );
 
     return {
-      baseManifest,
-      extendedManifest: extendedManifest.baseManifest,
+      mainManifest,
+      extendedManifest: extendedManifest.mainManifest,
       mergedManifest: mergeManifests(
-        baseManifest.result,
+        mainManifest.result,
         extendedManifest.mergedManifest,
       ),
       files,
@@ -135,8 +135,8 @@ export async function loadManifest(
   }
 
   return {
-    baseManifest,
-    mergedManifest: baseManifest.result,
+    mainManifest,
+    mergedManifest: mainManifest.result,
     files,
   };
 }
@@ -301,7 +301,7 @@ export async function checkManifest(
       try {
         await writeFileFn(
           manifestPath,
-          manifestResults.files.manifest.baseManifest.toString(),
+          manifestResults.files.manifest.mainManifest.toString(),
         );
       } catch (error) {
         // Note: This error isn't pushed to the errors array, because it's not an
@@ -343,8 +343,8 @@ export async function runFixes(
   let fixResults: ValidatorResults = results;
   assert(fixResults.files);
 
-  fixResults.files.manifest.baseManifest =
-    fixResults.files.manifest.baseManifest.clone();
+  fixResults.files.manifest.mainManifest =
+    fixResults.files.manifest.mainManifest.clone();
 
   const mergedReports: ValidatorReport[] = deepClone(fixResults.reports);
 
@@ -365,25 +365,25 @@ export async function runFixes(
       ({ manifest } = await report.fix({ manifest }));
 
       manifest.mergedManifest = mergeManifests(
-        manifest.baseManifest.result,
+        manifest.mainManifest.result,
         manifest.mergedManifest,
       );
     }
 
-    // The `baseManifest` is always the first manifest loaded, and is the one
+    // The `mainManifest` is always the first manifest loaded, and is the one
     // that should be updated with fixes. Any manifests that the base manifest
     // extends will not be updated.
     // We can revisit this in the future if we want to support fixing extended
     // manifests as well, but it adds complexity, as we'd need to track which
     // fixes apply to which manifest.
-    fixResults.files.manifest.baseManifest.value = `${JSON.stringify(
-      getWritableManifest(manifest.baseManifest.result),
+    fixResults.files.manifest.mainManifest.value = `${JSON.stringify(
+      getWritableManifest(manifest.mainManifest.result),
       null,
       2,
     )}\n`;
     fixResults.files.manifest = manifest;
     fixResults.files.manifest.mergedManifest = mergeManifests(
-      fixResults.files.manifest.baseManifest.result,
+      fixResults.files.manifest.mainManifest.result,
       fixResults.files.manifest.mergedManifest,
     );
 

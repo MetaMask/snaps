@@ -85,7 +85,7 @@ export const unusedExports: ValidatorMeta = {
         `The Snap requests permission for the following handlers, but does not export them: ${formattedEndowments}.`,
         ({ manifest }) => {
           unusedEndowments.forEach(([, endowment]) => {
-            delete manifest.baseManifest.result.initialPermissions?.[
+            delete manifest.mainManifest.result.initialPermissions?.[
               endowment as keyof InitialPermissions
             ];
           });

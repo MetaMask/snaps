@@ -40,7 +40,7 @@ describe('isSnapManifest', () => {
     await isSnapManifest.structureCheck(
       {
         manifest: {
-          baseManifest: manifest,
+          mainManifest: manifest,
           mergedManifest: manifest.result,
         },
         localizationFiles: [],

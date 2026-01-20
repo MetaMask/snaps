@@ -51,7 +51,7 @@ export type UnvalidatedExtendableManifest = {
    * The base manifest, i.e., the manifest at the given path. This may extend
    * another manifest, and can be partial.
    */
-  baseManifest: VirtualFile<Json>;
+  mainManifest: VirtualFile<Json>;
 
   /**
    * The extended manifest, if any. This is the manifest that the base manifest
@@ -96,7 +96,7 @@ export type ExtendableManifest = {
    * The base manifest, i.e., the manifest at the given path. This may extend
    * another manifest, and can be partial.
    */
-  baseManifest: VirtualFile<DeepPartial<SnapManifest>>;
+  mainManifest: VirtualFile<DeepPartial<SnapManifest>>;
 
   /**
    * The extended manifest, if any. This is the manifest that the base manifest

@@ -15,10 +15,10 @@ export const packageNameMatch: ValidatorMeta = {
         'package-name-match',
         `"${NpmSnapFileNames.Manifest}" npm package name ("${manifestPackageName}") does not match the "${NpmSnapFileNames.PackageJson}" "name" field ("${packageJsonName}").`,
         ({ manifest }) => {
-          manifest.baseManifest.result.source ??= {};
-          manifest.baseManifest.result.source.location ??= {};
-          manifest.baseManifest.result.source.location.npm ??= {};
-          manifest.baseManifest.result.source.location.npm.packageName =
+          manifest.mainManifest.result.source ??= {};
+          manifest.mainManifest.result.source.location ??= {};
+          manifest.mainManifest.result.source.location.npm ??= {};
+          manifest.mainManifest.result.source.location.npm.packageName =
             packageJsonName;
 
           return { manifest };

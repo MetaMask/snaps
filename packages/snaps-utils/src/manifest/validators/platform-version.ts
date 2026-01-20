@@ -14,7 +14,7 @@ export const platformVersion: ValidatorMeta = {
 
     // Create a require function in the context of the location of the manifest
     // file to avoid potentially loading the wrong version of the Snaps SDK.
-    const require = createRequire(files.manifest.baseManifest.path);
+    const require = createRequire(files.manifest.mainManifest.path);
 
     const packageJson = require.resolve('@metamask/snaps-sdk/package.json');
     // eslint-disable-next-line import-x/no-dynamic-require
@@ -25,7 +25,7 @@ export const platformVersion: ValidatorMeta = {
         'platform-version-missing',
         'The "platformVersion" field is missing from the manifest.',
         ({ manifest }) => {
-          manifest.baseManifest.result.platformVersion = actualVersion;
+          manifest.mainManifest.result.platformVersion = actualVersion;
           return { manifest };
         },
       );
@@ -38,7 +38,7 @@ export const platformVersion: ValidatorMeta = {
         'platform-version-mismatch',
         `The "platformVersion" field in the manifest must match the version of the Snaps SDK. Got "${manifestPlatformVersion}", expected "${actualVersion}".`,
         async ({ manifest }) => {
-          manifest.baseManifest.result.platformVersion = actualVersion;
+          manifest.mainManifest.result.platformVersion = actualVersion;
           return { manifest };
         },
       );

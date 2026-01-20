@@ -12,7 +12,7 @@ export const checksum: ValidatorMeta = {
   severity: 'error',
   async semanticCheck(files, context) {
     const mergedManifest =
-      files.manifest.baseManifest.clone() as VirtualFile<SnapManifest>;
+      files.manifest.mainManifest.clone() as VirtualFile<SnapManifest>;
     mergedManifest.result = files.manifest.mergedManifest;
     mergedManifest.value = JSON.stringify(files.manifest.mergedManifest);
 
@@ -28,9 +28,9 @@ export const checksum: ValidatorMeta = {
         'checksum',
         `"${NpmSnapFileNames.Manifest}" "shasum" field does not match computed shasum. Got "${gotChecksum}", expected "${expectedChecksum}".`,
         async ({ manifest }) => {
-          manifest.baseManifest.result ??= {};
-          manifest.baseManifest.result.source ??= {};
-          manifest.baseManifest.result.source.shasum = expectedChecksum;
+          manifest.mainManifest.result ??= {};
+          manifest.mainManifest.result.source ??= {};
+          manifest.mainManifest.result.source.shasum = expectedChecksum;
           return { manifest };
         },
       );

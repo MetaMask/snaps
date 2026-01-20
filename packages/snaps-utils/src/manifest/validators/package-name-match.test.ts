@@ -36,7 +36,7 @@ describe('packageNameMatch', () => {
     });
     expect(manifest.source.location.npm.packageName).toBe('foobar');
     expect(
-      newManifest.baseManifest.result.source.location.npm.packageName,
+      newManifest.mainManifest.result.source.location.npm.packageName,
     ).toBe('@metamask/example-snap');
   });
 });
