@@ -30,6 +30,7 @@ import {
   MOCK_ORIGIN,
   getMockExtendableSnapFiles,
 } from '../test-utils';
+import type { DeepPartial } from '../types';
 import { NpmSnapFileNames } from '../types';
 
 jest.mock('fs');
@@ -164,6 +165,59 @@ describe('checkManifest', () => {
     const file = await readJsonFile<SnapManifest>(MANIFEST_PATH);
     const { source, version } = file.result;
     expect(source.shasum).toBe(defaultManifest.source.shasum);
+    expect(version).toBe('1.0.0');
+  });
+
+  it('fixes problems in a manifest extending another manifest', async () => {
+    const extendedManifest: DeepPartial<SnapManifest> = {
+      extends: './other.manifest.json',
+      source: {
+        shasum: '29MYwcRiruhy9BEJpN/TBIhxoD3t0P4OdXztV9rW8tc=',
+      },
+    };
+
+    const otherManifest = getSnapManifest({
+      proposedName: 'Base Snap',
+      version: '0.0.1',
+    });
+
+    await fs.writeFile(
+      join(BASE_PATH, 'extended.manifest.json'),
+      JSON.stringify(extendedManifest),
+    );
+
+    await fs.writeFile(
+      join(BASE_PATH, 'other.manifest.json'),
+      JSON.stringify(otherManifest),
+    );
+
+    const mainManifestPath = join(BASE_PATH, 'main.manifest.json');
+    await fs.writeFile(
+      mainManifestPath,
+      JSON.stringify({
+        extends: './extended.manifest.json',
+        proposedName: 'Main Snap',
+      }),
+    );
+
+    const { files, updated, reports } = await checkManifest(mainManifestPath);
+    const unfixed = reports.filter((report) => !report.wasFixed);
+    const fixed = reports.filter((report) => report.wasFixed);
+
+    const newManifest = getSnapManifest({
+      proposedName: 'Main Snap',
+      shasum: 'Dc6De3HrrTRD7UPozSYDYx6CZu3cEv/kyFtJnLupSx4=',
+      platformVersion: getPlatformVersion(),
+    });
+
+    expect(files?.manifest.mergedManifest).toStrictEqual(newManifest);
+    expect(updated).toBe(true);
+    expect(unfixed).toHaveLength(0);
+    expect(fixed).toHaveLength(3);
+
+    const file = await readJsonFile<SnapManifest>(mainManifestPath);
+    const { source, version } = file.result;
+    expect(source.shasum).toBe(newManifest.source.shasum);
     expect(version).toBe('1.0.0');
   });
 

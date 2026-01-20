@@ -366,7 +366,7 @@ export async function runFixes(
 
       manifest.mergedManifest = mergeManifests(
         manifest.baseManifest.result,
-        manifest.extendedManifest?.result,
+        manifest.mergedManifest,
       );
     }
 
@@ -384,7 +384,7 @@ export async function runFixes(
     fixResults.files.manifest = manifest;
     fixResults.files.manifest.mergedManifest = mergeManifests(
       fixResults.files.manifest.baseManifest.result,
-      fixResults.files.manifest.extendedManifest?.result,
+      fixResults.files.manifest.mergedManifest,
     );
 
     fixResults = await runValidators(fixResults.files, rules);
