@@ -2763,6 +2763,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/aa@npm:^4.3.5":
+  version: 4.3.5
+  resolution: "@lavamoat/aa@npm:4.3.5"
+  dependencies:
+    resolve: "npm:1.22.10"
+  bin:
+    lavamoat-ls: src/cli.js
+  checksum: 10/253140c38b25455df8c64f236c8fb97db9406bacc9518f9282ddf593dd9c7ae61aa59ccdeb70bd47e68acb24ed902cf700f215e0acf86b7ac3278490932d5a75
+  languageName: node
+  linkType: hard
+
 "@lavamoat/allow-scripts@npm:^3.4.1":
   version: 3.4.1
   resolution: "@lavamoat/allow-scripts@npm:3.4.1"
@@ -2795,12 +2806,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^1.5.6":
-  version: 1.5.6
-  resolution: "@lavamoat/webpack@npm:1.5.6"
+"@lavamoat/webpack@npm:^1.5.7":
+  version: 1.5.7
+  resolution: "@lavamoat/webpack@npm:1.5.7"
   dependencies:
     "@babel/parser": "npm:7.28.3"
-    "@lavamoat/aa": "npm:^4.3.4"
+    "@lavamoat/aa": "npm:^4.3.5"
     "@lavamoat/types": "npm:^0.1.0"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
@@ -2808,7 +2819,7 @@ __metadata:
     ses: "npm:1.14.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/eb3f84a6ce143f154e430fc37ad757e594f3e1d5987398b59ddcf86d0371f23b2c671d5339ad63cd2d7e3e2305956c65bebfc5eb31d91fad994939a906bcb1be
+  checksum: 10/1216e44028fd3208a6cb45dfa332521a89f17829dc5dca330bafd9895ac407bcf5569e411857138a38d69ea64113462a9ac82f27e369b82351bc3628266e14c0
   languageName: node
   linkType: hard
 
@@ -4318,7 +4329,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^3.4.1"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": "npm:^1.5.6"
+    "@lavamoat/webpack": "npm:^1.5.7"
     "@metamask/auto-changelog": "npm:^5.0.2"
     "@metamask/json-rpc-engine": "npm:^10.2.1"
     "@metamask/object-multiplex": "npm:^2.1.0"
