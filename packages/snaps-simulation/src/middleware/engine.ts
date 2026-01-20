@@ -6,8 +6,10 @@ import type { Json } from '@metamask/utils';
 
 import { createInternalMethodsMiddleware } from './internal-methods';
 import { createMockMiddleware } from './mock';
+import { createMultichainMiddleware } from './multichain';
 import { createProviderMiddleware } from './provider';
 import type {
+  MultichainMiddlewareHooks,
   PermittedMiddlewareHooks,
   RestrictedMiddlewareHooks,
 } from '../simulation';
@@ -17,8 +19,10 @@ export type CreateJsonRpcEngineOptions = {
   store: Store;
   restrictedHooks: RestrictedMiddlewareHooks;
   permittedHooks: PermittedMiddlewareHooks;
+  multichainHooks: MultichainMiddlewareHooks;
   permissionMiddleware: JsonRpcMiddleware<RestrictedMethodParameters, Json>;
   endpoint?: string;
+  isMultichain: boolean;
 };
 
 /**
@@ -32,6 +36,8 @@ export type CreateJsonRpcEngineOptions = {
  * @param options.restrictedHooks - Any hooks used by the middleware handlers.
  * @param options.permittedHooks - Any hooks used by the middleware handlers.
  * @param options.permissionMiddleware - The permission middleware to use.
+ * @param options.multichainHooks - Hooks used by the multichain middleware.
+ * @param options.isMultichain - Whether the engine is used for multichain.
  * @returns A JSON-RPC engine.
  */
 export function createJsonRpcEngine({
@@ -39,8 +45,13 @@ export function createJsonRpcEngine({
   restrictedHooks,
   permittedHooks,
   permissionMiddleware,
+  multichainHooks,
+  isMultichain,
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
+
+  engine.push(createMultichainMiddleware(isMultichain, multichainHooks));
+
   engine.push(createMockMiddleware(store));
 
   // The hooks here do not match the hooks used by the clients, so this

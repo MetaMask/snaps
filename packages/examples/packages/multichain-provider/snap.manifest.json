@@ -1,0 +1,27 @@
+{
+  "version": "0.0.0",
+  "description": "MetaMask example Snap demonstrating the use of the Multichain Provider API and `endowment:multichain-provider` permission.",
+  "proposedName": "Multichain Provider Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "I0x2z2mgHyS0EVXs3/2q6Iq39SoPiOpyT5VBTRpn5Vw=",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/multichain-provider-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    "endowment:rpc": {
+      "dapps": true
+    },
+    "endowment:multichain-provider": {}
+  },
+  "platformVersion": "10.3.0",
+  "manifestVersion": "0.1"
+}

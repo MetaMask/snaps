@@ -2,17 +2,17 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { hexToBigInt } from '@metamask/utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import { hexToBigInt, parseCaipChainId } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { InternalMethodsMiddlewareHooks } from './middleware';
+import type { ScopedJsonRpcRequest } from '../multichain';
 
 /**
  * A mock handler for net_version that always returns a specific
  * hardcoded result.
  *
- * @param _request - Incoming JSON-RPC request. Ignored for this specific
- * handler.
+ * @param request - Incoming JSON-RPC request.
  * @param response - The outgoing JSON-RPC response, modified to return the
  * result.
  * @param _next - The `json-rpc-engine` middleware next handler.
@@ -21,14 +21,16 @@ import type { InternalMethodsMiddlewareHooks } from './middleware';
  * @returns The JSON-RPC response.
  */
 export async function getNetworkVersionHandler(
-  _request: JsonRpcRequest,
+  request: ScopedJsonRpcRequest,
   response: PendingJsonRpcResponse,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   hooks: Pick<InternalMethodsMiddlewareHooks, 'getSimulationState'>,
 ) {
-  const hexChainId = hooks.getSimulationState().chain.chainId;
-  response.result = hexToBigInt(hexChainId).toString(10);
+  const requestScope = request.scope && parseCaipChainId(request.scope);
+  response.result = requestScope
+    ? BigInt(requestScope.reference).toString(10)
+    : hexToBigInt(hooks.getSimulationState().chain.chainId).toString(10);
 
   return end();
 }

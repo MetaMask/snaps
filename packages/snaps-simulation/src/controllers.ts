@@ -1,3 +1,7 @@
+import {
+  caip25CaveatBuilder,
+  Caip25CaveatType,
+} from '@metamask/chain-agnostic-permission';
 import { Messenger } from '@metamask/messenger';
 import type {
   CaveatSpecificationConstraint,
@@ -24,6 +28,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import type { SnapManifest } from '@metamask/snaps-utils';
+import type { Hex } from '@metamask/utils';
 import { getSafeJson } from '@metamask/utils';
 
 import { getPermissionSpecifications } from './methods';
@@ -142,9 +147,28 @@ function getPermissionController(options: GetControllersOptions) {
     ],
   });
 
+  const simulatedAccounts = options.options.accounts;
+  const ethereumAccounts = simulatedAccounts
+    .filter((account) =>
+      account.scopes.some((scope) => scope.startsWith('eip155')),
+    )
+    .map((account) => ({
+      type: 'eip155:eoa',
+      address: account.address as Hex,
+    }));
+
   return new PermissionController({
     messenger,
     caveatSpecifications: {
+      [Caip25CaveatType]: caip25CaveatBuilder({
+        findNetworkClientIdByChainId: (chainId) => chainId,
+        isNonEvmScopeSupported: (_scope) => true,
+        getNonEvmAccountAddresses: (scope) =>
+          simulatedAccounts
+            .filter((account) => account.scopes.includes(scope))
+            .map((account) => `${scope}:${account.address}`),
+        listAccounts: () => ethereumAccounts,
+      }),
       ...snapsCaveatsSpecifications,
       ...snapsEndowmentCaveatSpecifications,
     },

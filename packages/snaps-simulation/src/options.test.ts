@@ -8,7 +8,7 @@ describe('getOptions', () => {
       {
         "accounts": [
           {
-            "address": "0x1234567890abcdef1234567890abcdef12345678",
+            "address": "0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
             "owned": false,
@@ -18,7 +18,7 @@ describe('getOptions', () => {
             "selected": false,
           },
           {
-            "address": "7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv",
+            "address": "CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e",
             "assets": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -71,7 +71,7 @@ describe('getOptions', () => {
       {
         "accounts": [
           {
-            "address": "0x1234567890abcdef1234567890abcdef12345678",
+            "address": "0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf",
             "assets": [],
             "id": "29bc7513-d1b9-4466-98a6-f5f9e0b90137",
             "owned": false,
@@ -81,7 +81,7 @@ describe('getOptions', () => {
             "selected": false,
           },
           {
-            "address": "7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv",
+            "address": "CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e",
             "assets": [
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
               "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",

@@ -62,6 +62,23 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   'wallet_scanQRCode',
 ]);
 
+export const MULTICHAIN_API_METHODS = Object.freeze([
+  'wallet_createSession',
+  'wallet_invokeMethod',
+  'wallet_getSession',
+  'wallet_revokeSession',
+]);
+
+/**
+ * Check whether a validated request should be routed to the multichain API.
+ *
+ * @param args - The request arguments.
+ * @returns True if the request is a multichain request, otherwise false.
+ */
+export function isMultichainRequest(args: RequestArguments) {
+  return MULTICHAIN_API_METHODS.includes(args.method);
+}
+
 /**
  * Asserts the validity of request arguments for a snap outbound request using the `snap.request` API.
  *

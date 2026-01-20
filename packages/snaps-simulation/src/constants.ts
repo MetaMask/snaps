@@ -31,7 +31,7 @@ export const TYPEABLE_INPUTS = ['Input', 'AddressInput'];
 
 export const DEFAULT_ACCOUNTS: SimulationAccount[] = [
   {
-    address: '0x1234567890abcdef1234567890abcdef12345678',
+    address: '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
     id: '29bc7513-d1b9-4466-98a6-f5f9e0b90137',
     scopes: ['eip155:0'],
     selected: false,
@@ -40,7 +40,7 @@ export const DEFAULT_ACCOUNTS: SimulationAccount[] = [
     assets: [],
   },
   {
-    address: '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv',
+    address: 'CYWSQQ2iiFL6EZzuqvMM9o22CZX3N8PowvvkpBXqLK4e',
     id: 'e051723c-85d0-43a3-b9bf-568a90d3f378',
     scopes: [
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
