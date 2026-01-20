@@ -84,9 +84,7 @@ export default class SnapsWebpackPlugin {
           this.#applyPostProcessing(compiler, compilation, assets);
         },
       );
-    });
 
-    compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
       compilation.hooks.processAssets.tapPromise(
         {
           name: PLUGIN_NAME,
