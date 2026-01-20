@@ -74,166 +74,176 @@ export default class SnapsWebpackPlugin {
    * @param compiler - The Webpack compiler.
    */
   apply(compiler: Compiler) {
-    const { devtool } = compiler.options;
-
     compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
       compilation.hooks.processAssets.tap(
         {
           name: PLUGIN_NAME,
           stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_COMPATIBILITY,
-          additionalAssets: true,
         },
         (assets) => {
-          Object.keys(assets)
-            .filter((assetName) => assetName.endsWith('.js'))
-            .forEach((assetName) => {
-              const asset = assets[assetName];
-              const source = asset.source() as string;
-              const sourceMap = asset.map();
+          this.#applyPostProcessing(compiler, compilation, assets);
+        },
+      );
 
-              try {
-                const processed = postProcessBundle(source, {
-                  ...this.options,
-                  sourceMap: Boolean(devtool),
-                  inputSourceMap: devtool
-                    ? (sourceMap as SourceMap)
-                    : undefined,
-                });
-
-                if (processed.warnings.length > 0) {
-                  const webpackErrors = processed.warnings.map(
-                    (warning) => new WebpackError(warning),
-                  );
-
-                  compilation.warnings.push(...webpackErrors);
-                }
-
-                const replacement = processed.sourceMap
-                  ? new SourceMapSource(
-                      processed.code,
-                      assetName,
-                      processed.sourceMap,
-                      source,
-                      sourceMap as SourceMap,
-                    )
-                  : new RawSource(processed.code);
-
-                // For some reason the type of `RawSource` is not compatible with
-                // Webpack's own `Source`, but works fine when casting it to `any`.
-                compilation.updateAsset(assetName, replacement as any);
-              } catch (error) {
-                compilation.errors.push(
-                  new WebpackError(getErrorMessage(error)),
-                );
-              }
-            });
+      compilation.hooks.processAssets.tapPromise(
+        {
+          name: PLUGIN_NAME,
+          stage: Compilation.PROCESS_ASSETS_STAGE_ANALYSE,
+        },
+        async () => {
+          await this.#applyValidation(compiler, compilation);
         },
       );
     });
+  }
 
-    compiler.hooks.afterEmit.tapPromise(PLUGIN_NAME, async (compilation) => {
-      const file = compilation
-        .getAssets()
-        .find((asset) => asset.name.endsWith('.js'));
+  /**
+   * Apply post-processing to the generated assets.
+   *
+   * @param compiler - The Webpack compiler.
+   * @param compilation - The Webpack compilation.
+   * @param assets - The Webpack assets.
+   */
+  #applyPostProcessing(
+    compiler: Compiler,
+    compilation: Compilation,
+    assets: Compilation['assets'],
+  ) {
+    const { devtool } = compiler.options;
 
-      assert(file);
+    Object.keys(assets)
+      .filter((assetName) => assetName.endsWith('.js'))
+      .forEach((assetName) => {
+        const asset = assets[assetName];
+        const source = asset.source() as string;
+        const sourceMap = asset.map();
 
-      assert(compilation.outputOptions.path);
-      const outputPath = compilation.outputOptions.path;
-
-      const filePath = pathUtils.join(outputPath, file.name);
-
-      assert(
-        compiler.outputFileSystem,
-        'Expected compiler to have an output file system.',
-      );
-      const bundleFile = await promisify(
-        compiler.outputFileSystem.readFile.bind(compiler.outputFileSystem),
-      )(filePath);
-      assert(bundleFile);
-
-      const bundleContent = bundleFile.toString();
-      let exports: string[] | undefined;
-
-      if (this.options.eval) {
         try {
-          const output = await useTemporaryFile(
-            'snaps-bundle.js',
-            bundleContent,
-            async (path) => evalBundle(path),
-          );
+          const processed = postProcessBundle(source, {
+            ...this.options,
+            sourceMap: Boolean(devtool),
+            inputSourceMap: devtool ? (sourceMap as SourceMap) : undefined,
+          });
 
-          this.#spinner?.clear();
-          this.#spinner?.frame();
+          if (processed.warnings.length > 0) {
+            const webpackErrors = processed.warnings.map(
+              (warning) => new WebpackError(warning),
+            );
 
-          logInfo(
-            `${blue('ℹ')} ${dim('Snap bundle evaluated successfully.')}`,
-          );
-
-          exports = output.exports;
-        } catch (error) {
-          const webpackError = new WebpackError(
-            `Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap: ${getErrorMessage(error)}`,
-          );
-
-          if (error instanceof SnapEvalError) {
-            // The constructor for `WebpackError` doesn't accept the details
-            // property, so we need to set it manually.
-            webpackError.details = error.output.stderr;
+            compilation.warnings.push(...webpackErrors);
           }
 
-          compilation.errors.push(webpackError);
+          const replacement = processed.sourceMap
+            ? new SourceMapSource(
+                processed.code,
+                assetName,
+                processed.sourceMap,
+                source,
+                sourceMap as SourceMap,
+              )
+            : new RawSource(processed.code);
+
+          // For some reason the type of `RawSource` is not compatible with
+          // Webpack's own `Source`, but works fine when casting it to `any`.
+          compilation.updateAsset(assetName, replacement as any);
+        } catch (error) {
+          compilation.errors.push(new WebpackError(getErrorMessage(error)));
         }
+      });
+  }
+
+  /**
+   * Apply validation to the generated bundle.
+   *
+   * @param compiler - The Webpack compiler.
+   * @param compilation - The Webpack compilation.
+   */
+  async #applyValidation(compiler: Compiler, compilation: Compilation) {
+    const file = compilation
+      .getAssets()
+      .find((asset) => asset.name.endsWith('.js'));
+
+    assert(file, 'Expected to find a JavaScript asset in the compilation.');
+
+    const bundleContent = file.source.source().toString();
+    let exports: string[] | undefined;
+
+    if (this.options.eval) {
+      try {
+        const output = await useTemporaryFile(
+          'snaps-bundle.js',
+          bundleContent,
+          async (path) => evalBundle(path),
+        );
+
+        this.#spinner?.clear();
+        this.#spinner?.frame();
+
+        logInfo(`${blue('ℹ')} ${dim('Snap bundle evaluated successfully.')}`);
+
+        exports = output.exports;
+      } catch (error) {
+        const webpackError = new WebpackError(
+          `Failed to evaluate Snap bundle in SES. This is likely due to an incompatibility with the SES environment in your Snap: ${getErrorMessage(error)}`,
+        );
+
+        if (error instanceof SnapEvalError) {
+          // The constructor for `WebpackError` doesn't accept the details
+          // property, so we need to set it manually.
+          webpackError.details = error.output.stderr;
+        }
+
+        compilation.errors.push(webpackError);
+      }
+    }
+
+    if (this.options.manifestPath) {
+      const { reports } = await checkManifest(this.options.manifestPath, {
+        updateAndWriteManifest: this.options.writeManifest,
+        sourceCode: bundleContent,
+        exports,
+        handlerEndowments,
+        watchMode: compiler.watchMode,
+        writeFileFn: async (path, data) => {
+          assert(
+            compiler.outputFileSystem,
+            'Expected compiler to have an output file system.',
+          );
+          return writeManifest(
+            path,
+            data,
+            promisify(compiler.outputFileSystem.writeFile),
+          );
+        },
+      });
+
+      const errors = reports
+        .filter((report) => report.severity === 'error' && !report.wasFixed)
+        .map((report) => report.message);
+      const warnings = reports
+        .filter((report) => report.severity === 'warning' && !report.wasFixed)
+        .map((report) => report.message);
+      const fixed = reports
+        .filter((report) => report.wasFixed)
+        .map((report) => report.message);
+
+      if (errors.length > 0) {
+        compilation.errors.push(
+          ...errors.map((error) => new WebpackError(error)),
+        );
       }
 
-      if (this.options.manifestPath) {
-        const { reports } = await checkManifest(this.options.manifestPath, {
-          updateAndWriteManifest: this.options.writeManifest,
-          sourceCode: bundleContent,
-          exports,
-          handlerEndowments,
-          watchMode: compiler.watchMode,
-          writeFileFn: async (path, data) => {
-            assert(
-              compiler.outputFileSystem,
-              'Expected compiler to have an output file system.',
-            );
-            return writeManifest(
-              path,
-              data,
-              promisify(compiler.outputFileSystem.writeFile),
-            );
-          },
-        });
-
-        const errors = reports
-          .filter((report) => report.severity === 'error' && !report.wasFixed)
-          .map((report) => report.message);
-        const warnings = reports
-          .filter((report) => report.severity === 'warning' && !report.wasFixed)
-          .map((report) => report.message);
-        const fixed = reports
-          .filter((report) => report.wasFixed)
-          .map((report) => report.message);
-
-        if (errors.length > 0) {
-          compilation.errors.push(
-            ...errors.map((error) => new WebpackError(error)),
-          );
-        }
-
-        if (warnings.length > 0) {
-          compilation.warnings.push(
-            ...warnings.map((warning) => new WebpackError(warning)),
-          );
-        }
-
-        if (fixed.length > 0) {
-          compilation.warnings.push(
-            ...fixed.map((problem) => new WebpackError(`${problem} (fixed)`)),
-          );
-        }
+      if (warnings.length > 0) {
+        compilation.warnings.push(
+          ...warnings.map((warning) => new WebpackError(warning)),
+        );
       }
-    });
+
+      if (fixed.length > 0) {
+        compilation.warnings.push(
+          ...fixed.map((problem) => new WebpackError(`${problem} (fixed)`)),
+        );
+      }
+    }
   }
 }
