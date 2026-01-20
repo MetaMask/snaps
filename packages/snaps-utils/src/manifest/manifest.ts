@@ -1,6 +1,6 @@
 import { getErrorMessage } from '@metamask/snaps-sdk';
 import type { Json } from '@metamask/utils';
-import { assert, isPlainObject } from '@metamask/utils';
+import { assert, isObject } from '@metamask/utils';
 import deepmerge from 'deepmerge';
 import { promises as fs } from 'fs';
 import pathUtils, { dirname } from 'path';
@@ -55,8 +55,8 @@ function mergeManifests<Type>(
     return mainManifest as MergedManifest<Type>;
   }
 
-  assert(isPlainObject(mainManifest));
-  assert(isPlainObject(extendedManifest));
+  assert(isObject(mainManifest));
+  assert(isObject(extendedManifest));
 
   const mergedManifest = deepmerge(extendedManifest, mainManifest);
   delete mergedManifest.extends;
@@ -95,7 +95,7 @@ export async function loadManifest(
   const mainManifest = await readJsonFile(manifestPath);
   files.add(manifestPath);
 
-  if (!isPlainObject(mainManifest.result)) {
+  if (!isObject(mainManifest.result)) {
     throw new Error(
       `Failed to load Snap manifest: The Snap manifest file at "${manifestPath}" must contain a JSON object.`,
     );
@@ -442,7 +442,7 @@ export async function getSnapSourceCode(
   manifest: Json,
   sourceCode?: string,
 ): Promise<VirtualFile | undefined> {
-  if (!isPlainObject(manifest)) {
+  if (!isObject(manifest)) {
     return undefined;
   }
 
@@ -485,7 +485,7 @@ export async function getSnapIcon(
   basePath: string,
   manifest: Json,
 ): Promise<VirtualFile | undefined> {
-  if (!isPlainObject(manifest)) {
+  if (!isObject(manifest)) {
     return undefined;
   }
 
@@ -518,7 +518,7 @@ export function getSnapFilePaths(
   manifest: Json,
   selector: (manifest: Partial<SnapManifest>) => string[] | undefined,
 ) {
-  if (!isPlainObject(manifest)) {
+  if (!isObject(manifest)) {
     return undefined;
   }
 
