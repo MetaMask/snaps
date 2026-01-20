@@ -261,7 +261,7 @@ export type SnapConfig = {
     /**
      * Whether the Snap should be hidden from the user in the client UI.
      */
-    hidden: boolean;
+    hidden?: boolean;
 
     /**
      * Whether the Snap can be removed from the client.
