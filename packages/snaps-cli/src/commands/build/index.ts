@@ -8,10 +8,15 @@ const command = {
   command: ['build', 'b'],
   desc: 'Build snap from source',
   builder: (yarg: yargs.Argv) => {
-    yarg.option('analyze', builders.analyze);
+    yarg
+      .option('analyze', builders.analyze)
+      .option('preinstalled', builders.preinstalled);
   },
   handler: async (argv: YargsArgs) =>
-    buildHandler(argv.context.config, argv.analyze),
+    buildHandler(argv.context.config, {
+      analyze: argv.analyze,
+      preinstalled: argv.preinstalled,
+    }),
 };
 
 export * from './implementation';

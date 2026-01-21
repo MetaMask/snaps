@@ -8,6 +8,11 @@ const config: SnapConfig = {
   typescript: {
     enabled: true,
   },
+  preinstalled: {
+    hideSnapBranding: true,
+    hidden: false,
+    removable: false,
+  },
   stats: {
     buffer: false,
   },

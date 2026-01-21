@@ -23,9 +23,8 @@
     "snap.manifest.json"
   ],
   "scripts": {
-    "build": "mm-snap build && yarn build:manifest",
+    "build": "mm-snap build --preinstalled",
     "build:clean": "yarn clean && yarn build",
-    "build:manifest": "tsx scripts/generate-json.mts",
     "changelog:update": "../../../../scripts/update-changelog.sh @metamask/preinstalled-example-snap",
     "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/preinstalled-example-snap",
     "clean": "rimraf \"dist\"",
@@ -51,9 +50,7 @@
     "@lavamoat/allow-scripts": "^3.4.1",
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-cli": "workspace:^",
-    "@metamask/snaps-controllers": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",
-    "@metamask/utils": "^11.9.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
     "@types/node": "18.14.2",
@@ -64,9 +61,7 @@
     "jest-silent-reporter": "^0.6.0",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
-    "tsx": "^4.20.3",
-    "typescript": "~5.3.3",
-    "yocto-spinner": "^0.1.0"
+    "typescript": "~5.3.3"
   },
   "engines": {
     "node": "^20 || >=22"

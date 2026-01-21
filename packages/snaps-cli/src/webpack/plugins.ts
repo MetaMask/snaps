@@ -1,8 +1,10 @@
+import type { SnapManifest } from '@metamask/snaps-utils';
 import { loadManifest } from '@metamask/snaps-utils/node';
 import { assert, hasProperty, isObject } from '@metamask/utils';
 import { bold, dim, red, yellow } from 'chalk';
 import { isBuiltin } from 'module';
 import type { Ora } from 'ora';
+import { dirname, resolve } from 'path';
 import type {
   Compiler,
   ProvidePlugin,
@@ -10,9 +12,10 @@ import type {
   StatsError,
   WebpackPluginInstance,
 } from 'webpack';
-import { WebpackError } from 'webpack';
+import { Compilation, WebpackError, sources } from 'webpack';
 
-import { formatText, pluralize } from './utils';
+import type { WebpackOptions } from './config';
+import { formatText, pluralize, readWebpackFile } from './utils';
 import { error, getErrorMessage, info, warn } from '../utils';
 
 export type SnapsStatsPluginOptions = {
@@ -462,5 +465,147 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
         },
       );
     });
+  }
+}
+
+/**
+ * The options for the {@link PreinstalledSnapsBundlePlugin}.
+ */
+export type PreinstalledSnapsBundlePluginOptions = {
+  /**
+   * The path to the manifest file.
+   */
+  manifestPath: string;
+
+  /**
+   * The name of the output file.
+   */
+  outputName: string;
+
+  /**
+   * The preinstalled options from the Webpack configuration.
+   */
+  preinstalledOptions: WebpackOptions['preinstalledOptions'];
+};
+
+/**
+ * A plugin that creates a preinstalled Snap bundle from the compiled bundle.
+ * This will read the manifest, and any required files (locales, icon), and
+ * create a `preinstalled-snap.json` file that can be used to install the Snap
+ * as a preinstalled Snap.
+ */
+export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
+  readonly #options: PreinstalledSnapsBundlePluginOptions;
+
+  readonly #spinner?: Ora;
+
+  constructor(options: PreinstalledSnapsBundlePluginOptions, spinner?: Ora) {
+    this.#options = options;
+    this.#spinner = spinner;
+  }
+
+  /**
+   * Apply the plugin to the Webpack compiler.
+   *
+   * @param compiler - The Webpack compiler.
+   */
+  apply(compiler: Compiler) {
+    compiler.hooks.compilation.tap(this.constructor.name, (compilation) => {
+      compilation.hooks.processAssets.tapPromise(
+        {
+          name: this.constructor.name,
+          // `PROCESS_ASSETS_STAGE_REPORT` is the last stage, so we ensure this
+          // plugin runs after all other plugins have finished processing
+          // assets.
+          stage: Compilation.PROCESS_ASSETS_STAGE_REPORT,
+        },
+        async () => {
+          info('Creating preinstalled Snap bundle.', this.#spinner);
+
+          const asset = compilation.getAsset(this.#options.outputName);
+          if (!asset) {
+            compilation.errors.push(
+              new WebpackError(
+                'Bundle asset not found. Make sure to build the project first.',
+              ),
+            );
+
+            return;
+          }
+
+          const bundleSource = asset.source.source().toString();
+          const preinstalledSnapBundleJson = JSON.stringify(
+            await this.#createPreinstalledBundle(compilation, bundleSource),
+            null,
+            2,
+          );
+
+          compilation.emitAsset(
+            'preinstalled-snap.json',
+            new sources.RawSource(preinstalledSnapBundleJson),
+          );
+        },
+      );
+    });
+  }
+
+  /**
+   * Create a preinstalled bundle object from the given bundle source. This will
+   * load the manifest, read any required files (locales, icon), and return the
+   * preinstalled bundle object.
+   *
+   * Custom auxiliary files are not currently supported in preinstalled Snaps.
+   *
+   * @param compilation - The Webpack compilation.
+   * @param bundleSource - The source code of the bundle.
+   * @returns The preinstalled bundle object.
+   */
+  async #createPreinstalledBundle(
+    compilation: Compilation,
+    bundleSource: string,
+  ) {
+    const { mergedManifest } = await loadManifest(this.#options.manifestPath);
+    const manifest = mergedManifest as SnapManifest;
+
+    const basePath = dirname(this.#options.manifestPath);
+
+    const files = [
+      {
+        path: manifest.source.location.npm.filePath,
+        value: bundleSource,
+      },
+    ];
+
+    if (manifest.source.locales) {
+      for (const locale of manifest.source.locales) {
+        files.push({
+          path: locale,
+          value: await readWebpackFile(
+            compilation.inputFileSystem,
+            resolve(basePath, locale),
+          ),
+        });
+      }
+    }
+
+    if (manifest.source.location.npm.iconPath) {
+      const { iconPath } = manifest.source.location.npm;
+      files.push({
+        path: manifest.source.location.npm.iconPath,
+
+        // The icon is expected to be an SVG file, so we read it as UTF-8.
+        value: await readWebpackFile(
+          compilation.inputFileSystem,
+          resolve(basePath, iconPath),
+        ),
+      });
+    }
+
+    return {
+      snapId: `npm:${manifest.source.location.npm.packageName}`,
+      manifest,
+      files,
+      ...this.#options.preinstalledOptions,
+    };
   }
 }

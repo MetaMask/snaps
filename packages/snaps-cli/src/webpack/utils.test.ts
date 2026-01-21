@@ -1,4 +1,6 @@
 import { dim } from 'chalk';
+import { createFsFromVolume, Volume } from 'memfs';
+import type { InputFileSystem } from 'webpack';
 
 import {
   WEBPACK_FALLBACKS,
@@ -11,6 +13,7 @@ import {
   getEnvironmentVariables,
   formatText,
   getImageSVG,
+  readWebpackFile,
 } from './utils';
 import type { ProcessedConfig } from '../config';
 import { getMockConfig } from '../test-utils';
@@ -231,6 +234,42 @@ describe('getImageSVG', () => {
     const image = getImageSVG('image/jpeg', new Uint8Array([1, 2, 3]));
     expect(image).toMatchInlineSnapshot(
       `"<svg xmlns="http://www.w3.org/2000/svg"><image href="data:image/jpeg;base64,AQID" /></svg>"`,
+    );
+  });
+});
+
+describe('readWebpackFile', () => {
+  it('reads a file from a Webpack input or output file system', async () => {
+    const fileSystem = createFsFromVolume(new Volume());
+    await fileSystem.promises.writeFile('/test.txt', 'Hello, world!');
+
+    // @ts-expect-error: Type mismatch between `memfs` and Webpack.
+    const content = await readWebpackFile(fileSystem, '/test.txt');
+    expect(content).toBe('Hello, world!');
+  });
+
+  it('throws an error if the file does not exist', async () => {
+    const fileSystem = createFsFromVolume(new Volume());
+
+    await expect(
+      // @ts-expect-error: Type mismatch between `memfs` and Webpack.
+      readWebpackFile(fileSystem, '/non-existent.txt'),
+    ).rejects.toThrow(
+      "ENOENT: no such file or directory, open '/non-existent.txt'",
+    );
+  });
+
+  it('throws an error if the data is undefined', async () => {
+    const fileSystem: InputFileSystem = {
+      // @ts-expect-error - Partial file system implementation.
+      readFile: (_path, _encoding, callback) => {
+        // Simulate undefined data
+        callback(null, undefined);
+      },
+    };
+
+    await expect(readWebpackFile(fileSystem, '/some-file.txt')).rejects.toThrow(
+      'File not found: "/some-file.txt".',
     );
   });
 });

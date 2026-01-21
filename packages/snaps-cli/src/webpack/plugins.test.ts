@@ -1,3 +1,4 @@
+import { getSnapManifest } from '@metamask/snaps-utils/test-utils';
 import { createFsFromVolume, Volume } from 'memfs';
 import ora from 'ora';
 import { promisify } from 'util';
@@ -5,6 +6,7 @@ import type { Compiler, Watching } from 'webpack';
 import { WebpackError, ProvidePlugin } from 'webpack';
 
 import {
+  PreinstalledSnapsBundlePlugin,
   SnapsBuiltInResolver,
   SnapsBundleWarningsPlugin,
   SnapsStatsPlugin,
@@ -17,6 +19,9 @@ jest.mock('../commands/eval/implementation');
 jest.mock('@metamask/snaps-utils/node', () => ({
   ...jest.requireActual('@metamask/snaps-utils/node'),
   loadManifest: jest.fn().mockResolvedValue({
+    mergedManifest: getSnapManifest({
+      locales: ['locales/en.json', 'locales/nl.json'],
+    }),
     files: new Set(['/snap.manifest.json']),
   }),
 }));
@@ -501,5 +506,138 @@ describe('SnapsBundleWarningsPlugin', () => {
     });
 
     expect(stats.warnings).toHaveLength(0);
+  });
+});
+
+describe('PreinstalledSnapsBundlePlugin', () => {
+  it('creates a preinstalled bundle', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    const fileSystem = createFsFromVolume(new Volume());
+
+    await fileSystem.promises.mkdir('/snap/images', { recursive: true });
+    await fileSystem.promises.mkdir('/snap/locales', { recursive: true });
+
+    await fileSystem.promises.writeFile(
+      '/snap/snap.manifest.json',
+      JSON.stringify(getSnapManifest()),
+    );
+    await fileSystem.promises.writeFile('/snap/images/icon.svg', '<svg />');
+    await fileSystem.promises.writeFile('/snap/locales/en.json', '{}');
+    await fileSystem.promises.writeFile('/snap/locales/nl.json', '{}');
+
+    const { stats } = await compile({
+      code: `
+        console.log('Preinstalled Snap.');
+      `,
+      fileSystem,
+      config: {
+        plugins: [
+          new PreinstalledSnapsBundlePlugin({
+            manifestPath: '/snap/snap.manifest.json',
+            outputName: 'output.js',
+            preinstalledOptions: {
+              hidden: true,
+              hideSnapBranding: true,
+              removable: false,
+            },
+          }),
+        ],
+      },
+    });
+
+    expect(stats.errors).toHaveLength(0);
+    expect(stats.warnings).toHaveLength(0);
+
+    const output = fileSystem.readFileSync('/preinstalled-snap.json', 'utf-8');
+    expect(output).toMatchInlineSnapshot(`
+      "{
+        "snapId": "npm:@metamask/example-snap",
+        "manifest": {
+          "version": "1.0.0",
+          "description": "The test example snap!",
+          "proposedName": "@metamask/example-snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/example-snap.git"
+          },
+          "source": {
+            "shasum": "/17SwI03+Cn9sk45Z6Czp+Sktru1oLzOmkJW+YbP9WE=",
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/example-snap",
+                "registry": "https://registry.npmjs.org",
+                "iconPath": "images/icon.svg"
+              }
+            },
+            "locales": [
+              "locales/en.json",
+              "locales/nl.json"
+            ]
+          },
+          "initialPermissions": {
+            "snap_dialog": {},
+            "endowment:rpc": {
+              "snaps": true,
+              "dapps": false
+            }
+          },
+          "platformVersion": "1.0.0",
+          "manifestVersion": "0.1"
+        },
+        "files": [
+          {
+            "path": "dist/bundle.js",
+            "value": "/******/ (() => { // webpackBootstrap\\n\\n        console.log('Preinstalled Snap.');\\n      \\n/******/ })()\\n;"
+          },
+          {
+            "path": "locales/en.json",
+            "value": "{}"
+          },
+          {
+            "path": "locales/nl.json",
+            "value": "{}"
+          },
+          {
+            "path": "images/icon.svg",
+            "value": "<svg />"
+          }
+        ],
+        "hidden": true,
+        "hideSnapBranding": true,
+        "removable": false
+      }"
+    `);
+  });
+
+  it('throws an error if the output file cannot be found', async () => {
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation();
+
+    const fileSystem = createFsFromVolume(new Volume());
+
+    await expect(
+      compile({
+        code: `
+        console.log('Preinstalled Snap.');
+      `,
+        fileSystem,
+        config: {
+          plugins: [
+            new PreinstalledSnapsBundlePlugin({
+              manifestPath: '/snap/snap.manifest.json',
+              outputName: 'non-existent.js',
+              preinstalledOptions: {
+                hidden: true,
+                hideSnapBranding: true,
+                removable: false,
+              },
+            }),
+          ],
+        },
+      }),
+    ).rejects.toThrow('Failed to compile.');
   });
 });

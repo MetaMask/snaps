@@ -247,6 +247,29 @@ export type SnapConfig = {
       };
 
   /**
+   * Options for preinstalled Snaps. These options are added to the preinstalled
+   * Snap bundle.
+   *
+   * These options do not affect regular Snaps that are installed by users.
+   */
+  preinstalled?: {
+    /**
+     * Whether to hide branding specific to Snaps in the client UI.
+     */
+    hideSnapBranding?: boolean;
+
+    /**
+     * Whether the Snap should be hidden from the user in the client UI.
+     */
+    hidden?: boolean;
+
+    /**
+     * Whether the Snap can be removed from the client.
+     */
+    removable?: boolean;
+  };
+
+  /**
    * Support for TypeScript type-checking feature.
    *
    * @example
@@ -443,6 +466,15 @@ export const SnapsConfigStruct = object({
       }),
     ]),
     false,
+  ),
+
+  preinstalled: defaulted(
+    object({
+      hideSnapBranding: defaulted(boolean(), false),
+      hidden: defaulted(boolean(), false),
+      removable: defaulted(boolean(), false),
+    }),
+    {},
   ),
 
   typescript: defaulted(

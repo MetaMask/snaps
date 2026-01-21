@@ -2,9 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "composite": false,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "composite": false
   },
-  "include": ["src", "scripts", "snap.config.ts"]
+  "include": ["src", "snap.config.ts"]
 }

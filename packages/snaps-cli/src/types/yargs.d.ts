@@ -24,6 +24,7 @@ type YargsArgs = {
   build?: boolean;
   fix?: boolean;
   input?: string;
+  preinstalled?: boolean;
 
   config?: string;
   sourceMaps: boolean;

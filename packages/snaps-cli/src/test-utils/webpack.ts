@@ -1,6 +1,6 @@
 import { logError } from '@metamask/snaps-utils';
 import { DEFAULT_SNAP_BUNDLE } from '@metamask/snaps-utils/test-utils';
-import { hasProperty, isPlainObject } from '@metamask/utils';
+import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import { promisify } from 'util';
@@ -81,9 +81,12 @@ export async function compile(
         return;
       }
 
-      const output = (await promisify(compiler.outputFileSystem.readFile)(
+      assert(compiler.outputFileSystem);
+
+      // eslint-disable-next-line promise/no-promise-in-callback
+      const output = await promisify(compiler.outputFileSystem.readFile)(
         '/output.js',
-      )) as string;
+      ).then((buffer) => buffer?.toString('utf-8') ?? '');
 
       resolve({
         code: output,
