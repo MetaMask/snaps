@@ -5,7 +5,7 @@ import { builtinModules } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
 import stripAnsi from 'strip-ansi';
-import type { Configuration } from 'webpack';
+import type { Configuration, InputFileSystem, OutputFileSystem } from 'webpack';
 
 import type { ProcessedConfig } from '../config';
 
@@ -389,4 +389,35 @@ export function formatText(
 export function getImageSVG(mimeType: string, bytes: Uint8Array) {
   const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
   return `<svg xmlns="http://www.w3.org/2000/svg"><image href="${dataUrl}" /></svg>`;
+}
+
+/**
+ * Read a file from a Webpack input or output file system.
+ *
+ * @param fileSystem - The Webpack file system.
+ * @param path - The path to the file.
+ * @returns The file contents.
+ */
+export async function readWebpackFile(
+  fileSystem: InputFileSystem | OutputFileSystem,
+  path: string,
+): Promise<string> {
+  // This function doesn't use `promisify`, since it doesn't seem to infer the
+  // correct type when providing an encoding. We also can't use `readFileSync`,
+  // because it isn't guaranteed to be available on all file systems.
+  return new Promise((resolvePromise, rejectPromise) => {
+    fileSystem.readFile(path, 'utf-8', (error, data) => {
+      if (error) {
+        rejectPromise(error);
+        return;
+      }
+
+      if (data === undefined) {
+        rejectPromise(new Error(`File not found: "${path}".`));
+        return;
+      }
+
+      resolvePromise(data);
+    });
+  });
 }

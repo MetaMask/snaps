@@ -15,7 +15,7 @@ import type {
 import { Compilation, WebpackError, sources } from 'webpack';
 
 import type { WebpackOptions } from './config';
-import { formatText, pluralize } from './utils';
+import { formatText, pluralize, readWebpackFile } from './utils';
 import { error, getErrorMessage, info, warn } from '../utils';
 
 export type SnapsStatsPluginOptions = {
@@ -525,9 +525,13 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
 
           const asset = compilation.getAsset(this.#options.outputName);
           if (!asset) {
-            throw new Error(
-              'Bundle asset not found. Make sure to build the project first.',
+            compilation.errors.push(
+              new WebpackError(
+                'Bundle asset not found. Make sure to build the project first.',
+              ),
             );
+
+            return;
           }
 
           const bundleSource = asset.source.source().toString();
@@ -577,7 +581,10 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
       for (const locale of manifest.source.locales) {
         files.push({
           path: locale,
-          value: await this.#readFile(compilation, resolve(basePath, locale)),
+          value: await readWebpackFile(
+            compilation.inputFileSystem,
+            resolve(basePath, locale),
+          ),
         });
       }
     }
@@ -588,7 +595,10 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
         path: manifest.source.location.npm.iconPath,
 
         // The icon is expected to be an SVG file, so we read it as UTF-8.
-        value: await this.#readFile(compilation, resolve(basePath, iconPath)),
+        value: await readWebpackFile(
+          compilation.inputFileSystem,
+          resolve(basePath, iconPath),
+        ),
       });
     }
 
@@ -598,40 +608,5 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
       files,
       ...this.#options.preinstalledOptions,
     };
-  }
-
-  /**
-   * Read a file from the compilation's input file system as UTF-8.
-   *
-   * This function doesn't use `promisify`, since it doesn't seem to infer the
-   * correct type when providing an encoding. We also can't use `readFileSync`,
-   * because it isn't guaranteed to be available on all file systems.
-   *
-   * @param compilation - The Webpack compilation.
-   * @param path - The path to the file.
-   * @returns The file contents.
-   */
-  async #readFile(compilation: Compilation, path: string) {
-    return new Promise<string>((resolvePromise, rejectPromise) => {
-      compilation.inputFileSystem.readFile(
-        path,
-        'utf-8',
-        (readFileError, data) => {
-          if (readFileError) {
-            rejectPromise(readFileError);
-            return;
-          }
-
-          if (!data) {
-            rejectPromise(
-              new Error(`File at path "${path}" is empty or undefined.`),
-            );
-            return;
-          }
-
-          resolvePromise(data);
-        },
-      );
-    });
   }
 }
