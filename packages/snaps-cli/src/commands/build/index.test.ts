@@ -39,9 +39,7 @@ describe('build command', () => {
           path: expect.stringContaining('custom.json'),
         }),
       }),
-      {
-        port: undefined,
-      },
+      { analyze: undefined, preinstalled: undefined },
     );
   });
 
