@@ -1,9 +1,9 @@
-import { resolve } from 'path';
 import type yargs from 'yargs';
 
 import { watchHandler } from './watch';
 import builders from '../../builders';
 import type { YargsArgs } from '../../types/yargs';
+import { getConfigWithManifest } from '../../utils';
 
 const command = {
   command: ['watch', 'w'],
@@ -12,19 +12,12 @@ const command = {
     yarg.option('port', builders.port).option('manifest', builders.manifest);
   },
   handler: async (argv: YargsArgs) => {
-    const configWithManifest = argv.manifest
-      ? {
-          ...argv.context.config,
-          manifest: {
-            ...argv.context.config.manifest,
-            path: resolve(process.cwd(), argv.manifest),
-          },
-        }
-      : argv.context.config;
-
-    return await watchHandler(configWithManifest, {
-      port: argv.port,
-    });
+    return await watchHandler(
+      getConfigWithManifest(argv.context.config, argv.manifest),
+      {
+        port: argv.port,
+      },
+    );
   },
 };
 

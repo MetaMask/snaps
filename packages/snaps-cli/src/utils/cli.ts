@@ -1,4 +1,6 @@
-import path from 'path';
+import path, { resolve } from 'path';
+
+import type { ProcessedConfig } from '../config';
 
 export const CONFIG_FILE = 'snap.config.js';
 export const TS_CONFIG_FILE = 'snap.config.ts';
@@ -45,4 +47,28 @@ export function sanitizeInputs(argv: Record<string, unknown>) {
  */
 export function trimPathString(pathString: string): string {
   return pathString.replace(/^[./]+|[./]+$/gu, '');
+}
+
+/**
+ * Get a config object with an updated manifest path if provided.
+ *
+ * @param config - The processed config object.
+ * @param manifestPath - The manifest path.
+ * @returns The processed config object with the updated manifest path.
+ */
+export function getConfigWithManifest(
+  config: ProcessedConfig,
+  manifestPath?: string,
+): ProcessedConfig {
+  if (manifestPath) {
+    return {
+      ...config,
+      manifest: {
+        ...config.manifest,
+        path: resolve(process.cwd(), manifestPath),
+      },
+    };
+  }
+
+  return config;
 }
