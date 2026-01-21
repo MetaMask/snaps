@@ -38,6 +38,9 @@ export async function sandboxHandler(
   await executeSteps(steps, {
     build,
     config,
-    options: {},
+    options: {
+      analyze: false,
+      preinstalled: false,
+    },
   });
 }

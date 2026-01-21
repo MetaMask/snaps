@@ -181,6 +181,106 @@ describe('build', () => {
     `);
   });
 
+  it('builds a preinstalled bundle using Webpack', async () => {
+    jest.spyOn(process, 'cwd').mockReturnValue('/snap');
+
+    const warn = jest.spyOn(console, 'warn').mockImplementation();
+    const log = jest.spyOn(console, 'log').mockImplementation();
+
+    const config = getMockConfig({
+      input: '/snap/input.js',
+      output: {
+        path: './',
+        filename: 'output.js',
+      },
+      evaluate: false,
+      manifest: {
+        path: '/snap/snap.manifest.json',
+      },
+      customizeWebpackConfig: (webpackConfig: Configuration) => {
+        delete webpackConfig.module?.rules;
+        return webpackConfig;
+      },
+    });
+
+    await build(config, {
+      preinstalled: true,
+      preinstalledOptions: {
+        hidden: true,
+        hideSnapBranding: false,
+        removable: true,
+      },
+    });
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringMatching(
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+      ),
+    );
+
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining('Creating preinstalled Snap bundle.'),
+    );
+
+    const output = await fs.readFile('/snap/output.js', 'utf8');
+    expect(output).toMatchInlineSnapshot(
+      `"(()=>{var r={157:r=>{r.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}}},e={};var o=function o(t){var s=e[t];if(void 0!==s)return s.exports;var n=e[t]={exports:{}};return r[t](n,n.exports,o),n.exports}(157);module.exports=o})();"`,
+    );
+
+    const preinstalledBundle = await fs.readFile(
+      '/snap/preinstalled-snap.json',
+      'utf8',
+    );
+
+    expect(JSON.parse(preinstalledBundle)).toMatchInlineSnapshot(`
+      {
+        "files": [
+          {
+            "path": "dist/bundle.js",
+            "value": "(()=>{var r={157:r=>{r.exports.onRpcRequest=({request:r})=>{console.log("Hello, world!");const{method:e,id:o}=r;return e+o}}},e={};var o=function o(t){var s=e[t];if(void 0!==s)return s.exports;var n=e[t]={exports:{}};return r[t](n,n.exports,o),n.exports}(157);module.exports=o})();",
+          },
+          {
+            "path": "images/icon.svg",
+            "value": "<svg />",
+          },
+        ],
+        "hidden": true,
+        "hideSnapBranding": false,
+        "manifest": {
+          "description": "The test example snap!",
+          "initialPermissions": {
+            "endowment:rpc": {
+              "dapps": false,
+              "snaps": true,
+            },
+            "snap_dialog": {},
+          },
+          "manifestVersion": "0.1",
+          "platformVersion": "10.3.0",
+          "proposedName": "@metamask/example-snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/example-snap.git",
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "iconPath": "images/icon.svg",
+                "packageName": "@metamask/example-snap",
+                "registry": "https://registry.npmjs.org",
+              },
+            },
+            "shasum": "Epw19dYZycnk/gHOyZfra1nZHwx8+pFs9tgOxzvXoUg=",
+          },
+          "version": "1.0.0",
+        },
+        "removable": true,
+        "snapId": "npm:@metamask/example-snap",
+      }
+    `);
+  });
+
   it('rejects if the compiler has an error', async () => {
     const error = new Error('Compiler error.');
     const mock = getCompiler as jest.MockedFunction<typeof getCompiler>;

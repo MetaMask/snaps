@@ -33,6 +33,39 @@ describe('buildHandler', () => {
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
       evaluate: true,
+      preinstalled: false,
+      preinstalledOptions: expect.any(Object),
+      spinner: expect.any(Object),
+    });
+  });
+
+  it('builds a preinstalled Snap', async () => {
+    await fs.promises.writeFile('/input.js', DEFAULT_SNAP_BUNDLE);
+
+    jest.spyOn(console, 'log').mockImplementation();
+    const config = getMockConfig({
+      input: '/input.js',
+      output: {
+        path: '/foo',
+        filename: 'output.js',
+      },
+    });
+
+    await buildHandler(config, {
+      analyze: false,
+      preinstalled: true,
+    });
+
+    expect(process.exitCode).not.toBe(1);
+    expect(build).toHaveBeenCalledWith(config, {
+      analyze: false,
+      evaluate: true,
+      preinstalled: true,
+      preinstalledOptions: {
+        hidden: false,
+        hideSnapBranding: false,
+        removable: false,
+      },
       spinner: expect.any(Object),
     });
   });
@@ -68,12 +101,17 @@ describe('buildHandler', () => {
 
     jest.mocked(build).mockResolvedValueOnce(compiler);
 
-    await buildHandler(config, true);
+    await buildHandler(config, {
+      analyze: true,
+      preinstalled: false,
+    });
 
     expect(process.exitCode).not.toBe(1);
     expect(build).toHaveBeenCalledWith(config, {
       analyze: true,
       evaluate: true,
+      preinstalled: false,
+      preinstalledOptions: expect.any(Object),
       spinner: expect.any(Object),
     });
 
@@ -103,6 +141,8 @@ describe('buildHandler', () => {
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
       evaluate: false,
+      preinstalled: false,
+      preinstalledOptions: expect.any(Object),
       spinner: expect.any(Object),
     });
   });

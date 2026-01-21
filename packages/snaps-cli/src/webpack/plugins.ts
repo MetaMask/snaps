@@ -2,7 +2,6 @@ import type { SnapManifest } from '@metamask/snaps-utils';
 import { loadManifest } from '@metamask/snaps-utils/node';
 import { assert, hasProperty, isObject } from '@metamask/utils';
 import { bold, dim, red, yellow } from 'chalk';
-import { readFile } from 'fs/promises';
 import { isBuiltin } from 'module';
 import type { Ora } from 'ora';
 import { dirname, resolve } from 'path';
@@ -479,6 +478,11 @@ export type PreinstalledSnapsBundlePluginOptions = {
   manifestPath: string;
 
   /**
+   * The name of the output file.
+   */
+  outputName: string;
+
+  /**
    * The preinstalled options from the Webpack configuration.
    */
   preinstalledOptions: WebpackOptions['preinstalledOptions'];
@@ -519,7 +523,7 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
         async () => {
           info('Creating preinstalled Snap bundle.', this.#spinner);
 
-          const asset = compilation.getAsset('bundle.js');
+          const asset = compilation.getAsset(this.#options.outputName);
           if (!asset) {
             throw new Error(
               'Bundle asset not found. Make sure to build the project first.',
@@ -528,7 +532,7 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
 
           const bundleSource = asset.source.source().toString();
           const preinstalledSnapBundleJson = JSON.stringify(
-            await this.#createPreinstalledBundle(bundleSource),
+            await this.#createPreinstalledBundle(compilation, bundleSource),
             null,
             2,
           );
@@ -549,10 +553,14 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
    *
    * Custom auxiliary files are not currently supported in preinstalled Snaps.
    *
+   * @param compilation - The Webpack compilation.
    * @param bundleSource - The source code of the bundle.
    * @returns The preinstalled bundle object.
    */
-  async #createPreinstalledBundle(bundleSource: string) {
+  async #createPreinstalledBundle(
+    compilation: Compilation,
+    bundleSource: string,
+  ) {
     const { mergedManifest } = await loadManifest(this.#options.manifestPath);
     const manifest = mergedManifest as SnapManifest;
 
@@ -569,7 +577,7 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
       for (const locale of manifest.source.locales) {
         files.push({
           path: locale,
-          value: await readFile(resolve(basePath, locale), 'utf-8'),
+          value: await this.#readFile(compilation, resolve(basePath, locale)),
         });
       }
     }
@@ -580,7 +588,7 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
         path: manifest.source.location.npm.iconPath,
 
         // The icon is expected to be an SVG file, so we read it as UTF-8.
-        value: await readFile(resolve(basePath, iconPath), 'utf-8'),
+        value: await this.#readFile(compilation, resolve(basePath, iconPath)),
       });
     }
 
@@ -590,5 +598,40 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
       files,
       ...this.#options.preinstalledOptions,
     };
+  }
+
+  /**
+   * Read a file from the compilation's input file system as UTF-8.
+   *
+   * This function doesn't use `promisify`, since it doesn't seem to infer the
+   * correct type when providing an encoding. We also can't use `readFileSync`,
+   * because it isn't guaranteed to be available on all file systems.
+   *
+   * @param compilation - The Webpack compilation.
+   * @param path - The path to the file.
+   * @returns The file contents.
+   */
+  async #readFile(compilation: Compilation, path: string) {
+    return new Promise<string>((resolvePromise, rejectPromise) => {
+      compilation.inputFileSystem.readFile(
+        path,
+        'utf-8',
+        (readFileError, data) => {
+          if (readFileError) {
+            rejectPromise(readFileError);
+            return;
+          }
+
+          if (!data) {
+            rejectPromise(
+              new Error(`File at path "${path}" is empty or undefined.`),
+            );
+            return;
+          }
+
+          resolvePromise(data);
+        },
+      );
+    });
   }
 }

@@ -34,4 +34,31 @@ describe('mm-snap build', () => {
       expect(runner.exitCode).toBe(0);
     },
   );
+
+  it('builds a preinstalled Snap using "mm-snap build --preinstalled"', async () => {
+    runner = getCommandRunner('build', ['--preinstalled']);
+    await runner.wait();
+
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Checking the input file\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Building the Snap bundle\./u),
+    );
+    expect(runner.stdout).toContainEqual(
+      expect.stringMatching(/Creating preinstalled Snap bundle\./u),
+    );
+
+    expect(runner.stderr).toContainEqual(
+      expect.stringMatching(
+        /Compiled \d+ files? in \d+ms with \d+ warnings?\./u,
+      ),
+    );
+    expect(runner.stderr).toContainEqual(
+      expect.stringContaining(
+        'No icon found in the Snap manifest. It is recommended to include an icon for the Snap. See https://docs.metamask.io/snaps/how-to/design-a-snap/#guidelines-at-a-glance for more information.',
+      ),
+    );
+    expect(runner.exitCode).toBe(0);
+  });
 });

@@ -30,6 +30,8 @@ describe('sandboxHandler', () => {
     expect(build).toHaveBeenCalledWith(config, {
       analyze: false,
       evaluate: true,
+      preinstalled: false,
+      preinstalledOptions: expect.any(Object),
       spinner: expect.any(Object),
     });
 

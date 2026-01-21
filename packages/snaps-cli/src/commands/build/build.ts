@@ -96,7 +96,10 @@ export const steps: Steps<BuildContext> = [
  */
 export async function buildHandler(
   config: ProcessedConfig,
-  options: BuildOptions = {},
+  options: BuildOptions = {
+    analyze: false,
+    preinstalled: false,
+  },
 ): Promise<void> {
   return await executeSteps(steps, {
     build: true,

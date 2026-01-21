@@ -385,6 +385,7 @@ export async function getDefaultConfiguration(
         new PreinstalledSnapsBundlePlugin(
           {
             manifestPath: config.manifest.path,
+            outputName: config.output.filename,
             preinstalledOptions: options.preinstalledOptions,
           },
           options.spinner,
