@@ -25,7 +25,6 @@
   "scripts": {
     "build": "mm-snap build --preinstalled",
     "build:clean": "yarn clean && yarn build",
-    "build:manifest": "tsx scripts/generate-json.mts",
     "changelog:update": "../../../../scripts/update-changelog.sh @metamask/preinstalled-example-snap",
     "changelog:validate": "../../../../scripts/validate-changelog.sh @metamask/preinstalled-example-snap",
     "clean": "rimraf \"dist\"",
@@ -62,7 +61,6 @@
     "jest-silent-reporter": "^0.6.0",
     "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
-    "tsx": "^4.20.3",
     "typescript": "~5.3.3"
   },
   "engines": {
