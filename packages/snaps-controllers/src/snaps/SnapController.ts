@@ -949,6 +949,10 @@ export class SnapController extends BaseController<
 
   readonly #ensureOnboardingComplete: () => Promise<void>;
 
+  // A promise that resolves when the controller has finished setting up.
+  // This is used to ensure that the controller is ready to be used.
+  // It is resolved when the controller has finished setting up and the platform is ready.
+  // It is rejected if there is an error during setup.
   readonly #controllerSetup = createDeferredPromise();
 
   constructor({
@@ -4733,19 +4737,25 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Retrieve the source code for a snap from storage.
+   * Retrieve the source code for a Snap from storage.
    *
-   * @param snapId - The snap ID.
-   * @returns The source code for the snap.
+   * @param snapId - The Snap ID.
+   * @returns The source code for the Snap.
    */
   async #getSourceCode(snapId: SnapId): Promise<string> {
     const storage = await this.#getStorage(snapId);
 
-    assert(storage?.sourceCode, `Source code for snap "${snapId}" not found.`);
+    assert(storage?.sourceCode, `Source code for Snap "${snapId}" not found.`);
 
-    return storage?.sourceCode;
+    return storage.sourceCode;
   }
 
+  /**
+   * Retrieve the storage for a Snap from the StorageService.
+   *
+   * @param snapId - The Snap ID.
+   * @returns The storage for the Snap.
+   */
   async #getStorage(snapId: SnapId): Promise<StorageServiceSnapData | null> {
     const { result, error } = await this.messenger.call(
       'StorageService:getItem',
@@ -4759,12 +4769,12 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Store the source code for a snap in storage.
+   * Store the source code for a Snap in storage.
    * For now we call the StorageService with just the source code
    * since that's all we store.
    *
-   * @param snapId - The snap ID.
-   * @param sourceCode - The source code for the snap.
+   * @param snapId - The Snap ID.
+   * @param sourceCode - The source code for the Snap.
    */
   async #setSourceCode(snapId: SnapId, sourceCode: string): Promise<void> {
     await this.messenger.call('StorageService:setItem', this.name, snapId, {
@@ -4773,18 +4783,18 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Remove the source code for a snap from storage.
+   * Remove the source code for a Snap from storage.
    * Since we only store source code, this effectively
-   * removes all data for the snap for now.
+   * removes all data for the Snap for now.
    *
-   * @param snapId - The snap ID.
+   * @param snapId - The Snap ID.
    */
   async #removeSourceCode(snapId: SnapId): Promise<void> {
     await this.messenger.call('StorageService:removeItem', this.name, snapId);
   }
 
   /**
-   * Clear all snap data from the storage service.
+   * Clear all Snap data from the StorageService.
    */
   async #clearStorageService(): Promise<void> {
     await this.messenger.call('StorageService:clear', this.name);

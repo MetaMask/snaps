@@ -154,10 +154,13 @@ const OTHER_ENCRYPTION_KEY =
   '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
 
 describe('SnapController', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     fetchMock.mockImplementation(async () => {
       throw new AssertionError({ message: 'Unmocked access to internet.' });
     });
+
+    // Hydrate the storage service with the default snap data.
+    await hydrateStorageService();
   });
 
   it('creates a snap controller and execution service', async () => {
@@ -169,8 +172,6 @@ describe('SnapController', () => {
   });
 
   it('adds a snap and uses its JSON-RPC api with a NodeThreadExecutionService', async () => {
-    await hydrateStorageService();
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         state: {
@@ -205,8 +206,6 @@ describe('SnapController', () => {
       getNodeEESMessenger(rootMessenger),
     ) as unknown as NodeThreadExecutionService;
 
-    await hydrateStorageService();
-
     const [snapController] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         rootMessenger,
@@ -239,8 +238,6 @@ describe('SnapController', () => {
   it('passes endowments to a snap when executing it', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -293,8 +290,6 @@ describe('SnapController', () => {
   it('errors if attempting to start a snap that was already started', async () => {
     const messenger = getSnapControllerMessenger();
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -330,8 +325,6 @@ describe('SnapController', () => {
       },
     });
 
-    await hydrateStorageService();
-
     const { rootMessenger } = options;
     const [snapController, service] = getSnapControllerWithEES(options);
 
@@ -358,8 +351,6 @@ describe('SnapController', () => {
   });
 
   it('adds a snap and uses its JSON-RPC API and then get stopped from idling too long', async () => {
-    await hydrateStorageService();
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 10,
@@ -395,8 +386,6 @@ describe('SnapController', () => {
 
   it('terminates a snap even if connection to worker has failed', async () => {
     const rootMessenger = getControllerMessenger();
-
-    await hydrateStorageService();
 
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
@@ -448,8 +437,6 @@ describe('SnapController', () => {
   });
 
   it(`reads a snap's status after adding it`, async () => {
-    await hydrateStorageService();
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
@@ -473,8 +460,6 @@ describe('SnapController', () => {
   });
 
   it('adds a snap, stops it, and starts it again on-demand', async () => {
-    await hydrateStorageService();
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
@@ -566,8 +551,6 @@ describe('SnapController', () => {
       () => ({}),
     );
 
-    await hydrateStorageService();
-
     const initialConnections = {
       'npm:filsnap': {},
       'https://snaps.metamask.io': {},
@@ -650,8 +633,6 @@ describe('SnapController', () => {
           : {},
     );
 
-    await hydrateStorageService();
-
     const initialConnections = {
       'npm:filsnap': {},
       'https://snaps.metamask.io': {},
@@ -730,8 +711,6 @@ describe('SnapController', () => {
       'PermissionController:getPermissions',
       () => ({}),
     );
-
-    await hydrateStorageService();
 
     const initialConnections = {
       'npm:filsnap': {},
@@ -1025,8 +1004,6 @@ describe('SnapController', () => {
   });
 
   it('throws an error if the platform is disabled during handleRequest', async () => {
-    await hydrateStorageService();
-
     const controller = getSnapController(
       getSnapControllerOptions({
         getFeatureFlags: () => ({ disableSnaps: true }),
@@ -1236,8 +1213,6 @@ describe('SnapController', () => {
   it('reuses an already installed snap if it satisfies the requested SemVer range', async () => {
     const messenger = getSnapControllerMessenger();
 
-    await hydrateStorageService();
-
     const controller = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -1379,8 +1354,6 @@ describe('SnapController', () => {
   });
 
   it('adds a snap, disable/enables it, and still gets a response from an RPC method', async () => {
-    await hydrateStorageService();
-
     const [snapController, service] = getSnapControllerWithEES(
       getSnapControllerWithEESOptions({
         idleTimeCheckInterval: 1000,
@@ -1477,8 +1450,6 @@ describe('SnapController', () => {
       },
     });
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
@@ -1528,8 +1499,6 @@ describe('SnapController', () => {
       },
     });
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
 
@@ -1554,8 +1523,6 @@ describe('SnapController', () => {
         snaps: getPersistedSnapsState(getPersistedSnapObject()),
       },
     });
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(options);
     const snap = snapController.getExpect(MOCK_SNAP_ID);
@@ -2106,8 +2073,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -2138,8 +2103,6 @@ describe('SnapController', () => {
 
   it('removes a snap that is stopped without errors', async () => {
     const rootMessenger = getControllerMessenger();
-
-    await hydrateStorageService();
 
     const options = getSnapControllerWithEESOptions({
       rootMessenger,
@@ -2207,8 +2170,6 @@ describe('SnapController', () => {
   it('clears encrypted state of Snaps when the client is locked', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const state = { myVariable: 1 };
 
@@ -2291,8 +2252,6 @@ describe('SnapController', () => {
         const rootMessenger = getControllerMessenger();
         const messenger = getSnapControllerMessenger(rootMessenger);
 
-        await hydrateStorageService();
-
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
@@ -2329,8 +2288,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2365,8 +2322,6 @@ describe('SnapController', () => {
     it('allows MetaMask to send a JSON-RPC request', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2416,8 +2371,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2465,8 +2418,6 @@ describe('SnapController', () => {
     it('allows a website origin if it is in the `allowedOrigins` list', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2516,8 +2467,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2565,8 +2514,6 @@ describe('SnapController', () => {
     it('allows a website origin if `dapps` is `true`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2617,8 +2564,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2666,8 +2611,6 @@ describe('SnapController', () => {
     it('allows a Snap origin if `snaps` is `true`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2731,8 +2674,6 @@ describe('SnapController', () => {
         const rootMessenger = getControllerMessenger();
         const messenger = getSnapControllerMessenger(rootMessenger);
 
-        await hydrateStorageService();
-
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
@@ -2787,8 +2728,6 @@ describe('SnapController', () => {
       const { promise, resolve } = createDeferredPromise();
       const ensureOnboardingComplete = jest.fn().mockReturnValue(promise);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2834,8 +2773,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2877,8 +2814,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -2919,8 +2854,6 @@ describe('SnapController', () => {
     it('throws if the website origin is not in the `allowedOrigins` list for keyring requests', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -2971,8 +2904,6 @@ describe('SnapController', () => {
     it('injects context into onUserInput', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -3046,8 +2977,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3111,8 +3040,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3172,8 +3099,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3229,8 +3154,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3285,8 +3208,6 @@ describe('SnapController', () => {
     it("doesn't throw if onTransaction return value is an id", async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -3347,8 +3268,6 @@ describe('SnapController', () => {
     it('throws if onSignature handler returns a phishing link', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -3413,8 +3332,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3474,8 +3391,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -3530,8 +3445,6 @@ describe('SnapController', () => {
     it("doesn't throw if onSignature return value is valid", async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -3589,8 +3502,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -3644,8 +3555,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -3698,8 +3607,6 @@ describe('SnapController', () => {
   it('throws if onHomePage handler returns a phishing link', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -3764,8 +3671,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -3821,8 +3726,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -3877,8 +3780,6 @@ describe('SnapController', () => {
   it('throws if onSettingsPage handler returns a phishing link', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -3943,8 +3844,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -4000,8 +3899,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -4056,8 +3953,6 @@ describe('SnapController', () => {
   it('throws if onNameLookup returns an invalid value', async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -4116,8 +4011,6 @@ describe('SnapController', () => {
   it("doesn't throw if onNameLookup return value is valid", async () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
-
-    await hydrateStorageService();
 
     const snapController = getSnapController(
       getSnapControllerOptions({
@@ -4182,8 +4075,6 @@ describe('SnapController', () => {
     const rootMessenger = getControllerMessenger();
     const messenger = getSnapControllerMessenger(rootMessenger);
 
-    await hydrateStorageService();
-
     const snapController = getSnapController(
       getSnapControllerOptions({
         messenger,
@@ -4237,8 +4128,6 @@ describe('SnapController', () => {
     it('throws if `onAssetsLookup` handler returns an invalid response', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4302,8 +4191,6 @@ describe('SnapController', () => {
     it('filters out assets that are out of scope for `onAssetsLookup`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4381,8 +4268,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetsLookup` returns a valid response for fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4476,8 +4361,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetsLookup` returns a valid response for non-fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4602,8 +4485,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -4666,8 +4547,6 @@ describe('SnapController', () => {
     it('filters out assets that are out of scope for `onAssetsConversion`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4743,8 +4622,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetsConversion` returns a valid response', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4832,8 +4709,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -4896,8 +4771,6 @@ describe('SnapController', () => {
     it('filters out assets that are out of scope for `onAssetsMarketData`', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -4972,8 +4845,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetsMarketData` returns a valid response for fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -5060,8 +4931,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetsMarketData` returns a valid response for non-fungible assets', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -5188,8 +5057,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -5252,8 +5119,6 @@ describe('SnapController', () => {
     it('returns the value when `onAssetHistoricalPrice` returns a valid response', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -5333,8 +5198,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -5379,8 +5242,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -5424,8 +5285,6 @@ describe('SnapController', () => {
   describe('getRpcRequestHandler', () => {
     it('handlers populate the "jsonrpc" property if missing', async () => {
       const rootMessenger = getControllerMessenger();
-
-      await hydrateStorageService();
 
       const options = getSnapControllerWithEESOptions({
         rootMessenger,
@@ -5661,8 +5520,6 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
       const snapObject = getPersistedSnapObject();
       const truncatedSnap = getTruncatedSnap();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -6699,8 +6556,6 @@ describe('SnapController', () => {
         },
       );
 
-      await hydrateStorageService();
-
       const snapControllerOptions = getSnapControllerWithEESOptions({
         preinstalledSnaps,
         rootMessenger,
@@ -6776,8 +6631,6 @@ describe('SnapController', () => {
           ],
         },
       ];
-
-      await hydrateStorageService();
 
       const snapControllerOptions = getSnapControllerWithEESOptions({
         preinstalledSnaps,
@@ -7354,8 +7207,6 @@ describe('SnapController', () => {
 
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -7916,8 +7767,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -7998,8 +7847,6 @@ describe('SnapController', () => {
 
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -8281,8 +8128,6 @@ describe('SnapController', () => {
       });
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -8333,8 +8178,6 @@ describe('SnapController', () => {
         Promise.reject(new Error('foo')),
       );
       const detect = loopbackDetect(location);
-
-      await hydrateStorageService();
 
       const controller = getSnapController(
         getSnapControllerOptions({
@@ -8842,8 +8685,6 @@ describe('SnapController', () => {
       });
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -8887,8 +8728,6 @@ describe('SnapController', () => {
         manifest: manifest.result,
       });
 
-      await hydrateStorageService();
-
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -8922,8 +8761,6 @@ describe('SnapController', () => {
         manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const controller = getSnapController(
         getSnapControllerOptions({
@@ -9377,8 +9214,6 @@ describe('SnapController', () => {
       );
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -9428,8 +9263,6 @@ describe('SnapController', () => {
         manifest: manifest.result,
       });
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const controller = getSnapController(
         getSnapControllerOptions({
@@ -9562,8 +9395,6 @@ describe('SnapController', () => {
       const detectSnapLocation = loopbackDetect({
         manifest: manifest.result,
       });
-
-      await hydrateStorageService();
 
       const controller = getSnapController(
         getSnapControllerOptions({
@@ -9966,8 +9797,6 @@ describe('SnapController', () => {
         }),
       });
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -10174,8 +10003,6 @@ describe('SnapController', () => {
       });
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const controller = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -10200,8 +10027,6 @@ describe('SnapController', () => {
   describe('removeSnap', () => {
     it('will remove the "wallet_snap" permission from a subject that no longer has any permitted snaps', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -10313,8 +10138,6 @@ describe('SnapController', () => {
     it("will skip subjects that don't have the snap permission", async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -10374,8 +10197,6 @@ describe('SnapController', () => {
     it('removes snap state', async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -10402,8 +10223,6 @@ describe('SnapController', () => {
   describe('enableSnap', () => {
     it('enables a disabled snap', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -10438,8 +10257,6 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the specified snap is blocked', async () => {
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
@@ -10461,8 +10278,6 @@ describe('SnapController', () => {
   describe('disableSnap', () => {
     it('disables a snap', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -10486,8 +10301,6 @@ describe('SnapController', () => {
     });
 
     it('stops a running snap when disabling it', async () => {
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           state: {
@@ -10523,8 +10336,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11083,8 +10894,6 @@ describe('SnapController', () => {
 
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11150,6 +10959,26 @@ describe('SnapController', () => {
 
   describe('SnapController actions', () => {
     describe('SnapController:init', () => {
+      it('populates `isReady`', async () => {
+        const rootMessenger = getControllerMessenger();
+        const messenger = getSnapControllerMessenger(rootMessenger);
+
+        const snapController = getSnapController(
+          getSnapControllerOptions({ messenger }),
+          false,
+        );
+
+        expect(snapController.state.isReady).toBe(false);
+
+        messenger.call('SnapController:init');
+
+        await waitForControllerToBeReady(messenger);
+
+        expect(snapController.state.isReady).toBe(true);
+
+        snapController.destroy();
+      });
+
       it('calls `onStart` for all Snaps with the `endowment:lifecycle-hooks` permission', async () => {
         const rootMessenger = getControllerMessenger();
         const messenger = getSnapControllerMessenger(rootMessenger);
@@ -11266,8 +11095,6 @@ describe('SnapController', () => {
           },
         );
 
-        await hydrateStorageService();
-
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
@@ -11295,8 +11122,6 @@ describe('SnapController', () => {
       it('gets a snap', async () => {
         const messenger = getSnapControllerMessenger();
 
-        await hydrateStorageService();
-
         const snapController = getSnapController(
           getSnapControllerOptions({
             messenger,
@@ -11319,8 +11144,6 @@ describe('SnapController', () => {
     describe('SnapController:handleRequest', () => {
       it('handles a snap RPC request', async () => {
         const messenger = getSnapControllerMessenger();
-
-        await hydrateStorageService();
 
         const snapController = getSnapController(
           getSnapControllerOptions({
@@ -11354,8 +11177,6 @@ describe('SnapController', () => {
         const executionEnvironmentStub = new ExecutionEnvironmentStub(
           getNodeEESMessenger(rootMessenger),
         ) as unknown as NodeThreadExecutionService;
-
-        await hydrateStorageService();
 
         const [snapController] = getSnapControllerWithEES(
           getSnapControllerWithEESOptions({
@@ -11423,8 +11244,6 @@ describe('SnapController', () => {
           getNodeEESMessenger(rootMessenger),
         ) as unknown as NodeThreadExecutionService;
 
-        await hydrateStorageService();
-
         const [snapController] = getSnapControllerWithEES(
           getSnapControllerWithEESOptions({
             environmentEndowmentPermissions: ['endowment:cronjob'],
@@ -11466,8 +11285,6 @@ describe('SnapController', () => {
         const executionEnvironmentStub = new ExecutionEnvironmentStub(
           getNodeEESMessenger(rootMessenger),
         ) as unknown as NodeThreadExecutionService;
-
-        await hydrateStorageService();
 
         const [snapController] = getSnapControllerWithEES(
           getSnapControllerWithEESOptions({
@@ -11511,8 +11328,6 @@ describe('SnapController', () => {
           getNodeEESMessenger(rootMessenger),
         ) as unknown as NodeThreadExecutionService;
 
-        await hydrateStorageService();
-
         const [snapController] = getSnapControllerWithEES(
           getSnapControllerWithEESOptions({
             rootMessenger,
@@ -11549,8 +11364,6 @@ describe('SnapController', () => {
     it('handles a transaction insight request', async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11580,8 +11393,6 @@ describe('SnapController', () => {
     it('handles a signature insight request', async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11610,8 +11421,6 @@ describe('SnapController', () => {
 
     it('handles a name lookup request', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11662,8 +11471,6 @@ describe('SnapController', () => {
         DEFAULT_ENCRYPTION_KEY_DERIVATION_OPTIONS,
       );
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11706,8 +11513,6 @@ describe('SnapController', () => {
           params: { iterations: 10_000 },
         },
       );
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11847,8 +11652,6 @@ describe('SnapController', () => {
         ),
       );
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11872,8 +11675,6 @@ describe('SnapController', () => {
 
     it('throws an error if the state is corrupt', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -11905,8 +11706,6 @@ describe('SnapController', () => {
 
       const state = { foo: 'bar' };
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -11936,8 +11735,6 @@ describe('SnapController', () => {
 
     it(`returns null if the Snap has no state yet`, async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12014,8 +11811,6 @@ describe('SnapController', () => {
     it(`updates the snap's state`, async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12056,8 +11851,6 @@ describe('SnapController', () => {
 
     it(`updates the snap's unencrypted state`, async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12102,8 +11895,6 @@ describe('SnapController', () => {
           hmac(sha512, key, data),
         );
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12141,8 +11932,6 @@ describe('SnapController', () => {
 
       const encryptor = getSnapControllerEncryptor();
       const encryptWithKey = jest.spyOn(encryptor, 'encryptWithKey');
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12215,8 +12004,6 @@ describe('SnapController', () => {
 
       const errorValue = new Error('Failed to persist state.');
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12262,8 +12049,6 @@ describe('SnapController', () => {
     it('clears the state of a snap', async () => {
       const messenger = getSnapControllerMessenger();
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12291,8 +12076,6 @@ describe('SnapController', () => {
 
     it('clears the unencrypted state of a snap', async () => {
       const messenger = getSnapControllerMessenger();
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12323,8 +12106,6 @@ describe('SnapController', () => {
       const messenger = getSnapControllerMessenger();
 
       const errorValue = new Error('Failed to persist state.');
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12479,8 +12260,6 @@ describe('SnapController', () => {
         origin: MOCK_ORIGIN,
       });
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12512,8 +12291,6 @@ describe('SnapController', () => {
         id: MOCK_SNAP_ID,
         origin: MOCK_ORIGIN,
       });
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -12883,8 +12660,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -12953,8 +12728,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -13001,8 +12774,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -13040,8 +12811,6 @@ describe('SnapController', () => {
     it('calls the `onUpdate` lifecycle hook', async () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13112,8 +12881,6 @@ describe('SnapController', () => {
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -13159,8 +12926,6 @@ describe('SnapController', () => {
 
       const rootMessenger = getControllerMessenger();
       const messenger = getSnapControllerMessenger(rootMessenger);
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13243,8 +13008,6 @@ describe('SnapController', () => {
         platformVersion: '6.0.0' as SemVerVersion,
       });
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -13271,8 +13034,6 @@ describe('SnapController', () => {
       const manifest = getSnapManifest({
         platformVersion: '6.0.0' as SemVerVersion,
       });
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13301,8 +13062,6 @@ describe('SnapController', () => {
         platformVersion: '6.0.0' as SemVerVersion,
       });
 
-      await hydrateStorageService();
-
       const snapController = getSnapController(
         getSnapControllerOptions({
           messenger,
@@ -13328,8 +13087,6 @@ describe('SnapController', () => {
 
       const manifest = getSnapManifest();
       delete manifest.platformVersion;
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13384,8 +13141,6 @@ describe('SnapController', () => {
           [SnapEndowments.LifecycleHooks]: {},
         },
       });
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13476,8 +13231,6 @@ describe('SnapController', () => {
           [SnapEndowments.LifecycleHooks]: {},
         },
       });
-
-      await hydrateStorageService();
 
       const snapController = getSnapController(
         getSnapControllerOptions({
@@ -13579,8 +13332,6 @@ describe('SnapController', () => {
           path: 'src/foo.json',
           value: stringToBytes('{ "foo" : "bar" }'),
         });
-
-        await hydrateStorageService();
 
         const controller = getSnapController(
           getSnapControllerOptions({
@@ -13699,8 +13450,6 @@ describe('SnapController', () => {
       });
 
       it('does not persist snaps in the installing state', async () => {
-        await hydrateStorageService();
-
         const firstSnapController = getSnapController(
           getSnapControllerOptions({
             state: {
