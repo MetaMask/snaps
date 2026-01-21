@@ -412,6 +412,8 @@ export async function readWebpackFile(
         return;
       }
 
+      // Webpack's file system can return `undefined` according to its types,
+      // in which case we assume the file was not found.
       if (data === undefined) {
         rejectPromise(new Error(`File not found: "${path}".`));
         return;
