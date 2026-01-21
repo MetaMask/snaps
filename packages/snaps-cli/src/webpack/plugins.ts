@@ -518,7 +518,6 @@ export class PreinstalledSnapsBundlePlugin implements WebpackPluginInstance {
           // plugin runs after all other plugins have finished processing
           // assets.
           stage: Compilation.PROCESS_ASSETS_STAGE_REPORT,
-          additionalAssets: false,
         },
         async () => {
           info('Creating preinstalled Snap bundle.', this.#spinner);
