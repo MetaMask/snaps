@@ -100,7 +100,7 @@ export type StorageServiceSnapData = {
 
 export type PersistedSnap = Snap;
 
-export type StoredSnap = PersistedSnap & StorageServiceSnapData;
+export type StoredSnap = Snap & StorageServiceSnapData;
 
 /**
  * A Snap as it exists in {@link SnapController} state.
