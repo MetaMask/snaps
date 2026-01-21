@@ -1,4 +1,5 @@
 import { getMockConfig } from '@metamask/snaps-cli/test-utils';
+import yargs from 'yargs';
 
 import command from '.';
 import { buildHandler } from './build';
@@ -40,6 +41,24 @@ describe('build command', () => {
       }),
       {
         port: undefined,
+      },
+    );
+  });
+
+  it('throws if `--manifest` is used without `--preinstalled`', async () => {
+    expect.assertions(2);
+
+    const yarg = yargs();
+    command.builder(yarg);
+
+    yarg.parseSync(
+      ['mm-snap', 'build', '--manifest', 'path/to/manifest.json'],
+      {},
+      (error) => {
+        expect(error).toBeInstanceOf(Error);
+        expect(error?.message).toBe(
+          'The `--manifest` option requires the `--preinstalled` flag to be set.',
+        );
       },
     );
   });
