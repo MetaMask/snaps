@@ -63,10 +63,9 @@ export async function getCompiler({
  * minimal configuration that compiles the provided code.
  * @returns The compiled code.
  */
-export async function compile(options: CompileOptions): Promise<{
-  code: string;
-  stats: StatsCompilation;
-}> {
+export async function compile(
+  options: CompileOptions,
+): Promise<{ code: string; stats: StatsCompilation }> {
   const compiler = await getCompiler(options);
 
   return new Promise((resolve, reject) => {
