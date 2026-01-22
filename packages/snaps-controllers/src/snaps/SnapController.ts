@@ -1234,8 +1234,9 @@ export class SnapController extends BaseController<
    * actions.
    */
   #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
-      this.init(...args),
+    this.messenger.registerActionHandler(
+      `${controllerName}:init`,
+      async (...args) => this.init(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -1353,23 +1354,7 @@ export class SnapController extends BaseController<
    * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
    * runnable Snaps.
    */
-  init() {
-    // Handles the preinstalled snaps and populates the `isReady` state.
-    this.#handleControllerSetup().catch((error) => {
-      logWarning('Error during SnapController initialization.', error);
-    });
-
-    this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
-  }
-
-  /**
-   * Sets up the SnapController by handling preinstalled snaps.
-   * This method will resolve the controller setup promise when complete
-   * or reject the promise if there is an error.
-   *
-   * @throws If there is an error during setup.
-   */
-  async #handleControllerSetup() {
+  async init() {
     try {
       if (this.#preinstalledSnaps) {
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
@@ -1379,10 +1364,11 @@ export class SnapController extends BaseController<
 
       // Populate the `isReady` state.
       await this.#ensureCanUsePlatform();
+
+      this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
     } catch (error) {
       this.#controllerSetup.reject(error);
-
-      throw error;
+      logWarning('Error during SnapController initialization.', error);
     }
   }
 

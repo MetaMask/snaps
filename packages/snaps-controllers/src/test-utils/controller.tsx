@@ -68,7 +68,6 @@ import type {
   PersistedSnapControllerState,
   SnapControllerActions,
   SnapControllerEvents,
-  SnapControllerGetStateAction,
   SnapControllerStateChangeEvent,
   SnapsRegistryActions,
   SnapsRegistryEvents,
@@ -598,6 +597,7 @@ export const getSnapControllerOptions = (
     snaps: {},
     snapStates: {},
     unencryptedSnapStates: {},
+    isReady: false,
     ...options.state,
   };
   return options;
@@ -631,13 +631,13 @@ export const getSnapControllerWithEESOptions = ({
   };
 };
 
-export const getSnapController = (
+export const getSnapController = async (
   options = getSnapControllerOptions(),
   init = true,
 ) => {
   const controller = new SnapController(options);
   if (init) {
-    controller.init();
+    await controller.init();
   }
   return controller;
 };
@@ -654,7 +654,7 @@ export const hydrateStorageService = async (
   );
 };
 
-export const getSnapControllerWithEES = (
+export const getSnapControllerWithEES = async (
   options = getSnapControllerWithEESOptions(),
   service?: ReturnType<typeof getNodeEES>,
   init = true,
@@ -666,7 +666,7 @@ export const getSnapControllerWithEES = (
   const controller = new SnapController(options);
 
   if (init) {
-    controller.init();
+    await controller.init();
   }
 
   return [controller, _service] as const;
@@ -939,35 +939,6 @@ export async function waitForStateChange(
   return new Promise<void>((resolve) => {
     messenger.subscribe('SnapController:stateChange', () => {
       resolve();
-    });
-  });
-}
-
-/**
- * Wait for the controller to be ready by listening for the state change event.
- *
- * @param messenger - The messenger to listen to.
- * @returns A promise that resolves when the controller is ready.
- */
-export async function waitForControllerToBeReady(
-  messenger: Messenger<
-    'SnapController',
-    SnapControllerGetStateAction,
-    SnapControllerStateChangeEvent
-  >,
-) {
-  return new Promise<void>((resolve) => {
-    const state = messenger.call('SnapController:getState');
-
-    if (state.isReady) {
-      resolve();
-      return;
-    }
-
-    messenger.subscribe('SnapController:stateChange', (snapControllerState) => {
-      if (snapControllerState.isReady) {
-        resolve();
-      }
     });
   });
 }
