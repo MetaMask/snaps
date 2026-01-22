@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-cli",
-  "version": "8.3.0",
+  "version": "8.4.0",
   "description": "A CLI for developing MetaMask Snaps",
   "keywords": [
     "MetaMask",

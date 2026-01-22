@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.2.0]
+
 ### Uncategorized
 
 - chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
@@ -553,7 +555,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...HEAD
+[14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...@metamask/snaps-rpc-methods@14.2.0
 [14.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.0...@metamask/snaps-rpc-methods@14.1.1
 [14.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.0.0...@metamask/snaps-rpc-methods@14.1.0
 [14.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.3...@metamask/snaps-rpc-methods@14.0.0

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0]
+
 ### Uncategorized
 
 - chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
@@ -268,7 +270,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.9.0...HEAD
+[3.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.8.0...@metamask/snaps-simulation@3.9.0
 [3.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.7.0...@metamask/snaps-simulation@3.8.0
 [3.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.6.0...@metamask/snaps-simulation@3.7.0
 [3.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.1...@metamask/snaps-simulation@3.6.0

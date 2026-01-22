@@ -7,17 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- release: `137.0.0` ([#3780](https://github.com/MetaMask/snaps/pull/3780))
-- release: `134.0.0` ([#3761](https://github.com/MetaMask/snaps/pull/3761))
-- release: `131.0.0` ([#3730](https://github.com/MetaMask/snaps/pull/3730))
-- release: `126.0.0` ([#3662](https://github.com/MetaMask/snaps/pull/3662))
-- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
-- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
-
 ## [2.3.0]
 
 ### Added
