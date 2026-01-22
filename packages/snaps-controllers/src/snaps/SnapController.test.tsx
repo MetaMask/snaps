@@ -10712,13 +10712,13 @@ describe('SnapController', () => {
       expect(updatedSnap.preinstalled).toBe(true);
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        10,
+        9,
         'PermissionController:revokePermissions',
         { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        11,
+        10,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
