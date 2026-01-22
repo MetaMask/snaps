@@ -128,6 +128,7 @@ import {
   MOCK_WALLET_SNAP_PERMISSION,
   MockSnapsRegistry,
   sleep,
+  storageAdapter,
   waitForControllerToBeReady,
   waitForStateChange,
 } from '../test-utils';
@@ -161,6 +162,11 @@ describe('SnapController', () => {
 
     // Hydrate the storage service with the default snap data.
     await hydrateStorageService();
+  });
+
+  afterEach(async () => {
+    // Clear the storage service after each test.
+    await storageAdapter.clear(controllerName);
   });
 
   it('creates a snap controller and execution service', async () => {
@@ -6962,7 +6968,7 @@ describe('SnapController', () => {
 
       // We expect two calls as we mock the PermissionController to always return an empty set.
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6979,7 +6985,7 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        8,
+        9,
         'SubjectMetadataController:addSubjectMetadata',
         {
           subjectType: SubjectType.Snap,
@@ -6991,7 +6997,7 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        9,
+        10,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -7053,7 +7059,7 @@ describe('SnapController', () => {
 
       // We expect two calls as we mock the PermissionController to always return an empty set.
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -7070,7 +7076,7 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        8,
+        9,
         'SubjectMetadataController:addSubjectMetadata',
         {
           subjectType: SubjectType.Snap,
@@ -7082,7 +7088,7 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
-        9,
+        10,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -8195,7 +8201,7 @@ describe('SnapController', () => {
         }),
       ).rejects.toThrow('foo');
 
-      expect(messenger.call).toHaveBeenCalledTimes(4);
+      expect(messenger.call).toHaveBeenCalledTimes(3);
       expect(detect).toHaveBeenCalledTimes(1);
       expect(detect).toHaveBeenCalledWith(
         MOCK_SNAP_ID,
@@ -9449,7 +9455,7 @@ describe('SnapController', () => {
       const newSnap = controller.get(MOCK_SNAP_ID);
 
       expect(newSnap?.version).toBe('1.0.0');
-      expect(callActionSpy).toHaveBeenCalledTimes(7);
+      expect(callActionSpy).toHaveBeenCalledTimes(6);
 
       expect(callActionSpy).toHaveBeenNthCalledWith(
         2,
@@ -13164,26 +13170,26 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         SnapEndowments.LifecycleHooks,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        9,
         'PermissionController:getPermissions',
         MOCK_SNAP_ID,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        9,
+        10,
         'ExecutionService:executeSnap',
         expect.any(Object),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        11,
+        12,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
@@ -13254,26 +13260,26 @@ describe('SnapController', () => {
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'PermissionController:hasPermission',
         MOCK_SNAP_ID,
         SnapEndowments.LifecycleHooks,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        6,
+        9,
         'PermissionController:getPermissions',
         MOCK_SNAP_ID,
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        9,
+        10,
         'ExecutionService:executeSnap',
         expect.any(Object),
       );
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        11,
+        12,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
