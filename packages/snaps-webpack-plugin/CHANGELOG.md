@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
+- refactor: Refactor Webpack plugin for readability and hook into `processAssets` ([#3806](https://github.com/MetaMask/snaps/pull/3806))
+- feat!: Add `--manifest` option for custom manifest to dev server ([#3793](https://github.com/MetaMask/snaps/pull/3793))
+- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
+- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+
 ## [5.1.1]
 
 ### Fixed

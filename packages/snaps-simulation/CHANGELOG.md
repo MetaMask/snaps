@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
+- feat!: Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+- chore: Bump @metamask/json-rpc-engine from 10.2.0 to 10.2.1 ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+
 ## [3.8.0]
 
 ### Added

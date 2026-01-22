@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
 ## [3.3.0]
 
 ### Added
