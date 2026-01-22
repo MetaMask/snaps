@@ -3509,11 +3509,14 @@ export class SnapController extends BaseController<
     // checking for isUpdate here as this function is also used in
     // the install flow, we do not care to create snapshots for installs
     if (isUpdate) {
-      const previousSourceCode = await this.#getSourceCode(snapId);
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
 
       if (rollbackSnapshot !== undefined) {
+        // Save statePatches first, before any async operations that might throw.
+        // This ensures rollback can revert state changes even if subsequent operations fail.
         rollbackSnapshot.statePatches = inversePatches;
+
+        const previousSourceCode = await this.#getSourceCode(snapId);
         rollbackSnapshot.previousSourceCode = previousSourceCode;
       }
     }
