@@ -68,6 +68,7 @@ import type {
   PersistedSnapControllerState,
   SnapControllerActions,
   SnapControllerEvents,
+  SnapControllerGetStateAction,
   SnapControllerStateChangeEvent,
   SnapsRegistryActions,
   SnapsRegistryEvents,
@@ -949,9 +950,20 @@ export async function waitForStateChange(
  * @returns A promise that resolves when the controller is ready.
  */
 export async function waitForControllerToBeReady(
-  messenger: Messenger<'SnapController', any, SnapControllerStateChangeEvent>,
+  messenger: Messenger<
+    'SnapController',
+    SnapControllerGetStateAction,
+    SnapControllerStateChangeEvent
+  >,
 ) {
   return new Promise<void>((resolve) => {
+    const state = messenger.call('SnapController:getState');
+
+    if (state.isReady) {
+      resolve();
+      return;
+    }
+
     messenger.subscribe('SnapController:stateChange', (snapControllerState) => {
       if (snapControllerState.isReady) {
         resolve();

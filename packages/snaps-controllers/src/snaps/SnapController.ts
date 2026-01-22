@@ -1234,9 +1234,8 @@ export class SnapController extends BaseController<
    * actions.
    */
   #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(
-      `${controllerName}:init`,
-      async (...args) => this.init(...args),
+    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
+      this.init(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -1355,7 +1354,8 @@ export class SnapController extends BaseController<
    * runnable Snaps.
    */
   init() {
-    this.#setup().catch((error) => {
+    // Handles the preinstalled snaps and populates the `isReady` state.
+    this.#handleControllerSetup().catch((error) => {
       logWarning('Error during SnapController initialization.', error);
     });
 
@@ -1369,7 +1369,7 @@ export class SnapController extends BaseController<
    *
    * @throws If there is an error during setup.
    */
-  async #setup() {
+  async #handleControllerSetup() {
     try {
       if (this.#preinstalledSnaps) {
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
@@ -1377,7 +1377,8 @@ export class SnapController extends BaseController<
 
       this.#controllerSetup.resolve();
 
-      await this.#platformIsReady();
+      // Populate the `isReady` state.
+      await this.#ensureCanUsePlatform();
     } catch (error) {
       this.#controllerSetup.reject(error);
 
@@ -1783,10 +1784,6 @@ export class SnapController extends BaseController<
     // Ensure the controller has finished setting up.
     await this.#controllerSetup.promise;
 
-    await this.#platformIsReady();
-  }
-
-  async #platformIsReady() {
     // Ensure the user has onboarded before allowing access to Snaps.
     await this.#ensureOnboardingComplete();
 
@@ -4353,7 +4350,11 @@ export class SnapController extends BaseController<
       this.applyPatches(statePatches);
     }
 
-    await this.#setSourceCode(snapId, previousSourceCode);
+    // If the snap has a previous source code, set it back to the previous source code.
+    // If it doesn't, we don't need to set it back to the previous source code because it means we haven't updated the source code.
+    if (previousSourceCode !== '') {
+      await this.#setSourceCode(snapId, previousSourceCode);
+    }
 
     // Reset snap status, as we may have been in another state when we stored state patches
     // But now we are 100% in a stopped state
