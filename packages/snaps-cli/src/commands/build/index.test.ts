@@ -11,6 +11,7 @@ const getMockArgv = (manifest?: string | undefined) => {
   return {
     context: { config: getMockConfig() },
     manifest,
+    preinstalled: true,
   } as unknown as YargsArgs;
 };
 
@@ -39,7 +40,7 @@ describe('build command', () => {
           path: expect.stringContaining('custom.json'),
         }),
       }),
-      { analyze: undefined, preinstalled: undefined },
+      { analyze: undefined, preinstalled: true },
     );
   });
 
