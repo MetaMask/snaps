@@ -1,6 +1,7 @@
-import pathUtils from 'path';
+import pathUtils, { resolve } from 'path';
 
-import { sanitizeInputs, trimPathString } from './cli';
+import { getConfigWithManifest, sanitizeInputs, trimPathString } from './cli';
+import { getMockConfig } from '../test-utils';
 
 jest.mock('fs');
 
@@ -59,6 +60,23 @@ describe('misc', () => {
       expect(trimPathString('hello////')).toBe('hello');
       expect(trimPathString('../hello')).toBe('hello');
       expect(trimPathString('//////hello')).toBe('hello');
+    });
+  });
+
+  describe('getConfigWithManifest', () => {
+    it('returns the original config if no manifest path is provided', () => {
+      const config = getMockConfig();
+      expect(getConfigWithManifest(config)).toBe(config);
+    });
+
+    it('returns a config with the updated manifest path if provided', () => {
+      const config = getMockConfig();
+      const manifestPath = 'path/to/manifest.json';
+
+      const updatedConfig = getConfigWithManifest(config, manifestPath);
+      expect(updatedConfig.manifest.path).toBe(
+        resolve(process.cwd(), manifestPath),
+      );
     });
   });
 });
