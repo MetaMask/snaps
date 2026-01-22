@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.4.0]
+
+### Added
+
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+- Bump `@metamask/utils` from `11.8.1` to `11.9.0` ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+
 ## [10.3.0]
 
 ### Added
@@ -580,7 +591,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.0...HEAD
+[10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.3.0...@metamask/snaps-execution-environments@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.3...@metamask/snaps-execution-environments@10.3.0
 [10.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.2...@metamask/snaps-execution-environments@10.2.3
 [10.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.1...@metamask/snaps-execution-environments@10.2.2

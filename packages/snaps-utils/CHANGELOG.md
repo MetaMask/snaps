@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.0]
+
+### Added
+
+- Add `loadManifest` function to load extendable manifests ([#3793](https://github.com/MetaMask/snaps/pull/3793))
+
+### Changed
+
+- **BREAKING:** Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
+  - `checkManifest` now returns `ExtendableSnapFiles`, containing a manifest
+    that may extend another manifest.
+- **BREAKING:** Require path to manifest instead of directory in `checkManifest` function ([#3793](https://github.com/MetaMask/snaps/pull/3793))
+
 ## [11.7.1]
 
 ### Changed
@@ -754,7 +767,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.0...HEAD
+[12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.1...@metamask/snaps-utils@12.0.0
 [11.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.0...@metamask/snaps-utils@11.7.1
 [11.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.3...@metamask/snaps-utils@11.7.0
 [11.6.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.6.2...@metamask/snaps-utils@11.6.3

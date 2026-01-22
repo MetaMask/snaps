@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.0.0]
+
+### Added
+
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- **BREAKING:** Change default account used by account and asset selector ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+  - The `AccountSelector` and `AssetSelector` now use the first account of
+    default secret recovery phrase by default.
+
 ## [9.8.0]
 
 ### Added
@@ -460,7 +472,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.8.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.0.0...HEAD
+[10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.8.0...@metamask/snaps-jest@10.0.0
 [9.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.7.0...@metamask/snaps-jest@9.8.0
 [9.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.6.0...@metamask/snaps-jest@9.7.0
 [9.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.5.1...@metamask/snaps-jest@9.6.0

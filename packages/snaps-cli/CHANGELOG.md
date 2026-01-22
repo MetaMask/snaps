@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.4.0]
+
+### Added
+
+- Add `--manifest` option for custom manifests ([#3793](https://github.com/MetaMask/snaps/pull/3793), [#3811](https://github.com/MetaMask/snaps/pull/3811))
+  - This is currently only supported for the `watch` command, and `build`
+    command for preinstalled Snaps (when used with the `--preinstalled` flag).
+- Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
+  - For example, you could have a `snap.manifest.json` file with common fields,
+    and a `snap.manifest.dev.json` file that extends it with
+    development-specific fields:
+    ```json5
+    // snap.manifest.json
+    {
+      "version": "1.0.0",
+      "proposedName": "My Snap",
+      "initialPermissions": {
+        "endowment:network-access": {}
+      }
+    }
+    ```
+    and
+    ```json5
+    // snap.manifest.dev.json
+    {
+      "extends": "./snap.manifest.json",
+      "proposedName": "My Snap (development)",
+      "initialConnections": {
+        "https://localhost:8000": {}
+      }
+    }
+    ```
+    When running `mm-snap watch --manifest snap.manifest.dev.json`, the
+    resulting manifest will combine the fields from both files.
+- Add `--preinstalled` flag to build command to create preinstalled Snap bundle ([#3805](https://github.com/MetaMask/snaps/pull/3805))
+
 ## [8.3.0]
 
 ### Added
@@ -407,7 +443,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.4.0...HEAD
+[8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.3.0...@metamask/snaps-cli@8.4.0
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.2.0...@metamask/snaps-cli@8.3.0
 [8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.1...@metamask/snaps-cli@8.2.0
 [8.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.0...@metamask/snaps-cli@8.1.1

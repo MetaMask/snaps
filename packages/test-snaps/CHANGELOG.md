@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.0]
+
+### Added
+
+- Add multichain provider example ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- Use latest versions of example Snaps ([#3813](https://github.com/MetaMask/snaps/pull/3813))
+
 ## [3.3.0]
 
 ### Added
@@ -420,7 +430,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.0...HEAD
+[3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.3.0...@metamask/test-snaps@3.4.0
 [3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.2.0...@metamask/test-snaps@3.3.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.1.0...@metamask/test-snaps@3.2.0
 [3.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.0.0...@metamask/test-snaps@3.1.0

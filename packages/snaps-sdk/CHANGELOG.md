@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.4.0]
+
+### Added
+
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- Bump `@metamask/utils` from `11.8.1` to `11.9.0` ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+
 ## [10.3.0]
 
 ### Added
@@ -679,7 +689,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...HEAD
+[10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...@metamask/snaps-sdk@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...@metamask/snaps-sdk@10.3.0
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.1.0...@metamask/snaps-sdk@10.2.0
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.0.0...@metamask/snaps-sdk@10.1.0

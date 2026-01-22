@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.2.0]
+
+### Added
+
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+- Bump `@metamask/permission-controller` from `12.1.0` to `12.2.0` ([#3746](https://github.com/MetaMask/snaps/pull/3746), [#3791](https://github.com/MetaMask/snaps/pull/3791))
+- Bump `@metamask/utils` from `11.8.1` to `11.9.0` ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+
+### Fixed
+
+- Prevent concurrent `wallet_requestSnaps` requests ([#3800](https://github.com/MetaMask/snaps/pull/3800))
+
 ## [14.1.1]
 
 ### Fixed
@@ -541,7 +557,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...HEAD
+[14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...@metamask/snaps-rpc-methods@14.2.0
 [14.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.0...@metamask/snaps-rpc-methods@14.1.1
 [14.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.0.0...@metamask/snaps-rpc-methods@14.1.0
 [14.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@13.5.3...@metamask/snaps-rpc-methods@14.0.0
