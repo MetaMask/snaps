@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.0.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- feat!: Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
-- feat!: Add `--manifest` option for custom manifest to dev server ([#3793](https://github.com/MetaMask/snaps/pull/3793))
+- Add `loadManifest` function to load extendable manifests ([#3793](https://github.com/MetaMask/snaps/pull/3793))
+
+### Changed
+
+- **BREAKING:** Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
+  - `checkManifest` now returns `ExtendableSnapFiles`, containing a manifest
+    that may extend another manifest.
+- **BREAKING:** Require path to manifest instead of directory in `checkManifest` function ([#3793](https://github.com/MetaMask/snaps/pull/3793))
 
 ## [11.7.1]
 

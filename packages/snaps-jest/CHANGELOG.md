@@ -9,9 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.0.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- **BREAKING:** Change default account used by account selector ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+  - The `AccountSelector` now uses the first account of default secret
+    recovery phrase by default.
 
 ## [9.8.0]
 

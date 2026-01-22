@@ -9,17 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.2.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- feat!: Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
-- chore: Bump @metamask/json-rpc-engine from 10.2.0 to 10.2.1 ([#3804](https://github.com/MetaMask/snaps/pull/3804))
-- fix: Prevent concurrent `wallet_requestSnaps` requests ([#3800](https://github.com/MetaMask/snaps/pull/3800))
-- chore: Bump @metamask/permission-controller from 12.1.1 to 12.2.0 ([#3791](https://github.com/MetaMask/snaps/pull/3791))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
-- feat: Add `DateTimePicker` component ([#3698](https://github.com/MetaMask/snaps/pull/3698))
-- chore: Bump @metamask/permission-controller from 12.1.0 to 12.1.1 ([#3746](https://github.com/MetaMask/snaps/pull/3746))
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+- Bump `@metamask/permission-controller` from `12.1.0` to `12.2.0` ([#3746](https://github.com/MetaMask/snaps/pull/3746), [#3791](https://github.com/MetaMask/snaps/pull/3791))
+- Bump `@metamask/utils` from `11.8.1` to `11.9.0` ([#3783](https://github.com/MetaMask/snaps/pull/3783))
+
+### Fixed
+
+- Prevent concurrent `wallet_requestSnaps` requests ([#3800](https://github.com/MetaMask/snaps/pull/3800))
 
 ## [14.1.1]
 

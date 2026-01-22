@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
-- feat!: Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+- Use latest versions of example Snaps ([#3813](https://github.com/MetaMask/snaps/pull/3813))
 
 ## [3.3.0]
 

@@ -9,24 +9,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [8.4.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- feat: Support `--manifest` option in build command ([#3811](https://github.com/MetaMask/snaps/pull/3811))
-- feat: Add `--preinstalled` flag to build command to create preinstalled Snap bundle ([#3805](https://github.com/MetaMask/snaps/pull/3805))
-- feat!: Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
-- feat!: Add `--manifest` option for custom manifest to dev server ([#3793](https://github.com/MetaMask/snaps/pull/3793))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
-- release: `137.0.0` ([#3780](https://github.com/MetaMask/snaps/pull/3780))
-- release: `134.0.0` ([#3761](https://github.com/MetaMask/snaps/pull/3761))
-- release: `131.0.0` ([#3730](https://github.com/MetaMask/snaps/pull/3730))
-- release: `126.0.0` ([#3662](https://github.com/MetaMask/snaps/pull/3662))
-- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
-- chore: Bump @metamask/utils from 11.7.0 to 11.8.1 ([#3648](https://github.com/MetaMask/snaps/pull/3648))
-- chore: Bump @metamask/utils from 11.6.0 to 11.7.0 ([#3628](https://github.com/MetaMask/snaps/pull/3628))
-- chore: Bump @metamask/utils from 11.4.2 to 11.5.0 ([#3623](https://github.com/MetaMask/snaps/pull/3623))
-- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
+- Add `--manifest` option for custom manifests ([#3793](https://github.com/MetaMask/snaps/pull/3793), [#3811](https://github.com/MetaMask/snaps/pull/3811))
+  - This is currently only supported for the `watch` command, and `build`
+    command for preinstalled Snaps (when used with the `--preinstalled` flag).
+- Allow manifest to extend another manifest ([#3802](https://github.com/MetaMask/snaps/pull/3802))
+  - For example, you could have a `snap.manifest.json` file with common fields,
+    and a `snap.manifest.dev.json` file that extends it with
+    development-specific fields:
+    ```json5
+    // snap.manifest.json
+    {
+      "version": "1.0.0",
+      "proposedName": "My Snap",
+      "initialPermissions": {
+        "endowment:network-access": {}
+      }
+    }
+    ```
+    and
+    ```json5
+    // snap.manifest.dev.json
+    {
+      "extends": "./snap.manifest.json",
+      "proposedName": "My Snap (development)",
+      "initialConnections": {
+        "https://localhost:8000": {}
+      }
+    }
+    ```
+    When running `mm-snap watch --manifest snap.manifest.dev.json`, the
+    resulting manifest will combine the fields from both files.
+- Add `--preinstalled` flag to build command to create preinstalled Snap bundle ([#3805](https://github.com/MetaMask/snaps/pull/3805))
 
 ## [8.3.0]
 

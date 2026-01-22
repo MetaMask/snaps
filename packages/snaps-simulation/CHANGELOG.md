@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.9.0]
+## [4.0.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- feat!: Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
-- chore: Bump @metamask/json-rpc-engine from 10.2.0 to 10.2.1 ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+- Add Multichain API support ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+
+### Changed
+
+- **BREAKING:** Change default account used by account selector ([#3759](https://github.com/MetaMask/snaps/pull/3759))
+  - The `AccountSelector` now uses the first account of default secret
+    recovery phrase by default.
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
 
 ## [3.8.0]
 
@@ -270,8 +275,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.9.0...HEAD
-[3.9.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.8.0...@metamask/snaps-simulation@3.9.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.0.0...HEAD
+[4.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.8.0...@metamask/snaps-simulation@4.0.0
 [3.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.7.0...@metamask/snaps-simulation@3.8.0
 [3.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.6.0...@metamask/snaps-simulation@3.7.0
 [3.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@3.5.1...@metamask/snaps-simulation@3.6.0
