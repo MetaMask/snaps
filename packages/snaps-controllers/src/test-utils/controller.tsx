@@ -559,7 +559,6 @@ export const getSnapControllerOptions = (
 ) => {
   const options = {
     environmentEndowmentPermissions: [],
-    closeAllConnections: jest.fn(),
     messenger: getSnapControllerMessenger(),
     featureFlags: {
       dappsCanUpdateSnaps: true,
@@ -599,7 +598,6 @@ export const getSnapControllerWithEESOptions = ({
   return {
     featureFlags: { dappsCanUpdateSnaps: true },
     environmentEndowmentPermissions: [],
-    closeAllConnections: jest.fn(),
     messenger: snapControllerMessenger,
     rootMessenger,
     getMnemonicSeed: async () =>
