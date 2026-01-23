@@ -311,7 +311,6 @@ export type SnapError = {
 };
 
 // Types that probably should be defined elsewhere in prod
-type CloseAllConnectionsFunction = (origin: string) => void;
 type StoredSnaps = Record<SnapId, Snap>;
 
 export type SnapControllerState = {
@@ -711,12 +710,6 @@ type DynamicFeatureFlags = {
 
 type SnapControllerArgs = {
   /**
-   * A teardown function that allows the host to clean up its instrumentation
-   * for a running snap.
-   */
-  closeAllConnections?: CloseAllConnectionsFunction;
-
-  /**
    * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
    */
   dynamicPermissions?: string[];
@@ -893,8 +886,6 @@ export class SnapController extends BaseController<
   SnapControllerState,
   SnapControllerMessenger
 > {
-  readonly #closeAllConnections?: CloseAllConnectionsFunction;
-
   readonly #dynamicPermissions: string[];
 
   readonly #environmentEndowmentPermissions: string[];
@@ -944,7 +935,6 @@ export class SnapController extends BaseController<
   readonly #ensureOnboardingComplete: () => Promise<void>;
 
   constructor({
-    closeAllConnections,
     messenger,
     state,
     dynamicPermissions = ['endowment:caip25', 'wallet_snap'],
@@ -1031,7 +1021,6 @@ export class SnapController extends BaseController<
       },
     });
 
-    this.#closeAllConnections = closeAllConnections;
     this.#dynamicPermissions = dynamicPermissions;
     this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#excludedPermissions = excludedPermissions;
@@ -1917,7 +1906,6 @@ export class SnapController extends BaseController<
 
     try {
       if (this.isRunning(snapId)) {
-        this.#closeAllConnections?.(snapId);
         await this.#terminateSnap(snapId);
       }
     } finally {
