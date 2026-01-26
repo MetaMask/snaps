@@ -72,16 +72,28 @@ describe('Bip32PathStruct', () => {
     expect(() => assert(['m', "1399742832'", '0'], Bip32PathStruct)).toThrow(
       'The purpose "1399742832\'" is not allowed for entropy derivation.',
     );
+
+    expect(() => assert(['m', "01399742832'", '0'], Bip32PathStruct)).toThrow(
+      'The purpose "01399742832\'" is not allowed for entropy derivation.',
+    );
+
+    expect(() => assert(['m', "001399742832'", '0'], Bip32PathStruct)).toThrow(
+      'The purpose "001399742832\'" is not allowed for entropy derivation.',
+    );
   });
 
-  it.each([`m/44'/60'/0'/0/0`, `m/44'/60'/0'/0`, `m/44'/60'/0'`, `m/44'/60'`])(
-    'throws for forbidden paths',
-    (path) => {
-      expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
-        `The path "${path}" is not allowed for entropy derivation.`,
-      );
-    },
-  );
+  it.each([
+    `m/44'/60'/0'/0/0`,
+    `m/44'/60'/0'/0`,
+    `m/44'/60'/0'`,
+    `m/44'/60'`,
+    `m/44'/060'`,
+    `m/44'/0060'`,
+  ])('throws for forbidden paths', (path) => {
+    expect(() => assert(path.split('/'), Bip32PathStruct)).toThrow(
+      `The path "${path}" is not allowed for entropy derivation.`,
+    );
+  });
 });
 
 describe('CurveStruct', () => {
