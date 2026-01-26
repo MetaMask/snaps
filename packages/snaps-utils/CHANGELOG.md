@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.0.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Tighten derivation path validation ([#3816](https://github.com/MetaMask/snaps/pull/3816))
+- Tighten derivation path validation ([#3816](https://github.com/MetaMask/snaps/pull/3816))
 
 ## [12.0.0]
 
