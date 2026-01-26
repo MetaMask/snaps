@@ -28,10 +28,14 @@ export function isDerivationPathEqual(a: string[], b: string[]): boolean {
         return value === bValue;
       }
 
-      const aInt = value.endsWith("'") ? value.slice(0, -1) : value;
-      const bInt = bValue.endsWith("'") ? bValue.slice(0, -1) : bValue;
+      const aIsHardened = value.endsWith("'");
+      const bIsHardened = bValue.endsWith("'");
+      const aInt = aIsHardened ? value.slice(0, -1) : value;
+      const bInt = bIsHardened ? bValue.slice(0, -1) : bValue;
 
-      return parseInt(aInt, 10) === parseInt(bInt, 10);
+      return (
+        aIsHardened === bIsHardened && parseInt(aInt, 10) === parseInt(bInt, 10)
+      );
     })
   );
 }
