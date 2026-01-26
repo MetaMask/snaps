@@ -30,7 +30,7 @@ import {
   CaipChainIdStruct,
 } from '@metamask/utils';
 
-import { isEqual } from '../array';
+import { isDerivationPathEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
@@ -45,12 +45,14 @@ const FORBIDDEN_PURPOSES: string[] = [
   STATE_ENCRYPTION_MAGIC_VALUE,
 ];
 
+const FORBIDDEN_PURPOSE_PATHS: string[][] = FORBIDDEN_PURPOSES.map(
+  (purpose) => ['m', `${purpose}`],
+);
+
 export const FORBIDDEN_COIN_TYPES: number[] = [60];
-const FORBIDDEN_PATHS: string[][] = FORBIDDEN_COIN_TYPES.map((coinType) => [
-  'm',
-  "44'",
-  `${coinType}'`,
-]);
+const FORBIDDEN_COIN_TYPE_PATHS: string[][] = FORBIDDEN_COIN_TYPES.map(
+  (coinType) => ['m', "44'", `${coinType}'`],
+);
 
 export const Bip32PathStruct = refine(
   array(string()),
@@ -72,13 +74,23 @@ export const Bip32PathStruct = refine(
       return 'Path must be a valid BIP-32 derivation path array.';
     }
 
-    if (FORBIDDEN_PURPOSES.includes(path[1])) {
+    if (
+      FORBIDDEN_PURPOSE_PATHS.some((forbiddenPath) =>
+        isDerivationPathEqual(
+          path.slice(0, forbiddenPath.length),
+          forbiddenPath,
+        ),
+      )
+    ) {
       return `The purpose "${path[1]}" is not allowed for entropy derivation.`;
     }
 
     if (
-      FORBIDDEN_PATHS.some((forbiddenPath) =>
-        isEqual(path.slice(0, forbiddenPath.length), forbiddenPath),
+      FORBIDDEN_COIN_TYPE_PATHS.some((forbiddenPath) =>
+        isDerivationPathEqual(
+          path.slice(0, forbiddenPath.length),
+          forbiddenPath,
+        ),
       )
     ) {
       return `The path "${path.join(
