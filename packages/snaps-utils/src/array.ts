@@ -24,8 +24,8 @@ export function isDerivationPathEqual(a: string[], b: string[]): boolean {
     a.every((value, index) => {
       const bValue = b[index];
 
-      if (index === 0 && value === bValue) {
-        return true;
+      if (index === 0) {
+        return value === bValue;
       }
 
       const aInt = value.endsWith("'") ? value.slice(0, -1) : value;
