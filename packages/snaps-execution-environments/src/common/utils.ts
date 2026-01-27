@@ -56,6 +56,7 @@ export const BLOCKED_RPC_METHODS = Object.freeze([
   'eth_sendTransaction',
   'eth_decrypt',
   'eth_getEncryptionPublicKey',
+  'metamask_sendDomainMetadata',
   'wallet_addEthereumChain',
   'wallet_watchAsset',
   'wallet_registerOnboarding',
