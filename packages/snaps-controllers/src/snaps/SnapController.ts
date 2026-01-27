@@ -78,7 +78,6 @@ import type {
   StatusEvents,
   StatusStates,
   StorageServiceSnapData,
-  StoredSnap,
   TruncatedSnap,
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
@@ -241,7 +240,7 @@ export type SnapRuntimeData = {
   /**
    * A promise that resolves when the Snap has finished installing
    */
-  installPromise: null | Promise<StoredSnap>;
+  installPromise: null | Promise<PersistedSnap>;
 
   /**
    * A promise that resolves when the Snap has finished booting
@@ -330,7 +329,7 @@ export type SnapControllerState = {
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
-  snaps: Record<SnapId, PersistedSnap>;
+  snaps: Record<SnapId, Snap>;
   snapStates: Record<SnapId, string>;
 };
 
@@ -341,7 +340,7 @@ type RollbackSnapshot = {
     granted?: RequestedPermissions;
     requestData?: Record<string, unknown>;
   };
-  previousSourceCode: string;
+  previousSourceCode?: string;
   previousInitialConnections?: Record<string, EmptyObject> | null;
   newInitialConnections?: Record<string, EmptyObject>;
   newVersion: string;
@@ -3269,7 +3268,7 @@ export class SnapController extends BaseController<
    * version.
    * @returns The resulting snap object.
    */
-  async #add(args: AddSnapArgs): Promise<StoredSnap> {
+  async #add(args: AddSnapArgs): Promise<PersistedSnap> {
     const { id: snapId, location, versionRange } = args;
 
     this.#setupRuntime(snapId);
@@ -3419,7 +3418,7 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  async #set(args: SetSnapArgs): Promise<StoredSnap> {
+  async #set(args: SetSnapArgs): Promise<PersistedSnap> {
     const {
       id: snapId,
       origin,
@@ -4290,7 +4289,6 @@ export class SnapController extends BaseController<
 
     this.#rollbackSnapshots.set(snapId, {
       statePatches: [],
-      previousSourceCode: '',
       permissions: {},
       newVersion: '',
     });
@@ -4341,7 +4339,7 @@ export class SnapController extends BaseController<
 
     // If the snap has a previous source code, set it back to the previous source code.
     // If it doesn't, we don't need to set it back to the previous source code because it means we haven't updated the source code.
-    if (previousSourceCode !== '') {
+    if (previousSourceCode) {
       await this.#setSourceCode(snapId, previousSourceCode);
     }
 
