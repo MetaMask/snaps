@@ -98,9 +98,10 @@ export type StorageServiceSnapData = {
   sourceCode: string;
 };
 
-export type PersistedSnap = Snap;
-
-export type StoredSnap = Snap & StorageServiceSnapData;
+/**
+ * A Snap's data as stored in the StorageService and the SnapController state.
+ */
+export type PersistedSnap = Snap & StorageServiceSnapData;
 
 /**
  * A Snap as it exists in {@link SnapController} state.
