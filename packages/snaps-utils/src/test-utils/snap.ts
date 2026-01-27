@@ -2,7 +2,11 @@ import type { SnapId } from '@metamask/snaps-sdk';
 import type { SemVerVersion } from '@metamask/utils';
 
 import type { MakeSemVer } from './common';
-import { DEFAULT_SNAP_SHASUM, getSnapManifest } from './manifest';
+import {
+  DEFAULT_SNAP_BUNDLE,
+  DEFAULT_SNAP_SHASUM,
+  getSnapManifest,
+} from './manifest';
 import type { PersistedSnap, Snap, TruncatedSnap } from '../snaps';
 import { SnapStatus } from '../snaps';
 
@@ -21,6 +25,7 @@ export const getPersistedSnapObject = ({
   initialPermissions = getSnapManifest().initialPermissions,
   initialConnections = getSnapManifest().initialConnections,
   manifest = getSnapManifest(),
+  sourceCode = DEFAULT_SNAP_BUNDLE,
   status = SnapStatus.Stopped,
   version = getSnapManifest().version,
   versionHistory = [
@@ -38,9 +43,9 @@ export const getPersistedSnapObject = ({
     id,
     version: version as SemVerVersion,
     manifest,
+    sourceCode,
     status,
     enabled,
-
     versionHistory,
     auxiliaryFiles,
     localizationFiles,
