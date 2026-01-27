@@ -230,16 +230,24 @@ describe('MultichainRouter', () => {
     it('throws if address resolution fails', async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
-      const withSnapKeyring = getMockWithSnapKeyring({
-        // Simulate the Snap returning a bogus address
-        resolveAccountAddress: jest.fn().mockResolvedValue({ address: 'foo' }),
-      });
+      const withSnapKeyring = getMockWithSnapKeyring();
 
       /* eslint-disable-next-line no-new */
       new MultichainRouter({
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async ({ handler }) => {
+          if (handler === HandlerType.OnKeyringRequest) {
+            // Simulate the Snap returning a bogus address
+            return { address: 'foo' };
+          }
+          throw new Error('Unmocked request');
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -271,19 +279,27 @@ describe('MultichainRouter', () => {
     it('throws if address resolution returns an address that isnt available', async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
-      const withSnapKeyring = getMockWithSnapKeyring({
-        // Simulate the Snap returning an unconnected address
-        resolveAccountAddress: jest.fn().mockResolvedValue({
-          address:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKa',
-        }),
-      });
+      const withSnapKeyring = getMockWithSnapKeyring();
 
       /* eslint-disable-next-line no-new */
       new MultichainRouter({
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async ({ handler }) => {
+          if (handler === HandlerType.OnKeyringRequest) {
+            // Simulate the Snap returning an unconnected address
+            return {
+              address:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKa',
+            };
+          }
+          throw new Error('Unmocked request');
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -315,18 +331,26 @@ describe('MultichainRouter', () => {
     it(`throws if address resolution returns a lower case address that isn't available`, async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
-      const withSnapKeyring = getMockWithSnapKeyring({
-        // Simulate the Snap returning an unconnected address
-        resolveAccountAddress: jest.fn().mockResolvedValue({
-          address: `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:${MOCK_SOLANA_ACCOUNTS[0].address.toLowerCase()}`,
-        }),
-      });
+      const withSnapKeyring = getMockWithSnapKeyring();
 
       /* eslint-disable-next-line no-new */
       new MultichainRouter({
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async ({ handler }) => {
+          if (handler === HandlerType.OnKeyringRequest) {
+            // Simulate the Snap returning an unconnected address
+            return {
+              address: `solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:${MOCK_SOLANA_ACCOUNTS[0].address.toLowerCase()}`,
+            };
+          }
+          throw new Error('Unmocked request');
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',

@@ -16,6 +16,7 @@ import type {
 import {
   assert,
   hasProperty,
+  isObject,
   KnownCaipNamespace,
   parseCaipAccountId,
 } from '@metamask/utils';
@@ -52,11 +53,6 @@ type SnapKeyring = {
     params?: Json[] | Record<string, Json>;
     scope: CaipChainId;
   }) => Promise<Json>;
-  resolveAccountAddress: (
-    snapId: SnapId,
-    scope: CaipChainId,
-    request: Json,
-  ) => Promise<{ address: CaipAccountId } | null>;
 };
 
 // Expecting a bound function that calls KeyringController.withKeyring selecting the Snap keyring
@@ -137,7 +133,9 @@ export class MultichainRouter {
   /**
    * Attempts to resolve the account address to use for a given request by inspecting the request itself.
    *
-   * The request is sent to to an account Snap via the SnapKeyring that will attempt this resolution.
+   * The request is sent to to an account Snap that will attempt this resolution.
+   *
+   * We manually construct the request instead of using the SnapKeyring, as the keyring may not be available.
    *
    * @param snapId - The ID of the Snap to send the request to.
    * @param scope - The CAIP-2 scope for the request.
@@ -151,10 +149,25 @@ export class MultichainRouter {
     request: JsonRpcRequest,
   ) {
     try {
-      const result = await this.#withSnapKeyring(async ({ keyring }) =>
-        keyring.resolveAccountAddress(snapId, scope, request),
+      const result = await this.#messenger.call(
+        'SnapController:handleRequest',
+        {
+          snapId,
+          origin: 'metamask',
+          request: {
+            method: 'keyring_resolveAccountAddress',
+            params: {
+              request,
+              scope,
+            },
+          },
+          handler: HandlerType.OnKeyringRequest,
+        },
       );
-      const address = result?.address;
+
+      assert(result === null || isObject(result));
+
+      const address = result?.address as CaipAccountId;
       return address ? parseCaipAccountId(address).address : null;
     } catch {
       throw rpcErrors.internal();
