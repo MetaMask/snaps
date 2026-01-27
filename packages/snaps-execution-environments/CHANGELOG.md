@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.4.1]
+
+### Fixed
+
+- Inspect `wallet_invokeMethod` requests before sending ([#3819](https://github.com/MetaMask/snaps/pull/3819))
+- Block `metamask_sendDomainMetadata` ([#3818](https://github.com/MetaMask/snaps/pull/3818))
+
 ## [10.4.0]
 
 ### Added
@@ -591,7 +598,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.1...HEAD
+[10.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.0...@metamask/snaps-execution-environments@10.4.1
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.3.0...@metamask/snaps-execution-environments@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.3...@metamask/snaps-execution-environments@10.3.0
 [10.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.2...@metamask/snaps-execution-environments@10.2.3
