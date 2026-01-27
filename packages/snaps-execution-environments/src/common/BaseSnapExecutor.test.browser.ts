@@ -614,7 +614,10 @@ describe('BaseSnapExecutor', () => {
 
   it('supports the multichain API using the snap global', async () => {
     const CODE = `
-      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_invokeMethod', params: { scope: 'eip155:1', request: { method: 'eth_chainId' } } });
+      module.exports.onRpcRequest = async () => {
+        await snap.request({ method: 'wallet_createSession', params: {} });
+        return snap.request({ method: 'wallet_invokeMethod', params: { scope: 'eip155:1', request: { method: 'eth_chainId' } } });
+      };
     `;
 
     const executor = new TestSnapExecutor();
@@ -636,6 +639,17 @@ describe('BaseSnapExecutor', () => {
         MOCK_ORIGIN,
         { jsonrpc: '2.0', method: '', params: [] },
       ],
+    });
+
+    const sessionRequest = await executor.readRpc();
+    await executor.writeRpc({
+      name: 'metamask-multichain-provider',
+      data: {
+        jsonrpc: '2.0',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        id: sessionRequest.data.id!,
+        result: { sessionScopes: {} },
+      },
     });
 
     const multichainRequest = await executor.readRpc();
@@ -668,6 +682,52 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       jsonrpc: '2.0',
       result: '0x1',
+    });
+  });
+
+  it('blocks certain RPC methods using the multichain API', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => snap.request({ method: 'wallet_invokeMethod', params: { scope: 'eip155:1', request: { method: 'metamask_sendDomainMetadata' } } });
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: [
+        MOCK_SNAP_ID,
+        HandlerType.OnRpcRequest,
+        MOCK_ORIGIN,
+        { jsonrpc: '2.0', method: '', params: [] },
+      ],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: {
+        code: -31001,
+        message: 'Wrapped Snap Error',
+        data: {
+          cause: expect.objectContaining({
+            code: -32601,
+            message: 'The method does not exist / is not available.',
+            data: {
+              cause: null,
+              method: 'metamask_sendDomainMetadata',
+            },
+          }),
+        },
+      },
     });
   });
 
