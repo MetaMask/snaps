@@ -106,11 +106,13 @@ export function assertMultichainOutboundRequest(args: RequestArguments) {
   // For `wallet_invokeMethod`, we need to inspect the parameters to determine
   // if the Snap is requesting a blocked RPC method.
   assert(
-    isObject(args.params) && typeof args.params.method === 'string',
+    isObject(args.params) &&
+      isObject(args.params.request) &&
+      typeof args.params.request.method === 'string',
     rpcErrors.invalidParams(),
   );
 
-  const innerMethod = args.params.method;
+  const innerMethod = args.params.request.method;
 
   assert(
     !BLOCKED_MULTICHAIN_RPC_METHODS.includes(innerMethod),
