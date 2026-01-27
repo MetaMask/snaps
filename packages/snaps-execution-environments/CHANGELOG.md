@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.4.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Inspect `wallet_invokeMethod` requests before sending ([#3819](https://github.com/MetaMask/snaps/pull/3819))
-- fix: Block `metamask_sendDomainMetadata` ([#3818](https://github.com/MetaMask/snaps/pull/3818))
-- chore: Bump lavamoat from 10.0.5 to 10.1.0 ([#3815](https://github.com/MetaMask/snaps/pull/3815))
+- Inspect `wallet_invokeMethod` requests before sending ([#3819](https://github.com/MetaMask/snaps/pull/3819))
+- Block `metamask_sendDomainMetadata` ([#3818](https://github.com/MetaMask/snaps/pull/3818))
 
 ## [10.4.0]
 
