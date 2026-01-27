@@ -115,6 +115,14 @@ export function assertMultichainOutboundRequest(args: RequestArguments) {
   const innerMethod = args.params.request.method;
 
   assert(
+    !String.prototype.startsWith.call(innerMethod, 'snap_'),
+    rpcErrors.methodNotFound({
+      data: {
+        method: innerMethod,
+      },
+    }),
+  );
+  assert(
     !BLOCKED_MULTICHAIN_RPC_METHODS.includes(innerMethod),
     rpcErrors.methodNotFound({
       data: {
