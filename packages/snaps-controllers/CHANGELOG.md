@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- refactor!: Remove `closeAllConnections` constructor argument ([#3814](https://github.com/MetaMask/snaps/pull/3814))
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- chore: Bump @metamask/json-rpc-engine from 10.2.0 to 10.2.1 ([#3804](https://github.com/MetaMask/snaps/pull/3804))
-
 ## [17.2.1]
 
 ### Changed
