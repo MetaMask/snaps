@@ -49,6 +49,7 @@ import {
   withTeardown,
   isValidResponse,
   isMultichainRequest,
+  assertMultichainOutboundRequest,
 } from './utils';
 import {
   ExecuteSnapRequestArgumentsStruct,
@@ -547,6 +548,7 @@ export class BaseSnapExecutor {
       assertSnapOutboundRequest(sanitizedArgs);
 
       if (isMultichainRequest(sanitizedArgs)) {
+        assertMultichainOutboundRequest(sanitizedArgs);
         return await withTeardown(
           originalMultichainRequest(sanitizedArgs),
           this as any,

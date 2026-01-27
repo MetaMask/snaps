@@ -70,6 +70,19 @@ export const MULTICHAIN_API_METHODS = Object.freeze([
   'wallet_revokeSession',
 ]);
 
+// Subset of BLOCKED_RPC_METHODS
+export const BLOCKED_MULTICHAIN_RPC_METHODS = Object.freeze([
+  'wallet_requestPermissions',
+  'wallet_revokePermissions',
+  'eth_decrypt',
+  'eth_getEncryptionPublicKey',
+  'metamask_sendDomainMetadata',
+  'wallet_addEthereumChain',
+  'wallet_watchAsset',
+  'wallet_registerOnboarding',
+  'wallet_scanQRCode',
+]);
+
 /**
  * Check whether a validated request should be routed to the multichain API.
  *
@@ -78,6 +91,35 @@ export const MULTICHAIN_API_METHODS = Object.freeze([
  */
 export function isMultichainRequest(args: RequestArguments) {
   return MULTICHAIN_API_METHODS.includes(args.method);
+}
+
+/**
+ * Asserts the validity of request arguments for a multichain outbound request using the `snap.request` API.
+ *
+ * @param args - The arguments to validate.
+ */
+export function assertMultichainOutboundRequest(args: RequestArguments) {
+  if (args.method !== 'wallet_invokeMethod') {
+    return;
+  }
+
+  // For `wallet_invokeMethod`, we need to inspect the parameters to determine
+  // if the Snap is requesting a blocked RPC method.
+  assert(
+    isObject(args.params) && typeof args.params.method === 'string',
+    rpcErrors.invalidParams(),
+  );
+
+  const innerMethod = args.params.method;
+
+  assert(
+    !BLOCKED_MULTICHAIN_RPC_METHODS.includes(innerMethod),
+    rpcErrors.methodNotFound({
+      data: {
+        method: innerMethod,
+      },
+    }),
+  );
 }
 
 /**
