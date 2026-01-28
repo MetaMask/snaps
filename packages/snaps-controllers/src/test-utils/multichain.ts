@@ -94,9 +94,6 @@ export const MOCK_SOLANA_SNAP_PERMISSIONS: Record<
 
 type MockSnapKeyring = {
   submitRequest: (request: unknown) => Promise<Json>;
-  resolveAccountAddress: (
-    options: unknown,
-  ) => Promise<{ address: CaipAccountId } | null>;
 };
 
 type MockOperationCallback = ({
@@ -106,16 +103,14 @@ type MockOperationCallback = ({
 }) => Promise<any>;
 
 export const getMockWithSnapKeyring = (
-  { submitRequest = jest.fn(), resolveAccountAddress = jest.fn() } = {
+  { submitRequest = jest.fn() } = {
     submitRequest: jest.fn(),
-    resolveAccountAddress: jest.fn(),
   },
 ): WithSnapKeyringFunction => {
   return async (callback: MockOperationCallback) =>
     callback({
       keyring: {
         submitRequest,
-        resolveAccountAddress,
       },
     });
 };
