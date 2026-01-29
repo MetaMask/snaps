@@ -45,7 +45,7 @@ yarn build
 # Build a single package
 yarn workspace @metamask/snaps-controllers build
 
-# Build execution environments (special LavaMoat build, run after main build)
+# Build execution environments exclusively (special LavaMoat build, run optionally)
 yarn build:execution-environments
 ```
 
@@ -184,13 +184,13 @@ snaps-jest
 - **SnapId**: Unique identifier (e.g., `npm:@metamask/example-snap`)
 - **SnapStatus**: Lifecycle state (`Stopped`, `Running`, `Crashed`)
 - **SnapManifest**: Configuration file (`snap.manifest.json`)
-- **TruncatedSnap**: Lightweight snap representation
-- **PersistedSnap**: Full snap data for storage
+- **TruncatedSnap**: Lightweight Snap representation
+- **PersistedSnap**: Full Snap data for storage
 
 ### Permission System
 
 - **Caveat**: Constraint on a permission
-- **Endowment**: Capability granted to a snap (e.g., `endowment:network-access`). May grant access to JavaScript globals.
+- **Endowment**: Capability granted to a Snap (e.g., `endowment:network-access`). May grant access to JavaScript globals.
 - **Restricted**: JSON-RPC method requiring permission
 - **Permitted**: Publicly accessible JSON-RPC method
 
@@ -198,17 +198,17 @@ snaps-jest
 
 - **ExecutionEnvironment**: Runtime context (iframe, webview, worker)
 - **Job**: Execution task with Snap ID, streams, and JSON-RPC engine
-- **Endowments**: APIs available in snap context
+- **Endowments**: APIs available in Snap context
 
 ## Adding New Platform Features
 
 When implementing a new Snaps Platform feature (e.g., a new permission, endowment, or RPC method), include:
 
-1. **An example snap** in `packages/examples/packages/` demonstrating the feature
+1. **An example Snap** in `packages/examples/packages/` demonstrating the feature
 2. **A test-snaps UI** in `packages/test-snaps/` for manual testing with MetaMask
 3. **Simulation support** in `snaps-simulation` and/or `snaps-jest` if needed for the example's E2E tests to pass
 
-New RPC methods, permissions, or platform APIs often require corresponding mock implementations or handlers in the simulation layer before the example snap's tests can function correctly.
+New RPC methods, permissions, or platform APIs often require corresponding mock implementations or handlers in the simulation layer before the example Snap's tests can function correctly.
 
 ### Example Snap Structure
 
@@ -224,7 +224,7 @@ packages/examples/packages/<feature-name>/
 └── jest.config.js
 ```
 
-The example snap should:
+The example Snap should:
 
 - Export the relevant handler (e.g., `onRpcRequest`, `onTransaction`)
 - Request only the permissions needed for the feature
@@ -238,12 +238,12 @@ Add a feature directory in `packages/test-snaps/src/features/snaps/<feature-name
 packages/test-snaps/src/features/snaps/<feature-name>/
 ├── constants.ts          # SNAP_ID, SNAP_PORT, VERSION exports
 ├── index.ts              # Re-exports the React component
-└── <FeatureName>.tsx     # React component with UI to test the snap
+└── <FeatureName>.tsx     # React component with UI to test the Snap
 ```
 
 Then:
 
-1. Add the example snap as a `devDependency` in `packages/test-snaps/package.json`
+1. Add the example Snap as a `devDependency` in `packages/test-snaps/package.json`
 2. Export the feature component from `packages/test-snaps/src/features/snaps/index.ts`
 
 See `packages/examples/packages/multichain-provider/` for a complete example.
