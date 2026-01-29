@@ -11,6 +11,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:assets": {
           "allowedCaveats": [
             "chainIds",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -23,6 +24,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -142,6 +144,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:signature-insight": {
           "allowedCaveats": [
             "signatureOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",

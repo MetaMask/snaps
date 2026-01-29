@@ -128,12 +128,11 @@ export function getTransactionOriginCaveat(
     return null;
   }
 
-  assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.TransactionOrigin);
+  const caveat = permission.caveats.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.TransactionOrigin,
+  ) as Caveat<string, boolean> | undefined;
 
-  const caveat = permission.caveats[0] as Caveat<string, boolean>;
-
-  return caveat.value ?? null;
+  return caveat ? caveat.value : null;
 }
 
 export const transactionInsightCaveatSpecifications: Record<

@@ -23,7 +23,10 @@ describe('endowment:cronjob', () => {
         permissionType: PermissionType.Endowment,
         targetName: SnapEndowments.Cronjob,
         endowmentGetter: expect.any(Function),
-        allowedCaveats: [SnapCaveatType.SnapCronjob],
+        allowedCaveats: [
+          SnapCaveatType.SnapCronjob,
+          SnapCaveatType.MaxRequestTime,
+        ],
         subjectTypes: [SubjectType.Snap],
         validator: expect.any(Function),
       });
@@ -125,7 +128,7 @@ describe('getCronjobCaveatJobs', () => {
     expect(getCronjobCaveatJobs(permission)).toBeNull();
   });
 
-  it('throws if there is more than one caveat', () => {
+  it('returns the jobs when multiple caveats exist', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -147,26 +150,24 @@ describe('getCronjobCaveatJobs', () => {
           },
         },
         {
-          type: SnapCaveatType.SnapCronjob,
-          value: {
-            jobs: [
-              {
-                expression: '* * * * *',
-                request: {
-                  method: 'exampleMethodOne',
-                  params: ['p1'],
-                },
-              },
-            ],
-          },
+          type: SnapCaveatType.MaxRequestTime,
+          value: 1000,
         },
       ],
     };
 
-    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
+    expect(getCronjobCaveatJobs(permission)).toStrictEqual([
+      {
+        expression: '* * * * *',
+        request: {
+          method: 'exampleMethodOne',
+          params: ['p1'],
+        },
+      },
+    ]);
   });
 
-  it('throws if the caveat type is wrong', () => {
+  it('returns null if there is no "snapCronjob" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -175,22 +176,12 @@ describe('getCronjobCaveatJobs', () => {
       caveats: [
         {
           type: SnapCaveatType.ChainIds,
-          value: {
-            jobs: [
-              {
-                expression: '* * * * *',
-                request: {
-                  method: 'exampleMethodOne',
-                  params: ['p1'],
-                },
-              },
-            ],
-          },
+          value: ['eip155:1'],
         },
       ],
     };
 
-    expect(() => getCronjobCaveatJobs(permission)).toThrow('Assertion failed.');
+    expect(getCronjobCaveatJobs(permission)).toBeNull();
   });
 });
 

@@ -90,21 +90,29 @@ describe('getKeyringCaveatOrigins', () => {
     ).toStrictEqual({ allowedOrigins: ['foo.com'] });
   });
 
-  it('throws if the caveat is not a single "rpcOrigin"', () => {
+  it('returns the origins when multiple caveats exist', () => {
+    expect(
+      // @ts-expect-error Missing other required permission types.
+      getKeyringCaveatOrigins({
+        caveats: [
+          {
+            type: SnapCaveatType.KeyringOrigin,
+            value: { allowedOrigins: ['foo.com'] },
+          },
+          {
+            type: SnapCaveatType.MaxRequestTime,
+            value: 1000,
+          },
+        ],
+      }),
+    ).toStrictEqual({ allowedOrigins: ['foo.com'] });
+  });
+
+  it('throws if there is no "keyringOrigin" caveat', () => {
     expect(() =>
       // @ts-expect-error Missing other required permission types.
       getKeyringCaveatOrigins({
         caveats: [{ type: 'foo', value: 'bar' }],
-      }),
-    ).toThrow('Assertion failed.');
-
-    expect(() =>
-      // @ts-expect-error Missing other required permission types.
-      getKeyringCaveatOrigins({
-        caveats: [
-          { type: 'keyringOrigin', value: { allowedOrigins: ['foo.com'] } },
-          { type: 'keyringOrigin', value: { allowedOrigins: ['foo.com'] } },
-        ],
       }),
     ).toThrow('Assertion failed.');
   });

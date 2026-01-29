@@ -18,7 +18,10 @@ describe('endowment:signature-insight', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.SignatureInsight,
-      allowedCaveats: [SnapCaveatType.SignatureOrigin],
+      allowedCaveats: [
+        SnapCaveatType.SignatureOrigin,
+        SnapCaveatType.MaxRequestTime,
+      ],
       endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
@@ -92,7 +95,7 @@ describe('getSignatureOriginCaveat', () => {
     expect(getSignatureOriginCaveat(permission)).toBeNull();
   });
 
-  it('throws if the permission does not have exactly one caveat', () => {
+  it('returns the value when multiple caveats exist', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -104,18 +107,16 @@ describe('getSignatureOriginCaveat', () => {
           value: true,
         },
         {
-          type: SnapCaveatType.SignatureOrigin,
-          value: true,
+          type: SnapCaveatType.MaxRequestTime,
+          value: 1000,
         },
       ],
     };
 
-    expect(() => getSignatureOriginCaveat(permission)).toThrow(
-      'Assertion failed',
-    );
+    expect(getSignatureOriginCaveat(permission)).toBe(true);
   });
 
-  it('throws if the first caveat is not a "signatureOrigin" caveat', () => {
+  it('returns null if there is no "signatureOrigin" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -129,9 +130,7 @@ describe('getSignatureOriginCaveat', () => {
       ],
     };
 
-    expect(() => getSignatureOriginCaveat(permission)).toThrow(
-      'Assertion failed',
-    );
+    expect(getSignatureOriginCaveat(permission)).toBeNull();
   });
 });
 

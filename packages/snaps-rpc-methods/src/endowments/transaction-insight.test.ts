@@ -95,7 +95,7 @@ describe('getTransactionOriginCaveat', () => {
     expect(getTransactionOriginCaveat(permission)).toBeNull();
   });
 
-  it('throws if the permission does not have exactly one caveat', () => {
+  it('returns the value when multiple caveats exist', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -107,18 +107,16 @@ describe('getTransactionOriginCaveat', () => {
           value: true,
         },
         {
-          type: SnapCaveatType.TransactionOrigin,
-          value: true,
+          type: SnapCaveatType.MaxRequestTime,
+          value: 1000,
         },
       ],
     };
 
-    expect(() => getTransactionOriginCaveat(permission)).toThrow(
-      'Assertion failed',
-    );
+    expect(getTransactionOriginCaveat(permission)).toBe(true);
   });
 
-  it('throws if the first caveat is not a "transactionOrigin" caveat', () => {
+  it('returns null if there is no "transactionOrigin" caveat', () => {
     const permission: PermissionConstraint = {
       date: 0,
       parentCapability: 'foo',
@@ -132,9 +130,7 @@ describe('getTransactionOriginCaveat', () => {
       ],
     };
 
-    expect(() => getTransactionOriginCaveat(permission)).toThrow(
-      'Assertion failed',
-    );
+    expect(getTransactionOriginCaveat(permission)).toBeNull();
   });
 });
 

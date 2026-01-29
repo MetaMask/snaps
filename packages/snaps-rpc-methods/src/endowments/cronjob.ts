@@ -14,7 +14,7 @@ import {
   isCronjobSpecificationArray,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
+import { hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
@@ -42,7 +42,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.SnapCronjob],
+    allowedCaveats: [SnapCaveatType.SnapCronjob, SnapCaveatType.MaxRequestTime],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
     validator: createGenericPermissionValidator([
@@ -100,12 +100,11 @@ export function getCronjobCaveatJobs(
     return null;
   }
 
-  assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.SnapCronjob);
+  const caveat = permission.caveats.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.SnapCronjob,
+  ) as Caveat<string, { jobs: Json[] }> | undefined;
 
-  const caveat = permission.caveats[0] as Caveat<string, { jobs: Json[] }>;
-
-  return (caveat.value?.jobs as CronjobSpecification[]) ?? null;
+  return (caveat?.value?.jobs as CronjobSpecification[]) ?? null;
 }
 
 /**
