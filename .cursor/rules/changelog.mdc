@@ -1,0 +1,118 @@
+---
+description: Changelog guidelines for package changes
+globs: '**/CHANGELOG.md'
+alwaysApply: false
+---
+
+# Changelog Guidelines
+
+Use `@metamask/auto-changelog` and follow [Keep a Changelog](https://keepachangelog.com/).
+
+## Structure
+
+Each package has a `CHANGELOG.md` with this structure:
+
+```markdown
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
+
+### Added
+
+- New feature description ([#123](link-to-pr))
+
+### Changed
+
+- **BREAKING:** Description of breaking change ([#124](link-to-pr))
+- Non-breaking change description ([#125](link-to-pr))
+
+## [1.2.0]
+
+### Added
+
+- Previously released feature
+```
+
+## Categories (in order)
+
+1. **Added** - New features
+2. **Changed** - Changes to existing functionality
+3. **Deprecated** - Features to be removed
+4. **Removed** - Removed features
+5. **Fixed** - Bug fixes
+6. **Security** - Security fixes
+
+## Rules
+
+### Breaking Changes
+
+- Prefix with `**BREAKING:**`
+- List first in their category
+- Describe what changed and migration path if needed
+
+```markdown
+### Changed
+
+- **BREAKING:** Renamed `oldMethod` to `newMethod` ([#123](link))
+- Other non-breaking changes ([#124](link))
+```
+
+### Entry Format
+
+- Link to PR: `([#123](https://github.com/MetaMask/snaps/pull/123))`
+- Describe API changes precisely, not just PR titles
+- Use imperative mood: "Add feature" not "Added feature"
+
+```markdown
+### Added
+
+- Add `getSnapState` method for retrieving encrypted state ([#123](link))
+
+### Fixed
+
+- Fix race condition when multiple Snaps start simultaneously ([#124](link))
+```
+
+### What to Include
+
+Include:
+
+- New APIs, methods, or components
+- Breaking changes (API changes, removed features)
+- Bug fixes affecting consumers
+- Deprecations
+
+Omit:
+
+- Internal refactoring (no consumer impact)
+- Test-only changes
+- Documentation updates
+- Dependency bumps (unless they affect consumers)
+
+## Validation
+
+```bash
+# Validate all changelogs
+yarn changelog:validate
+
+# Common errors:
+# - Missing [Unreleased] section
+# - Invalid category name
+# - Missing PR link
+```
+
+## Unreleased Section
+
+Always maintain an `## [Unreleased]` section at the top:
+
+```markdown
+## [Unreleased]
+
+### Added
+
+- New feature being developed ([#123](link))
+```
+
+When releasing, this section becomes the new version and a fresh `[Unreleased]` section is created.

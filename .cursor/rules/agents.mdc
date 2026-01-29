@@ -5,18 +5,35 @@ alwaysApply: true
 
 # Snaps Monorepo
 
-Yarn 4 monorepo for the MetaMask Snaps platform. See `docs/internals/` for architecture details.
+Yarn 4 monorepo for the MetaMask Snaps platform. See `docs/internals/` for detailed architecture.
 
-## Packages
+## Stack
 
-| Package                           | Purpose                             |
-| --------------------------------- | ----------------------------------- |
-| `snaps-sdk`                       | SDK for building snaps (types, JSX) |
-| `snaps-controllers`               | SnapController, ExecutionService    |
-| `snaps-rpc-methods`               | RPC method implementations          |
-| `snaps-execution-environments`    | SES sandboxing, endowments          |
-| `snaps-utils`                     | Shared utilities                    |
-| `snaps-simulation` / `snaps-jest` | Testing                             |
+- **Yarn 4** - Monorepo management
+- **TypeScript 5** - Type-safe code
+- **Jest + SWC** - Unit tests; **Vitest** for browser tests
+- **ESLint 9 + Prettier** - Linting and formatting
+- **ts-bridge** - Builds (produces ESM + CJS)
+- **LavaMoat** - Secure execution environment builds
+- **@metamask/auto-changelog** - Changelog management
+
+## Key Packages
+
+| Package                        | Purpose                             |
+| ------------------------------ | ----------------------------------- |
+| `snaps-sdk`                    | SDK for building Snaps (types, JSX) |
+| `snaps-utils`                  | Shared utilities                    |
+| `snaps-rpc-methods`            | RPC method implementations          |
+| `snaps-controllers`            | SnapController, ExecutionService    |
+| `snaps-execution-environments` | SES sandboxing, endowments          |
+| `snaps-simulation`             | Headless testing framework          |
+| `snaps-jest`                   | Jest preset for Snap testing        |
+
+## Dependency Flow
+
+```
+snaps-sdk → snaps-utils → snaps-rpc-methods → snaps-controllers → snaps-simulation → snaps-jest
+```
 
 ## Commands
 
@@ -25,7 +42,15 @@ yarn install && yarn build
 yarn test
 yarn lint
 yarn workspace @metamask/<pkg> test
+yarn workspace @metamask/<pkg> jest --no-coverage src/file.test.ts  # Single file
 ```
+
+## Development Workflow (TDD)
+
+1. **Update tests first** - Write/modify tests describing desired behavior
+2. **Watch tests fail** - Run tests to verify they fail
+3. **Make tests pass** - Implement changes
+4. **Run all checks** - `yarn lint && yarn test && yarn changelog:validate`
 
 ## Code Style
 
@@ -35,6 +60,7 @@ yarn workspace @metamask/<pkg> test
 - JSDoc for public APIs
 - `@metamask/superstruct` for validation
 - `@metamask/rpc-errors` for errors
+- Use uppercase "Snap" in docs/comments
 
 ## Key Patterns
 
@@ -42,3 +68,4 @@ yarn workspace @metamask/<pkg> test
 - **JSX components**: `createSnapComponent` + validation struct
 - **Testing**: Co-located `*.test.ts`, use `toStrictEqual`
 - **Permissions**: Caveats attenuate authority
+- **Controllers**: Extend `BaseController`, define messenger types

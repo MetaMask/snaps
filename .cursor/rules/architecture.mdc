@@ -5,6 +5,22 @@ alwaysApply: true
 
 # Snaps Platform Architecture
 
+## Dependency Graph
+
+```
+snaps-sdk (foundation)
+    ↓
+snaps-utils
+    ↓
+snaps-rpc-methods
+    ↓
+snaps-controllers ←── snaps-execution-environments (peer dep)
+    ↓
+snaps-simulation
+    ↓
+snaps-jest
+```
+
 ## Request Flow
 
 ```
@@ -13,10 +29,19 @@ Dapp → MetaMask → SnapController → ExecutionService → ExecutionEnvironme
 
 1. **Dapp** calls `wallet_invokeSnap(snapId, request)`
 2. **MetaMask** checks permissions via PermissionController middleware
-3. **SnapController** routes request, starts snap if needed
+3. **SnapController** routes request, starts Snap if needed
 4. **ExecutionService** manages communication with execution environment
-5. **ExecutionEnvironment** runs snap code in SES compartment
+5. **ExecutionEnvironment** runs Snap code in SES compartment
 6. **Snap** handles request and returns response
+
+## Execution Flow
+
+1. **SnapController** receives a request and starts the Snap if needed
+2. **ExecutionService** creates an execution environment (iframe, worker, etc.)
+3. **ExecutionEnvironment** sets up SES compartment with allowed endowments
+4. Snap code is evaluated in the compartment
+5. Exported handlers are registered and can receive requests
+6. Responses are validated as JSON-serializable before returning
 
 ## Key Components
 
@@ -24,11 +49,11 @@ Dapp → MetaMask → SnapController → ExecutionService → ExecutionEnvironme
 
 The brain of the platform:
 
-- Starts/stops snaps
+- Starts/stops Snaps
 - Manages permissions and state
-- Routes requests to correct snap
-- Installs/uninstalls snaps
-- Uses XState state machine for snap lifecycle
+- Routes requests to correct Snap
+- Installs/uninstalls Snaps
+- Uses XState state machine for Snap lifecycle
 
 ### ExecutionService (`snaps-controllers`)
 
@@ -36,16 +61,16 @@ Manages execution environments:
 
 - Creates environments (iframe, worker, Node.js process)
 - Sets up communication streams (postMessage)
-- Handles snap execution commands
+- Handles Snap execution commands
 
 ### ExecutionEnvironment (`snaps-execution-environments`)
 
-Runs snap code securely:
+Runs Snap code securely:
 
 - Built with LavaMoat for runtime protection
 - Creates SES compartment for sandboxing
 - Provides endowments (controlled global APIs)
-- Validates snap exports
+- Validates Snap exports
 
 ## Execution Environments
 
@@ -59,17 +84,14 @@ Runs snap code securely:
 
 ## Permission System
 
-Uses `@metamask/permission-controller` with:
+Uses `@metamask/permission-controller`:
 
-- **Subjects**: Websites, snaps, extensions
+- **Subjects**: Websites, Snaps, extensions
 - **Targets**: JSON-RPC methods, endowments
-- **Caveats**: Restrictions on permissions (e.g., allowed derivation paths)
-
-### Permission Types
-
-1. **Restricted methods** - Require explicit permission (e.g., `snap_getBip44Entropy`)
-2. **Unrestricted methods** - Anyone can call
-3. **Endowments** - Global APIs granted to snaps (e.g., `fetch`, `WebSocket`)
+- **Restricted methods**: Require permission (e.g., `snap_getBip32Entropy`)
+- **Permitted methods**: No permission needed (e.g., `wallet_requestSnaps`)
+- **Caveats**: Constraints on permissions (e.g., allowed derivation paths)
+- **Caveat mappers**: Convert manifest values to caveat objects
 
 ## Endowments
 
@@ -89,7 +111,7 @@ Middlewares process requests in order:
 ```typescript
 const engine = new JsonRpcEngine();
 engine.push(permissionMiddleware); // Check permissions
-engine.push(snapsMethodMiddleware); // Handle snap methods
+engine.push(snapsMethodMiddleware); // Handle Snap methods
 engine.push(/* other middleware */);
 ```
 

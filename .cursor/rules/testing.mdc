@@ -1,16 +1,30 @@
 ---
 description: Testing patterns for Snaps packages
-globs: '**/*.test.ts,**/*.test.tsx'
+globs: '**/*.test.ts,**/*.test.tsx,**/*.test.browser.ts'
 alwaysApply: false
 ---
 
 # Testing Patterns
 
+## Test-Driven Development
+
+Follow this workflow:
+
+1. **Update tests first** - Write/modify tests describing desired behavior (aim for 100% coverage)
+2. **Watch tests fail** - Run tests to verify they fail with current implementation
+3. **Make tests pass** - Implement changes to make tests pass
+4. **Run all checks** - Lint, types, tests, changelog validation
+
 ## File Organization
 
-- Tests: `*.test.ts` or `*.test.tsx` (co-located with source)
-- Test utilities: `test-utils/` directory in each package
-- Framework: Jest
+| Type          | Pattern                   | Location               |
+| ------------- | ------------------------- | ---------------------- |
+| Unit tests    | `*.test.ts`, `*.test.tsx` | Co-located with source |
+| Browser tests | `*.test.browser.ts`       | Co-located with source |
+| Utilities     | `test-utils/`             | Per-package directory  |
+
+- **Jest** - Unit tests (with SWC for transformation)
+- **Vitest** - Browser tests (some packages)
 
 ## Test Structure
 
@@ -70,8 +84,6 @@ it.each(['local:http://localhost:8000 ', 'local:http://localhost:8000\n'])(
 
 ## Test Utilities & Factories
 
-Use factory functions from `@metamask/snaps-utils/test-utils`:
-
 ```typescript
 import {
   MOCK_SNAP_ID,
@@ -89,6 +101,14 @@ import {
 const snap = getSnapObject({ enabled: false });
 const persisted = getPersistedSnapObject({ status: SnapStatus.Running });
 ```
+
+### Naming Conventions
+
+| Type           | Pattern                       | Example                                       |
+| -------------- | ----------------------------- | --------------------------------------------- |
+| Mock constant  | `MOCK_[DESCRIPTOR]`           | `MOCK_SNAP_ID`, `MOCK_ORIGIN`                 |
+| Factory helper | `get[Type]Object()`           | `getSnapObject()`, `getPersistedSnapObject()` |
+| Directory      | `__mocks__/`, `__fixtures__/` | `__mocks__/fs.ts`                             |
 
 ## Controller Test Utilities
 
@@ -141,7 +161,6 @@ const hooks = {
 ### Mock Controllers
 
 ```typescript
-// Approval controller mock
 export class MockApprovalController {
   #approval?: {
     request: Partial<ApprovalRequest>;
@@ -260,27 +279,27 @@ it('creates interface with JSX', async () => {
 ## Assertions Best Practices
 
 ```typescript
-// ✅ GOOD - Strict equality
+// Strict equality
 expect(result).toStrictEqual({ foo: 'bar' });
 
-// ✅ GOOD - Partial matching for shape tests
+// Partial matching for shape tests
 expect(handler).toMatchObject({
   methodNames: ['snap_method'],
   implementation: expect.any(Function),
 });
 
-// ✅ GOOD - Dynamic value matchers
+// Dynamic value matchers
 expect(snap.versionHistory).toStrictEqual([
   { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
 ]);
 
-// ✅ GOOD - Boolean checks
+// Boolean checks
 expect(isSnapId('npm:@metamask/snap')).toBe(true);
 
-// ✅ GOOD - Null checks
+// Null checks
 expect(get(null, 'key')).toBeNull();
 
-// ✅ GOOD - Function call verification
+// Function call verification
 expect(hasPermission).toHaveBeenCalledWith('snap_manageState');
 expect(getSnapState).toHaveBeenCalledTimes(1);
 expect(mockFn).not.toHaveBeenCalled();
@@ -289,9 +308,9 @@ expect(mockFn).not.toHaveBeenCalled();
 ## Async Testing
 
 ```typescript
-// Wait for state changes
 import { waitForStateChange, sleep } from '../test-utils';
 
+// Wait for state changes
 it('updates state', async () => {
   const stateChange = waitForStateChange(messenger);
   controller.doSomething();

@@ -8,6 +8,16 @@ alwaysApply: false
 
 Example snaps live in `packages/examples/packages/` and are tested via `packages/test-snaps/`.
 
+## When Adding New Platform Features
+
+When implementing a new Snaps platform feature (e.g., new permission, endowment, or RPC method), include:
+
+1. **Example Snap** in `packages/examples/packages/` demonstrating the feature
+2. **Test-snaps UI** in `packages/test-snaps/` for manual testing with MetaMask
+3. **Simulation support** in `snaps-simulation` and/or `snaps-jest` if needed for the example's E2E tests to pass
+
+New RPC methods, permissions, or platform APIs often require corresponding mock implementations or handlers in the simulation layer before the example Snap's tests can function correctly.
+
 ## Quick Start
 
 Copy an existing simple example (like `json-rpc` or `manage-state`) and modify it.
@@ -443,8 +453,19 @@ yarn start
 - [ ] Write tests with snaps-jest
 - [ ] Build and update shasum
 
+### Simulation Support (if needed)
+
+See the **simulation.mdc** rule for detailed guidance on adding simulation support.
+
+- [ ] Add hook implementation in `snaps-simulation/src/methods/hooks/`
+- [ ] Wire hook in `snaps-simulation/src/methods/specifications.ts`
+- [ ] Add store slice if state is needed
+- [ ] Add Jest matcher in `snaps-jest` if testing convenience is needed
+- [ ] Verify example snap tests pass
+
 ### Test-Snaps Integration
 
+- [ ] Add example snap as `devDependency` in `packages/test-snaps/package.json`
 - [ ] Create `features/snaps/<name>/` directory
 - [ ] Create `constants.ts` with snap ID, port, version
 - [ ] Create main component using `<Snap>` wrapper

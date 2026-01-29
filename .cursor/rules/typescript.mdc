@@ -6,7 +6,39 @@ alwaysApply: false
 
 # TypeScript Conventions
 
-## Naming
+## Naming Conventions
+
+### Files
+
+| Type         | Pattern                  | Example                              |
+| ------------ | ------------------------ | ------------------------------------ |
+| Controller   | `PascalCase.ts`          | `SnapController.ts`                  |
+| Utility      | `lowercase.ts`           | `utils.ts`, `validation.ts`          |
+| Test         | `[Name].test.ts`         | `SnapController.test.ts`             |
+| Browser test | `[Name].test.browser.ts` | `IFrameSnapExecutor.test.browser.ts` |
+| JSX test     | `[Name].test.tsx`        | `SnapController.test.tsx`            |
+
+### Classes and Types
+
+| Element          | Pattern                   | Example                                    |
+| ---------------- | ------------------------- | ------------------------------------------ |
+| Controller       | `[Domain]Controller`      | `SnapController`, `CronjobController`      |
+| Abstract service | `Abstract[Domain]Service` | `AbstractExecutionService`                 |
+| Executor         | `[Platform]SnapExecutor`  | `IFrameSnapExecutor`, `ThreadSnapExecutor` |
+| Struct validator | `[Type]Struct`            | `CronjobSpecificationStruct`               |
+| Props type       | `[Component]Props`        | `TextProps`, `ButtonProps`                 |
+| Element type     | `[Component]Element`      | `TextElement`, `ButtonElement`             |
+
+### Functions
+
+| Purpose    | Pattern           | Example                        |
+| ---------- | ----------------- | ------------------------------ |
+| Factory    | `get[Type]Object` | `getPersistedSnapObject()`     |
+| Type guard | `is[Type]`        | `isCronjobSpecification()`     |
+| Creator    | `create[Thing]`   | `createSnapComponent()`        |
+| Handler    | `on[Action]`      | `onTransaction`, `onSignature` |
+
+### Variables
 
 - Variables/functions: `camelCase`
 - Types/interfaces: `PascalCase` (no `I` prefix)
@@ -16,28 +48,27 @@ alwaysApply: false
 ## Types
 
 ```typescript
-// ✅ GOOD - Explicit types for function params and public APIs
+// Explicit types for function params and public APIs
 export function getSnap(snapId: SnapId): Snap | undefined;
 
-// ❌ BAD - Missing parameter types
-export function getSnap(snapId);
+// Infer types from Superstruct
+type MyType = Infer<typeof MyTypeStruct>;
 ```
 
 ## Imports
 
 ```typescript
-// ✅ GOOD - Type imports separated
+// Type imports separated
 import type { SnapId } from '@metamask/snaps-sdk';
 import { validateSnapId } from '@metamask/snaps-utils';
 
-// ✅ GOOD - Superstruct for validation
+// Superstruct for validation
 import { create, object, string } from '@metamask/superstruct';
 ```
 
 ## Error Handling
 
 ```typescript
-// ✅ GOOD - Use rpc-errors
 import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
 
 throw rpcErrors.invalidParams({ message: 'Invalid params: ...' });
@@ -46,7 +77,7 @@ throw providerErrors.unauthorized();
 
 ## JSDoc
 
-Document all exported functions with JSDoc:
+Document all exported functions:
 
 ```typescript
 /**
@@ -56,4 +87,16 @@ Document all exported functions with JSDoc:
  * @returns The Snap state, or null if not found.
  */
 export function getSnapState(snapId: SnapId): Json | null;
+```
+
+## Controllers
+
+- Controllers extend `BaseController`
+- Must have state; stateless logic belongs in services
+- Define public messenger types with actions and events
+- Include `:getState` action and `:stateChange` event at minimum
+
+```typescript
+export type MyControllerActions = MyControllerGetStateAction | OtherAction;
+export type MyControllerEvents = MyControllerStateChangeEvent | OtherEvent;
 ```
