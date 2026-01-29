@@ -166,7 +166,7 @@ snaps-jest
 | Factory       | `get[Type]Object`    | `getPersistedSnapObject()`     |
 | Type guard    | `is[Type]`           | `isCronjobSpecification()`     |
 | Creator       | `create[Thing]`      | `createSnapComponent()`        |
-| Handler       | `on[Action]`         | `OnTransaction`, `OnSignature` |
+| Handler       | `on[Action]`         | `onTransaction`, `onSignature` |
 | Caveat mapper | `[type]CaveatMapper` | `snapIdsCaveatMapper()`        |
 
 ### Test Utilities
