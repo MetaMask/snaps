@@ -1,0 +1,212 @@
+---
+description: Superstruct validation patterns
+globs: '**/*.ts'
+alwaysApply: false
+---
+
+# Validation with Superstruct
+
+Use `@metamask/superstruct` for runtime validation throughout the codebase.
+
+## Basic Usage
+
+```typescript
+import {
+  create,
+  object,
+  string,
+  boolean,
+  number,
+  array,
+  optional,
+  nullable,
+  literal,
+  union,
+  refine,
+  assign,
+} from '@metamask/superstruct';
+
+// Define struct
+const ParamsStruct = object({
+  key: string(),
+  value: optional(string()),
+  count: optional(number()),
+  enabled: boolean(),
+});
+
+// Validate and get typed result
+const validated = create(params, ParamsStruct);
+```
+
+## Common Patterns
+
+### Optional with Undefined
+
+```typescript
+// Always include undefined for optional props
+const MyStruct = object({
+  required: string(),
+  optional: optional(string()), // string | undefined
+});
+```
+
+### Literal Values
+
+```typescript
+const VariantStruct = union([
+  literal('primary'),
+  literal('secondary'),
+  literal('destructive'),
+]);
+```
+
+### Union Types
+
+```typescript
+import { nullUnion } from '@metamask/snaps-sdk/internals';
+
+// nullUnion is a utility for cleaner union types
+const TypeStruct = nullUnion([
+  literal('text'),
+  literal('password'),
+  literal('number'),
+]);
+```
+
+### Custom Refinements
+
+```typescript
+const SnapIdStruct = refine(string(), 'Snap ID', (value) => {
+  if (!value.startsWith('npm:') && !value.startsWith('local:')) {
+    return `Expected snap ID to start with "npm:" or "local:", got "${value}"`;
+  }
+  return true;
+});
+```
+
+### Extending Structs
+
+```typescript
+const BaseStruct = object({
+  name: string(),
+  value: optional(string()),
+});
+
+const ExtendedStruct = assign(
+  BaseStruct,
+  object({
+    type: literal('extended'),
+    extra: number(),
+  }),
+);
+```
+
+## RPC Parameter Validation
+
+```typescript
+import { StructError } from '@metamask/superstruct';
+import { rpcErrors } from '@metamask/rpc-errors';
+
+function getValidatedParams(params?: unknown) {
+  try {
+    return create(params, ParamsStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+    throw rpcErrors.internal();
+  }
+}
+```
+
+## Type Inference
+
+```typescript
+import type { Infer } from '@metamask/superstruct';
+import type { InferMatching } from '@metamask/snaps-utils';
+
+// Infer type from struct
+type Params = Infer<typeof ParamsStruct>;
+
+// Match inferred type against expected type
+type ValidatedParams = InferMatching<typeof ParamsStruct, ExpectedType>;
+```
+
+## JSX Validation (`snaps-sdk/jsx/validation.ts`)
+
+For JSX components, use the `element` helper:
+
+```typescript
+import { Describe } from '@metamask/snaps-sdk/internals';
+
+// Simple element with props
+export const MyComponentStruct: Describe<MyComponentElement> = element(
+  'MyComponent',
+  {
+    label: string(),
+    variant: optional(nullUnion([literal('default'), literal('primary')])),
+  },
+);
+
+// Element with selective props (union based on discriminator)
+export const InputStruct: Describe<InputElement> = elementWithSelectiveProps(
+  'Input',
+  (value) => {
+    if (value.type === 'number') return NumberInputPropsStruct;
+    if (value.type === 'password') return PasswordInputPropsStruct;
+    return TextInputPropsStruct;
+  },
+);
+
+// Children validation
+export const BoxStruct: Describe<BoxElement> = element('Box', {
+  children: children([
+    /* allowed child structs */
+  ]),
+  direction: optional(nullUnion([literal('vertical'), literal('horizontal')])),
+});
+```
+
+### Children Helpers
+
+```typescript
+// Multiple child types, nestable arrays
+children([TextStruct, IconStruct, ButtonStruct]);
+
+// Single child only
+singleChild(TextStruct);
+
+// String content (text nodes)
+StringElementStruct;
+```
+
+## Type Guards
+
+```typescript
+import { is, assertStruct } from '@metamask/superstruct';
+
+// Type guard
+export function isSnapId(value: unknown): value is SnapId {
+  return is(value, SnapIdStruct);
+}
+
+// Assertion
+export function assertIsValidSnapId(value: unknown): asserts value is SnapId {
+  assertStruct(value, SnapIdStruct, 'Invalid snap ID');
+}
+```
+
+## Validation with Context
+
+```typescript
+import { validate } from '@metamask/superstruct';
+
+const [error, result] = validate(value, MyStruct);
+if (error) {
+  // Handle validation error with full path info
+  console.log(error.path); // ['nested', 'field']
+  console.log(error.message);
+}
+```

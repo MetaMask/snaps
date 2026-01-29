@@ -1,0 +1,238 @@
+---
+description: Patterns for implementing RPC methods in snaps-rpc-methods
+globs: '**/snaps-rpc-methods/**/*.ts'
+alwaysApply: false
+---
+
+# RPC Method Implementation
+
+## Method Types
+
+### Permitted Methods (`permitted/`)
+
+Available to dapps and snaps via middleware. Exported as handlers:
+
+```typescript
+import type { PermittedHandlerExport } from '@metamask/permission-controller';
+
+const hookNames: MethodHooksObject<MyHooks> = {
+  hasPermission: true,
+  doAction: true,
+};
+
+export const myHandler: PermittedHandlerExport<MyHooks, Params, Result> = {
+  methodNames: ['snap_myMethod'],
+  implementation: myImplementation,
+  hookNames,
+};
+```
+
+Added to middleware in `permitted/middleware.ts`.
+
+### Restricted Methods (`restricted/`)
+
+Require permission to call. Use permission specification builder pattern:
+
+```typescript
+import { PermissionType, SubjectType } from '@metamask/permission-controller';
+
+export const myMethodBuilder = {
+  targetName: 'snap_myMethod',
+  specificationBuilder: ({ methodHooks }) => ({
+    permissionType: PermissionType.RestrictedMethod,
+    targetName: 'snap_myMethod',
+    allowedCaveats: ['myCaveat'], // or null
+    methodImplementation: getImplementation(methodHooks),
+    subjectTypes: [SubjectType.Snap],
+  }),
+  methodHooks: {
+    doAction: true,
+  },
+} as const;
+```
+
+Exported via `restrictedMethodPermissionBuilders` in `restricted/index.ts`.
+
+### Endowments (`endowments/`)
+
+Grant global APIs to snaps (e.g., `fetch`, `WebSocket`):
+
+```typescript
+export const networkAccessEndowmentBuilder = {
+  targetName: 'endowment:network-access',
+  specificationBuilder: () => ({
+    permissionType: PermissionType.Endowment,
+    targetName: 'endowment:network-access',
+    endowmentGetter: () => ['fetch', 'Request', 'Headers', 'Response'],
+    allowedCaveats: null,
+    subjectTypes: [SubjectType.Snap],
+  }),
+};
+```
+
+## Implementation Pattern
+
+```typescript
+async function myImplementation(
+  request: JsonRpcRequest<Params>,
+  response: PendingJsonRpcResponse<Result>,
+  _next: unknown,
+  end: JsonRpcEngineEndCallback,
+  { hasPermission, doAction }: MyHooks,
+): Promise<void> {
+  // 1. Check permission (for permitted methods that wrap restricted ones)
+  if (!hasPermission('snap_manageState')) {
+    return end(providerErrors.unauthorized());
+  }
+
+  // 2. Validate params
+  try {
+    const validated = getValidatedParams(request.params);
+
+    // 3. Execute
+    const result = await doAction(validated);
+    response.result = result;
+  } catch (error) {
+    return end(error);
+  }
+
+  return end();
+}
+```
+
+## Hooks Type
+
+```typescript
+export type MyHooks = {
+  /**
+   * Check if the requesting origin has a given permission.
+   *
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the origin has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
+  /**
+   * Perform the action.
+   *
+   * @param params - The validated parameters.
+   * @returns The result.
+   */
+  doAction: (params: ValidatedParams) => Promise<Result>;
+};
+```
+
+## Parameter Validation
+
+```typescript
+import {
+  create,
+  object,
+  string,
+  optional,
+  boolean,
+  StructError,
+} from '@metamask/superstruct';
+import { rpcErrors } from '@metamask/rpc-errors';
+
+const ParamsStruct = object({
+  key: optional(string()),
+  encrypted: optional(boolean()),
+});
+
+function getValidatedParams(params?: unknown) {
+  try {
+    return create(params, ParamsStruct);
+  } catch (error) {
+    if (error instanceof StructError) {
+      throw rpcErrors.invalidParams({
+        message: `Invalid params: ${error.message}.`,
+      });
+    }
+    throw rpcErrors.internal();
+  }
+}
+```
+
+## Caveats (`restricted/caveats/`)
+
+Caveats attenuate permissions. Each caveat has:
+
+- Type constant in `SnapCaveatType`
+- Validator function
+- Caveat mapper (converts manifest value to caveat format)
+
+```typescript
+// Caveat type
+export const SnapCaveatType = {
+  PermittedDerivationPaths: 'permittedDerivationPaths',
+  // ...
+};
+
+// Caveat mapper (manifest → caveat)
+export function permittedDerivationPathsCaveatMapper(
+  value: Json,
+): Pick<PermissionConstraint, 'caveats'> {
+  return {
+    caveats: [
+      {
+        type: SnapCaveatType.PermittedDerivationPaths,
+        value,
+      },
+    ],
+  };
+}
+```
+
+## Adding New Methods
+
+1. **Permitted method**: Add handler to `permitted/`, export from `permitted/handlers.ts`, add to middleware
+2. **Restricted method**: Add builder to `restricted/`, export from `restricted/index.ts`
+3. **Endowment**: Add builder to `endowments/`, export from `endowments/index.ts`
+
+## Testing
+
+```typescript
+describe('myHandler', () => {
+  it('has the expected shape', () => {
+    expect(myHandler).toMatchObject({
+      methodNames: ['snap_myMethod'],
+      implementation: expect.any(Function),
+      hookNames: { hasPermission: true, doAction: true },
+    });
+  });
+
+  it('returns result for valid input', async () => {
+    const hooks = {
+      hasPermission: jest.fn().mockReturnValue(true),
+      doAction: jest.fn().mockResolvedValue({ result: 'ok' }),
+    };
+
+    const engine = new JsonRpcEngine();
+    engine.push((req, res, next, end) => {
+      myHandler.implementation(req, res, next, end, hooks)?.catch(end);
+    });
+
+    const response = await engine.handle({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'snap_myMethod',
+      params: { key: 'test' },
+    });
+
+    expect(response).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: { result: 'ok' },
+    });
+  });
+
+  it('throws unauthorized without permission', async () => {
+    const hooks = {
+      hasPermission: jest.fn().mockReturnValue(false),
+      doAction: jest.fn(),
+    };
+    // ... test returns unauthorized error
+  });
+});
+```

@@ -1,0 +1,492 @@
+---
+description: Guide for adding new API support in snaps-simulation and snaps-jest
+globs: '**/snaps-simulation/**/*.ts,**/snaps-jest/**/*.ts'
+alwaysApply: false
+---
+
+# Supporting New APIs in Simulation
+
+When implementing new Snaps platform features (permissions, RPC methods, endowments), you need corresponding mock implementations in `snaps-simulation` for example Snap tests to work.
+
+## Architecture Overview
+
+```
+snaps-jest (test helpers)
+    ↓ uses
+snaps-simulation (headless simulation)
+    ├── methods/hooks/      # Hook implementations for restricted methods
+    ├── methods/specifications.ts  # Wires hooks to permission specs
+    ├── middleware/         # JSON-RPC middleware (ethereum provider, internal methods)
+    ├── store/              # Redux store slices (state, notifications, mocks, etc.)
+    └── helpers.ts          # Snap helper functions (request, onTransaction, etc.)
+```
+
+## Adding a New Hook (Restricted Method)
+
+Restricted methods use hooks. To support a new one:
+
+### Step 1: Create Hook Implementation
+
+Create `methods/hooks/<name>.ts`:
+
+```typescript
+import type { SagaIterator } from 'redux-saga';
+import { put, select } from 'redux-saga/effects';
+
+import type { RunSagaFunction } from '../../store';
+import { myAction, getMyState } from '../../store';
+
+/**
+ * Implementation of the myMethod hook.
+ *
+ * @param snapId - The ID of the Snap.
+ * @param params - The method parameters.
+ * @yields Interacts with the Redux store.
+ * @returns The result.
+ */
+function* myMethodImplementation(
+  snapId: string,
+  params: MyParams,
+): SagaIterator<MyResult> {
+  // Read from store
+  const currentState = yield select(getMyState);
+
+  // Write to store
+  yield put(
+    myAction({
+      /* payload */
+    }),
+  );
+
+  return result;
+}
+
+/**
+ * Get the implementation of the `myMethod` hook.
+ *
+ * @param runSaga - The function to run a saga outside the usual Redux flow.
+ * @returns The implementation of the `myMethod` hook.
+ */
+export function getMyMethodImplementation(runSaga: RunSagaFunction) {
+  return async (...args: Parameters<typeof myMethodImplementation>) => {
+    return await runSaga(myMethodImplementation, ...args).toPromise();
+  };
+}
+```
+
+### Step 2: Export from hooks/index.ts
+
+```typescript
+export * from './my-method';
+```
+
+### Step 3: Wire Hook in specifications.ts
+
+In `methods/specifications.ts`, add the hook to `buildSnapRestrictedMethodSpecifications`:
+
+```typescript
+import { getMyMethodImplementation } from './hooks';
+
+export function getPermissionSpecifications({
+  controllerMessenger,
+  hooks,
+  runSaga,
+  options,
+}: GetPermissionSpecificationsOptions) {
+  return {
+    ...buildSnapRestrictedMethodSpecifications(EXCLUDED_SNAP_PERMISSIONS, {
+      // Existing hooks...
+      myMethod: getMyMethodImplementation(runSaga),
+    }),
+  };
+}
+```
+
+### Step 4: Add Store Slice (if needed)
+
+If the hook needs persistent state, create `store/<name>.ts`:
+
+```typescript
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+
+import type { ApplicationState } from './store';
+
+export type MyState = {
+  data: string | null;
+};
+
+const INITIAL_STATE: MyState = {
+  data: null,
+};
+
+export const mySlice = createSlice({
+  name: 'myFeature',
+  initialState: INITIAL_STATE,
+  reducers: {
+    setData: (state, action: PayloadAction<string>) => {
+      state.data = action.payload;
+    },
+    clearData: (state) => {
+      state.data = null;
+    },
+  },
+});
+
+export const { setData, clearData } = mySlice.actions;
+
+export const getData = createSelector(
+  (state: ApplicationState) => state.myFeature,
+  ({ data }) => data,
+);
+```
+
+Then add to `store/store.ts`:
+
+```typescript
+import { mySlice } from './my-feature';
+
+export function createStore(options: SimulationOptions) {
+  const store = configureStore({
+    reducer: {
+      // Existing slices...
+      myFeature: mySlice.reducer,
+    },
+    // ...
+  });
+}
+```
+
+---
+
+## Adding Internal Method Middleware
+
+For methods normally handled by MetaMask (like `eth_accounts`, `eth_chainId`):
+
+### Step 1: Create Handler
+
+Create `middleware/internal-methods/<name>.ts`:
+
+```typescript
+import type {
+  JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+} from '@metamask/json-rpc-engine';
+import type { JsonRpcParams, JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+
+import type { InternalMethodsMiddlewareHooks } from './middleware';
+
+/**
+ * Get the handler for `my_method`.
+ *
+ * @param _request - The JSON-RPC request.
+ * @param response - The JSON-RPC response.
+ * @param _next - The next middleware function.
+ * @param end - The end callback.
+ * @param hooks - The middleware hooks.
+ * @returns Nothing.
+ */
+export async function getMyMethodHandler(
+  _request: JsonRpcRequest<JsonRpcParams>,
+  response: PendingJsonRpcResponse<unknown>,
+  _next: JsonRpcEngineNextCallback,
+  end: JsonRpcEngineEndCallback,
+  hooks: InternalMethodsMiddlewareHooks,
+): Promise<void> {
+  // Use hooks to get data
+  const state = hooks.getSimulationState();
+
+  response.result = /* computed result */;
+  return end();
+}
+```
+
+### Step 2: Register in Middleware
+
+In `middleware/internal-methods/middleware.ts`:
+
+```typescript
+import { getMyMethodHandler } from './my-method';
+
+const methodHandlers = {
+  // Existing handlers...
+  my_method: getMyMethodHandler,
+};
+```
+
+### Step 3: Add Hook Type (if needed)
+
+```typescript
+export type InternalMethodsMiddlewareHooks = {
+  // Existing hooks...
+
+  /**
+   * A hook that does something.
+   */
+  myHook: () => SomeType;
+};
+```
+
+---
+
+## Adding a Snap Helper Function
+
+To expose new functionality to tests (like `onTransaction`, `onHomePage`):
+
+### Step 1: Add to SnapHelpers Type
+
+In `helpers.ts`:
+
+```typescript
+export type SnapHelpers = {
+  // Existing helpers...
+
+  /**
+   * Send a custom request to the Snap.
+   *
+   * @param options - The request options.
+   * @returns The response.
+   */
+  onMyFeature(options: MyFeatureOptions): Promise<SnapResponseWithInterface>;
+};
+```
+
+### Step 2: Implement Helper
+
+In `getHelpers()`:
+
+```typescript
+export function getHelpers({
+  snapId,
+  store,
+  executionService,
+  runSaga,
+  controllerMessenger,
+  options,
+}: InstalledSnap & { options: SimulationOptions }): SnapHelpers {
+  const onMyFeature = async (
+    request: MyFeatureOptions,
+  ): Promise<SnapResponseWithInterface> => {
+    log('Handling my feature %o.', request);
+
+    const params = create(request, MyFeatureOptionsStruct);
+
+    const response = await handleRequest({
+      snapId,
+      store,
+      executionService,
+      runSaga,
+      controllerMessenger,
+      simulationOptions: options,
+      handler: HandlerType.OnMyFeature, // Add to snaps-utils HandlerType
+      request: {
+        method: '',
+        params,
+      },
+    });
+
+    assertIsResponseWithInterface(response);
+    return response;
+  };
+
+  return {
+    // Existing helpers...
+    onMyFeature,
+  };
+}
+```
+
+### Step 3: Add Options Struct
+
+In `structs.ts`:
+
+```typescript
+export const MyFeatureOptionsStruct = object({
+  origin: optional(string()),
+  someParam: string(),
+});
+```
+
+---
+
+## Adding a Jest Matcher
+
+In `snaps-jest/src/matchers.ts`:
+
+```typescript
+/**
+ * Check if the Snap did something specific.
+ *
+ * @param actual - The actual response.
+ * @param expected - The expected value.
+ * @returns The status and message.
+ */
+export const toDoSomething: MatcherFunction<[expected: SomeType]> = function (
+  actual,
+  expected,
+) {
+  assertActualIsSnapResponse(actual, 'toDoSomething');
+
+  const { someProperty } = actual;
+  const pass = this.equals(someProperty, expected);
+
+  const message = pass
+    ? () =>
+        `${this.utils.matcherHint('.not.toDoSomething')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Received: ${this.utils.printReceived(someProperty)}`
+    : () =>
+        `${this.utils.matcherHint('.toDoSomething')}\n\n` +
+        `Expected: ${this.utils.printExpected(expected)}\n` +
+        `Received: ${this.utils.printReceived(someProperty)}`;
+
+  return { message, pass };
+};
+
+// Register the matcher
+expect.extend({
+  // Existing matchers...
+  toDoSomething,
+});
+```
+
+Then add type declaration in the same file or a `.d.ts`:
+
+```typescript
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toDoSomething(expected: SomeType): R;
+    }
+  }
+}
+```
+
+---
+
+## Testing
+
+### Hook Tests
+
+Create `methods/hooks/<name>.test.ts`:
+
+```typescript
+import { myMethodImplementation } from './my-method';
+
+describe('myMethodImplementation', () => {
+  it('returns expected result', async () => {
+    const runSaga = jest.fn().mockReturnValue({
+      toPromise: jest.fn().mockResolvedValue(expected),
+    });
+
+    const implementation = getMyMethodImplementation(runSaga);
+    const result = await implementation('snap-id', params);
+
+    expect(result).toStrictEqual(expected);
+  });
+});
+```
+
+### Store Tests
+
+Create `store/<name>.test.ts`:
+
+```typescript
+import { mySlice, setData, clearData, getData } from './my-feature';
+
+describe('mySlice', () => {
+  it('sets data', () => {
+    const state = mySlice.reducer(undefined, setData('value'));
+    expect(state.data).toBe('value');
+  });
+
+  it('clears data', () => {
+    const state = mySlice.reducer({ data: 'value' }, clearData());
+    expect(state.data).toBeNull();
+  });
+});
+
+describe('getData', () => {
+  it('returns the data', () => {
+    const state = { myFeature: { data: 'value' } };
+    expect(getData(state)).toBe('value');
+  });
+});
+```
+
+---
+
+## Checklist
+
+### New Hook (Restricted Method)
+
+- [ ] Create `methods/hooks/<name>.ts` with saga implementation
+- [ ] Export from `methods/hooks/index.ts`
+- [ ] Wire in `methods/specifications.ts`
+- [ ] Create store slice if needed (`store/<name>.ts`)
+- [ ] Register slice in `store/store.ts`
+- [ ] Write tests for hook and store
+
+### New Internal Method
+
+- [ ] Create `middleware/internal-methods/<name>.ts`
+- [ ] Register in `middleware/internal-methods/middleware.ts`
+- [ ] Add hook types if needed
+- [ ] Write tests
+
+### New Helper Function
+
+- [ ] Add to `SnapHelpers` type in `helpers.ts`
+- [ ] Implement in `getHelpers()`
+- [ ] Add options struct in `structs.ts`
+- [ ] Export from snaps-jest if needed
+- [ ] Write tests
+
+### New Jest Matcher
+
+- [ ] Add matcher function in `snaps-jest/src/matchers.ts`
+- [ ] Register with `expect.extend()`
+- [ ] Add type declaration
+- [ ] Write tests in `matchers.test.tsx`
+
+---
+
+## Common Patterns
+
+### Simple Hook (No State)
+
+```typescript
+export function getMyHookImplementation(options: SimulationOptions) {
+  return () => options.someValue ?? defaultValue;
+}
+```
+
+### Hook with Store Access
+
+```typescript
+function* myHookImplementation(snapId: string): SagaIterator<Result> {
+  const data = yield select(getData);
+  yield put(setData(newData));
+  return data;
+}
+```
+
+### Async Hook Wrapper
+
+```typescript
+export function getMyHookImplementation(runSaga: RunSagaFunction) {
+  return async (...args: Parameters<typeof myHookImplementation>) => {
+    return await runSaga(myHookImplementation, ...args).toPromise();
+  };
+}
+```
+
+### Sync Hook Wrapper
+
+```typescript
+export function getMyHookImplementation(runSaga: RunSagaFunction) {
+  return (...args: Parameters<typeof myHookImplementation>) => {
+    return runSaga(myHookImplementation, ...args).result();
+  };
+}
+```
