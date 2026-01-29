@@ -98,15 +98,15 @@ Each consumer-facing change should have a changelog entry. Follow ["Keep a Chang
 
 ## Architecture
 
-This is a Yarn workspaces monorepo for MetaMask Snaps infrastructure. Key packages:
+This is a Yarn workspaces monorepo for Snaps Platform infrastructure. Key packages:
 
 - **snaps-sdk**: Core library for building Snaps. Provides types, JSX runtime, and APIs that Snap developers use. Foundation dependency for most other packages.
 
 - **snaps-utils**: Shared utilities used across the Snaps ecosystem. Includes manifest validation, permissions handling, and common helpers.
 
-- **snaps-controllers**: Controllers that manage Snap lifecycle within MetaMask. Handles installation, execution, permissions, and state management. Used by MetaMask extension/mobile.
+- **snaps-controllers**: Controllers that manage Snap lifecycle within MetaMask. Handles installation, execution, permissions, and state management. Used by MetaMask clients (extension/mobile).
 
-- **snaps-execution-environments**: Sandboxed environments where Snaps run. Uses SES (Secure EcmaScript) for isolation. Builds special bundles via LavaMoat for security.
+- **snaps-execution-environments**: Sandboxed environments where Snaps run with limited access to globals. Uses SES (Secure EcmaScript) for isolation. Builds special bundles via LavaMoat for security.
 
 - **snaps-rpc-methods**: JSON-RPC method implementations for Snap APIs (e.g., `snap_dialog`, `snap_manageState`).
 
@@ -190,14 +190,14 @@ snaps-jest
 ### Permission System
 
 - **Caveat**: Constraint on a permission
-- **Endowment**: Capability granted to a snap (e.g., `endowment:network-access`)
-- **Restricted**: Method requiring permission
-- **Permitted**: Publicly accessible method
+- **Endowment**: Capability granted to a snap (e.g., `endowment:network-access`). May grant access to JavaScript globals.
+- **Restricted**: JSON-RPC method requiring permission
+- **Permitted**: Publicly accessible JSON-RPC method
 
 ### Execution
 
 - **ExecutionEnvironment**: Runtime context (iframe, webview, worker)
-- **Job**: Execution task with ID, streams, and JSON-RPC engine
+- **Job**: Execution task with Snap ID, streams, and JSON-RPC engine
 - **Endowments**: APIs available in snap context
 
 ## Code Guidelines
