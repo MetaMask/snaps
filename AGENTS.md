@@ -273,3 +273,4 @@ See `packages/examples/packages/multichain-provider/` for a complete example.
 - Coverage threshold is 100% by default (some packages override this)
 - Workspace package names use `@metamask/` scope (e.g., `@metamask/snaps-controllers`, not the directory name `snaps-controllers`)
 - Use uppercase "Snap" (not "snap") in comments and documentation when referring to MetaMask Snaps
+- Document all functions, classes, and types with JSDoc
