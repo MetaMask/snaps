@@ -136,6 +136,37 @@ snaps-simulation
 snaps-jest
 ```
 
+## Key Architectural Concepts
+
+### SES and Compartments
+
+Snaps run in [SES (Secure EcmaScript)](https://github.com/endojs/endo/tree/master/packages/ses) compartments for isolation. The compartment limits access to globals.
+
+### Permission System
+
+The platform uses `PermissionController` from `@metamask/permission-controller` extensively:
+
+- **Subjects**: Websites, Snaps, or extensions that request permissions
+- **Targets**: JSON-RPC methods or endowments being permissioned
+- **Restricted methods**: JSON-RPC methods that require permission to call (e.g., `snap_getBip32Entropy`)
+- **Permitted methods**: JSON-RPC methods available without special permission (e.g., `wallet_requestSnaps`). These generally do not pass through the `PermissionController`.
+- **Endowment**: Capability granted to a Snap (e.g., `endowment:network-access`). May grant access to JavaScript globals.
+- **Caveats**: Constraints that attenuate what a permission grants (e.g., limiting derivation paths)
+- **Caveat mappers**: Functions that convert manifest values to caveat objects
+
+### JSON-RPC Flow
+
+Requests flow through a middleware stack in `json-rpc-engine`. Each connection (dapp or Snap) gets its own engine instance. The permission middleware checks authorization before allowing restricted method calls.
+
+### Execution Flow
+
+1. **SnapController** receives a request and starts the Snap if needed
+2. **ExecutionService** creates an execution environment (iframe, worker, etc.)
+3. **ExecutionEnvironment** sets up SES compartment with allowed endowments
+4. Snap code is evaluated in the compartment
+5. Exported handlers are registered and can receive requests
+6. Responses are validated as JSON-serializable before returning
+
 ## Naming Conventions
 
 ### File Naming
@@ -161,13 +192,12 @@ snaps-jest
 
 ### Function Naming
 
-| Purpose       | Pattern              | Example                        |
-| ------------- | -------------------- | ------------------------------ |
-| Factory       | `get[Type]Object`    | `getPersistedSnapObject()`     |
-| Type guard    | `is[Type]`           | `isCronjobSpecification()`     |
-| Creator       | `create[Thing]`      | `createSnapComponent()`        |
-| Handler       | `on[Action]`         | `onTransaction`, `onSignature` |
-| Caveat mapper | `[type]CaveatMapper` | `snapIdsCaveatMapper()`        |
+| Purpose    | Pattern           | Example                        |
+| ---------- | ----------------- | ------------------------------ |
+| Factory    | `get[Type]Object` | `getPersistedSnapObject()`     |
+| Type guard | `is[Type]`        | `isCronjobSpecification()`     |
+| Creator    | `create[Thing]`   | `createSnapComponent()`        |
+| Handler    | `on[Action]`      | `onTransaction`, `onSignature` |
 
 ### Test Utilities
 
@@ -176,29 +206,6 @@ snaps-jest
 | Mock constant  | `MOCK_[DESCRIPTOR]`           | `MOCK_SNAP_ID`, `MOCK_ORIGIN`                 |
 | Factory helper | `get[Type]Object()`           | `getSnapObject()`, `getPersistedSnapObject()` |
 | Directory      | `__mocks__/`, `__fixtures__/` | `__mocks__/fs.ts`                             |
-
-## Domain Vocabulary
-
-### Snap Lifecycle
-
-- **SnapId**: Unique identifier (e.g., `npm:@metamask/example-snap`)
-- **SnapStatus**: Lifecycle state (`Stopped`, `Running`, `Crashed`)
-- **SnapManifest**: Configuration file (`snap.manifest.json`)
-- **TruncatedSnap**: Lightweight Snap representation
-- **PersistedSnap**: Full Snap data for storage
-
-### Permission System
-
-- **Caveat**: Constraint on a permission
-- **Endowment**: Capability granted to a Snap (e.g., `endowment:network-access`). May grant access to JavaScript globals.
-- **Restricted**: JSON-RPC method requiring permission
-- **Permitted**: Publicly accessible JSON-RPC method
-
-### Execution
-
-- **ExecutionEnvironment**: Runtime context (iframe, webview, worker)
-- **Job**: Execution task with Snap ID, streams, and JSON-RPC engine
-- **Endowments**: APIs available in Snap context
 
 ## Adding New Platform Features
 
@@ -250,20 +257,6 @@ See `packages/examples/packages/multichain-provider/` for a complete example.
 
 ## Code Guidelines
 
-### Controllers
-
-- Controller classes should extend `BaseController`
-- Controllers must have state; stateless logic belongs in services
-- Define public messenger types with actions and events
-- Include `:getState` action and `:stateChange` event at minimum
-- Constructor takes `messenger` and `state` options
-
-### Exports
-
-- Each package has an `index.ts` that defines all public exports
-- Use barrel exports (`export * from './module'`)
-- Superstruct validators define both the struct and inferred type together
-
 ### General
 
 - Packages use `workspace:^` for internal dependencies
@@ -274,3 +267,30 @@ See `packages/examples/packages/multichain-provider/` for a complete example.
 - Workspace package names use `@metamask/` scope (e.g., `@metamask/snaps-controllers`, not the directory name `snaps-controllers`)
 - Use uppercase "Snap" (not "snap") in comments and documentation when referring to MetaMask Snaps
 - Document all functions, classes, and types with JSDoc
+- Use `@metamask/superstruct` for runtime validation of data structures, RPC parameters, and API inputs/outputs
+- Define a `[Type]Struct` and infer the TypeScript type from it: `type MyType = Infer<typeof MyTypeStruct>`
+- Validate early at system boundaries (RPC handlers, external data) rather than deep in business logic
+
+### Controllers
+
+- Controllers are generally used whenever we need to store state in the MetaMask clients
+- Controller classes should extend `BaseController`
+- Controllers must have state; stateless logic belongs in services
+- Define public messenger types with actions and events
+- Include `:getState` action and `:stateChange` event at minimum
+- Constructor takes `messenger` and `state` options
+
+### Exports
+
+- Each package has an `index.ts` that defines all public exports
+- Some packages have platform-specific entry points (e.g., `@metamask/snaps-utils/node`, `@metamask/snaps-controllers/node`, `@metamask/snaps-controllers/react-native`) for platform-specific APIs that shouldn't be bundled for other environments
+
+## Further Reading
+
+See `docs/` for detailed platform internals:
+
+- `docs/internals/architecture.md` — System overview with sequence diagrams
+- `docs/internals/permissions.md` — Permission system deep dive
+- `docs/internals/execution.md` — SES sandboxing and endowments
+- `docs/internals/json-rpc.md` — JSON-RPC middleware stack
+- `docs/internals/platform/` — Individual component documentation
