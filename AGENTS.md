@@ -200,6 +200,54 @@ snaps-jest
 - **Job**: Execution task with Snap ID, streams, and JSON-RPC engine
 - **Endowments**: APIs available in snap context
 
+## Adding New Platform Features
+
+When implementing a new Snaps Platform feature (e.g., a new permission, endowment, or RPC method), include:
+
+1. **An example snap** in `packages/examples/packages/` demonstrating the feature
+2. **A test-snaps UI** in `packages/test-snaps/` for manual testing with MetaMask
+3. **Simulation support** in `snaps-simulation` and/or `snaps-jest` if needed for the example's E2E tests to pass
+
+New RPC methods, permissions, or platform APIs often require corresponding mock implementations or handlers in the simulation layer before the example snap's tests can function correctly.
+
+### Example Snap Structure
+
+Create a new directory in `packages/examples/packages/<feature-name>/`:
+
+```
+packages/examples/packages/<feature-name>/
+├── src/
+│   ├── index.ts          # Snap entry point with handler exports
+│   └── index.test.ts     # Tests using @metamask/snaps-jest
+├── snap.manifest.json    # Snap manifest with required permissions
+├── package.json          # Package with @metamask/snaps-jest devDependency
+└── jest.config.js
+```
+
+The example snap should:
+
+- Export the relevant handler (e.g., `onRpcRequest`, `onTransaction`)
+- Request only the permissions needed for the feature
+- Include tests using `installSnap()` from `@metamask/snaps-jest`
+
+### Test-Snaps Integration
+
+Add a feature directory in `packages/test-snaps/src/features/snaps/<feature-name>/`:
+
+```
+packages/test-snaps/src/features/snaps/<feature-name>/
+├── constants.ts          # SNAP_ID, SNAP_PORT, VERSION exports
+├── index.ts              # Re-exports the React component
+└── <FeatureName>.tsx     # React component with UI to test the snap
+```
+
+Then:
+
+1. Add the example snap as a `devDependency` in `packages/test-snaps/package.json`
+2. Export the feature component from `packages/test-snaps/src/features/snaps/index.ts`
+
+See `packages/examples/packages/multichain-provider/` for a complete example.
+
 ## Code Guidelines
 
 ### Controllers
@@ -224,3 +272,4 @@ snaps-jest
 - JSX components use `@metamask/snaps-sdk/jsx` with automatic runtime
 - Coverage threshold is 100% by default (some packages override this)
 - Workspace package names use `@metamask/` scope (e.g., `@metamask/snaps-controllers`, not the directory name `snaps-controllers`)
+- Use uppercase "Snap" (not "snap") in comments and documentation when referring to MetaMask Snaps
