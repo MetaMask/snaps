@@ -50,7 +50,7 @@
     "*.{js,ts,tsx,jsx}": [
       "eslint --fix"
     ],
-    "!(CHANGELOG).{json,yml,md}": [
+    "!(CHANGELOG|CLAUDE).{json,yml,md}": [
       "prettier --write"
     ],
     "yarn.lock": [
