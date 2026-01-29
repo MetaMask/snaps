@@ -1,4 +1,5 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
+import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from './enum';
 import { homePageEndowmentBuilder } from './home-page';
@@ -10,8 +11,9 @@ describe('endowment:page-home', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.HomePage,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: null,
+      allowedCaveats: [SnapCaveatType.MaxRequestTime],
       subjectTypes: [SubjectType.Snap],
+      validator: expect.any(Function),
     });
 
     expect(specification.endowmentGetter()).toBeNull();

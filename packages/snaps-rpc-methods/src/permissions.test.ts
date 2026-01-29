@@ -57,13 +57,16 @@ describe('buildSnapEndowmentSpecifications', () => {
           "validator": [Function],
         },
         "endowment:lifecycle-hooks": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:lifecycle-hooks",
+          "validator": [Function],
         },
         "endowment:multichain-provider": {
           "allowedCaveats": null,
@@ -98,22 +101,28 @@ describe('buildSnapEndowmentSpecifications', () => {
           "targetName": "endowment:network-access",
         },
         "endowment:page-home": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:page-home",
+          "validator": [Function],
         },
         "endowment:page-settings": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:page-settings",
+          "validator": [Function],
         },
         "endowment:protocol": {
           "allowedCaveats": [
