@@ -1,0 +1,59 @@
+---
+description: TypeScript coding conventions for Snaps packages
+globs: '**/*.ts,**/*.tsx'
+alwaysApply: false
+---
+
+# TypeScript Conventions
+
+## Naming
+
+- Variables/functions: `camelCase`
+- Types/interfaces: `PascalCase` (no `I` prefix)
+- Enums: `PascalCase`, members also `PascalCase`
+- Type parameters: minimum 3 characters (e.g., `Type`, `Value`, not `T`)
+
+## Types
+
+```typescript
+// ✅ GOOD - Explicit types for function params and public APIs
+export function getSnap(snapId: SnapId): Snap | undefined;
+
+// ❌ BAD - Missing parameter types
+export function getSnap(snapId);
+```
+
+## Imports
+
+```typescript
+// ✅ GOOD - Type imports separated
+import type { SnapId } from '@metamask/snaps-sdk';
+import { validateSnapId } from '@metamask/snaps-utils';
+
+// ✅ GOOD - Superstruct for validation
+import { create, object, string } from '@metamask/superstruct';
+```
+
+## Error Handling
+
+```typescript
+// ✅ GOOD - Use rpc-errors
+import { rpcErrors, providerErrors } from '@metamask/rpc-errors';
+
+throw rpcErrors.invalidParams({ message: 'Invalid params: ...' });
+throw providerErrors.unauthorized();
+```
+
+## JSDoc
+
+Document all exported functions with JSDoc:
+
+```typescript
+/**
+ * Get the state of the Snap.
+ *
+ * @param snapId - The ID of the Snap.
+ * @returns The Snap state, or null if not found.
+ */
+export function getSnapState(snapId: SnapId): Json | null;
+```

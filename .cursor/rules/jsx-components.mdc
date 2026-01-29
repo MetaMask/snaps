@@ -1,0 +1,479 @@
+---
+description: Guide for creating new JSX components in snaps-sdk
+globs: '**/snaps-sdk/src/jsx/**/*.ts,**/snaps-sdk/src/jsx/**/*.tsx'
+alwaysApply: false
+---
+
+# Creating New Snaps JSX Components
+
+This guide covers how to create new JSX components for the Snaps SDK.
+
+## File Structure
+
+For a new component `MyComponent`:
+
+```
+packages/snaps-sdk/src/jsx/components/
+├── MyComponent.ts          # Component definition
+├── MyComponent.test.tsx    # Tests
+└── index.ts               # Update exports
+```
+
+For form components, place in `form/` subdirectory.
+
+## Step 1: Create Component File
+
+### Basic Component Pattern
+
+```typescript
+// MyComponent.ts
+import { createSnapComponent } from '../component';
+
+/**
+ * The props of the {@link MyComponent} component.
+ *
+ * @property label - The label to display.
+ * @property variant - The visual variant.
+ */
+export type MyComponentProps = {
+  label: string;
+  variant?: 'default' | 'primary' | undefined;
+};
+
+const TYPE = 'MyComponent';
+
+/**
+ * A component that displays a label.
+ *
+ * @param props - The props of the component.
+ * @param props.label - The label to display.
+ * @param props.variant - The visual variant.
+ * @returns A MyComponent element.
+ * @example
+ * <MyComponent label="Hello" variant="primary" />
+ */
+export const MyComponent = createSnapComponent<MyComponentProps, typeof TYPE>(
+  TYPE,
+);
+
+/**
+ * A MyComponent element.
+ *
+ * @see MyComponent
+ */
+export type MyComponentElement = ReturnType<typeof MyComponent>;
+```
+
+### Component with Children
+
+```typescript
+// Import child types you want to allow
+import type { TextElement } from './Text';
+import type { IconElement } from './Icon';
+import type { SnapsChildren } from '../component';
+import { createSnapComponent } from '../component';
+
+/**
+ * The allowed children of {@link MyComponent}.
+ */
+export type MyComponentChildren = SnapsChildren<TextElement | IconElement>;
+
+/**
+ * The props of the {@link MyComponent} component.
+ *
+ * @property children - The content to display.
+ * @property title - The title.
+ */
+export type MyComponentProps = {
+  children: MyComponentChildren;
+  title: string;
+};
+
+const TYPE = 'MyComponent';
+
+/**
+ * A component with children.
+ *
+ * @param props - The props of the component.
+ * @param props.children - The content to display.
+ * @param props.title - The title.
+ * @returns A MyComponent element.
+ * @example
+ * <MyComponent title="Hello">
+ *   <Text>Content here</Text>
+ * </MyComponent>
+ */
+export const MyComponent = createSnapComponent<MyComponentProps, typeof TYPE>(
+  TYPE,
+);
+
+export type MyComponentElement = ReturnType<typeof MyComponent>;
+```
+
+### Component with Generic Children
+
+For components accepting any JSX element:
+
+```typescript
+import type { GenericSnapElement, SnapsChildren } from '../component';
+import { createSnapComponent } from '../component';
+
+export type ContainerProps = {
+  // Use GenericSnapElement for any JSX element
+  children: SnapsChildren<GenericSnapElement>;
+};
+```
+
+### Component with Single Child
+
+For components requiring exactly one child:
+
+```typescript
+export type WrapperProps = {
+  // Single child, not nestable array
+  children: GenericSnapElement;
+};
+```
+
+### Component with Tuple Children
+
+For specific child ordering (e.g., Container with Box + Footer):
+
+```typescript
+import type { BoxElement } from './Box';
+import type { FooterElement } from './Footer';
+
+export type ContainerProps = {
+  children: [BoxElement, FooterElement] | BoxElement;
+};
+```
+
+## Step 2: Children Type Reference
+
+Import from `../component`:
+
+| Type                  | Use Case                                                |
+| --------------------- | ------------------------------------------------------- |
+| `SnapsChildren<T>`    | Nestable array of T, with boolean/null for conditionals |
+| `GenericSnapElement`  | Any JSX element                                         |
+| `StringElement`       | String or nested strings (for text content)             |
+| `GenericSnapChildren` | GenericSnapElement \| boolean \| null                   |
+
+Common patterns:
+
+```typescript
+// String content only
+children: StringElement;
+
+// Specific elements
+children: SnapsChildren<TextElement | IconElement>;
+
+// Any elements
+children: SnapsChildren<GenericSnapElement>;
+
+// Single specific element
+children: TextElement;
+
+// Tuple of elements
+children: [HeaderElement, BodyElement];
+```
+
+## Step 3: Props Type Conventions
+
+### Optional Props
+
+Always use `| undefined` for optional props:
+
+```typescript
+export type MyProps = {
+  required: string;
+  optional?: string | undefined; // ✅ Correct
+  wrong?: string; // ❌ Missing undefined
+};
+```
+
+### Literal Union Types
+
+Use string literal unions for constrained values:
+
+```typescript
+export type MyProps = {
+  variant?: 'default' | 'primary' | 'destructive' | undefined;
+  size?: 'sm' | 'md' | 'lg' | undefined;
+  alignment?: 'start' | 'center' | 'end' | undefined;
+};
+```
+
+### JSDoc for Props Type
+
+Document every property:
+
+```typescript
+/**
+ * The props of the {@link MyComponent} component.
+ *
+ * @property children - The content to render.
+ * @property label - The label text.
+ * @property variant - The visual style variant. Defaults to `'default'`.
+ * @property disabled - Whether the component is disabled.
+ */
+export type MyComponentProps = {
+  children: SnapsChildren<TextElement>;
+  label: string;
+  variant?: 'default' | 'primary' | undefined;
+  disabled?: boolean | undefined;
+};
+```
+
+## Step 4: Update Index Exports
+
+Add to `components/index.ts`:
+
+```typescript
+// Add import
+import type { MyComponentElement } from './MyComponent';
+
+// Add export
+export * from './MyComponent';
+
+// Add to JSXElement union type
+export type JSXElement =
+  | /* existing types */
+  | MyComponentElement;
+```
+
+For form components, update `components/form/index.ts`:
+
+```typescript
+import type { MyFormElement } from './MyForm';
+
+export * from './MyForm';
+
+export type StandardFormElement =
+  | /* existing types */
+  | MyFormElement;
+```
+
+## Step 5: Add Validation Struct
+
+In `validation.ts`, create a struct for runtime validation:
+
+```typescript
+import type { MyComponentElement } from './components';
+
+/**
+ * A struct for the {@link MyComponentElement} type.
+ */
+export const MyComponentStruct: Describe<MyComponentElement> = element(
+  'MyComponent',
+  {
+    label: string(),
+    variant: optional(nullUnion([literal('default'), literal('primary')])),
+  },
+);
+```
+
+### Validation Helpers
+
+```typescript
+// Simple element with props
+element('Name', { prop: string() });
+
+// Element with selective props (union types based on a field)
+elementWithSelectiveProps('Input', (value) => {
+  if (value.type === 'text') return TextInputPropsStruct;
+  if (value.type === 'number') return NumberInputPropsStruct;
+  return GenericInputPropsStruct;
+});
+
+// Children validation
+children([TextStruct, IconStruct]); // Multiple allowed types
+singleChild(TextStruct); // Single child only
+
+// String children
+StringElementStruct;
+
+// Generic element children
+children([lazy(() => BoxChildStruct)]);
+```
+
+### Add to JSXElementStruct
+
+```typescript
+export const JSXElementStruct: Describe<JSXElement> = typedUnion('type', {
+  // ... existing entries
+  MyComponent: MyComponentStruct,
+});
+```
+
+## Step 6: Write Tests
+
+Create `MyComponent.test.tsx`:
+
+```tsx
+import { MyComponent } from './MyComponent';
+import { Text } from './Text';
+import { Icon } from './Icon';
+
+describe('MyComponent', () => {
+  it('renders with required props', () => {
+    const result = <MyComponent label="Hello" />;
+
+    expect(result).toStrictEqual({
+      type: 'MyComponent',
+      key: null,
+      props: {
+        label: 'Hello',
+      },
+    });
+  });
+
+  it('renders with all props', () => {
+    const result = <MyComponent label="Hello" variant="primary" />;
+
+    expect(result).toStrictEqual({
+      type: 'MyComponent',
+      key: null,
+      props: {
+        label: 'Hello',
+        variant: 'primary',
+      },
+    });
+  });
+
+  it('renders with children', () => {
+    const result = (
+      <MyComponent label="Hello">
+        <Text>Content</Text>
+      </MyComponent>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'MyComponent',
+      key: null,
+      props: {
+        label: 'Hello',
+        children: {
+          type: 'Text',
+          key: null,
+          props: {
+            children: 'Content',
+          },
+        },
+      },
+    });
+  });
+
+  it('renders with multiple children', () => {
+    const result = (
+      <MyComponent label="Hello">
+        <Text>First</Text>
+        <Text>Second</Text>
+      </MyComponent>
+    );
+
+    expect(result).toStrictEqual({
+      type: 'MyComponent',
+      key: null,
+      props: {
+        label: 'Hello',
+        children: [
+          { type: 'Text', key: null, props: { children: 'First' } },
+          { type: 'Text', key: null, props: { children: 'Second' } },
+        ],
+      },
+    });
+  });
+
+  it('handles conditional rendering', () => {
+    const result = (
+      <MyComponent label="Hello">{false && <Text>Hidden</Text>}</MyComponent>
+    );
+
+    expect(result.props.children).toBe(false);
+  });
+
+  it('renders with a key', () => {
+    const result = <MyComponent key="unique" label="Hello" />;
+
+    expect(result).toStrictEqual({
+      type: 'MyComponent',
+      key: 'unique',
+      props: {
+        label: 'Hello',
+      },
+    });
+  });
+});
+```
+
+## Complete Checklist
+
+When creating a new component:
+
+- [ ] Create `ComponentName.ts` with props type, component, and element type
+- [ ] Document all props with JSDoc `@property` tags
+- [ ] Document the component function with `@param` and `@example`
+- [ ] Use `| undefined` for all optional props
+- [ ] Export from `components/index.ts` (or `form/index.ts`)
+- [ ] Add element type to `JSXElement` union
+- [ ] Create validation struct in `validation.ts`
+- [ ] Add to `JSXElementStruct` typed union
+- [ ] Create `ComponentName.test.tsx` with comprehensive tests
+- [ ] Test: required props only
+- [ ] Test: all props
+- [ ] Test: with children (if applicable)
+- [ ] Test: multiple children (if applicable)
+- [ ] Test: conditional children (boolean false)
+- [ ] Test: with key prop
+
+## Example: Complete Form Component
+
+```typescript
+// packages/snaps-sdk/src/jsx/components/form/Slider.ts
+import { createSnapComponent } from '../../component';
+
+/**
+ * The props of the {@link Slider} component.
+ *
+ * @property name - The name for form data identification.
+ * @property value - The current value.
+ * @property min - The minimum value.
+ * @property max - The maximum value.
+ * @property step - The step increment.
+ * @property disabled - Whether the slider is disabled.
+ */
+export type SliderProps = {
+  name: string;
+  value?: number | undefined;
+  min?: number | undefined;
+  max?: number | undefined;
+  step?: number | undefined;
+  disabled?: boolean | undefined;
+};
+
+const TYPE = 'Slider';
+
+/**
+ * A slider component for selecting numeric values.
+ *
+ * @param props - The props of the component.
+ * @param props.name - The name for form data identification.
+ * @param props.value - The current value.
+ * @param props.min - The minimum value. Defaults to `0`.
+ * @param props.max - The maximum value. Defaults to `100`.
+ * @param props.step - The step increment. Defaults to `1`.
+ * @param props.disabled - Whether the slider is disabled.
+ * @returns A slider element.
+ * @example
+ * <Slider name="volume" min={0} max={100} value={50} />
+ */
+export const Slider = createSnapComponent<SliderProps, typeof TYPE>(TYPE);
+
+/**
+ * A slider element.
+ *
+ * @see Slider
+ */
+export type SliderElement = ReturnType<typeof Slider>;
+```

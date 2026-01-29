@@ -1,0 +1,311 @@
+---
+description: Testing patterns for Snaps packages
+globs: '**/*.test.ts,**/*.test.tsx'
+alwaysApply: false
+---
+
+# Testing Patterns
+
+## File Organization
+
+- Tests: `*.test.ts` or `*.test.tsx` (co-located with source)
+- Test utilities: `test-utils/` directory in each package
+- Framework: Jest
+
+## Test Structure
+
+```typescript
+describe('ModuleName', () => {
+  describe('functionName', () => {
+    // 1. Shape/contract tests first
+    it('has the expected shape', () => {
+      expect(handler).toMatchObject({
+        methodNames: ['snap_method'],
+        implementation: expect.any(Function),
+        hookNames: { someHook: true },
+      });
+    });
+
+    // 2. Happy path tests
+    it('returns expected result', async () => {
+      const result = await functionUnderTest(validInput);
+      expect(result).toStrictEqual(expected);
+    });
+
+    // 3. Edge cases and error handling
+    it('throws if permission is missing', async () => {
+      await expect(fn()).rejects.toThrow('error message');
+    });
+  });
+});
+```
+
+## Parameterized Tests with `it.each`
+
+```typescript
+// Array of values
+it.each(['npm:@metamask/snap', 'local:http://localhost:8000'])(
+  'returns true for "%s"',
+  (value) => {
+    expect(isSnapId(value)).toBe(true);
+  },
+);
+
+// Array of invalid values
+it.each([undefined, {}, null, true, 2, 'invalid'])(
+  'returns false for "%s"',
+  (value) => {
+    expect(isSnapId(value)).toBe(false);
+  },
+);
+
+// Numbered test cases (use #%# for index)
+it.each(['local:http://localhost:8000 ', 'local:http://localhost:8000\n'])(
+  'disallows whitespace #%#',
+  (value) => {
+    expect(() => assertIsValidSnapId(value)).toThrow(/Invalid snap ID/u);
+  },
+);
+```
+
+## Test Utilities & Factories
+
+Use factory functions from `@metamask/snaps-utils/test-utils`:
+
+```typescript
+import {
+  MOCK_SNAP_ID,
+  MOCK_LOCAL_SNAP_ID,
+  MOCK_ORIGIN,
+  getSnapObject,
+  getPersistedSnapObject,
+  getTruncatedSnap,
+  getMockSnapData,
+  getSnapManifest,
+  DEFAULT_SNAP_BUNDLE,
+} from '@metamask/snaps-utils/test-utils';
+
+// Factory with defaults - override only what you need
+const snap = getSnapObject({ enabled: false });
+const persisted = getPersistedSnapObject({ status: SnapStatus.Running });
+```
+
+## Controller Test Utilities
+
+From `../test-utils` in snaps-controllers:
+
+```typescript
+import {
+  getSnapController,
+  getSnapControllerOptions,
+  getSnapControllerMessenger,
+  getSnapControllerWithEES,
+  getControllerMessenger,
+  MockSnapsRegistry,
+  approvalControllerMock,
+  MOCK_SNAP_SUBJECT_METADATA,
+  MOCK_RPC_ORIGINS_PERMISSION,
+} from '../test-utils';
+
+// Create controller with custom options
+const controller = getSnapController(
+  getSnapControllerOptions({
+    state: { snaps: { [MOCK_SNAP_ID]: getPersistedSnapObject() } },
+  }),
+);
+```
+
+## Mocking Patterns
+
+### Jest Mock Functions
+
+```typescript
+// Sync functions
+const hasPermission = jest.fn().mockReturnValue(true);
+
+// Async functions
+const getSnapState = jest.fn().mockResolvedValue({ foo: 'bar' });
+const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+
+// Rejecting promises
+const failingFn = jest.fn().mockRejectedValue(new Error('Failed'));
+
+// Group into hooks object
+const hooks = {
+  hasPermission,
+  getSnapState,
+  getUnlockPromise,
+};
+```
+
+### Mock Controllers
+
+```typescript
+// Approval controller mock
+export class MockApprovalController {
+  #approval?: {
+    request: Partial<ApprovalRequest>;
+    promise: { resolve; reject };
+  };
+
+  async addRequest(request: { id?: string; origin?: string }) {
+    return new Promise((resolve, reject) => {
+      this.#approval = { promise: { resolve, reject }, request };
+    });
+  }
+
+  async acceptRequest(_id: string, value: unknown) {
+    this.#approval?.promise.resolve(value);
+  }
+}
+```
+
+### Fetch Mocking
+
+```typescript
+import fetchMock from 'jest-fetch-mock';
+
+fetchMock.enableMocks();
+
+beforeEach(() => {
+  fetchMock.resetMocks();
+});
+
+it('fetches data', async () => {
+  fetchMock.mockResponseOnce(JSON.stringify({ data: 'value' }));
+  // ... test
+});
+```
+
+## RPC Engine Testing
+
+```typescript
+import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+
+it('handles RPC request', async () => {
+  const { implementation } = myHandler;
+  const hooks = {
+    /* mocks */
+  };
+
+  const engine = new JsonRpcEngine();
+  engine.push((request, response, next, end) => {
+    const result = implementation(request, response, next, end, hooks);
+    result?.catch(end);
+  });
+
+  const response = await engine.handle({
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'snap_myMethod',
+    params: { key: 'value' },
+  });
+
+  expect(response).toStrictEqual({
+    jsonrpc: '2.0',
+    id: 1,
+    result: expectedResult,
+  });
+});
+```
+
+## Error Testing
+
+```typescript
+import { errorCodes } from '@metamask/rpc-errors';
+
+// Test RPC error responses
+expect(response).toStrictEqual({
+  jsonrpc: '2.0',
+  id: 1,
+  error: {
+    code: errorCodes.rpc.invalidParams,
+    message: 'Invalid params: Expected a boolean.',
+    stack: expect.any(String),
+  },
+});
+
+// Test thrown errors
+expect(() => fn(invalid)).toThrow('Expected error message');
+
+// Test async rejection
+await expect(asyncFn(invalid)).rejects.toThrow('Error message');
+
+// Test error with regex
+expect(() => fn()).toThrow(/Invalid snap ID/u);
+```
+
+## JSX Component Testing
+
+```typescript
+import { Box, Text, Button } from '@metamask/snaps-sdk/jsx';
+
+it('creates interface with JSX', async () => {
+  const content = (
+    <Box>
+      <Text>Hello</Text>
+      <Button name="action">Click</Button>
+    </Box>
+  );
+
+  const hooks = {
+    createInterface: jest.fn().mockReturnValue('interface-id'),
+    getInterface: jest.fn().mockReturnValue({ content, state: {} }),
+  };
+
+  // Test with hooks
+});
+```
+
+## Assertions Best Practices
+
+```typescript
+// ✅ GOOD - Strict equality
+expect(result).toStrictEqual({ foo: 'bar' });
+
+// ✅ GOOD - Partial matching for shape tests
+expect(handler).toMatchObject({
+  methodNames: ['snap_method'],
+  implementation: expect.any(Function),
+});
+
+// ✅ GOOD - Dynamic value matchers
+expect(snap.versionHistory).toStrictEqual([
+  { origin: MOCK_ORIGIN, version: '1.0.0', date: expect.any(Number) },
+]);
+
+// ✅ GOOD - Boolean checks
+expect(isSnapId('npm:@metamask/snap')).toBe(true);
+
+// ✅ GOOD - Null checks
+expect(get(null, 'key')).toBeNull();
+
+// ✅ GOOD - Function call verification
+expect(hasPermission).toHaveBeenCalledWith('snap_manageState');
+expect(getSnapState).toHaveBeenCalledTimes(1);
+expect(mockFn).not.toHaveBeenCalled();
+```
+
+## Async Testing
+
+```typescript
+// Wait for state changes
+import { waitForStateChange, sleep } from '../test-utils';
+
+it('updates state', async () => {
+  const stateChange = waitForStateChange(messenger);
+  controller.doSomething();
+  await stateChange;
+  expect(controller.state).toStrictEqual(expected);
+});
+
+// Deferred promises
+import { createDeferredPromise } from '@metamask/utils';
+
+it('handles async flow', async () => {
+  const { promise, resolve } = createDeferredPromise();
+  // ... setup
+  resolve(value);
+  await promise;
+});
+```

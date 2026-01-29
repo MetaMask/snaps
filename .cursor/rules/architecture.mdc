@@ -1,0 +1,100 @@
+---
+description: High-level architecture of the Snaps platform
+alwaysApply: true
+---
+
+# Snaps Platform Architecture
+
+## Request Flow
+
+```
+Dapp → MetaMask → SnapController → ExecutionService → ExecutionEnvironment → SES Compartment → Snap
+```
+
+1. **Dapp** calls `wallet_invokeSnap(snapId, request)`
+2. **MetaMask** checks permissions via PermissionController middleware
+3. **SnapController** routes request, starts snap if needed
+4. **ExecutionService** manages communication with execution environment
+5. **ExecutionEnvironment** runs snap code in SES compartment
+6. **Snap** handles request and returns response
+
+## Key Components
+
+### SnapController (`snaps-controllers`)
+
+The brain of the platform:
+
+- Starts/stops snaps
+- Manages permissions and state
+- Routes requests to correct snap
+- Installs/uninstalls snaps
+- Uses XState state machine for snap lifecycle
+
+### ExecutionService (`snaps-controllers`)
+
+Manages execution environments:
+
+- Creates environments (iframe, worker, Node.js process)
+- Sets up communication streams (postMessage)
+- Handles snap execution commands
+
+### ExecutionEnvironment (`snaps-execution-environments`)
+
+Runs snap code securely:
+
+- Built with LavaMoat for runtime protection
+- Creates SES compartment for sandboxing
+- Provides endowments (controlled global APIs)
+- Validates snap exports
+
+## Execution Environments
+
+| Environment     | Use Case      |
+| --------------- | ------------- |
+| Iframe          | Extension MV2 |
+| Offscreen       | Extension MV3 |
+| WebWorker       | Extension MV2 |
+| Node.js process | Testing/CLI   |
+| Node.js worker  | Testing/CLI   |
+
+## Permission System
+
+Uses `@metamask/permission-controller` with:
+
+- **Subjects**: Websites, snaps, extensions
+- **Targets**: JSON-RPC methods, endowments
+- **Caveats**: Restrictions on permissions (e.g., allowed derivation paths)
+
+### Permission Types
+
+1. **Restricted methods** - Require explicit permission (e.g., `snap_getBip44Entropy`)
+2. **Unrestricted methods** - Anyone can call
+3. **Endowments** - Global APIs granted to snaps (e.g., `fetch`, `WebSocket`)
+
+## Endowments
+
+Snaps run in sandboxed SES compartments with limited globals. Endowments are:
+
+- Frozen and sealed (immutable)
+- Limited subset of standard APIs
+- Wrapped for proper teardown
+- Some default, others require permissions
+
+Default endowments: see `packages/snaps-utils/src/default-endowments.ts`
+
+## JSON-RPC Stack
+
+Middlewares process requests in order:
+
+```typescript
+const engine = new JsonRpcEngine();
+engine.push(permissionMiddleware); // Check permissions
+engine.push(snapsMethodMiddleware); // Handle snap methods
+engine.push(/* other middleware */);
+```
+
+Middleware can:
+
+- Modify request/response
+- Handle request and call `end()`
+- Pass to next middleware via `next()`

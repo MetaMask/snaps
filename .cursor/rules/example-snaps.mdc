@@ -1,0 +1,454 @@
+---
+description: Boilerplate for creating new example snaps and test-snaps integration
+globs: '**/examples/packages/**/*.ts,**/examples/packages/**/*.tsx,**/test-snaps/**/*.ts,**/test-snaps/**/*.tsx'
+alwaysApply: false
+---
+
+# Creating Example Snaps
+
+Example snaps live in `packages/examples/packages/` and are tested via `packages/test-snaps/`.
+
+## Quick Start
+
+Copy an existing simple example (like `json-rpc` or `manage-state`) and modify it.
+
+## Part 1: Example Snap (`packages/examples/packages/<name>/`)
+
+### Required Files
+
+```
+packages/examples/packages/<name>/
+├── src/
+│   ├── index.ts          # Entry point (or .tsx for JSX)
+│   └── index.test.ts     # Tests
+├── snap.manifest.json
+├── snap.config.ts
+├── package.json
+├── tsconfig.json
+├── jest.config.js
+├── .depcheckrc.json
+├── CHANGELOG.md
+├── README.md
+├── LICENSE.APACHE2
+└── LICENSE.MIT0
+```
+
+### snap.manifest.json
+
+```json
+{
+  "version": "1.0.0",
+  "description": "Example snap for [FEATURE]",
+  "proposedName": "[NAME] Example Snap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "source": {
+    "shasum": "PLACEHOLDER",
+    "location": {
+      "npm": {
+        "filePath": "dist/bundle.js",
+        "packageName": "@metamask/<name>-example-snap",
+        "registry": "https://registry.npmjs.org/"
+      }
+    }
+  },
+  "initialPermissions": {
+    // Add permissions needed for the feature being tested
+  },
+  "platformVersion": "10.4.0",
+  "manifestVersion": "0.1"
+}
+```
+
+### snap.config.ts
+
+```typescript
+import type { SnapConfig } from '@metamask/snaps-cli';
+import { resolve } from 'path';
+
+const config: SnapConfig = {
+  input: resolve(__dirname, 'src/index.ts'),
+  server: {
+    port: 80XX, // Pick unique port (check existing examples)
+  },
+  typescript: {
+    enabled: true,
+  },
+  stats: {
+    buffer: false,
+  },
+};
+
+export default config;
+```
+
+### package.json
+
+```json
+{
+  "name": "@metamask/<name>-example-snap",
+  "version": "1.0.0",
+  "description": "MetaMask example snap for [FEATURE]",
+  "keywords": ["MetaMask", "Snaps", "Ethereum"],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/examples/packages/<name>#readme",
+  "bugs": { "url": "https://github.com/MetaMask/snaps/issues" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "license": "(MIT-0 OR Apache-2.0)",
+  "sideEffects": false,
+  "main": "./dist/bundle.js",
+  "files": ["dist", "snap.manifest.json"],
+  "scripts": {
+    "build": "mm-snap build",
+    "build:clean": "yarn clean && yarn build",
+    "clean": "rimraf \"dist\"",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:dependencies",
+    "lint:dependencies": "depcheck",
+    "lint:eslint": "eslint . --cache",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" \"!snap.manifest.json\" --ignore-path ../../../../.gitignore",
+    "start": "mm-snap watch",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:verbose": "jest --verbose"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.5.0",
+    "@metamask/snaps-cli": "workspace:^",
+    "@metamask/snaps-jest": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
+    "@swc/jest": "^0.2.38",
+    "@types/node": "18.14.2",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.11.0",
+    "jest": "^29.0.2",
+    "jest-silent-reporter": "^0.6.0",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.3.3"
+  },
+  "engines": { "node": "^20 || >=22" },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
+```
+
+### Entry Point (src/index.ts)
+
+```typescript
+import {
+  MethodNotFoundError,
+  type OnRpcRequestHandler,
+} from '@metamask/snaps-sdk';
+
+export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
+  switch (request.method) {
+    case 'myMethod':
+      return await snap.request({
+        method: 'snap_someMethod',
+        params: request.params,
+      });
+
+    default:
+      throw new MethodNotFoundError({ method: request.method });
+  }
+};
+```
+
+### Test (src/index.test.ts)
+
+```typescript
+import { expect } from '@jest/globals';
+import { installSnap } from '@metamask/snaps-jest';
+
+describe('onRpcRequest', () => {
+  it('throws for unknown methods', async () => {
+    const { request } = await installSnap();
+
+    const response = await request({ method: 'unknown' });
+
+    expect(response).toRespondWithError({
+      code: -32601,
+      message: 'The method does not exist / is not available.',
+      stack: expect.any(String),
+      data: { method: 'unknown', cause: null },
+    });
+  });
+
+  it('handles myMethod', async () => {
+    const { request } = await installSnap();
+
+    const response = await request({
+      method: 'myMethod',
+      params: {
+        /* ... */
+      },
+    });
+
+    expect(response).toRespondWith(/* expected */);
+  });
+});
+```
+
+---
+
+## Part 2: Test-Snaps Integration (`packages/test-snaps/`)
+
+The test-snaps dapp provides a UI for manually testing example snaps. Each snap gets a card in the UI.
+
+### Directory Structure
+
+```
+packages/test-snaps/src/features/snaps/<name>/
+├── constants.ts         # Snap ID, port, version
+├── <Name>.tsx          # Main component
+├── index.ts            # Exports
+└── components/         # Sub-components (optional)
+    ├── index.ts
+    └── MyAction.tsx
+```
+
+### Step 1: Create constants.ts
+
+```typescript
+import packageJson from '@metamask/<name>-example-snap/package.json';
+
+export const MY_SNAP_ID = 'npm:@metamask/<name>-example-snap';
+export const MY_SNAP_PORT = 80XX; // Same port as snap.config.ts
+export const MY_SNAP_VERSION = packageJson.version;
+```
+
+### Step 2: Create Main Component (<Name>.tsx)
+
+Simple example (single action):
+
+```tsx
+import { logError } from '@metamask/snaps-utils';
+import type { FunctionComponent } from 'react';
+import { Button } from 'react-bootstrap';
+
+import { MY_SNAP_ID, MY_SNAP_PORT, MY_SNAP_VERSION } from './constants';
+import { useInvokeMutation } from '../../../api';
+import { Result, Snap } from '../../../components';
+import { getSnapId } from '../../../utils';
+
+export const MySnap: FunctionComponent = () => {
+  const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
+
+  const handleClick = () => {
+    invokeSnap({
+      snapId: getSnapId(MY_SNAP_ID, MY_SNAP_PORT),
+      method: 'myMethod',
+      params: {
+        /* optional params */
+      },
+    }).catch(logError);
+  };
+
+  return (
+    <Snap
+      name="My Example Snap"
+      snapId={MY_SNAP_ID}
+      port={MY_SNAP_PORT}
+      version={MY_SNAP_VERSION}
+      testId="my-snap"
+    >
+      <Button
+        variant="primary"
+        id="myAction"
+        className="mb-3"
+        disabled={isLoading}
+        onClick={handleClick}
+      >
+        Do Something
+      </Button>
+      <Result>
+        <span id="myResult">
+          {JSON.stringify(data, null, 2)}
+          {JSON.stringify(error, null, 2)}
+        </span>
+      </Result>
+    </Snap>
+  );
+};
+```
+
+### Step 3: Create index.ts
+
+```typescript
+export * from './MySnap';
+```
+
+### Step 4: Register in features/snaps/index.ts
+
+```typescript
+// Add export
+export * from './<name>';
+```
+
+The snap will automatically appear in the test-snaps UI because `App.tsx` iterates over all exports from `features/snaps`.
+
+### With Sub-Components
+
+For complex snaps with multiple actions, create components:
+
+```
+<name>/
+├── constants.ts
+├── <Name>.tsx
+├── index.ts
+└── components/
+    ├── index.ts
+    ├── ActionOne.tsx
+    └── ActionTwo.tsx
+```
+
+**components/ActionOne.tsx:**
+
+```tsx
+import { logError } from '@metamask/snaps-utils';
+import type { FunctionComponent } from 'react';
+import { Button } from 'react-bootstrap';
+
+import { MY_SNAP_ID, MY_SNAP_PORT } from '../constants';
+import { useInvokeMutation } from '../../../../api';
+import { getSnapId } from '../../../../utils';
+
+export const ActionOne: FunctionComponent = () => {
+  const [invokeSnap, { isLoading }] = useInvokeMutation();
+
+  const handleClick = () => {
+    invokeSnap({
+      snapId: getSnapId(MY_SNAP_ID, MY_SNAP_PORT),
+      method: 'actionOne',
+    }).catch(logError);
+  };
+
+  return (
+    <Button
+      variant="primary"
+      id="actionOne"
+      className="mb-3"
+      disabled={isLoading}
+      onClick={handleClick}
+    >
+      Action One
+    </Button>
+  );
+};
+```
+
+**components/index.ts:**
+
+```typescript
+export * from './ActionOne';
+export * from './ActionTwo';
+```
+
+**<Name>.tsx (with components):**
+
+```tsx
+import type { FunctionComponent } from 'react';
+
+import { ActionOne, ActionTwo } from './components';
+import { MY_SNAP_ID, MY_SNAP_PORT, MY_SNAP_VERSION } from './constants';
+import { Result, Snap } from '../../../components';
+
+export const MySnap: FunctionComponent = () => {
+  return (
+    <Snap
+      name="My Example Snap"
+      snapId={MY_SNAP_ID}
+      port={MY_SNAP_PORT}
+      version={MY_SNAP_VERSION}
+      testId="my-snap"
+    >
+      <ActionOne />
+      <ActionTwo />
+      <Result>
+        <span id="myResult" />
+      </Result>
+    </Snap>
+  );
+};
+```
+
+### API Hooks
+
+From `../../../api`:
+
+```typescript
+// Mutation (triggers action, invalidates cache)
+const [invokeSnap, { isLoading, data, error }] = useInvokeMutation();
+
+// Query (fetches data, uses cache)
+const { data, error, isLoading, refetch } = useInvokeQuery({
+  snapId: getSnapId(SNAP_ID, PORT),
+  method: 'getData',
+});
+
+// Install snap
+const [installSnap] = useInstallSnapMutation();
+
+// Get installed snaps
+const { data: snaps } = useGetSnapsQuery();
+```
+
+### Snap Component Props
+
+```typescript
+<Snap
+  name="Display Name"           // Card title
+  snapId={SNAP_ID}             // npm:@metamask/...
+  port={PORT}                  // Dev server port
+  version={VERSION}            // From package.json
+  testId="my-snap"             // data-testid for e2e tests
+  hideConnect={false}          // Optional: hide connect button
+>
+  {/* children */}
+</Snap>
+```
+
+---
+
+## Build & Verify
+
+```bash
+# Build example snap
+cd packages/examples/packages/<name>
+yarn build          # Generates dist/ and shasum
+yarn test
+yarn start          # Dev server
+
+# Update manifest shasum after build
+# Then run test-snaps
+cd packages/test-snaps
+yarn start
+```
+
+---
+
+## Checklist
+
+### Example Snap
+
+- [ ] Create directory in `packages/examples/packages/`
+- [ ] Add all config files (manifest, package.json, tsconfig, etc.)
+- [ ] Implement snap handlers
+- [ ] Write tests with snaps-jest
+- [ ] Build and update shasum
+
+### Test-Snaps Integration
+
+- [ ] Create `features/snaps/<name>/` directory
+- [ ] Create `constants.ts` with snap ID, port, version
+- [ ] Create main component using `<Snap>` wrapper
+- [ ] Create sub-components for multiple actions (optional)
+- [ ] Export from `index.ts`
+- [ ] Add export to `features/snaps/index.ts`
+- [ ] Verify snap appears in test-snaps UI

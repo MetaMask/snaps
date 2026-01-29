@@ -1,0 +1,44 @@
+---
+description: Core guidelines for the MetaMask Snaps monorepo
+alwaysApply: true
+---
+
+# Snaps Monorepo
+
+Yarn 4 monorepo for the MetaMask Snaps platform. See `docs/internals/` for architecture details.
+
+## Packages
+
+| Package                           | Purpose                             |
+| --------------------------------- | ----------------------------------- |
+| `snaps-sdk`                       | SDK for building snaps (types, JSX) |
+| `snaps-controllers`               | SnapController, ExecutionService    |
+| `snaps-rpc-methods`               | RPC method implementations          |
+| `snaps-execution-environments`    | SES sandboxing, endowments          |
+| `snaps-utils`                     | Shared utilities                    |
+| `snaps-simulation` / `snaps-jest` | Testing                             |
+
+## Commands
+
+```bash
+yarn install && yarn build
+yarn test
+yarn lint
+yarn workspace @metamask/<pkg> test
+```
+
+## Code Style
+
+- TypeScript strict mode
+- Single quotes, trailing commas (Prettier)
+- No `console.log` (use logger)
+- JSDoc for public APIs
+- `@metamask/superstruct` for validation
+- `@metamask/rpc-errors` for errors
+
+## Key Patterns
+
+- **RPC methods**: `permitted/` (middleware) vs `restricted/` (permission builders)
+- **JSX components**: `createSnapComponent` + validation struct
+- **Testing**: Co-located `*.test.ts`, use `toStrictEqual`
+- **Permissions**: Caveats attenuate authority
