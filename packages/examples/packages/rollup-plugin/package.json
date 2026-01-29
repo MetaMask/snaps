@@ -42,9 +42,6 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --watch"
   },
-  "dependencies": {
-    "@metamask/snaps-sdk": "workspace:^"
-  },
   "devDependencies": {
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
@@ -54,6 +51,7 @@
     "@metamask/auto-changelog": "^5.0.2",
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-rollup-plugin": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.1",
     "@rollup/plugin-node-resolve": "^15.1.0",
