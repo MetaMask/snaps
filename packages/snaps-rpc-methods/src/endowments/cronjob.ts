@@ -96,11 +96,7 @@ export function getCronjobCaveatMapper(
 export function getCronjobCaveatJobs(
   permission?: PermissionConstraint,
 ): CronjobSpecification[] | null {
-  if (!permission?.caveats) {
-    return null;
-  }
-
-  const caveat = permission.caveats.find(
+  const caveat = permission?.caveats?.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.SnapCronjob,
   ) as Caveat<string, { jobs: Json[] }> | undefined;
 

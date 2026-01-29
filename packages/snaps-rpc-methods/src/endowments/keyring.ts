@@ -112,9 +112,7 @@ export function getKeyringCaveatMapper(
 export function getKeyringCaveatOrigins(
   permission?: PermissionConstraint,
 ): KeyringOrigins {
-  assert(permission?.caveats);
-
-  const caveat = permission.caveats.find(
+  const caveat = permission?.caveats?.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.KeyringOrigin,
   ) as Caveat<string, KeyringOrigins> | undefined;
 

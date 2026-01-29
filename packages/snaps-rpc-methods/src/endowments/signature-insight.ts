@@ -124,15 +124,11 @@ export function getSignatureInsightCaveatMapper(
 export function getSignatureOriginCaveat(
   permission?: PermissionConstraint,
 ): boolean | null {
-  if (!permission?.caveats) {
-    return null;
-  }
-
-  const caveat = permission.caveats.find(
+  const caveat = permission?.caveats?.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.SignatureOrigin,
   ) as Caveat<string, boolean> | undefined;
 
-  return caveat ? caveat.value : null;
+  return caveat?.value ?? null;
 }
 
 export const signatureInsightCaveatSpecifications: Record<

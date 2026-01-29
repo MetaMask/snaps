@@ -113,9 +113,7 @@ export function getRpcCaveatMapper(
 export function getRpcCaveatOrigins(
   permission?: PermissionConstraint,
 ): RpcOrigins {
-  assert(permission?.caveats);
-
-  const caveat = permission.caveats.find(
+  const caveat = permission?.caveats?.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.RpcOrigin,
   ) as Caveat<string, RpcOrigins> | undefined;
 

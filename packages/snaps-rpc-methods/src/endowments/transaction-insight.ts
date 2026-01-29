@@ -124,15 +124,11 @@ export function getTransactionInsightCaveatMapper(
 export function getTransactionOriginCaveat(
   permission?: PermissionConstraint,
 ): boolean | null {
-  if (!permission?.caveats) {
-    return null;
-  }
-
-  const caveat = permission.caveats.find(
+  const caveat = permission?.caveats?.find(
     (permCaveat) => permCaveat.type === SnapCaveatType.TransactionOrigin,
   ) as Caveat<string, boolean> | undefined;
 
-  return caveat ? caveat.value : null;
+  return caveat?.value ?? null;
 }
 
 export const transactionInsightCaveatSpecifications: Record<
