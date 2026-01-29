@@ -41,7 +41,10 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.SignatureOrigin],
+    allowedCaveats: [
+      SnapCaveatType.SignatureOrigin,
+      SnapCaveatType.MaxRequestTime,
+    ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.SignatureOrigin, optional: true },
@@ -121,16 +124,11 @@ export function getSignatureInsightCaveatMapper(
 export function getSignatureOriginCaveat(
   permission?: PermissionConstraint,
 ): boolean | null {
-  if (!permission?.caveats) {
-    return null;
-  }
+  const caveat = permission?.caveats?.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.SignatureOrigin,
+  ) as Caveat<string, boolean> | undefined;
 
-  assert(permission.caveats.length === 1);
-  assert(permission.caveats[0].type === SnapCaveatType.SignatureOrigin);
-
-  const caveat = permission.caveats[0] as Caveat<string, boolean>;
-
-  return caveat.value ?? null;
+  return caveat?.value ?? null;
 }
 
 export const signatureInsightCaveatSpecifications: Record<

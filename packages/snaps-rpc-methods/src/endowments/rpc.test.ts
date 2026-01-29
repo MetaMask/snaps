@@ -85,21 +85,29 @@ describe('getRpcCaveatOrigins', () => {
     ).toStrictEqual({ snaps: true, dapps: false });
   });
 
-  it('throws if the caveat is not a single "rpcOrigin"', () => {
+  it('returns the origins when multiple caveats exist', () => {
+    expect(
+      // @ts-expect-error Missing other required permission types.
+      getRpcCaveatOrigins({
+        caveats: [
+          {
+            type: SnapCaveatType.RpcOrigin,
+            value: { snaps: true, dapps: false },
+          },
+          {
+            type: SnapCaveatType.MaxRequestTime,
+            value: 1000,
+          },
+        ],
+      }),
+    ).toStrictEqual({ snaps: true, dapps: false });
+  });
+
+  it('throws if there is no "rpcOrigin" caveat', () => {
     expect(() =>
       // @ts-expect-error Missing other required permission types.
       getRpcCaveatOrigins({
         caveats: [{ type: 'foo', value: 'bar' }],
-      }),
-    ).toThrow('Assertion failed.');
-
-    expect(() =>
-      // @ts-expect-error Missing other required permission types.
-      getRpcCaveatOrigins({
-        caveats: [
-          { type: 'rpcOrigin', value: { snaps: true, dapps: false } },
-          { type: 'rpcOrigin', value: { snaps: true, dapps: false } },
-        ],
       }),
     ).toThrow('Assertion failed.');
   });

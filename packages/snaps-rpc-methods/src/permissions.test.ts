@@ -11,6 +11,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:assets": {
           "allowedCaveats": [
             "chainIds",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -23,6 +24,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:cronjob": {
           "allowedCaveats": [
             "snapCronjob",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
@@ -55,13 +57,16 @@ describe('buildSnapEndowmentSpecifications', () => {
           "validator": [Function],
         },
         "endowment:lifecycle-hooks": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:lifecycle-hooks",
+          "validator": [Function],
         },
         "endowment:multichain-provider": {
           "allowedCaveats": null,
@@ -96,22 +101,28 @@ describe('buildSnapEndowmentSpecifications', () => {
           "targetName": "endowment:network-access",
         },
         "endowment:page-home": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:page-home",
+          "validator": [Function],
         },
         "endowment:page-settings": {
-          "allowedCaveats": null,
+          "allowedCaveats": [
+            "maxRequestTime",
+          ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
           ],
           "targetName": "endowment:page-settings",
+          "validator": [Function],
         },
         "endowment:protocol": {
           "allowedCaveats": [
@@ -142,6 +153,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:signature-insight": {
           "allowedCaveats": [
             "signatureOrigin",
+            "maxRequestTime",
           ],
           "endowmentGetter": [Function],
           "permissionType": "Endowment",

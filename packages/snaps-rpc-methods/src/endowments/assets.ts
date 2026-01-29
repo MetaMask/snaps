@@ -35,7 +35,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
   return {
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
-    allowedCaveats: [SnapCaveatType.ChainIds],
+    allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.MaxRequestTime],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
     validator: createGenericPermissionValidator([

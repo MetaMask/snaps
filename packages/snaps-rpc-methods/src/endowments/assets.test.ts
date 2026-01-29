@@ -12,7 +12,10 @@ describe('endowment:assets', () => {
         permissionType: PermissionType.Endowment,
         targetName: SnapEndowments.Assets,
         endowmentGetter: expect.any(Function),
-        allowedCaveats: [SnapCaveatType.ChainIds],
+        allowedCaveats: [
+          SnapCaveatType.ChainIds,
+          SnapCaveatType.MaxRequestTime,
+        ],
         subjectTypes: [SubjectType.Snap],
         validator: expect.any(Function),
       });
