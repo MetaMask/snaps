@@ -94,7 +94,7 @@
     "cron-parser": "^4.5.0",
     "fast-deep-equal": "^3.1.3",
     "fast-json-stable-stringify": "^2.1.0",
-    "fast-xml-parser": "^4.4.1",
+    "fast-xml-parser": "^5.3.4",
     "luxon": "^3.5.0",
     "marked": "^12.0.1",
     "rfdc": "^1.3.0",
