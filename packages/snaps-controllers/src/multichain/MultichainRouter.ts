@@ -133,7 +133,7 @@ export class MultichainRouter {
   /**
    * Attempts to resolve the account address to use for a given request by inspecting the request itself.
    *
-   * The request is sent to to an account Snap that will attempt this resolution.
+   * The request is sent to an account Snap that will attempt this resolution.
    *
    * We manually construct the request instead of using the SnapKeyring, as the keyring may not be available.
    *
@@ -182,7 +182,8 @@ export class MultichainRouter {
    *
    * If an account is expected to service this request but none is found, the function will throw.
    *
-   * @param connectedAddresses - The CAIP-10 addresses connected to the requesting origin.
+   * @param connectedAddresses - The CAIP-10 addresses connected to the
+   * requesting origin for the requested scope.
    * @param scope - The CAIP-2 scope for the request.
    * @param request - The JSON-RPC request.
    * @returns An account ID if found, otherwise null.
@@ -279,11 +280,12 @@ export class MultichainRouter {
    * Handle an incoming JSON-RPC request tied to a specific scope by routing
    * to either a protocol Snap or an account Snap.
    *
-   * Note: Addresses are considered case sensitive by the MultichainRouter as
-   * not all non-EVM chains are case insensitive.
+   * Note: Addresses are considered case-sensitive by the MultichainRouter as
+   * not all non-EVM chains are case-insensitive.
    *
    * @param options - An options bag.
-   * @param options.connectedAddresses - Addresses currently connected to the origin.
+   * @param options.connectedAddresses - Addresses currently connected to the
+   * origin for the requested scope.
    * @param options.origin - The origin of the RPC request.
    * @param options.request - The JSON-RPC request.
    * @param options.scope - The CAIP-2 scope for the request.
