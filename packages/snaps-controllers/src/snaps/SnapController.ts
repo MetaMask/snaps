@@ -1105,7 +1105,7 @@ export class SnapController extends BaseController<
         this.#handleRegistryUpdate().catch((error) => {
           logError(
             `Error when processing Snaps registry update: ${getErrorMessage(
-                error,
+              error,
             )}`,
           );
         });
