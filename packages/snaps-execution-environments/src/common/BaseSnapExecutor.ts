@@ -277,7 +277,9 @@ export class BaseSnapExecutor {
     }
 
     try {
-      const result = await this.#methods[method as keyof Methods](...params);
+      const result = await this.#methods[method as keyof Methods](
+        ...paramsAsArray,
+      );
       await this.#respond(id, { result });
     } catch (rpcError) {
       await this.#respond(id, {
@@ -497,7 +499,10 @@ export class BaseSnapExecutor {
    * @param multichainProvider - A StreamProvider connected to the CAIP-27 client stream.
    * @returns The snap provider object.
    */
-  #createSnapGlobal(provider: StreamProvider, multichainProvider: StreamProvider,): SnapsProvider {
+  #createSnapGlobal(
+    provider: StreamProvider,
+    multichainProvider: StreamProvider,
+  ): SnapsProvider {
     const originalRequest = provider.request.bind(provider);
     const originalMultichainRequest =
       multichainProvider.request.bind(multichainProvider);
