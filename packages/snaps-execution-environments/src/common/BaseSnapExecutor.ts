@@ -32,6 +32,7 @@ import {
   hasProperty,
   getSafeJson,
   JsonRpcIdStruct,
+  createDeferredPromise,
 } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
@@ -119,56 +120,35 @@ export type NotifyFunction = (
 ) => Promise<void>;
 
 export class BaseSnapExecutor {
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private readonly snapData: Map<string, SnapData>;
+  readonly #snapData: Map<string, SnapData>;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private readonly commandStream: Duplex;
+  readonly #commandStream: Duplex;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private readonly rpcStream: Duplex;
+  readonly #rpcStream: Duplex;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private readonly methods: CommandMethodsMapping;
+  readonly #methods: CommandMethodsMapping;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private snapErrorHandler?: (event: ErrorEvent) => void;
+  #snapErrorHandler?: (event: ErrorEvent) => void;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
+  #snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private lastTeardown = 0;
+  readonly #teardownRef = { lastTeardown: 0 };
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
-    this.snapData = new Map();
-    this.commandStream = commandStream;
-    this.commandStream.on('data', (data) => {
-      this.onCommandRequest(data).catch((error) => {
+    this.#snapData = new Map();
+    this.#commandStream = commandStream;
+    this.#commandStream.on('data', (data) => {
+      this.#onCommandRequest(data).catch((error) => {
         // TODO: Decide how to handle errors.
         logError(error);
       });
     });
-    this.rpcStream = rpcStream;
+    this.#rpcStream = rpcStream;
 
-    this.methods = getCommandMethodImplementations(
-      this.startSnap.bind(this),
+    this.#methods = getCommandMethodImplementations(
+      this.#startSnap.bind(this),
       async (target, handlerType, args) => {
-        const data = this.snapData.get(target);
+        const data = this.#snapData.get(target);
         // We're capturing the handler in case someone modifies the data object
         // before the call.
         const handler = data?.exports[handlerType];
@@ -186,7 +166,7 @@ export class BaseSnapExecutor {
           return null;
         }
 
-        const result = await this.executeInSnapContext(target, async () =>
+        const result = await this.#executeInSnapContext(target, async () =>
           // TODO: fix handler args type cast
           handler(args as any),
         );
@@ -208,14 +188,11 @@ export class BaseSnapExecutor {
           );
         }
       },
-      this.onTerminate.bind(this),
+      this.#handleTerminate.bind(this),
     );
   }
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private errorHandler(error: unknown, data: Record<string, Json>) {
+  #errorHandler(error: unknown, data: Record<string, Json>) {
     const serializedError = serializeError(error, {
       fallbackError: unhandledError,
       shouldIncludeStack: false,
@@ -224,9 +201,6 @@ export class BaseSnapExecutor {
 
     const errorData = getErrorData(serializedError);
 
-    // TODO: Either fix this lint violation or explain why it's necessary to
-    //  ignore.
-    // eslint-disable-next-line promise/no-promise-in-callback
     this.#notify({
       method: 'UnhandledError',
       params: {
@@ -243,10 +217,7 @@ export class BaseSnapExecutor {
     });
   }
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private async onCommandRequest(message: JsonRpcRequest) {
+  async #onCommandRequest(message: JsonRpcRequest) {
     if (!isJsonRpcRequest(message)) {
       if (
         hasProperty(message, 'id') &&
@@ -308,7 +279,9 @@ export class BaseSnapExecutor {
     }
 
     try {
-      const result = await (this.methods as any)[method](...paramsAsArray);
+      const result = await this.#methods[method as keyof Methods](
+        ...(paramsAsArray as any),
+      );
       await this.#respond(id, { result });
     } catch (rpcError) {
       await this.#respond(id, {
@@ -325,7 +298,7 @@ export class BaseSnapExecutor {
   // and await it before continuing execution
   async #write(chunk: Json) {
     return new Promise<void>((resolve, reject) => {
-      this.commandStream.write(chunk, (error) => {
+      this.#commandStream.write(chunk, (error) => {
         if (error) {
           reject(error);
           return;
@@ -377,34 +350,34 @@ export class BaseSnapExecutor {
    *
    * @param snapId - The id of the snap.
    * @param sourceCode - The source code of the snap, in IIFE format.
-   * @param _endowments - An array of the names of the endowments.
+   * @param endowmentKeys - An array of the names of the endowments.
    */
-  protected async startSnap(
+  async #startSnap(
     snapId: string,
     sourceCode: string,
-    _endowments: string[],
+    endowmentKeys: string[],
   ): Promise<void> {
     log(`Starting snap '${snapId}' in worker.`);
-    if (this.snapPromiseErrorHandler) {
-      removeEventListener('unhandledrejection', this.snapPromiseErrorHandler);
+    if (this.#snapPromiseErrorHandler) {
+      removeEventListener('unhandledrejection', this.#snapPromiseErrorHandler);
     }
 
-    if (this.snapErrorHandler) {
-      removeEventListener('error', this.snapErrorHandler);
+    if (this.#snapErrorHandler) {
+      removeEventListener('error', this.#snapErrorHandler);
     }
 
-    this.snapErrorHandler = (error: ErrorEvent) => {
-      this.errorHandler(error.error, { snapId });
+    this.#snapErrorHandler = (error: ErrorEvent) => {
+      this.#errorHandler(error.error, { snapId });
     };
 
-    this.snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
-      this.errorHandler(error instanceof Error ? error : error.reason, {
+    this.#snapPromiseErrorHandler = (error: PromiseRejectionEvent) => {
+      this.#errorHandler(error instanceof Error ? error : error.reason, {
         snapId,
       });
     };
 
     const multiplex = new ObjectMultiplex();
-    pipeline(this.rpcStream, multiplex, this.rpcStream, (error) => {
+    pipeline(this.#rpcStream, multiplex, this.#rpcStream, (error) => {
       if (error && !error.message?.match('Premature close')) {
         logError(`Provider stream failure.`, error);
       }
@@ -428,8 +401,8 @@ export class BaseSnapExecutor {
 
     multichainProvider.initializeSync();
 
-    const snap = this.createSnapGlobal(provider, multichainProvider);
-    const ethereum = this.createEIP1193Provider(provider);
+    const snap = this.#createSnapGlobal(provider, multichainProvider);
+    const ethereum = this.#createEIP1193Provider(provider);
     // We specifically use any type because the Snap can modify the object any way they want
     const snapModule: any = { exports: {} };
 
@@ -438,20 +411,20 @@ export class BaseSnapExecutor {
         snap,
         ethereum,
         snapId,
-        endowments: _endowments,
+        endowments: endowmentKeys,
         notify: this.#notify.bind(this),
       });
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.
-      this.snapData.set(snapId, {
+      this.#snapData.set(snapId, {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
         exports: {},
       });
 
-      addEventListener('unhandledRejection', this.snapPromiseErrorHandler);
-      addEventListener('error', this.snapErrorHandler);
+      addEventListener('unhandledRejection', this.#snapPromiseErrorHandler);
+      addEventListener('error', this.#snapErrorHandler);
 
       const compartment = new Compartment({
         ...endowments,
@@ -468,12 +441,12 @@ export class BaseSnapExecutor {
       compartment.globalThis.global = compartment.globalThis;
       compartment.globalThis.window = compartment.globalThis;
 
-      await this.executeInSnapContext(snapId, async () => {
+      await this.#executeInSnapContext(snapId, async () => {
         compartment.evaluate(sourceCode);
-        await this.registerSnapExports(snapId, snapModule);
+        await this.#registerSnapExports(snapId, snapModule);
       });
     } catch (error) {
-      this.removeSnap(snapId);
+      this.#removeSnap(snapId);
 
       const [cause] = unwrapError(error);
       throw rpcErrors.internal({
@@ -489,21 +462,18 @@ export class BaseSnapExecutor {
    * Cancels all running evaluations of all snaps and clears all snap data.
    * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
-  protected onTerminate() {
+  #handleTerminate() {
     // `stop()` tears down snap endowments.
     // Teardown will also be run for each snap as soon as there are
     // no more running evaluations for that snap.
-    this.snapData.forEach((data) =>
+    this.#snapData.forEach((data) =>
       data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
     );
-    this.snapData.clear();
+    this.#snapData.clear();
   }
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private async registerSnapExports(snapId: string, snapModule: any) {
-    const data = this.snapData.get(snapId);
+  async #registerSnapExports(snapId: string, snapModule: any) {
+    const data = this.#snapData.get(snapId);
     // Somebody deleted the snap before we could register.
     if (!data) {
       return;
@@ -531,10 +501,7 @@ export class BaseSnapExecutor {
    * @param multichainProvider - A StreamProvider connected to the CAIP-27 client stream.
    * @returns The snap provider object.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private createSnapGlobal(
+  #createSnapGlobal(
     provider: StreamProvider,
     multichainProvider: StreamProvider,
   ): SnapsProvider {
@@ -551,11 +518,14 @@ export class BaseSnapExecutor {
         assertMultichainOutboundRequest(sanitizedArgs);
         return await withTeardown(
           originalMultichainRequest(sanitizedArgs),
-          this as any,
+          this.#teardownRef,
         );
       }
 
-      return await withTeardown(originalRequest(sanitizedArgs), this as any);
+      return await withTeardown(
+        originalRequest(sanitizedArgs),
+        this.#teardownRef,
+      );
     };
 
     const snapsProvider = { request } as SnapsProvider;
@@ -569,19 +539,17 @@ export class BaseSnapExecutor {
    * @param provider - A StreamProvider connected to MetaMask.
    * @returns The EIP-1193 Ethereum provider object.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private createEIP1193Provider(
-    provider: StreamProvider,
-  ): SnapsEthereumProvider {
+  #createEIP1193Provider(provider: StreamProvider): SnapsEthereumProvider {
     const originalRequest = provider.request.bind(provider);
 
     const request = async (args: RequestArguments) => {
       // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      return await withTeardown(originalRequest(sanitizedArgs), this as any);
+      return await withTeardown(
+        originalRequest(sanitizedArgs),
+        this.#teardownRef,
+      );
     };
 
     const ethereumProvider = { request };
@@ -594,11 +562,8 @@ export class BaseSnapExecutor {
    *
    * @param snapId - The id of the snap to remove.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private removeSnap(snapId: string): void {
-    this.snapData.delete(snapId);
+  #removeSnap(snapId: string): void {
+    this.#snapData.delete(snapId);
   }
 
   /**
@@ -612,34 +577,27 @@ export class BaseSnapExecutor {
    * @returns The executor's return value.
    * @template Result - The return value of the executor.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line no-restricted-syntax
-  private async executeInSnapContext<Result>(
+  async #executeInSnapContext<Result>(
     snapId: string,
     executor: () => Promise<Result> | Result,
   ): Promise<Result> {
-    const data = this.snapData.get(snapId);
+    const data = this.#snapData.get(snapId);
     if (data === undefined) {
       throw rpcErrors.internal(
         `Tried to execute in context of unknown snap: "${snapId}".`,
       );
     }
 
-    let stop: () => void;
-    const stopPromise = new Promise<never>(
-      (_resolve, reject) =>
-        (stop = () =>
-          reject(
-            // TODO(rekmarks): Specify / standardize error code for this case.
-            rpcErrors.internal(
-              `The snap "${snapId}" has been terminated during execution.`,
-            ),
-          )),
-    );
+    const { promise: stopPromise, reject } = createDeferredPromise<Result>();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const evaluationData = { stop: stop! };
+    const stop = () =>
+      reject(
+        rpcErrors.internal(
+          `The Snap "${snapId}" has been terminated during execution.`,
+        ),
+      );
+
+    const evaluationData = { stop };
 
     try {
       data.runningEvaluations.add(evaluationData);
@@ -653,7 +611,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
-        this.lastTeardown += 1;
+        this.#teardownRef.lastTeardown += 1;
         await data.idleTeardown();
       }
     }
