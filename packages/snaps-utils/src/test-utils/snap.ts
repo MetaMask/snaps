@@ -43,9 +43,9 @@ export const getPersistedSnapObject = ({
     id,
     version: version as SemVerVersion,
     manifest,
+    sourceCode,
     status,
     enabled,
-    sourceCode,
     versionHistory,
     auxiliaryFiles,
     localizationFiles,
@@ -59,7 +59,6 @@ export const getSnapObject = ({
   enabled = true,
   id = MOCK_SNAP_ID,
   initialPermissions = getSnapManifest().initialPermissions,
-  sourceCode = DEFAULT_SNAP_BUNDLE,
   manifest = getSnapManifest(),
   status = SnapStatus.Stopped,
   version = getSnapManifest().version,
@@ -74,7 +73,6 @@ export const getSnapObject = ({
   return {
     blocked,
     initialPermissions,
-    sourceCode,
     id,
     version: version as SemVerVersion,
     manifest,
@@ -152,7 +150,6 @@ export const getMockSnapData = ({
       enabled,
       id,
       manifest,
-      sourceCode,
     }),
   };
 };
