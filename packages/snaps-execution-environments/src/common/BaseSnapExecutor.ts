@@ -132,6 +132,8 @@ export class BaseSnapExecutor {
 
   #snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
+  readonly #teardownRef = { lastTeardown: 0 };
+
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.#snapData = new Map();
     this.#commandStream = commandStream;
@@ -516,11 +518,14 @@ export class BaseSnapExecutor {
         assertMultichainOutboundRequest(sanitizedArgs);
         return await withTeardown(
           originalMultichainRequest(sanitizedArgs),
-          this as any,
+          this.#teardownRef,
         );
       }
 
-      return await withTeardown(originalRequest(sanitizedArgs), this as any);
+      return await withTeardown(
+        originalRequest(sanitizedArgs),
+        this.#teardownRef,
+      );
     };
 
     const snapsProvider = { request } as SnapsProvider;
@@ -541,7 +546,10 @@ export class BaseSnapExecutor {
       // As part of the sanitization, we validate that the args are valid JSON.
       const sanitizedArgs = sanitizeRequestArguments(args);
       assertEthereumOutboundRequest(sanitizedArgs);
-      return await withTeardown(originalRequest(sanitizedArgs), this as any);
+      return await withTeardown(
+        originalRequest(sanitizedArgs),
+        this.#teardownRef,
+      );
     };
 
     const ethereumProvider = { request };
@@ -603,6 +611,7 @@ export class BaseSnapExecutor {
       data.runningEvaluations.delete(evaluationData);
 
       if (data.runningEvaluations.size === 0) {
+        this.#teardownRef.lastTeardown += 1;
         await data.idleTeardown();
       }
     }
