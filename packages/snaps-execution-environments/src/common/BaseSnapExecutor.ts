@@ -186,7 +186,7 @@ export class BaseSnapExecutor {
           );
         }
       },
-      this.#onTerminate.bind(this),
+      this.#handleTerminate.bind(this),
     );
   }
 
@@ -278,7 +278,7 @@ export class BaseSnapExecutor {
 
     try {
       const result = await this.#methods[method as keyof Methods](
-        ...paramsAsArray,
+        ...(paramsAsArray as any),
       );
       await this.#respond(id, { result });
     } catch (rpcError) {
@@ -460,7 +460,7 @@ export class BaseSnapExecutor {
    * Cancels all running evaluations of all snaps and clears all snap data.
    * NOTE:** Should only be called in response to the `terminate` RPC command.
    */
-  #onTerminate() {
+  #handleTerminate() {
     // `stop()` tears down snap endowments.
     // Teardown will also be run for each snap as soon as there are
     // no more running evaluations for that snap.
