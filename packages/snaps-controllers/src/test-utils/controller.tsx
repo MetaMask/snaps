@@ -319,7 +319,7 @@ export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
   },
 };
 
-export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
+export const getControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
     SnapControllerActions | AllowedActions,
     SnapControllerEvents | AllowedEvents
@@ -413,27 +413,12 @@ export const getControllerMessenger = (registry = new MockSnapsRegistry()) => {
   );
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
 
-  messenger.registerActionHandler(
-    'SnapsRegistry:get',
-    registry.get.bind(registry),
-  );
-  messenger.registerActionHandler(
-    'SnapsRegistry:getMetadata',
-    registry.getMetadata.bind(registry),
-  );
-  messenger.registerActionHandler(
-    'SnapsRegistry:resolveVersion',
-    registry.resolveVersion.bind(registry),
-  );
-
-  messenger.registerActionHandler(
-    'SnapsRegistry:update',
-    registry.update.bind(registry),
-  );
+  // eslint-disable-next-line no-new
+  new MockSnapsRegistry(messenger);
 
   messenger.registerActionHandler(
     'SnapInterfaceController:createInterface',
-    async () => MOCK_INTERFACE_ID,
+    () => MOCK_INTERFACE_ID,
   );
 
   messenger.registerActionHandler(
@@ -503,6 +488,7 @@ export const getSnapControllerMessenger = (
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
+      'SnapsRegistry:stateChange',
     ],
     messenger: snapControllerMessenger,
   });

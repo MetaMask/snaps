@@ -157,6 +157,7 @@ import type {
   ResolveVersion,
   SnapsRegistryInfo,
   SnapsRegistryRequest,
+  SnapsRegistryStateChangeEvent,
   Update,
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
@@ -675,7 +676,8 @@ export type AllowedEvents =
   | ExecutionServiceEvents
   | SnapInstalled
   | SnapUpdated
-  | KeyringControllerLock;
+  | KeyringControllerLock
+  | SnapsRegistryStateChangeEvent;
 
 type SnapControllerMessenger = Messenger<
   typeof controllerName,
@@ -1095,6 +1097,16 @@ export class SnapController extends BaseController<
     this.messenger.subscribe(
       'KeyringController:lock',
       this.#handleLock.bind(this),
+    );
+
+    this.messenger.subscribe(
+      'SnapsRegistry:stateChange',
+      () => {
+        this.#handleRegistryUpdate().catch((error) => {
+          logError(error);
+        });
+      },
+      ({ database }) => database,
     );
 
     this.#initializeStateMachine();
@@ -1530,16 +1542,23 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Checks all installed snaps against the block list and
-   * blocks/unblocks snaps as appropriate. See {@link SnapController.blockSnap}
-   * for more information.
+   * Trigger an update of the registry.
    *
-   * Also updates any preinstalled Snaps to the latest allowlisted version.
+   * As a side-effect of this, preinstalled Snaps may be updated and Snaps may be blocked/unblocked.
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
     await this.messenger.call('SnapsRegistry:update');
+  }
 
+  /**
+   * Checks all installed Snaps against the blocklist and
+   * blocks/unblocks Snaps as appropriate. See {@link SnapController.blockSnap}
+   * for more information.
+   *
+   * Also updates any preinstalled Snaps to the latest allowlisted version.
+   */
+  async #handleRegistryUpdate() {
     const blockedSnaps = await this.messenger.call(
       'SnapsRegistry:get',
       Object.values(this.state.snaps).reduce<SnapsRegistryRequest>(

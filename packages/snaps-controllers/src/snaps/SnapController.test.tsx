@@ -1038,8 +1038,8 @@ describe('SnapController', () => {
   });
 
   it('throws an error if snap is not on allowlist and allowlisting is required but resolve succeeds', async () => {
-    const registry = new MockSnapsRegistry();
-    const rootMessenger = getControllerMessenger(registry);
+    const rootMessenger = getControllerMessenger();
+    const registry = new MockSnapsRegistry(rootMessenger);
     const messenger = getSnapControllerMessenger(rootMessenger);
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -1067,8 +1067,8 @@ describe('SnapController', () => {
   });
 
   it('throws an error if the registry is unavailable and allowlisting is required but resolve succeeds', async () => {
-    const registry = new MockSnapsRegistry();
-    const rootMessenger = getControllerMessenger(registry);
+    const rootMessenger = getControllerMessenger();
+    const registry = new MockSnapsRegistry(rootMessenger);
     const messenger = getSnapControllerMessenger(rootMessenger);
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -1131,8 +1131,8 @@ describe('SnapController', () => {
   });
 
   it('resolves to allowlisted version when allowlisting is required', async () => {
-    const registry = new MockSnapsRegistry();
-    const rootMessenger = getControllerMessenger(registry);
+    const rootMessenger = getControllerMessenger();
+    const registry = new MockSnapsRegistry(rootMessenger);
     const messenger = getSnapControllerMessenger(rootMessenger);
 
     const { manifest, sourceCode, svgIcon } =
@@ -1172,8 +1172,8 @@ describe('SnapController', () => {
   });
 
   it('does not use registry resolving when allowlist is not required', async () => {
-    const registry = new MockSnapsRegistry();
-    const rootMessenger = getControllerMessenger(registry);
+    const rootMessenger = getControllerMessenger();
+    const registry = new MockSnapsRegistry(rootMessenger);
     const messenger = getSnapControllerMessenger(rootMessenger);
     const controller = getSnapController(
       getSnapControllerOptions({
@@ -8560,8 +8560,8 @@ describe('SnapController', () => {
     });
 
     it('throws an error if the new version of the snap is blocked', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -10181,8 +10181,8 @@ describe('SnapController', () => {
 
   describe('updateRegistry', () => {
     it('updates the registry database', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const snapController = getSnapController(
@@ -10201,8 +10201,8 @@ describe('SnapController', () => {
     });
 
     it('blocks snaps as expected', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
       const publishMock = jest.spyOn(messenger, 'publish');
 
@@ -10272,8 +10272,8 @@ describe('SnapController', () => {
     });
 
     it('stops running snaps when they are blocked', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
@@ -10297,6 +10297,7 @@ describe('SnapController', () => {
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
+      await waitForStateChange(messenger);
 
       // The snap is blocked, disabled, and stopped
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10307,8 +10308,8 @@ describe('SnapController', () => {
     });
 
     it('unblocks snaps as expected', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
       const publishMock = jest.spyOn(messenger, 'publish');
 
@@ -10370,8 +10371,8 @@ describe('SnapController', () => {
 
     it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
@@ -10414,8 +10415,8 @@ describe('SnapController', () => {
 
     it('logs but does not throw unexpected errors while blocking', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const mockSnap = getMockSnapData({
@@ -10458,8 +10459,8 @@ describe('SnapController', () => {
     });
 
     it('updates preinstalled Snaps', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       // Simulate previous permissions, some of which will be removed
@@ -10511,6 +10512,7 @@ describe('SnapController', () => {
       );
 
       await snapController.updateRegistry();
+      await waitForStateChange(messenger);
 
       const updatedSnap = snapController.get(snapId);
       assert(updatedSnap);
@@ -10545,8 +10547,8 @@ describe('SnapController', () => {
     });
 
     it('does not update preinstalled Snaps when the feature flag is off', async () => {
-      const registry = new MockSnapsRegistry();
-      const rootMessenger = getControllerMessenger(registry);
+      const rootMessenger = getControllerMessenger();
+      const registry = new MockSnapsRegistry(rootMessenger);
       const messenger = getSnapControllerMessenger(rootMessenger);
 
       const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
