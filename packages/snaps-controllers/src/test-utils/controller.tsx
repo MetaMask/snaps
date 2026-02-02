@@ -25,11 +25,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
-import type {
-  PersistedSnap,
-  StorageServiceSnapData,
-  Snap,
-} from '@metamask/snaps-utils';
+import type { PersistedSnap, Snap } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
@@ -41,6 +37,7 @@ import {
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
 import type {
+  InitialStorageData,
   StorageServiceActions,
   StorageServiceEvents,
 } from '@metamask/storage-service';
@@ -82,7 +79,7 @@ import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
 } from '../snaps';
-import { controllerName, SnapController } from '../snaps';
+import { SnapController } from '../snaps';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -637,19 +634,9 @@ export const extractSourceCodeFromSnapsState = (
   );
 };
 
-export const hydrateStorageService = async (
-  storageService: StorageService,
-  snapsData: Record<SnapId, StorageServiceSnapData>,
-) => {
-  await Promise.all(
-    Object.entries(snapsData).map(async ([snapId, snapData]) => {
-      await storageService.setItem(controllerName, snapId, snapData);
-    }),
-  );
-};
-
 export const getStorageService = (
   messenger: ReturnType<typeof getControllerMessenger>,
+  initialData?: InitialStorageData,
 ) => {
   const storageServiceMessenger = new Messenger<
     'StorageService',
@@ -663,7 +650,7 @@ export const getStorageService = (
 
   return new StorageService({
     messenger: storageServiceMessenger,
-    storage: new InMemoryStorageAdapter(),
+    storage: new InMemoryStorageAdapter(initialData),
   });
 };
 
@@ -673,13 +660,13 @@ export const getSnapController = async (
 ) => {
   const { rootMessenger, ...controllerOptions } = options;
 
-  const storageService = getStorageService(rootMessenger);
-
   const { snaps, snapsData } = extractSourceCodeFromSnapsState(
     controllerOptions.state?.snaps ?? {},
   );
 
-  await hydrateStorageService(storageService, snapsData);
+  getStorageService(rootMessenger, {
+    SnapController: snapsData,
+  });
 
   const controller = new SnapController({
     ...controllerOptions,
@@ -704,13 +691,13 @@ export const getSnapControllerWithEES = async (
     // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
-  const storageService = getStorageService(options.rootMessenger);
-
   const { snaps, snapsData } = extractSourceCodeFromSnapsState(
     options.state?.snaps ?? {},
   );
 
-  await hydrateStorageService(storageService, snapsData);
+  getStorageService(options.rootMessenger, {
+    SnapController: snapsData,
+  });
 
   const controller = new SnapController({
     ...options,

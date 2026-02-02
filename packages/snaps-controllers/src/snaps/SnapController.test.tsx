@@ -1041,9 +1041,6 @@ describe('SnapController', () => {
   it('throws an error if snap is not on allowlist and allowlisting is required but resolve succeeds', async () => {
     const rootMessenger = getControllerMessenger();
     const registry = new MockSnapsRegistry(rootMessenger);
-    const messenger = getSnapControllerMessenger(rootMessenger);
-    const registry = new MockSnapsRegistry();
-    const rootMessenger = getControllerMessenger(registry);
 
     const controller = await getSnapController(
       getSnapControllerOptions({
@@ -10248,14 +10245,14 @@ describe('SnapController', () => {
         origin: MOCK_ORIGIN,
       });
 
-      const snapController = await getSnapController(
-        getSnapControllerOptions({
-          rootMessenger,
-          state: {
-            snaps: getPersistedSnapsState(mockSnap.stateObject),
-          },
-        }),
-      );
+      const options = getSnapControllerOptions({
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(mockSnap.stateObject),
+        },
+      });
+
+      const snapController = await getSnapController(options);
 
       await snapController.startSnap(mockSnap.id);
 
@@ -10264,7 +10261,7 @@ describe('SnapController', () => {
         [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
-      await waitForStateChange(messenger);
+      await waitForStateChange(options.messenger);
 
       // The snap is blocked, disabled, and stopped
       expect(snapController.get(mockSnap.id)?.blocked).toBe(true);
@@ -10476,7 +10473,8 @@ describe('SnapController', () => {
       const snapController = await getSnapController(options);
 
       await snapController.updateRegistry();
-      await waitForStateChange(messenger);
+      await waitForStateChange(options.messenger);
+      await sleep(100);
 
       const updatedSnap = snapController.get(snapId);
       assert(updatedSnap);
