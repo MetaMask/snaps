@@ -633,12 +633,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
     });
 
     const sessionRequest = await executor.readRpc();
@@ -703,12 +703,12 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
-        { jsonrpc: '2.0', method: '', params: [] },
-      ],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '', params: [] },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2415,13 +2415,13 @@ describe('BaseSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        MOCK_SNAP_ID,
-        HandlerType.OnRpcRequest,
-        MOCK_ORIGIN,
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
         // @ts-expect-error Invalid JSON
-        { jsonrpc: '2.0', method: 'foo', params: undefined },
-      ],
+        request: { jsonrpc: '2.0', method: 'foo', params: undefined },
+      },
     });
 
     expect(await executor.readCommand()).toStrictEqual({
@@ -2445,7 +2445,12 @@ describe('BaseSnapExecutor', () => {
       // @ts-expect-error Invalid JSON
       id: undefined,
       method: 'snapRpc',
-      params: [MOCK_SNAP_ID, HandlerType.OnRpcRequest, MOCK_ORIGIN, {}],
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: {},
+      },
     });
 
     expect(consoleSpy.calls[0]?.args[0]).toBe(
