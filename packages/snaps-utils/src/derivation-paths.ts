@@ -190,6 +190,11 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     curve: 'ed25519',
     name: 'IOTA',
   },
+  {
+    path: ['m', `44'`, `6767'`],
+    curve: 'ed25519',
+    name: 'Canton',
+  },
 ];
 
 /**
