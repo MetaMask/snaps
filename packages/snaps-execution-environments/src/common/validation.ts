@@ -24,11 +24,7 @@ import {
   union,
   literal,
 } from '@metamask/superstruct';
-import type {
-  CaipChainId,
-  JsonRpcRequest,
-  JsonRpcSuccess,
-} from '@metamask/utils';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 import {
   assertStruct,
   CaipAssetTypeOrIdStruct,
@@ -37,7 +33,6 @@ import {
   JsonRpcIdStruct,
   JsonRpcParamsStruct,
   JsonRpcRequestStruct,
-  JsonRpcSuccessStruct,
   JsonRpcVersionStruct,
   JsonStruct,
 } from '@metamask/utils';
@@ -75,8 +70,6 @@ export function isEndowment(value: unknown): value is Endowment {
 export function isEndowmentsArray(value: unknown): value is Endowment[] {
   return Array.isArray(value) && value.every(isEndowment);
 }
-
-const OkStruct = literal('OK');
 
 export const PingRequestArgumentsStruct = optional(literal(undefined));
 
@@ -437,31 +430,3 @@ export function assertIsOnWebSocketEventArguments(
 ): asserts value is OnWebSocketEventArguments {
   assertRequestArguments(value, OnWebSocketEventArgumentsStruct);
 }
-
-// TODO: Either fix this lint violation or explain why it's necessary to ignore.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OkResponseStruct = object({
-  id: JsonRpcIdStruct,
-  jsonrpc: JsonRpcVersionStruct,
-  result: OkStruct,
-});
-
-const SnapRpcResponse = JsonRpcSuccessStruct;
-
-export type OkResponse = Infer<typeof OkResponseStruct>;
-export type SnapRpcResponse = Infer<typeof SnapRpcResponse>;
-
-export type Response = OkResponse | SnapRpcResponse;
-
-type RequestFunction<
-  Args extends RequestArguments,
-  ResponseType extends JsonRpcSuccess,
-> = (args: Args) => Promise<ResponseType['result']>;
-
-export type Ping = RequestFunction<PingRequestArguments, OkResponse>;
-export type Terminate = RequestFunction<TerminateRequestArguments, OkResponse>;
-export type ExecuteSnap = RequestFunction<
-  ExecuteSnapRequestArguments,
-  OkResponse
->;
-export type SnapRpc = RequestFunction<SnapRpcRequestArguments, SnapRpcResponse>;
