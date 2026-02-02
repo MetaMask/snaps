@@ -176,7 +176,6 @@ export abstract class AbstractExecutionService<WorkerType>
         this.#command(snapId, {
           jsonrpc: '2.0',
           method: 'terminate',
-          params: [],
           id: nanoid(),
         }),
         this.#terminationTimeout,
@@ -493,10 +492,10 @@ export abstract class AbstractExecutionService<WorkerType>
       jsonrpc: '2.0',
       method: 'snapRpc',
       params: {
+        snapId,
         origin,
         handler,
         request: request as JsonRpcRequest,
-        target: snapId,
       },
     });
   }
