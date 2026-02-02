@@ -78,14 +78,9 @@ export function isEndowmentsArray(value: unknown): value is Endowment[] {
 
 const OkStruct = literal('OK');
 
-export const PingRequestArgumentsStruct = optional(
-  union([literal(undefined), array()]),
-);
+export const PingRequestArgumentsStruct = optional(literal(undefined));
 
-export const TerminateRequestArgumentsStruct = union([
-  literal(undefined),
-  array(),
-]);
+export const TerminateRequestArgumentsStruct = PingRequestArgumentsStruct;
 
 export const ExecuteSnapRequestArgumentsStruct = object({
   snapId: string(),
