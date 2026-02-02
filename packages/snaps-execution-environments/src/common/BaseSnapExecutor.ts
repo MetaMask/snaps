@@ -19,7 +19,7 @@ import {
   unwrapError,
   logInfo,
 } from '@metamask/snaps-utils';
-import { validate, is } from '@metamask/superstruct';
+import { is } from '@metamask/superstruct';
 import type {
   JsonRpcNotification,
   JsonRpcId,
@@ -37,12 +37,10 @@ import {
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
 
-import type { CommandMethodsMapping } from './commands';
-import { getCommandMethodImplementations } from './commands';
+import { assertCommandParams, getHandlerArguments } from './commands';
 import { createEndowments } from './endowments';
 import { addEventListener, removeEventListener } from './globalEvents';
 import { SnapProvider } from './SnapProvider';
-import { sortParamKeys } from './sortParams';
 import {
   assertEthereumOutboundRequest,
   assertSnapOutboundRequest,
@@ -52,11 +50,13 @@ import {
   isMultichainRequest,
   assertMultichainOutboundRequest,
 } from './utils';
+import type {
+  ExecuteSnapRequestArguments,
+  SnapRpcRequestArguments,
+} from './validation';
 import {
   ExecuteSnapRequestArgumentsStruct,
-  PingRequestArgumentsStruct,
   SnapRpcRequestArgumentsStruct,
-  TerminateRequestArgumentsStruct,
 } from './validation';
 import { log } from '../logging';
 
@@ -89,32 +89,6 @@ export type InvokeSnap = (
   args: InvokeSnapArgs | undefined,
 ) => Promise<Json>;
 
-/**
- * The supported methods in the execution environment. The validator checks the
- * incoming JSON-RPC request, and the `params` property is used for sorting the
- * parameters, if they are an object.
- */
-const EXECUTION_ENVIRONMENT_METHODS = {
-  ping: {
-    struct: PingRequestArgumentsStruct,
-    params: [],
-  },
-  executeSnap: {
-    struct: ExecuteSnapRequestArgumentsStruct,
-    params: ['snapId', 'sourceCode', 'endowments'],
-  },
-  terminate: {
-    struct: TerminateRequestArgumentsStruct,
-    params: [],
-  },
-  snapRpc: {
-    struct: SnapRpcRequestArgumentsStruct,
-    params: ['target', 'handler', 'origin', 'request'],
-  },
-};
-
-type Methods = typeof EXECUTION_ENVIRONMENT_METHODS;
-
 export type NotifyFunction = (
   notification: Omit<JsonRpcNotification, 'jsonrpc'>,
 ) => Promise<void>;
@@ -126,8 +100,6 @@ export class BaseSnapExecutor {
 
   readonly #rpcStream: Duplex;
 
-  readonly #methods: CommandMethodsMapping;
-
   #snapErrorHandler?: (event: ErrorEvent) => void;
 
   #snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
@@ -138,58 +110,12 @@ export class BaseSnapExecutor {
     this.#snapData = new Map();
     this.#commandStream = commandStream;
     this.#commandStream.on('data', (data) => {
+      /* istanbul ignore next 2 */
       this.#onCommandRequest(data).catch((error) => {
-        // TODO: Decide how to handle errors.
         logError(error);
       });
     });
     this.#rpcStream = rpcStream;
-
-    this.#methods = getCommandMethodImplementations(
-      this.#startSnap.bind(this),
-      async (target, handlerType, args) => {
-        const data = this.#snapData.get(target);
-        // We're capturing the handler in case someone modifies the data object
-        // before the call.
-        const handler = data?.exports[handlerType];
-        const { required } = SNAP_EXPORTS[handlerType];
-
-        assert(
-          !required || handler !== undefined,
-          `No ${handlerType} handler exported for snap "${target}".`,
-          rpcErrors.methodNotSupported,
-        );
-
-        // Certain handlers are not required. If they are not exported, we
-        // return null.
-        if (!handler) {
-          return null;
-        }
-
-        const result = await this.#executeInSnapContext(target, async () =>
-          // TODO: fix handler args type cast
-          handler(args as any),
-        );
-
-        // The handler might not return anything, but undefined is not valid JSON.
-        if (result === undefined || result === null) {
-          return null;
-        }
-
-        // /!\ Always return only sanitized JSON to prevent security flaws. /!\
-        try {
-          return getSafeJson(result);
-        } catch (error) {
-          throw rpcErrors.internal(
-            `Received non-JSON-serializable value: ${error.message.replace(
-              /^Assertion failed: /u,
-              '',
-            )}`,
-          );
-        }
-      },
-      this.#handleTerminate.bind(this),
-    );
   }
 
   #errorHandler(error: unknown, data: Record<string, Json>) {
@@ -225,14 +151,12 @@ export class BaseSnapExecutor {
       ) {
         // Instead of throwing, we directly respond with an error.
         // We can only do this if the message ID is still valid.
-        await this.#write({
+        await this.#respond((message as Pick<JsonRpcRequest, 'id'>).id, {
           error: serializeError(
             rpcErrors.internal(
               'JSON-RPC requests must be JSON serializable objects.',
             ),
           ),
-          id: (message as Pick<JsonRpcRequest, 'id'>).id,
-          jsonrpc: '2.0',
         });
       } else {
         logInfo(
@@ -244,44 +168,8 @@ export class BaseSnapExecutor {
 
     const { id, method, params } = message;
 
-    if (!hasProperty(EXECUTION_ENVIRONMENT_METHODS, method)) {
-      await this.#respond(id, {
-        error: rpcErrors
-          .methodNotFound({
-            data: {
-              method,
-            },
-          })
-          .serialize(),
-      });
-      return;
-    }
-
-    const methodObject = EXECUTION_ENVIRONMENT_METHODS[method as keyof Methods];
-
-    // support params by-name and by-position
-    const paramsAsArray = sortParamKeys(methodObject.params, params);
-
-    const [error] = validate<any, any>(paramsAsArray, methodObject.struct);
-    if (error) {
-      await this.#respond(id, {
-        error: rpcErrors
-          .invalidParams({
-            message: `Invalid parameters for method "${method}": ${error.message}.`,
-            data: {
-              method,
-              params: paramsAsArray,
-            },
-          })
-          .serialize(),
-      });
-      return;
-    }
-
     try {
-      const result = await this.#methods[method as keyof Methods](
-        ...(paramsAsArray as any),
-      );
+      const result = await this.#handleCommand(method, params);
       await this.#respond(id, { result });
     } catch (rpcError) {
       await this.#respond(id, {
@@ -290,6 +178,103 @@ export class BaseSnapExecutor {
           shouldPreserveMessage: false,
         }),
       });
+    }
+  }
+
+  /**
+   * Handle an incoming JSON-RPC command request.
+   *
+   * @param method - The JSON-RPC method name.
+   * @param params - The optional JSON-RPC parameters.
+   * @returns The response based on the JSON-RPC method invoked.
+   * @throws If the passed method is not available.
+   */
+  async #handleCommand(method: string, params?: Json) {
+    switch (method) {
+      case 'ping':
+        return 'OK';
+
+      case 'terminate': {
+        this.#handleTerminate();
+        return 'OK';
+      }
+
+      case 'executeSnap': {
+        assertCommandParams(method, params, ExecuteSnapRequestArgumentsStruct);
+        await this.#startSnap(params);
+        return 'OK';
+      }
+
+      case 'snapRpc': {
+        assertCommandParams(method, params, SnapRpcRequestArgumentsStruct);
+        return await this.#invokeSnap(params);
+      }
+
+      default:
+        throw rpcErrors.methodNotFound({
+          data: {
+            method,
+          },
+        });
+    }
+  }
+
+  /**
+   * Invoke an exported handler on a running Snap.
+   *
+   * @param options - An options bag.
+   * @param options.snapId - The Snap ID.
+   * @param options.handler - The handler to invoke.
+   * @param options.origin - The origin invoking the handler.
+   * @param options.request - The JSON-RPC request to invoke the handler with.
+   * @returns The result of invoking the handler on the Snap.
+   */
+  async #invokeSnap({
+    snapId,
+    handler: handlerType,
+    origin,
+    request,
+  }: SnapRpcRequestArguments) {
+    const args = getHandlerArguments(origin, handlerType, request);
+
+    const data = this.#snapData.get(snapId);
+    // We're capturing the handler in case someone modifies the data object
+    // before the call.
+    const handler = data?.exports[handlerType];
+    const { required } = SNAP_EXPORTS[handlerType];
+
+    assert(
+      !required || handler !== undefined,
+      `No ${handlerType} handler exported for Snap "${snapId}".`,
+      rpcErrors.methodNotSupported,
+    );
+
+    // Certain handlers are not required. If they are not exported, we
+    // return null.
+    if (!handler) {
+      return null;
+    }
+
+    const result = await this.#executeInSnapContext(snapId, async () =>
+      // TODO: fix handler args type cast
+      handler(args as any),
+    );
+
+    // The handler might not return anything, but undefined is not valid JSON.
+    if (result === undefined || result === null) {
+      return null;
+    }
+
+    // /!\ Always return only sanitized JSON to prevent security flaws. /!\
+    try {
+      return getSafeJson(result);
+    } catch (error) {
+      throw rpcErrors.internal(
+        `Received non-JSON-serializable value: ${error.message.replace(
+          /^Assertion failed: /u,
+          '',
+        )}`,
+      );
     }
   }
 
@@ -348,15 +333,16 @@ export class BaseSnapExecutor {
    * Attempts to evaluate a snap in SES. Generates APIs for the snap. May throw
    * on errors.
    *
-   * @param snapId - The id of the snap.
-   * @param sourceCode - The source code of the snap, in IIFE format.
-   * @param endowmentKeys - An array of the names of the endowments.
+   * @param params - The parameters.
+   * @param params.snapId - The id of the snap.
+   * @param params.sourceCode - The source code of the snap, in IIFE format.
+   * @param params.endowments - An array of the names of the endowments.
    */
-  async #startSnap(
-    snapId: string,
-    sourceCode: string,
-    endowmentKeys: string[],
-  ): Promise<void> {
+  async #startSnap({
+    snapId,
+    sourceCode,
+    endowments: endowmentKeys,
+  }: ExecuteSnapRequestArguments): Promise<void> {
     log(`Starting snap '${snapId}' in worker.`);
     if (this.#snapPromiseErrorHandler) {
       removeEventListener('unhandledrejection', this.#snapPromiseErrorHandler);

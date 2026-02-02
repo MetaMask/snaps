@@ -21,15 +21,10 @@ import {
   record,
   size,
   string,
-  tuple,
   union,
   literal,
 } from '@metamask/superstruct';
-import type {
-  CaipChainId,
-  JsonRpcRequest,
-  JsonRpcSuccess,
-} from '@metamask/utils';
+import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
 import {
   assertStruct,
   CaipAssetTypeOrIdStruct,
@@ -38,7 +33,6 @@ import {
   JsonRpcIdStruct,
   JsonRpcParamsStruct,
   JsonRpcRequestStruct,
-  JsonRpcSuccessStruct,
   JsonRpcVersionStruct,
   JsonStruct,
 } from '@metamask/utils';
@@ -77,28 +71,21 @@ export function isEndowmentsArray(value: unknown): value is Endowment[] {
   return Array.isArray(value) && value.every(isEndowment);
 }
 
-const OkStruct = literal('OK');
+export const PingRequestArgumentsStruct = optional(literal(undefined));
 
-export const PingRequestArgumentsStruct = optional(
-  union([literal(undefined), array()]),
-);
+export const TerminateRequestArgumentsStruct = PingRequestArgumentsStruct;
 
-export const TerminateRequestArgumentsStruct = union([
-  literal(undefined),
-  array(),
-]);
+export const ExecuteSnapRequestArgumentsStruct = object({
+  snapId: string(),
+  sourceCode: string(),
+  endowments: array(EndowmentStruct),
+});
 
-export const ExecuteSnapRequestArgumentsStruct = tuple([
-  string(),
-  string(),
-  array(EndowmentStruct),
-]);
-
-export const SnapRpcRequestArgumentsStruct = tuple([
-  string(),
-  enums(Object.values(HandlerType)),
-  string(),
-  assign(
+export const SnapRpcRequestArgumentsStruct = object({
+  snapId: string(),
+  handler: enums(Object.values(HandlerType)),
+  origin: string(),
+  request: assign(
     JsonRpcRequestWithoutIdStruct,
     object({
       // Previously this would validate that the parameters were valid JSON.
@@ -107,7 +94,7 @@ export const SnapRpcRequestArgumentsStruct = tuple([
       params: optional(record(string(), any())),
     }),
   ),
-]);
+});
 
 export type PingRequestArguments = Infer<typeof PingRequestArgumentsStruct>;
 export type TerminateRequestArguments = Infer<
@@ -443,34 +430,3 @@ export function assertIsOnWebSocketEventArguments(
 ): asserts value is OnWebSocketEventArguments {
   assertRequestArguments(value, OnWebSocketEventArgumentsStruct);
 }
-
-// TODO: Either fix this lint violation or explain why it's necessary to ignore.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const OkResponseStruct = object({
-  id: JsonRpcIdStruct,
-  jsonrpc: JsonRpcVersionStruct,
-  result: OkStruct,
-});
-
-const SnapRpcResponse = JsonRpcSuccessStruct;
-
-export type OkResponse = Infer<typeof OkResponseStruct>;
-export type SnapRpcResponse = Infer<typeof SnapRpcResponse>;
-
-export type Response = OkResponse | SnapRpcResponse;
-
-type RequestParams<Params extends unknown[] | undefined> =
-  Params extends undefined ? [] : Params;
-
-type RequestFunction<
-  Args extends RequestArguments,
-  ResponseType extends JsonRpcSuccess,
-> = (...args: RequestParams<Args>) => Promise<ResponseType['result']>;
-
-export type Ping = RequestFunction<PingRequestArguments, OkResponse>;
-export type Terminate = RequestFunction<TerminateRequestArguments, OkResponse>;
-export type ExecuteSnap = RequestFunction<
-  ExecuteSnapRequestArguments,
-  OkResponse
->;
-export type SnapRpc = RequestFunction<SnapRpcRequestArguments, SnapRpcResponse>;

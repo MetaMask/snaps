@@ -71,7 +71,7 @@ describe('ThreadSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 1,
       method: 'executeSnap',
-      params: [FAKE_SNAP_NAME, CODE, []],
+      params: { snapId: FAKE_SNAP_NAME, sourceCode: CODE, endowments: [] },
     });
 
     expect(
@@ -83,12 +83,12 @@ describe('ThreadSnapExecutor', () => {
       jsonrpc: '2.0',
       id: 2,
       method: 'snapRpc',
-      params: [
-        FAKE_SNAP_NAME,
-        ON_RPC_REQUEST,
-        FAKE_ORIGIN,
-        { jsonrpc: '2.0', method: '' },
-      ],
+      params: {
+        snapId: FAKE_SNAP_NAME,
+        handler: ON_RPC_REQUEST,
+        origin: FAKE_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
     });
 
     expect(
