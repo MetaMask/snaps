@@ -148,7 +148,7 @@ const OTHER_ENCRYPTION_KEY =
   '0x7cd340349a41e0f7af62a9d97c76e96b12485e0206791d6b5638dd59736af8f5';
 
 describe('SnapController', () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     fetchMock.mockImplementation(async () => {
       throw new AssertionError({ message: 'Unmocked access to internet.' });
     });
@@ -1209,6 +1209,12 @@ describe('SnapController', () => {
 
     expect(newSnap).toStrictEqual(getSnapObject());
     expect(options.messenger.call).toHaveBeenCalledTimes(1);
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      1,
+      'PermissionController:hasPermission',
+      MOCK_SNAP_ID,
+      SnapEndowments.LifecycleHooks,
+    );
 
     controller.destroy();
   });
@@ -1258,6 +1264,14 @@ describe('SnapController', () => {
     );
 
     expect(options.messenger.call).toHaveBeenNthCalledWith(
+      3,
+      'StorageService:setItem',
+      controllerName,
+      MOCK_SNAP_ID,
+      { sourceCode: DEFAULT_SNAP_BUNDLE },
+    );
+
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
       6,
       'ApprovalController:updateRequestState',
       expect.objectContaining({
@@ -1268,6 +1282,13 @@ describe('SnapController', () => {
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
+    );
+
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      12,
+      'StorageService:removeItem',
+      controllerName,
+      MOCK_SNAP_ID,
     );
 
     expect(controller.get(MOCK_SNAP_ID)).toBeUndefined();
@@ -1308,6 +1329,14 @@ describe('SnapController', () => {
     expect(messengerCallMock).toHaveBeenCalledTimes(12);
 
     expect(messengerCallMock).toHaveBeenNthCalledWith(
+      3,
+      'StorageService:setItem',
+      controllerName,
+      MOCK_SNAP_ID,
+      { sourceCode: DEFAULT_SNAP_BUNDLE },
+    );
+
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
       6,
       'ApprovalController:updateRequestState',
       expect.objectContaining({
@@ -1318,6 +1347,13 @@ describe('SnapController', () => {
           type: SNAP_APPROVAL_INSTALL,
         },
       }),
+    );
+
+    expect(messengerCallMock).toHaveBeenNthCalledWith(
+      12,
+      'StorageService:removeItem',
+      controllerName,
+      MOCK_SNAP_ID,
     );
 
     expect(options.messenger.publish).not.toHaveBeenCalledWith(
@@ -2109,6 +2145,13 @@ describe('SnapController', () => {
     await snapController.removeSnap(snap.id);
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
+
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      2,
+      'StorageService:removeItem',
+      controllerName,
+      MOCK_SNAP_ID,
+    );
 
     expect(options.messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -6097,6 +6140,13 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6354,6 +6404,13 @@ describe('SnapController', () => {
       );
 
       expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -6468,6 +6525,13 @@ describe('SnapController', () => {
           },
           subject: { origin: MOCK_SNAP_ID },
         },
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledWith(
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
       );
 
       expect(snapControllerOptions.messenger.publish).toHaveBeenCalledWith(
@@ -10038,6 +10102,27 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+
+    it('removes snap source code', async () => {
+      const options = getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      await snapController.removeSnap(MOCK_SNAP_ID);
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:removeItem',
+        controllerName,
+        MOCK_SNAP_ID,
+      );
+
+      snapController.destroy();
+    });
   });
 
   describe('enableSnap', () => {
@@ -10481,6 +10566,14 @@ describe('SnapController', () => {
 
       expect(updatedSnap.version).toStrictEqual(updateVersion);
       expect(updatedSnap.preinstalled).toBe(true);
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        controllerName,
+        snapId,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
         9,
