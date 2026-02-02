@@ -4142,10 +4142,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/slip44@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@metamask/slip44@npm:4.3.0"
-  checksum: 10/508983a48911f2be8d9de117d390ecfb5b949a6032f5d6c5cc63f7f23302b87468be6ff08dee4881d39e8f5f66b5545eab15e6fc0511acea10fd4c99852a8212
+"@metamask/slip44@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@metamask/slip44@npm:4.4.0"
+  checksum: 10/296ac7c578bd35792c7e3942a9a0b7d9d7af76cf98358b97403c1ed483faa3c2fe6c71b1c3f8c7719fbfcf9fc73e5fa8707c89ac277ee9ce6c8bc4c694b2059d
   languageName: node
   linkType: hard
 
@@ -4637,7 +4637,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^12.2.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
-    "@metamask/slip44": "npm:^4.3.0"
+    "@metamask/slip44": "npm:^4.4.0"
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/superstruct": "npm:^3.2.1"
