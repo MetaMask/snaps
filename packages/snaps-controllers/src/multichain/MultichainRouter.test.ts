@@ -122,6 +122,49 @@ describe('MultichainRouter', () => {
       expect(result).toStrictEqual({ signature: '0x' });
     });
 
+    it('disallows routing to unconnected accounts', async () => {
+      const rootMessenger = getRootMultichainRouterMessenger();
+      const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
+      const withSnapKeyring = getMockWithSnapKeyring();
+
+      /* eslint-disable-next-line no-new */
+      new MultichainRouter({
+        messenger,
+        withSnapKeyring,
+      });
+
+      rootMessenger.registerActionHandler(
+        'AccountsController:listMultichainAccounts',
+        () => MOCK_SOLANA_ACCOUNTS,
+      );
+
+      rootMessenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async ({ handler }) => {
+          if (handler === HandlerType.OnKeyringRequest) {
+            return { address: SOLANA_CONNECTED_ACCOUNTS[0] };
+          }
+          throw new Error('Unmocked request');
+        },
+      );
+
+      await expect(
+        messenger.call('MultichainRouter:handleRequest', {
+          origin: METAMASK_ORIGIN,
+          connectedAddresses: [],
+          scope: SOLANA_CAIP2,
+          request: {
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'signAndSendTransaction',
+            params: {
+              message: 'foo',
+            },
+          },
+        }),
+      ).rejects.toThrow('No available account found for request.');
+    });
+
     it('can route protocol requests to protocol Snaps', async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);

@@ -211,7 +211,21 @@ export class MultichainRouter {
       return null;
     }
 
-    const resolutionSnapId = accounts[0].metadata.snap.id;
+    const parsedConnectedAddresses = connectedAddresses.map(
+      (connectedAddress) => parseCaipAccountId(connectedAddress).address,
+    );
+
+    const connectedAccounts = accounts.filter((account) =>
+      parsedConnectedAddresses.includes(account.address),
+    );
+
+    if (connectedAccounts.length === 0) {
+      throw rpcErrors.invalidParams({
+        message: 'No available account found for request.',
+      });
+    }
+
+    const resolutionSnapId = connectedAccounts[0].metadata.snap.id;
 
     // Attempt to resolve the address that should be used for signing.
     const address = await this.#resolveRequestAddress(
@@ -220,18 +234,12 @@ export class MultichainRouter {
       request,
     );
 
-    const parsedConnectedAddresses = connectedAddresses.map(
-      (connectedAddress) => parseCaipAccountId(connectedAddress).address,
-    );
-
     // If we have a resolved address, try to find the selected account based on that
     // otherwise, default to one of the connected accounts.
     // TODO: Eventually let the user choose if we have more than one option for the account.
-    const selectedAccount = accounts.find(
-      (account) =>
-        parsedConnectedAddresses.includes(account.address) &&
-        (!address || account.address === address),
-    );
+    const selectedAccount = address
+      ? connectedAccounts.find((account) => account.address === address)
+      : connectedAccounts[0];
 
     if (!selectedAccount) {
       throw rpcErrors.invalidParams({
