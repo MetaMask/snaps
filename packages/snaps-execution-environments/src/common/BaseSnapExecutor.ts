@@ -110,6 +110,7 @@ export class BaseSnapExecutor {
     this.#snapData = new Map();
     this.#commandStream = commandStream;
     this.#commandStream.on('data', (data) => {
+      /* istanbul ignore next 2 */
       this.#onCommandRequest(data).catch((error) => {
         logError(error);
       });

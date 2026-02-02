@@ -163,6 +163,25 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('returns an error when receiving invalid commands', async () => {
+    const executor = new TestSnapExecutor();
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 1,
+      method: 'foo',
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({
+        code: -32601,
+        message: 'The method does not exist / is not available.',
+      }),
+    });
+  });
+
   it('reports when outbound requests are made using ethereum', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => ethereum.request({ method: 'eth_blockNumber', params: [] });
