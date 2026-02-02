@@ -181,6 +181,14 @@ export class BaseSnapExecutor {
     }
   }
 
+  /**
+   * Handle an incoming JSON-RPC command request.
+   *
+   * @param method - The JSON-RPC method name.
+   * @param params - The optional JSON-RPC parameters.
+   * @returns The response based on the JSON-RPC method invoked.
+   * @throws If the passed method is not available.
+   */
   async #handleCommand(method: string, params?: Json) {
     switch (method) {
       case 'ping':
@@ -211,6 +219,16 @@ export class BaseSnapExecutor {
     }
   }
 
+  /**
+   * Invoke an exported handler on a running Snap.
+   *
+   * @param options - An options bag.
+   * @param options.snapId - The Snap ID.
+   * @param options.handler - The handler to invoke.
+   * @param options.origin - The origin invoking the handler.
+   * @param options.request - The JSON-RPC request to invoke the handler with.
+   * @returns The result of invoking the handler on the Snap.
+   */
   async #invokeSnap({
     snapId,
     handler: handlerType,
