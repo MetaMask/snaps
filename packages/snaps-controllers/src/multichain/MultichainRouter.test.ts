@@ -125,11 +125,7 @@ describe('MultichainRouter', () => {
     it('disallows routing to unconnected accounts', async () => {
       const rootMessenger = getRootMultichainRouterMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
-      const withSnapKeyring = getMockWithSnapKeyring({
-        submitRequest: jest.fn().mockResolvedValue({
-          signature: '0x',
-        }),
-      });
+      const withSnapKeyring = getMockWithSnapKeyring();
 
       /* eslint-disable-next-line no-new */
       new MultichainRouter({
@@ -140,11 +136,6 @@ describe('MultichainRouter', () => {
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
         () => MOCK_SOLANA_ACCOUNTS,
-      );
-
-      rootMessenger.registerActionHandler(
-        'PermissionController:getPermissions',
-        () => MOCK_SOLANA_SNAP_PERMISSIONS,
       );
 
       rootMessenger.registerActionHandler(
