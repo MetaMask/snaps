@@ -2584,17 +2584,17 @@ describe('BaseSnapExecutor', () => {
     [
       {
         snapId: 1,
-        code: 'module.exports.onRpcRequest = () => 1;',
+        sourceCode: 'module.exports.onRpcRequest = () => 1;',
         endowments: [],
       },
       {
         snapId: MOCK_SNAP_ID,
-        code: 1,
+        sourceCode: 1,
         endowments: [],
       },
       {
         snapId: MOCK_SNAP_ID,
-        code: 'module.exports.onRpcRequest = () => 1;',
+        sourceCode: 'module.exports.onRpcRequest = () => 1;',
         endowments: ['foo', 1],
       },
     ].forEach((params) => {
@@ -2626,25 +2626,25 @@ describe('BaseSnapExecutor', () => {
     [
       {
         snapId: 1,
-        method: HandlerType.OnRpcRequest,
+        handler: HandlerType.OnRpcRequest,
         origin: MOCK_ORIGIN,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
         snapId: MOCK_SNAP_ID,
-        method: 1,
+        handler: 1,
         origin: MOCK_ORIGIN,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
         snapId: MOCK_SNAP_ID,
-        method: HandlerType.OnRpcRequest,
+        handler: HandlerType.OnRpcRequest,
         origin: 1,
         request: { jsonrpc: '2.0', method: '', params: [] },
       },
       {
         snapId: MOCK_SNAP_ID,
-        method: HandlerType.OnRpcRequest,
+        handler: HandlerType.OnRpcRequest,
         origin: MOCK_ORIGIN,
         request: 1,
       },
