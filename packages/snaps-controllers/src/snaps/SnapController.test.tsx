@@ -11848,10 +11848,7 @@ describe('SnapController', () => {
         throw errorValue;
       });
 
-      // TODO: Either fix this lint violation or explain why it's necessary to
-      //  ignore.
-
-      await options.messenger.call(
+      options.messenger.call(
         'SnapController:clearSnapState',
         MOCK_SNAP_ID,
         true,
@@ -11969,10 +11966,7 @@ describe('SnapController', () => {
 
       const snapController = await getSnapController(options);
 
-      // TODO: Either fix this lint violation or explain why it's necessary to
-      //  ignore.
-
-      const result = await options.messenger.call(
+      const result = options.messenger.call(
         'SnapController:getPermitted',
         mockSnap.origin,
       );
