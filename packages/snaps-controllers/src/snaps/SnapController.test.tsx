@@ -2146,8 +2146,7 @@ describe('SnapController', () => {
 
     expect(snapController.state.snaps[snap.id]).toBeUndefined();
 
-    expect(options.messenger.call).toHaveBeenNthCalledWith(
-      2,
+    expect(options.messenger.call).toHaveBeenCalledWith(
       'StorageService:removeItem',
       controllerName,
       MOCK_SNAP_ID,
@@ -10115,7 +10114,7 @@ describe('SnapController', () => {
       await snapController.removeSnap(MOCK_SNAP_ID);
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        2,
+        7,
         'StorageService:removeItem',
         controllerName,
         MOCK_SNAP_ID,
@@ -10568,11 +10567,11 @@ describe('SnapController', () => {
       expect(updatedSnap.preinstalled).toBe(true);
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        2,
+        7,
         'StorageService:setItem',
         controllerName,
         snapId,
-        { sourceCode: DEFAULT_SNAP_BUNDLE },
+        { sourceCode: expect.any(String) },
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
@@ -10696,6 +10695,11 @@ describe('SnapController', () => {
       expect(callActionSpy).toHaveBeenCalledWith(
         'PermissionController:revokeAllPermissions',
         MOCK_SNAP_ID,
+      );
+
+      expect(callActionSpy).toHaveBeenCalledWith(
+        'StorageService:clear',
+        controllerName,
       );
 
       await expect(requestPromise).rejects.toThrow(
