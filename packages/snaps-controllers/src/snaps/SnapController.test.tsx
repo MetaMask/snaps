@@ -7990,6 +7990,14 @@ describe('SnapController', () => {
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
+        18,
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
         19,
         'SubjectMetadataController:addSubjectMetadata',
         {
@@ -8283,11 +8291,66 @@ describe('SnapController', () => {
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
+        26,
+        'StorageService:setItem',
+        controllerName,
+        snapId3,
+        { sourceCode: expect.any(String) },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        39,
+        'StorageService:setItem',
+        controllerName,
+        snapId1,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        50,
+        'StorageService:setItem',
+        controllerName,
+        snapId2,
+        { sourceCode: 'foo' },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
         53,
         'PermissionController:revokePermissions',
         {
           [MOCK_ORIGIN]: [WALLET_SNAP_PERMISSION_KEY],
         },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        62,
+        'StorageService:removeItem',
+        controllerName,
+        snapId3,
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        64,
+        'StorageService:setItem',
+        controllerName,
+        snapId1,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        65,
+        'StorageService:setItem',
+        controllerName,
+        snapId2,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        65,
+        'StorageService:setItem',
+        controllerName,
+        snapId2,
+        { sourceCode: DEFAULT_SNAP_BUNDLE },
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
