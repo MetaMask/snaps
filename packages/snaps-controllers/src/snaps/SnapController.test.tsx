@@ -8346,14 +8346,6 @@ describe('SnapController', () => {
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        65,
-        'StorageService:setItem',
-        controllerName,
-        snapId2,
-        { sourceCode: DEFAULT_SNAP_BUNDLE },
-      );
-
-      expect(options.messenger.call).toHaveBeenNthCalledWith(
         67,
         'PermissionController:grantPermissions',
         {
