@@ -77,6 +77,7 @@ import type {
   StatusContext,
   StatusEvents,
   StatusStates,
+  StorageServiceSnapData,
   TruncatedSnap,
   TruncatedSnapFields,
 } from '@metamask/snaps-utils';
@@ -111,6 +112,12 @@ import {
   OnAssetsConversionResponseStruct,
   OnAssetsMarketDataResponseStruct,
 } from '@metamask/snaps-utils';
+import type {
+  StorageServiceGetItemAction,
+  StorageServiceSetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceClearAction,
+} from '@metamask/storage-service';
 import type {
   Json,
   NonEmptyArray,
@@ -322,7 +329,7 @@ export type SnapControllerState = {
 };
 
 export type PersistedSnapControllerState = SnapControllerState & {
-  snaps: Record<SnapId, PersistedSnap>;
+  snaps: Record<SnapId, Snap>;
   snapStates: Record<SnapId, string>;
 };
 
@@ -333,6 +340,7 @@ type RollbackSnapshot = {
     granted?: RequestedPermissions;
     requestData?: Record<string, unknown>;
   };
+  previousSourceCode?: string;
   previousInitialConnections?: Record<string, EmptyObject> | null;
   newInitialConnections?: Record<string, EmptyObject>;
   newVersion: string;
@@ -670,7 +678,11 @@ export type AllowedActions =
   | Update
   | ResolveVersion
   | CreateInterface
-  | GetInterface;
+  | GetInterface
+  | StorageServiceSetItemAction
+  | StorageServiceGetItemAction
+  | StorageServiceRemoveItemAction
+  | StorageServiceClearAction;
 
 export type AllowedEvents =
   | ExecutionServiceEvents
@@ -936,6 +948,12 @@ export class SnapController extends BaseController<
 
   readonly #ensureOnboardingComplete: () => Promise<void>;
 
+  // A promise that resolves when the controller has finished setting up.
+  // This is used to ensure that the controller is ready to be used.
+  // It is resolved when the controller has finished setting up and the platform is ready.
+  // It is rejected if there is an error during setup.
+  readonly #controllerSetup = createDeferredPromise();
+
   constructor({
     messenger,
     state,
@@ -983,7 +1001,6 @@ export class SnapController extends BaseController<
             return Object.values(snaps).reduce<Record<SnapId, Partial<Snap>>>(
               (acc, snap) => {
                 const snapCopy: Partial<Snap> = { ...snap };
-                delete snapCopy.sourceCode;
                 delete snapCopy.auxiliaryFiles;
                 acc[snap.id] = snapCopy;
                 return acc;
@@ -1120,10 +1137,6 @@ export class SnapController extends BaseController<
       this.#setupRuntime(snap.id),
     );
 
-    if (this.#preinstalledSnaps) {
-      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-    }
-
     this.#trackSnapExport = throttleTracking(
       (snapId: SnapId, handler: string, success: boolean, origin: string) => {
         const snapMetadata = this.messenger.call(
@@ -1220,8 +1233,9 @@ export class SnapController extends BaseController<
    * actions.
    */
   #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
-      this.init(...args),
+    this.messenger.registerActionHandler(
+      `${controllerName}:init`,
+      async (...args) => this.init(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -1336,17 +1350,28 @@ export class SnapController extends BaseController<
   /**
    * Initialise the SnapController.
    *
-   * Currently this method calls the `onStart` lifecycle hook for all
+   * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
    * runnable Snaps.
    */
-  init() {
-    // Lazily populate the `isReady` state.
-    this.#ensureCanUsePlatform().catch(logWarning);
+  async init() {
+    try {
+      if (this.#preinstalledSnaps) {
+        await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+      }
 
-    this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
+      this.#controllerSetup.resolve();
+
+      // Populate the `isReady` state.
+      await this.#ensureCanUsePlatform();
+
+      this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
+    } catch (error) {
+      this.#controllerSetup.reject(error);
+      logWarning('Error during SnapController initialization.', error);
+    }
   }
 
-  #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
+  async #handlePreinstalledSnaps(preinstalledSnaps: PreinstalledSnap[]) {
     for (const {
       snapId,
       manifest,
@@ -1418,7 +1443,7 @@ export class SnapController extends BaseController<
       };
 
       // Add snap to the SnapController state
-      this.#set({
+      await this.#set({
         id: snapId,
         origin: METAMASK_ORIGIN,
         files: filesObject,
@@ -1741,6 +1766,9 @@ export class SnapController extends BaseController<
    * Waits for onboarding and then asserts whether the Snaps platform is allowed to run.
    */
   async #ensureCanUsePlatform() {
+    // Ensure the controller has finished setting up.
+    await this.#controllerSetup.promise;
+
     // Ensure the user has onboarded before allowing access to Snaps.
     await this.#ensureOnboardingComplete();
 
@@ -1843,9 +1871,11 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
+    const sourceCode = await this.#getSourceCode(snapId);
+
     await this.#startSnap({
       snapId,
-      sourceCode: snap.sourceCode,
+      sourceCode,
     });
   }
 
@@ -2428,9 +2458,11 @@ export class SnapController extends BaseController<
     this.#snapsRuntimeData.clear();
     this.#rollbackSnapshots.clear();
 
+    await this.#clearStorageService();
+
     // We want to remove all snaps & permissions, except for preinstalled snaps
     if (this.#preinstalledSnaps) {
-      this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
+      await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
     }
   }
 
@@ -2480,6 +2512,8 @@ export class SnapController extends BaseController<
           delete state.snapStates[snapId];
           delete state.unencryptedSnapStates[snapId];
         });
+
+        await this.#removeSourceCode(snapId);
 
         // If the snap has been fully installed before, also emit snapUninstalled.
         if (snap.status !== SnapStatus.Installing) {
@@ -3129,7 +3163,7 @@ export class SnapController extends BaseController<
 
       this.#transition(snapId, SnapStatusEvents.Update);
 
-      this.#set({
+      await this.#set({
         origin,
         id: snapId,
         files: newSnap,
@@ -3384,7 +3418,7 @@ export class SnapController extends BaseController<
    * @param args - The add snap args.
    * @returns The resulting snap object.
    */
-  #set(args: SetSnapArgs): PersistedSnap {
+  async #set(args: SetSnapArgs): Promise<PersistedSnap> {
     const {
       id: snapId,
       origin,
@@ -3457,7 +3491,6 @@ export class SnapController extends BaseController<
       initialPermissions: manifest.result.initialPermissions,
       manifest: manifest.result,
       status: this.#statusMachine.config.initial as StatusStates['value'],
-      sourceCode,
       version,
       versionHistory,
       auxiliaryFiles,
@@ -3476,10 +3509,18 @@ export class SnapController extends BaseController<
     // the install flow, we do not care to create snapshots for installs
     if (isUpdate) {
       const rollbackSnapshot = this.#getRollbackSnapshot(snapId);
+
       if (rollbackSnapshot !== undefined) {
+        // Save statePatches first, before any async operations that might throw.
+        // This ensures rollback can revert state changes even if subsequent operations fail.
         rollbackSnapshot.statePatches = inversePatches;
+
+        const previousSourceCode = await this.#getSourceCode(snapId);
+        rollbackSnapshot.previousSourceCode = previousSourceCode;
       }
     }
+
+    await this.#setSourceCode(snapId, sourceCode);
 
     // In case the Snap uses a localized manifest, we need to get the
     // proposed name from the localized manifest.
@@ -4289,10 +4330,17 @@ export class SnapController extends BaseController<
       permissions,
       previousInitialConnections,
       newInitialConnections,
+      previousSourceCode,
     } = rollbackSnapshot;
 
     if (statePatches?.length) {
       this.applyPatches(statePatches);
+    }
+
+    // If the snap has a previous source code, set it back to the previous source code.
+    // If it doesn't, we don't need to set it back to the previous source code because it means we haven't updated the source code.
+    if (previousSourceCode) {
+      await this.#setSourceCode(snapId, previousSourceCode);
     }
 
     // Reset snap status, as we may have been in another state when we stored state patches
@@ -4674,5 +4722,69 @@ export class SnapController extends BaseController<
       runtime.encryptionSalt = null;
       runtime.state = undefined;
     }
+  }
+
+  /**
+   * Retrieve the source code for a Snap from storage.
+   *
+   * @param snapId - The Snap ID.
+   * @returns The source code for the Snap.
+   */
+  async #getSourceCode(snapId: SnapId): Promise<string> {
+    const storage = await this.#getStorage(snapId);
+
+    assert(storage?.sourceCode, `Source code for Snap "${snapId}" not found.`);
+
+    return storage.sourceCode;
+  }
+
+  /**
+   * Retrieve the storage for a Snap from the StorageService.
+   *
+   * @param snapId - The Snap ID.
+   * @returns The storage for the Snap.
+   */
+  async #getStorage(snapId: SnapId): Promise<StorageServiceSnapData | null> {
+    const { result, error } = await this.messenger.call(
+      'StorageService:getItem',
+      this.name,
+      snapId,
+    );
+
+    assert(!error, `Error retrieving storage for snap "${snapId}": ${error}`);
+
+    return result as StorageServiceSnapData | null;
+  }
+
+  /**
+   * Store the source code for a Snap in storage.
+   * For now we call the StorageService with just the source code
+   * since that's all we store.
+   *
+   * @param snapId - The Snap ID.
+   * @param sourceCode - The source code for the Snap.
+   */
+  async #setSourceCode(snapId: SnapId, sourceCode: string): Promise<void> {
+    await this.messenger.call('StorageService:setItem', this.name, snapId, {
+      sourceCode,
+    });
+  }
+
+  /**
+   * Remove the source code for a Snap from storage.
+   * Since we only store source code, this effectively
+   * removes all data for the Snap for now.
+   *
+   * @param snapId - The Snap ID.
+   */
+  async #removeSourceCode(snapId: SnapId): Promise<void> {
+    await this.messenger.call('StorageService:removeItem', this.name, snapId);
+  }
+
+  /**
+   * Clear all Snap data from the StorageService.
+   */
+  async #clearStorageService(): Promise<void> {
+    await this.messenger.call('StorageService:clear', this.name);
   }
 }

@@ -25,6 +25,7 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
+import type { PersistedSnap, Snap } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   getPersistedSnapObject,
@@ -35,6 +36,15 @@ import {
   MockControllerMessenger,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import type {
+  InitialStorageData,
+  StorageServiceActions,
+  StorageServiceEvents,
+} from '@metamask/storage-service';
+import {
+  InMemoryStorageAdapter,
+  StorageService,
+} from '@metamask/storage-service';
 import type { Json } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
@@ -325,9 +335,12 @@ export const getControllerMessenger = () => {
     SnapControllerEvents | AllowedEvents
   >();
 
-  messenger.registerActionHandler('PermissionController:hasPermission', () => {
-    return true;
-  });
+  messenger.registerActionHandler(
+    'PermissionController:hasPermission',
+    (_id, permission) => {
+      return permission !== SnapEndowments.LifecycleHooks;
+    },
+  );
 
   messenger.registerActionHandler('PermissionController:hasPermissions', () => {
     return true;
@@ -482,6 +495,10 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
+      'StorageService:setItem',
+      'StorageService:getItem',
+      'StorageService:removeItem',
+      'StorageService:clear',
     ],
     events: [
       'ExecutionService:unhandledError',
@@ -503,9 +520,23 @@ export type SnapControllerConstructorParams = ConstructorParameters<
   typeof SnapController
 >[0];
 
-export type PartialSnapControllerConstructorParams = Partial<
-  Omit<ConstructorParameters<typeof SnapController>[0], 'state'> & {
-    state: Partial<SnapControllerConstructorParams['state']>;
+export type SnapControllerStateWithStorageService = Omit<
+  PersistedSnapControllerState,
+  'snaps'
+> & {
+  snaps: Record<SnapId, PersistedSnap>;
+};
+
+export type SnapControllerConstructorParamsWithStorage = Omit<
+  SnapControllerConstructorParams,
+  'state'
+> & {
+  state: SnapControllerStateWithStorageService;
+};
+
+export type PartialSnapControllerConstructorParamsWithStorage = Partial<
+  Omit<SnapControllerConstructorParamsWithStorage, 'state'> & {
+    state?: Partial<SnapControllerStateWithStorageService>;
   }
 >;
 
@@ -540,12 +571,21 @@ export const getSnapControllerEncryptor = () => {
   };
 };
 
-export const getSnapControllerOptions = (
-  opts?: PartialSnapControllerConstructorParams,
-) => {
+export type GetSnapControllerOptionsParam = Omit<
+  PartialSnapControllerConstructorParamsWithStorage,
+  'messenger'
+> & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
+
+export const getSnapControllerOptions = ({
+  rootMessenger = getControllerMessenger(),
+  ...opts
+}: GetSnapControllerOptionsParam = {}) => {
+  const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
+
   const options = {
     environmentEndowmentPermissions: [],
-    messenger: getSnapControllerMessenger(),
+    messenger: snapControllerMessenger,
+    rootMessenger,
     featureFlags: {
       dappsCanUpdateSnaps: true,
       rejectInvalidPlatformVersion: true,
@@ -559,66 +599,126 @@ export const getSnapControllerOptions = (
     trackEvent: jest.fn(),
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     ...opts,
-  } as SnapControllerConstructorParams;
+  } as SnapControllerConstructorParamsWithStorage & {
+    rootMessenger: ReturnType<typeof getControllerMessenger>;
+  };
 
   options.state = {
     snaps: {},
     snapStates: {},
     unencryptedSnapStates: {},
-    ...options.state,
+    isReady: false,
+    ...opts?.state,
   };
+
   return options;
 };
 
-export type GetSnapControllerWithEESOptionsParam = Omit<
-  PartialSnapControllerConstructorParams,
-  'messenger'
-> & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
-
-export const getSnapControllerWithEESOptions = ({
-  rootMessenger = getControllerMessenger(),
-  ...options
-}: GetSnapControllerWithEESOptionsParam = {}) => {
-  const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
-
-  return {
-    featureFlags: { dappsCanUpdateSnaps: true },
-    environmentEndowmentPermissions: [],
-    messenger: snapControllerMessenger,
-    rootMessenger,
-    getMnemonicSeed: async () =>
-      Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
-    encryptor: getSnapControllerEncryptor(),
-    fetchFunction: jest.fn(),
-    trackEvent: jest.fn(),
-    ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
-    ...options,
-  } as SnapControllerConstructorParams & {
-    rootMessenger: ReturnType<typeof getControllerMessenger>;
-  };
+export const extractSourceCodeFromSnapsState = (
+  snaps: Record<SnapId, PersistedSnap>,
+): {
+  snaps: Record<SnapId, Snap>;
+  snapsData: Record<SnapId, { sourceCode: string }>;
+} => {
+  return Object.entries(snaps).reduce<{
+    snaps: Record<SnapId, Snap>;
+    snapsData: Record<SnapId, { sourceCode: string }>;
+  }>(
+    (acc, [snapId, snap]) => {
+      const { sourceCode, ...rest } = snap;
+      acc.snaps[snapId as SnapId] = rest;
+      acc.snapsData[snapId as SnapId] = { sourceCode };
+      return acc;
+    },
+    { snaps: {}, snapsData: {} },
+  );
 };
 
-export const getSnapController = (options = getSnapControllerOptions()) => {
-  return new SnapController(options);
+export const getStorageService = (
+  messenger: ReturnType<typeof getControllerMessenger>,
+  initialData?: InitialStorageData,
+) => {
+  const storageServiceMessenger = new Messenger<
+    'StorageService',
+    StorageServiceActions,
+    StorageServiceEvents,
+    any
+  >({
+    namespace: 'StorageService',
+    parent: messenger,
+  });
+
+  return new StorageService({
+    messenger: storageServiceMessenger,
+    storage: new InMemoryStorageAdapter(initialData),
+  });
 };
 
-export const getSnapControllerWithEES = (
-  options = getSnapControllerWithEESOptions(),
+export const getSnapController = async (
+  options = getSnapControllerOptions(),
+  init = true,
+) => {
+  const { rootMessenger, ...controllerOptions } = options;
+
+  const { snaps, snapsData } = extractSourceCodeFromSnapsState(
+    controllerOptions.state?.snaps ?? {},
+  );
+
+  getStorageService(rootMessenger, {
+    SnapController: snapsData,
+  });
+
+  const controller = new SnapController({
+    ...controllerOptions,
+    state: {
+      ...controllerOptions.state,
+      snaps,
+    },
+  });
+
+  if (init) {
+    await controller.init();
+  }
+  return controller;
+};
+
+export const getSnapControllerWithEES = async (
+  options = getSnapControllerOptions(),
   service?: ReturnType<typeof getNodeEES>,
+  init = true,
 ) => {
   const _service =
     // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
-  const controller = new SnapController(options);
+  const { snaps, snapsData } = extractSourceCodeFromSnapsState(
+    options.state?.snaps ?? {},
+  );
+
+  getStorageService(options.rootMessenger, {
+    SnapController: snapsData,
+  });
+
+  const controller = new SnapController({
+    ...options,
+    state: {
+      ...options.state,
+      snaps,
+    },
+  });
+
+  if (init) {
+    await controller.init();
+  }
+
   return [controller, _service] as const;
 };
 
 export const getPersistedSnapsState = (
-  ...snaps: PersistedSnapControllerState['snaps'][SnapId][]
-): PersistedSnapControllerState['snaps'] => {
+  ...snaps: SnapControllerStateWithStorageService['snaps'][SnapId][]
+): SnapControllerStateWithStorageService['snaps'] => {
   return (snaps.length > 0 ? snaps : [getPersistedSnapObject()]).reduce<
-    PersistedSnapControllerState['snaps']
+    SnapControllerStateWithStorageService['snaps']
   >((snapsState, snapObject) => {
     snapsState[snapObject.id] = snapObject;
     return snapsState;
@@ -815,13 +915,6 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     messenger.registerActionHandler('SnapController:get', (snapId: string) => {
       return getSnapObject({ id: snapId as SnapId });
     });
-
-    messenger.registerActionHandler(
-      'PermissionController:hasPermission',
-      () => {
-        return true;
-      },
-    );
   }
 
   jest.spyOn(snapInterfaceControllerMessenger, 'call');
