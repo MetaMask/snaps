@@ -1,7 +1,7 @@
 import { JsonRpcEngineV2 } from '@metamask/json-rpc-engine/v2';
 import type { JsonRpcRequest } from '@metamask/utils';
 
-import { createWalletSnapPermissionMiddleware } from '@metamask/snaps-rpc-methods';
+import { createWalletSnapPermissionMiddleware } from './wallet-snap-permission';
 
 describe('createWalletSnapPermissionMiddleware', () => {
   it('throws an error if wallet_snap permission is requested with other permissions', async () => {
@@ -47,6 +47,23 @@ describe('createWalletSnapPermissionMiddleware', () => {
           /* eslint-enable @typescript-eslint/naming-convention */
         },
       ] as const,
+    } satisfies JsonRpcRequest;
+
+    expect(await engine.handle(request)).toBe(true);
+  });
+
+  it('does nothing for invalid requests', async () => {
+    const responseMiddleware = jest.fn().mockReturnValue(true);
+
+    const engine = JsonRpcEngineV2.create({
+      middleware: [createWalletSnapPermissionMiddleware(), responseMiddleware],
+    });
+
+    const request = {
+      jsonrpc: '2.0' as const,
+      id: 1,
+      method: 'wallet_requestPermissions',
+      params: [] as const,
     } satisfies JsonRpcRequest;
 
     expect(await engine.handle(request)).toBe(true);
