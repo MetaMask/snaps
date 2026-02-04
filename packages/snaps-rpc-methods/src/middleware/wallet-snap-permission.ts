@@ -5,6 +5,8 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { Json } from '@metamask/utils';
 
+import { WALLET_SNAP_PERMISSION_KEY } from '../restricted';
+
 type RequestParams = [Record<string, Json>];
 
 /**
@@ -29,7 +31,7 @@ export function createWalletSnapPermissionMiddleware(): JsonRpcMiddleware<
 
       if (
         requestedPermissionsKeys.length > 1 &&
-        requestedPermissionsKeys.includes('wallet_snap')
+        requestedPermissionsKeys.includes(WALLET_SNAP_PERMISSION_KEY)
       ) {
         throw rpcErrors.invalidParams(
           'Permission request for `wallet_snap` cannot include other permissions. Please separate your permission requests into multiple calls to `wallet_requestPermissions`.',
