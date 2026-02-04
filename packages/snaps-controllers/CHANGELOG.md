@@ -13,13 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING:** Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
 
-### Fixed
-
-- Disallow using unconnected accounts in `MultichainRouter` ([#3837](https://github.com/MetaMask/snaps/pull/3837))
-- Update `SnapController` state when `SnapsRegistry` changes ([#3828](https://github.com/MetaMask/snaps/pull/3828))
-- Update documentation for `MultichainRouter` ([#3827](https://github.com/MetaMask/snaps/pull/3827))
-- Manually construct `keyring_resolveAccountAddress` request ([#3822](https://github.com/MetaMask/snaps/pull/3822))
-
 ### Changed
 
 - **BREAKING:** Remove `closeAllConnections` constructor argument ([#3814](https://github.com/MetaMask/snaps/pull/3814))
@@ -27,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bump `lodash` from `4.17.21` to `4.17.23` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
 - Bump `tar` from `7.0.0` to `7.1.0` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
 - Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+
+### Fixed
+
+- Disallow using unconnected accounts in `MultichainRouter` ([#3837](https://github.com/MetaMask/snaps/pull/3837))
+- Update `SnapController` state when `SnapsRegistry` changes ([#3828](https://github.com/MetaMask/snaps/pull/3828))
+- Update documentation for `MultichainRouter` ([#3827](https://github.com/MetaMask/snaps/pull/3827))
+- Manually construct `keyring_resolveAccountAddress` request ([#3822](https://github.com/MetaMask/snaps/pull/3822))
 
 ## [17.2.1]
 
