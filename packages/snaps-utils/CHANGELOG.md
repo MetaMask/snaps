@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.0]
+
 ### Uncategorized
 
 - feat!: Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
@@ -780,7 +782,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.0...HEAD
+[12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.1...@metamask/snaps-utils@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.0...@metamask/snaps-utils@12.0.1
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.1...@metamask/snaps-utils@12.0.0
 [11.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.0...@metamask/snaps-utils@11.7.1

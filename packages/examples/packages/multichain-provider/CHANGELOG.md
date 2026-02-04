@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump the npm_and_yarn group across 1 directory with 2 updates ([#3821](https://github.com/MetaMask/snaps/pull/3821))
-- chore: Move example dependencies to devDependencies ([#3824](https://github.com/MetaMask/snaps/pull/3824))
-
 ## [1.0.0]
 
 ### Added

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0]
+
 ### Uncategorized
 
 - refactor!: Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
@@ -603,7 +605,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.0...HEAD
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.1...@metamask/snaps-execution-environments@11.0.0
 [10.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.0...@metamask/snaps-execution-environments@10.4.1
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.3.0...@metamask/snaps-execution-environments@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.2.3...@metamask/snaps-execution-environments@10.3.0

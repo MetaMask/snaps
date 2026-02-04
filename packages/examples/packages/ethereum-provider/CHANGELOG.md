@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump the npm_and_yarn group across 1 directory with 2 updates ([#3821](https://github.com/MetaMask/snaps/pull/3821))
-- chore: Move example dependencies to devDependencies ([#3824](https://github.com/MetaMask/snaps/pull/3824))
-- release: `139.0.0` ([#3813](https://github.com/MetaMask/snaps/pull/3813))
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-
 ## [3.0.0]
 
 ### Added
