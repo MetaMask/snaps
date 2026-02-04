@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
+- fix: Cleanup endowment handling of `maxRequestTime` ([#3826](https://github.com/MetaMask/snaps/pull/3826))
+
 ## [4.0.0]
 
 ### Added

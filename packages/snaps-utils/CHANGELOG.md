@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
+- chore: Bump @metamask/slip44 from 4.3.0 to 4.4.0 ([#3834](https://github.com/MetaMask/snaps/pull/3834))
+- chore: Add Canton Network derivation path ([#3833](https://github.com/MetaMask/snaps/pull/3833))
+- chore: Bump fast-xml-parser from 4.5.3 to 5.3.4 in /packages/snaps-utils in the npm_and_yarn group across 1 directory ([#3831](https://github.com/MetaMask/snaps/pull/3831))
+
 ## [12.0.1]
 
 ### Fixed
