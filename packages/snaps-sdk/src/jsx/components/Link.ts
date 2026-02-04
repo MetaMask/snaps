@@ -22,6 +22,7 @@ export type LinkChildren = SnapsChildren<
  * @property children - The text to display in the link.
  * @property href - The URL to link to. This must be an `https` or `mailto` URL.
  * `http` is not allowed.
+ * @category Component Props
  */
 export type LinkProps = {
   children: LinkChildren;
@@ -40,12 +41,14 @@ const TYPE = 'Link';
  * @returns A link element.
  * @example
  * <Link href="https://example.com">Click here</Link>
+ * @category Components
  */
 export const Link = createSnapComponent<LinkProps, typeof TYPE>(TYPE);
 
 /**
  * A link element.
  *
- * @see Link
+ * @see {@link Link}
+ * @category Elements
  */
 export type LinkElement = ReturnType<typeof Link>;

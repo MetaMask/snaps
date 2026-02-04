@@ -19,6 +19,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The selected value of the asset selector.
  * Only non-EIP-155 namespaces are supported for now.
  * @property disabled - Whether the asset selector is disabled.
+ * @category Component Props
  */
 export type AssetSelectorProps = {
   name: string;
@@ -59,10 +60,17 @@ const TYPE = 'AssetSelector';
  *  ]}
  *  chainIds={['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp']}
  * />
+ * @category Components
  */
 export const AssetSelector = createSnapComponent<
   AssetSelectorProps,
   typeof TYPE
 >(TYPE);
 
+/**
+ * An asset selector element.
+ *
+ * @see {@link AssetSelector}
+ * @category Elements
+ */
 export type AssetSelectorElement = ReturnType<typeof AssetSelector>;

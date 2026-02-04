@@ -16,6 +16,7 @@ export type BoldChildren = SnapsChildren<
  * The props of the {@link Bold} component.
  *
  * @property children - The text to display in bold.
+ * @category Component Props
  */
 export type BoldProps = {
   children: BoldChildren;
@@ -34,12 +35,14 @@ const TYPE = 'Bold';
  * <Text>
  *   Hello <Bold>world</Bold>!
  * </Text>
+ * @category Components
  */
 export const Bold = createSnapComponent<BoldProps, typeof TYPE>(TYPE);
 
 /**
  * A bold element.
  *
- * @see Bold
+ * @see {@link Bold}
+ * @category Elements
  */
 export type BoldElement = ReturnType<typeof Bold>;

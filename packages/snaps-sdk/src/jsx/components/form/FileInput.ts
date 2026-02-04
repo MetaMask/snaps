@@ -11,6 +11,7 @@ import { createSnapComponent } from '../../component';
  * @property compact - Whether the file input field is compact. Default is
  * `false`.
  * @property disabled - whether the file input is disabled.
+ * @category Component Props
  */
 export type FileInputProps = {
   name: string;
@@ -45,12 +46,14 @@ const TYPE = 'FileInput';
  * <Field label="Upload file">
  *   <FileInput name="file" />
  * </Field>
+ * @category Components
  */
 export const FileInput = createSnapComponent<FileInputProps, typeof TYPE>(TYPE);
 
 /**
  * A file input element.
  *
- * @see FileInput
+ * @see {@link FileInput}
+ * @category Elements
  */
 export type FileInputElement = ReturnType<typeof FileInput>;

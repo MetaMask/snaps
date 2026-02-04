@@ -1,0 +1,37 @@
+{
+  "name": "Snaps SDK",
+  "entryPoints": [
+    "./src/index.ts",
+    "./src/jsx/index.ts"
+  ],
+
+  // Hide the internal APIs.
+  "exclude": [
+    "./src/internals/**"
+  ],
+
+  // Exclude internal and private members.
+  "excludeInternal": true,
+  "excludePrivate": true,
+
+  // Customise the favicon to use the MetaMask fox icon.
+  "favicon": "./assets/favicon.svg",
+
+  // Hide the TypeDoc generator from the footer.
+  "hideGenerator": true,
+
+  // Add additional links to the header.
+  "navigationLinks": {
+    "MetaMask Documentation": "https://docs.metamask.io/",
+    "GitHub": "https://github.com/MetaMask/snaps"
+  },
+
+  // Specify the output directory for the generated documentation.
+  "out": "docs",
+
+  // Configuration for the theme to use.
+  "plugin": [
+    "typedoc-theme-fresh"
+  ],
+  "theme": "fresh"
+}

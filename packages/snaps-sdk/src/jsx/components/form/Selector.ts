@@ -11,6 +11,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The selected value of the selector.
  * @property children - The children of the selector.
  * @property disabled - Whether the selector is disabled.
+ * @category Component Props
  */
 export type SelectorProps = {
   name: string;
@@ -39,12 +40,14 @@ const TYPE = 'Selector';
  *  <SelectorOption value="option2"><Card title="Option 2" value="Bar" /></SelectorOption>
  *  <SelectorOption value="option3"><Card title="Option 3" value="Baz" /></SelectorOption>
  * </Selector>
+ * @category Components
  */
 export const Selector = createSnapComponent<SelectorProps, typeof TYPE>(TYPE);
 
 /**
  * A selector element.
  *
- * @see Selector
+ * @see {@link Selector}
+ * @category Elements
  */
 export type SelectorElement = ReturnType<typeof Selector>;

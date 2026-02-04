@@ -11,12 +11,14 @@ const TYPE = 'Spinner';
  * @returns A spinner element.
  * @example
  * <Spinner />
+ * @category Components
  */
 export const Spinner = createSnapComponent(TYPE);
 
 /**
  * A spinner element.
  *
- * @see Spinner
+ * @see {@link Spinner}
+ * @category Elements
  */
 export type SpinnerElement = ReturnType<typeof Spinner>;

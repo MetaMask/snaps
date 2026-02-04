@@ -9,6 +9,7 @@ import { createSnapComponent } from '../../component';
  * @property label - An optional label for the checkbox.
  * @property variant - An optional variant for the checkbox.
  * @property disabled - Whether the checkbox is disabled.
+ * @category Component Props
  */
 export type CheckboxProps = {
   name: string;
@@ -33,12 +34,14 @@ const TYPE = 'Checkbox';
  * @returns A checkbox element.
  * @example
  * <Checkbox name="accept-terms" />
+ * @category Components
  */
 export const Checkbox = createSnapComponent<CheckboxProps, typeof TYPE>(TYPE);
 
 /**
  * A checkbox element.
  *
- * @see Checkbox
+ * @see {@link Checkbox}
+ * @category Elements
  */
 export type CheckboxElement = ReturnType<typeof Checkbox>;

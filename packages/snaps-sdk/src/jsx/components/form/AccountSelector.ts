@@ -12,6 +12,7 @@ import { createSnapComponent } from '../../component';
  * @property switchGlobalAccount - Whether to switch the selected account in the client.
  * @property disabled - Whether the account selector is disabled.
  * @property value - The selected address.
+ * @category Component Props
  */
 export type AccountSelectorProps = {
   name: string;
@@ -48,6 +49,7 @@ const TYPE = 'AccountSelector';
  * <AccountSelector name="account-selector" value="eip155:1:0x1234..." />
  * @example
  * <AccountSelector name="account-selector" hideExternalAccounts chainIds={['eip155:1']} switchGlobalAccount value="eip155:1:0x1234..." />
+ * @category Components
  */
 export const AccountSelector = createSnapComponent<
   AccountSelectorProps,
@@ -57,6 +59,7 @@ export const AccountSelector = createSnapComponent<
 /**
  * An account selector element.
  *
- * @see AccountSelector
+ * @see {@link AccountSelector}
+ * @category Elements
  */
 export type AccountSelectorElement = ReturnType<typeof AccountSelector>;

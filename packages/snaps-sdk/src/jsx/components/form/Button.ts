@@ -19,6 +19,7 @@ import type { ImageElement } from '../Image';
  * @property disabled - Whether the button is disabled. Defaults to `false`.
  * @property loading - Whether the button is loading. Defaults to `false`.
  * @property form - The name of the form component to associate the button with.
+ * @category Component Props
  */
 export type ButtonProps = {
   children: SnapsChildren<StringElement | IconElement | ImageElement>;
@@ -42,12 +43,14 @@ const TYPE = 'Button';
  * @returns A button element.
  * @example
  * <Button name="my-button">Click me</Button>
+ * @category Components
  */
 export const Button = createSnapComponent<ButtonProps, typeof TYPE>(TYPE);
 
 /**
  * A button element.
  *
- * @see Button
+ * @see {@link Button}
+ * @category Elements
  */
 export type ButtonElement = ReturnType<typeof Button>;

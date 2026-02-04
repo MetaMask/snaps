@@ -11,12 +11,14 @@ const TYPE = 'Divider';
  * @returns A divider element.
  * @example
  * <Divider />
+ * @category Components
  */
 export const Divider = createSnapComponent(TYPE);
 
 /**
  * A divider element.
  *
- * @see Divider
+ * @see {@link Divider}
+ * @category Elements
  */
 export type DividerElement = ReturnType<typeof Divider>;

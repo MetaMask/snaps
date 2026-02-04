@@ -10,6 +10,7 @@ import { createSnapComponent } from '../../component';
  * @property value - The selected value of the dropdown.
  * @property children - The children of the dropdown.
  * @property disabled - Whether the dropdown is disabled.
+ * @category Component Props
  */
 export type DropdownProps = {
   name: string;
@@ -36,12 +37,14 @@ const TYPE = 'Dropdown';
  *  <Option value="option2">Option 2</Option>
  *  <Option value="option3">Option 3</Option>
  * </Dropdown>
+ * @category Components
  */
 export const Dropdown = createSnapComponent<DropdownProps, typeof TYPE>(TYPE);
 
 /**
  * A dropdown element.
  *
- * @see Dropdown
+ * @see {@link Dropdown}
+ * @category Elements
  */
 export type DropdownElement = ReturnType<typeof Dropdown>;

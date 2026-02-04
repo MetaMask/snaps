@@ -5,6 +5,7 @@ import { createSnapComponent } from '../component';
  * The props of the {@link Section} component.
  *
  * @property children - The children of the section.
+ * @category Component Props
  */
 export type SectionProps = {
   // We can't use `JSXElement` because it causes a circular reference.
@@ -39,12 +40,14 @@ const TYPE = 'Section';
  *     <Address address="0x0000000000000000000000000000000000000000" />
  *   </Row>
  * </Section>
+ * @category Components
  */
 export const Section = createSnapComponent<SectionProps, typeof TYPE>(TYPE);
 
 /**
  * A section element.
  *
- * @see Section
+ * @see {@link Section}
+ * @category Elements
  */
 export type SectionElement = ReturnType<typeof Section>;

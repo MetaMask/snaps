@@ -17,6 +17,7 @@ import { createSnapComponent } from '../../component';
  * @property label - The label of the field.
  * @property error - The error message of the field.
  * @property children - The input field and the submit button.
+ * @category Component Props
  */
 export type FieldProps = {
   label?: string | undefined;
@@ -56,12 +57,14 @@ const TYPE = 'Field';
  * <Field label="Upload file">
  *   <FileInput name="file" accept={['image/*']} multiple />
  * </Field>
+ * @category Components
  */
 export const Field = createSnapComponent<FieldProps, typeof TYPE>(TYPE);
 
 /**
  * A field element.
  *
- * @see Field
+ * @see {@link Field}
+ * @category Elements
  */
 export type FieldElement = ReturnType<typeof Field>;

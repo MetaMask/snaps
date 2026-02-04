@@ -12,6 +12,7 @@ const TYPE = 'RadioGroup';
  * @property value - The value of the radio group element.
  * @property children - Radio options in form of <Radio> elements.
  * @property disabled - Whether the radio group is disabled.
+ * @category Component Props
  */
 type RadioGroupProps = {
   name: string;
@@ -31,6 +32,7 @@ type RadioGroupProps = {
  * @returns A RadioGroup element.
  * @example
  * <RadioGroup />
+ * @category Components
  */
 export const RadioGroup = createSnapComponent<RadioGroupProps, typeof TYPE>(
   TYPE,
@@ -39,6 +41,7 @@ export const RadioGroup = createSnapComponent<RadioGroupProps, typeof TYPE>(
 /**
  * A RadioGroup element.
  *
- * @see RadioGroup
+ * @see {@link RadioGroup}
+ * @category Elements
  */
 export type RadioGroupElement = ReturnType<typeof RadioGroup>;

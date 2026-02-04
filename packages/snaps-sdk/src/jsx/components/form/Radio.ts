@@ -7,6 +7,7 @@ import { createSnapComponent } from '../../component';
  * state in the form data.
  * @property children - The text to display.
  * @property disabled - Whether the radio is disabled.
+ * @category Component Props
  */
 type RadioProps = {
   value: string;
@@ -32,12 +33,14 @@ const TYPE = 'Radio';
  *  <Radio value="option2">Option 2</Radio>
  *  <Radio value="option3">Option 3</Radio>
  * </RadioGroup>
+ * @category Components
  */
 export const Radio = createSnapComponent<RadioProps, typeof TYPE>(TYPE);
 
 /**
  * A radio element.
  *
- * @see Radio
+ * @see {@link Radio}
+ * @category Elements
  */
 export type RadioElement = ReturnType<typeof Radio>;

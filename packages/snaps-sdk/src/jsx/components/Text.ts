@@ -35,6 +35,7 @@ export type TextColors =
  * @property color - The color of the text.
  * @property size - The size of the text. Defaults to `md`.
  * @property fontWeight - The font weight of the text. Defaults to `regular`.
+ * @category Component Props
  */
 export type TextProps = {
   children: TextChildren;
@@ -72,12 +73,14 @@ const TYPE = 'Text';
  * <Text fontWeight="medium">
  *   Hello <Bold>world</Bold>!
  * </Text>
+ * @category Components
  */
 export const Text = createSnapComponent<TextProps, typeof TYPE>(TYPE);
 
 /**
  * A text element.
  *
- * @see Text
+ * @see {@link Text}
+ * @category Elements
  */
 export type TextElement = ReturnType<typeof Text>;

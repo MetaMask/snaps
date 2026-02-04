@@ -5,6 +5,7 @@ import { createSnapComponent } from '../component';
  * The props of the {@link Footer} component.
  *
  * @property children - The single or multiple buttons in the footer.
+ * @category Component Props
  */
 export type FooterProps = {
   children: ButtonElement | [ButtonElement, ButtonElement];
@@ -23,12 +24,14 @@ const TYPE = 'Footer';
  *   <Button name="cancel">Cancel</Button>
  *   <Button name="confirm">Confirm</Button>
  * </Footer>
+ * @category Components
  */
 export const Footer = createSnapComponent<FooterProps, typeof TYPE>(TYPE);
 
 /**
  * A footer element.
  *
- * @see Footer
+ * @see {@link Footer}
+ * @category Elements
  */
 export type FooterElement = ReturnType<typeof Footer>;

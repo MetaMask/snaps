@@ -7,6 +7,7 @@ import { createSnapComponent } from '../component';
  * element.
  * @property sensitive - Whether the value is sensitive. If `true`, the value
  * will be hidden when the user is not interacting with the copyable element.
+ * @category Component Props
  */
 export type CopyableProps = {
   value: string;
@@ -27,12 +28,14 @@ const TYPE = 'Copyable';
  * @example
  * <Copyable value="0x1234567890123456789012345678901234567890" />
  * <Copyable value="0x1234567890123456789012345678901234567890" sensitive />
+ * @category Components
  */
 export const Copyable = createSnapComponent<CopyableProps, typeof TYPE>(TYPE);
 
 /**
  * A copyable element.
  *
- * @see Copyable
+ * @see {@link Copyable}
+ * @category Elements
  */
 export type CopyableElement = ReturnType<typeof Copyable>;

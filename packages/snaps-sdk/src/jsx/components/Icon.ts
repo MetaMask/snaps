@@ -284,6 +284,7 @@ export enum IconName {
  * @property name - The name of the icon to display from a pre-defined list.
  * @property color - The color of the displayed icon.
  * @property size - The size of the displayed icon. Use `inherit` to size it the same as the text.
+ * @category Component Props
  */
 export type IconProps = {
   name: `${IconName}`;
@@ -303,12 +304,14 @@ const TYPE = 'Icon';
  * @returns An icon element.
  * @example
  * <Icon name="warning" color="warning" size="md" />
+ * @category Components
  */
 export const Icon = createSnapComponent<IconProps, typeof TYPE>(TYPE);
 
 /**
  * An icon element.
  *
- * @see Icon
+ * @see {@link Icon}
+ * @category Elements
  */
 export type IconElement = ReturnType<typeof Icon>;

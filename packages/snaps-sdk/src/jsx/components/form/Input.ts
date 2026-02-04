@@ -2,6 +2,9 @@ import { createSnapComponent } from '../../component';
 
 // TODO: Add the `onChange` prop to the `InputProps` type.
 
+/**
+ * @category Component Props
+ */
 export type GenericInputProps = {
   name: string;
   value?: string | undefined;
@@ -9,10 +12,19 @@ export type GenericInputProps = {
   disabled?: boolean | undefined;
 };
 
+/**
+ * @category Component Props
+ */
 export type TextInputProps = { type: 'text' } & GenericInputProps;
 
+/**
+ * @category Component Props
+ */
 export type PasswordInputProps = { type: 'password' } & GenericInputProps;
 
+/**
+ * @category Component Props
+ */
 export type NumberInputProps = {
   type: 'number';
   min?: number;
@@ -34,6 +46,7 @@ export type NumberInputProps = {
  * Only applicable to the type `number` input.
  * @property step - The step value of the input field.
  * Only applicable to the type `number` input.
+ * @category Component Props
  */
 export type InputProps =
   | GenericInputProps
@@ -64,12 +77,14 @@ const TYPE = 'Input';
  * <Input name="username" type="text" />
  * @example
  * <Input name="numeric" type="number" min={1} max={100} step={1} />
+ * @category Components
  */
 export const Input = createSnapComponent<InputProps, typeof TYPE>(TYPE);
 
 /**
  * An input element.
  *
- * @see Input
+ * @see {@link Input}
+ * @category Elements
  */
 export type InputElement = ReturnType<typeof Input>;
