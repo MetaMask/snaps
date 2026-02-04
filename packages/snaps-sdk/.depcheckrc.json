@@ -13,6 +13,7 @@
     "prettier-plugin-packagejson",
     "ts-node",
     "typedoc",
+    "typedoc-theme-fresh",
     "typescript"
   ]
 }
