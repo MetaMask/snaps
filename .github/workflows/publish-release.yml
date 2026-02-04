@@ -122,6 +122,47 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
 
+  get-sdk-release-version:
+    needs: npm-publish
+    runs-on: ubuntu-latest
+    outputs:
+      RELEASE_VERSION: ${{ steps.get-release-version.outputs.RELEASE_VERSION }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.sha }}
+      - id: get-release-version
+        shell: bash
+        run: |
+          RELEASE_VERSION="$(jq --raw-output '.version' packages/snaps-sdk/package.json)"
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+
+  publish-release-to-gh-pages:
+    name: Publish docs to `docs/${{ needs.get-release-version.outputs.RELEASE_VERSION }}` directory of `gh-pages` branch
+    needs: get-sdk-release-version
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-sdk build:docs
+      destination_dir: docs/${{ needs.get-sdk-release-version.outputs.RELEASE_VERSION }}
+      publish_dir: ./packages/snaps-sdk/docs
+    secrets:
+      PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-release-to-latest-gh-pages:
+    name: Publish docs to `latest` directory of `gh-pages` branch
+    needs: publish-release-to-gh-pages
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-sdk build:docs
+      destination_dir: docs/latest
+      publish_dir: ./packages/snaps-sdk/docs
+    secrets:
+      PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
   is-environment-release:
     name: Determine whether this release updates the iframe execution environment
     runs-on: ubuntu-latest
