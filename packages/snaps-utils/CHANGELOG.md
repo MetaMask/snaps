@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.1.0]
+
+### Added
+
+- Add types for Snap's `StorageService` data ([#3777](https://github.com/MetaMask/snaps/pull/3777))
+- Add Canton Network derivation path ([#3833](https://github.com/MetaMask/snaps/pull/3833))
+
+### Changed
+
+- Bump `@metamask/slip44` from `4.3.0` to `4.4.0` ([#3834](https://github.com/MetaMask/snaps/pull/3834))
+- Bump `fast-xml-parser` from `4.5.3` to `5.3.4` ([#3831](https://github.com/MetaMask/snaps/pull/3831))
+
 ## [12.0.1]
 
 ### Fixed
@@ -773,7 +785,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.0...HEAD
+[12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.1...@metamask/snaps-utils@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.0...@metamask/snaps-utils@12.0.1
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.1...@metamask/snaps-utils@12.0.0
 [11.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@11.7.0...@metamask/snaps-utils@11.7.1

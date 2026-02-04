@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.0.0]
+
+### Added
+
+- **BREAKING:** Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
+
+### Changed
+
+- **BREAKING:** Remove `closeAllConnections` constructor argument ([#3814](https://github.com/MetaMask/snaps/pull/3814))
+- Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
+- Bump `lodash` from `4.17.21` to `4.17.23` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
+- Bump `tar` from `7.0.0` to `7.1.0` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+
+### Fixed
+
+- Disallow using unconnected accounts in `MultichainRouter` ([#3837](https://github.com/MetaMask/snaps/pull/3837))
+- Update `SnapController` state when `SnapsRegistry` changes ([#3828](https://github.com/MetaMask/snaps/pull/3828))
+- Update documentation for `MultichainRouter` ([#3827](https://github.com/MetaMask/snaps/pull/3827))
+- Manually construct `keyring_resolveAccountAddress` request ([#3822](https://github.com/MetaMask/snaps/pull/3822))
+
 ## [17.2.1]
 
 ### Changed
@@ -1018,7 +1039,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.0...HEAD
+[18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.1...@metamask/snaps-controllers@18.0.0
 [17.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.0...@metamask/snaps-controllers@17.2.1
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.2...@metamask/snaps-controllers@17.2.0
 [17.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.1...@metamask/snaps-controllers@17.1.2

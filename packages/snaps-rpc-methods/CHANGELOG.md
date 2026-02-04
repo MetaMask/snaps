@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [14.3.0]
+
+### Added
+
+- Add middleware to validate `wallet_snap` permission request ([#3838](https://github.com/MetaMask/snaps/pull/3838))
+
+### Fixed
+
+- Cleanup endowment handling of `maxRequestTime` ([#3826](https://github.com/MetaMask/snaps/pull/3826))
+
 ## [14.2.0]
 
 ### Added
@@ -557,7 +567,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.3.0...HEAD
+[14.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...@metamask/snaps-rpc-methods@14.3.0
 [14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...@metamask/snaps-rpc-methods@14.2.0
 [14.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.0...@metamask/snaps-rpc-methods@14.1.1
 [14.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.0.0...@metamask/snaps-rpc-methods@14.1.0
