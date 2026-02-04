@@ -148,7 +148,7 @@ jobs:
       destination_dir: docs/${{ needs.get-sdk-release-version.outputs.RELEASE_VERSION }}
       publish_dir: ./packages/snaps-sdk/docs
     secrets:
-      PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   publish-release-to-latest-gh-pages:
     name: Publish docs to `latest` directory of `gh-pages` branch
@@ -161,7 +161,7 @@ jobs:
       destination_dir: docs/latest
       publish_dir: ./packages/snaps-sdk/docs
     secrets:
-      PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   is-environment-release:
     name: Determine whether this release updates the iframe execution environment

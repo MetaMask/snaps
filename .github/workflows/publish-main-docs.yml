@@ -16,4 +16,4 @@ jobs:
       destination_dir: docs/staging
       publish_dir: ./packages/snaps-sdk/docs
     secrets:
-      PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
