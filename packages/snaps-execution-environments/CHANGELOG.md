@@ -9,10 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.0.0]
 
-### Uncategorized
+### Changed
 
-- refactor!: Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
-- refactor: Use hash-private in `BaseSnapExecutor` ([#3830](https://github.com/MetaMask/snaps/pull/3830))
+- **BREAKING:** Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
+- Use hash-private in `BaseSnapExecutor` ([#3830](https://github.com/MetaMask/snaps/pull/3830))
 
 ## [10.4.1]
 

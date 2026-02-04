@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.3.0]
 
-### Uncategorized
+### Added
 
-- feat: Add middleware to validate `wallet_snap` permission request ([#3838](https://github.com/MetaMask/snaps/pull/3838))
-- fix: Cleanup endowment handling of `maxRequestTime` ([#3826](https://github.com/MetaMask/snaps/pull/3826))
+- Add middleware to validate `wallet_snap` permission request ([#3838](https://github.com/MetaMask/snaps/pull/3838))
+
+### Fixed
+
+- Cleanup endowment handling of `maxRequestTime` ([#3826](https://github.com/MetaMask/snaps/pull/3826))
 
 ## [14.2.0]
 

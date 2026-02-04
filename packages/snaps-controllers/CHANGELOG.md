@@ -9,18 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [18.0.0]
 
-### Uncategorized
+### Added
 
-- feat!: Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
-- fix: Disallow using unconnected accounts in MultichainRouter ([#3837](https://github.com/MetaMask/snaps/pull/3837))
-- refactor!: Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
-- fix: Update `SnapController` state when `SnapsRegistry` changes ([#3828](https://github.com/MetaMask/snaps/pull/3828))
-- fix: Update documentation for `MultichainRouter` ([#3827](https://github.com/MetaMask/snaps/pull/3827))
-- chore: Bump the npm_and_yarn group across 1 directory with 2 updates ([#3821](https://github.com/MetaMask/snaps/pull/3821))
-- fix: Manually construct `keyring_resolveAccountAddress` request ([#3822](https://github.com/MetaMask/snaps/pull/3822))
-- refactor!: Remove `closeAllConnections` constructor argument ([#3814](https://github.com/MetaMask/snaps/pull/3814))
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- chore: Bump @metamask/json-rpc-engine from 10.2.0 to 10.2.1 ([#3804](https://github.com/MetaMask/snaps/pull/3804))
+- **BREAKING:** Use `StorageService` to store source code ([#3777](https://github.com/MetaMask/snaps/pull/3777))
+
+### Fixed
+
+- Disallow using unconnected accounts in MultichainRouter ([#3837](https://github.com/MetaMask/snaps/pull/3837))
+- Update `SnapController` state when `SnapsRegistry` changes ([#3828](https://github.com/MetaMask/snaps/pull/3828))
+- Update documentation for `MultichainRouter` ([#3827](https://github.com/MetaMask/snaps/pull/3827))
+- Manually construct `keyring_resolveAccountAddress` request ([#3822](https://github.com/MetaMask/snaps/pull/3822))
+
+### Changed
+
+- **BREAKING:** Remove `closeAllConnections` constructor argument ([#3814](https://github.com/MetaMask/snaps/pull/3814))
+- **BREAKING:** Pass executor parameters by object ([#3803](https://github.com/MetaMask/snaps/pull/3803))
+- Bump `lodash` from `4.17.21` to `4.17.23` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
+- Bump `tar` from `7.0.0` to `7.1.0` ([#3821](https://github.com/MetaMask/snaps/pull/3821))
+- Bump `@metamask/json-rpc-engine` from `10.2.0` to `10.2.1` ([#3804](https://github.com/MetaMask/snaps/pull/3804))
 
 ## [17.2.1]
 
