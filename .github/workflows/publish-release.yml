@@ -122,37 +122,50 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
 
-  get-sdk-release-version:
-    needs: npm-publish
+  is-sdk-release:
+    name: Determine whether this release updates Snaps SDK
     runs-on: ubuntu-latest
+    needs: publish-release
     outputs:
-      RELEASE_VERSION: ${{ steps.get-release-version.outputs.RELEASE_VERSION }}
+      IS_SDK_RELEASE: ${{ steps.set-output.outputs.IS_SDK_RELEASE }}
+      SDK_VERSION: ${{ steps.set-output.outputs.SDK_VERSION }}
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v2
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - id: get-release-version
+          fetch-depth: 2
+      - name: Check if this is a Snaps SDK release
+        id: is-sdk-release
         shell: bash
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: ./scripts/is-release.sh "packages/snaps-sdk/package.json" "$BEFORE" "IS_SDK_RELEASE"
+      - name: Set output
+        id: set-output
+        if: steps.is-sdk-release.outputs.IS_SDK_RELEASE == 'true'
         run: |
-          RELEASE_VERSION="$(jq --raw-output '.version' packages/snaps-sdk/package.json)"
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "IS_SDK_RELEASE=true" >> "$GITHUB_OUTPUT"
+          echo "SDK_VERSION=$(jq --raw-output '.version' packages/snaps-sdk/package.json)" >> "$GITHUB_OUTPUT"
 
-  publish-release-to-gh-pages:
-    name: Publish docs to `docs/${{ needs.get-sdk-release-version.outputs.RELEASE_VERSION }}` directory of `gh-pages` branch
-    needs: get-sdk-release-version
+  publish-docs-to-gh-pages:
+    name: Publish docs to `docs/${{ needs.is-sdk-release.outputs.SDK_VERSION }}` directory of `gh-pages` branch
+    needs: is-sdk-release
+    if: ${{ needs.is-sdk-release.outputs.IS_SDK_RELEASE == 'true' }}
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
-      destination_dir: docs/${{ needs.get-sdk-release-version.outputs.RELEASE_VERSION }}
+      destination_dir: docs/${{ needs.is-sdk-release.outputs.SDK_VERSION }}
       publish_dir: ./packages/snaps-sdk/docs
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
-  publish-release-to-latest-gh-pages:
-    name: Publish docs to `latest` directory of `gh-pages` branch
-    needs: publish-release-to-gh-pages
+  publish-docs-to-latest-gh-pages:
+    name: Publish docs to `docs/latest` directory of `gh-pages` branch
+    needs: publish-docs-to-gh-pages
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
