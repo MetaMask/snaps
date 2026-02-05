@@ -138,7 +138,7 @@ jobs:
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> "$GITHUB_OUTPUT"
 
   publish-release-to-gh-pages:
-    name: Publish docs to `docs/${{ needs.get-release-version.outputs.RELEASE_VERSION }}` directory of `gh-pages` branch
+    name: Publish docs to `docs/${{ needs.get-sdk-release-version.outputs.RELEASE_VERSION }}` directory of `gh-pages` branch
     needs: get-sdk-release-version
     permissions:
       contents: write
