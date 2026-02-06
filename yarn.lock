@@ -4349,7 +4349,7 @@ __metadata:
     jest-environment-node: "npm:^29.5.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
-    lavamoat: "npm:^10.1.0"
+    lavamoat: "npm:^10.1.1"
     prettier: "npm:^3.3.3"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
@@ -13648,7 +13648,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.1.2, lavamoat-core@npm:^17.1.3":
+"lavamoat-core@npm:^17.1.3":
   version: 17.1.3
   resolution: "lavamoat-core@npm:17.1.3"
   dependencies:
@@ -13664,7 +13664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^8.1.0, lavamoat-tofu@npm:^8.1.1":
+"lavamoat-tofu@npm:^8.1.1":
   version: 8.1.1
   resolution: "lavamoat-tofu@npm:8.1.1"
   dependencies:
@@ -13680,25 +13680,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "lavamoat@npm:10.1.0"
+"lavamoat@npm:^10.1.1":
+  version: 10.1.1
+  resolution: "lavamoat@npm:10.1.1"
   dependencies:
     "@babel/code-frame": "npm:7.27.1"
     "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^4.3.5"
+    "@lavamoat/aa": "npm:^4.3.6"
     bindings: "npm:1.5.0"
     corepack: "npm:0.33.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^17.1.2"
-    lavamoat-tofu: "npm:^8.1.0"
+    lavamoat-core: "npm:^17.1.3"
+    lavamoat-tofu: "npm:^8.1.1"
     node-gyp-build: "npm:4.8.4"
     resolve: "npm:1.22.10"
     yargs: "npm:17.7.2"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/c774be02af528dac386d9cb071c6fe02574798459819279b65994ea25afaef82008fb8578e3dd77f7f48b33e422f7ff1a9f5d0da7f01b84788e18145c1c850bc
+  checksum: 10/6072cccc290ebc436bb721b9a1c38d04e079b541d5548e26ae43e5b675eb446daf01091b381eecc9401cd26229bdd409d1980fa2939443b4b9857f06f21ddaca
   languageName: node
   linkType: hard
 
