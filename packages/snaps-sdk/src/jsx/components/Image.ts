@@ -9,6 +9,7 @@ import { createSnapComponent } from '../component';
  * the `data:` URL scheme to embed images inside the SVG.
  * @property alt - The alternative text of the image, which describes the image
  * for users who cannot see it.
+ * @category Component Props
  */
 type ImageProps = {
   src: string;
@@ -37,12 +38,14 @@ const TYPE = 'Image';
  * @returns An image element.
  * @example
  * <Image src="<svg>...</svg>" alt="An example image" />
+ * @category Components
  */
 export const Image = createSnapComponent<ImageProps, typeof TYPE>(TYPE);
 
 /**
  * An image element.
  *
- * @see Image
+ * @see {@link Image}
+ * @category Elements
  */
 export type ImageElement = ReturnType<typeof Image>;

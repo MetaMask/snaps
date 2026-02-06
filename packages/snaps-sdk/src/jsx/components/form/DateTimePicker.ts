@@ -13,6 +13,7 @@ import { createSnapComponent } from '../../component';
  * @property disabled - Whether the date/time picker field is disabled.
  * @property disablePast - Whether to allow selection of past dates. Defaults to false.
  * @property disableFuture - Whether to allow selection of future dates. Defaults to false.
+ * @category Component Props
  */
 export type DateTimePickerProps = {
   name: string;
@@ -39,6 +40,7 @@ const TYPE = 'DateTimePicker';
  * @param props.disabled - Whether the date/time picker field is disabled.
  * @param props.disablePast - Whether to allow selection of past dates. Defaults to false.
  * @param props.disableFuture - Whether to allow selection of future dates. Defaults to false.
+ * @category Components
  */
 export const DateTimePicker = createSnapComponent<
   DateTimePickerProps,
@@ -48,6 +50,7 @@ export const DateTimePicker = createSnapComponent<
 /**
  * A DateTimePicker element.
  *
- * @see DateTimePicker
+ * @see {@link DateTimePicker}
+ * @category Elements
  */
 export type DateTimePickerElement = ReturnType<typeof DateTimePicker>;

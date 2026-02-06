@@ -9,6 +9,7 @@ import { createSnapComponent } from '../../component';
  * @property children - The children of the form.
  * @property name - The name of the form. This is used to identify the form in
  * the event handler.
+ * @category Component Props
  */
 export type FormProps = {
   children: SnapsChildren<GenericSnapElement>;
@@ -33,12 +34,14 @@ const TYPE = 'Form';
  *   </Field>
  *   <Button type="submit">Submit</Button>
  * </Form>
+ * @category Components
  */
 export const Form = createSnapComponent<FormProps, typeof TYPE>(TYPE);
 
 /**
  * A form element.
  *
- * @see Form
+ * @see {@link Form}
+ * @category Elements
  */
 export type FormElement = ReturnType<typeof Form>;

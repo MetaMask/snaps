@@ -6,6 +6,7 @@ import { createSnapComponent } from '../component';
  *
  * @property children - The text to display in the heading.
  * @property size - The size of the heading. Defaults to `sm`.
+ * @category Component Props
  */
 type HeadingProps = {
   children: StringElement;
@@ -25,12 +26,14 @@ const TYPE = 'Heading';
  * <Heading>Hello world!</Heading>
  * @example
  * <Heading size="lg">Hello world!</Heading>
+ * @category Components
  */
 export const Heading = createSnapComponent<HeadingProps, typeof TYPE>(TYPE);
 
 /**
  * A heading element.
  *
- * @see Heading
+ * @see {@link Heading}
+ * @category Elements
  */
 export type HeadingElement = ReturnType<typeof Heading>;

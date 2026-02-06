@@ -7,6 +7,7 @@ import { createSnapComponent } from '../component';
  * @param width - Width of the Skeleton.
  * @param width - Height of the Skeleton.
  * @param borderRadius - Border radius of the Skeleton.
+ * @category Component Props
  */
 export type SkeletonProps = {
   width?: number | string | undefined;
@@ -25,12 +26,14 @@ const TYPE = 'Skeleton';
  * @param props.borderRadius - Border radius of the Skeleton.
  * @example
  * <Skeleton height={32} width="50%" />
+ * @category Components
  */
 export const Skeleton = createSnapComponent<SkeletonProps, typeof TYPE>(TYPE);
 
 /**
  * A Skeleton element.
  *
- * @see Skeleton
+ * @see {@link Skeleton}
+ * @category Elements
  */
 export type SkeletonElement = ReturnType<typeof Skeleton>;

@@ -78,7 +78,15 @@ const config = createConfig([
       'jsdoc/check-tag-names': [
         'error',
         {
-          definedTags: ['property'],
+          definedTags: [
+            'property',
+
+            // Typedoc tags
+            'category',
+            'primaryExport',
+            'showCategories',
+            'showGroups',
+          ],
         },
       ],
 

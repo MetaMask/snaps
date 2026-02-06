@@ -24,6 +24,7 @@ export type BannerChildren = SnapsChildren<
  * @param children - The content to display in the banner.
  * @param title - Title of the banner.
  * @param severity - Severity level of the banner.
+ * @category Component Props
  */
 export type BannerProps = {
   children: BannerChildren;
@@ -44,12 +45,14 @@ const TYPE = 'Banner';
  * <Banner title="Success banner" severity="success">
  *   <Text>Here is the banner content!</Text>
  * </Banner>
+ * @category Components
  */
 export const Banner = createSnapComponent<BannerProps, typeof TYPE>(TYPE);
 
 /**
  * A Banner element.
  *
- * @see Banner
+ * @see {@link Banner}
+ * @category Elements
  */
 export type BannerElement = ReturnType<typeof Banner>;

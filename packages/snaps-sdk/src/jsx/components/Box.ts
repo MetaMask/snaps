@@ -9,6 +9,7 @@ import { createSnapComponent } from '../component';
  * @property alignment - The alignment mode to use within the box. Defaults to `start`.
  * @property crossAlignment - The cross alignment mode to use within the box.
  * @property center - Whether to center the children within the box. Defaults to `false`.
+ * @category Component Props
  */
 export type BoxProps = {
   // We can't use `JSXElement` because it causes a circular reference.
@@ -41,12 +42,14 @@ const TYPE = 'Box';
  * <Box>
  *   <Text>Hello world!</Text>
  * </Box>
+ * @category Components
  */
 export const Box = createSnapComponent<BoxProps, typeof TYPE>(TYPE);
 
 /**
  * A box element.
  *
- * @see Box
+ * @see {@link Box}
+ * @category Elements
  */
 export type BoxElement = ReturnType<typeof Box>;

@@ -11,6 +11,7 @@ export type ContainerBackgroundColor = 'default' | 'alternative';
  * The props of the {@link Container} component.
  *
  * @property children - The Box and the Footer or the Box element.
+ * @category Component Props
  */
 export type ContainerProps = {
   children: [GenericSnapElement, FooterElement] | GenericSnapElement;
@@ -36,12 +37,14 @@ const TYPE = 'Container';
  *     <Button name="confirm">Confirm</Button>
  *   </Footer>
  * </Container>
+ * @category Components
  */
 export const Container = createSnapComponent<ContainerProps, typeof TYPE>(TYPE);
 
 /**
  * A container element.
  *
- * @see Container
+ * @see {@link Container}
+ * @category Elements
  */
 export type ContainerElement = ReturnType<typeof Container>;

@@ -19,6 +19,7 @@ export type TooltipChildren =
  *
  * @property children - The children of the box.
  * @property content - The text to display in the tooltip.
+ * @category Component Props
  */
 export type TooltipProps = {
   children: TooltipChildren;
@@ -47,12 +48,14 @@ const TYPE = 'Tooltip';
  * <Tooltip content={<Text>Text with <Bold>formatting</Bold></Text>}>
  *   <Text>Hello world!</Text>
  * </Tooltip>
+ * @category Components
  */
 export const Tooltip = createSnapComponent<TooltipProps, typeof TYPE>(TYPE);
 
 /**
  * A tooltip element.
  *
- * @see Tooltip
+ * @see {@link Tooltip}
+ * @category Elements
  */
 export type TooltipElement = ReturnType<typeof Tooltip>;

@@ -9,6 +9,7 @@ import { createSnapComponent } from '../component';
  * @property description - The description, shown below the title.
  * @property value - The value, shown on the right side.
  * @property extra - An additional optional value shown below the value.
+ * @category Component Props
  */
 export type CardProps = {
   image?: string | undefined;
@@ -32,12 +33,14 @@ const TYPE = 'Card';
  * @returns A card element.
  * @example
  * <Card image="<svg />" title="Title" description="Description" value="$1200" extra="0.12 ETH" />
+ * @category Components
  */
 export const Card = createSnapComponent<CardProps, typeof TYPE>(TYPE);
 
 /**
  * A card element.
  *
- * @see Card
+ * @see {@link Card}
+ * @category Elements
  */
 export type CardElement = ReturnType<typeof Card>;

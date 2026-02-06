@@ -1,0 +1,19 @@
+name: Publish main branch docs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-to-gh-pages:
+    name: Publish docs to `staging` directory of `gh-pages` branch
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-sdk build:docs
+      destination_dir: docs/staging
+      publish_dir: ./packages/snaps-sdk/docs
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

@@ -15,6 +15,7 @@ export type ItalicChildren = SnapsChildren<
  *
  * @property children - The text to display in italic. This should be a string
  * or an array of strings.
+ * @category Component Props
  */
 export type ItalicProps = {
   children: ItalicChildren;
@@ -34,12 +35,14 @@ const TYPE = 'Italic';
  * <Text>
  *   Hello <Italic>world</Italic>!
  * </Text>
+ * @category Components
  */
 export const Italic = createSnapComponent<ItalicProps, typeof TYPE>(TYPE);
 
 /**
  * An italic element.
  *
- * @see Italic
+ * @see {@link Italic}
+ * @category Elements
  */
 export type ItalicElement = ReturnType<typeof Italic>;

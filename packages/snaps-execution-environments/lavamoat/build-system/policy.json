@@ -433,7 +433,7 @@
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": {
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domelementtype": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true
+        "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer>entities": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": {

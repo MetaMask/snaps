@@ -1,3 +1,12 @@
+/**
+ * The main entry point for the Snaps SDK, which can be accessed by importing
+ * from `@metamask/snaps-sdk`.
+ *
+ * @module Main
+ * @primaryExport
+ * @showGroups
+ */
+
 // Only internals that are used by other Snaps packages should be exported here.
 export type { EnumToUnion } from './internals';
 export type { UriOptions } from './internals';

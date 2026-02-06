@@ -8,6 +8,7 @@ import type { CardElement } from '../Card';
  * state in the form data.
  * @property children - The component to display.
  * @property disabled - Whether the selector option is disabled.
+ * @category Component Props
  */
 export type SelectorOptionProps = {
   value: string;
@@ -33,6 +34,7 @@ const TYPE = 'SelectorOption';
  *  <SelectorOption value="option2"><Card title="Option 2" value="Bar" /></SelectorOption>
  *  <SelectorOption value="option3"><Card title="Option 3" value="Baz" /></SelectorOption>
  * </Selector>
+ * @category Components
  */
 export const SelectorOption = createSnapComponent<
   SelectorOptionProps,
@@ -42,6 +44,7 @@ export const SelectorOption = createSnapComponent<
 /**
  * A selector option element.
  *
- * @see SelectorOption
+ * @see {@link SelectorOption}
+ * @category Elements
  */
 export type SelectorOptionElement = ReturnType<typeof SelectorOption>;

@@ -10,6 +10,7 @@ import { createSnapComponent } from '../component';
  * @property truncate - Whether to truncate the address. Defaults to `true`.
  * @property displayName - Whether to show the account name. Defaults to `false`.
  * @property avatar - Whether to show the address avatar. Defaults to `true`.
+ * @category Component Props
  */
 export type AddressProps = {
   address: `0x${string}` | CaipAccountId;
@@ -42,12 +43,14 @@ const TYPE = 'Address';
  * <Address address="0x1234567890123456789012345678901234567890" truncate={false} avatar={false} />
  * @example
  * <Address address="0x1234567890123456789012345678901234567890" displayName={true} />
+ * @category Components
  */
 export const Address = createSnapComponent<AddressProps, typeof TYPE>(TYPE);
 
 /**
  * An address element.
  *
- * @see Address
+ * @see {@link Address}
+ * @category Elements
  */
 export type AddressElement = ReturnType<typeof Address>;

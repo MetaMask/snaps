@@ -11,6 +11,7 @@ import { createSnapComponent } from '../../component';
  * state in the form data.
  * @property children - The text to display.
  * @property disabled - Whether the option is disabled.
+ * @category Component Props
  */
 type OptionProps = {
   value: string;
@@ -36,12 +37,14 @@ const TYPE = 'Option';
  *  <Option value="option2">Option 2</Option>
  *  <Option value="option3">Option 3</Option>
  * </Dropdown>
+ * @category Components
  */
 export const Option = createSnapComponent<OptionProps, typeof TYPE>(TYPE);
 
 /**
  * A dropdown option element.
  *
- * @see Option
+ * @see {@link Option}
+ * @category Elements
  */
 export type OptionElement = ReturnType<typeof Option>;
