@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@metamask/chain-agnostic-permission": "^1.4.0",
-    "@metamask/json-rpc-engine": "^10.2.1",
+    "@metamask/json-rpc-engine": "^10.2.2",
     "@metamask/json-rpc-middleware-stream": "^8.0.8",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^0.3.0",
