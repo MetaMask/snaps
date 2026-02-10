@@ -46,6 +46,7 @@ jobs:
       - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
+    environment: default-branch
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -69,6 +70,7 @@ jobs:
       - is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks.
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    environment: default-branch
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
@@ -92,6 +94,7 @@ jobs:
     name: Deduplicate yarn.lock
     runs-on: ubuntu-latest
     needs: prepare
+    environment: default-branch
     outputs:
       YARN_LOCK_CHANGED: ${{ steps.check-yarn-lock.outputs.YARN_LOCK_CHANGED }}
     steps:
@@ -121,6 +124,7 @@ jobs:
   build:
     name: Build packages
     runs-on: ubuntu-latest
+    environment: default-branch
     needs:
       - prepare
       - dedupe-yarn-lock
@@ -154,6 +158,7 @@ jobs:
   regenerate-lavamoat-policies:
     name: Regenerate LavaMoat policies
     runs-on: ubuntu-latest
+    environment: default-branch
     needs:
       - prepare
       - dedupe-yarn-lock
@@ -192,6 +197,7 @@ jobs:
   update-examples:
     name: Update examples
     runs-on: ubuntu-latest
+    environment: default-branch
     needs:
       - prepare
       - dedupe-yarn-lock
@@ -231,6 +237,7 @@ jobs:
     name: Commit result
     runs-on: ubuntu-latest
     if: ${{ !failure() && !cancelled() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    environment: default-branch
     needs:
       - is-fork-pull-request
       - prepare
