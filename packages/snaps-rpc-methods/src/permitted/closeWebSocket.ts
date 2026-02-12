@@ -13,6 +13,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_closeWebSocket';
+
 const hookNames: MethodHooksObject<CloseWebSocketMethodHooks> = {
   hasPermission: true,
   closeWebSocket: true,
@@ -35,15 +37,15 @@ export type CloseWebSocketParameters = InferMatching<
 /**
  * Handler for the `snap_closeWebSocket` method.
  */
-export const closeWebSocketHandler: PermittedHandlerExport<
+export const closeWebSocketHandler = {
+  methodNames: [methodName] as const,
+  implementation: closeWebSocketImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   CloseWebSocketMethodHooks,
   CloseWebSocketParams,
   CloseWebSocketResult
-> = {
-  methodNames: ['snap_closeWebSocket'],
-  implementation: closeWebSocketImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_closeWebSocket` method implementation.

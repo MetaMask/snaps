@@ -15,6 +15,8 @@ import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_clearState';
+
 const hookNames: MethodHooksObject<ClearStateHooks> = {
   clearSnapState: true,
   hasPermission: true,
@@ -23,15 +25,15 @@ const hookNames: MethodHooksObject<ClearStateHooks> = {
 /**
  * `snap_clearState` clears the state of the Snap.
  */
-export const clearStateHandler: PermittedHandlerExport<
+export const clearStateHandler = {
+  methodNames: [methodName] as const,
+  implementation: clearStateImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   ClearStateHooks,
   ClearStateParameters,
   ClearStateResult
-> = {
-  methodNames: ['snap_clearState'],
-  implementation: clearStateImplementation,
-  hookNames,
-};
+>;
 
 export type ClearStateHooks = {
   /**

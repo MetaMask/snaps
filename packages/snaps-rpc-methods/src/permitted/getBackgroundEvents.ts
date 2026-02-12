@@ -24,15 +24,15 @@ export type GetBackgroundEventsMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
-export const getBackgroundEventsHandler: PermittedHandlerExport<
+export const getBackgroundEventsHandler = {
+  methodNames: [methodName] as const,
+  implementation: getGetBackgroundEventsImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetBackgroundEventsMethodHooks,
   GetBackgroundEventsParams,
   GetBackgroundEventsResult
-> = {
-  methodNames: [methodName],
-  implementation: getGetBackgroundEventsImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_getBackgroundEvents` method implementation.

@@ -81,6 +81,8 @@
     "jest-it-up": "^2.0.0",
     "jest-silent-reporter": "^0.6.0",
     "prettier": "^3.3.3",
+    "ts-morph": "^27.0.2",
+    "tsx": "^4.21.0",
     "typescript": "~5.3.3"
   },
   "engines": {

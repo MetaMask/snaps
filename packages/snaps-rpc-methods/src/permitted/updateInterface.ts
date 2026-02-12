@@ -24,6 +24,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_updateInterface';
+
 const hookNames: MethodHooksObject<UpdateInterfaceMethodHooks> = {
   updateInterface: true,
 };
@@ -41,15 +43,15 @@ export type UpdateInterfaceMethodHooks = {
   ) => void;
 };
 
-export const updateInterfaceHandler: PermittedHandlerExport<
+export const updateInterfaceHandler = {
+  methodNames: [methodName] as const,
+  implementation: getUpdateInterfaceImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   UpdateInterfaceMethodHooks,
   UpdateInterfaceParameters,
   UpdateInterfaceResult
-> = {
-  methodNames: ['snap_updateInterface'],
-  implementation: getUpdateInterfaceImplementation,
-  hookNames,
-};
+>;
 
 const UpdateInterfaceParametersStruct = object({
   id: string(),

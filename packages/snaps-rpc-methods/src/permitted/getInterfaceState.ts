@@ -13,6 +13,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_getInterfaceState';
+
 const hookNames: MethodHooksObject<GetInterfaceStateMethodHooks> = {
   getInterfaceState: true,
 };
@@ -25,15 +27,15 @@ export type GetInterfaceStateMethodHooks = {
   getInterfaceState: (id: string) => InterfaceState;
 };
 
-export const getInterfaceStateHandler: PermittedHandlerExport<
+export const getInterfaceStateHandler = {
+  methodNames: [methodName] as const,
+  implementation: getGetInterfaceStateImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetInterfaceStateMethodHooks,
   GetInterfaceStateParameters,
   GetInterfaceStateResult
-> = {
-  methodNames: ['snap_getInterfaceState'],
-  implementation: getGetInterfaceStateImplementation,
-  hookNames,
-};
+>;
 
 const GetInterfaceStateParametersStruct = object({
   id: string(),

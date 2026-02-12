@@ -21,6 +21,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_sendWebSocketMessage';
+
 const hookNames: MethodHooksObject<SendWebSocketMessageMethodHooks> = {
   hasPermission: true,
   sendWebSocketMessage: true,
@@ -44,15 +46,15 @@ export type SendWebSocketMessageParameters = InferMatching<
 /**
  * Handler for the `snap_sendWebSocketMessage` method.
  */
-export const sendWebSocketMessageHandler: PermittedHandlerExport<
+export const sendWebSocketMessageHandler = {
+  methodNames: [methodName] as const,
+  implementation: sendWebSocketMessageImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   SendWebSocketMessageMethodHooks,
   SendWebSocketMessageParams,
   SendWebSocketMessageResult
-> = {
-  methodNames: ['snap_sendWebSocketMessage'],
-  implementation: sendWebSocketMessageImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_sendWebSocketMessage` method implementation.

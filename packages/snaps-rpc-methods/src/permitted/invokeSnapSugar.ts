@@ -11,17 +11,19 @@ import { isObject } from '@metamask/utils';
 /**
  * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
  */
-export const invokeSnapSugarHandler: PermittedHandlerExport<
-  InvokeSnapSugarHooks,
-  InvokeSnapParams,
-  InvokeSnapResult
-> = {
-  methodNames: ['wallet_invokeSnap'],
+const methodName = 'wallet_invokeSnap';
+
+export const invokeSnapSugarHandler = {
+  methodNames: [methodName] as const,
   implementation: invokeSnapSugar,
   hookNames: {
     invokeSnap: true,
   },
-};
+} satisfies PermittedHandlerExport<
+  InvokeSnapSugarHooks,
+  InvokeSnapParams,
+  InvokeSnapResult
+>;
 
 export type InvokeSnapSugarHooks = {
   invokeSnap: (params: InvokeSnapParams) => Promise<InvokeSnapResult>;

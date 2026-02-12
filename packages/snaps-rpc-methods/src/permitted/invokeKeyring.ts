@@ -18,6 +18,8 @@ import { hasProperty } from '@metamask/utils';
 import { getValidatedParams } from './invokeSnapSugar';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'wallet_invokeKeyring';
+
 const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
   hasPermission: true,
   handleSnapRpcRequest: true,
@@ -28,15 +30,15 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
 /**
  * `wallet_invokeKeyring` gets the requester's permitted and installed Snaps.
  */
-export const invokeKeyringHandler: PermittedHandlerExport<
+export const invokeKeyringHandler = {
+  methodNames: [methodName] as const,
+  implementation: invokeKeyringImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   InvokeKeyringHooks,
   InvokeSnapParams,
   InvokeKeyringResult
-> = {
-  methodNames: ['wallet_invokeKeyring'],
-  implementation: invokeKeyringImplementation,
-  hookNames,
-};
+>;
 
 export type InvokeKeyringHooks = {
   hasPermission: (permissionName: string) => boolean;

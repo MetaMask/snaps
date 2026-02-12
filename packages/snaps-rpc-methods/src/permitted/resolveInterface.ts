@@ -13,6 +13,8 @@ import { JsonStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_resolveInterface';
+
 const hookNames: MethodHooksObject<ResolveInterfaceMethodHooks> = {
   resolveInterface: true,
 };
@@ -25,15 +27,15 @@ export type ResolveInterfaceMethodHooks = {
   resolveInterface: (id: string, value: Json) => Promise<void>;
 };
 
-export const resolveInterfaceHandler: PermittedHandlerExport<
+export const resolveInterfaceHandler = {
+  methodNames: [methodName] as const,
+  implementation: getResolveInterfaceImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   ResolveInterfaceMethodHooks,
   ResolveInterfaceParameters,
   ResolveInterfaceResult
-> = {
-  methodNames: ['snap_resolveInterface'],
-  implementation: getResolveInterfaceImplementation,
-  hookNames,
-};
+>;
 
 const ResolveInterfaceParametersStruct = object({
   id: string(),
