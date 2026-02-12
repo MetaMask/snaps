@@ -9,7 +9,6 @@ import type {
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { HasPermission } from '@metamask/permission-controller';
-import type { TestOrigin } from '@metamask/phishing-controller';
 import type {
   InterfaceState,
   SnapId,
@@ -107,8 +106,13 @@ type MultichainAssetsControllerGetStateAction = ControllerGetStateAction<
   }
 >;
 
+type PhishingControllerTestOrigin = {
+  type: 'PhishingController:testOrigin';
+  handler: (origin: string) => { result: boolean; type: string };
+};
+
 export type SnapInterfaceControllerAllowedActions =
-  | TestOrigin
+  | PhishingControllerTestOrigin
   | HasApprovalRequest
   | AcceptRequest
   | GetSnap

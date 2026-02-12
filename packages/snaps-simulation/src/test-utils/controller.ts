@@ -1,5 +1,4 @@
 import { Messenger } from '@metamask/messenger';
-import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 
@@ -14,7 +13,7 @@ export const getRootControllerMessenger = (mocked = true) => {
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: PhishingDetectorResultType.All,
+      type: 'all',
     }));
 
     messenger.registerActionHandler(

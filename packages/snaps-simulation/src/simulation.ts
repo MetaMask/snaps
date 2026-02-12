@@ -12,7 +12,6 @@ import {
   type Caveat,
   type RequestedPermissions,
 } from '@metamask/permission-controller';
-import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
 import {
   detectSnapLocation,
@@ -718,7 +717,7 @@ export function registerActions(
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
-    () => ({ result: false, type: PhishingDetectorResultType.All }),
+    () => ({ result: false, type: 'all' }),
   );
 
   controllerMessenger.registerActionHandler(
