@@ -26,19 +26,17 @@ export type InferredGetFileParams = InferMatching<
   GetFileParams
 >;
 
+const methodName = 'snap_getFile';
+
 const hookNames: MethodHooksObject<GetFileHooks> = {
   getSnapFile: true,
 };
 
-export const getFileHandler: PermittedHandlerExport<
-  GetFileHooks,
-  InferredGetFileParams,
-  string
-> = {
-  methodNames: ['snap_getFile'],
+export const getFileHandler = {
+  methodNames: [methodName] as const,
   implementation,
   hookNames,
-};
+} satisfies PermittedHandlerExport<GetFileHooks, InferredGetFileParams, string>;
 
 export type GetFileHooks = {
   getSnapFile: (

@@ -20,6 +20,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_endTrace';
+
 const hookNames: MethodHooksObject<EndTraceMethodHooks> = {
   endTrace: true,
   getSnap: true,
@@ -56,15 +58,15 @@ export type EndTraceParameters = InferMatching<
 /**
  * Handler for the `snap_endTrace` method.
  */
-export const endTraceHandler: PermittedHandlerExport<
+export const endTraceHandler = {
+  methodNames: [methodName] as const,
+  implementation: getEndTraceImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   EndTraceMethodHooks,
   EndTraceParameters,
   EndTraceResult
-> = {
-  methodNames: ['snap_endTrace'],
-  implementation: getEndTraceImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_endTrace` method implementation. This method is used to end a

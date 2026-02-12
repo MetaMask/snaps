@@ -75,6 +75,8 @@ const METHOD_ALLOWLIST = Object.freeze([
   'web3_sha3',
 ]);
 
+const methodName = 'snap_experimentalProviderRequest';
+
 const hookNames: MethodHooksObject<ProviderRequestMethodHooks> = {
   hasPermission: true,
   getNetworkConfigurationByChainId: true,
@@ -98,15 +100,15 @@ export type ProviderRequestMethodHooks = {
   };
 };
 
-export const providerRequestHandler: PermittedHandlerExport<
+export const providerRequestHandler = {
+  methodNames: [methodName] as const,
+  implementation: providerRequestImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   ProviderRequestMethodHooks,
   ProviderRequestParameters,
   ProviderRequestResult
-> = {
-  methodNames: ['snap_experimentalProviderRequest'],
-  implementation: providerRequestImplementation,
-  hookNames,
-};
+>;
 
 const ProviderRequestParametersStruct = object({
   chainId: CaipChainIdStruct,

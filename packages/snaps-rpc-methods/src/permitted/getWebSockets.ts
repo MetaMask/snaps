@@ -11,6 +11,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_getWebSockets';
+
 const hookNames: MethodHooksObject<GetWebSocketsMethodHooks> = {
   hasPermission: true,
   getWebSockets: true,
@@ -24,15 +26,15 @@ export type GetWebSocketsMethodHooks = {
 /**
  * Handler for the `snap_getWebSockets` method.
  */
-export const getWebSocketsHandler: PermittedHandlerExport<
+export const getWebSocketsHandler = {
+  methodNames: [methodName] as const,
+  implementation: getWebSocketsImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetWebSocketsMethodHooks,
   GetWebSocketsParams,
   GetWebSocketsResult
-> = {
-  methodNames: ['snap_getWebSockets'],
-  implementation: getWebSocketsImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_getWebSockets` method implementation.

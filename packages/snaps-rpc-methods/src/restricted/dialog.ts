@@ -245,6 +245,8 @@ export type DialogParameters = InferMatching<
   DialogParams
 >;
 
+type DialogResult = boolean | null | string | Json;
+
 /**
  * Builds the method implementation for `snap_dialog`.
  *
@@ -263,7 +265,7 @@ export function getDialogImplementation({
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
-  ): Promise<boolean | null | string | Json> {
+  ): Promise<DialogResult> {
     const {
       params,
       context: { origin },

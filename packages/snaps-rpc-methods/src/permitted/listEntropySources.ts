@@ -26,6 +26,8 @@ const REQUIRED_PERMISSIONS = [
   getEntropyBuilder.targetName,
 ];
 
+const methodName = 'snap_listEntropySources';
+
 const hookNames: MethodHooksObject<ListEntropySourcesHooks> = {
   hasPermission: true,
   getEntropySources: true,
@@ -56,15 +58,15 @@ export type ListEntropySourcesHooks = {
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
-export const listEntropySourcesHandler: PermittedHandlerExport<
+export const listEntropySourcesHandler = {
+  methodNames: [methodName] as const,
+  implementation: listEntropySourcesImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   ListEntropySourcesHooks,
   ListEntropySourcesParams,
   ListEntropySourcesResult
-> = {
-  methodNames: ['snap_listEntropySources'],
-  implementation: listEntropySourcesImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_listEntropySources` method implementation.

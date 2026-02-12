@@ -1,9 +1,10 @@
 /**
  * The request parameters for the `snap_cancelBackgroundEvent` method.
- *
- * @property id - The id of the background event to cancel.
  */
 export type CancelBackgroundEventParams = {
+  /**
+   * The ID of the background event to cancel.
+   */
   id: string;
 };
 

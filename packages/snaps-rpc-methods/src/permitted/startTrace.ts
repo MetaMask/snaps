@@ -25,6 +25,8 @@ import { JsonStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_startTrace';
+
 const hookNames: MethodHooksObject<StartTraceMethodHooks> = {
   startTrace: true,
   getSnap: true,
@@ -64,15 +66,15 @@ export type StartTraceParameters = InferMatching<
 /**
  * Handler for the `snap_startTrace` method.
  */
-export const startTraceHandler: PermittedHandlerExport<
+export const startTraceHandler = {
+  methodNames: [methodName] as const,
+  implementation: getStartTraceImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   StartTraceMethodHooks,
   StartTraceParameters,
   StartTraceResult
-> = {
-  methodNames: ['snap_startTrace'],
-  implementation: getStartTraceImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_startTrace` method implementation. This method is used to start a

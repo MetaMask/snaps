@@ -10,6 +10,8 @@ import type {
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'wallet_getAllSnaps';
+
 const hookNames: MethodHooksObject<GetAllSnapsHooks> = {
   getAllSnaps: true,
 };
@@ -18,15 +20,15 @@ const hookNames: MethodHooksObject<GetAllSnapsHooks> = {
  * `wallet_getAllSnaps` gets all installed Snaps. Currently, this can only be
  * called from `https://snaps.metamask.io`.
  */
-export const getAllSnapsHandler: PermittedHandlerExport<
+export const getAllSnapsHandler = {
+  methodNames: [methodName] as const,
+  implementation: getAllSnapsImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetAllSnapsHooks,
   JsonRpcParams,
   GetSnapsResult
-> = {
-  methodNames: ['wallet_getAllSnaps'],
-  implementation: getAllSnapsImplementation,
-  hookNames,
-};
+>;
 
 export type GetAllSnapsHooks = {
   /**

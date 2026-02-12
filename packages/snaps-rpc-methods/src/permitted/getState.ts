@@ -21,6 +21,8 @@ import { manageStateBuilder } from '../restricted/manageState';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
+const methodName = 'snap_getState';
+
 const hookNames: MethodHooksObject<GetStateHooks> = {
   hasPermission: true,
   getSnapState: true,
@@ -30,15 +32,15 @@ const hookNames: MethodHooksObject<GetStateHooks> = {
 /**
  * `snap_getState` gets the state of the Snap.
  */
-export const getStateHandler: PermittedHandlerExport<
+export const getStateHandler = {
+  methodNames: [methodName] as const,
+  implementation: getStateImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetStateHooks,
   GetStateParameters,
   GetStateResult
-> = {
-  methodNames: ['snap_getState'],
-  implementation: getStateImplementation,
-  hookNames,
-};
+>;
 
 export type GetStateHooks = {
   /**

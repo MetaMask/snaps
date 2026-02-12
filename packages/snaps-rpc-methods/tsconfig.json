@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./"
   },
-  "include": ["./src", "package.json"],
+  "include": ["./src", "./scripts", "package.json"],
   "references": [{ "path": "../snaps-sdk" }, { "path": "../snaps-utils" }]
 }

@@ -34,6 +34,8 @@ import {
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
+const methodName = 'snap_setState';
+
 const hookNames: MethodHooksObject<SetStateHooks> = {
   hasPermission: true,
   getSnapState: true,
@@ -45,15 +47,15 @@ const hookNames: MethodHooksObject<SetStateHooks> = {
 /**
  * `snap_setState` sets the state of the Snap.
  */
-export const setStateHandler: PermittedHandlerExport<
+export const setStateHandler = {
+  methodNames: [methodName] as const,
+  implementation: setStateImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   SetStateHooks,
   SetStateParameters,
   SetStateResult
-> = {
-  methodNames: ['snap_setState'],
-  implementation: setStateImplementation,
-  hookNames,
-};
+>;
 
 export type SetStateHooks = {
   /**
