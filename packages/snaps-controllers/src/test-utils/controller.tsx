@@ -17,7 +17,6 @@ import type {
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
-import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import {
   SnapEndowments,
@@ -861,7 +860,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: PhishingDetectorResultType.All,
+      type: 'all',
     }));
 
     messenger.registerActionHandler(

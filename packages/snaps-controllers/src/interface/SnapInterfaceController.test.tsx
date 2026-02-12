@@ -1,5 +1,4 @@
 import { deriveStateFromMetadata } from '@metamask/base-controller';
-import { PhishingDetectorResultType } from '@metamask/phishing-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
 import {
   ContentType,
@@ -566,7 +565,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: PhishingDetectorResultType.All }),
+        () => ({ result: true, type: 'all' as const }),
       );
 
       // eslint-disable-next-line no-new
@@ -606,7 +605,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: PhishingDetectorResultType.All }),
+        () => ({ result: true, type: 'all' as const }),
       );
 
       // eslint-disable-next-line no-new
@@ -686,7 +685,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: PhishingDetectorResultType.All }),
+        () => ({ result: true, type: 'all' as const }),
       );
 
       rootMessenger.registerActionHandler(
@@ -1101,7 +1100,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: PhishingDetectorResultType.All }),
+        () => ({ result: true, type: 'all' as const }),
       );
 
       // eslint-disable-next-line no-new
@@ -1153,7 +1152,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: PhishingDetectorResultType.All }),
+        () => ({ result: true, type: 'all' as const }),
       );
 
       // eslint-disable-next-line no-new
