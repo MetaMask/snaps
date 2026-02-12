@@ -565,7 +565,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' as const }),
+        () => ({ result: true, type: 'all' }),
       );
 
       // eslint-disable-next-line no-new
@@ -605,7 +605,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' as const }),
+        () => ({ result: true, type: 'all' }),
       );
 
       // eslint-disable-next-line no-new
@@ -685,7 +685,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' as const }),
+        () => ({ result: true, type: 'all' }),
       );
 
       rootMessenger.registerActionHandler(
@@ -1100,7 +1100,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' as const }),
+        () => ({ result: true, type: 'all' }),
       );
 
       // eslint-disable-next-line no-new
@@ -1152,7 +1152,7 @@ describe('SnapInterfaceController', () => {
 
       rootMessenger.registerActionHandler(
         'PhishingController:testOrigin',
-        () => ({ result: true, type: 'all' as const }),
+        () => ({ result: true, type: 'all' }),
       );
 
       // eslint-disable-next-line no-new

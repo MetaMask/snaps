@@ -13,7 +13,7 @@ export const getRootControllerMessenger = (mocked = true) => {
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
       result: false,
-      type: 'all' as const,
+      type: 'all',
     }));
 
     messenger.registerActionHandler(

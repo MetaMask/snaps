@@ -717,7 +717,7 @@ export function registerActions(
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
-    () => ({ result: false, type: 'all' as const }),
+    () => ({ result: false, type: 'all' }),
   );
 
   controllerMessenger.registerActionHandler(
