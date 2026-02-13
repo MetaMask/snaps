@@ -96,7 +96,7 @@
     "@metamask/providers": "^22.1.1",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/superstruct": "^3.2.1",
-    "@metamask/utils": "^11.9.0",
+    "@metamask/utils": "^11.10.0",
     "luxon": "^3.5.0"
   },
   "devDependencies": {
