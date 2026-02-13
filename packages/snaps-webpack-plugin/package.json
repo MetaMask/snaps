@@ -66,7 +66,7 @@
     "webpack-sources": "^3.2.3"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.4.2",
+    "@lavamoat/allow-scripts": "^3.4.3",
     "@metamask/auto-changelog": "^5.3.1",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",

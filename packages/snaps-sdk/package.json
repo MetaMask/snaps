@@ -100,7 +100,7 @@
     "luxon": "^3.5.0"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.4.2",
+    "@lavamoat/allow-scripts": "^3.4.3",
     "@metamask/auto-changelog": "^5.3.1",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
