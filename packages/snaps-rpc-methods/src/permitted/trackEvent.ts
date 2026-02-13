@@ -21,6 +21,8 @@ import { JsonStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_trackEvent';
+
 const PropertiesStruct = optional(record(string(), JsonStruct));
 
 const snakeCaseRegex = /^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$/u;
@@ -79,15 +81,15 @@ export type TrackEventParameters = InferMatching<
 /**
  * Handler for the `snap_trackEvent` method.
  */
-export const trackEventHandler: PermittedHandlerExport<
+export const trackEventHandler = {
+  methodNames: [methodName] as const,
+  implementation: getTrackEventImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   TrackEventMethodHooks,
   TrackEventParameters,
   TrackEventResult
-> = {
-  methodNames: ['snap_trackEvent'],
-  implementation: getTrackEventImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_trackEvent` method implementation.

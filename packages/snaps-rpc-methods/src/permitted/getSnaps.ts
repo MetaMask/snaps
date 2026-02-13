@@ -5,6 +5,8 @@ import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'wallet_getSnaps';
+
 const hookNames: MethodHooksObject<GetSnapsHooks> = {
   getSnaps: true,
 };
@@ -12,15 +14,15 @@ const hookNames: MethodHooksObject<GetSnapsHooks> = {
 /**
  * `wallet_getSnaps` gets the requester's permitted and installed Snaps.
  */
-export const getSnapsHandler: PermittedHandlerExport<
+export const getSnapsHandler = {
+  methodNames: [methodName] as const,
+  implementation: getSnapsImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetSnapsHooks,
   JsonRpcParams,
   GetSnapsResult
-> = {
-  methodNames: ['wallet_getSnaps'],
-  implementation: getSnapsImplementation,
-  hookNames,
-};
+>;
 
 export type GetSnapsHooks = {
   /**

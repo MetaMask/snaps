@@ -25,15 +25,15 @@ export type CancelBackgroundEventMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
-export const cancelBackgroundEventHandler: PermittedHandlerExport<
+export const cancelBackgroundEventHandler = {
+  methodNames: [methodName] as const,
+  implementation: getCancelBackgroundEventImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   CancelBackgroundEventMethodHooks,
   CancelBackgroundEventParameters,
   CancelBackgroundEventResult
-> = {
-  methodNames: [methodName],
-  implementation: getCancelBackgroundEventImplementation,
-  hookNames,
-};
+>;
 
 const CancelBackgroundEventsParametersStruct = object({
   id: string(),

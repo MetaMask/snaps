@@ -26,6 +26,8 @@ import { Mutex } from 'async-mutex';
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'wallet_requestSnaps';
+
 const hookNames: MethodHooksObject<RequestSnapsHooks> = {
   installSnaps: true,
   requestPermissions: true,
@@ -35,15 +37,15 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
 /**
  * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
  */
-export const requestSnapsHandler: PermittedHandlerExport<
+export const requestSnapsHandler = {
+  methodNames: [methodName] as const,
+  implementation: requestSnapsImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   RequestSnapsHooks,
   RequestSnapsParams,
   RequestSnapsResult
-> = {
-  methodNames: ['wallet_requestSnaps'],
-  implementation: requestSnapsImplementation,
-  hookNames,
-};
+>;
 
 export type RequestSnapsHooks = {
   /**

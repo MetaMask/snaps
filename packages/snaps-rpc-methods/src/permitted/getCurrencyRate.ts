@@ -14,6 +14,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_getCurrencyRate';
+
 const hookNames: MethodHooksObject<GetCurrencyRateMethodHooks> = {
   getCurrencyRate: true,
 };
@@ -27,15 +29,15 @@ export type GetCurrencyRateMethodHooks = {
   getCurrencyRate: (currency: AvailableCurrency) => CurrencyRate | undefined;
 };
 
-export const getCurrencyRateHandler: PermittedHandlerExport<
+export const getCurrencyRateHandler = {
+  methodNames: [methodName] as const,
+  implementation: getGetCurrencyRateImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetCurrencyRateMethodHooks,
   GetCurrencyRateParameters,
   GetCurrencyRateResult
-> = {
-  methodNames: ['snap_getCurrencyRate'],
-  implementation: getGetCurrencyRateImplementation,
-  hookNames,
-};
+>;
 
 const GetCurrencyRateParametersStruct = object({
   currency: union([currency('btc')]),
