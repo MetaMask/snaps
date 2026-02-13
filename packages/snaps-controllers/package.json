@@ -112,7 +112,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^3.4.2",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.3.1",
     "@metamask/browser-passworder": "^6.0.0",
     "@noble/hashes": "^1.7.1",
     "@swc/core": "1.11.31",

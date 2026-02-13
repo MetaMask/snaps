@@ -73,7 +73,7 @@
   "devDependencies": {
     "@jest/types": "^29.6.3",
     "@lavamoat/allow-scripts": "^3.4.2",
-    "@metamask/auto-changelog": "^5.0.2",
+    "@metamask/auto-changelog": "^5.3.1",
     "@metamask/snaps-utils": "workspace:^",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
