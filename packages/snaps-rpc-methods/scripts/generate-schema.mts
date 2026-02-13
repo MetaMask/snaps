@@ -12,7 +12,9 @@ import type {
   TypeNode,
   VariableDeclaration,
 } from 'ts-morph';
-import { Project, SyntaxKind, TypeFormatFlags } from 'ts-morph';
+import { Project, ts, TypeFormatFlags } from 'ts-morph';
+
+import SyntaxKind = ts.SyntaxKind;
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
 const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema.json');
@@ -130,13 +132,46 @@ function unwrapPromiseTypeNode(typeNode: TypeNode) {
 }
 
 /**
+ * Get the structural type node for a type, if it is an alias for a structural
+ * type. This is needed to get a more accurate string representation of the
+ * type, since some types (e.g., `Record`) are represented as an index signature
+ * in the compiler API, which does not include the type alias name and can be
+ * difficult to read.
+ *
+ * @param type - The type to get the structural type node for.
+ * @returns The structural type node for the type, or `null` if the type is not
+ * an alias for a structural type.
+ */
+function getStructuralTypeNode(type: Type): TypeNode | null {
+  const aliasSymbol = type.getAliasSymbol();
+  if (!aliasSymbol) {
+    return null;
+  }
+
+  const declaration = aliasSymbol.getDeclarations()[0];
+  if (!declaration?.isKind(SyntaxKind.TypeAliasDeclaration)) {
+    return null;
+  }
+
+  const typeNode = declaration.getTypeNodeOrThrow();
+  if (typeNode.isKind(SyntaxKind.TypeReference)) {
+    const typeName = typeNode.getTypeName().getText();
+    if (typeName === 'Record') {
+      return typeNode;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Get the string representation of a type, using type aliases where possible
  * and without truncating the type (e.g., to `string` or `object`).
  *
  * @param type - The type to get the string representation of.
  * @returns The string representation of the type.
  */
-function getTypeString(type: Type) {
+function getTypeString(type: Type): string {
   const plainType = type.getText(
     undefined,
 
@@ -155,6 +190,33 @@ function getTypeString(type: Type) {
   // Edge cases.
   if (plainType === 'ComponentOrElement') {
     return 'JSXElement';
+  }
+
+  // Aliased types that are not properly represented with `getText()`, such as
+  // `Record`.
+  const aliasSymbol = type.getAliasSymbol();
+  if (aliasSymbol) {
+    const aliasName = aliasSymbol.getName();
+
+    if (aliasName !== 'Omit') {
+      const typeArguments = type.getAliasTypeArguments();
+
+      // If the type has type arguments (generics), include those in the string
+      // representation. For example, `Record<string, Json>` instead of
+      // `{ [x: string]: Json; }`.
+      if (typeArguments.length > 0) {
+        const stringifiedArguments = typeArguments.map((argument) =>
+          getTypeString(argument),
+        );
+
+        return `${aliasName}<${stringifiedArguments.join(', ')}>`;
+      }
+    }
+  }
+
+  const typeNode = getStructuralTypeNode(type);
+  if (typeNode) {
+    return typeNode.getText();
   }
 
   return type.getText(
