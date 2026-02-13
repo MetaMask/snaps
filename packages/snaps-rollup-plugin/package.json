@@ -60,7 +60,7 @@
     "@metamask/snaps-utils": "workspace:^"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.4.2",
+    "@lavamoat/allow-scripts": "^3.4.3",
     "@metamask/auto-changelog": "^5.3.1",
     "@rollup/plugin-virtual": "^2.1.0",
     "@swc/core": "1.11.31",
