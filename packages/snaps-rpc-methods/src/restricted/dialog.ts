@@ -245,7 +245,7 @@ export type DialogParameters = InferMatching<
   DialogParams
 >;
 
-type DialogResult = boolean | null | string | Json;
+type DialogResult = Json;
 
 /**
  * Builds the method implementation for `snap_dialog`.

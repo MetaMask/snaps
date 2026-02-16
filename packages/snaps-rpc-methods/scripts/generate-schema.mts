@@ -12,16 +12,14 @@ import type {
   TypeNode,
   VariableDeclaration,
 } from 'ts-morph';
-import { Project, ts, TypeFormatFlags } from 'ts-morph';
-
-import SyntaxKind = ts.SyntaxKind;
+import { SymbolFlags, Project, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
 const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema.json');
 
 // Types which should be kept as-is, without trying to expand them or use type
 // aliases.
-const LITERAL_TYPES = ['Json', 'SnapId'];
+const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
 
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
@@ -165,20 +163,32 @@ function getStructuralTypeNode(type: Type): TypeNode | null {
 }
 
 /**
- * Get the string representation of a type, using type aliases where possible
- * and without truncating the type (e.g., to `string` or `object`).
+ * If a type is a union of the literal types `true` and `false`, replace it with
+ * the `boolean` type.
  *
- * @param type - The type to get the string representation of.
- * @returns The string representation of the type.
+ * @param types - An array of type strings to check and fix.
+ * @returns An array of type strings with `true | false` replaced by `boolean`,
+ * if applicable.
  */
-function getTypeString(type: Type): string {
-  const plainType = type.getText(
-    undefined,
+function fixBooleanTypes(types: string[]) {
+  if (types.includes('true') && types.includes('false')) {
+    return types
+      .filter((type) => type !== 'true' && type !== 'false')
+      .concat('boolean');
+  }
 
-    // This flag tells TypeScript to use type aliases when possible.
-    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-  );
+  return types;
+}
 
+/**
+ * Get a type alias for a plain type string, if it matches certain known types
+ * that should be represented as a specific alias in the schema.
+ *
+ * @param plainType - The plain type string to get the alias for.
+ * @returns The type alias for the plain type string, or `null` if there is no
+ * specific alias for the plain type string.
+ */
+function getTypeAlias(plainType: string) {
   if (LITERAL_TYPES.includes(plainType)) {
     return plainType;
   }
@@ -192,6 +202,128 @@ function getTypeString(type: Type): string {
     return 'JSXElement';
   }
 
+  // This is a workaround for a specific issue where the type of the
+  // `params` property of the JSON-RPC request object is represented as a
+  // complex intersection and union of types. It may be possible to simplify
+  // this in the future by improving the way we extract the type of the `params`
+  // property, but for now we can just check for this specific case and return
+  // the expected type alias.
+  if (
+    plainType ===
+      '(((Record<string, Json> | Json[]) & ExactOptionalGuard) & JsonRpcParams) | undefined' ||
+    plainType ===
+      '(((Json[] | Record<string, Json>) & ExactOptionalGuard) & JsonRpcParams) | undefined'
+  ) {
+    return 'JsonRpcParams';
+  }
+
+  return null;
+}
+
+/**
+ * Get a clean string representation of a type. This function handles special
+ * cases, such as union and intersection types, to provide a more accurate and
+ * readable string representation.
+ *
+ * @param type - The type to get the string representation of.
+ * @param seen - A set of type strings that have already been processed, to
+ * avoid infinite recursion in case of circular type references.
+ * @returns The string representation of the type.
+ */
+function getCleanTypeString(type: Type, seen = new Set<string>()): string {
+  const plainType = type.getText(
+    undefined,
+
+    // This flag tells TypeScript to use type aliases when possible.
+    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+  );
+
+  const alias = getTypeAlias(plainType);
+  if (alias) {
+    seen.delete(plainType);
+    return alias;
+  }
+
+  if (seen.has(plainType)) {
+    return plainType;
+  }
+
+  seen.add(plainType);
+
+  // Process union types by getting the string representation of each type in
+  // the union and joining them with ` | `.
+  if (type.isUnion()) {
+    const unionTypes = type.getUnionTypes();
+    const unionTypeStrings = unionTypes.map((unionType) =>
+      getTypeString(unionType, seen),
+    );
+
+    // TypeScript represents `boolean` as a union of `true` and `false`, so we
+    // check for this specific case and replace it with `boolean` in the string
+    // representation.
+    const fixedArray = fixBooleanTypes(unionTypeStrings).toSorted((a, b) => {
+      if (a === 'null' || a === 'undefined') {
+        return 1;
+      }
+
+      if (b === 'null' || b === 'undefined') {
+        return -1;
+      }
+
+      return a.localeCompare(b);
+    });
+
+    const uniqueTypes = [...new Set(fixedArray)];
+    return uniqueTypes.join(' | ');
+  }
+
+  // Process intersection types by getting the string representation of each
+  // type in the intersection and joining them with ` & `.
+  if (type.isIntersection()) {
+    const intersectionTypes = type.getIntersectionTypes();
+    const intersectionTypeStrings = intersectionTypes.map((intersectionType) =>
+      getTypeString(intersectionType, seen),
+    );
+
+    return intersectionTypeStrings.join(' & ');
+  }
+
+  // For object types that are not arrays and have properties, we want to get a
+  // more detailed string representation that includes the properties of the
+  // object, with any fixes applied to the property types.
+  if (type.isObject() && !type.isArray() && type.getProperties().length > 0) {
+    const properties = type.getProperties();
+    const propertyStrings = properties.map((property) => {
+      const isOptional = property.hasFlags(SymbolFlags.Optional);
+      const declaration =
+        property.getValueDeclaration() ?? property.getDeclarations()[0];
+      const propertyType = property.getTypeAtLocation(declaration);
+
+      return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType, seen)}`;
+    });
+
+    return `{ ${propertyStrings.join('; ')} }`;
+  }
+
+  seen.delete(plainType);
+  return type.getText(
+    undefined,
+    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope |
+      TypeFormatFlags.NoTruncation |
+      TypeFormatFlags.InTypeAlias,
+  );
+}
+
+/**
+ * Get the string representation of a type, using type aliases where possible
+ * and without truncating the type (e.g., to `string` or `object`).
+ *
+ * @param type - The type to get the string representation of.
+ * @param seen - A set of type strings that have already been processed, to
+ * avoid infinite recursion in case of circular type references.
+ * @returns The string representation of the type.
+ */
+function getTypeString(type: Type, seen = new Set<string>()): string {
   // Aliased types that are not properly represented with `getText()`, such as
   // `Record`.
   const aliasSymbol = type.getAliasSymbol();
@@ -206,7 +338,7 @@ function getTypeString(type: Type): string {
       // `{ [x: string]: Json; }`.
       if (typeArguments.length > 0) {
         const stringifiedArguments = typeArguments.map((argument) =>
-          getTypeString(argument),
+          getTypeString(argument, seen),
         );
 
         return `${aliasName}<${stringifiedArguments.join(', ')}>`;
@@ -219,12 +351,7 @@ function getTypeString(type: Type): string {
     return typeNode.getText();
   }
 
-  return type.getText(
-    undefined,
-    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope |
-      TypeFormatFlags.NoTruncation |
-      TypeFormatFlags.InTypeAlias,
-  );
+  return getCleanTypeString(type, seen);
 }
 
 /**
