@@ -25,29 +25,6 @@ export type CancelBackgroundEventMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
-/**
- * Some documentation for the `snap_cancelBackgroundEvent` method.
- *
- * It works on multiple lines, and has some **formatting**.
- *
- * It also supports [links](https://www.markdownguide.org/cheat-sheet/).
- *
- * - Lists
- * - Are
- * - Cool
- *
- * @example
- * ```json
- * {
- *   "id": 1,
- *   "jsonrpc": "2.0",
- *   "method": "snap_cancelBackgroundEvent",
- *   "params": {
- *     "id": "1234-5678-9012-3456"
- *   }
- * }
- * ```
- */
 export const cancelBackgroundEventHandler = {
   methodNames: [methodName] as const,
   implementation: getCancelBackgroundEventImplementation,

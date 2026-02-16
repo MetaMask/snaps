@@ -1,9 +1,12 @@
 /* eslint-disable no-bitwise, no-console */
 
 import { assert } from '@metamask/utils';
-import { writeFile, mkdir } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
+import type { BuiltInParserName } from 'prettier';
+import { format } from 'prettier';
 import type {
+  JSDocTag,
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
   PropertyAssignment,
@@ -12,7 +15,7 @@ import type {
   TypeNode,
   VariableDeclaration,
 } from 'ts-morph';
-import { SymbolFlags, Project, SyntaxKind, TypeFormatFlags } from 'ts-morph';
+import { Project, SymbolFlags, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
 const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema', 'schema.json');
@@ -23,6 +26,16 @@ const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
 
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
+
+// Mapping of file extensions to Prettier parsers, used to format example code
+// in the JSDoc comments of the handlers.
+const PRETTIER_PARSER: Record<string, BuiltInParserName> = {
+  json: 'json',
+  ts: 'typescript',
+  tsx: 'typescript',
+  js: 'babel',
+  jsx: 'babel',
+};
 
 /**
  * The type of subjects that can call a JSON-RPC method.
@@ -40,7 +53,7 @@ type Method = {
   parameters: MethodParameter[] | MethodParameter | null;
   result: MethodParameter[] | MethodParameter | null;
   subjectTypes: SubjectType[];
-  examples: string[];
+  examples: MethodExample[];
   restricted: boolean;
 };
 
@@ -51,6 +64,16 @@ type MethodParameter = {
   type: string;
   name?: string;
   description?: string | null;
+};
+
+/**
+ * The schema for a method example, including its title (if any), language, and
+ * content.
+ */
+type MethodExample = {
+  title?: string;
+  language: string;
+  content: string;
 };
 
 /**
@@ -572,6 +595,56 @@ function getObjectProperties(
 }
 
 /**
+ * Parse a method example from a JSDoc `@example` tag.
+ *
+ * @param tag - The JSDoc tag to parse the example from, which is expected to be
+ * an `@example` tag with the example content in the tag's comment text.
+ * @returns The method example parsed from the JSDoc tag, or `null` if the tag
+ * does not contain a valid example in its comment text.
+ */
+async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
+  const text = tag.getCommentText();
+  if (!text) {
+    return null;
+  }
+
+  // The example JSDoc tag is expected to be in this format:
+  // ```
+  // @example [optional title]
+  // ```[language]
+  // example content
+  // ```
+  const match = text.match(
+    /^(?:(?<title>.+)\n)?```(?<language>\w+)\n(?<content>[\s\S]+)```$/u,
+  );
+
+  if (!match) {
+    return null;
+  }
+
+  const { title, language, content } = match.groups as {
+    title?: string;
+    language: string;
+    content: string;
+  };
+
+  const parser = PRETTIER_PARSER[language];
+  if (!parser) {
+    console.warn(
+      `Unable to format example with language "${language}" because there is no corresponding Prettier parser.`,
+    );
+
+    return null;
+  }
+
+  return {
+    title: title?.trim(),
+    language,
+    content: await format(content, { parser }),
+  };
+}
+
+/**
  * Get the method description from the JSDoc comments. This function expects
  * the handler declaration to include JSDoc comments that describe the method.
  *
@@ -606,15 +679,21 @@ function getMethodDescription(declaration: VariableDeclaration) {
  * @returns An array of method examples extracted from the JSDoc `@example`
  * tags, or an empty array if no examples are found.
  */
-function getMethodExamples(declaration: VariableDeclaration) {
+async function getMethodExamples(
+  declaration: VariableDeclaration,
+): Promise<MethodExample[]> {
   const variableStatement = declaration.getVariableStatementOrThrow();
   const jsDocs = variableStatement.getJsDocs();
 
   const examples = jsDocs.flatMap((jsDoc) => jsDoc.getTags());
-  return examples
+  const promises = examples
     .filter((tag) => tag.getTagName() === 'example')
-    .map((example) => example.getCommentText())
-    .filter((example): example is string => typeof example === 'string');
+    .map(async (example) => parseJsDocExample(example));
+
+  const results = await Promise.all(promises);
+  return results.filter(
+    (example): example is MethodExample => example !== null,
+  );
 }
 
 /**
@@ -780,7 +859,9 @@ function getMethodSubjectTypes(methodName: string): SubjectType[] {
  *
  * @returns The name of the handler.
  */
-function processPermittedHandler(property: PropertyAssignment): Method {
+async function processPermittedHandler(
+  property: PropertyAssignment,
+): Promise<Method> {
   const name = property.getName();
 
   // Get the handler identifier (e.g., the right-hand side of the property
@@ -812,7 +893,7 @@ function processPermittedHandler(property: PropertyAssignment): Method {
   const parameters = getMethodParameters(properties);
   const result = getMethodResult(properties);
   const subjectTypes = getMethodSubjectTypes(name);
-  const examples = getMethodExamples(declaration);
+  const examples = await getMethodExamples(declaration);
 
   return {
     name,
@@ -834,7 +915,7 @@ function processPermittedHandler(property: PropertyAssignment): Method {
  * handlers file.
  * @returns An array of method schemas extracted from the permitted handlers.
  */
-function processPermittedHandlers(project: Project) {
+async function processPermittedHandlers(project: Project) {
   const handlersFile = project.getSourceFile('src/permitted/handlers.ts');
   assert(handlersFile, 'Handlers file not found.');
 
@@ -846,13 +927,15 @@ function processPermittedHandlers(project: Project) {
     SyntaxKind.ObjectLiteralExpression,
   );
 
-  return initializer.getProperties().map((property) => {
+  const promises = initializer.getProperties().map(async (property) => {
     const propertyAssignment = property.asKindOrThrow(
       SyntaxKind.PropertyAssignment,
     );
 
     return processPermittedHandler(propertyAssignment);
   });
+
+  return await Promise.all(promises);
 }
 
 /**
@@ -1122,7 +1205,9 @@ function getRestrictedMethodResult(
  *
  * @returns The method schema extracted from the restricted handler.
  */
-function processRestrictedHandler(property: PropertyAssignment): Method {
+async function processRestrictedHandler(
+  property: PropertyAssignment,
+): Promise<Method> {
   const name = property.getName();
 
   // Get the handler identifier (e.g., the right-hand side of the property
@@ -1168,7 +1253,7 @@ function processRestrictedHandler(property: PropertyAssignment): Method {
   const description = getMethodDescription(declaration);
   const parameters = getRestrictedMethodParameters(object);
   const result = getRestrictedMethodResult(object);
-  const examples = getMethodExamples(declaration);
+  const examples = await getMethodExamples(declaration);
 
   return {
     name: methodName,
@@ -1192,7 +1277,7 @@ function processRestrictedHandler(property: PropertyAssignment): Method {
  * handlers file.
  * @returns An array of method schemas extracted from the restricted handlers.
  */
-function processRestrictedHandlers(project: Project) {
+async function processRestrictedHandlers(project: Project) {
   const restrictedHandlersFile = project.getSourceFile(
     'src/restricted/index.ts',
   );
@@ -1212,24 +1297,23 @@ function processRestrictedHandlers(project: Project) {
     .getInitializerIfKindOrThrow(SyntaxKind.AsExpression)
     .getExpressionIfKindOrThrow(SyntaxKind.ObjectLiteralExpression);
 
-  return initializer
-    .getProperties()
-    .map((property) => {
-      const propertyAssignment = property.asKindOrThrow(
-        SyntaxKind.PropertyAssignment,
-      );
+  const promises = initializer.getProperties().map(async (property) => {
+    const propertyAssignment = property.asKindOrThrow(
+      SyntaxKind.PropertyAssignment,
+    );
 
-      return processRestrictedHandler(propertyAssignment);
-    })
-    .toSorted((a, b) => a.name.localeCompare(b.name));
+    return processRestrictedHandler(propertyAssignment);
+  });
+
+  return await Promise.all(promises);
 }
 
 const project = new Project({
   tsConfigFilePath: TS_CONFIG_PATH,
 });
 
-const permittedMethods = processPermittedHandlers(project);
-const restrictedMethods = processRestrictedHandlers(project);
+const permittedMethods = await processPermittedHandlers(project);
+const restrictedMethods = await processRestrictedHandlers(project);
 
 const schema = [...permittedMethods, ...restrictedMethods].toSorted((a, b) =>
   a.name.localeCompare(b.name),

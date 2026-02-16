@@ -4490,6 +4490,7 @@ __metadata:
     "@swc/jest": "npm:^0.2.38"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/node": "npm:18.14.2"
+    "@types/prettier": "npm:^3.0.0"
     async-mutex: "npm:^0.5.0"
     deepmerge: "npm:^4.2.2"
     depcheck: "npm:^1.4.7"
@@ -6511,6 +6512,15 @@ __metadata:
   version: 2.3.2
   resolution: "@types/prettier@npm:2.3.2"
   checksum: 10/79ff504571854c20f34c5864007828d25e9abec0d6d066ce018d781c39ec8dea0378fd1f36c42badea5ee6693e3f2e68ca8a52fc23f51b5b42b188600eec5f94
+  languageName: node
+  linkType: hard
+
+"@types/prettier@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/prettier@npm:3.0.0"
+  dependencies:
+    prettier: "npm:*"
+  checksum: 10/a2a512d304e5bcf78f38089dc88ad19215e6ab871d435a17aef3ce538a63b07c0e359c18db23989dc1ed9fff96d99eee1f680416080184df5c7e0e3bf767e165
   languageName: node
   linkType: hard
 
@@ -15613,6 +15623,15 @@ __metadata:
     prettier:
       optional: true
   checksum: 10/9c5d3c92ac9c873af652636c9007bc368f03c685aba8fef0f1ae41de88235f7acebdee080970f61583639ef89e07391ef01150a30c2d5e5ae615bb507053423a
+  languageName: node
+  linkType: hard
+
+"prettier@npm:*":
+  version: 3.8.1
+  resolution: "prettier@npm:3.8.1"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 10/3da1cf8c1ef9bea828aa618553696c312e951f810bee368f6887109b203f18ee869fe88f66e65f9cf60b7cb1f2eae859892c860a300c062ff8ec69c381fc8dbd
   languageName: node
   linkType: hard
 

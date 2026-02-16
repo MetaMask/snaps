@@ -76,6 +76,7 @@
     "@swc/jest": "^0.2.38",
     "@ts-bridge/cli": "^0.6.1",
     "@types/node": "18.14.2",
+    "@types/prettier": "^3.0.0",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
