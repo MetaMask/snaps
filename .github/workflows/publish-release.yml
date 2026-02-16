@@ -124,7 +124,9 @@ jobs:
 
   publish-schema-to-gh-pages:
     name: Publish schema to `schema/${{ needs.get-release-tag.outputs.tag }}` directory of `gh-pages` branch
-    needs: publish-release
+    needs:
+      - get-release-tag
+      - publish-release
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
@@ -137,7 +139,9 @@ jobs:
 
   publish-schema-to-latest-gh-pages:
     name: Publish schema to `schema/latest` directory of `gh-pages` branch
-    needs: publish-schema-to-gh-pages
+    needs:
+      - get-release-tag
+      - publish-schema-to-gh-pages
     permissions:
       contents: write
     uses: ./.github/workflows/publish-github-pages.yml
