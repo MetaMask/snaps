@@ -40,6 +40,7 @@ type Method = {
   parameters: MethodParameter[] | MethodParameter | null;
   result: MethodParameter[] | MethodParameter | null;
   subjectTypes: SubjectType[];
+  examples: string[];
   restricted: boolean;
 };
 
@@ -593,6 +594,30 @@ function getMethodDescription(declaration: VariableDeclaration) {
 }
 
 /**
+ * Get the method examples from the JSDoc `@example` tags. This function expects
+ * the handler declaration to include JSDoc comments with `@example` tags that
+ * provide examples of how to call the method, which can be included in the
+ * schema to provide additional context and guidance for developers using the
+ * method.
+ *
+ * @param declaration - The variable declaration that defines the handler,
+ * which is expected to include JSDoc comments with `@example` tags that provide
+ * examples of how to call the method.
+ * @returns An array of method examples extracted from the JSDoc `@example`
+ * tags, or an empty array if no examples are found.
+ */
+function getMethodExamples(declaration: VariableDeclaration) {
+  const variableStatement = declaration.getVariableStatementOrThrow();
+  const jsDocs = variableStatement.getJsDocs();
+
+  const examples = jsDocs.flatMap((jsDoc) => jsDoc.getTags());
+  return examples
+    .filter((tag) => tag.getTagName() === 'example')
+    .map((example) => example.getCommentText())
+    .filter((example): example is string => typeof example === 'string');
+}
+
+/**
  * Get the method parameters from the `implementation` property of a handler.
  *
  * This function expects properties to include an `implementation` property
@@ -787,6 +812,7 @@ function processPermittedHandler(property: PropertyAssignment): Method {
   const parameters = getMethodParameters(properties);
   const result = getMethodResult(properties);
   const subjectTypes = getMethodSubjectTypes(name);
+  const examples = getMethodExamples(declaration);
 
   return {
     name,
@@ -794,6 +820,7 @@ function processPermittedHandler(property: PropertyAssignment): Method {
     parameters,
     result,
     subjectTypes,
+    examples,
     restricted: false,
   };
 }
@@ -1141,12 +1168,14 @@ function processRestrictedHandler(property: PropertyAssignment): Method {
   const description = getMethodDescription(declaration);
   const parameters = getRestrictedMethodParameters(object);
   const result = getRestrictedMethodResult(object);
+  const examples = getMethodExamples(declaration);
 
   return {
     name: methodName,
     description,
     parameters,
     result,
+    examples,
     // Restricted methods are only callable by Snaps, so we can hard code the
     // subject type here.
     subjectTypes: ['snap'],
