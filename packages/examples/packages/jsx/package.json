@@ -45,7 +45,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^3.4.3",
-    "@metamask/auto-changelog": "^5.3.1",
+    "@metamask/auto-changelog": "^5.3.2",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-cli": "workspace:^",
     "@metamask/snaps-jest": "workspace:^",

@@ -43,7 +43,7 @@
     "test:watch": "jest --watch"
   },
   "devDependencies": {
-    "@metamask/auto-changelog": "^5.3.1",
+    "@metamask/auto-changelog": "^5.3.2",
     "@metamask/background-events-example-snap": "workspace:^",
     "@metamask/bip32-example-snap": "workspace:^",
     "@metamask/bip44-example-snap": "workspace:^",
