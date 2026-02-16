@@ -310,7 +310,9 @@ export abstract class AbstractExecutionService<WorkerType>
 
     commandStream.on('data', notificationHandler);
 
-    const rpcStream = mux.createStream(SNAP_STREAM_NAMES.JSON_RPC);
+    const rpcStream = mux
+      .createStream(SNAP_STREAM_NAMES.JSON_RPC)
+      .setMaxListeners(20);
 
     rpcStream.on('data', (chunk) => {
       if (chunk?.data && hasProperty(chunk?.data, 'id')) {
