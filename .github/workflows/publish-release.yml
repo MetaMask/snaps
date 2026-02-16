@@ -122,6 +122,32 @@ jobs:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
 
+  publish-schema-to-gh-pages:
+    name: Publish schema to `schema/${{ needs.get-release-tag.outputs.tag }}` directory of `gh-pages` branch
+    needs: publish-release
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
+      destination_dir: schema/${{ needs.get-release-tag.outputs.tag }}
+      publish_dir: ./packages/snaps-rpc-methods/schema
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-schema-to-latest-gh-pages:
+    name: Publish schema to `schema/latest` directory of `gh-pages` branch
+    needs: publish-schema-to-gh-pages
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
+      destination_dir: schema/latest
+      publish_dir: ./packages/snaps-rpc-methods/schema
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
   is-sdk-release:
     name: Determine whether this release updates Snaps SDK
     runs-on: ubuntu-latest

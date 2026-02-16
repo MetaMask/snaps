@@ -17,3 +17,17 @@ jobs:
       publish_dir: ./packages/snaps-sdk/docs
     secrets:
       PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+
+  publish-schema-to-gh-pages:
+    name: Publish schema to `schema/staging` directory of `gh-pages` branch
+    needs:
+      - publish-to-gh-pages
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-github-pages.yml
+    with:
+      build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
+      destination_dir: schema/staging
+      publish_dir: ./packages/snaps-rpc-methods/schema
+    secrets:
+      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}

@@ -38,6 +38,8 @@
   ],
   "scripts": {
     "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
+    "build:post": "yarn build:schema",
+    "build:schema": "tsx ./scripts/generate-schema.mts",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-rpc-methods",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-rpc-methods",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",

@@ -1,8 +1,8 @@
 /* eslint-disable no-bitwise, no-console */
 
 import { assert } from '@metamask/utils';
-import { writeFile } from 'fs/promises';
-import { resolve } from 'path';
+import { writeFile, mkdir } from 'fs/promises';
+import { dirname, resolve } from 'path';
 import type {
   ObjectLiteralElementLike,
   ObjectLiteralExpression,
@@ -15,7 +15,7 @@ import type {
 import { SymbolFlags, Project, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
-const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema.json');
+const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema', 'schema.json');
 
 // Types which should be kept as-is, without trying to expand them or use type
 // aliases.
@@ -1207,4 +1207,5 @@ const schema = [...permittedMethods, ...restrictedMethods].toSorted((a, b) =>
 );
 
 console.log(`Writing "schema.json" to ${SCHEMA_OUTPUT_PATH}...`);
+await mkdir(dirname(SCHEMA_OUTPUT_PATH), { recursive: true });
 await writeFile(SCHEMA_OUTPUT_PATH, JSON.stringify(schema, null, 2));
