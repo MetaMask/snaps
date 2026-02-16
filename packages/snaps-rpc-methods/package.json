@@ -84,7 +84,7 @@
     "jest-silent-reporter": "^0.6.0",
     "prettier": "^3.3.3",
     "ts-morph": "^27.0.2",
-    "tsx": "^4.21.0",
+    "tsx": "^4.20.3",
     "typescript": "~5.3.3"
   },
   "engines": {
