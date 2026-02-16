@@ -1,13 +1,12 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import { asV2Middleware } from '@metamask/json-rpc-engine';
+import { JsonRpcEngineV2 as JsonRpcEngine } from '@metamask/json-rpc-engine/v2';
 import { createStreamMiddleware } from '@metamask/json-rpc-middleware-stream';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
-import { JsonRpcError } from '@metamask/rpc-errors';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
 import type {
   Json,
-  JsonRpcError as JsonRpcErrorType,
   JsonRpcNotification,
   JsonRpcRequest,
 } from '@metamask/utils';
@@ -54,7 +53,7 @@ export type JobStreams = {
 export type Job<WorkerType> = {
   id: string;
   streams: JobStreams;
-  rpcEngine: JsonRpcEngine;
+  rpcEngine: JsonRpcEngine<JsonRpcRequest>;
   worker: WorkerType;
 };
 
@@ -215,7 +214,6 @@ export abstract class AbstractExecutionService<WorkerType>
    */
   async #initJob(snapId: string, timer: Timer): Promise<Job<WorkerType>> {
     const { streams, worker } = await this.#initStreams(snapId, timer);
-    const rpcEngine = new JsonRpcEngine();
 
     const jsonRpcConnection = createStreamMiddleware();
 
@@ -230,7 +228,9 @@ export abstract class AbstractExecutionService<WorkerType>
       },
     );
 
-    rpcEngine.push(jsonRpcConnection.middleware);
+    const rpcEngine = JsonRpcEngine.create({
+      middleware: [asV2Middleware(jsonRpcConnection.middleware)],
+    });
 
     const envMetadata = {
       id: snapId,
@@ -465,15 +465,7 @@ export abstract class AbstractExecutionService<WorkerType>
     }
 
     log('Parent: Sending Command', message);
-    const response = await job.rpcEngine.handle(message);
-
-    // We don't need full validation of the response here because we control it.
-    if (hasProperty(response, 'error')) {
-      const error = response.error as JsonRpcErrorType;
-      throw new JsonRpcError(error.code, error.message, error.data);
-    }
-
-    return response.result;
+    return await job.rpcEngine.handle(message);
   }
 
   /**
