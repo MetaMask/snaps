@@ -2872,9 +2872,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "@metamask/auto-changelog@npm:5.3.1"
+"@metamask/auto-changelog@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "@metamask/auto-changelog@npm:5.3.2"
   dependencies:
     "@octokit/rest": "npm:^20.0.0"
     diff: "npm:^5.0.0"
@@ -2885,7 +2885,7 @@ __metadata:
     prettier: ">=3.0.0"
   bin:
     auto-changelog: dist/cli.mjs
-  checksum: 10/a7cfd0901d56a3ce918793b6648e3b0f153d030616c0d1711e23bffb4ea353468a3d2b69f376a73595b760b4e7ed3d7422d4edc6512528678b30fb7e7a8f2a89
+  checksum: 10/21c993fae0af9bf4d219d52f1c28ab364e6844c4ab93f987a4db3a3df66f0e0c9a0c8a69c130bcb3ecd535e4a9b45a6e8059e95879ac652f9978dba198dd0ec1
   languageName: node
   linkType: hard
 
@@ -2895,7 +2895,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -2931,7 +2931,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -2959,7 +2959,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3010,7 +3010,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3036,7 +3036,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3084,7 +3084,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3137,7 +3137,7 @@ __metadata:
   resolution: "@metamask/create-snap@workspace:packages/create-snap"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-utils": "workspace:^"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -3169,7 +3169,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3194,7 +3194,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3219,7 +3219,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3243,7 +3243,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3353,7 +3353,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3378,7 +3378,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3415,7 +3415,7 @@ __metadata:
   resolution: "@metamask/example-snaps@workspace:packages/examples"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@types/node": "npm:18.14.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
@@ -3432,7 +3432,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3458,7 +3458,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3484,7 +3484,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3508,7 +3508,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3532,7 +3532,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3557,7 +3557,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3582,7 +3582,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3607,7 +3607,7 @@ __metadata:
   resolution: "@metamask/invoke-snap-example-snap@workspace:packages/examples/packages/invoke-snap"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@types/node": "npm:18.14.2"
     depcheck: "npm:^1.4.7"
     eslint: "npm:^9.11.0"
@@ -3638,7 +3638,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3673,7 +3673,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -3712,7 +3712,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3736,7 +3736,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3760,7 +3760,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3792,7 +3792,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3817,7 +3817,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3841,7 +3841,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3866,7 +3866,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3939,7 +3939,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3964,7 +3964,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -3988,7 +3988,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4038,7 +4038,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.23.2"
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-rollup-plugin": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4094,7 +4094,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
@@ -4120,7 +4120,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4150,7 +4150,7 @@ __metadata:
   resolution: "@metamask/snaps-cli@workspace:packages/snaps-cli"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sandbox": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4224,7 +4224,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
     "@metamask/approval-controller": "npm:^8.0.0"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/json-rpc-engine": "npm:^10.2.2"
@@ -4304,7 +4304,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
     "@lavamoat/lavatube": "npm:^1.0.0"
     "@lavamoat/webpack": "npm:^1.5.8"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/json-rpc-engine": "npm:^10.2.2"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
@@ -4360,7 +4360,7 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@jest/types": "npm:^29.6.3"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-controllers": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-simulation": "workspace:^"
@@ -4392,7 +4392,7 @@ __metadata:
   resolution: "@metamask/snaps-monorepo@workspace:."
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/create-release-branch": "npm:^4.1.4"
     "@metamask/eslint-config": "npm:^14.0.0"
     "@metamask/eslint-config-browser": "npm:^14.0.0"
@@ -4459,7 +4459,7 @@ __metadata:
   resolution: "@metamask/snaps-rollup-plugin@workspace:packages/snaps-rollup-plugin"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-utils": "workspace:^"
     "@rollup/plugin-virtual": "npm:^2.1.0"
     "@swc/core": "npm:1.11.31"
@@ -4484,7 +4484,7 @@ __metadata:
   resolution: "@metamask/snaps-rpc-methods@workspace:packages/snaps-rpc-methods"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/json-rpc-engine": "npm:^10.2.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
@@ -4517,7 +4517,7 @@ __metadata:
   dependencies:
     "@chakra-ui/react": "npm:^3.15.0"
     "@emotion/react": "npm:^11.14.0"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/utils": "npm:^11.10.0"
     "@monaco-editor/react": "npm:^4.7.0"
@@ -4549,7 +4549,7 @@ __metadata:
   resolution: "@metamask/snaps-sdk@workspace:packages/snaps-sdk"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
@@ -4580,7 +4580,7 @@ __metadata:
   resolution: "@metamask/snaps-simulation@workspace:packages/snaps-simulation"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/chain-agnostic-permission": "npm:^1.4.0"
     "@metamask/json-rpc-engine": "npm:^10.2.2"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
@@ -4627,7 +4627,7 @@ __metadata:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/permission-controller": "npm:^12.2.0"
@@ -4684,7 +4684,7 @@ __metadata:
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
@@ -4730,7 +4730,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@metamask/test-snaps@workspace:packages/test-snaps"
   dependencies:
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/background-events-example-snap": "workspace:^"
     "@metamask/bip32-example-snap": "workspace:^"
     "@metamask/bip44-example-snap": "workspace:^"
@@ -4849,7 +4849,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4874,7 +4874,7 @@ __metadata:
   dependencies:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^3.4.3"
-    "@metamask/auto-changelog": "npm:^5.3.1"
+    "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
