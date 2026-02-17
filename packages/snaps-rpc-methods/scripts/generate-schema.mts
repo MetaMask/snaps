@@ -1054,7 +1054,7 @@ function getRestrictedMethodSpecification(object: ObjectLiteralExpression) {
  * ```ts
  * function getMethodImplementation() {
  *   return async function methodImplementation(
- *     request: RestrictedMethodOptions<MethodParameters>,
+ *     options: RestrictedMethodOptions<MethodParameters>,
  *     // ...
  *   ): Promise<MethodResult> {
  *     // ...
