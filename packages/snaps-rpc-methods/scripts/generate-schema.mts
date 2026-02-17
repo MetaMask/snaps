@@ -77,50 +77,21 @@ type MethodExample = {
 };
 
 /**
- * Find a property assignment by name in an array of object literal properties.
- *
- * @param properties - The properties of the object literal. This is expected to
- * be an array of property assignments.
- * @param propertyName - The name of the property to find.
- * @returns The property assignment with the specified name.
- */
-function findProperty(
-  properties: ObjectLiteralElementLike[],
-  propertyName: string,
-) {
-  return properties.find((property) => {
-    if (
-      // Some handlers use shorthand property assignments, so we need to check
-      // for both.
-      !property.isKind(SyntaxKind.PropertyAssignment) &&
-      !property.isKind(SyntaxKind.ShorthandPropertyAssignment)
-    ) {
-      return false;
-    }
-
-    return property.getName() === propertyName;
-  });
-}
-
-/**
  * Get the type of a property at the location of the implementation function o
  * a handler. This is needed to extract the type of the properties at the
  * correct location.
  *
  * @param symbol - The symbol of the handler, which is expected to be the symbol
  * of the object literal that defines the handler.
- * @param properties - The properties of the object literal that defines the
- * handler.
+ * @param object - The object literal expression that defines the handler, which
+ * is needed to find the correct property to extract the type from.
  * @returns The type of the property at the location of the implementation
  * function of the handler.
  */
-function getTypeAtLocation(
-  symbol: Symbol,
-  properties: ObjectLiteralElementLike[],
-) {
+function getTypeAtLocation(symbol: Symbol, object: ObjectLiteralExpression) {
   const property =
-    findProperty(properties, 'implementation') ??
-    findProperty(properties, 'specificationBuilder');
+    object.getProperty('implementation') ??
+    object.getProperty('specificationBuilder');
 
   assert(property, 'Property "implementation" not found.');
 
@@ -538,15 +509,14 @@ function getObjectProperty(typeNode: TypeNode): MethodParameter | null {
  * JSDoc descriptions (if any).
  *
  * @param typeNode - The object type node to extract properties from.
- * @param properties - The properties of the object literal that defines the
- * type. This is needed to extract the type of the properties at the correct
- * location.
+ * @param object - The object literal expression that defines the type, which is
+ * needed to find the correct property to extract the type from.
  * @returns An array of properties, where each property includes its name,
  * type, and JSDoc description (if any).
  */
 function getObjectProperties(
   typeNode: TypeNode,
-  properties: ObjectLiteralElementLike[],
+  object: ObjectLiteralExpression,
 ): MethodParameter | MethodParameter[] | null {
   const type = typeNode.getType();
   if (type.isString() || type.isNumber() || type.isBoolean()) {
@@ -584,7 +554,7 @@ function getObjectProperties(
   const propertyTags = getObjectJsDocPropertyTags(type);
 
   return propertySignatures.map((property) => {
-    const propertyType = getTypeAtLocation(property, properties);
+    const propertyType = getTypeAtLocation(property, object);
 
     return {
       name: property.getName(),
@@ -713,17 +683,17 @@ async function getMethodExamples(
  * }
  * ```
  *
- * @param properties - The properties of the handler object, i.e., the result of
- * `objectLiteralExpression.getProperties()`.
+ * @param object - The object literal expression that defines the handler, which
+ * is needed to find the correct property to extract the type from.
  * @returns An array of method parameters, where each parameter includes its
  * name, type, and JSDoc description (if any).
  */
 function getMethodParameters(
-  properties: ObjectLiteralElementLike[],
+  object: ObjectLiteralExpression,
 ): MethodParameter | MethodParameter[] | null {
   // Get the call signatures of the implementation function, which is expected
   // to be a middleware function.
-  const implementation = findProperty(properties, 'implementation')?.getType();
+  const implementation = object.getPropertyOrThrow('implementation').getType();
   assert(
     implementation?.isObject(),
     'Expected `implementation` to be an object type.',
@@ -763,23 +733,23 @@ function getMethodParameters(
     return null;
   }
 
-  return getObjectProperties(requestParameters, properties);
+  return getObjectProperties(requestParameters, object);
 }
 
 /**
  * Get the method return type from the `implementation` property of a handler.
  *
- * @param properties - The properties of the handler object, i.e., the result of
- * `objectLiteralExpression.getProperties()`.
+ * @param object - The object literal expression that defines the handler, which
+ * is needed to find the correct property to extract the type from.
  * @returns The method return type, including its name, type, and JSDoc
  * description (if any).
  */
 function getMethodResult(
-  properties: ObjectLiteralElementLike[],
+  object: ObjectLiteralExpression,
 ): MethodParameter | MethodParameter[] | null {
   // Get the call signatures of the implementation function, which is expected
   // to be a middleware function.
-  const implementation = findProperty(properties, 'implementation')?.getType();
+  const implementation = object.getPropertyOrThrow('implementation').getType();
   assert(
     implementation?.isObject(),
     'Expected `implementation` to be an object type.',
@@ -820,7 +790,7 @@ function getMethodResult(
     return null;
   }
 
-  return getObjectProperties(responseResult, properties);
+  return getObjectProperties(responseResult, object);
 }
 
 /**
@@ -887,11 +857,10 @@ async function processPermittedHandler(
   const object = declarationInitializer.getExpressionIfKindOrThrow(
     SyntaxKind.ObjectLiteralExpression,
   );
-  const properties = object.getProperties();
 
   const description = getMethodDescription(declaration);
-  const parameters = getMethodParameters(properties);
-  const result = getMethodResult(properties);
+  const parameters = getMethodParameters(object);
+  const result = getMethodResult(object);
   const subjectTypes = getMethodSubjectTypes(name);
   const examples = await getMethodExamples(declaration);
 
@@ -950,12 +919,12 @@ async function processPermittedHandlers(project: Project) {
  * }
  * ```
  *
- * @param properties - The properties of the handler object, i.e., the result of
- * `objectLiteralExpression.getProperties()`.
+ * @param object - The object literal expression that defines the handler, which
+ * is needed to find the correct property to extract the type from.
  * @returns The target name of the restricted method.
  */
-function getMethodTargetName(properties: ObjectLiteralElementLike[]) {
-  const targetName = findProperty(properties, 'targetName')?.getType();
+function getMethodTargetName(object: ObjectLiteralExpression) {
+  const targetName = object.getPropertyOrThrow('targetName').getType();
   assert(
     targetName?.isStringLiteral(),
     'Expected `targetName` to be a string literal type.',
@@ -1134,7 +1103,7 @@ function getRestrictedMethodParameters(
     return null;
   }
 
-  return getObjectProperties(requestParameters, object.getProperties());
+  return getObjectProperties(requestParameters, object);
 }
 
 /**
@@ -1185,7 +1154,7 @@ function getRestrictedMethodResult(
     .asKindOrThrow(SyntaxKind.TypeReference);
   const unwrappedReturnTypeNode = unwrapPromiseTypeNode(maybePromise);
 
-  return getObjectProperties(unwrappedReturnTypeNode, object.getProperties());
+  return getObjectProperties(unwrappedReturnTypeNode, object);
 }
 
 /**
@@ -1246,10 +1215,8 @@ async function processRestrictedHandler(
     SyntaxKind.ObjectLiteralExpression,
   );
 
-  const properties = object.getProperties();
-
   // Extract the method names and parameters from the handler definition.
-  const methodName = getMethodTargetName(properties);
+  const methodName = getMethodTargetName(object);
   const description = getMethodDescription(declaration);
   const parameters = getRestrictedMethodParameters(object);
   const result = getRestrictedMethodResult(object);
