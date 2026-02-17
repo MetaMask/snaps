@@ -1,5 +1,5 @@
 import { expect } from '@jest/globals';
-import { NotificationType, panel, text } from '@metamask/snaps-sdk';
+import { NodeType, NotificationType } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 import { getInterfaceActions } from '@metamask/snaps-simulation';
 import type {
@@ -525,7 +525,10 @@ describe('toRender', () => {
           <Text>Hello, world!</Text>
         </Box>,
       ),
-    ).toRender(panel([text('Hello, world!')]));
+    ).toRender({
+      type: NodeType.Panel as const,
+      children: [{ type: NodeType.Text as const, value: 'Hello, world!' }],
+    });
   });
 
   it('passes when the JSX component is correct', () => {
@@ -542,7 +545,10 @@ describe('toRender', () => {
             <Text>Hello, world!</Text>
           </Box>,
         ),
-      ).toRender(panel([text('Hello, world?')])),
+      ).toRender({
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Text as const, value: 'Hello, world?' }],
+      }),
     ).toThrow('Received:');
   });
 
@@ -561,7 +567,10 @@ describe('toRender', () => {
           // @ts-expect-error - Invalid response.
           null,
         ),
-      ).not.toRender(panel([text('Hello, world!')])),
+      ).not.toRender({
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Text as const, value: 'Hello, world!' }],
+      }),
     ).toThrow('Received has type:');
   });
 
@@ -573,7 +582,10 @@ describe('toRender', () => {
             <Text>Hello, world!</Text>
           </Box>,
         ),
-      ).not.toRender(panel([text('Hello, world?')]));
+      ).not.toRender({
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Text as const, value: 'Hello, world?' }],
+      });
     });
 
     it('passes when the JSX component is correct', () => {
@@ -590,7 +602,10 @@ describe('toRender', () => {
               <Text>Hello, world!</Text>
             </Box>,
           ),
-        ).not.toRender(panel([text('Hello, world!')])),
+        ).not.toRender({
+          type: NodeType.Panel as const,
+          children: [{ type: NodeType.Text as const, value: 'Hello, world!' }],
+        }),
       ).toThrow('Received:');
     });
 

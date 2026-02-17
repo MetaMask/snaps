@@ -31,7 +31,10 @@ describe('ComponentOrElementStruct', () => {
 
   it('validates legacy components', () => {
     expect(() =>
-      assert({ type: NodeType.Text, value: 'foo' }, ComponentOrElementStruct),
+      assert(
+        { type: NodeType.Text as const, value: 'foo' },
+        ComponentOrElementStruct,
+      ),
     ).not.toThrow();
   });
 });

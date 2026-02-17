@@ -1,6 +1,6 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
-import { UserInputEventType, button, input, text } from '@metamask/snaps-sdk';
+import { NodeType, UserInputEventType } from '@metamask/snaps-sdk';
 import {
   Card,
   Dropdown,
@@ -144,7 +144,7 @@ describe('handleRequest', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
     const id = interfaceController.createInterface(
       'local:http://localhost:4242' as SnapId,
       content,
@@ -338,7 +338,7 @@ describe('getInterfaceFromResult', () => {
     jest.spyOn(controllerMessenger, 'call');
 
     const result = await getInterfaceFromResult(
-      { content: text('foo') },
+      { content: { type: NodeType.Text as const, value: 'foo' } },
       MOCK_SNAP_ID,
       controllerMessenger,
     );
@@ -348,7 +348,7 @@ describe('getInterfaceFromResult', () => {
     expect(controllerMessenger.call).toHaveBeenCalledWith(
       'SnapInterfaceController:createInterface',
       MOCK_SNAP_ID,
-      text('foo'),
+      { type: NodeType.Text as const, value: 'foo' },
     );
   });
 });
@@ -361,7 +361,7 @@ describe('getInterfaceApi', () => {
       messenger:
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
 
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
 
@@ -400,7 +400,7 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
 
     const getInterface = await getInterfaceApi(
       { content },
@@ -453,7 +453,11 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const content = button({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'foo',
+    };
 
     const getInterface = await getInterfaceApi(
       { content },
@@ -502,7 +506,7 @@ describe('getInterfaceApi', () => {
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
 
-    const content = input('foo');
+    const content = { type: NodeType.Input as const, name: 'foo' };
 
     const getInterface = await getInterfaceApi(
       { content },

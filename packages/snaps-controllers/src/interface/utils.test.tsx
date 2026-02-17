@@ -1,4 +1,4 @@
-import { panel, text } from '@metamask/snaps-sdk';
+import { NodeType } from '@metamask/snaps-sdk';
 import {
   Box,
   Button,
@@ -55,7 +55,12 @@ describe('getJsxInterface', () => {
   });
 
   it('returns the JSX interface for a legacy element', () => {
-    expect(getJsxInterface(panel([text('Hello')]))).toStrictEqual(
+    expect(
+      getJsxInterface({
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Text as const, value: 'Hello' }],
+      }),
+    ).toStrictEqual(
       Box({
         children: Text({
           children: 'Hello',

@@ -13,7 +13,7 @@ import {
 } from '@metamask/snaps-controllers/node';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { CaipAssetType, CaipChainId } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, text } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding, NodeType } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import {
   getSnapManifest,
@@ -505,7 +505,7 @@ describe('getPermittedHooks', () => {
 
     jest.spyOn(controllerMessenger, 'call');
 
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
     const { snapId, close } = await getMockServer({
       manifest: getSnapManifest(),
     });
@@ -543,7 +543,7 @@ describe('getPermittedHooks', () => {
 
     jest.spyOn(controllerMessenger, 'call');
 
-    const content = text('bar');
+    const content = { type: NodeType.Text as const, value: 'bar' };
     const { snapId, close } = await getMockServer({
       manifest: getSnapManifest(),
     });
@@ -561,7 +561,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = createInterface(text('foo'));
+    const id = createInterface({ type: NodeType.Text as const, value: 'foo' });
 
     updateInterface(id, content);
 
@@ -602,7 +602,7 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = createInterface(text('foo'));
+    const id = createInterface({ type: NodeType.Text as const, value: 'foo' });
 
     const result = getInterfaceState(id);
 
@@ -643,7 +643,10 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const id = createInterface(text('foo'), { bar: 'baz' });
+    const id = createInterface(
+      { type: NodeType.Text as const, value: 'foo' },
+      { bar: 'baz' },
+    );
 
     const result = getInterfaceContext(id);
 
@@ -676,7 +679,10 @@ describe('getPermittedHooks', () => {
 
     const snapFiles = await fetchSnap(snapId, location);
 
-    const id = snapInterfaceController.createInterface(snapId, text('foo'));
+    const id = snapInterfaceController.createInterface(snapId, {
+      type: NodeType.Text as const,
+      value: 'foo',
+    });
 
     const { resolveInterface } = getPermittedHooks(
       snapId,

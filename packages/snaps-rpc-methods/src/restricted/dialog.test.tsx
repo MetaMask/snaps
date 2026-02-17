@@ -1,6 +1,6 @@
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import { DialogType, heading, panel, text } from '@metamask/snaps-sdk';
+import { DialogType, NodeType } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
 import type { DialogMethodHooks } from './dialog';
@@ -47,9 +47,11 @@ describe('implementation', () => {
     ({
       requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
-      getInterface: jest
-        .fn()
-        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
+      getInterface: jest.fn().mockReturnValue({
+        content: { type: NodeType.Text as const, value: 'foo' },
+        state: {},
+        snapId: 'foo',
+      }),
     }) as DialogMethodHooks;
 
   it('accepts string dialog types', async () => {
@@ -60,7 +62,13 @@ describe('implementation', () => {
       method: 'snap_dialog',
       params: {
         type: 'alert',
-        content: panel([heading('foo'), text('bar')]),
+        content: {
+          type: NodeType.Panel as const,
+          children: [
+            { type: NodeType.Heading as const, value: 'foo' },
+            { type: NodeType.Text as const, value: 'bar' },
+          ],
+        },
       },
     });
 
@@ -134,9 +142,11 @@ describe('implementation', () => {
     const hooks = {
       requestUserApproval: jest.fn(),
       createInterface: jest.fn().mockReturnValue('bar'),
-      getInterface: jest
-        .fn()
-        .mockReturnValue({ content: text('foo'), state: {}, snapId: 'foo' }),
+      getInterface: jest.fn().mockReturnValue({
+        content: { type: NodeType.Text as const, value: 'foo' },
+        state: {},
+        snapId: 'foo',
+      }),
     };
 
     const implementation = getDialogImplementation(hooks);
@@ -166,7 +176,13 @@ describe('implementation', () => {
     const hooks = getMockDialogHooks();
     const implementation = getDialogImplementation(hooks);
 
-    const content = panel([heading('foo'), text('bar')]);
+    const content = {
+      type: NodeType.Panel as const,
+      children: [
+        { type: NodeType.Heading as const, value: 'foo' },
+        { type: NodeType.Text as const, value: 'bar' },
+      ],
+    };
 
     await implementation({
       context: { origin: 'foo' },
@@ -261,7 +277,13 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Alert,
-          content: panel([heading('foo'), text('bar')]),
+          content: {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Heading as const, value: 'foo' },
+              { type: NodeType.Text as const, value: 'bar' },
+            ],
+          },
         },
       });
 
@@ -315,7 +337,13 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([heading('foo'), text('bar')]),
+          content: {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Heading as const, value: 'foo' },
+              { type: NodeType.Text as const, value: 'bar' },
+            ],
+          },
         },
       });
 
@@ -393,7 +421,13 @@ describe('implementation', () => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Prompt,
-          content: panel([heading('foo'), text('bar')]),
+          content: {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Heading as const, value: 'foo' },
+              { type: NodeType.Text as const, value: 'bar' },
+            ],
+          },
           placeholder: 'foobar',
         },
       });
@@ -552,7 +586,13 @@ describe('implementation', () => {
             method: 'snap_dialog',
             params: {
               type: DialogType.Prompt,
-              content: panel([heading('foo'), text('bar')]),
+              content: {
+                type: NodeType.Panel as const,
+                children: [
+                  { type: NodeType.Heading as const, value: 'foo' },
+                  { type: NodeType.Text as const, value: 'bar' },
+                ],
+              },
               placeholder: value,
             },
           }),
@@ -572,7 +612,13 @@ describe('implementation', () => {
           method: 'snap_dialog',
           params: {
             type: DialogType.Prompt,
-            content: panel([heading('foo'), text('bar')]),
+            content: {
+              type: NodeType.Panel as const,
+              children: [
+                { type: NodeType.Heading as const, value: 'foo' },
+                { type: NodeType.Text as const, value: 'bar' },
+              ],
+            },
             placeholder: '',
           },
         }),
@@ -592,7 +638,13 @@ describe('implementation', () => {
             method: 'snap_dialog',
             params: {
               type,
-              content: panel([heading('foo'), text('bar')]),
+              content: {
+                type: NodeType.Panel as const,
+                children: [
+                  { type: NodeType.Heading as const, value: 'foo' },
+                  { type: NodeType.Text as const, value: 'bar' },
+                ],
+              },
               placeholder: 'foobar',
             },
           }),

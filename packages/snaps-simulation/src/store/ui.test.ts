@@ -1,5 +1,5 @@
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { DialogType, text } from '@metamask/snaps-sdk';
+import { DialogType, NodeType } from '@metamask/snaps-sdk';
 
 import {
   getCurrentInterface,
@@ -15,14 +15,14 @@ describe('uiSlice', () => {
         undefined,
         setInterface({
           type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-          content: text('foo'),
+          content: { type: NodeType.Text as const, value: 'foo' },
         }),
       );
 
       expect(state).toStrictEqual({
         current: {
           type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-          content: text('foo'),
+          content: { type: NodeType.Text as const, value: 'foo' },
         },
       });
     });
@@ -34,7 +34,7 @@ describe('uiSlice', () => {
         {
           current: {
             type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-            content: text('foo'),
+            content: { type: NodeType.Text as const, value: 'foo' },
           },
         },
         uiSlice.actions.closeInterface(),
@@ -72,7 +72,7 @@ describe('getCurrentInterface', () => {
       ui: {
         current: {
           type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-          content: text('foo'),
+          content: { type: NodeType.Text as const, value: 'foo' },
         },
       },
     };
@@ -80,7 +80,7 @@ describe('getCurrentInterface', () => {
     // @ts-expect-error - The `state` parameter is only partially defined.
     expect(getCurrentInterface(state)).toStrictEqual({
       type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-      content: text('foo'),
+      content: { type: NodeType.Text as const, value: 'foo' },
     });
   });
 });
