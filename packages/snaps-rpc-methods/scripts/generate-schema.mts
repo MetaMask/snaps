@@ -559,9 +559,10 @@ function getTypeMethodParameters(
     property.getDeclarations()[0].isKind(SyntaxKind.PropertySignature),
   );
 
-  if (propertySignatures.length === 0) {
-    return null;
-  }
+  assert(
+    propertySignatures.length > 0,
+    'Expected object type to have at least one property signature.',
+  );
 
   // Parse `@property` tags from JSDoc comments on the type alias declaration,
   // if any, to get descriptions for the properties that may not be included in
