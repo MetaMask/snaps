@@ -8,7 +8,6 @@ import {
 } from '@metamask/superstruct';
 
 import { literal } from '../../internals';
-import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
 export const TextStruct = assign(
@@ -30,26 +29,3 @@ export const TextStruct = assign(
  * markdown will be enabled.
  */
 export type Text = Infer<typeof TextStruct>;
-
-/**
- * Create a {@link Text} node.
- *
- * @param args - The node arguments. This can be either a string
- * and a boolean, or an object with a `value` property
- * and an optional `markdown` property.
- * @param args.value - The text content of the node.
- * @param args.markdown - An optional flag to enable or disable markdown. This
- * is enabled by default.
- * @returns The text node as object.
- * @deprecated Snaps component functions are deprecated, in favor of the new JSX
- * components. This function will be removed in a future release.
- * @example
- * const node = text({ value: 'Hello, world!' });
- * const node = text('Hello, world!');
- * const node = text({ value: 'Hello, world!', markdown: false });
- * const node = text('Hello, world!', false);
- */
-export const text = createBuilder(NodeType.Text, TextStruct, [
-  'value',
-  'markdown',
-]);

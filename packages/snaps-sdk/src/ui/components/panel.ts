@@ -13,7 +13,6 @@ import { RowStruct } from './row';
 import { SpinnerStruct } from './spinner';
 import { TextStruct } from './text';
 import { typedUnion, literal } from '../../internals';
-import { createBuilder } from '../builder';
 import { NodeStruct, NodeType } from '../nodes';
 
 /**
@@ -60,31 +59,6 @@ export type Panel = {
   type: NodeType.Panel;
   children: Component[];
 };
-
-/**
- * Create a {@link Panel} node.
- *
- * @param args - The node arguments. This can be either an array of children, or
- * an object with a `children` property.
- * @param args.children - The child nodes of the panel. This can be any valid
- * {@link Component}.
- * @returns The panel node as object.
- * @deprecated Snaps component functions are deprecated, in favor of the new JSX
- * components. This function will be removed in a future release.
- * @example
- * const node = panel({
- *  children: [
- *    heading({ text: 'Hello, world!' }),
- *    text({ text: 'This is a panel.' }),
- *  ],
- * });
- *
- * const node = panel([
- *   heading('Hello, world!'),
- *   text('This is a panel.'),
- * ]);
- */
-export const panel = createBuilder(NodeType.Panel, PanelStruct, ['children']);
 
 // This is defined separately from `Component` to avoid circular dependencies.
 export const ComponentStruct = typedUnion([

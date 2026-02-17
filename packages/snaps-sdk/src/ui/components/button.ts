@@ -2,7 +2,6 @@ import type { Infer } from '@metamask/superstruct';
 import { assign, object, optional, string, union } from '@metamask/superstruct';
 
 import { enumValue, literal } from '../../internals';
-import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
 export enum ButtonVariant {
@@ -43,28 +42,3 @@ export const ButtonStruct = assign(
  * @property name - An optional name to identify the button.
  */
 export type Button = Infer<typeof ButtonStruct>;
-
-/**
- * Create a {@link Button} node.
- *
- * @param args - The node arguments. This can be either a string, or an object
- * with a `value` property. A set of optional properties can be passed.
- * @param args.variant - The optional variant of the button.
- * @param args.value - The text content of the node.
- * @param args.name - The optional name of the button.
- * @returns The text node as object.
- * @deprecated Snaps component functions are deprecated, in favor of the new JSX
- * components. This function will be removed in a future release.
- * @example
- * ```typescript
- * const node = button({  variant: 'primary', text: 'Hello, world!', name: 'myButton' });
- * const node = button('Hello, world!', 'button', 'myButton', 'primary');
- * const node = button('Hello, world!');
- * ```
- */
-export const button = createBuilder(NodeType.Button, ButtonStruct, [
-  'value',
-  'buttonType',
-  'name',
-  'variant',
-]);

@@ -7,7 +7,7 @@ import type {
   DialogParams,
 } from './dialog';
 import { DialogType } from './dialog';
-import type { text } from '../../ui';
+import type { JSXElement } from '../../jsx';
 
 describe('DialogType', () => {
   it('has the correct values', () => {
@@ -22,26 +22,26 @@ describe('AlertDialog', () => {
   it('accepts the type as enum', () => {
     expectTypeOf<{
       type: DialogType.Alert;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<AlertDialog>();
   });
 
   it('accepts the type as string', () => {
     expectTypeOf<{
       type: 'alert';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<AlertDialog>();
   });
 
   it('does not accept other types', () => {
     expectTypeOf<{
       type: DialogType.Confirmation;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<AlertDialog>();
 
     expectTypeOf<{
       type: 'confirmation';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<AlertDialog>();
   });
 });
@@ -50,26 +50,26 @@ describe('ConfirmationDialog', () => {
   it('accepts the type as enum', () => {
     expectTypeOf<{
       type: DialogType.Confirmation;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<ConfirmationDialog>();
   });
 
   it('accepts the type as string', () => {
     expectTypeOf<{
       type: 'confirmation';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<ConfirmationDialog>();
   });
 
   it('does not accept other types', () => {
     expectTypeOf<{
       type: DialogType.Alert;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<ConfirmationDialog>();
 
     expectTypeOf<{
       type: 'alert';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<ConfirmationDialog>();
   });
 });
@@ -78,26 +78,26 @@ describe('PromptDialog', () => {
   it('accepts the type as enum', () => {
     expectTypeOf<{
       type: DialogType.Prompt;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<PromptDialog>();
   });
 
   it('accepts the type as string', () => {
     expectTypeOf<{
       type: 'prompt';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<PromptDialog>();
   });
 
   it('does not accept other types', () => {
     expectTypeOf<{
       type: DialogType.Alert;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<PromptDialog>();
 
     expectTypeOf<{
       type: 'alert';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().not.toMatchTypeOf<PromptDialog>();
   });
 });
@@ -106,34 +106,34 @@ describe('DialogParams', () => {
   it('accepts the type as enum', () => {
     expectTypeOf<{
       type: DialogType.Alert;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
 
     expectTypeOf<{
       type: DialogType.Confirmation;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
 
     expectTypeOf<{
       type: DialogType.Prompt;
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
   });
 
   it('accepts the type as string', () => {
     expectTypeOf<{
       type: 'alert';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
 
     expectTypeOf<{
       type: 'confirmation';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
 
     expectTypeOf<{
       type: 'prompt';
-      content: ReturnType<typeof text>;
+      content: JSXElement;
     }>().toMatchTypeOf<DialogParams>();
   });
 });

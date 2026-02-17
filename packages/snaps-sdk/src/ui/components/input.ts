@@ -2,7 +2,6 @@ import type { Infer } from '@metamask/superstruct';
 import { assign, object, optional, string, union } from '@metamask/superstruct';
 
 import { enumValue, literal } from '../../internals';
-import { createBuilder } from '../builder';
 import { LiteralStruct, NodeType } from '../nodes';
 
 /**
@@ -46,31 +45,3 @@ export const InputStruct = assign(
  * @property error - An optional error text.
  */
 export type Input = Infer<typeof InputStruct>;
-
-/**
- * Create a {@link Input} node.
- *
- * @param args - The node arguments. This can either be a name and an optional variant, value and placeholder or an object
- * with the properties: `inputType`, `value`, `variant`, `placeholder` and `name`.
- * @param args.name - The name for the input.
- * @param args.value - The value of the input.
- * @param args.inputType - An optional type, either `text`, `password` or `number`.
- * @param args.placeholder - An optional input placeholder.
- * @param args.label - An optional input label.
- * @param args.error - An optional error text.
- * @returns The input node as an object.
- * @deprecated Snaps component functions are deprecated, in favor of the new JSX
- * components. This function will be removed in a future release.
- * @example
- * const node = input('myInput');
- * const node = input('myInput', InputType.Text, 'my placeholder', 'myValue', 'myLabel');
- * const node = input({ name: 'myInput' });
- * const node = input({name: 'myInput', value: 'myValue', inputType: InputType.Password, placeholder: 'placeholder'})
- */
-export const input = createBuilder(NodeType.Input, InputStruct, [
-  'name',
-  'inputType',
-  'placeholder',
-  'value',
-  'label',
-]);
