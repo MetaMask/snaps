@@ -23,7 +23,6 @@ export * from './manage-state';
 export type * from './methods';
 export type * from './multichain';
 export * from './notify';
-export type * from './provider-request';
 export type * from './request-snaps';
 export type * from './start-trace';
 export type * from './update-interface';

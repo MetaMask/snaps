@@ -3,7 +3,6 @@ import type { ClearStateHooks } from './clearState';
 import type { CloseWebSocketMethodHooks } from './closeWebSocket';
 import type { CreateInterfaceMethodHooks } from './createInterface';
 import type { EndTraceMethodHooks } from './endTrace';
-import type { ProviderRequestMethodHooks } from './experimentalProviderRequest';
 import type { GetAllSnapsHooks } from './getAllSnaps';
 import type { GetBackgroundEventsMethodHooks } from './getBackgroundEvents';
 import type { GetClientStatusHooks } from './getClientStatus';
@@ -36,7 +35,6 @@ export type PermittedRpcMethodHooks = ClearStateHooks &
   GetInterfaceStateMethodHooks &
   ResolveInterfaceMethodHooks &
   GetCurrencyRateMethodHooks &
-  ProviderRequestMethodHooks &
   ScheduleBackgroundEventMethodHooks &
   CancelBackgroundEventMethodHooks &
   GetBackgroundEventsMethodHooks &

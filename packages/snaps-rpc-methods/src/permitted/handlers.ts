@@ -3,7 +3,6 @@ import { clearStateHandler } from './clearState';
 import { closeWebSocketHandler } from './closeWebSocket';
 import { createInterfaceHandler } from './createInterface';
 import { endTraceHandler } from './endTrace';
-import { providerRequestHandler } from './experimentalProviderRequest';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getBackgroundEventsHandler } from './getBackgroundEvents';
 import { getClientStatusHandler } from './getClientStatus';
@@ -46,7 +45,6 @@ export const methodHandlers = {
   snap_listEntropySources: listEntropySourcesHandler,
   snap_resolveInterface: resolveInterfaceHandler,
   snap_getCurrencyRate: getCurrencyRateHandler,
-  snap_experimentalProviderRequest: providerRequestHandler,
   snap_scheduleBackgroundEvent: scheduleBackgroundEventHandler,
   snap_cancelBackgroundEvent: cancelBackgroundEventHandler,
   snap_getBackgroundEvents: getBackgroundEventsHandler,
