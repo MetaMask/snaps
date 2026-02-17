@@ -600,6 +600,9 @@ async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
     content: string;
   };
 
+  // While examples should be formatted correctly in the JSDoc comments,
+  // TypeScript does not preserve the formatting of the example content, so we
+  // use Prettier to format the example content based on the specified language.
   const parser = PRETTIER_PARSER[language];
   if (!parser) {
     throw new Error(
