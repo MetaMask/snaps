@@ -76,7 +76,7 @@ type MethodExample = {
 };
 
 /**
- * Get the type of a property at the location of the implementation function o
+ * Get the type of a property at the location of the implementation function of
  * a handler. This is needed to extract the type of the properties at the
  * correct location.
  *
