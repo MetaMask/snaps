@@ -922,8 +922,8 @@ async function processPermittedHandlers(project: Project) {
 
 /**
  * Get the target name of a restricted method from the `targetName` property of
- * the handler. This function expects properties to include a `targetName`
- * property that is a string literal type:
+ * the permission builder. This function expects properties to include a
+ * `targetName` property that is a string literal type:
  *
  * ```ts
  * {
@@ -932,8 +932,9 @@ async function processPermittedHandlers(project: Project) {
  * }
  * ```
  *
- * @param object - The object literal expression that defines the handler, which
- * is needed to find the correct property to extract the type from.
+ * @param object - The object literal expression that defines the permission
+ * builder, which is needed to find the correct property to extract the type
+ * from.
  * @returns The target name of the restricted method.
  */
 function getMethodTargetName(object: ObjectLiteralExpression) {
@@ -954,7 +955,7 @@ function getMethodTargetName(object: ObjectLiteralExpression) {
 
 /**
  * Get the method specification from the `specificationBuilder` property of a
- * handler. This function expects the property to include a
+ * permission builder. This function expects the property to include a
  * `specificationBuilder` containing the specification builder function for the
  * restricted method.
  *
@@ -1055,19 +1056,30 @@ function getRestrictedMethodSpecification(object: ObjectLiteralExpression) {
 }
 
 /**
- * Get the method parameters from the `implementation` property of a handler.
+ * Get the method parameters from the `methodImplementation` property of a
+ * permission builder.
  *
- * This function expects properties to include an `implementation` property
- * like the following, where `MethodParameters` is a type that represents the
- * parameters of the JSON-RPC method.
+ * This function expects properties to include a `methodImplementation`
+ * property like the following:
  *
  * ```ts
  * {
- *   implementation: (
+ *   methodImplementation: getMethodImplementation(...),
+ *   // ...
+ * }
+ * ```
+ *
+ * Where `getMethodImplementation` is a function that returns the actual
+ * implementation of the method like this:
+ *
+ * ```ts
+ * function getMethodImplementation() {
+ *   return async function methodImplementation(
  *     request: JsonRpcRequest<MethodParameters>,
  *     // ...
- *   ) => { ... },
- *   // ...
+ *   ): Promise<MethodResult> {
+ *     // ...
+ *   };
  * }
  * ```
  *
@@ -1120,10 +1132,11 @@ function getRestrictedMethodParameters(
 }
 
 /**
- * Get the method return type from the `implementation` property of a restricted
- * method handler.
+ * Get the method return type from the `methodImplementation` property of a
+ * restricted permission builder.
  *
- * @param object - The object literal expression that defines the handler.
+ * @param object - The object literal expression that defines the
+ * permission builder.
  * @returns The method return type, including its name, type, and JSDoc
  * description (if any).
  */
@@ -1144,7 +1157,7 @@ function getRestrictedMethodResult(
     .asKindOrThrow(SyntaxKind.TypeQuery)
     .getExprName();
 
-  // Get the actual function declaration of the handler.
+  // Get the actual function declaration of the permission builder.
   const functionDeclaration = expressionIdentifier
     .getSymbolOrThrow()
     .getDeclarations()
@@ -1155,7 +1168,7 @@ function getRestrictedMethodResult(
 
   assert(
     functionDeclaration,
-    'Function declaration for handler implementation not found.',
+    'Function declaration for permission builder implementation not found.',
   );
 
   const childFunction = functionDeclaration.getFirstDescendantByKindOrThrow(
@@ -1171,51 +1184,55 @@ function getRestrictedMethodResult(
 }
 
 /**
- * Process a single restricted handler property assignment, extracting the
+ * Process a single restricted method property assignment, extracting the
  * method names, descriptions, parameters, return types, and subject types for
  * the handler.
  *
- * @param property - The property assignment that defines the restricted
- * handler, e.g., the `handler_one` property in the following object literal:
+ * @param property - The property assignment that defines the permission
+ * builder, e.g., the `method_one` property in the following object literal:
  *
  * ```ts
  * {
- *   handler_one: handlerOne,
+ *   method_one: permissionBuilderOne,
  *   // ...
  * }
  * ```
  *
- * @returns The method schema extracted from the restricted handler.
+ * @returns The method schema extracted from the restricted permission builder.
  */
-async function processRestrictedHandler(
+async function processRestrictedPermissionBuilder(
   property: PropertyAssignment,
 ): Promise<Method> {
   const name = property.getName();
 
-  // Get the handler identifier (e.g., the right-hand side of the property
-  // assignment) from the `handlers` object.
+  // Get the permission builder identifier (e.g., the right-hand side of the
+  // property assignment) from the `restrictedMethodPermissionBuilders` object.
   const initializer = property.getInitializerIfKindOrThrow(
     SyntaxKind.Identifier,
   );
 
-  // Get the definition of the handler, e.g., the actual declaration of the
-  // handler object.
+  // Get the definition of the permission builder, e.g., the actual declaration
+  // of the permission builder object.
   const [definition] = initializer.getDefinitions();
-  assert(definition, `Definition for handler "${name}" not found.`);
+  assert(definition, `Definition for permission builder "${name}" not found.`);
 
-  // Get the object literal expression that defines the handler. This is a bit
-  // more complicated than for permitted handlers, since restricted handlers
-  // use `Object.freeze({ ... } as const)` instead of a `satisfies` expression,
-  // so the AST structure looks like this:
+  // Get the object literal expression that defines the permission builder. This
+  // is a bit more complicated than for permitted handlers, since restricted
+  // permission builders use `Object.freeze({ ... } as const)` instead of a
+  // `satisfies` expression, so the AST structure looks like this:
   //
   // VariableDeclaration
   //  └─ CallExpression (Object.freeze)
   //      └─ AsExpression (as const)
-  //          └─ ObjectLiteralExpression (the actual handler definition)
+  //          └─ ObjectLiteralExpression (the actual permission builder definition)
   const declaration = definition
     .getDeclarationNode()
     ?.asKindOrThrow(SyntaxKind.VariableDeclaration);
-  assert(declaration, `Declaration for handler "${name}" not found.`);
+
+  assert(
+    declaration,
+    `Declaration for perimssion builder "${name}" not found.`,
+  );
 
   const declarationInitializer = declaration.getInitializerIfKindOrThrow(
     SyntaxKind.CallExpression,
@@ -1228,7 +1245,8 @@ async function processRestrictedHandler(
     SyntaxKind.ObjectLiteralExpression,
   );
 
-  // Extract the method names and parameters from the handler definition.
+  // Extract the method names and parameters from the permission builder
+  // definition.
   const methodName = getMethodTargetName(object);
   const description = getMethodDescription(declaration);
   const parameters = getRestrictedMethodParameters(object);
@@ -1249,23 +1267,30 @@ async function processRestrictedHandler(
 }
 
 /**
- * Process the restricted handlers defined in `src/restricted/index.ts`,
- * extracting the method names, descriptions, parameters, return types, and
- * subject types for each handler.
+ * Process the restricted permission builders defined in
+ * `src/restricted/index.ts`, extracting the method names, descriptions,
+ * parameters, return types, and subject types for each permission builder.
  *
  * @param project - The `ts-morph` project instance to use for processing the
- * handlers file.
- * @returns An array of method schemas extracted from the restricted handlers.
+ * restricted permission builders file.
+ * @returns An array of method schemas extracted from the restricted permission
+ * builders.
  */
-async function processRestrictedHandlers(project: Project) {
-  const restrictedHandlersFile = project.getSourceFile(
+async function processRestrictedPermissionBuilders(project: Project) {
+  const restrictedPermissionBuildersFile = project.getSourceFile(
     'src/restricted/index.ts',
   );
-  assert(restrictedHandlersFile, 'Restricted handlers file not found.');
 
-  const restrictedHandlers = restrictedHandlersFile.getVariableDeclaration(
-    'restrictedMethodPermissionBuilders',
+  assert(
+    restrictedPermissionBuildersFile,
+    'Restricted permission builders file not found.',
   );
+
+  const restrictedHandlers =
+    restrictedPermissionBuildersFile.getVariableDeclaration(
+      'restrictedMethodPermissionBuilders',
+    );
+
   assert(
     restrictedHandlers,
     '`restrictedMethodPermissionBuilders` variable not found.',
@@ -1282,7 +1307,7 @@ async function processRestrictedHandlers(project: Project) {
       SyntaxKind.PropertyAssignment,
     );
 
-    return processRestrictedHandler(propertyAssignment);
+    return processRestrictedPermissionBuilder(propertyAssignment);
   });
 
   return await Promise.all(promises);
@@ -1293,7 +1318,7 @@ const project = new Project({
 });
 
 const permittedMethods = await processPermittedHandlers(project);
-const restrictedMethods = await processRestrictedHandlers(project);
+const restrictedMethods = await processRestrictedPermissionBuilders(project);
 
 const schema = [...permittedMethods, ...restrictedMethods].toSorted((a, b) =>
   a.name.localeCompare(b.name),
