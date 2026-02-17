@@ -324,6 +324,9 @@ function getTypeString(type: Type, seen = new Set<string>()): string {
   if (aliasSymbol) {
     const aliasName = aliasSymbol.getName();
 
+    // We want to skip `Omit` so it goes through the normal process of getting
+    // the type string, which will give us a more accurate representation of the
+    // type.
     if (aliasName !== 'Omit') {
       const typeArguments = type.getAliasTypeArguments();
 
