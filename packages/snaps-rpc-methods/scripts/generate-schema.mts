@@ -415,9 +415,12 @@ function getTypeNodeDescription(typeNode: TypeNode) {
     .asKindOrThrow(SyntaxKind.TypeAliasDeclaration)
     .getJsDocs();
 
-  const description = jsDocs.map((jsDoc) => jsDoc.getCommentText()).join(' ');
+  assert(
+    jsDocs.length <= 1,
+    'Expected at most one JSDoc comment on type alias declaration.',
+  );
 
-  return description || null;
+  return jsDocs[0]?.getCommentText() ?? null;
 }
 
 /**
