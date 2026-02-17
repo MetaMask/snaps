@@ -1252,6 +1252,7 @@ async function processRestrictedPermissionBuilder(
   const parameters = getRestrictedMethodParameters(object);
   const result = getRestrictedMethodResult(object);
   const examples = await getMethodExamples(declaration);
+  const subjectTypes = getMethodSubjectTypes(methodName);
 
   return {
     name: methodName,
@@ -1259,9 +1260,7 @@ async function processRestrictedPermissionBuilder(
     parameters,
     result,
     examples,
-    // Restricted methods are only callable by Snaps, so we can hard code the
-    // subject type here.
-    subjectTypes: ['snap'],
+    subjectTypes,
     restricted: true,
   };
 }
