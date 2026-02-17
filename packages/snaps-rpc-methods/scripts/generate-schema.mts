@@ -26,6 +26,14 @@ const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
 
+// A regular expression to remove the leading hyphen and whitespace from
+// property descriptions in JSDoc `@property` tags.
+const PROPERTY_DESCRIPTION_REGEX = /^\s?-\s/u;
+
+// A regular expression to parse example content from JSDoc comments.
+const EXAMPLE_JSDOC_REGEX =
+  /^(?:(?<title>.+)\n)?```(?<language>\w+)\n(?<content>[\s\S]+)```$/u;
+
 // Mapping of file extensions to Prettier parsers, used to format example code
 // in the JSDoc comments of the handlers.
 const PRETTIER_PARSER: Record<string, BuiltInParserName> = {
@@ -445,7 +453,9 @@ function getObjectJsDocPropertyTags(type: Type) {
       // space to separate the property name from the description, and then
       // remove any leading hyphen and whitespace from the description.
       const [name, ...descriptionParts] = text.split(' ');
-      const description = descriptionParts.join(' ').replace(/^\s?-\s/u, '');
+      const description = descriptionParts
+        .join(' ')
+        .replace(PROPERTY_DESCRIPTION_REGEX, '');
 
       return [name, description] as const;
     });
@@ -586,10 +596,7 @@ async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
   // ```[language]
   // example content
   // ```
-  const match = text.match(
-    /^(?:(?<title>.+)\n)?```(?<language>\w+)\n(?<content>[\s\S]+)```$/u,
-  );
-
+  const match = text.match(EXAMPLE_JSDOC_REGEX);
   if (!match) {
     return null;
   }
