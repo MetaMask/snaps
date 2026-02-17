@@ -530,9 +530,13 @@ function getTypeMethodParameter(typeNode: TypeNode): MethodParameter | null {
  * type, and JSDoc description (if any).
  */
 function getTypeMethodParameters(
-  typeNode: TypeNode,
+  typeNode: TypeNode | null,
   object: ObjectLiteralExpression,
 ): MethodParameter | MethodParameter[] | null {
+  if (!typeNode) {
+    return null;
+  }
+
   const type = typeNode.getType();
   if (type.isString() || type.isNumber() || type.isBoolean()) {
     return getTypeMethodParameter(typeNode);
@@ -681,7 +685,44 @@ async function getMethodExamples(
 }
 
 /**
- * Get the method parameters from the `implementation` property of a handler.
+ * Get the method type node declaration for a property of a handler.
+ *
+ * @param symbol - The symbol of the handler (i.e., the request or response
+ * parameter of the implementation function).
+ * @returns The method type node declaration for the property of the handler, or
+ * `null` if the method type node declaration cannot be found.
+ */
+function getMethodTypeNodeDeclaration(symbol: Symbol) {
+  const declaration = symbol
+    .getDeclarations()
+    .find((symbolDeclaration) =>
+      symbolDeclaration.isKind(SyntaxKind.Parameter),
+    );
+
+  // From the declaration of the `request` parameter, get the type reference of
+  // the parameter type (e.g., `JsonRpcRequest<Type>`).
+  const typeReference = declaration
+    ?.asKind(SyntaxKind.Parameter)
+    ?.getTypeNode()
+    ?.asKind(SyntaxKind.TypeReference);
+
+  if (!typeReference) {
+    return null;
+  }
+
+  // Extract the type of the `params` property of the JSON-RPC request object,
+  // which is expected to be the first (and only) type argument of the request
+  // type.
+  const [parameters] = typeReference.getTypeArguments();
+  if (!parameters) {
+    return null;
+  }
+
+  return parameters;
+}
+
+/**
+ * Get the method signature from the `implementation` property of a handler.
  *
  * This function expects properties to include an `implementation` property
  * like the following, where `MethodParameters` is a type that represents the
@@ -690,7 +731,7 @@ async function getMethodExamples(
  * ```ts
  * {
  *   implementation: (
- *     request: JsonRpcRequest<MethodParameters>,
+ *     request: JsonRpcRequest<MethodParameters, MethodResult>,
  *     // ...
  *   ) => { ... },
  *   // ...
@@ -699,12 +740,14 @@ async function getMethodExamples(
  *
  * @param object - The object literal expression that defines the handler, which
  * is needed to find the correct property to extract the type from.
- * @returns An array of method parameters, where each parameter includes its
- * name, type, and JSDoc description (if any).
+ * @returns A tuple containing the method parameters and result.
  */
-function getMethodParameters(
+function getMethodSignature(
   object: ObjectLiteralExpression,
-): MethodParameter | MethodParameter[] | null {
+): [
+  MethodParameter | MethodParameter[] | null,
+  MethodParameter | MethodParameter[] | null,
+] {
   // Get the call signatures of the implementation function, which is expected
   // to be a middleware function.
   const implementation = object.getPropertyOrThrow('implementation').getType();
@@ -719,92 +762,15 @@ function getMethodParameters(
     'Expected `implementation` to have at least one call signature.',
   );
 
-  // Get the `request` parameter of the call signature, which is expected to
-  // be a JSON-RPC request object.
-  const [request] = callSignature.getParameters();
+  // Get the `request` and `response` parameters of the call signature.
+  const [request, response] = callSignature.getParameters();
+  const requestTypeNode = getMethodTypeNodeDeclaration(request);
+  const responseTypeNode = getMethodTypeNodeDeclaration(response);
 
-  // Get the declaration of the `request` parameter.
-  const requestDeclaration = request
-    .getDeclarations()
-    .find((declaration) => declaration.isKind(SyntaxKind.Parameter));
-
-  // From the declaration of the `request` parameter, get the type reference of
-  // the parameter type (e.g., `JsonRpcRequest<Type>`).
-  const requestTypeReference = requestDeclaration
-    ?.asKind(SyntaxKind.Parameter)
-    ?.getTypeNode()
-    ?.asKind(SyntaxKind.TypeReference);
-
-  if (!requestTypeReference) {
-    return null;
-  }
-
-  // Extract the type of the `params` property of the JSON-RPC request object,
-  // which is expected to be the first (and only) type argument of the request
-  // type.
-  const [requestParameters] = requestTypeReference.getTypeArguments();
-  if (!requestParameters) {
-    return null;
-  }
-
-  return getTypeMethodParameters(requestParameters, object);
-}
-
-/**
- * Get the method return type from the `implementation` property of a handler.
- *
- * @param object - The object literal expression that defines the handler, which
- * is needed to find the correct property to extract the type from.
- * @returns The method return type, including its name, type, and JSDoc
- * description (if any).
- */
-function getMethodResult(
-  object: ObjectLiteralExpression,
-): MethodParameter | MethodParameter[] | null {
-  // Get the call signatures of the implementation function, which is expected
-  // to be a middleware function.
-  const implementation = object.getPropertyOrThrow('implementation').getType();
-  assert(
-    implementation?.isObject(),
-    'Expected `implementation` to be an object type.',
-  );
-
-  const [callSignature] = implementation.getCallSignatures();
-  assert(
-    callSignature,
-    'Expected `implementation` to have at least one call signature.',
-  );
-
-  // Get the `response` parameter of the call signature, which is expected to
-  // be a JSON-RPC response object.
-  const [, response] = callSignature.getParameters();
-
-  // Get the declaration of the `response` parameter.
-  const responseDeclaration = response
-    .getDeclarations()
-    .find((declaration) => declaration.isKind(SyntaxKind.Parameter));
-
-  // From the declaration of the `response` parameter, get the type reference of
-  // the parameter type (e.g., `PendingJsonRpcResponse<Type>`).
-  const responseTypeReference = responseDeclaration
-    ?.asKind(SyntaxKind.Parameter)
-    ?.getTypeNode()
-    ?.asKind(SyntaxKind.TypeReference);
-
-  assert(
-    responseTypeReference,
-    'Expected response parameter declaration not found.',
-  );
-
-  // Extract the type of the `result` property of the JSON-RPC response object,
-  // which is expected to be the first (and only) type argument of the response
-  // type.
-  const [responseResult] = responseTypeReference.getTypeArguments();
-  if (!responseResult) {
-    return null;
-  }
-
-  return getTypeMethodParameters(responseResult, object);
+  return [
+    getTypeMethodParameters(requestTypeNode, object),
+    getTypeMethodParameters(responseTypeNode, object),
+  ];
 }
 
 /**
@@ -873,8 +839,7 @@ async function processPermittedHandler(
   );
 
   const description = getMethodDescription(declaration);
-  const parameters = getMethodParameters(object);
-  const result = getMethodResult(object);
+  const [parameters, result] = getMethodSignature(object);
   const subjectTypes = getMethodSubjectTypes(name);
   const examples = await getMethodExamples(declaration);
 
@@ -1057,7 +1022,7 @@ function getRestrictedMethodSpecification(object: ObjectLiteralExpression) {
 }
 
 /**
- * Get the method parameters from the `methodImplementation` property of a
+ * Get the method signature from the `methodImplementation` property of a
  * permission builder.
  *
  * This function expects properties to include a `methodImplementation`
@@ -1076,7 +1041,7 @@ function getRestrictedMethodSpecification(object: ObjectLiteralExpression) {
  * ```ts
  * function getMethodImplementation() {
  *   return async function methodImplementation(
- *     request: JsonRpcRequest<MethodParameters>,
+ *     request: RestrictedMethodOptions<MethodParameters>,
  *     // ...
  *   ): Promise<MethodResult> {
  *     // ...
@@ -1088,9 +1053,12 @@ function getRestrictedMethodSpecification(object: ObjectLiteralExpression) {
  * @returns An array of method parameters, where each parameter includes its
  * name, type, and JSDoc description (if any).
  */
-function getRestrictedMethodParameters(
+function getRestrictedMethodSignature(
   object: ObjectLiteralExpression,
-): MethodParameter | MethodParameter[] | null {
+): [
+  MethodParameter | MethodParameter[] | null,
+  MethodParameter | MethodParameter[] | null,
+] {
   // Get the call signatures of the implementation function, which is expected
   // to be a middleware function.
   const specification = getRestrictedMethodSpecification(object);
@@ -1101,54 +1069,11 @@ function getRestrictedMethodParameters(
   const type = implementation.getType();
   const [callSignature] = type.getCallSignatures();
 
-  // Get the `request` parameter of the call signature, which is expected to
-  // be a JSON-RPC request object.
+  // Get the `request` parameter of the call signature.
   const [request] = callSignature.getParameters();
 
-  // Get the declaration of the `request` parameter.
-  const requestDeclaration = request
-    .getDeclarations()
-    .find((declaration) => declaration.isKind(SyntaxKind.Parameter));
-
-  // From the declaration of the `request` parameter, get the type reference of
-  // the parameter type (e.g., `JsonRpcRequest<Type>`).
-  const requestTypeReference = requestDeclaration
-    ?.asKind(SyntaxKind.Parameter)
-    ?.getTypeNode()
-    ?.asKind(SyntaxKind.TypeReference);
-
-  if (!requestTypeReference) {
-    return null;
-  }
-
-  // Extract the type of the `params` property of the JSON-RPC request object,
-  // which is expected to be the first (and only) type argument of the request
-  // type.
-  const [requestParameters] = requestTypeReference.getTypeArguments();
-  if (!requestParameters) {
-    return null;
-  }
-
-  return getTypeMethodParameters(requestParameters, object);
-}
-
-/**
- * Get the method return type from the `methodImplementation` property of a
- * restricted permission builder.
- *
- * @param object - The object literal expression that defines the
- * permission builder.
- * @returns The method return type, including its name, type, and JSDoc
- * description (if any).
- */
-function getRestrictedMethodResult(
-  object: ObjectLiteralExpression,
-): MethodParameter | MethodParameter[] | null {
-  const specification = getRestrictedMethodSpecification(object);
-  const implementation = specification
-    .getPropertyOrThrow('methodImplementation')
-    .asKindOrThrow(SyntaxKind.PropertySignature);
-
+  // Get the `response` parameter by looking at the return type of the
+  // implementation function.
   const implementationReference = implementation
     .getTypeNodeOrThrow()
     .asKindOrThrow(SyntaxKind.TypeReference);
@@ -1179,9 +1104,14 @@ function getRestrictedMethodResult(
   const maybePromise = childFunction
     .getReturnTypeNodeOrThrow()
     .asKindOrThrow(SyntaxKind.TypeReference);
-  const unwrappedReturnTypeNode = unwrapPromiseTypeNode(maybePromise);
 
-  return getTypeMethodParameters(unwrappedReturnTypeNode, object);
+  const requestTypeNode = getMethodTypeNodeDeclaration(request);
+  const responseTypeNode = unwrapPromiseTypeNode(maybePromise);
+
+  return [
+    getTypeMethodParameters(requestTypeNode, object),
+    getTypeMethodParameters(responseTypeNode, object),
+  ];
 }
 
 /**
@@ -1250,8 +1180,7 @@ async function processRestrictedPermissionBuilder(
   // definition.
   const methodName = getMethodTargetName(object);
   const description = getMethodDescription(declaration);
-  const parameters = getRestrictedMethodParameters(object);
-  const result = getRestrictedMethodResult(object);
+  const [parameters, result] = getRestrictedMethodSignature(object);
   const examples = await getMethodExamples(declaration);
   const subjectTypes = getMethodSubjectTypes(methodName);
 
