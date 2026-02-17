@@ -506,7 +506,7 @@ function getObjectPropertyDescription(
  * @returns The method parameter object, or `null` if the type is a nullable
  * type (e.g., `null`, `undefined`, `void`, or `never`).
  */
-function getObjectProperty(typeNode: TypeNode): MethodParameter | null {
+function getTypeMethodParameter(typeNode: TypeNode): MethodParameter | null {
   const type = typeNode.getType();
   const typeString = getTypeString(type);
   if (typeString === 'null') {
@@ -529,13 +529,13 @@ function getObjectProperty(typeNode: TypeNode): MethodParameter | null {
  * @returns An array of properties, where each property includes its name,
  * type, and JSDoc description (if any).
  */
-function getObjectProperties(
+function getTypeMethodParameters(
   typeNode: TypeNode,
   object: ObjectLiteralExpression,
 ): MethodParameter | MethodParameter[] | null {
   const type = typeNode.getType();
   if (type.isString() || type.isNumber() || type.isBoolean()) {
-    return getObjectProperty(typeNode);
+    return getTypeMethodParameter(typeNode);
   }
 
   if (type.isArray()) {
@@ -549,7 +549,7 @@ function getObjectProperties(
   }
 
   if (type.getProperties().length === 0) {
-    return getObjectProperty(typeNode);
+    return getTypeMethodParameter(typeNode);
   }
 
   // For each property of the `params` object, extract its name, type, and JSDoc
@@ -746,7 +746,7 @@ function getMethodParameters(
     return null;
   }
 
-  return getObjectProperties(requestParameters, object);
+  return getTypeMethodParameters(requestParameters, object);
 }
 
 /**
@@ -803,7 +803,7 @@ function getMethodResult(
     return null;
   }
 
-  return getObjectProperties(responseResult, object);
+  return getTypeMethodParameters(responseResult, object);
 }
 
 /**
@@ -1128,7 +1128,7 @@ function getRestrictedMethodParameters(
     return null;
   }
 
-  return getObjectProperties(requestParameters, object);
+  return getTypeMethodParameters(requestParameters, object);
 }
 
 /**
@@ -1180,7 +1180,7 @@ function getRestrictedMethodResult(
     .asKindOrThrow(SyntaxKind.TypeReference);
   const unwrappedReturnTypeNode = unwrapPromiseTypeNode(maybePromise);
 
-  return getObjectProperties(unwrappedReturnTypeNode, object);
+  return getTypeMethodParameters(unwrappedReturnTypeNode, object);
 }
 
 /**
