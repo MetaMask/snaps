@@ -602,11 +602,9 @@ async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
 
   const parser = PRETTIER_PARSER[language];
   if (!parser) {
-    console.warn(
-      `Unable to format example with language "${language}" because there is no corresponding Prettier parser.`,
+    throw new Error(
+      `Unable to format example with language "${language}" because there is no corresponding Prettier parser. Supported languages are: ${Object.keys(PRETTIER_PARSER).join(', ')}. To resolve this, either change the language of the example to a supported language or add a corresponding Prettier parser to the \`PRETTIER_PARSER\` mapping in the script.\n\nThis error occurred while parsing "${tag.getSourceFile().getFilePath()}" at line ${tag.getStartLineNumber()}.`,
     );
-
-    return null;
   }
 
   return {
