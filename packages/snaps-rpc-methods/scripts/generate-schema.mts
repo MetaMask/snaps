@@ -496,7 +496,12 @@ function getObjectPropertyDescription(
   // Otherwise, if there is a `@property` tag for the property, use the
   // description from the tag.
   if (jsDocs.length > 0) {
-    return jsDocs.map((jsDoc) => jsDoc.getCommentText()).join(' ');
+    assert(
+      jsDocs.length === 1,
+      'Expected at most one JSDoc comment on property declaration.',
+    );
+
+    return jsDocs[0].getCommentText() ?? null;
   }
 
   return propertyTags[propertyName] ?? null;
@@ -654,7 +659,12 @@ function getMethodDescription(declaration: VariableDeclaration) {
     return null;
   }
 
-  return jsDocs.map((jsDoc) => jsDoc.getCommentText()).join(' ');
+  assert(
+    jsDocs.length === 1,
+    'Expected at most one JSDoc comment on handler declaration.',
+  );
+
+  return jsDocs[0].getCommentText() ?? null;
 }
 
 /**
