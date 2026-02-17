@@ -234,7 +234,6 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
 
   const alias = getTypeAlias(plainType);
   if (alias) {
-    seen.delete(plainType);
     return alias;
   }
 
