@@ -275,6 +275,7 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       return a.localeCompare(b);
     });
 
+    seen.delete(plainType);
     const uniqueTypes = [...new Set(sortedArray)];
     return uniqueTypes.join(' | ');
   }
@@ -287,6 +288,7 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       getTypeString(intersectionType, seen),
     );
 
+    seen.delete(plainType);
     return intersectionTypeStrings.join(' & ');
   }
 
@@ -304,6 +306,7 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType, seen)}`;
     });
 
+    seen.delete(plainType);
     return `{ ${propertyStrings.join('; ')} }`;
   }
 
