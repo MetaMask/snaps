@@ -132,6 +132,33 @@ function unwrapPromiseTypeNode(typeNode: TypeNode) {
 }
 
 /**
+ * Find the declaration of a symbol that is not a type parameter.
+ *
+ * @param symbol - The symbol to find the declaration for.
+ * @returns The declaration of the symbol that is not a type parameter.
+ */
+function findDeclaration(symbol: Symbol) {
+  const declarations = symbol.getDeclarations();
+  if (declarations.length === 1) {
+    return declarations[0];
+  }
+
+  const foundDeclaration = declarations.find((declaration) => {
+    const type = declaration.getType();
+
+    // This fixes an edge case where JSON-RPC params may be defined as
+    // `JsonRpcParams` and a generic `Params` type parameter.
+    return !type.isTypeParameter();
+  });
+
+  if (!foundDeclaration) {
+    throw new Error(`Declaration not found for symbol: ${symbol.getName()}`);
+  }
+
+  return foundDeclaration;
+}
+
+/**
  * Get the structural type node for a type, if it is an alias for a structural
  * type. This is needed to get a more accurate string representation of the
  * type, since some types (e.g., `Record`) are represented as an index signature
@@ -148,7 +175,13 @@ function getStructuralTypeNode(type: Type): TypeNode | null {
     return null;
   }
 
-  const declaration = aliasSymbol.getDeclarations()[0];
+  const declarations = aliasSymbol.getDeclarations();
+  assert(
+    declarations.length === 1,
+    'Expected exactly one declaration for alias symbol.',
+  );
+
+  const declaration = declarations[0];
   if (!declaration?.isKind(SyntaxKind.TypeAliasDeclaration)) {
     return null;
   }
@@ -300,7 +333,7 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
     const propertyStrings = properties.map((property) => {
       const isOptional = property.hasFlags(SymbolFlags.Optional);
       const declaration =
-        property.getValueDeclaration() ?? property.getDeclarations()[0];
+        property.getValueDeclaration() ?? findDeclaration(property);
       const propertyType = property.getTypeAtLocation(declaration);
 
       return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType, seen)}`;
@@ -567,9 +600,11 @@ function getTypeMethodParameters(
   // For each property of the `params` object, extract its name, type, and JSDoc
   // description (if any).
   const objectProperties = type.getProperties();
-  const propertySignatures = objectProperties.filter((property) =>
-    property.getDeclarations()[0].isKind(SyntaxKind.PropertySignature),
-  );
+  const propertySignatures = objectProperties.filter((property) => {
+    return property
+      .getDeclarations()
+      .some((declaration) => declaration.isKind(SyntaxKind.PropertySignature));
+  });
 
   assert(
     propertySignatures.length > 0,
