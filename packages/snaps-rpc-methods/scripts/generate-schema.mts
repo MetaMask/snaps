@@ -164,7 +164,7 @@ function getStructuralTypeNode(type: Type): TypeNode | null {
  * @returns An array of type strings with `true | false` replaced by `boolean`,
  * if applicable.
  */
-function fixBooleanTypes(types: string[]) {
+function mergeBooleanTypes(types: string[]) {
   if (types.includes('true') && types.includes('false')) {
     return types
       .filter((type) => type !== 'true' && type !== 'false')
@@ -254,7 +254,8 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
     // TypeScript represents `boolean` as a union of `true` and `false`, so we
     // check for this specific case and replace it with `boolean` in the string
     // representation.
-    const fixedArray = fixBooleanTypes(unionTypeStrings).toSorted((a, b) => {
+    const mergedArray = mergeBooleanTypes(unionTypeStrings);
+    const sortedArray = mergedArray.toSorted((a, b) => {
       if (a === 'null' || a === 'undefined') {
         return 1;
       }
@@ -266,7 +267,7 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       return a.localeCompare(b);
     });
 
-    const uniqueTypes = [...new Set(fixedArray)];
+    const uniqueTypes = [...new Set(sortedArray)];
     return uniqueTypes.join(' | ');
   }
 
