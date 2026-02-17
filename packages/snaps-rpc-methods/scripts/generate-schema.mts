@@ -7,7 +7,6 @@ import type { BuiltInParserName } from 'prettier';
 import { format } from 'prettier';
 import type {
   JSDocTag,
-  ObjectLiteralElementLike,
   ObjectLiteralExpression,
   PropertyAssignment,
   Symbol,
