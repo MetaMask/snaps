@@ -1,5 +1,6 @@
 import type { OnTransactionHandler } from '@metamask/snaps-sdk';
-import { SeverityLevel, panel, text, row, address } from '@metamask/snaps-sdk';
+import { SeverityLevel } from '@metamask/snaps-sdk';
+import { Address, Box, Row, Text } from '@metamask/snaps-sdk/jsx';
 import { hasProperty } from '@metamask/utils';
 
 import { decodeData } from './utils';
@@ -30,19 +31,34 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   ) {
     const type = decodeData(transaction.data);
     return {
-      content: panel([
-        row('From', address(transaction.from as `0x${string}`)),
-        row(
-          'To',
-          transaction.to
-            ? address(transaction.to as `0x${string}`)
-            : text('None'),
-        ),
-        row('Transaction type', text(type)),
-      ]),
+      content: (
+        <Box>
+          <Row label="From">
+            <Address address={transaction.from as `0x${string}`} />
+          </Row>
+          <Row label="To">
+            {transaction.to ? (
+              <Address address={transaction.to as `0x${string}`} />
+            ) : (
+              <Text>None</Text>
+            )}
+          </Row>
+          <Row label="Transaction type">
+            <Text>{type}</Text>
+          </Row>
+        </Box>
+      ),
       severity: SeverityLevel.Critical,
     };
   }
 
-  return { content: panel([row('Transaction type', text('Unknown'))]) };
+  return {
+    content: (
+      <Box>
+        <Row label="Transaction type">
+          <Text>Unknown</Text>
+        </Row>
+      </Box>
+    ),
+  };
 };

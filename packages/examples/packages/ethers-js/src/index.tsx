@@ -1,12 +1,9 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
-  panel,
-  heading,
-  copyable,
-  text,
   UserRejectedRequestError,
   MethodNotFoundError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import { Wallet } from 'ethers';
 
 import type { SignMessageParams } from './types';
@@ -47,11 +44,13 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: 'confirmation',
-          content: panel([
-            heading('Signature request'),
-            text('Do you want to sign this message?'),
-            copyable(params.message),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>Do you want to sign this message?</Text>
+              <Copyable value={params.message} />
+            </Box>
+          ),
         },
       });
 

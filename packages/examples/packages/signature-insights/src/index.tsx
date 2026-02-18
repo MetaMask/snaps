@@ -1,5 +1,6 @@
 import type { OnSignatureHandler } from '@metamask/snaps-sdk';
-import { SeverityLevel, panel, text, row, heading } from '@metamask/snaps-sdk';
+import { SeverityLevel } from '@metamask/snaps-sdk';
+import { Box, Heading, Row, Text } from '@metamask/snaps-sdk/jsx';
 
 /**
  * The MetaMask test dapp uses the below contract address as the verifying
@@ -48,37 +49,53 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
       },
       {},
     );
-    return Object.entries(typeCount).map(([type, count]) =>
-      row(type, text(`${count}`)),
-    );
+    return Object.entries(typeCount).map(([type, count]) => (
+      <Row label={type}>
+        <Text>{`${count}`}</Text>
+      </Row>
+    ));
   };
 
   switch (signatureMethod) {
     case 'personal_sign':
       return {
-        content: panel([row('From:', text(from)), row('Data:', text(data))]),
+        content: (
+          <Box>
+            <Row label="From:">
+              <Text>{from}</Text>
+            </Row>
+            <Row label="Data:">
+              <Text>{data}</Text>
+            </Row>
+          </Box>
+        ),
         severity: SeverityLevel.Critical,
       };
 
     case 'eth_signTypedData':
       // Show a count of the different types.
       return {
-        content: panel([
-          heading('Message type count'),
-          ...getSignedTypedDataRows(data),
-        ]),
+        content: (
+          <Box>
+            <Heading>Message type count</Heading>
+            {getSignedTypedDataRows(data)}
+          </Box>
+        ),
         severity: SeverityLevel.Critical,
       };
 
     case 'eth_signTypedData_v3':
       if (domain.verifyingContract === MALICIOUS_CONTRACT) {
         return {
-          content: panel([
-            heading('Danger!'),
-            text(
-              `${domain.verifyingContract} has been identified as a malicious verifying contract.`,
-            ),
-          ]),
+          content: (
+            <Box>
+              <Heading>Danger!</Heading>
+              <Text>
+                {domain.verifyingContract} has been identified as a malicious
+                verifying contract.
+              </Text>
+            </Box>
+          ),
           severity: SeverityLevel.Critical,
         };
       }
@@ -87,12 +104,15 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
     case 'eth_signTypedData_v4':
       if (domain.verifyingContract === MALICIOUS_CONTRACT) {
         return {
-          content: panel([
-            heading('Danger!'),
-            text(
-              `${domain.verifyingContract} has been identified as a malicious verifying contract.`,
-            ),
-          ]),
+          content: (
+            <Box>
+              <Heading>Danger!</Heading>
+              <Text>
+                {domain.verifyingContract} has been identified as a malicious
+                verifying contract.
+              </Text>
+            </Box>
+          ),
           severity: SeverityLevel.Critical,
         };
       }

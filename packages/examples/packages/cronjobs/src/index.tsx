@@ -1,5 +1,6 @@
 import type { OnCronjobHandler } from '@metamask/snaps-sdk';
-import { panel, text, heading, MethodNotFoundError } from '@metamask/snaps-sdk';
+import { MethodNotFoundError } from '@metamask/snaps-sdk';
+import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
 
 /**
  * Handle cronjob execution requests from MetaMask. This handler handles one
@@ -23,10 +24,12 @@ export const onCronjob: OnCronjobHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: 'alert',
-          content: panel([
-            heading('Cronjob'),
-            text('This dialog was triggered by a cronjob.'),
-          ]),
+          content: (
+            <Box>
+              <Heading>Cronjob</Heading>
+              <Text>This dialog was triggered by a cronjob.</Text>
+            </Box>
+          ),
         },
       });
     default:

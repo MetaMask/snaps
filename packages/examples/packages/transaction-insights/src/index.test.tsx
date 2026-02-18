@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { panel, text, row, address } from '@metamask/snaps-sdk';
+import { Address, Box, Row, Text } from '@metamask/snaps-sdk/jsx';
 
 describe('onTransaction', () => {
   const FROM_ADDRESS = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
@@ -20,11 +20,17 @@ describe('onTransaction', () => {
     const screen = response.getInterface();
 
     expect(screen).toRender(
-      panel([
-        row('From', address(FROM_ADDRESS)),
-        row('To', address(TO_ADDRESS)),
-        row('Transaction type', text('ERC-20')),
-      ]),
+      <Box>
+        <Row label="From">
+          <Address address={FROM_ADDRESS} />
+        </Row>
+        <Row label="To">
+          <Address address={TO_ADDRESS} />
+        </Row>
+        <Row label="Transaction type">
+          <Text>ERC-20</Text>
+        </Row>
+      </Box>,
     );
   });
 
@@ -42,11 +48,17 @@ describe('onTransaction', () => {
     const screen = response.getInterface();
 
     expect(screen).toRender(
-      panel([
-        row('From', address(FROM_ADDRESS)),
-        row('To', address(TO_ADDRESS)),
-        row('Transaction type', text('ERC-721')),
-      ]),
+      <Box>
+        <Row label="From">
+          <Address address={FROM_ADDRESS} />
+        </Row>
+        <Row label="To">
+          <Address address={TO_ADDRESS} />
+        </Row>
+        <Row label="Transaction type">
+          <Text>ERC-721</Text>
+        </Row>
+      </Box>,
     );
   });
 
@@ -64,11 +76,17 @@ describe('onTransaction', () => {
     const screen = response.getInterface();
 
     expect(screen).toRender(
-      panel([
-        row('From', address(FROM_ADDRESS)),
-        row('To', address(TO_ADDRESS)),
-        row('Transaction type', text('ERC-1155')),
-      ]),
+      <Box>
+        <Row label="From">
+          <Address address={FROM_ADDRESS} />
+        </Row>
+        <Row label="To">
+          <Address address={TO_ADDRESS} />
+        </Row>
+        <Row label="Transaction type">
+          <Text>ERC-1155</Text>
+        </Row>
+      </Box>,
     );
   });
 
@@ -84,11 +102,17 @@ describe('onTransaction', () => {
     const screen = response.getInterface();
 
     expect(screen).toRender(
-      panel([
-        row('From', address(FROM_ADDRESS)),
-        row('To', address(TO_ADDRESS)),
-        row('Transaction type', text('Unknown')),
-      ]),
+      <Box>
+        <Row label="From">
+          <Address address={FROM_ADDRESS} />
+        </Row>
+        <Row label="To">
+          <Address address={TO_ADDRESS} />
+        </Row>
+        <Row label="Transaction type">
+          <Text>Unknown</Text>
+        </Row>
+      </Box>,
     );
   });
 
@@ -104,11 +128,17 @@ describe('onTransaction', () => {
     const screen = response.getInterface();
 
     expect(screen).toRender(
-      panel([
-        row('From', address(FROM_ADDRESS)),
-        row('To', address(TO_ADDRESS)),
-        row('Transaction type', text('Unknown')),
-      ]),
+      <Box>
+        <Row label="From">
+          <Address address={FROM_ADDRESS} />
+        </Row>
+        <Row label="To">
+          <Address address={TO_ADDRESS} />
+        </Row>
+        <Row label="Transaction type">
+          <Text>Unknown</Text>
+        </Row>
+      </Box>,
     );
   });
 });
