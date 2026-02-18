@@ -2,8 +2,6 @@ import { expect, describe, it } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
 import { Box, Row, Text } from '@metamask/snaps-sdk/jsx';
 
-// The Snaps E2E testing framework doesn't currently support onSignature, so we unit
-// test it instead.
 describe('onSignature', () => {
   it('returns custom UI', async () => {
     const { onSignature } = await installSnap();

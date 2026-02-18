@@ -50,7 +50,7 @@ export const onSignature: OnSignatureHandler = async ({ signature }) => {
       {},
     );
     return Object.entries(typeCount).map(([type, count]) => (
-      <Row label={type}>
+      <Row key={type} label={type}>
         <Text>{`${count}`}</Text>
       </Row>
     ));
