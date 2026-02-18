@@ -4,7 +4,7 @@ import { resolve } from 'path';
 import { DefinePlugin } from 'webpack';
 
 const config: SnapConfig = {
-  input: resolve(__dirname, 'src/index.ts'),
+  input: resolve(__dirname, 'src/index.tsx'),
   server: {
     port: 8008,
   },

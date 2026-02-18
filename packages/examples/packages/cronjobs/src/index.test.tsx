@@ -1,6 +1,6 @@
 import { expect } from '@jest/globals';
 import { installSnap } from '@metamask/snaps-jest';
-import { heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
 
 describe('onCronjob', () => {
   describe('execute', () => {
@@ -16,10 +16,10 @@ describe('onCronjob', () => {
       const ui = await request.getInterface();
 
       expect(ui).toRender(
-        panel([
-          heading('Cronjob'),
-          text('This dialog was triggered by a cronjob.'),
-        ]),
+        <Box>
+          <Heading>Cronjob</Heading>
+          <Text>This dialog was triggered by a cronjob.</Text>
+        </Box>,
       );
 
       // TODO(ritave): Fix types in SnapInterface

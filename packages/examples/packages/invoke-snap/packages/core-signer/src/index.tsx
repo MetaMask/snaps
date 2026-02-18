@@ -1,13 +1,10 @@
 import type { OnRpcRequestHandler } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
-  copyable,
   MethodNotFoundError,
   UserRejectedRequestError,
 } from '@metamask/snaps-sdk';
+import { Box, Copyable, Heading, Text } from '@metamask/snaps-sdk/jsx';
 import { add0x, assert, hexToBytes } from '@metamask/utils';
 import { secp256k1 } from '@noble/curves/secp256k1';
 
@@ -57,16 +54,16 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
         method: 'snap_dialog',
         params: {
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Signature request'),
-            text('Do you want to sign the following message?'),
-
-            text('Public key'),
-            copyable(add0x(childNode.publicKey)),
-
-            text('Message'),
-            copyable(message),
-          ]),
+          content: (
+            <Box>
+              <Heading>Signature request</Heading>
+              <Text>Do you want to sign the following message?</Text>
+              <Text>Public key</Text>
+              <Copyable value={add0x(childNode.publicKey)} />
+              <Text>Message</Text>
+              <Copyable value={message} />
+            </Box>
+          ),
         },
       });
 

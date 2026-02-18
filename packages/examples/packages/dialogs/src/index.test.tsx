@@ -6,7 +6,7 @@ import {
   assertIsPromptDialog,
   installSnap,
 } from '@metamask/snaps-jest';
-import { heading, panel, text } from '@metamask/snaps-sdk';
+import { Box, Heading, Link, Text } from '@metamask/snaps-sdk/jsx';
 
 import { CustomDialog } from './components';
 
@@ -41,10 +41,10 @@ describe('onRpcRequest', () => {
       assertIsAlertDialog(ui);
 
       expect(ui).toRender(
-        panel([
-          heading('Alert Dialog'),
-          text('This is an alert dialog. It has a single button: "OK".'),
-        ]),
+        <Box>
+          <Heading>Alert Dialog</Heading>
+          <Text>This is an alert dialog. It has a single button: "OK".</Text>
+        </Box>,
       );
 
       await ui.ok();
@@ -65,12 +65,15 @@ describe('onRpcRequest', () => {
       assertIsConfirmationDialog(ui);
 
       expect(ui).toRender(
-        panel([
-          heading('Confirmation Dialog'),
-          text(
-            'This is a confirmation dialog. It has two buttons: "OK" and "Cancel," letting the user choose whether to proceed with an action. [That](https://snaps.metamask.io/) is a what a link looks like.',
-          ),
-        ]),
+        <Box>
+          <Heading>Confirmation Dialog</Heading>
+          <Text>
+            This is a confirmation dialog. It has two buttons: "OK" and
+            "Cancel," letting the user choose whether to proceed with an action.
+            <Link href="https://snaps.metamask.io/">That</Link> is a what a link
+            looks like.
+          </Text>
+        </Box>,
       );
 
       await ui.ok();
@@ -105,12 +108,13 @@ describe('onRpcRequest', () => {
       assertIsPromptDialog(ui);
 
       expect(ui).toRender(
-        panel([
-          heading('Prompt Dialog'),
-          text(
-            'This is a prompt dialog. In addition to the "OK" and "Cancel" buttons, it has a text input field.',
-          ),
-        ]),
+        <Box>
+          <Heading>Prompt Dialog</Heading>
+          <Text>
+            This is a prompt dialog. In addition to the "OK" and "Cancel"
+            buttons, it has a text input field.
+          </Text>
+        </Box>,
       );
 
       await ui.ok('Hello, world!');

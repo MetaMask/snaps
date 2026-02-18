@@ -4,12 +4,10 @@ import type {
 } from '@metamask/snaps-sdk';
 import {
   DialogType,
-  panel,
-  text,
-  heading,
   MethodNotFoundError,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
+import { Box, Heading, Link, Text } from '@metamask/snaps-sdk/jsx';
 
 import { CustomDialog } from './components';
 
@@ -42,10 +40,14 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           // For this example we're using `DialogType.Alert`, but you can also
           // use the literal string value "alert" here.
           type: DialogType.Alert,
-          content: panel([
-            heading('Alert Dialog'),
-            text('This is an alert dialog. It has a single button: "OK".'),
-          ]),
+          content: (
+            <Box>
+              <Heading>Alert Dialog</Heading>
+              <Text>
+                This is an alert dialog. It has a single button: "OK".
+              </Text>
+            </Box>
+          ),
         },
       });
 
@@ -56,12 +58,18 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           // For this example we're using `DialogType.Confirmation`, but you can
           // also use the literal string value "confirmation" here.
           type: DialogType.Confirmation,
-          content: panel([
-            heading('Confirmation Dialog'),
-            text(
-              'This is a confirmation dialog. It has two buttons: "OK" and "Cancel," letting the user choose whether to proceed with an action. [That](https://snaps.metamask.io/) is a what a link looks like.',
-            ),
-          ]),
+          content: (
+            <Box>
+              <Heading>Confirmation Dialog</Heading>
+              <Text>
+                This is a confirmation dialog. It has two buttons: "OK" and
+                "Cancel," letting the user choose whether to proceed with an
+                action.
+                <Link href="https://snaps.metamask.io/">That</Link> is a what a
+                link looks like.
+              </Text>
+            </Box>
+          ),
         },
       });
 
@@ -72,12 +80,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           // For this example we're using `DialogType.Prompt`, but you can also
           // use the literal string value "prompt" here.
           type: DialogType.Prompt,
-          content: panel([
-            heading('Prompt Dialog'),
-            text(
-              'This is a prompt dialog. In addition to the "OK" and "Cancel" buttons, it has a text input field.',
-            ),
-          ]),
+          content: (
+            <Box>
+              <Heading>Prompt Dialog</Heading>
+              <Text>
+                This is a prompt dialog. In addition to the "OK" and "Cancel"
+                buttons, it has a text input field.
+              </Text>
+            </Box>
+          ),
           placeholder: 'This is shown in the input.',
         },
       });
