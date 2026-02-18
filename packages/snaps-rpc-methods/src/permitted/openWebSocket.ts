@@ -22,6 +22,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { SnapEndowments } from '../endowments';
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_openWebSocket';
+
 const hookNames: MethodHooksObject<OpenWebSocketMethodHooks> = {
   hasPermission: true,
   openWebSocket: true,
@@ -45,15 +47,15 @@ export type OpenWebSocketParameters = InferMatching<
 /**
  * Handler for the `snap_openWebSocket` method.
  */
-export const openWebSocketHandler: PermittedHandlerExport<
+export const openWebSocketHandler = {
+  methodNames: [methodName] as const,
+  implementation: openWebSocketImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   OpenWebSocketMethodHooks,
   OpenWebSocketParams,
   OpenWebSocketResult
-> = {
-  methodNames: ['snap_openWebSocket'],
-  implementation: openWebSocketImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_openWebSocket` method implementation.

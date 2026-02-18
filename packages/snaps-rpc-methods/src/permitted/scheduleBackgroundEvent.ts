@@ -39,15 +39,15 @@ export type ScheduleBackgroundEventMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
-export const scheduleBackgroundEventHandler: PermittedHandlerExport<
+export const scheduleBackgroundEventHandler = {
+  methodNames: [methodName] as const,
+  implementation: getScheduleBackgroundEventImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   ScheduleBackgroundEventMethodHooks,
   ScheduleBackgroundEventParameters,
   ScheduleBackgroundEventResult
-> = {
-  methodNames: [methodName],
-  implementation: getScheduleBackgroundEventImplementation,
-  hookNames,
-};
+>;
 
 const ScheduleBackgroundEventParametersWithDateStruct = object({
   date: ISO8601DateStruct,

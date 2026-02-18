@@ -10,6 +10,8 @@ import type {
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_getClientStatus';
+
 const hookNames: MethodHooksObject<GetClientStatusHooks> = {
   getIsLocked: true,
   getIsActive: true,
@@ -19,15 +21,15 @@ const hookNames: MethodHooksObject<GetClientStatusHooks> = {
 /**
  * `snap_getClientStatus` returns useful information about the client running the snap.
  */
-export const getClientStatusHandler: PermittedHandlerExport<
+export const getClientStatusHandler = {
+  methodNames: [methodName] as const,
+  implementation: getClientStatusImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   GetClientStatusHooks,
   JsonRpcParams,
   GetClientStatusResult
-> = {
-  methodNames: ['snap_getClientStatus'],
-  implementation: getClientStatusImplementation,
-  hookNames,
-};
+>;
 
 export type GetClientStatusHooks = {
   /**

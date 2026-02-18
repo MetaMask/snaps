@@ -14,6 +14,8 @@ import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
+const methodName = 'snap_trackError';
+
 const hookNames: MethodHooksObject<TrackErrorMethodHooks> = {
   trackError: true,
   getSnap: true,
@@ -49,15 +51,15 @@ export type TrackErrorParameters = InferMatching<
 /**
  * Handler for the `snap_trackError` method.
  */
-export const trackErrorHandler: PermittedHandlerExport<
+export const trackErrorHandler = {
+  methodNames: [methodName] as const,
+  implementation: getTrackErrorImplementation,
+  hookNames,
+} satisfies PermittedHandlerExport<
   TrackErrorMethodHooks,
   TrackErrorParameters,
   TrackErrorResult
-> = {
-  methodNames: ['snap_trackError'],
-  implementation: getTrackErrorImplementation,
-  hookNames,
-};
+>;
 
 /**
  * The `snap_trackError` method implementation. This method allows preinstalled

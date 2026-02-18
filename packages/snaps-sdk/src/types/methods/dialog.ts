@@ -102,4 +102,4 @@ export type DialogParams =
  * - If the dialog is a `prompt`, the result is the value entered by
  * the user.
  */
-export type DialogResult = null | boolean | string | Json;
+export type DialogResult = Json;
