@@ -28,16 +28,6 @@ export const ParentStruct = assign(
 );
 
 /**
- * A node which supports child nodes. This is used for nodes that render their
- * children, such as {@link Panel}.
- *
- * @property type - The type of the node.
- * @property children - The children of the node
- * @internal
- */
-export type Parent = Infer<typeof ParentStruct>;
-
-/**
  * @internal
  */
 export const PanelStruct: Struct<Panel> = assign(
@@ -47,15 +37,8 @@ export const PanelStruct: Struct<Panel> = assign(
   }),
 );
 
-/**
- * A panel node, which renders its children.
- *
- * @property type - The type of the node, must be the string 'text'.
- * @property value - The text content of the node, either as plain text, or as a
- * markdown string.
- */
 // This node references itself indirectly, so it cannot be inferred.
-export type Panel = {
+type Panel = {
   type: NodeType.Panel;
   children: Component[];
 };

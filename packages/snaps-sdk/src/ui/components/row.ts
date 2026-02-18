@@ -1,4 +1,3 @@
-import type { Infer } from '@metamask/superstruct';
 import { assign, object, string, optional, union } from '@metamask/superstruct';
 
 import { AddressStruct } from './address';
@@ -31,14 +30,3 @@ export const RowStruct = assign(
     value: RowComponentStruct,
   }),
 );
-
-/**
- * A row node, that renders a row with a label and a value.
- *
- * @property type - The type of the node. Must be the string `row`.
- * @property label - The label for the row.
- * @property value - A sub component to be rendered
- * on one side of the row.
- * @property variant - Optional variant for styling.
- */
-export type Row = Infer<typeof RowStruct>;

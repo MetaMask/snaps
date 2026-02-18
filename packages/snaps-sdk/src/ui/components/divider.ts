@@ -1,4 +1,3 @@
-import type { Infer } from '@metamask/superstruct';
 import { assign, object } from '@metamask/superstruct';
 
 import { literal } from '../../internals';
@@ -10,8 +9,3 @@ export const DividerStruct = assign(
     type: literal(NodeType.Divider),
   }),
 );
-
-/**
- * A divider node, that renders a line between other nodes.
- */
-export type Divider = Infer<typeof DividerStruct>;
