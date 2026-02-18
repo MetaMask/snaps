@@ -38,7 +38,7 @@ export const PanelStruct: Struct<Panel> = assign(
 );
 
 // This node references itself indirectly, so it cannot be inferred.
-type Panel = {
+export type Panel = {
   type: NodeType.Panel;
   children: Component[];
 };
