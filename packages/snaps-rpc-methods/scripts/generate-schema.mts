@@ -100,7 +100,10 @@ function getTypeAtLocation(symbol: Symbol, object: ObjectLiteralExpression) {
     object.getProperty('implementation') ??
     object.getProperty('specificationBuilder');
 
-  assert(property, 'Property "implementation" or "specificationBuilder" not found.');
+  assert(
+    property,
+    'Property "implementation" or "specificationBuilder" not found.',
+  );
 
   const typeAtLocation = symbol.getTypeAtLocation(property);
   assert(typeAtLocation, 'Type at location not found.');
