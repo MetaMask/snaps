@@ -1,13 +1,6 @@
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import type { SnapId } from '@metamask/snaps-sdk';
-import {
-  ContentType,
-  form,
-  image,
-  input,
-  panel,
-  text,
-} from '@metamask/snaps-sdk';
+import { ContentType, NodeType } from '@metamask/snaps-sdk';
 import {
   AccountSelector,
   AssetSelector,
@@ -93,13 +86,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = panel([
-        text('[foo](https://foo.bar)'),
-        form({
-          name: 'foo',
-          children: [input({ name: 'bar' })],
-        }),
-      ]);
+      const components = {
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: '[foo](https://foo.bar)' },
+          {
+            type: NodeType.Form as const,
+            name: 'foo',
+            children: [{ type: NodeType.Input as const, name: 'bar' }],
+          },
+        ],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -573,13 +570,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = panel([
-        text('[foo](https://foo.bar)'),
-        form({
-          name: 'foo',
-          children: [input({ name: 'bar' })],
-        }),
-      ]);
+      const components = {
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: '[foo](https://foo.bar)' },
+          {
+            type: NodeType.Form as const,
+            name: 'foo',
+            children: [{ type: NodeType.Input as const, name: 'bar' }],
+          },
+        ],
+      };
 
       expect(() =>
         rootMessenger.call(
@@ -748,7 +749,10 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = panel([image(`<svg />`)]);
+      const components = {
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Image as const, value: '<svg />' }],
+      };
 
       expect(() =>
         rootMessenger.call(
@@ -800,7 +804,15 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
+      const components = {
+        type: NodeType.Panel as const,
+        children: [
+          {
+            type: NodeType.Text as const,
+            value: '[foo](https://foo.bar)'.repeat(2500),
+          },
+        ],
+      };
 
       expect(() =>
         rootMessenger.call(
@@ -823,10 +835,11 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -853,10 +866,11 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -904,15 +918,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = form({
+      const newContent = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'baz' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'baz' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -996,15 +1012,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = form({
+      const newContent = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'baz' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'baz' }],
+      };
 
       const context = { foo: 'bar' };
 
@@ -1050,15 +1068,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = form({
+      const newContent = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'baz' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'baz' }],
+      };
 
       const context = { foo: 'bar' };
 
@@ -1108,18 +1128,23 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = panel([
-        text('[foo](https://foo.bar)'),
-        form({
-          name: 'foo',
-          children: [input({ name: 'baz' })],
-        }),
-      ]);
+      const newContent = {
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: '[foo](https://foo.bar)' },
+          {
+            type: NodeType.Form as const,
+            name: 'foo',
+            children: [{ type: NodeType.Input as const, name: 'baz' }],
+          },
+        ],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -1214,12 +1239,16 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = panel([image('<svg />')]);
+      const newContent = {
+        type: NodeType.Panel as const,
+        children: [{ type: NodeType.Image as const, value: '<svg />' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -1292,12 +1321,21 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const components = form({
+      const components = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'bar' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
-      const newContent = panel([text('[foo](https://foo.bar)'.repeat(2500))]);
+      const newContent = {
+        type: NodeType.Panel as const,
+        children: [
+          {
+            type: NodeType.Text as const,
+            value: '[foo](https://foo.bar)'.repeat(2500),
+          },
+        ],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -1325,7 +1363,11 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
+      const content = {
+        type: NodeType.Form as const,
+        name: 'foo',
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
       expect(() =>
         rootMessenger.call(
@@ -1347,12 +1389,17 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
-
-      const newContent = form({
+      const content = {
+        type: NodeType.Form as const,
         name: 'foo',
-        children: [input({ name: 'baz' })],
-      });
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
+
+      const newContent = {
+        type: NodeType.Form as const,
+        name: 'foo',
+        children: [{ type: NodeType.Input as const, name: 'baz' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
@@ -1470,7 +1517,11 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
+      const content = {
+        type: NodeType.Form as const,
+        name: 'foo',
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
       const newState = { foo: { bar: 'baz' } };
 
@@ -1557,7 +1608,11 @@ describe('SnapInterfaceController', () => {
         messenger: controllerMessenger,
       });
 
-      const content = form({ name: 'foo', children: [input({ name: 'bar' })] });
+      const content = {
+        type: NodeType.Form as const,
+        name: 'foo',
+        children: [{ type: NodeType.Input as const, name: 'bar' }],
+      };
 
       const id = rootMessenger.call(
         'SnapInterfaceController:createInterface',
