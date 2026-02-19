@@ -85,7 +85,7 @@
     "description": null,
     "parameters": {
       "type": "{ content: JSXElement } | { id: string } | { type: \"alert\"; content: JSXElement } | { type: \"alert\"; id: string } | { type: \"confirmation\"; content: JSXElement } | { type: \"confirmation\"; id: string } | { type: \"prompt\"; content: JSXElement; placeholder?: string | null } | { type: \"prompt\"; id: string; placeholder?: string | null }",
-      "description": null
+      "description": "The request parameters for the `snap_dialog` method."
     },
     "result": {
       "type": "Json",
