@@ -22,7 +22,6 @@ export const ParentStruct = assign(
   NodeStruct,
   object({
     // This node references itself indirectly, so we need to use `lazy()`.
-
     children: array(
       lazy(
         /* istanbul ignore next */
