@@ -71,6 +71,7 @@ type MethodParameter = {
   type: string;
   name?: string;
   description?: string | null;
+  required?: boolean;
 };
 
 /**
@@ -621,11 +622,13 @@ function getTypeMethodParameters(
 
   return propertySignatures.map((property) => {
     const propertyType = getTypeAtLocation(property, object);
+    const isOptional = property.hasFlags(SymbolFlags.Optional);
 
     return {
       name: property.getName(),
       type: getTypeString(propertyType),
       description: getObjectPropertyDescription(property, propertyTags),
+      required: !isOptional,
     };
   });
 }
