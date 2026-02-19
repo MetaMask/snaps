@@ -581,8 +581,19 @@ function getTypeMethodParameters(
     return null;
   }
 
+  // Handle an edge case of certain handlers using `RestrictedMethodParameters`
+  // as response type, which means the type is not used.
+  if (typeNode.getText() === 'RestrictedMethodParameters') {
+    return null;
+  }
+
   const type = typeNode.getType();
-  if (type.isString() || type.isNumber() || type.isBoolean()) {
+  if (
+    type.isString() ||
+    type.isNumber() ||
+    type.isBoolean() ||
+    type.isTemplateLiteral()
+  ) {
     return getTypeMethodParameter(typeNode);
   }
 
