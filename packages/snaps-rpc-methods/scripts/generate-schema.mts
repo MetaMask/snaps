@@ -11,10 +11,13 @@ import type {
   PropertyAssignment,
   Symbol,
   Type,
+  TypeAliasDeclaration,
   TypeNode,
   VariableDeclaration,
 } from 'ts-morph';
-import { Project, SymbolFlags, SyntaxKind, TypeFormatFlags } from 'ts-morph';
+import { Project, SymbolFlags, ts, TypeFormatFlags } from 'ts-morph';
+
+import SyntaxKind = ts.SyntaxKind;
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
 const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema', 'schema.json');
@@ -424,6 +427,53 @@ function getTypeAliasDeclaration(type: Type) {
 }
 
 /**
+ * Unwrap an `InferMatching` type node to get the underlying type, if the given
+ * type node is an `InferMatching` type. This is needed to get the correct
+ * description for certain types that are defined using `InferMatching`, such
+ * as `DialogParams`, since the JSDoc comments are on the underlying type rather
+ * than the `InferMatching` type itself. If the given declaration is not an
+ * `InferMatching` type, it is returned as-is.
+ *
+ * @param declaration - The type alias declaration that may be an
+ * `InferMatching` type.
+ * @returns The underlying type alias declaration if the given declaration is an
+ * `InferMatching` type, or the given declaration otherswise.
+ */
+function unwrapInferMatchingTypeNode(declaration: TypeAliasDeclaration) {
+  const typeNode = declaration.getTypeNodeOrThrow();
+  if (!typeNode.isKind(SyntaxKind.TypeReference)) {
+    return declaration;
+  }
+
+  const typeReference = typeNode.asKindOrThrow(SyntaxKind.TypeReference);
+  if (typeReference.getTypeName().getText() !== 'InferMatching') {
+    return declaration;
+  }
+
+  const typeArguments = typeReference.getTypeArguments();
+  assert(
+    typeArguments.length === 2,
+    'Expected `InferMatching` to have exactly two type arguments.',
+  );
+
+  const actualTypeNode = typeArguments[1];
+  const symbol = actualTypeNode
+    .asKindOrThrow(SyntaxKind.TypeReference)
+    .getTypeName()
+    .getSymbolOrThrow()
+    .getAliasedSymbolOrThrow();
+
+  const actualDeclaration = symbol
+    .getDeclarations()
+    .find((symbolDeclaration): symbolDeclaration is TypeAliasDeclaration =>
+      symbolDeclaration.isKind(SyntaxKind.TypeAliasDeclaration),
+    );
+
+  assert(actualDeclaration, 'Expected declaration of actual type not found.');
+  return actualDeclaration;
+}
+
+/**
  * Get the description of a type node from its JSDoc comments, if it has any.
  *
  * @param typeNode - The type node to get the description for.
@@ -436,14 +486,15 @@ function getTypeNodeDescription(typeNode: TypeNode) {
     .getTypeName()
     .asKindOrThrow(SyntaxKind.Identifier);
 
-  const symbol = identifier.getSymbol()?.getAliasedSymbol();
+  const symbol =
+    identifier.getSymbol()?.getAliasedSymbol() ?? identifier.getSymbol();
   if (!symbol) {
     return null;
   }
 
   const declaration = symbol
     .getDeclarations()
-    .find((symbolDeclarations) =>
+    .find((symbolDeclarations): symbolDeclarations is TypeAliasDeclaration =>
       symbolDeclarations.isKind(SyntaxKind.TypeAliasDeclaration),
     );
 
@@ -451,7 +502,8 @@ function getTypeNodeDescription(typeNode: TypeNode) {
     return null;
   }
 
-  const jsDocs = declaration
+  const unwrappedDeclaration = unwrapInferMatchingTypeNode(declaration);
+  const jsDocs = unwrappedDeclaration
     .asKindOrThrow(SyntaxKind.TypeAliasDeclaration)
     .getJsDocs();
 
