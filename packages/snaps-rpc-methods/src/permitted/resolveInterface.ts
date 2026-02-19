@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   ResolveInterfaceParams,
@@ -12,14 +12,22 @@ import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { UI_PERMISSIONS } from '../utils';
 
 const methodName = 'snap_resolveInterface';
 
 const hookNames: MethodHooksObject<ResolveInterfaceMethodHooks> = {
+  hasPermission: true,
   resolveInterface: true,
 };
 
 export type ResolveInterfaceMethodHooks = {
+  /**
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the Snap has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
   /**
    * @param id - The interface id.
    * @param value - The value to resolve the interface with.
@@ -56,6 +64,8 @@ export type ResolveInterfaceParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
+ * @param hooks.hasPermission - The function to check if the Snap has a given
+ * permission.
  * @param hooks.resolveInterface - The function to resolve the interface.
  * @returns Nothing.
  */
@@ -64,8 +74,12 @@ async function getResolveInterfaceImplementation(
   res: PendingJsonRpcResponse<ResolveInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { resolveInterface }: ResolveInterfaceMethodHooks,
+  { hasPermission, resolveInterface }: ResolveInterfaceMethodHooks,
 ): Promise<void> {
+  if (!UI_PERMISSIONS.some(hasPermission)) {
+    return end(providerErrors.unauthorized());
+  }
+
   const { params } = req;
 
   try {

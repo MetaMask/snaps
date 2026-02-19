@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceStateParams,
   GetInterfaceStateResult,
@@ -12,14 +12,22 @@ import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { UI_PERMISSIONS } from '../utils';
 
 const methodName = 'snap_getInterfaceState';
 
 const hookNames: MethodHooksObject<GetInterfaceStateMethodHooks> = {
+  hasPermission: true,
   getInterfaceState: true,
 };
 
 export type GetInterfaceStateMethodHooks = {
+  /**
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the Snap has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
   /**
    * @param id - The interface ID.
    * @returns The interface state.
@@ -55,16 +63,22 @@ export type GetInterfaceStateParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
+ * @param hooks.hasPermission - The function to check if the Snap has a given
+ * permission.
  * @param hooks.getInterfaceState - The function to get the interface state.
- * @returns Noting.
+ * @returns Nothing.
  */
 function getGetInterfaceStateImplementation(
   req: JsonRpcRequest<GetInterfaceStateParameters>,
   res: PendingJsonRpcResponse<GetInterfaceStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getInterfaceState }: GetInterfaceStateMethodHooks,
+  { hasPermission, getInterfaceState }: GetInterfaceStateMethodHooks,
 ): void {
+  if (!UI_PERMISSIONS.some(hasPermission)) {
+    return end(providerErrors.unauthorized());
+  }
+
   const { params } = req;
 
   try {

@@ -3,7 +3,6 @@ import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from '@metamask/snaps-sdk';
-import { text } from '@metamask/snaps-sdk';
 import { Box, type JSXElement, Text } from '@metamask/snaps-sdk/jsx';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
@@ -16,6 +15,7 @@ describe('snap_updateInterface', () => {
         methodNames: ['snap_updateInterface'],
         implementation: expect.any(Function),
         hookNames: {
+          hasPermission: true,
           updateInterface: true,
         },
       });
@@ -23,12 +23,62 @@ describe('snap_updateInterface', () => {
   });
 
   describe('implementation', () => {
+    it('throws if the origin does not have permission to show UI', async () => {
+      const { implementation } = updateInterfaceHandler;
+
+      const hasPermission = jest.fn().mockReturnValue(false);
+      const updateInterface = jest.fn();
+
+      const hooks = { hasPermission, updateInterface };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<UpdateInterfaceParams>,
+          response as PendingJsonRpcResponse<UpdateInterfaceResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_updateInterface',
+        params: {
+          id: 'foo',
+          ui: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ) as JSXElement,
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: 4100,
+          message:
+            'The requested account and/or method has not been authorized by the user.',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
+    });
+
     it('returns the result from the `updateInterface` hook', async () => {
       const { implementation } = updateInterfaceHandler;
 
+      const hasPermission = jest.fn().mockReturnValue(true);
       const updateInterface = jest.fn();
 
       const hooks = {
+        hasPermission,
         updateInterface,
       };
 
@@ -52,7 +102,11 @@ describe('snap_updateInterface', () => {
         method: 'snap_updateInterface',
         params: {
           id: 'foo',
-          ui: text('foo'),
+          ui: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ) as JSXElement,
         },
       });
 
@@ -62,9 +116,11 @@ describe('snap_updateInterface', () => {
     it('updates a JSX interface', async () => {
       const { implementation } = updateInterfaceHandler;
 
+      const hasPermission = jest.fn().mockReturnValue(true);
       const updateInterface = jest.fn();
 
       const hooks = {
+        hasPermission,
         updateInterface,
       };
 
@@ -109,9 +165,11 @@ describe('snap_updateInterface', () => {
   it('updates the interface context', async () => {
     const { implementation } = updateInterfaceHandler;
 
+    const hasPermission = jest.fn().mockReturnValue(true);
     const updateInterface = jest.fn();
 
     const hooks = {
+      hasPermission,
       updateInterface,
     };
 
@@ -156,9 +214,11 @@ describe('snap_updateInterface', () => {
   it('throws on invalid params', async () => {
     const { implementation } = updateInterfaceHandler;
 
+    const hasPermission = jest.fn().mockReturnValue(true);
     const updateInterface = jest.fn();
 
     const hooks = {
+      hasPermission,
       updateInterface,
     };
 

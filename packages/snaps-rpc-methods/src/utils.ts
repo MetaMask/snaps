@@ -19,6 +19,8 @@ import {
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
+import { SnapEndowments } from './endowments';
+
 const HARDENED_VALUE = 0x80000000;
 
 export const FORBIDDEN_KEYS = ['constructor', '__proto__', 'prototype'];
@@ -366,3 +368,16 @@ export async function getValueFromEntropySource(
     });
   }
 }
+
+/**
+ * The permissions that allow a Snap to show UI. Snaps must have at least one
+ * of these permissions to use the interface management RPC methods.
+ */
+export const UI_PERMISSIONS = [
+  'snap_dialog',
+  'snap_notify',
+  SnapEndowments.HomePage,
+  SnapEndowments.SettingsPage,
+  SnapEndowments.TransactionInsight,
+  SnapEndowments.SignatureInsight,
+] as const;
