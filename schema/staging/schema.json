@@ -6,7 +6,8 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The ID of the background event to cancel."
+        "description": "The ID of the background event to cancel.",
+        "required": true
       }
     ],
     "result": null,
@@ -23,7 +24,8 @@
       {
         "name": "encrypted",
         "type": "boolean | null",
-        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the extension is unlocked, while unencrypted state can be used\nwhether the extension is locked or unlocked."
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the extension is unlocked, while unencrypted state can be used\nwhether the extension is locked or unlocked.",
+        "required": false
       }
     ],
     "result": null,
@@ -40,7 +42,8 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The id of the WebSocket connection to close."
+        "description": "The id of the WebSocket connection to close.",
+        "required": true
       }
     ],
     "result": null,
@@ -57,12 +60,14 @@
       {
         "name": "ui",
         "type": "JSXElement",
-        "description": "The components to display in the interface."
+        "description": "The components to display in the interface.",
+        "required": true
       },
       {
         "name": "context",
         "type": "Record<string, Json> | null",
-        "description": null
+        "description": null,
+        "required": false
       }
     ],
     "result": {
@@ -99,17 +104,20 @@
       {
         "name": "id",
         "type": "string | null",
-        "description": "The unique identifier of the trace.\nDefaults to 'default' if not provided."
+        "description": "The unique identifier of the trace.\nDefaults to 'default' if not provided.",
+        "required": false
       },
       {
         "name": "name",
         "type": "string",
-        "description": "The name of the trace."
+        "description": "The name of the trace.",
+        "required": true
       },
       {
         "name": "timestamp",
         "type": "number | null",
-        "description": "Override the end time of the trace."
+        "description": "Override the end time of the trace.",
+        "required": false
       }
     ],
     "result": null,
@@ -140,64 +148,76 @@
       {
         "name": "curve",
         "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "path",
         "type": "string[]",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "source",
         "type": "string | null",
-        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method."
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
       }
     ],
     "result": [
       {
         "name": "depth",
         "type": "number",
-        "description": "The 0-indexed path depth of this node."
+        "description": "The 0-indexed path depth of this node.",
+        "required": true
       },
       {
         "name": "masterFingerprint",
         "type": "number | null",
-        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key."
+        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key.",
+        "required": false
       },
       {
         "name": "parentFingerprint",
         "type": "number",
-        "description": "The fingerprint of the parent key, or 0 if this is a master node."
+        "description": "The fingerprint of the parent key, or 0 if this is a master node.",
+        "required": true
       },
       {
         "name": "index",
         "type": "number",
-        "description": "The index of the node, or 0 if this is a master node."
+        "description": "The index of the node, or 0 if this is a master node.",
+        "required": true
       },
       {
         "name": "network",
         "type": "\"mainnet\" | \"testnet\" | null",
-        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`."
+        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`.",
+        "required": false
       },
       {
         "name": "privateKey",
         "type": "string | null",
-        "description": "The (optional) private key of this node."
+        "description": "The (optional) private key of this node.",
+        "required": false
       },
       {
         "name": "publicKey",
         "type": "string",
-        "description": "The public key of this node."
+        "description": "The public key of this node.",
+        "required": true
       },
       {
         "name": "chainCode",
         "type": "string",
-        "description": "The chain code of this node."
+        "description": "The chain code of this node.",
+        "required": true
       },
       {
         "name": "curve",
         "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
-        "description": "The name of the curve used by the node."
+        "description": "The name of the curve used by the node.",
+        "required": true
       }
     ],
     "examples": [],
@@ -213,22 +233,26 @@
       {
         "name": "curve",
         "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "path",
         "type": "string[]",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "compressed",
         "type": "boolean | null",
-        "description": "Whether to return the compressed public key. Defaults to `false`."
+        "description": "Whether to return the compressed public key. Defaults to `false`.",
+        "required": false
       },
       {
         "name": "source",
         "type": "string | null",
-        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method."
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
       }
     ],
     "result": {
@@ -248,64 +272,76 @@
       {
         "name": "coinType",
         "type": "number",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "source",
         "type": "string | null",
-        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method."
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
       }
     ],
     "result": [
       {
         "name": "depth",
         "type": "0 | 1 | 2 | 3 | 4 | 5",
-        "description": "The 0-indexed BIP-44 path depth of this node.\n\nA BIP-44 path is of the form:\n\n`m / 44' / coin_type' / account' / change / address_index`\n\nWith the following depths:\n\n`0 / 1 / 2 / 3 / 4 / 5`"
+        "description": "The 0-indexed BIP-44 path depth of this node.\n\nA BIP-44 path is of the form:\n\n`m / 44' / coin_type' / account' / change / address_index`\n\nWith the following depths:\n\n`0 / 1 / 2 / 3 / 4 / 5`",
+        "required": true
       },
       {
         "name": "masterFingerprint",
         "type": "number | null",
-        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key."
+        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key.",
+        "required": false
       },
       {
         "name": "parentFingerprint",
         "type": "number",
-        "description": "The fingerprint of the parent key, or 0 if this is a master node."
+        "description": "The fingerprint of the parent key, or 0 if this is a master node.",
+        "required": true
       },
       {
         "name": "index",
         "type": "number",
-        "description": "The index of the node, or 0 if this is a master node."
+        "description": "The index of the node, or 0 if this is a master node.",
+        "required": true
       },
       {
         "name": "network",
         "type": "\"mainnet\" | \"testnet\" | null",
-        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`."
+        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`.",
+        "required": false
       },
       {
         "name": "privateKey",
         "type": "string | null",
-        "description": "The hexadecimal string representation of the private key for this node.\nMay be `undefined` if the node is a public node."
+        "description": "The hexadecimal string representation of the private key for this node.\nMay be `undefined` if the node is a public node.",
+        "required": false
       },
       {
         "name": "publicKey",
         "type": "string",
-        "description": "The hexadecimal string representation of the public key for this node."
+        "description": "The hexadecimal string representation of the public key for this node.",
+        "required": true
       },
       {
         "name": "chainCode",
         "type": "string",
-        "description": "The hexadecimal string representation of the chain code for this node."
+        "description": "The hexadecimal string representation of the chain code for this node.",
+        "required": true
       },
       {
         "name": "coin_type",
         "type": "number",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "path",
         "type": "`m / bip32:${number}' / bip32:${number}'`",
-        "description": null
+        "description": null,
+        "required": true
       }
     ],
     "examples": [],
@@ -322,22 +358,26 @@
       {
         "name": "clientVersion",
         "type": "string",
-        "description": "The semantic version of the client that the Snap is running in."
+        "description": "The semantic version of the client that the Snap is running in.",
+        "required": true
       },
       {
         "name": "platformVersion",
         "type": "string",
-        "description": "The Snaps Platform version that the client is running."
+        "description": "The Snaps Platform version that the client is running.",
+        "required": true
       },
       {
         "name": "locked",
         "type": "boolean",
-        "description": "A boolean flag that indicates whether the client is locked or not."
+        "description": "A boolean flag that indicates whether the client is locked or not.",
+        "required": true
       },
       {
         "name": "active",
         "type": "boolean",
-        "description": "A boolean flag that indicates whether the client is active or not."
+        "description": "A boolean flag that indicates whether the client is active or not.",
+        "required": true
       }
     ],
     "subjectTypes": [
@@ -353,7 +393,8 @@
       {
         "name": "currency",
         "type": "\"btc\" | \"BTC\"",
-        "description": "The currency symbol."
+        "description": "The currency symbol.",
+        "required": true
       }
     ],
     "result": {
@@ -373,24 +414,28 @@
       {
         "name": "version",
         "type": "1",
-        "description": "The version of the entropy to retrieve. This is used for backwards\ncompatibility. As of now, only version 1 is supported."
+        "description": "The version of the entropy to retrieve. This is used for backwards\ncompatibility. As of now, only version 1 is supported.",
+        "required": true
       },
       {
         "name": "salt",
         "type": "string | null",
-        "description": "The optional salt to use when deriving the entropy."
+        "description": "The optional salt to use when deriving the entropy.",
+        "required": false
       },
       {
         "name": "source",
         "type": "string | null",
-        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method."
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
       }
     ],
     "result": [
       {
         "name": "length",
         "type": "number",
-        "description": null
+        "description": null,
+        "required": true
       }
     ],
     "examples": [],
@@ -406,12 +451,14 @@
       {
         "name": "path",
         "type": "string",
-        "description": "The path to the file to retrieve."
+        "description": "The path to the file to retrieve.",
+        "required": true
       },
       {
         "name": "encoding",
         "type": "\"base64\" | \"hex\" | \"utf8\" | null",
-        "description": "The encoding to use when retrieving the file."
+        "description": "The encoding to use when retrieving the file.",
+        "required": false
       }
     ],
     "result": {
@@ -431,7 +478,8 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The interface id."
+        "description": "The interface id.",
+        "required": true
       }
     ],
     "result": {
@@ -451,7 +499,8 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The interface id."
+        "description": "The interface id.",
+        "required": true
       }
     ],
     "result": {
@@ -471,7 +520,8 @@
       {
         "name": "length",
         "type": "Json",
-        "description": null
+        "description": null,
+        "required": true
       }
     ],
     "result": {
@@ -491,64 +541,76 @@
       {
         "name": "length",
         "type": "Json",
-        "description": null
+        "description": null,
+        "required": true
       }
     ],
     "result": [
       {
         "name": "locale",
         "type": "string",
-        "description": "The user's selected locale."
+        "description": "The user's selected locale.",
+        "required": true
       },
       {
         "name": "currency",
         "type": "string",
-        "description": "The user's selected currency."
+        "description": "The user's selected currency.",
+        "required": true
       },
       {
         "name": "hideBalances",
         "type": "boolean",
-        "description": "Whether the user has chosen to hide balances."
+        "description": "Whether the user has chosen to hide balances.",
+        "required": true
       },
       {
         "name": "useSecurityAlerts",
         "type": "boolean",
-        "description": "Whether to run transactions and signatures through security providers."
+        "description": "Whether to run transactions and signatures through security providers.",
+        "required": true
       },
       {
         "name": "simulateOnChainActions",
         "type": "boolean",
-        "description": "Whether to simulate transactions and signatures."
+        "description": "Whether to simulate transactions and signatures.",
+        "required": true
       },
       {
         "name": "useTokenDetection",
         "type": "boolean",
-        "description": "Whether to auto-detect tokens."
+        "description": "Whether to auto-detect tokens.",
+        "required": true
       },
       {
         "name": "batchCheckBalances",
         "type": "boolean",
-        "description": "Whether to fetch balances in an aggregated manner."
+        "description": "Whether to fetch balances in an aggregated manner.",
+        "required": true
       },
       {
         "name": "displayNftMedia",
         "type": "boolean",
-        "description": "Whether to display NFT media."
+        "description": "Whether to display NFT media.",
+        "required": true
       },
       {
         "name": "useNftDetection",
         "type": "boolean",
-        "description": "Whether to auto-detect NFTs."
+        "description": "Whether to auto-detect NFTs.",
+        "required": true
       },
       {
         "name": "useExternalPricingData",
         "type": "boolean",
-        "description": "Whether to get token price data from an external source."
+        "description": "Whether to get token price data from an external source.",
+        "required": true
       },
       {
         "name": "showTestnets",
         "type": "boolean",
-        "description": "Whether to show testnets."
+        "description": "Whether to show testnets.",
+        "required": true
       }
     ],
     "examples": [],
@@ -564,12 +626,14 @@
       {
         "name": "key",
         "type": "string | null",
-        "description": "The key of the state to retrieve. If not provided, the entire\nstate is retrieved. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax."
+        "description": "The key of the state to retrieve. If not provided, the entire\nstate is retrieved. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax.",
+        "required": false
       },
       {
         "name": "encrypted",
         "type": "boolean | null",
-        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked."
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked.",
+        "required": false
       }
     ],
     "result": {
@@ -617,7 +681,8 @@
       {
         "name": "method",
         "type": "string",
-        "description": "The method to call on the Snap."
+        "description": "The method to call on the Snap.",
+        "required": true
       }
     ],
     "result": {
@@ -637,12 +702,14 @@
       {
         "name": "operation",
         "type": "\"clear\" | \"get\" | \"update\"",
-        "description": "The operation to perform on the state."
+        "description": "The operation to perform on the state.",
+        "required": true
       },
       {
         "name": "encrypted",
         "type": "boolean | null",
-        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state."
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state.",
+        "required": false
       }
     ],
     "result": {
@@ -662,12 +729,14 @@
       {
         "name": "type",
         "type": "\"inApp\" | \"native\"",
-        "description": "The type of notification to display."
+        "description": "The type of notification to display.",
+        "required": true
       },
       {
         "name": "message",
         "type": "string",
-        "description": "The message to display in the notification."
+        "description": "The message to display in the notification.",
+        "required": true
       }
     ],
     "result": null,
@@ -684,12 +753,14 @@
       {
         "name": "url",
         "type": "string",
-        "description": "The URL of the WebSocket connection to open."
+        "description": "The URL of the WebSocket connection to open.",
+        "required": true
       },
       {
         "name": "protocols",
         "type": "string[] | null",
-        "description": "The protocols to use for the WebSocket connection."
+        "description": "The protocols to use for the WebSocket connection.",
+        "required": false
       }
     ],
     "result": {
@@ -709,12 +780,14 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The interface id."
+        "description": "The interface id.",
+        "required": true
       },
       {
         "name": "value",
         "type": "Json",
-        "description": "The value to resolve the interface with."
+        "description": "The value to resolve the interface with.",
+        "required": true
       }
     ],
     "result": null,
@@ -731,7 +804,8 @@
       {
         "name": "request",
         "type": "{ method: string; params?: JsonRpcParams }",
-        "description": "The request to be called when the event fires."
+        "description": "The request to be called when the event fires.",
+        "required": true
       }
     ],
     "result": {
@@ -751,12 +825,14 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The id of the WebSocket connection to send a message to."
+        "description": "The id of the WebSocket connection to send a message to.",
+        "required": true
       },
       {
         "name": "message",
         "type": "number[] | string",
-        "description": "The message to send."
+        "description": "The message to send.",
+        "required": true
       }
     ],
     "result": null,
@@ -773,17 +849,20 @@
       {
         "name": "key",
         "type": "string | null",
-        "description": "The key of the state to update. If not provided, the entire\nstate is updated. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax."
+        "description": "The key of the state to update. If not provided, the entire\nstate is updated. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax.",
+        "required": false
       },
       {
         "name": "value",
         "type": "Json",
-        "description": "The value to set the state to."
+        "description": "The value to set the state to.",
+        "required": true
       },
       {
         "name": "encrypted",
         "type": "boolean | null",
-        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked."
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked.",
+        "required": false
       }
     ],
     "result": null,
@@ -800,32 +879,38 @@
       {
         "name": "data",
         "type": "Record<string, boolean | number | string> | null",
-        "description": "Custom data to associate with the trace."
+        "description": "Custom data to associate with the trace.",
+        "required": false
       },
       {
         "name": "id",
         "type": "string | null",
-        "description": "A unique identifier when not tracing a callback.\nDefaults to 'default' if not provided."
+        "description": "A unique identifier when not tracing a callback.\nDefaults to 'default' if not provided.",
+        "required": false
       },
       {
         "name": "name",
         "type": "string",
-        "description": "The name of the trace."
+        "description": "The name of the trace.",
+        "required": true
       },
       {
         "name": "parentContext",
         "type": "{ [prop: string]: Json; } | boolean | Json[] | number | string | null",
-        "description": "The parent context of the trace.\nIf provided, the trace will be nested under the parent trace."
+        "description": "The parent context of the trace.\nIf provided, the trace will be nested under the parent trace.",
+        "required": false
       },
       {
         "name": "startTime",
         "type": "number | null",
-        "description": "Override the start time of the trace."
+        "description": "Override the start time of the trace.",
+        "required": false
       },
       {
         "name": "tags",
         "type": "Record<string, boolean | number | string> | null",
-        "description": "Custom tags to associate with the trace."
+        "description": "Custom tags to associate with the trace.",
+        "required": false
       }
     ],
     "result": null,
@@ -842,7 +927,8 @@
       {
         "name": "error",
         "type": "{ name: string; message: string; stack: string | null; cause: TrackableError | null }",
-        "description": "The error object to track."
+        "description": "The error object to track.",
+        "required": true
       }
     ],
     "result": {
@@ -862,7 +948,8 @@
       {
         "name": "event",
         "type": "{ event: string; properties?: Record<string, Json> | null; sensitiveProperties?: Record<string, Json> | null }",
-        "description": "Primary payload object containing other metrics properties."
+        "description": "Primary payload object containing other metrics properties.",
+        "required": true
       }
     ],
     "result": null,
@@ -879,17 +966,20 @@
       {
         "name": "id",
         "type": "string",
-        "description": "The interface id."
+        "description": "The interface id.",
+        "required": true
       },
       {
         "name": "ui",
         "type": "JSXElement",
-        "description": "The components to display in the interface."
+        "description": "The components to display in the interface.",
+        "required": true
       },
       {
         "name": "context",
         "type": "Record<string, Json> | null",
-        "description": null
+        "description": null,
+        "required": false
       }
     ],
     "result": null,
@@ -936,12 +1026,14 @@
       {
         "name": "snapId",
         "type": "string",
-        "description": "The ID of the Snap to invoke."
+        "description": "The ID of the Snap to invoke.",
+        "required": true
       },
       {
         "name": "request",
         "type": "Record<string, Json>",
-        "description": "The JSON-RPC request to send to the Snap."
+        "description": "The JSON-RPC request to send to the Snap.",
+        "required": true
       }
     ],
     "result": {
@@ -962,12 +1054,14 @@
       {
         "name": "snapId",
         "type": "string",
-        "description": "The ID of the Snap to invoke."
+        "description": "The ID of the Snap to invoke.",
+        "required": true
       },
       {
         "name": "request",
         "type": "Record<string, Json>",
-        "description": "The JSON-RPC request to send to the Snap."
+        "description": "The JSON-RPC request to send to the Snap.",
+        "required": true
       }
     ],
     "result": {
@@ -1006,12 +1100,14 @@
       {
         "name": "snapId",
         "type": "string",
-        "description": null
+        "description": null,
+        "required": true
       },
       {
         "name": "request",
         "type": "Record<string, Json>",
-        "description": null
+        "description": null,
+        "required": true
       }
     ],
     "result": {
