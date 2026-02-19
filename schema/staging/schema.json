@@ -430,14 +430,10 @@
         "required": false
       }
     ],
-    "result": [
-      {
-        "name": "length",
-        "type": "number",
-        "description": null,
-        "required": true
-      }
-    ],
+    "result": {
+      "type": "`0x${string}`",
+      "description": "The result returned by the `snap_getEntropy` method."
+    },
     "examples": [],
     "subjectTypes": [
       "snap"
@@ -516,14 +512,7 @@
   {
     "name": "snap_getLocale",
     "description": null,
-    "parameters": [
-      {
-        "name": "length",
-        "type": "Json",
-        "description": null,
-        "required": true
-      }
-    ],
+    "parameters": null,
     "result": {
       "type": "string",
       "description": "The result returned by the `snap_getLocale` method.\n\nIt is the locale of the user's MetaMask extension."
@@ -537,14 +526,7 @@
   {
     "name": "snap_getPreferences",
     "description": null,
-    "parameters": [
-      {
-        "name": "length",
-        "type": "Json",
-        "description": null,
-        "required": true
-      }
-    ],
+    "parameters": null,
     "result": [
       {
         "name": "locale",
