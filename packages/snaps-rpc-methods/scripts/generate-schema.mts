@@ -27,7 +27,7 @@ const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
 
-// A regular expression to remove the lfeading hyphen and whitespace from
+// A regular expression to remove the leading hyphen and whitespace from
 // property descriptions in JSDoc `@property` tags.
 const PROPERTY_DESCRIPTION_REGEX = /^\s?-\s/u;
 
