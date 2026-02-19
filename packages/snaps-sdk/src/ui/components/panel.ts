@@ -22,8 +22,15 @@ export const ParentStruct = assign(
   NodeStruct,
   object({
     // This node references itself indirectly, so we need to use `lazy()`.
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    children: array(lazy(() => ComponentStruct)),
+
+    children: array(
+      lazy(
+        /* istanbul ignore next */
+        () =>
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          ComponentStruct,
+      ),
+    ),
   }),
 );
 
