@@ -15,9 +15,7 @@ import type {
   TypeNode,
   VariableDeclaration,
 } from 'ts-morph';
-import { Project, SymbolFlags, ts, TypeFormatFlags } from 'ts-morph';
-
-import SyntaxKind = ts.SyntaxKind;
+import { Project, SymbolFlags, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
 const TS_CONFIG_PATH = resolve(process.cwd(), 'tsconfig.json');
 const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema', 'schema.json');
