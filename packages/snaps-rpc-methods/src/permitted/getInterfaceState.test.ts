@@ -55,7 +55,7 @@ describe('snap_getInterfaceState', () => {
         error: {
           code: 4100,
           message:
-            'The requested account and/or method has not been authorized by the user.',
+            'This method can only be used if the Snap has one of the following permissions: snap_dialog, snap_notify, endowment:page-home, endowment:page-settings, endowment:transaction-insight, endowment:signature-insight.',
           stack: expect.any(String),
         },
         id: 1,

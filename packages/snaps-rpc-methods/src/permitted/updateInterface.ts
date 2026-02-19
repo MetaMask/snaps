@@ -94,7 +94,11 @@ function getUpdateInterfaceImplementation(
   { hasPermission, updateInterface }: UpdateInterfaceMethodHooks,
 ): void {
   if (!UI_PERMISSIONS.some(hasPermission)) {
-    return end(providerErrors.unauthorized());
+    return end(
+      providerErrors.unauthorized({
+        message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
+      }),
+    );
   }
 
   const { params } = req;
