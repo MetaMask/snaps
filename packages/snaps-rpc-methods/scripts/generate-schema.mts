@@ -27,7 +27,7 @@ const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
 
-// A regular expression to remove the leading hyphen and whitespace from
+// A regular expression to remove the lfeading hyphen and whitespace from
 // property descriptions in JSDoc `@property` tags.
 const PROPERTY_DESCRIPTION_REGEX = /^\s?-\s/u;
 
@@ -435,7 +435,7 @@ function getTypeAliasDeclaration(type: Type) {
  * @param declaration - The type alias declaration that may be an
  * `InferMatching` type.
  * @returns The underlying type alias declaration if the given declaration is an
- * `InferMatching` type, or the given declaration otherswise.
+ * `InferMatching` type, or the given declaration otherwise.
  */
 function unwrapInferMatchingTypeNode(declaration: TypeAliasDeclaration) {
   const typeNode = declaration.getTypeNodeOrThrow();
@@ -454,21 +454,25 @@ function unwrapInferMatchingTypeNode(declaration: TypeAliasDeclaration) {
     'Expected `InferMatching` to have exactly two type arguments.',
   );
 
-  const actualTypeNode = typeArguments[1];
-  const symbol = actualTypeNode
+  const underlyingTypeNode = typeArguments[1];
+  const symbol = underlyingTypeNode
     .asKindOrThrow(SyntaxKind.TypeReference)
     .getTypeName()
     .getSymbolOrThrow()
     .getAliasedSymbolOrThrow();
 
-  const actualDeclaration = symbol
+  const underlyingDeclaration = symbol
     .getDeclarations()
     .find((symbolDeclaration): symbolDeclaration is TypeAliasDeclaration =>
       symbolDeclaration.isKind(SyntaxKind.TypeAliasDeclaration),
     );
 
-  assert(actualDeclaration, 'Expected declaration of actual type not found.');
-  return actualDeclaration;
+  assert(
+    underlyingDeclaration,
+    'Expected declaration of underlying type not found.',
+  );
+
+  return underlyingDeclaration;
 }
 
 /**
