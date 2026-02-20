@@ -6,7 +6,6 @@ export type * from './get-bip32-entropy';
 export type * from './get-bip32-public-key';
 export type * from './get-bip44-entropy';
 export type * from './get-client-status';
-export type * from './get-currency-rate';
 export type * from './get-entropy';
 export * from './get-file';
 export type * from './get-interface-context';
