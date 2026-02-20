@@ -14,6 +14,7 @@ describe('snap_resolveInterface', () => {
         methodNames: ['snap_resolveInterface'],
         implementation: expect.any(Function),
         hookNames: {
+          hasPermission: true,
           resolveInterface: true,
         },
       });
@@ -21,12 +22,58 @@ describe('snap_resolveInterface', () => {
   });
 
   describe('implementation', () => {
+    it('throws if the origin does not have permission to show UI', async () => {
+      const { implementation } = resolveInterfaceHandler;
+
+      const hasPermission = jest.fn().mockReturnValue(false);
+      const resolveInterface = jest.fn();
+
+      const hooks = { hasPermission, resolveInterface };
+
+      const engine = new JsonRpcEngine();
+
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<ResolveInterfaceParams>,
+          response as PendingJsonRpcResponse<ResolveInterfaceResult>,
+          next,
+          end,
+          hooks,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_resolveInterface',
+        params: {
+          id: 'foo',
+          value: 'bar',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: 4100,
+          message:
+            'This method can only be used if the Snap has one of the following permissions: snap_dialog, snap_notify, endowment:page-home, endowment:page-settings, endowment:transaction-insight, endowment:signature-insight.',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
+    });
+
     it('returns null after calling the `resolveInterface` hook', async () => {
       const { implementation } = resolveInterfaceHandler;
 
+      const hasPermission = jest.fn().mockReturnValue(true);
       const resolveInterface = jest.fn();
 
       const hooks = {
+        hasPermission,
         resolveInterface,
       };
 
@@ -60,9 +107,11 @@ describe('snap_resolveInterface', () => {
     it('resolves an interface', async () => {
       const { implementation } = resolveInterfaceHandler;
 
+      const hasPermission = jest.fn().mockReturnValue(true);
       const resolveInterface = jest.fn();
 
       const hooks = {
+        hasPermission,
         resolveInterface,
       };
 
@@ -97,9 +146,11 @@ describe('snap_resolveInterface', () => {
   it('throws on invalid params', async () => {
     const { implementation } = resolveInterfaceHandler;
 
+    const hasPermission = jest.fn().mockReturnValue(true);
     const resolveInterface = jest.fn();
 
     const hooks = {
+      hasPermission,
       resolveInterface,
     };
 

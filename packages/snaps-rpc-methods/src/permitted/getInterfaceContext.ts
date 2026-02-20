@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceContextParams,
   GetInterfaceContextResult,
@@ -12,14 +12,22 @@ import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { UI_PERMISSIONS } from '../utils';
 
 const methodName = 'snap_getInterfaceContext';
 
 const hookNames: MethodHooksObject<GetInterfaceContextMethodHooks> = {
+  hasPermission: true,
   getInterfaceContext: true,
 };
 
 export type GetInterfaceContextMethodHooks = {
+  /**
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the Snap has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
   /**
    * @param id - The interface ID.
    * @returns The interface context.
@@ -55,16 +63,26 @@ export type GetInterfaceContextParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
+ * @param hooks.hasPermission - The function to check if the Snap has a given
+ * permission.
  * @param hooks.getInterfaceContext - The function to get the interface context.
- * @returns Noting.
+ * @returns Nothing.
  */
 function getInterfaceContextImplementation(
   req: JsonRpcRequest<GetInterfaceContextParameters>,
   res: PendingJsonRpcResponse<GetInterfaceContextResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getInterfaceContext }: GetInterfaceContextMethodHooks,
+  { hasPermission, getInterfaceContext }: GetInterfaceContextMethodHooks,
 ): void {
+  if (!UI_PERMISSIONS.some(hasPermission)) {
+    return end(
+      providerErrors.unauthorized({
+        message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
+      }),
+    );
+  }
+
   const { params } = req;
 
   try {

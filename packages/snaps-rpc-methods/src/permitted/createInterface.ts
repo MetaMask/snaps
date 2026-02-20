@@ -1,6 +1,6 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type { PermittedHandlerExport } from '@metamask/permission-controller';
-import { rpcErrors } from '@metamask/rpc-errors';
+import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
@@ -18,16 +18,26 @@ import { StructError, create, object, optional } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
+import { UI_PERMISSIONS } from '../utils';
 
 const methodName = 'snap_createInterface';
 
 const hookNames: MethodHooksObject<CreateInterfaceMethodHooks> = {
+  hasPermission: true,
   createInterface: true,
 };
 
 export type CreateInterfaceMethodHooks = {
   /**
+   * @param permissionName - The name of the permission to check.
+   * @returns Whether the Snap has the permission.
+   */
+  hasPermission: (permissionName: string) => boolean;
+
+  /**
    * @param ui - The UI components.
+   * @param context - An optional interface context object.
+   * @param contentType - The optional content type.
    * @returns The unique identifier of the interface.
    */
   createInterface: (
@@ -66,6 +76,8 @@ export type CreateInterfaceParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
+ * @param hooks.hasPermission - The function to check if the Snap has a given
+ * permission.
  * @param hooks.createInterface - The function to create the interface.
  * @returns Nothing.
  */
@@ -74,8 +86,16 @@ function getCreateInterfaceImplementation(
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { createInterface }: CreateInterfaceMethodHooks,
+  { hasPermission, createInterface }: CreateInterfaceMethodHooks,
 ): void {
+  if (!UI_PERMISSIONS.some(hasPermission)) {
+    return end(
+      providerErrors.unauthorized({
+        message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
+      }),
+    );
+  }
+
   const { params } = req;
 
   try {
