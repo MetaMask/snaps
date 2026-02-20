@@ -5,13 +5,14 @@ import type { Hex } from '@metamask/utils';
  */
 export type GetEntropyParams = {
   /**
-   * The version of the entropy to retrieve. This is used for backwards
-   * compatibility. As of now, only version 1 is supported.
+   * The version of the entropy to retrieve. This is reserved for future use,
+   * and as of now, only version 1 is supported.
    */
   version: 1;
 
   /**
-   * The optional salt to use when deriving the entropy.
+   * An arbitrary string to be used as a salt for the entropy. This can be used
+   * to generate different entropy for different purposes.
    */
   salt?: string | undefined;
 
@@ -24,6 +25,6 @@ export type GetEntropyParams = {
 };
 
 /**
- * The result returned by the `snap_getEntropy` method.
+ * The entropy as a hexadecimal string.
  */
 export type GetEntropyResult = Hex;

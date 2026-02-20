@@ -12,7 +12,6 @@ export type InvokeSnapParams = {
 };
 
 /**
- * The result returned by the `wallet_invokeSnap` method, which is the result
- * returned by the Snap.
+ * The result of the Snap method call.
  */
 export type InvokeSnapResult = Json;

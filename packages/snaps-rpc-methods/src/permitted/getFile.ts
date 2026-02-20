@@ -32,6 +32,32 @@ const hookNames: MethodHooksObject<GetFileHooks> = {
   getSnapFile: true,
 };
 
+/**
+ * Gets a static file's content in UTF-8, Base64, or hexadecimal.
+ *
+ * The file must be specified in [the Snap's manifest file](https://docs.metamask.io/snaps/features/static-files/).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "source": {
+ *     "files": ["./files/my-file.bin"]
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const contents = await snap.request({
+ *   method: 'snap_getFile',
+ *   params: {
+ *     path: './files/myfile.bin',
+ *     encoding: 'hex',
+ *   },
+ * })
+ *
+ * // '0x...'
+ * console.log(contents)
+ * ```
+ */
 export const getFileHandler = {
   methodNames: [methodName] as const,
   implementation,

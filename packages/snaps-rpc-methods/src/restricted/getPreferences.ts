@@ -55,6 +55,9 @@ const methodHooks: MethodHooksObject<GetPreferencesMethodHooks> = {
   getPreferences: true,
 };
 
+/**
+ * Gets the user's preferences.
+ */
 export const getPreferencesBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,

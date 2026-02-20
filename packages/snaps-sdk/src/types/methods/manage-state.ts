@@ -71,8 +71,6 @@ export type ManageStateParams =
   | UpdateStateOperation;
 
 /**
- * The result returned by the `snap_manageState` method.
- *
  * If the operation is `get`, the result is the state. Otherwise, the result is
  * `null`.
  */

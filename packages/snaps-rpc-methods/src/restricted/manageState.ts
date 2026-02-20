@@ -113,6 +113,48 @@ const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
   getSnap: true,
 };
 
+/**
+ * Allow the Snap to persist up to 64 MB of data to disk and retrieve it at
+ * will. By default, the data is automatically encrypted using a Snap-specific
+ * key and automatically decrypted when retrieved. You can set `encrypted` to
+ * `false` to use unencrypted storage (available when the client is locked).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_manageState": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * // Persist some data.
+ * await snap.request({
+ *   method: 'snap_manageState',
+ *   params: {
+ *     operation: 'update',
+ *     newState: { hello: 'world' },
+ *   },
+ * })
+ *
+ * // At a later time, get the stored data.
+ * const persistedData = await snap.request({
+ *   method: 'snap_manageState',
+ *   params: { operation: 'get' },
+ * })
+ *
+ * console.log(persistedData)
+ * // { hello: 'world' }
+ *
+ * // If there's no need to store data anymore, clear it out.
+ * await snap.request({
+ *   method: 'snap_manageState',
+ *   params: {
+ *     operation: 'clear',
+ *   },
+ * })
+ * ```
+ */
 export const manageStateBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,

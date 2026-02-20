@@ -30,11 +30,25 @@ export type NameLookupMatchers =
     };
 
 export type Bip32Entropy = {
+  /**
+   * The curve to use for the derived key. This must be a curve supported by
+   * [`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree).
+   */
   curve: SupportedCurve;
+
+  /**
+   * The derivation path to use for the derived key, represented as an array of
+   * path segments. For example, the path `m/44'/1'/0'/0/0` would be represented
+   * as `['m', "44'", "1'", "0'", '0', '0']`.
+   */
   path: string[];
 };
 
 export type Bip44Entropy = {
+  /**
+   * The coin type to use for the derived key, as specified in the
+   * [SLIP-44 registry](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).
+   */
   coinType: number;
 };
 

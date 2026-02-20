@@ -67,6 +67,41 @@ const methodHooks: MethodHooksObject<GetEntropyHooks> = {
   getClientCryptography: true,
 };
 
+/**
+ * Get a deterministic 256-bit entropy value, specific to the Snap and the
+ * user's account. You can use this entropy to generate a private key, or any
+ * other value that requires a high level of randomness. Other Snaps can't
+ * access this entropy, and it changes if the user's secret recovery phrase
+ * changes.
+ *
+ * You can optionally specify a salt to generate different entropy for different
+ * purposes. Using a salt results in entropy unrelated to the entropy generated
+ * without a salt.
+ *
+ * This value is deterministic: it's always the same for the same Snap, user
+ * account, and salt.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_getEntropy": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const entropy = await snap.request({
+ *   method: 'snap_getEntropy',
+ *   params: {
+ *     version: 1,
+ *     salt: 'foo', // Optional.
+ *   },
+ * })
+ *
+ * // '0x...'
+ * console.log(entropy)
+ * ```
+ */
 export const getEntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
