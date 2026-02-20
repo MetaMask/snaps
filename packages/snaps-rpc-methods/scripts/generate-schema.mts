@@ -36,7 +36,7 @@ const EXAMPLE_TITLE_REGEX = /^(?:(?<title>.+)\n)?```/u;
 
 // A regular expression to parse example content from JSDoc comments.
 const EXAMPLE_JSDOC_REGEX =
-  /```(?<language>\w+)(?: name="(?<name>\w+)")?\n(?<content>[\s\S]+?)```/gu;
+  /```(?<language>\w+)(?: name="(?<name>[^"]+)")?\n(?<content>[\s\S]+?)```/gu;
 
 // Mapping of file extensions to Prettier parsers, used to format example code
 // in the JSDoc comments of the handlers.
