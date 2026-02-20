@@ -31,9 +31,12 @@ const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
 // property descriptions in JSDoc `@property` tags.
 const PROPERTY_DESCRIPTION_REGEX = /^\s?-\s/u;
 
+// A regular expression to parse the optional title from example JSDoc tags.
+const EXAMPLE_TITLE_REGEX = /^^(?:(?<title>.+)\n)?```/u;
+
 // A regular expression to parse example content from JSDoc comments.
 const EXAMPLE_JSDOC_REGEX =
-  /^(?:(?<title>.+)\n)?```(?<language>\w+)\n(?<content>[\s\S]+)```$/u;
+  /```(?<language>\w+)(?: name="(?<name>\w+)")?\n(?<content>[\s\S]+?)```/gu;
 
 // Mapping of file extensions to Prettier parsers, used to format example code
 // in the JSDoc comments of the handlers.
@@ -81,8 +84,11 @@ type MethodParameter = {
  */
 type MethodExample = {
   title?: string;
-  language: string;
-  content: string;
+  examples: {
+    name?: string;
+    language: string;
+    content: string;
+  }[];
 };
 
 /**
@@ -713,36 +719,49 @@ async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
   }
 
   // The example JSDoc tag is expected to be in this format:
-  // ```
+  //
   // @example [optional title]
-  // ```[language]
+  // ```[language] name="[optional name]"
   // example content
   // ```
-  const match = text.match(EXAMPLE_JSDOC_REGEX);
-  if (!match) {
+  // ```[language] name="[optional name]"
+  // optional second example content
+  // ```
+  const matches = text.matchAll(EXAMPLE_JSDOC_REGEX);
+  if (!matches) {
     return null;
   }
 
-  const { title, language, content } = match.groups as {
-    title?: string;
-    language: string;
-    content: string;
-  };
+  const titleMatch = text.match(EXAMPLE_TITLE_REGEX);
+  const title = titleMatch?.groups?.title?.trim();
 
-  // While examples should be formatted correctly in the JSDoc comments,
-  // TypeScript does not preserve the formatting of the example content, so we
-  // use Prettier to format the example content based on the specified language.
-  const parser = PRETTIER_PARSER[language];
-  if (!parser) {
-    throw new Error(
-      `Unable to format example with language "${language}" because there is no corresponding Prettier parser. Supported languages are: ${Object.keys(PRETTIER_PARSER).join(', ')}. To resolve this, either change the language of the example to a supported language or add a corresponding Prettier parser to the \`PRETTIER_PARSER\` mapping in the script.\n\nThis error occurred while parsing "${tag.getSourceFile().getFilePath()}" at line ${tag.getStartLineNumber()}.`,
-    );
-  }
+  const examples = Array.from(matches).map(async (match) => {
+    const { name, language, content } = match.groups as {
+      name?: string;
+      language: string;
+      content: string;
+    };
+
+    // While examples should be formatted correctly in the JSDoc comments,
+    // TypeScript does not preserve the formatting of the example content, so we
+    // use Prettier to format the example content based on the specified language.
+    const parser = PRETTIER_PARSER[language];
+    if (!parser) {
+      throw new Error(
+        `Unable to format example with language "${language}" because there is no corresponding Prettier parser. Supported languages are: ${Object.keys(PRETTIER_PARSER).join(', ')}. To resolve this, either change the language of the example to a supported language or add a corresponding Prettier parser to the \`PRETTIER_PARSER\` mapping in the script.\n\nThis error occurred while parsing "${tag.getSourceFile().getFilePath()}" at line ${tag.getStartLineNumber()}.`,
+      );
+    }
+
+    return {
+      name: name?.trim(),
+      language,
+      content: await format(content, { parser }),
+    };
+  });
 
   return {
-    title: title?.trim(),
-    language,
-    content: await format(content, { parser }),
+    title,
+    examples: await Promise.all(examples),
   };
 }
 
