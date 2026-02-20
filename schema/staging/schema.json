@@ -387,27 +387,6 @@
     "restricted": false
   },
   {
-    "name": "snap_getCurrencyRate",
-    "description": null,
-    "parameters": [
-      {
-        "name": "currency",
-        "type": "\"btc\" | \"BTC\"",
-        "description": "The currency symbol.",
-        "required": true
-      }
-    ],
-    "result": {
-      "type": "{ currency: string; conversionRate: number; conversionDate: number; usdConversionRate?: number | null } | null",
-      "description": "The result returned by the `snap_getCurrencyRate` method, which is the {@link CurrencyRate} object."
-    },
-    "subjectTypes": [
-      "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
     "name": "snap_getEntropy",
     "description": null,
     "parameters": [
