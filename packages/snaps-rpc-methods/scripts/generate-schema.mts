@@ -32,7 +32,7 @@ const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
 const PROPERTY_DESCRIPTION_REGEX = /^\s?-\s/u;
 
 // A regular expression to parse the optional title from example JSDoc tags.
-const EXAMPLE_TITLE_REGEX = /^^(?:(?<title>.+)\n)?```/u;
+const EXAMPLE_TITLE_REGEX = /^(?:(?<title>.+)\n)?```/u;
 
 // A regular expression to parse example content from JSDoc comments.
 const EXAMPLE_JSDOC_REGEX =
