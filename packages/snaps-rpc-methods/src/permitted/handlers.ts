@@ -6,7 +6,6 @@ import { endTraceHandler } from './endTrace';
 import { getAllSnapsHandler } from './getAllSnaps';
 import { getBackgroundEventsHandler } from './getBackgroundEvents';
 import { getClientStatusHandler } from './getClientStatus';
-import { getCurrencyRateHandler } from './getCurrencyRate';
 import { getFileHandler } from './getFile';
 import { getInterfaceContextHandler } from './getInterfaceContext';
 import { getInterfaceStateHandler } from './getInterfaceState';
@@ -44,7 +43,6 @@ export const methodHandlers = {
   snap_getInterfaceContext: getInterfaceContextHandler,
   snap_listEntropySources: listEntropySourcesHandler,
   snap_resolveInterface: resolveInterfaceHandler,
-  snap_getCurrencyRate: getCurrencyRateHandler,
   snap_scheduleBackgroundEvent: scheduleBackgroundEventHandler,
   snap_cancelBackgroundEvent: cancelBackgroundEventHandler,
   snap_getBackgroundEvents: getBackgroundEventsHandler,

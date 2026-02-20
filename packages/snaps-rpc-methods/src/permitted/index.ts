@@ -6,7 +6,6 @@ import type { EndTraceMethodHooks } from './endTrace';
 import type { GetAllSnapsHooks } from './getAllSnaps';
 import type { GetBackgroundEventsMethodHooks } from './getBackgroundEvents';
 import type { GetClientStatusHooks } from './getClientStatus';
-import type { GetCurrencyRateMethodHooks } from './getCurrencyRate';
 import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
 import type { GetSnapsHooks } from './getSnaps';
 import type { GetStateHooks } from './getState';
@@ -34,7 +33,6 @@ export type PermittedRpcMethodHooks = ClearStateHooks &
   UpdateInterfaceMethodHooks &
   GetInterfaceStateMethodHooks &
   ResolveInterfaceMethodHooks &
-  GetCurrencyRateMethodHooks &
   ScheduleBackgroundEventMethodHooks &
   CancelBackgroundEventMethodHooks &
   GetBackgroundEventsMethodHooks &
