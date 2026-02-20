@@ -33,10 +33,6 @@ import type {
   GetClientStatusParams,
   GetClientStatusResult,
 } from './get-client-status';
-import type {
-  GetCurrencyRateParams,
-  GetCurrencyRateResult,
-} from './get-currency-rate';
 import type { GetEntropyParams, GetEntropyResult } from './get-entropy';
 import type { GetFileParams, GetFileResult } from './get-file';
 import type {
@@ -123,7 +119,6 @@ export type SnapMethods = {
   snap_getBip32PublicKey: [GetBip32PublicKeyParams, GetBip32PublicKeyResult];
   snap_getBip44Entropy: [GetBip44EntropyParams, GetBip44EntropyResult];
   snap_getClientStatus: [GetClientStatusParams, GetClientStatusResult];
-  snap_getCurrencyRate: [GetCurrencyRateParams, GetCurrencyRateResult];
   snap_getEntropy: [GetEntropyParams, GetEntropyResult];
   snap_getFile: [GetFileParams, GetFileResult];
   snap_getLocale: [GetLocaleParams, GetLocaleResult];
