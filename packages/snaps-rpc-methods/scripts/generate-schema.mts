@@ -728,14 +728,15 @@ async function parseJsDocExample(tag: JSDocTag): Promise<MethodExample | null> {
   // optional second example content
   // ```
   const matches = text.matchAll(EXAMPLE_JSDOC_REGEX);
-  if (!matches) {
+  const matchesArray = Array.from(matches);
+  if (matchesArray.length === 0) {
     return null;
   }
 
   const titleMatch = text.match(EXAMPLE_TITLE_REGEX);
   const title = titleMatch?.groups?.title?.trim();
 
-  const examples = Array.from(matches).map(async (match) => {
+  const examples = matchesArray.map(async (match) => {
     const { name, language, content } = match.groups as {
       name?: string;
       language: string;
