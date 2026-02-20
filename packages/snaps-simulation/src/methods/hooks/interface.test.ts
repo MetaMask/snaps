@@ -1,5 +1,5 @@
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
-import { text } from '@metamask/snaps-sdk';
+import { NodeType } from '@metamask/snaps-sdk';
 import { getJsxElementFromComponent } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 
@@ -25,7 +25,7 @@ describe('getCreateInterfaceImplementation', () => {
 
     const fn = getCreateInterfaceImplementation(controllerMessenger);
 
-    const content = text('bar');
+    const content = { type: NodeType.Text as const, value: 'bar' };
 
     const id = await fn(MOCK_SNAP_ID, content);
 
@@ -56,7 +56,7 @@ describe('getGetInterfaceImplementation', () => {
 
     const fn = getGetInterfaceImplementation(controllerMessenger);
 
-    const content = text('bar');
+    const content = { type: NodeType.Text as const, value: 'bar' };
 
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
 

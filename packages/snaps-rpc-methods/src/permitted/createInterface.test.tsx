@@ -1,5 +1,5 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import { text, type CreateInterfaceResult } from '@metamask/snaps-sdk';
+import { NodeType, type CreateInterfaceResult } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
 import {
   Text,
@@ -108,7 +108,7 @@ describe('snap_createInterface', () => {
         id: 1,
         method: 'snap_createInterface',
         params: {
-          ui: text('foo'),
+          ui: { type: NodeType.Text as const, value: 'foo' },
         },
       });
 

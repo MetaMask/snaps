@@ -6,7 +6,7 @@ import {
   InterfaceStateStruct,
 } from './interface';
 import { Text } from '../jsx';
-import { text } from '../ui';
+import { NodeType } from '../ui';
 
 describe('FormStateStruct', () => {
   it('passes for a valid form state', () => {
@@ -30,6 +30,11 @@ describe('ComponentOrElementStruct', () => {
   });
 
   it('validates legacy components', () => {
-    expect(() => assert(text('foo'), ComponentOrElementStruct)).not.toThrow();
+    expect(() =>
+      assert(
+        { type: NodeType.Text as const, value: 'foo' },
+        ComponentOrElementStruct,
+      ),
+    ).not.toThrow();
   });
 });

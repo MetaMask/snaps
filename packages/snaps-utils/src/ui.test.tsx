@@ -1,17 +1,4 @@
-import {
-  panel,
-  text,
-  row,
-  address,
-  image,
-  form,
-  button,
-  copyable,
-  divider,
-  input,
-  heading,
-  spinner,
-} from '@metamask/snaps-sdk';
+import { NodeType } from '@metamask/snaps-sdk';
 import {
   AssetSelector,
   Address,
@@ -230,9 +217,10 @@ describe('getTextChildren', () => {
 describe('getJsxElementFromComponent', () => {
   it('returns the JSX element for an address component', () => {
     expect(
-      getJsxElementFromComponent(
-        address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520'),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Address as const,
+        value: '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520',
+      }),
     ).toStrictEqual(
       <Address address="0x4bbeeb066ed09b7aed07bf39eee0460dfa261520" />,
     );
@@ -240,13 +228,12 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a button component', () => {
     expect(
-      getJsxElementFromComponent(
-        button({
-          variant: 'primary',
-          name: 'foo',
-          value: 'foo',
-        }),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Button as const,
+        variant: 'primary',
+        name: 'foo',
+        value: 'foo',
+      }),
     ).toStrictEqual(
       <Button name="foo" variant="primary">
         foo
@@ -256,13 +243,12 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a button component with a secondary variant', () => {
     expect(
-      getJsxElementFromComponent(
-        button({
-          variant: 'secondary',
-          name: 'bar',
-          value: 'bar',
-        }),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Button as const,
+        variant: 'secondary',
+        name: 'bar',
+        value: 'bar',
+      }),
     ).toStrictEqual(
       <Button name="bar" variant="destructive">
         bar
@@ -272,13 +258,12 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a button component with a type', () => {
     expect(
-      getJsxElementFromComponent(
-        button({
-          buttonType: 'submit',
-          name: 'bar',
-          value: 'bar',
-        }),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Button as const,
+        buttonType: 'submit',
+        name: 'bar',
+        value: 'bar',
+      }),
     ).toStrictEqual(
       <Button name="bar" type="submit">
         bar
@@ -287,23 +272,31 @@ describe('getJsxElementFromComponent', () => {
   });
 
   it('returns the JSX element for a copyable component', () => {
-    expect(getJsxElementFromComponent(copyable('foo', true))).toStrictEqual(
-      <Copyable value="foo" sensitive />,
-    );
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Copyable as const,
+        value: 'foo',
+        sensitive: true,
+      }),
+    ).toStrictEqual(<Copyable value="foo" sensitive />);
   });
 
   it('returns the JSX element for a divider component', () => {
-    expect(getJsxElementFromComponent(divider())).toStrictEqual(<Divider />);
+    expect(
+      getJsxElementFromComponent({ type: NodeType.Divider as const }),
+    ).toStrictEqual(<Divider />);
   });
 
   it('returns the JSX element for a form component', () => {
     expect(
-      getJsxElementFromComponent(
-        form({
-          name: 'foo',
-          children: [input({ label: 'bar', name: 'baz' }), button('button')],
-        }),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Form as const,
+        name: 'foo',
+        children: [
+          { type: NodeType.Input as const, label: 'bar', name: 'baz' },
+          { type: NodeType.Button as const, value: 'button' },
+        ],
+      }),
     ).toStrictEqual(
       <Form name="foo">
         <Field label="bar">
@@ -322,19 +315,30 @@ describe('getJsxElementFromComponent', () => {
   });
 
   it('returns the JSX element for a heading component', () => {
-    expect(getJsxElementFromComponent(heading('foo'))).toStrictEqual(
-      <Heading>foo</Heading>,
-    );
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Heading as const,
+        value: 'foo',
+      }),
+    ).toStrictEqual(<Heading>foo</Heading>);
   });
 
   it('returns the JSX element for an image component', () => {
-    expect(getJsxElementFromComponent(image('<svg />'))).toStrictEqual(
-      <Image src="<svg />" />,
-    );
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Image as const,
+        value: '<svg />',
+      }),
+    ).toStrictEqual(<Image src="<svg />" />);
   });
 
   it('returns the JSX element for an input component', () => {
-    expect(getJsxElementFromComponent(input('foo'))).toStrictEqual(
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Input as const,
+        name: 'foo',
+      }),
+    ).toStrictEqual(
       <Field label={undefined}>
         <Input
           name="foo"
@@ -348,13 +352,12 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for an input component with a label and error', () => {
     expect(
-      getJsxElementFromComponent(
-        input({
-          name: 'foo',
-          label: 'bar',
-          error: 'baz',
-        }),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Input as const,
+        name: 'foo',
+        label: 'bar',
+        error: 'baz',
+      }),
     ).toStrictEqual(
       <Field label="bar" error="baz">
         <Input
@@ -369,7 +372,13 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a panel component', () => {
     expect(
-      getJsxElementFromComponent(panel([text('foo'), text('bar')])),
+      getJsxElementFromComponent({
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: 'foo' },
+          { type: NodeType.Text as const, value: 'bar' },
+        ],
+      }),
     ).toStrictEqual(
       <Box>
         <Text>foo</Text>
@@ -379,7 +388,13 @@ describe('getJsxElementFromComponent', () => {
   });
 
   it('returns the JSX element for a row component', () => {
-    expect(getJsxElementFromComponent(row('foo', text('bar')))).toStrictEqual(
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Row as const,
+        label: 'foo',
+        value: { type: NodeType.Text as const, value: 'bar' },
+      }),
+    ).toStrictEqual(
       <Row label="foo">
         <Text>bar</Text>
       </Row>,
@@ -388,7 +403,12 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a row component with a variant', () => {
     expect(
-      getJsxElementFromComponent(row('foo', text('bar'), 'critical')),
+      getJsxElementFromComponent({
+        type: NodeType.Row as const,
+        label: 'foo',
+        value: { type: NodeType.Text as const, value: 'bar' },
+        variant: 'critical',
+      }),
     ).toStrictEqual(
       <Row label="foo" variant="critical">
         <Text>bar</Text>
@@ -398,9 +418,14 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a row component with an address component', () => {
     expect(
-      getJsxElementFromComponent(
-        row('foo', address('0x4bbeeb066ed09b7aed07bf39eee0460dfa261520')),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Row as const,
+        label: 'foo',
+        value: {
+          type: NodeType.Address as const,
+          value: '0x4bbeeb066ed09b7aed07bf39eee0460dfa261520',
+        },
+      }),
     ).toStrictEqual(
       <Row label="foo">
         <Address address="0x4bbeeb066ed09b7aed07bf39eee0460dfa261520" />
@@ -409,17 +434,27 @@ describe('getJsxElementFromComponent', () => {
   });
 
   it('returns the JSX element for a spinner component', () => {
-    expect(getJsxElementFromComponent(spinner())).toStrictEqual(<Spinner />);
+    expect(
+      getJsxElementFromComponent({ type: NodeType.Spinner as const }),
+    ).toStrictEqual(<Spinner />);
   });
 
   it('returns the JSX element for a text component', () => {
-    expect(getJsxElementFromComponent(text('foo'))).toStrictEqual(
-      <Text>foo</Text>,
-    );
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Text as const,
+        value: 'foo',
+      }),
+    ).toStrictEqual(<Text>foo</Text>);
   });
 
   it('returns the JSX element for a text component with bold text', () => {
-    expect(getJsxElementFromComponent(text('Hello, **world**!'))).toStrictEqual(
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Text as const,
+        value: 'Hello, **world**!',
+      }),
+    ).toStrictEqual(
       <Text>
         Hello, <Bold>world</Bold>!
       </Text>,
@@ -427,7 +462,12 @@ describe('getJsxElementFromComponent', () => {
   });
 
   it('returns the JSX element for a text component with italic text', () => {
-    expect(getJsxElementFromComponent(text('Hello, *world*!'))).toStrictEqual(
+    expect(
+      getJsxElementFromComponent({
+        type: NodeType.Text as const,
+        value: 'Hello, *world*!',
+      }),
+    ).toStrictEqual(
       <Text>
         Hello, <Italic>world</Italic>!
       </Text>,
@@ -436,7 +476,10 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a text component with a link', () => {
     expect(
-      getJsxElementFromComponent(text('Hello, [world](https://foo.bar)!')),
+      getJsxElementFromComponent({
+        type: NodeType.Text as const,
+        value: 'Hello, [world](https://foo.bar)!',
+      }),
     ).toStrictEqual(
       <Text>
         Hello, <Link href="https://foo.bar">world</Link>!
@@ -446,21 +489,45 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a deeply nested component tree', () => {
     expect(
-      getJsxElementFromComponent(
-        panel([
-          text('foo'),
-          panel([
-            text('bar'),
-            panel([
-              text('baz'),
-              panel([
-                text('qux'),
-                panel([text('quux'), panel([text('corge')])]),
-              ]),
-            ]),
-          ]),
-        ]),
-      ),
+      getJsxElementFromComponent({
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: 'foo' },
+          {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Text as const, value: 'bar' },
+              {
+                type: NodeType.Panel as const,
+                children: [
+                  { type: NodeType.Text as const, value: 'baz' },
+                  {
+                    type: NodeType.Panel as const,
+                    children: [
+                      { type: NodeType.Text as const, value: 'qux' },
+                      {
+                        type: NodeType.Panel as const,
+                        children: [
+                          { type: NodeType.Text as const, value: 'quux' },
+                          {
+                            type: NodeType.Panel as const,
+                            children: [
+                              {
+                                type: NodeType.Text as const,
+                                value: 'corge',
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
     ).toStrictEqual(
       <Box>
         <Text>foo</Text>
@@ -485,28 +552,50 @@ describe('getJsxElementFromComponent', () => {
 
   it('returns the JSX element for a complex component tree', () => {
     expect(
-      getJsxElementFromComponent(
-        panel([
-          text('foo'),
-          row('bar', text('baz')),
-          panel([
-            text('qux'),
-            row('quux', image('<svg />')),
-            panel([
-              text(
-                'Here are some _formatting_ **elements**.\n\nAnd a [link](https://foo.bar).',
-              ),
-              form({
-                name: 'foo',
+      getJsxElementFromComponent({
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: 'foo' },
+          {
+            type: NodeType.Row as const,
+            label: 'bar',
+            value: { type: NodeType.Text as const, value: 'baz' },
+          },
+          {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Text as const, value: 'qux' },
+              {
+                type: NodeType.Row as const,
+                label: 'quux',
+                value: { type: NodeType.Image as const, value: '<svg />' },
+              },
+              {
+                type: NodeType.Panel as const,
                 children: [
-                  input({ label: 'bar', name: 'baz' }),
-                  button('button'),
+                  {
+                    type: NodeType.Text as const,
+                    value:
+                      'Here are some _formatting_ **elements**.\n\nAnd a [link](https://foo.bar).',
+                  },
+                  {
+                    type: NodeType.Form as const,
+                    name: 'foo',
+                    children: [
+                      {
+                        type: NodeType.Input as const,
+                        label: 'bar',
+                        name: 'baz',
+                      },
+                      { type: NodeType.Button as const, value: 'button' },
+                    ],
+                  },
                 ],
-              }),
-            ]),
-          ]),
-        ]),
-      ),
+              },
+            ],
+          },
+        ],
+      }),
     ).toStrictEqual(
       <Box>
         <Text>foo</Text>
@@ -990,25 +1079,59 @@ describe('validateJsxElements', () => {
 
 describe('getTotalTextLength', () => {
   it('calculates total length', () => {
-    expect(getTotalTextLength(text('foo'))).toBe(3);
+    expect(
+      getTotalTextLength({ type: NodeType.Text as const, value: 'foo' }),
+    ).toBe(3);
   });
 
   it('calculates total length for nested text', () => {
     expect(
-      getTotalTextLength(
-        panel([text('foo'), panel([text('bar'), text('baz')])]),
-      ),
+      getTotalTextLength({
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: 'foo' },
+          {
+            type: NodeType.Panel as const,
+            children: [
+              { type: NodeType.Text as const, value: 'bar' },
+              { type: NodeType.Text as const, value: 'baz' },
+            ],
+          },
+        ],
+      }),
     ).toBe(9);
   });
 
   it('calculates total length for nested text in rows', () => {
     expect(
-      getTotalTextLength(panel([row('1', text('foo')), row('2', text('bar'))])),
+      getTotalTextLength({
+        type: NodeType.Panel as const,
+        children: [
+          {
+            type: NodeType.Row as const,
+            label: '1',
+            value: { type: NodeType.Text as const, value: 'foo' },
+          },
+          {
+            type: NodeType.Row as const,
+            label: '2',
+            value: { type: NodeType.Text as const, value: 'bar' },
+          },
+        ],
+      }),
     ).toBe(6);
   });
 
   it('ignores non text components', () => {
-    expect(getTotalTextLength(panel([text('foo'), image('<svg />')]))).toBe(3);
+    expect(
+      getTotalTextLength({
+        type: NodeType.Panel as const,
+        children: [
+          { type: NodeType.Text as const, value: 'foo' },
+          { type: NodeType.Image as const, value: '<svg />' },
+        ],
+      }),
+    ).toBe(3);
   });
 });
 

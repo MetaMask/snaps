@@ -3,6 +3,7 @@ import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from '@metamask/snaps-sdk';
+import { NodeType } from '@metamask/snaps-sdk';
 import { Box, type JSXElement, Text } from '@metamask/snaps-sdk/jsx';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
@@ -102,11 +103,7 @@ describe('snap_updateInterface', () => {
         method: 'snap_updateInterface',
         params: {
           id: 'foo',
-          ui: (
-            <Box>
-              <Text>Hello, world!</Text>
-            </Box>
-          ) as JSXElement,
+          ui: { type: NodeType.Text as const, value: 'foo' },
         },
       });
 

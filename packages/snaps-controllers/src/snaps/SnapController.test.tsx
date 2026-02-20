@@ -22,7 +22,7 @@ import {
 import type { Snap, SnapId } from '@metamask/snaps-sdk';
 import {
   AuxiliaryFileEncoding,
-  text,
+  NodeType,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
 import { Text, Box, Button } from '@metamask/snaps-sdk/jsx';
@@ -2997,7 +2997,10 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: text('[Foo bar](https://foo.bar)'),
+            content: {
+              type: NodeType.Text as const,
+              value: '[Foo bar](https://foo.bar)',
+            },
           }),
       );
 
@@ -3059,7 +3062,10 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: text('[Foo bar](https://foo.bar)'),
+            content: {
+              type: NodeType.Text as const,
+              value: '[Foo bar](https://foo.bar)',
+            },
             foo: 'bar',
           }),
       );
@@ -3095,7 +3101,12 @@ describe('SnapController', () => {
         }),
       );
 
-      const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+      const handlerResponse = {
+        content: {
+          type: NodeType.Text as const,
+          value: '[foobar](https://foo.bar)',
+        },
+      };
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
@@ -3284,7 +3295,10 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: text('[Foo bar](https://foo.bar)'),
+            content: {
+              type: NodeType.Text as const,
+              value: '[Foo bar](https://foo.bar)',
+            },
           }),
       );
 
@@ -3346,7 +3360,10 @@ describe('SnapController', () => {
         'ExecutionService:handleRpcRequest',
         async () =>
           Promise.resolve({
-            content: text('[Foo bar](https://foo.bar)'),
+            content: {
+              type: NodeType.Text as const,
+              value: '[Foo bar](https://foo.bar)',
+            },
             foo: 'bar',
           }),
       );
@@ -3436,7 +3453,12 @@ describe('SnapController', () => {
         }),
       );
 
-      const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+      const handlerResponse = {
+        content: {
+          type: NodeType.Text as const,
+          value: '[foobar](https://foo.bar)',
+        },
+      };
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
@@ -3617,7 +3639,10 @@ describe('SnapController', () => {
       'ExecutionService:handleRpcRequest',
       async () =>
         Promise.resolve({
-          content: text('[Foo bar](https://foo.bar)'),
+          content: {
+            type: NodeType.Text as const,
+            value: '[Foo bar](https://foo.bar)',
+          },
         }),
     );
 
@@ -3711,7 +3736,12 @@ describe('SnapController', () => {
       }),
     );
 
-    const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+    const handlerResponse = {
+      content: {
+        type: NodeType.Text as const,
+        value: '[foobar](https://foo.bar)',
+      },
+    };
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',
@@ -3787,7 +3817,10 @@ describe('SnapController', () => {
       'ExecutionService:handleRpcRequest',
       async () =>
         Promise.resolve({
-          content: text('[Foo bar](https://foo.bar)'),
+          content: {
+            type: NodeType.Text as const,
+            value: '[Foo bar](https://foo.bar)',
+          },
         }),
     );
 
@@ -3881,7 +3914,12 @@ describe('SnapController', () => {
       }),
     );
 
-    const handlerResponse = { content: text('[foobar](https://foo.bar)') };
+    const handlerResponse = {
+      content: {
+        type: NodeType.Text as const,
+        value: '[foobar](https://foo.bar)',
+      },
+    };
 
     rootMessenger.registerActionHandler(
       'PermissionController:getPermissions',

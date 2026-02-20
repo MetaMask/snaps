@@ -3,12 +3,8 @@ import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import {
   ButtonType,
   DialogType,
+  NodeType,
   UserInputEventType,
-  button,
-  form,
-  input,
-  panel,
-  text,
 } from '@metamask/snaps-sdk';
 import {
   Button,
@@ -483,7 +479,11 @@ describe('resolveWithSaga', () => {
 
 describe('getElement', () => {
   it('gets an element at the root', () => {
-    const content = button({ value: 'foo', name: 'bar' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'bar',
+    };
     const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
@@ -492,7 +492,10 @@ describe('getElement', () => {
   });
 
   it('gets an element with a given name inside a panel', () => {
-    const content = panel([button({ value: 'foo', name: 'bar' })]);
+    const content = {
+      type: NodeType.Panel as const,
+      children: [{ type: NodeType.Button as const, value: 'foo', name: 'bar' }],
+    };
     const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
@@ -501,7 +504,11 @@ describe('getElement', () => {
   });
 
   it('gets an element in a form', () => {
-    const content = form('foo', [button({ value: 'foo', name: 'bar' })]);
+    const content = {
+      type: NodeType.Form as const,
+      name: 'foo',
+      children: [{ type: NodeType.Button as const, value: 'foo', name: 'bar' }],
+    };
     const result = getElement(getJsxElementFromComponent(content), 'bar');
 
     expect(result).toStrictEqual({
@@ -511,10 +518,25 @@ describe('getElement', () => {
   });
 
   it('gets an element in a form when there are multiple forms', () => {
-    const content = panel([
-      form('form-1', [button({ value: 'foo', name: 'bar' })]),
-      form('form-2', [button({ value: 'foo', name: 'baz' })]),
-    ]);
+    const content = {
+      type: NodeType.Panel as const,
+      children: [
+        {
+          type: NodeType.Form as const,
+          name: 'form-1',
+          children: [
+            { type: NodeType.Button as const, value: 'foo', name: 'bar' },
+          ],
+        },
+        {
+          type: NodeType.Form as const,
+          name: 'form-2',
+          children: [
+            { type: NodeType.Button as const, value: 'foo', name: 'baz' },
+          ],
+        },
+      ],
+    };
     const result = getElement(getJsxElementFromComponent(content), 'baz');
 
     expect(result).toStrictEqual({
@@ -567,7 +589,11 @@ describe('clickElement', () => {
   );
 
   it('sends a ButtonClickEvent to the snap', async () => {
-    const content = button({ value: 'foo', name: 'bar' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'bar',
+    };
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
       content,
@@ -600,10 +626,19 @@ describe('clickElement', () => {
   });
 
   it('sends a FormSubmitEvent to the snap', async () => {
-    const content = form('bar', [
-      input({ value: 'foo', name: 'foo' }),
-      button({ value: 'baz', name: 'baz', buttonType: ButtonType.Submit }),
-    ]);
+    const content = {
+      type: NodeType.Form as const,
+      name: 'bar',
+      children: [
+        { type: NodeType.Input as const, value: 'foo', name: 'foo' },
+        {
+          type: NodeType.Button as const,
+          value: 'baz',
+          name: 'baz',
+          buttonType: ButtonType.Submit,
+        },
+      ],
+    };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -792,7 +827,11 @@ describe('clickElement', () => {
   });
 
   it('throws if there is no button with the given name in the interface', async () => {
-    const content = button({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'foo',
+    };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -815,7 +854,11 @@ describe('clickElement', () => {
   });
 
   it('throws if the element is not a button', async () => {
-    const content = input({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Input as const,
+      value: 'foo',
+      name: 'foo',
+    };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -838,7 +881,11 @@ describe('clickElement', () => {
   });
 
   it('unwraps errors', async () => {
-    const content = button({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'foo',
+    };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -900,7 +947,7 @@ describe('typeInField', () => {
   it('updates the interface state and sends an InputChangeEvent', async () => {
     jest.spyOn(rootControllerMessenger, 'call');
 
-    const content = input('bar');
+    const content = { type: NodeType.Input as const, name: 'bar' };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -991,7 +1038,7 @@ describe('typeInField', () => {
   });
 
   it('throws if there is no inputs in the interface', async () => {
-    const content = text('bar');
+    const content = { type: NodeType.Text as const, value: 'bar' };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -1013,7 +1060,11 @@ describe('typeInField', () => {
   });
 
   it('throws if the element is not an input', async () => {
-    const content = button({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'foo',
+    };
 
     const interfaceId = interfaceController.createInterface(
       MOCK_SNAP_ID,
@@ -1353,7 +1404,7 @@ describe('getInterface', () => {
     const options = getMockOptions();
     const { store, runSaga } = createStore(options);
 
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
@@ -1395,7 +1446,7 @@ describe('getInterface', () => {
       options,
     ).toPromise();
 
-    const content = text('foo');
+    const content = { type: NodeType.Text as const, value: 'foo' };
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
@@ -1423,7 +1474,11 @@ describe('getInterface', () => {
     const options = getMockOptions();
     const { store, runSaga } = createStore(options);
 
-    const content = button({ value: 'foo', name: 'foo' });
+    const content = {
+      type: NodeType.Button as const,
+      value: 'foo',
+      name: 'foo',
+    };
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
@@ -1467,7 +1522,7 @@ describe('getInterface', () => {
     const options = getMockOptions();
     const { store, runSaga } = createStore(options);
 
-    const content = input('foo');
+    const content = { type: NodeType.Input as const, name: 'foo' };
     const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
     const type = DialogType.Alert;
     const ui = { type: DIALOG_APPROVAL_TYPES[type], id };
