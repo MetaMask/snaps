@@ -4076,17 +4076,26 @@ export class SnapController extends BaseController<
     const { conversions: requestedConversions } = requestedParams;
 
     const filteredConversionRates = requestedConversions.reduce<
-      Record<CaipAssetType, Record<CaipAssetType, AssetConversion>>
+      Map<CaipAssetType, Map<CaipAssetType, AssetConversion>>
     >((accumulator, conversion) => {
       const rate = conversionRates[conversion.from]?.[conversion.to];
       // Only include rates that were actually requested.
       if (rate) {
-        accumulator[conversion.from] ??= {};
-        accumulator[conversion.from][conversion.to] = rate;
+        if (!accumulator.has(conversion.from)) {
+          accumulator.set(conversion.from, new Map());
+        }
+        accumulator.get(conversion.from).set(conversion.to, rate);
       }
       return accumulator;
-    }, {});
-    return { conversionRates: filteredConversionRates };
+    }, new Map());
+    // Convert nested Maps into plain objects for return value compatibility.
+    const conversionRatesObj = Object.fromEntries(
+      Array.from(filteredConversionRates.entries()).map(([fromKey, toMap]) => [
+        fromKey,
+        Object.fromEntries(toMap.entries()),
+      ]),
+    );
+    return { conversionRates: conversionRatesObj };
   }
 
   /**
@@ -4113,11 +4122,13 @@ export class SnapController extends BaseController<
       const result = marketData[assets.asset]?.[assets.unit];
       // Only include rates that were actually requested.
       if (result) {
-        accumulator[assets.asset] ??= {};
+        if (!accumulator[assets.asset]) {
+          accumulator[assets.asset] = Object.create(null);
+        }
         accumulator[assets.asset][assets.unit] = result;
       }
       return accumulator;
-    }, {});
+    }, Object.create(null));
     return { marketData: filteredMarketData };
   }
 
