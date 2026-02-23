@@ -98,36 +98,6 @@
     "restricted": true
   },
   {
-    "name": "snap_endTrace",
-    "description": "Handler for the `snap_endTrace` method.",
-    "parameters": [
-      {
-        "name": "id",
-        "type": "string | null",
-        "description": "The unique identifier of the trace.\nDefaults to 'default' if not provided.",
-        "required": false
-      },
-      {
-        "name": "name",
-        "type": "string",
-        "description": "The name of the trace.",
-        "required": true
-      },
-      {
-        "name": "timestamp",
-        "type": "number | null",
-        "description": "Override the end time of the trace.",
-        "required": false
-      }
-    ],
-    "result": null,
-    "subjectTypes": [
-      "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
     "name": "snap_getBackgroundEvents",
     "description": null,
     "parameters": null,
@@ -834,93 +804,6 @@
     "restricted": false
   },
   {
-    "name": "snap_startTrace",
-    "description": "Handler for the `snap_startTrace` method.",
-    "parameters": [
-      {
-        "name": "data",
-        "type": "Record<string, boolean | number | string> | null",
-        "description": "Custom data to associate with the trace.",
-        "required": false
-      },
-      {
-        "name": "id",
-        "type": "string | null",
-        "description": "A unique identifier when not tracing a callback.\nDefaults to 'default' if not provided.",
-        "required": false
-      },
-      {
-        "name": "name",
-        "type": "string",
-        "description": "The name of the trace.",
-        "required": true
-      },
-      {
-        "name": "parentContext",
-        "type": "{ [prop: string]: Json; } | boolean | Json[] | number | string | null",
-        "description": "The parent context of the trace.\nIf provided, the trace will be nested under the parent trace.",
-        "required": false
-      },
-      {
-        "name": "startTime",
-        "type": "number | null",
-        "description": "Override the start time of the trace.",
-        "required": false
-      },
-      {
-        "name": "tags",
-        "type": "Record<string, boolean | number | string> | null",
-        "description": "Custom tags to associate with the trace.",
-        "required": false
-      }
-    ],
-    "result": null,
-    "subjectTypes": [
-      "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
-    "name": "snap_trackError",
-    "description": "Handler for the `snap_trackError` method.",
-    "parameters": [
-      {
-        "name": "error",
-        "type": "{ name: string; message: string; stack: string | null; cause: TrackableError | null }",
-        "description": "The error object to track.",
-        "required": true
-      }
-    ],
-    "result": {
-      "type": "string",
-      "description": "The result returned by the `snap_trackEvent` method. This is the ID of the\ntracked error, as returned by the Sentry instance in the client."
-    },
-    "subjectTypes": [
-      "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
-    "name": "snap_trackEvent",
-    "description": "Handler for the `snap_trackEvent` method.",
-    "parameters": [
-      {
-        "name": "event",
-        "type": "{ event: string; properties?: Record<string, Json> | null; sensitiveProperties?: Record<string, Json> | null }",
-        "description": "Primary payload object containing other metrics properties.",
-        "required": true
-      }
-    ],
-    "result": null,
-    "subjectTypes": [
-      "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
     "name": "snap_updateInterface",
     "description": null,
     "parameters": [
@@ -946,21 +829,6 @@
     "result": null,
     "subjectTypes": [
       "snap"
-    ],
-    "examples": [],
-    "restricted": false
-  },
-  {
-    "name": "wallet_getAllSnaps",
-    "description": "`wallet_getAllSnaps` gets all installed Snaps. Currently, this can only be\ncalled from `https://snaps.metamask.io`.",
-    "parameters": null,
-    "result": {
-      "type": "Record<SnapId, { error: JsonRpcError } | Snap>",
-      "description": "The result returned by the `wallet_getSnaps` method.\n\nIt consists of a map of Snap IDs to either the Snap object or an error."
-    },
-    "subjectTypes": [
-      "snap",
-      "website"
     ],
     "examples": [],
     "restricted": false
