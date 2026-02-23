@@ -129,6 +129,42 @@ const methodHooks: MethodHooksObject<GetBip32PublicKeyMethodHooks> = {
   getClientCryptography: true,
 };
 
+/**
+ * Gets the [BIP-32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+ * public key for the derivation path specified by the `path` parameter. Note
+ * that this returns the public key, not the extended public key (`xpub`), or
+ * Ethereum address.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_getBip32PublicKey": [
+ *       {
+ *         "path": ["m", "44'", "3'", "0'", "0", "0"],
+ *         "curve": "secp256k1"
+ *       }
+ *     ]
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * // This example uses Dogecoin, which has a derivation path starting with
+ * // "m / 44' / 3'".
+ * const dogecoinPublicKey = await snap.request({
+ *   method: 'snap_getBip32PublicKey',
+ *   params: {
+ *     // The path and curve must be specified in the initial permissions.
+ *     path: ['m', "44'", "3'", "0'", "0", "0"],
+ *     curve: 'secp256k1',
+ *     compressed: false,
+ *   },
+ * })
+ *
+ * // '0x...'
+ * console.log(dogecoinPublicKey)
+ * ```
+ */
 export const getBip32PublicKeyBuilder = Object.freeze({
   targetName,
   specificationBuilder,

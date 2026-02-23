@@ -143,6 +143,16 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
   getSnap: true,
 };
 
+/**
+ * Display a
+ * [notification](https://docs.metamask.io/snaps/features/notifications/) in
+ * MetaMask or natively in the OS. Snaps can trigger a short (up to 80
+ * characters) notification message for actionable or time sensitive
+ * information. `inApp` notifications can also include an optional
+ * [expanded view](https://docs.metamask.io/snaps/features/notifications/#expanded-view).
+ * The expanded view has a title, content, and optional footer link shown when
+ * a user clicks on the notification.
+ */
 export const notifyBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,

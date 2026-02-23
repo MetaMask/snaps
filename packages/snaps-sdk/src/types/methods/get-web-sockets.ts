@@ -6,7 +6,13 @@
 export type GetWebSocketsParams = never;
 
 /**
- * The result returned by the `snap_getWebSockets` method.
+ * An array of connected WebSockets for the Snap. Each WebSocket is represented
+ * by an object containing the following properties:
+ *
+ * - `id` - The unique identifier of the WebSocket connection.
+ * - `url` - The URL of the WebSocket connection.
+ * - `protocols` - An array of subprotocols used in the WebSocket connection (if
+ * any).
  */
 export type GetWebSocketsResult = {
   id: string;

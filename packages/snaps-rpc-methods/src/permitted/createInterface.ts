@@ -47,6 +47,27 @@ export type CreateInterfaceMethodHooks = {
   ) => string;
 };
 
+/**
+ * Create an interactive interface for use in
+ * [interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).
+ *
+ * @example
+ * ```tsx
+ * import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
+ *
+ * const interfaceId = snap.request({
+ *   method: 'snap_createInterface',
+ *   params: {
+ *     ui: (
+ *       <Box>
+ *         <Heading>Example Interface</Heading>
+ *         <Text>This is an example interface created by "snap_createInterface".</Text>
+ *       </Box>
+ *     ),
+ *   },
+ * });
+ * ```
+ */
 export const createInterfaceHandler = {
   methodNames: [methodName] as const,
   implementation: getCreateInterfaceImplementation,

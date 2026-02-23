@@ -6,8 +6,6 @@
 export type GetLocaleParams = never;
 
 /**
- * The result returned by the `snap_getLocale` method.
- *
- * It is the locale of the user's MetaMask extension.
+ * The user's locale setting as a [language code](https://github.com/MetaMask/metamask-extension/blob/develop/app/_locales/index.json).
  */
 export type GetLocaleResult = string;

@@ -59,6 +59,15 @@ const methodHooks: MethodHooksObject<GetLocaleMethodHooks> = {
   getPreferences: true,
 };
 
+/**
+ * Get the user's locale setting. You can use this method to localize text in
+ * your Snap.
+ *
+ * Note that this method is deprecated. We recommend using
+ * [`snap_getPreferences`](https://docs.metamask.io/snaps/reference/snaps-api/snap_getpreferences)
+ * instead, which provides access to the user's locale as well as other
+ * preferences.
+ */
 export const getLocaleBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,

@@ -12,7 +12,25 @@ const hookNames: MethodHooksObject<GetSnapsHooks> = {
 };
 
 /**
- * `wallet_getSnaps` gets the requester's permitted and installed Snaps.
+ * Get permitted and installed Snaps for the requesting origin.
+ *
+ * @example
+ * ```ts
+ * const snaps = await snap.request({
+ *   method: 'wallet_getSnaps',
+ * });
+ * console.log(snaps);
+ * // {
+ * //   'npm:example-snap': {
+ * //     id: 'npm:example-snap',
+ * //     version: '1.0.0',
+ * //     initialPermissions: { ... },
+ * //     blocked: false,
+ * //     enabled: true,
+ * //   },
+ * //   ...,
+ * // }
+ * ```
  */
 export const getSnapsHandler = {
   methodNames: [methodName] as const,

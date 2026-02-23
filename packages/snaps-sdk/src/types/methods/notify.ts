@@ -15,7 +15,8 @@ export enum NotificationType {
 /**
  * The request parameters for the `snap_notify` method.
  *
- * @property type - The type of notification to display.
+ * @property type - The notification type (`inApp` or `native`). We recommend
+ * using `inApp` because native notifications may be rate-limited by the OS.
  * @property message - The message to display in the notification.
  */
 export type NotifyParams =

@@ -19,7 +19,31 @@ const hookNames: MethodHooksObject<GetClientStatusHooks> = {
 };
 
 /**
- * `snap_getClientStatus` returns useful information about the client running the snap.
+ * Get the status of the client running the Snap.
+ *
+ * @example
+ * ```ts
+ * import type { OnCronjobHandler } from '@metamask/snaps-sdk'
+ * import { MethodNotFoundError } from '@metamask/snaps-sdk'
+ *
+ * export const onCronjob: OnCronjobHandler = async ({ request }) => {
+ *   switch (request.method) {
+ *     case 'execute':
+ *       // Find out if MetaMask is locked.
+ *       const { locked } = await snap.request({
+ *         method: 'snap_getClientStatus',
+ *       })
+ *
+ *       if (!locked) {
+ *         // Do something that requires MetaMask to be unlocked, such as
+ *         // accessing the encrypted state.
+ *       }
+ *
+ *     default:
+ *       throw new MethodNotFoundError()
+ *   }
+ * }
+ * ```
  */
 export const getClientStatusHandler = {
   methodNames: [methodName] as const,

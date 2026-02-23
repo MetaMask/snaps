@@ -39,6 +39,32 @@ export type ScheduleBackgroundEventMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
+/**
+ * Schedule a background event for a Snap. The background event will trigger a
+ * JSON-RPC request to the Snap at the scheduled time, handled by the
+ * `onCronjob` entry point in the Snap.
+ *
+ * The schedule can be defined using either an ISO 8601 date or duration string.
+ * For example:
+ *
+ * - Using a date: `2026-12-31T23:59:59Z`
+ * - Using a duration: `P1DT2H` (which represents a duration of 1 day and 2
+ * hours)
+ *
+ * @example
+ * ```ts
+ * const id = await wallet.request({
+ *   method: 'snap_scheduleBackgroundEvent',
+ *   params: {
+ *     date: '2026-12-31T23:59:59Z',
+ *     request: {
+ *       method: 'mySnapMethod',
+ *       params: { foo: 'bar' },
+ *     },
+ *   },
+ * });
+ * ```
+ */
 export const scheduleBackgroundEventHandler = {
   methodNames: [methodName] as const,
   implementation: getScheduleBackgroundEventImplementation,

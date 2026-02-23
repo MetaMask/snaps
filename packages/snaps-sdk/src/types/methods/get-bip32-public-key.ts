@@ -18,9 +18,7 @@ export type GetBip32PublicKeyParams = Bip32Entropy & {
 };
 
 /**
- * The result returned by the `snap_getBip32PublicKey` method.
- *
- * It is the public key in hexadecimal format, in either compressed or
- * uncompressed format, depending on the `compressed` parameter.
+ * The public key as hexadecimal string. May be compressed or uncompressed
+ * depending on the `compressed` parameter provided in the request parameters.
  */
 export type GetBip32PublicKeyResult = string;

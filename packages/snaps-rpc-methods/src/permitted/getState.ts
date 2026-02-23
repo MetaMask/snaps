@@ -30,7 +30,28 @@ const hookNames: MethodHooksObject<GetStateHooks> = {
 };
 
 /**
- * `snap_getState` gets the state of the Snap.
+ * Get the state of the Snap, or a specific value within the state. By default,
+ * the data is automatically encrypted using a Snap-specific key and
+ * automatically decrypted when retrieved. You can set `encrypted` to `false` to
+ * use unencrypted storage (available when the client is locked).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_manageState": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const state = await snap.request({
+ *   method: 'snap_getState',
+ *   params: {
+ *     key: 'some.nested.value', // Optional, defaults to entire state
+ *     encrypted: true, // Optional, defaults to `true`
+ *   },
+ * });
+ * ```
  */
 export const getStateHandler = {
   methodNames: [methodName] as const,

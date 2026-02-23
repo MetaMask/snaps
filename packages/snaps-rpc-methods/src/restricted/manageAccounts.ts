@@ -122,6 +122,16 @@ export function manageAccountsImplementation({
   };
 }
 
+/**
+ * Manage account management Snap accounts. This method is organized into
+ * multiple sub-methods which each take their own parameters:
+ *
+ * - `createAccount`
+ * - `updateAccount`
+ * - `deleteAccount`
+ * - `listAccounts`
+ * - `submitResponse`
+ */
 export const manageAccountsBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,

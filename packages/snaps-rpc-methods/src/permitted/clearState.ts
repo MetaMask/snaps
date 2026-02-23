@@ -23,7 +23,17 @@ const hookNames: MethodHooksObject<ClearStateHooks> = {
 };
 
 /**
- * `snap_clearState` clears the state of the Snap.
+ * Clear the entire state of the Snap.
+ *
+ * @example
+ * ```ts
+ * await snap.request({
+ *   method: 'snap_clearState',
+ *   params: {
+ *     encrypted: true, // Optional, defaults to true
+ *   },
+ * });
+ * ```
  */
 export const clearStateHandler = {
   methodNames: [methodName] as const,

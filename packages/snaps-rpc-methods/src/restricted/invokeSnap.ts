@@ -141,6 +141,13 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
   handleSnapRpcRequest: true,
 };
 
+/**
+ * Calls the specified JSON-RPC API method of the specified Snap. The Snap
+ * must be installed and the dapp must have permission to communicate with the
+ * Snap, or the request is rejected. The dapp can install the Snap and request
+ * permission to communicate with it using
+ * [`wallet_requestSnaps`](http://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).
+ */
 export const invokeSnapBuilder = Object.freeze({
   targetName: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,

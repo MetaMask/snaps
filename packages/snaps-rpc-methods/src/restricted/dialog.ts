@@ -20,6 +20,7 @@ import type {
   ComponentOrElement,
   InterfaceContext,
   ContentType,
+  DialogResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
@@ -145,6 +146,32 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   getInterface: true,
 };
 
+/**
+ * Display a [dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/)
+ * in the MetaMask UI.
+ *
+ * @example
+ * ```ts
+ * import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
+ *
+ * const walletAddress = await snap.request({
+ *   method: 'snap_dialog',
+ *   params: {
+ *     type: 'prompt',
+ *     content: (
+ *       <Box>
+ *         <Heading>What is the wallet address?</Heading>
+ *         <Text>Please enter the wallet address to be monitored.</Text>
+ *       </Box>
+ *     ),
+ *     placeholder: '0x123...',
+ *   },
+ * });
+ *
+ * // `walletAddress` will be a string containing the address entered by the
+ * // user.
+ * ```
+ */
 export const dialogBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
@@ -244,8 +271,6 @@ export type DialogParameters = InferMatching<
   typeof DialogParametersStruct,
   DialogParams
 >;
-
-type DialogResult = Json;
 
 /**
  * Builds the method implementation for `snap_dialog`.

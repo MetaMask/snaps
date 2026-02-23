@@ -24,6 +24,30 @@ export type GetBackgroundEventsMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
+/**
+ * Get the scheduled background events for the Snap.
+ *
+ * @example
+ * ```ts
+ * const events = await snap.request({
+ *   method: 'snap_getBackgroundEvents',
+ * });
+ * console.log(events);
+ * // [
+ * //   {
+ * //     id: 'event-1',
+ * //     scheduledAt: 1672531200000,
+ * //     snapId: 'npm:example-snap',
+ * //     date: 1672531200000,
+ * //     request: {
+ * //       method: 'example_method',
+ * //       params: { example: 'data' },
+ * //     },
+ * //   },
+ * //   ...,
+ * // ]
+ * ```
+ */
 export const getBackgroundEventsHandler = {
   methodNames: [methodName] as const,
   implementation: getGetBackgroundEventsImplementation,

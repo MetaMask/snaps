@@ -78,8 +78,24 @@ export type PromptDialog =
       placeholder?: string;
     };
 
+/* eslint-disable jsdoc/check-indentation */
 /**
- * The request parameters for the `snap_dialog` method.
+ * An object containing the contents of the dialog.
+ *
+ * - `type` - The type of dialog. Not providing a type will create a fully
+ * [custom dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).
+ * Possible values are:
+ *   - `alert` - An alert that can only be acknowledged.
+ *   - `confirmation` - A confirmation that can be accepted or rejected.
+ *   - `prompt` - A prompt where the user can enter a text response.
+ *
+ * - One of:
+ *   - `content` - The content of the alert, as a
+ * [custom UI](https://docs.metamask.io/snaps/features/custom-ui/) component.
+ *   - `id` - The ID of an
+ * [interactive interface](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+ * - `placeholder` - An optional placeholder text to display in the dialog. Only
+ * applicable for the `prompt` dialog.
  *
  * @property type - The type of dialog to display.
  * @property content - The content to display in the dialog.
@@ -92,10 +108,9 @@ export type DialogParams =
   | ConfirmationDialog
   | PromptDialog
   | DefaultDialog;
+/* eslint-enable jsdoc/check-indentation */
 
 /**
- * The result returned by the `snap_dialog` method.
- *
  * - If the dialog is an `alert`, the result is `null`.
  * - If the dialog is a `confirmation`, the result is a boolean indicating
  * whether the user confirmed the dialog.

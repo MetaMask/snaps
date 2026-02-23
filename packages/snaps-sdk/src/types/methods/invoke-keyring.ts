@@ -11,7 +11,6 @@ import type { InvokeSnapParams } from './invoke-snap';
 export type InvokeKeyringParams = InvokeSnapParams;
 
 /**
- * The result returned by the `wallet_invokeKeyring` method, which is the result
- * returned by the Snap.
+ * The result returned by the Snap.
  */
 export type InvokeKeyringResult = Json;

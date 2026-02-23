@@ -45,7 +45,52 @@ const hookNames: MethodHooksObject<SetStateHooks> = {
 };
 
 /**
- * `snap_setState` sets the state of the Snap.
+ * Allow the Snap to persist up to 64 MB of data to disk and retrieve it at
+ * will. By default, the data is automatically encrypted using a Snap-specific
+ * key and automatically decrypted when retrieved. You can set `encrypted` to
+ * `false` to use unencrypted storage (available when the client is locked).
+ *
+ * If the key is `undefined`, the value is expected to be an object. In this
+ * case, the value is set as the new root state.
+ *
+ * If the key is not `undefined`, the value is set in the state at the key. If
+ * the key does not exist, it is created (and any missing intermediate keys are
+ * created as well).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_manageState": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * // Set the entire state:
+ * await snap.request({
+ *   method: 'snap_setState',
+ *   params: {
+ *     value: {
+ *       some: {
+ *         nested: {
+ *           value: 'Hello, world!',
+ *         },
+ *       },
+ *     },
+ *     encrypted: true, // Optional, defaults to `true`
+ *   },
+ * });
+ *
+ * // Set a specific value within the state:
+ * await snap.request({
+ *   method: 'snap_setState',
+ *   params: {
+ *     key: 'some.nested.value',
+ *     value: 'Hello, world!',
+ *     encrypted: true, // Optional, defaults to `true`
+ *   },
+ * });
+ * ```
  */
 export const setStateHandler = {
   methodNames: [methodName] as const,

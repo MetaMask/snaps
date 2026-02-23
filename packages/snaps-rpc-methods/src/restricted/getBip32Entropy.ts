@@ -114,6 +114,61 @@ const methodHooks: MethodHooksObject<GetBip32EntropyMethodHooks> = {
   getClientCryptography: true,
 };
 
+/**
+ * Enables you to [manage users' non-EVM accounts](https://docs.metamask.io/snaps/features/non-evm-networks/)
+ * by deriving the [SLIP-10](https://github.com/satoshilabs/slips/blob/master/slip-0010.md)
+ * keys specified by the `path` and `curve` parameters. The keys are derived
+ * using the entropy from the user's Secret Recovery Phrase.
+ *
+ * If the keys you want to derive conform to the [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
+ * structure, use [snap_getBip44Entropy](https://docs.metamask.io/snaps/reference/snaps-api/snap_getbip44entropy)
+ * instead. Otherwise, use this method.
+ *
+ * This method is designed to be used with the [`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree)
+ * module. `@metamask/key-tree` can help you get the [extended private keys](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#extended-keys)
+ * for user addresses, but it's your responsibility to know how to use those
+ * keys to, for example, derive an address for the relevant protocol or sign a
+ * transaction for the user.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_getBip32Entropy": [
+ *       {
+ *         "path": ["m", "44'", "3'"],
+ *         "curve": "secp256k1" // Or "ed25519", "ed25519Bip32"
+ *       }
+ *     ]
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * import { SLIP10Node } from '@metamask/key-tree'
+ *
+ * // This example uses Dogecoin, which has a derivation path starting with
+ * // m/44'/3'.
+ * const dogecoinNode = await snap.request({
+ *   method: 'snap_getBip32Entropy',
+ *   params: {
+ *     // The path and curve must be specified in the initial permissions.
+ *     path: ['m', "44'", "3'"],
+ *     curve: 'secp256k1',
+ *   },
+ * })
+ *
+ * // Next, create an instance of a SLIP-10 node for the Dogecoin node.
+ * const dogecoinSlip10Node = await SLIP10Node.fromJSON(dogecoinNode)
+ *
+ * // m/44'/3'/0'
+ * const accountKey0 = await dogecoinSlip10Node.derive(["bip32:0'"])
+ *
+ * // m/44'/3'/1'
+ * const accountKey1 = await dogecoinSlip10Node.derive(["bip32:1'"])
+ *
+ * // Now, you can ask the user to sign transactions, etc.
+ * ```
+ */
 export const getBip32EntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,

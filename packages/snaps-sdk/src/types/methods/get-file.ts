@@ -11,16 +11,21 @@ export enum AuxiliaryFileEncoding {
 
 /**
  * The request parameters for the `snap_getFile` method.
- *
- * @property path - The path to the file to retrieve.
- * @property encoding - The encoding to use when retrieving the file.
  */
 export type GetFileParams = {
+  /**
+   * The path to the file, relative to the Snap's package directory
+   * (that is, one level above `src`).
+   */
   path: string;
+
+  /**
+   * The encoding to use when retrieving the file. Defaults to `base64`.
+   */
   encoding?: EnumToUnion<AuxiliaryFileEncoding>;
 };
 
 /**
- * The result returned by the `snap_getFile` method.
+ * The file content as a string in the requested encoding.
  */
 export type GetFileResult = string;
