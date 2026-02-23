@@ -57,6 +57,8 @@ export type EndTraceParameters = InferMatching<
 
 /**
  * Handler for the `snap_endTrace` method.
+ *
+ * @internal
  */
 export const endTraceHandler = {
   methodNames: [methodName] as const,

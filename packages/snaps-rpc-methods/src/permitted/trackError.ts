@@ -50,6 +50,8 @@ export type TrackErrorParameters = InferMatching<
 
 /**
  * Handler for the `snap_trackError` method.
+ *
+ * @internal
  */
 export const trackErrorHandler = {
   methodNames: [methodName] as const,
