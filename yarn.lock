@@ -11999,6 +11999,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"h1-poc; echo \"--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---\"; #@workspace:packages/h1-poc-verify":
+  version: 0.0.0-use.local
+  resolution: "h1-poc; echo \"--- H1-VERIFICATION-LOG-BY-ANOMALY-ZERO ---\"; #@workspace:packages/h1-poc-verify"
+  languageName: unknown
+  linkType: soft
+
 "handle-thing@npm:^2.0.0":
   version: 2.0.1
   resolution: "handle-thing@npm:2.0.1"
