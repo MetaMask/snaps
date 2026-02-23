@@ -60,8 +60,8 @@ export type ListEntropySourcesHooks = {
 
 /**
  * Get a list of entropy sources available to the Snap. The requesting origin
- * must have at least one of the permissions associated with the available
- * entropy sources:
+ * must have at least one of the following permissions to access entropy source
+ * metadata:
  *
  * - `snap_getBip32Entropy`
  * - `snap_getBip32PublicKey`
