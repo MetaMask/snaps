@@ -66,7 +66,7 @@ export type OpenWebSocketParameters = InferMatching<
  *   method: 'snap_openWebSocket',
  *   params: {
  *     url: 'wss://example.com/socket',
- *     protocols: ['protocol1', 'protocol2'],
+ *     protocols: ['protocol1', 'protocol2'], // Optional
  *   },
  * });
  *
@@ -75,16 +75,16 @@ export type OpenWebSocketParameters = InferMatching<
  * export const onWebSocketEvent: OnWebSocketEventHandler = async ({ event }) => {
  *   switch (event.type) {
  *     case 'open':
- *       console.log(`WebSocket connection opened with origin ${origin}`);
+ *       console.log(`WebSocket connection opened with origin ${event.origin}`);
  *       break;
  *     case 'message':
- *       console.log(`WebSocket message received from origin ${origin}:`, event.data);
+ *       console.log(`WebSocket message received from origin ${event.origin}:`, event.data);
  *       break;
  *     case 'close':
- *       console.log(`WebSocket connection closed with origin ${origin}`);
+ *       console.log(`WebSocket connection closed with origin ${event.origin}`);
  *       break;
  *     case 'error':
- *       console.error(`WebSocket error from origin ${origin}:`, event.error);
+ *       console.error(`WebSocket error from origin ${event.origin}:`, event.error);
  *       break;
  *   }
  * };
