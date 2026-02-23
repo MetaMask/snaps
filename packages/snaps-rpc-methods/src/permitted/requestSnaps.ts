@@ -45,8 +45,8 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
  * satisfies the range. The request succeeds if the Snap is successfully
  * installed.
  *
- * If the installation of any Snap fails, this method returns the error that
- * caused the failure.
+ * If the installation of any Snap fails, or the user rejects the installation
+ * or permission request, this method returns the error that caused the failure.
  */
 export const requestSnapsHandler = {
   methodNames: [methodName] as const,
