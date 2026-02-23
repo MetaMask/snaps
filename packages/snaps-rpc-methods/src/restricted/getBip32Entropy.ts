@@ -137,7 +137,7 @@ const methodHooks: MethodHooksObject<GetBip32EntropyMethodHooks> = {
  *     "snap_getBip32Entropy": [
  *       {
  *         "path": ["m", "44'", "3'"],
- *         "curve": "secp256k1" // Or "ed25519"
+ *         "curve": "secp256k1" // Or "ed25519", "ed25519Bip32"
  *       }
  *     ]
  *   }
