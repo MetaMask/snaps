@@ -80,6 +80,8 @@ export type TrackEventParameters = InferMatching<
 
 /**
  * Handler for the `snap_trackEvent` method.
+ *
+ * @internal
  */
 export const trackEventHandler = {
   methodNames: [methodName] as const,

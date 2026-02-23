@@ -19,6 +19,8 @@ const hookNames: MethodHooksObject<GetAllSnapsHooks> = {
 /**
  * `wallet_getAllSnaps` gets all installed Snaps. Currently, this can only be
  * called from `https://snaps.metamask.io`.
+ *
+ * @internal
  */
 export const getAllSnapsHandler = {
   methodNames: [methodName] as const,

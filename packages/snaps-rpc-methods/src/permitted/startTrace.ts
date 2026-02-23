@@ -65,6 +65,8 @@ export type StartTraceParameters = InferMatching<
 
 /**
  * Handler for the `snap_startTrace` method.
+ *
+ * @internal
  */
 export const startTraceHandler = {
   methodNames: [methodName] as const,

@@ -705,6 +705,26 @@ function getTypeMethodParameters(
 }
 
 /**
+ * Check if a handler is marked as internal by looking for an `@internal` tag in
+ * the JSDoc comments of the variable declaration that defines the handler. If
+ * the handler is marked as internal, it should be excluded from the generated
+ * schema, since it is not intended to be used by external developers.
+ *
+ * @param declaration - The variable declaration that defines the handler, which
+ * is expected to include JSDoc comments that may contain an `@internal` tag.
+ * @returns `true` if the handler is marked as internal, or `false` otherwise.
+ */
+function isInternal(declaration: VariableDeclaration) {
+  const variableStatement = declaration.getVariableStatementOrThrow();
+  const jsDocs = variableStatement.getJsDocs();
+
+  return jsDocs.some((jsDoc) => {
+    const tags = jsDoc.getTags();
+    return tags.some((tag) => tag.getTagName() === 'internal');
+  });
+}
+
+/**
  * Parse a method example from a JSDoc `@example` tag.
  *
  * @param tag - The JSDoc tag to parse the example from, which is expected to be
@@ -946,11 +966,12 @@ function getMethodSubjectTypes(methodName: string): SubjectType[] {
  * }
  * ```
  *
- * @returns The name of the handler.
+ * @returns A method schema extracted from the handler, or `null` if the handler
+ * is marked as internal and should be excluded from the generated schema.
  */
 async function processPermittedHandler(
   property: PropertyAssignment,
-): Promise<Method> {
+): Promise<Method | null> {
   const name = property.getName();
 
   // Get the handler identifier (e.g., the right-hand side of the property
@@ -976,6 +997,10 @@ async function processPermittedHandler(
   const object = declarationInitializer.getExpressionIfKindOrThrow(
     SyntaxKind.ObjectLiteralExpression,
   );
+
+  if (isInternal(declaration)) {
+    return null;
+  }
 
   const description = getMethodDescription(declaration);
   const [parameters, result] = getMethodSignature(object);
@@ -1022,7 +1047,8 @@ async function processPermittedHandlers(project: Project) {
     return processPermittedHandler(propertyAssignment);
   });
 
-  return await Promise.all(promises);
+  const results = await Promise.all(promises);
+  return results.filter((method): method is Method => method !== null);
 }
 
 /**
@@ -1268,11 +1294,13 @@ function getRestrictedMethodSignature(
  * }
  * ```
  *
- * @returns The method schema extracted from the restricted permission builder.
+ * @returns The method schema extracted from the restricted permission builder,
+ * or `null` if the permission builder is marked as internal and should be
+ * excluded from the generated schema.
  */
 async function processRestrictedPermissionBuilder(
   property: PropertyAssignment,
-): Promise<Method> {
+): Promise<Method | null> {
   const name = property.getName();
 
   // Get the permission builder identifier (e.g., the right-hand side of the
@@ -1314,6 +1342,10 @@ async function processRestrictedPermissionBuilder(
   const object = asExpression.getExpressionIfKindOrThrow(
     SyntaxKind.ObjectLiteralExpression,
   );
+
+  if (isInternal(declaration)) {
+    return null;
+  }
 
   // Extract the method names and parameters from the permission builder
   // definition.
@@ -1378,7 +1410,8 @@ async function processRestrictedPermissionBuilders(project: Project) {
     return processRestrictedPermissionBuilder(propertyAssignment);
   });
 
-  return await Promise.all(promises);
+  const results = await Promise.all(promises);
+  return results.filter((method): method is Method => method !== null);
 }
 
 const project = new Project({
