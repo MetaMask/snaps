@@ -31,7 +31,7 @@ const hookNames: MethodHooksObject<GetStateHooks> = {
 
 /**
  * Get the state of the Snap, or a specific value within the state. By default,
- * the data is automatically encrypted using a Snap-specific key an
+ * the data is automatically encrypted using a Snap-specific key and
  * automatically decrypted when retrieved. You can set `encrypted` to `false` to
  * use unencrypted storage (available when the client is locked).
  *
