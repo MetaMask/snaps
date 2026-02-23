@@ -23,7 +23,7 @@ const hookNames: MethodHooksObject<ClearStateHooks> = {
 };
 
 /**
- * Clear the state of the Snap.
+ * Clear the entire state of the Snap.
  *
  * @example
  * ```ts
