@@ -17,6 +17,7 @@ export type GetStateParams = {
 };
 
 /**
- * The result returned by the `snap_getState` method.
+ * The state of the Snap. If a key was provided in the request parameters, this
+ * is the value of that key in the state. Otherwise, this is the entire state.
  */
 export type GetStateResult = Json;

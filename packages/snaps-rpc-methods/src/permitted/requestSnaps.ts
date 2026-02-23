@@ -35,7 +35,18 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
 };
 
 /**
- * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
+ * Request permission for a dapp to communicate with the specified Snaps and
+ * attempt to install them if they're not already installed.
+ *
+ * If the Snap version range is specified, MetaMask attempts to install a
+ * version of the Snap that satisfies the range. If a compatible version of the
+ * Snap is already installed, the request succeeds. If an incompatible version
+ * is installed, MetaMask attempts to update the Snap to the latest version that
+ * satisfies the range. The request succeeds if the Snap is successfully
+ * installed.
+ *
+ * If the installation of any Snap fails, this method returns the error that
+ * caused the failure.
  */
 export const requestSnapsHandler = {
   methodNames: [methodName] as const,

@@ -24,7 +24,7 @@ export type GetWebSocketsMethodHooks = {
 };
 
 /**
- * Handler for the `snap_getWebSockets` method.
+ * Get the connected WebSockets for the Snap.
  */
 export const getWebSocketsHandler = {
   methodNames: [methodName] as const,

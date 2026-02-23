@@ -2,15 +2,26 @@ import type { ComponentOrElement, InterfaceContext } from '..';
 
 /**
  * The request parameters for the `snap_createInterface` method.
- *
- * @property ui - The components to display in the interface.
  */
 export type CreateInterfaceParams = {
+  /**
+   * The [custom UI](https://docs.metamask.io/snaps/features/custom-ui/) to
+   * create.
+   */
   ui: ComponentOrElement;
+
+  /**
+   * Optional context for the interface, which can be used to provide additional
+   * information about the interface to the Snap, without being part of the UI
+   * itself.
+   */
   context?: InterfaceContext;
 };
 
 /**
- * The result returned by the `snap_createInterface` method, which is the id of the created interface.
+ * The interface's ID to be used in subsequent calls to custom UI methods such
+ * as [`snap_updateInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_updateinterface),
+ * or to display the interface using one of the interface display methods such
+ * as [`snap_dialog`](https://docs.metamask.io/snaps/reference/snaps-api/snap_dialog).
  */
 export type CreateInterfaceResult = string;

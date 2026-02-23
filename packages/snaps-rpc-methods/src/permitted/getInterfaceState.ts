@@ -35,6 +35,20 @@ export type GetInterfaceStateMethodHooks = {
   getInterfaceState: (id: string) => InterfaceState;
 };
 
+/**
+ * Get the form state of an [interface](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/)
+ * created by [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+ *
+ * @example
+ * ```ts
+ * const state = await snap.request({
+ *   method: 'snap_getInterfaceState',
+ *   params: {
+ *     id: interfaceId,
+ *   },
+ * });
+ * ```
+ */
 export const getInterfaceStateHandler = {
   methodNames: [methodName] as const,
   implementation: getGetInterfaceStateImplementation,

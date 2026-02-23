@@ -45,7 +45,50 @@ export type OpenWebSocketParameters = InferMatching<
 >;
 
 /**
- * Handler for the `snap_openWebSocket` method.
+ * Open a WebSocket connection to the specified URL with optional protocols.
+ *
+ * Note: This method is only available to snaps that have the
+ * [`endowment:network-access`](https://docs.metamask.io/snaps/features/network-access/)
+ * permission.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "endowment:network-access": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * // Open a connection to a WebSocket server, e.g., in the JSON-RPC handler of
+ * // the Snap:
+ * snap.request({
+ *   method: 'snap_openWebSocket',
+ *   params: {
+ *     url: 'wss://example.com/socket',
+ *     protocols: ['protocol1', 'protocol2'],
+ *   },
+ * });
+ *
+ * // Listen for events from the WebSocket connection in the `onWebSocketEvent`
+ * // handler of the Snap:
+ * export const onWebSocketEvent: OnWebSocketEventHandler = async ({ event }) => {
+ *   switch (event.type) {
+ *     case 'open':
+ *       console.log(`WebSocket connection opened with origin ${origin}`);
+ *       break;
+ *     case 'message':
+ *       console.log(`WebSocket message received from origin ${origin}:`, event.data);
+ *       break;
+ *     case 'close':
+ *       console.log(`WebSocket connection closed with origin ${origin}`);
+ *       break;
+ *     case 'error':
+ *       console.error(`WebSocket error from origin ${origin}:`, event.error);
+ *       break;
+ *   }
+ * };
+ * ```
  */
 export const openWebSocketHandler = {
   methodNames: [methodName] as const,

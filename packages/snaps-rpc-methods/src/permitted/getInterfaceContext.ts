@@ -35,6 +35,42 @@ export type GetInterfaceContextMethodHooks = {
   getInterfaceContext: (id: string) => InterfaceContext | null;
 };
 
+/**
+ * Get the context of an [interface](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/)
+ * created by [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+ *
+ * @example
+ * ```ts
+ * import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
+ *
+ * const interfaceId = await snap.request({
+ *   method: 'snap_createInterface',
+ *   params: {
+ *     ui: (
+ *       <Box>
+ *         <Heading>Hello, world!</Heading>
+ *         <Text>Welcome to my Snap homepage!</Text>
+ *       </Box>
+ *     ),
+ *     context: {
+ *       key: 'value'
+ *     }
+ *   },
+ * })
+ *
+ * const context = await snap.request({
+ *   method: 'snap_getInterfaceContext',
+ *   params: {
+ *     id: interfaceId,
+ *   },
+ * })
+ *
+ * console.log(context)
+ * // {
+ * //   key: 'value'
+ * // }
+ * ```
+ */
 export const getInterfaceContextHandler = {
   methodNames: [methodName] as const,
   implementation: getInterfaceContextImplementation,

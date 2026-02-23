@@ -2,12 +2,16 @@ import type { Json } from '@metamask/utils';
 
 /**
  * The request parameters for the `wallet_invokeSnap` method.
- *
- * @property snapId - The ID of the Snap to invoke.
- * @property request - The JSON-RPC request to send to the Snap.
  */
 export type InvokeSnapParams = {
+  /**
+   * The ID of the Snap to invoke.
+   */
   snapId: string;
+
+  /**
+   * The JSON-RPC request to send to the Snap.
+   */
   request: Record<string, Json>;
 };
 

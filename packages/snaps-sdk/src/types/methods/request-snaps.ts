@@ -3,15 +3,14 @@ import type { JsonRpcError } from '@metamask/utils';
 import type { Snap } from '../snap';
 
 /**
- * The request parameters for the `wallet_requestSnaps` method.
- *
- * It consists of a map of Snap IDs to optional version strings to request.
+ * An object mapping the IDs of the requested Snaps to optional SemVer version
+ * ranges. The SemVer version ranges use the same semantics as NPM
+ * `package.json` ranges.
  */
 export type RequestSnapsParams = Record<string, { version?: string }>;
 
 /**
- * The result returned by the `wallet_requestSnaps` method.
- *
- * It consists of a map of Snap IDs to either the Snap object or an error.
+ * An object mapping the IDs of the requested Snaps to either the installed Snap
+ * or an error if the Snap failed to install or was not permitted.
  */
 export type RequestSnapsResult = Record<string, { error: JsonRpcError } | Snap>;

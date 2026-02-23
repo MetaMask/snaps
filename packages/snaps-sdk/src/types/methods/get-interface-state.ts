@@ -3,13 +3,20 @@ import type { InterfaceState } from '../interface';
 /**
  * The request parameters for the `snap_getInterfaceState` method.
  *
- * @property id - The interface id.
+ * @property id - The interface ID.
  */
 export type GetInterfaceStateParams = {
   id: string;
 };
 
 /**
- * The result returned by the `snap_getInterfaceState` method, which is the state of the interface.
+ * The state of the given interface. This is a `Record` of the form state, where
+ * the keys are the `name` properties of the form fields, and the values are the
+ * current values of those fields, depending on the type of the field.
+ *
+ * For example, for a text field, the value would be a `string`, for a checkbox
+ * field, the value would be a `boolean`, and for a file upload field, the value
+ * would be a `File` object. The exact structure of the state depends on the
+ * form fields that were defined when the interface was created.
  */
 export type GetInterfaceStateResult = InterfaceState;

@@ -44,7 +44,21 @@ export type SendWebSocketMessageParameters = InferMatching<
 >;
 
 /**
- * Handler for the `snap_sendWebSocketMessage` method.
+ * Send a message to an open WebSocket connection. The message will be sent to
+ * the WebSocket connection with the specified ID, which must have been
+ * previously opened by the snap using the [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket/)
+ * method.
+ *
+ * @example
+ * ```ts
+ * await wallet.request({
+ *   method: 'snap_sendWebSocketMessage',
+ *   params: {
+ *     id: 'websocket-connection-id',
+ *     message: 'Hello, WebSocket!', // or message: [1, 2, 3] for binary data
+ *   },
+ * });
+ * ```
  */
 export const sendWebSocketMessageHandler = {
   methodNames: [methodName] as const,

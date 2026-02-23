@@ -35,6 +35,10 @@ export type ResolveInterfaceMethodHooks = {
   resolveInterface: (id: string, value: Json) => Promise<void>;
 };
 
+/**
+ * Resolve an interactive interface. For use in
+ * [custom dialogs](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).
+ */
 export const resolveInterfaceHandler = {
   methodNames: [methodName] as const,
   implementation: getResolveInterfaceImplementation,

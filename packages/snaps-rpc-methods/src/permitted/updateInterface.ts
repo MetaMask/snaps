@@ -51,6 +51,10 @@ export type UpdateInterfaceMethodHooks = {
   ) => void;
 };
 
+/**
+ * Update an interactive interface. For use in
+ * [interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).
+ */
 export const updateInterfaceHandler = {
   methodNames: [methodName] as const,
   implementation: getUpdateInterfaceImplementation,

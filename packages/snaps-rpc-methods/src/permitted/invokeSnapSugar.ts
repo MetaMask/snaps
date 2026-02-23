@@ -8,11 +8,33 @@ import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
-/**
- * `wallet_invokeSnap` attempts to invoke an RPC method of the specified Snap.
- */
 const methodName = 'wallet_invokeSnap';
 
+/**
+ * Invoke a method of a Snap, designated by the `snapId` parameter, with a
+ * JSON-RPC request specified in the `request` parameter. This is effectively a
+ * wrapper around [`wallet_snap`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_snap)
+ * that allows for more convenient invocation of Snap methods without needing to
+ * specify the full `wallet_snap` parameters.
+ *
+ * The Snap must be installed and the dapp must have permission to communicate
+ * with the Snap, or the request is rejected. The dapp can install the Snap and
+ * request permission to communicate with it using [`wallet_requestSnaps`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).
+ *
+ * @example
+ * ```ts
+ * const result = await snap.request({
+ *   method: 'wallet_invokeSnap',
+ *   params: {
+ *     snapId: 'npm:@metamask/example-snap',
+ *     request: {
+ *       method: 'someMethod',
+ *       params: { some: 'params' },
+ *     },
+ *   },
+ * });
+ * ```
+ */
 export const invokeSnapSugarHandler = {
   methodNames: [methodName] as const,
   implementation: invokeSnapSugar,

@@ -17,6 +17,6 @@ export type ScheduleBackgroundEventParams =
   | { duration: string; request: Cronjob['request'] };
 
 /**
- * The result returned by the `snap_scheduleBackgroundEvent` method, which is the ID of the scheduled event.
+ * The ID of the scheduled background event.
  */
 export type ScheduleBackgroundEventResult = string;

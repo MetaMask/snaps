@@ -45,7 +45,50 @@ const hookNames: MethodHooksObject<SetStateHooks> = {
 };
 
 /**
- * `snap_setState` sets the state of the Snap.
+ * Set the state of the Snap, or a specific value within the state. The state
+ * can be encrypted or unencrypted.
+ *
+ * If the key is `undefined`, the value is expected to be an object. In this
+ * case, the value is set as the new state.
+ *
+ * If the key is not `undefined`, the value is set in the state at the key. If
+ * the key does not exist, it is created (and any missing intermediate keys are
+ * created as well).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_manageState": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * // Set the entire state:
+ * await snap.request({
+ *   method: 'snap_setState',
+ *   params: {
+ *     value: {
+ *       some: {
+ *         nested: {
+ *           value: 'Hello, world!',
+ *         },
+ *       },
+ *     },
+ *     encrypted: true, // Optional, defaults to `true`
+ *   },
+ * });
+ *
+ * // Set a specific value within the state:
+ * await snap.request({
+ *   method: 'snap_setState',
+ *   params: {
+ *     key: 'some.nested.value',
+ *     value: 'Hello, world!',
+ *     encrypted: true, // Optional, defaults to `true`
+ *   },
+ * });
+ * ```
  */
 export const setStateHandler = {
   methodNames: [methodName] as const,

@@ -58,6 +58,16 @@ export type ListEntropySourcesHooks = {
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
 
+/**
+ * Get a list of entropy sources available to the Snap. The requesting origin
+ * must have at least one of the permissions associated with the available
+ * entropy sources:
+ *
+ * - `snap_getBip32Entropy`
+ * - `snap_getBip32PublicKey`
+ * - `snap_getBip44Entropy`
+ * - `snap_getEntropy`
+ */
 export const listEntropySourcesHandler = {
   methodNames: [methodName] as const,
   implementation: listEntropySourcesImplementation,

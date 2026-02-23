@@ -35,7 +35,8 @@ export type CloseWebSocketParameters = InferMatching<
 >;
 
 /**
- * Handler for the `snap_closeWebSocket` method.
+ * Closes a WebSocket connection that was previously opened with
+ * [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket).
  */
 export const closeWebSocketHandler = {
   methodNames: [methodName] as const,

@@ -25,6 +25,26 @@ export type CancelBackgroundEventMethodHooks = {
   hasPermission: (permissionName: string) => boolean;
 };
 
+/**
+ * Cancel a background event created by
+ * [`snap_scheduleBackgroundEvent`](https://docs.metamask.io/snaps/reference/snaps-api/snap_schedulebackgroundevent).
+ *
+ * @example
+ * ```ts
+ * const id = snap.request({
+ *   method: 'snap_scheduleBackgroundEvent',
+ *   params: {
+ *     // ...
+ *   },
+ * });
+ *
+ * // Later, when you want to cancel the background event:
+ * snap.request({
+ *   method: 'snap_cancelBackgroundEvent',
+ *   params: { id },
+ * });
+ * ```
+ */
 export const cancelBackgroundEventHandler = {
   methodNames: [methodName] as const,
   implementation: getCancelBackgroundEventImplementation,

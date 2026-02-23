@@ -30,6 +30,13 @@ export type EntropySource = {
 export type ListEntropySourcesParams = never;
 
 /**
- * The result returned by the `snap_listEntropySources` method.
+ * An array of entropy sources available to the Snap. Each entropy source
+ * consists of:
+ *
+ * - `name` - The name of the entropy source.
+ * - `id` - The ID of the entropy source.
+ * - `type` - The type of the entropy source. Currently, only `mnemonic` is
+ * supported.
+ * - `primary` - Whether the entropy source is the primary source.
  */
 export type ListEntropySourcesResult = EntropySource[];

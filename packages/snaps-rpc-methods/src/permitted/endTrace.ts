@@ -56,7 +56,8 @@ export type EndTraceParameters = InferMatching<
 >;
 
 /**
- * Handler for the `snap_endTrace` method.
+ * End a performance trace in Sentry. This method is only available to
+ * preinstalled Snaps.
  *
  * @internal
  */
