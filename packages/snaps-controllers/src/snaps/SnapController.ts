@@ -952,7 +952,7 @@ export class SnapController extends BaseController<
   // This is used to ensure that the controller is ready to be used.
   // It is resolved when the controller has finished setting up and the platform is ready.
   // It is rejected if there is an error during setup.
-  readonly #controllerSetup = createDeferredPromise();
+  #controllerSetup = createDeferredPromise();
 
   constructor({
     messenger,
@@ -1352,8 +1352,10 @@ export class SnapController extends BaseController<
    *
    * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
    * runnable Snaps.
+   *
+   * @param waitForPlatform - Whether to wait for the platform to be ready before returning.
    */
-  async init() {
+  async init(waitForPlatform = true) {
     try {
       if (this.#preinstalledSnaps) {
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
@@ -1362,7 +1364,11 @@ export class SnapController extends BaseController<
       this.#controllerSetup.resolve();
 
       // Populate the `isReady` state.
-      await this.#ensureCanUsePlatform();
+      if (waitForPlatform) {
+        await this.#ensureCanUsePlatform();
+      } else {
+        this.#ensureCanUsePlatform().catch(logError);
+      }
 
       this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
     } catch (error) {
@@ -2441,6 +2447,7 @@ export class SnapController extends BaseController<
   /**
    * Completely clear the controller's state: delete all associated data,
    * handlers, event listeners, and permissions; tear down all snap providers.
+   * Also re-initializes the controller after clearing the state.
    */
   async clearState() {
     const snapIds = Object.keys(this.state.snaps);
@@ -2460,10 +2467,10 @@ export class SnapController extends BaseController<
 
     await this.#clearStorageService();
 
-    // We want to remove all snaps & permissions, except for preinstalled snaps
-    if (this.#preinstalledSnaps) {
-      await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-    }
+    this.#controllerSetup = createDeferredPromise();
+
+    // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
+    await this.init(false);
   }
 
   /**

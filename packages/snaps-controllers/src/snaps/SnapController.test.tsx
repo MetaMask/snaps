@@ -10800,7 +10800,7 @@ describe('SnapController', () => {
       );
 
       expect(snapController.state).toStrictEqual({
-        isReady: false,
+        isReady: true,
         snaps: {},
         snapStates: {},
         unencryptedSnapStates: {},
