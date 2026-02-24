@@ -92,6 +92,7 @@ type ArrayMethodParameter = CommonMethod & {
 
 type UnionMethodParameter = CommonMethod & {
   kind: 'union';
+  commonProperties: MethodParameter[];
   options: MethodParameter[];
 };
 
@@ -113,34 +114,6 @@ type MethodExample = {
     content: string;
   }[];
 };
-
-/**
- * Get the type of a property at the location of the implementation function of
- * a handler. This is needed to extract the type of the properties at the
- * correct location.
- *
- * @param symbol - The symbol of the handler, which is expected to be the symbol
- * of the object literal that defines the handler.
- * @param object - The object literal expression that defines the handler, which
- * is needed to find the correct property to extract the type from.
- * @returns The type of the property at the location of the implementation
- * function of the handler.
- */
-function getTypeAtLocation(symbol: Symbol, object: ObjectLiteralExpression) {
-  const property =
-    object.getProperty('implementation') ??
-    object.getProperty('specificationBuilder');
-
-  assert(
-    property,
-    'Property "implementation" or "specificationBuilder" not found.',
-  );
-
-  const typeAtLocation = symbol.getTypeAtLocation(property);
-  assert(typeAtLocation, 'Type at location not found.');
-
-  return typeAtLocation;
-}
 
 /**
  * Unwrap a `Promise` type node to get the underlying type, if the given type
@@ -744,6 +717,72 @@ function getUnionTypeNode(typeNode: TypeNode): UnionTypeNode | null {
 }
 
 /**
+ * Extract properties that are common to all object-typed union options,
+ * i.e., properties that appear in every object option with the same name and
+ * type string. Common properties are returned separately so they can be
+ * hoisted to the union level, and are removed from each option's property
+ * list.
+ *
+ * Non-object options (primitives, arrays, nested unions) are passed through
+ * unchanged.
+ *
+ * @param options - The union member parameters to process.
+ * @returns An object with `commonProperties` (the hoisted properties) and
+ * `options` (the options with those properties removed).
+ */
+function extractCommonProperties(options: MethodParameter[]): {
+  commonProperties: MethodParameter[];
+  options: MethodParameter[];
+} {
+  const objectOptions = options.filter(
+    (option): option is ObjectMethodParameter => option.kind === 'object',
+  );
+
+  if (objectOptions.length < 2) {
+    return { commonProperties: [], options };
+  }
+
+  const [firstOption, ...remainingOptions] = objectOptions;
+
+  // A property is common if every object option contains a property with the
+  // same name and the same type string.
+  const commonProperties = firstOption.properties.filter(
+    (property) =>
+      property.name !== undefined &&
+      remainingOptions.every((option) =>
+        option.properties.some(
+          (otherProperty) =>
+            otherProperty.name === property.name &&
+            otherProperty.type === property.type,
+        ),
+      ),
+  );
+
+  if (commonProperties.length === 0) {
+    return { commonProperties: [], options };
+  }
+
+  const commonPropertyNames = new Set(
+    commonProperties.map((property) => property.name),
+  );
+
+  const strippedOptions = options.map((option): MethodParameter => {
+    if (option.kind !== 'object') {
+      return option;
+    }
+
+    return {
+      ...option,
+      properties: option.properties.filter(
+        (property) => !commonPropertyNames.has(property.name),
+      ),
+    };
+  });
+
+  return { commonProperties, options: strippedOptions };
+}
+
+/**
  * Get the properties of an object type, including their names, types, and
  * JSDoc descriptions (if any).
  *
@@ -771,14 +810,6 @@ function getTypeMethodParameters(
   }
 
   const type = typeNode.getType();
-  if (isPrimitiveType(type)) {
-    return {
-      kind: 'primitive',
-      type: getTypeString(type),
-      description: getTypeNodeDescription(typeNode),
-    };
-  }
-
   const plainType = type.getText(
     undefined,
 
@@ -795,6 +826,14 @@ function getTypeMethodParameters(
     return {
       kind: 'primitive',
       type: alias,
+      description: getTypeNodeDescription(typeNode),
+    };
+  }
+
+  if (isPrimitiveType(type)) {
+    return {
+      kind: 'primitive',
+      type: getTypeString(type),
       description: getTypeNodeDescription(typeNode),
     };
   }
@@ -820,17 +859,20 @@ function getTypeMethodParameters(
   if (type.isUnion()) {
     const referencedTypeNode = getUnionTypeNode(typeNode);
     if (referencedTypeNode) {
-      const options = referencedTypeNode
+      const rawOptions = referencedTypeNode
         .getTypeNodes()
         .map((memberTypeNode) =>
           getTypeMethodParameters(memberTypeNode, object, isResponse),
         )
         .filter((option): option is MethodParameter => option !== null);
 
+      const { commonProperties, options } = extractCommonProperties(rawOptions);
+
       return {
         kind: 'union',
         type: getTypeString(type),
         description: getTypeNodeDescription(typeNode),
+        commonProperties,
         options,
       };
     }
@@ -875,16 +917,10 @@ function getTypeMethodParameters(
       isResponse,
     );
 
-    if (parameter === null) {
-      const propertyType = getTypeAtLocation(property, object);
-      return {
-        kind: 'primitive',
-        name: propertyName,
-        type: getTypeString(propertyType),
-        description: propertyDescription,
-        ...(!isResponse && { required: !isOptional }),
-      };
-    }
+    assert(
+      parameter,
+      'Failed to get type method parameter for object property.',
+    );
 
     return {
       ...parameter,
