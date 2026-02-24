@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- docs: Update documentation RPC methods ([#3868](https://github.com/MetaMask/snaps/pull/3868))
+- chore!: Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
+- chore!: Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
+- feat: Add script to extract RPC method documentation ([#3853](https://github.com/MetaMask/snaps/pull/3853))
+- chore!: Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
+- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
+- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
+- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
+- chore: Bump @metamask/utils from 11.9.0 to 11.10.0 ([#3854](https://github.com/MetaMask/snaps/pull/3854))
+- docs: Enable `typedoc` for `snaps-sdk` ([#3840](https://github.com/MetaMask/snaps/pull/3840))
+
 ## [10.4.0]
 
 ### Added

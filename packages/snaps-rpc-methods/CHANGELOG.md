@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- docs: Update documentation RPC methods ([#3868](https://github.com/MetaMask/snaps/pull/3868))
+- feat: Remove internal methods from generated schema ([#3869](https://github.com/MetaMask/snaps/pull/3869))
+- feat: Extract multiple example code blocks ([#3867](https://github.com/MetaMask/snaps/pull/3867))
+- chore!: Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
+- chore!: Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
+- fix: Require any interface permission to use RPC methods ([#3864](https://github.com/MetaMask/snaps/pull/3864))
+- fix: Unwrap `InferMatching` type if aliased symbol not found ([#3863](https://github.com/MetaMask/snaps/pull/3863))
+- fix: Fix more schema generation edge cases ([#3862](https://github.com/MetaMask/snaps/pull/3862))
+- feat: Add `required` field to `MethodParameter` in schema generation script ([#3861](https://github.com/MetaMask/snaps/pull/3861))
+- feat: Add script to extract RPC method documentation ([#3853](https://github.com/MetaMask/snaps/pull/3853))
+- chore!: Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
+- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
+- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
+- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
+- chore: Bump @metamask/utils from 11.9.0 to 11.10.0 ([#3854](https://github.com/MetaMask/snaps/pull/3854))
+- chore: Bump @metamask/json-rpc-engine from 10.2.1 to 10.2.2 ([#3849](https://github.com/MetaMask/snaps/pull/3849))
+
 ## [14.3.0]
 
 ### Added
