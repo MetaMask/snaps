@@ -2447,6 +2447,7 @@ export class SnapController extends BaseController<
   /**
    * Completely clear the controller's state: delete all associated data,
    * handlers, event listeners, and permissions; tear down all snap providers.
+   * Also re-initializes the controller after clearing the state.
    */
   async clearState() {
     const snapIds = Object.keys(this.state.snaps);
