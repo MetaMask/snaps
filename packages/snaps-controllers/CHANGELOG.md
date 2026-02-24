@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.0.1]
+
+### Changed
+
+- Use `JsonRpcEngineV2` for execution services ([#3857](https://github.com/MetaMask/snaps/pull/3857))
+- Remove `@metamask/phishing-controller` dependency ([#3852](https://github.com/MetaMask/snaps/pull/3852))
+- Bump `@metamask/utils` from `11.9.0` to `11.10.0` ([#3854](https://github.com/MetaMask/snaps/pull/3854))
+- Bump `@metamask/json-rpc-engine` from `10.2.1` to `10.2.2` ([#3849](https://github.com/MetaMask/snaps/pull/3849))
+
+### Fixed
+
+- Reinitialize `SnapController` after clearing state ([#3870](https://github.com/MetaMask/snaps/pull/3870))
+- Increase max listeners limit for `rpcStream` ([#3856](https://github.com/MetaMask/snaps/pull/3856))
+
 ## [18.0.0]
 
 ### Added
@@ -1039,7 +1053,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.1...HEAD
+[18.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.0...@metamask/snaps-controllers@18.0.1
 [18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.1...@metamask/snaps-controllers@18.0.0
 [17.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.2.0...@metamask/snaps-controllers@17.2.1
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@17.1.2...@metamask/snaps-controllers@17.2.0
