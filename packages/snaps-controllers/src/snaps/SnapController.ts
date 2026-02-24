@@ -952,7 +952,7 @@ export class SnapController extends BaseController<
   // This is used to ensure that the controller is ready to be used.
   // It is resolved when the controller has finished setting up and the platform is ready.
   // It is rejected if there is an error during setup.
-  readonly #controllerSetup = createDeferredPromise();
+  #controllerSetup = createDeferredPromise();
 
   constructor({
     messenger,
@@ -2459,6 +2459,8 @@ export class SnapController extends BaseController<
     this.#rollbackSnapshots.clear();
 
     await this.#clearStorageService();
+
+    this.#controllerSetup = createDeferredPromise();
 
     // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
     await this.init();
