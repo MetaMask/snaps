@@ -1,0 +1,1196 @@
+[
+  {
+    "name": "snap_cancelBackgroundEvent",
+    "description": "Cancel a background event created by\n[`snap_scheduleBackgroundEvent`](https://docs.metamask.io/snaps/reference/snaps-api/snap_schedulebackgroundevent).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The ID of the background event to cancel.",
+        "required": true
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const id = snap.request({\n  method: \"snap_scheduleBackgroundEvent\",\n  params: {\n    // ...\n  },\n});\n\n// Later, when you want to cancel the background event:\nsnap.request({\n  method: \"snap_cancelBackgroundEvent\",\n  params: { id },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_clearState",
+    "description": "Clear the entire state of the Snap.",
+    "parameters": [
+      {
+        "name": "encrypted",
+        "type": "boolean | null",
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the extension is unlocked, while unencrypted state can be used\nwhether the extension is locked or unlocked.",
+        "required": false
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "await snap.request({\n  method: \"snap_clearState\",\n  params: {\n    encrypted: true, // Optional, defaults to true\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_closeWebSocket",
+    "description": "Closes a WebSocket connection that was previously opened with\n[`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The ID of the WebSocket connection to close.",
+        "required": true
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "snap_createInterface",
+    "description": "Create an interactive interface for use in\n[interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).",
+    "parameters": [
+      {
+        "name": "ui",
+        "type": "JSXElement",
+        "description": "The [custom UI](https://docs.metamask.io/snaps/features/custom-ui/) to\ncreate.",
+        "required": true
+      },
+      {
+        "name": "context",
+        "type": "Record<string, Json> | null",
+        "description": "Optional context for the interface, which can be used to provide additional\ninformation about the interface to the Snap, without being part of the UI\nitself.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "string",
+      "description": "The interface's ID to be used in subsequent calls to custom UI methods such\nas [`snap_updateInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_updateinterface),\nor to display the interface using one of the interface display methods such\nas [`snap_dialog`](https://docs.metamask.io/snaps/reference/snaps-api/snap_dialog)."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "tsx",
+            "content": "import { Box, Heading, Text } from \"@metamask/snaps-sdk/jsx\";\n\nconst interfaceId = snap.request({\n  method: \"snap_createInterface\",\n  params: {\n    ui: (\n      <Box>\n        <Heading>Example Interface</Heading>\n        <Text>\n          This is an example interface created by \"snap_createInterface\".\n        </Text>\n      </Box>\n    ),\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_dialog",
+    "description": "Display a [dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/)\nin the MetaMask UI.",
+    "parameters": {
+      "type": "{ content: JSXElement } | { id: string } | { type: \"alert\"; content: JSXElement } | { type: \"alert\"; id: string } | { type: \"confirmation\"; content: JSXElement } | { type: \"confirmation\"; id: string } | { type: \"prompt\"; content: JSXElement; placeholder?: string | null } | { type: \"prompt\"; id: string; placeholder?: string | null }",
+      "description": "An object containing the contents of the dialog.\n\n- `type` - The type of dialog. Not providing a type will create a fully\n[custom dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).\nPossible values are:\n  - `alert` - An alert that can only be acknowledged.\n  - `confirmation` - A confirmation that can be accepted or rejected.\n  - `prompt` - A prompt where the user can enter a text response.\n\n- One of:\n  - `content` - The content of the alert, as a\n[custom UI](https://docs.metamask.io/snaps/features/custom-ui/) component.\n  - `id` - The ID of an\n[interactive interface](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).\n- `placeholder` - An optional placeholder text to display in the dialog. Only\napplicable for the `prompt` dialog."
+    },
+    "result": {
+      "type": "Json",
+      "description": "- If the dialog is an `alert`, the result is `null`.\n- If the dialog is a `confirmation`, the result is a boolean indicating\nwhether the user confirmed the dialog.\n- If the dialog is a `prompt`, the result is the value entered by\nthe user."
+    },
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "import { Box, Heading, Text } from \"@metamask/snaps-sdk/jsx\";\n\nconst walletAddress = await snap.request({\n  method: \"snap_dialog\",\n  params: {\n    type: \"prompt\",\n    content: (\n      <Box>\n        <Heading>What is the wallet address?</Heading>\n        <Text>Please enter the wallet address to be monitored.</Text>\n      </Box>\n    ),\n    placeholder: \"0x123...\",\n  },\n});\n\n// `walletAddress` will be a string containing the address entered by the\n// user.\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getBackgroundEvents",
+    "description": "Get the scheduled background events for the Snap.",
+    "parameters": null,
+    "result": {
+      "type": "{ id: string; scheduledAt: string; snapId: SnapId; date: string; request: { method: string; jsonrpc?: \"2.0\" | null; id?: number | string | null; params?: Json[] | Record<string, Json> | null } }[]",
+      "description": "The result returned by the `snap_getBackgroundEvents` method.\n\nIt consists of an array background events (if any) for a snap."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const events = await snap.request({\n  method: \"snap_getBackgroundEvents\",\n});\nconsole.log(events);\n// [\n//   {\n//     id: 'event-1',\n//     scheduledAt: 1672531200000,\n//     snapId: 'npm:example-snap',\n//     date: 1672531200000,\n//     request: {\n//       method: 'example_method',\n//       params: { example: 'data' },\n//     },\n//   },\n//   ...,\n// ]\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getBip32Entropy",
+    "description": "Enables you to [manage users' non-EVM accounts](https://docs.metamask.io/snaps/features/non-evm-networks/)\nby deriving the [SLIP-10](https://github.com/satoshilabs/slips/blob/master/slip-0010.md)\nkeys specified by the `path` and `curve` parameters. The keys are derived\nusing the entropy from the user's Secret Recovery Phrase.\n\nIf the keys you want to derive conform to the [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)\nstructure, use [snap_getBip44Entropy](https://docs.metamask.io/snaps/reference/snaps-api/snap_getbip44entropy)\ninstead. Otherwise, use this method.\n\nThis method is designed to be used with the [`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree)\nmodule. `@metamask/key-tree` can help you get the [extended private keys](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#extended-keys)\nfor user addresses, but it's your responsibility to know how to use those\nkeys to, for example, derive an address for the relevant protocol or sign a\ntransaction for the user.",
+    "parameters": [
+      {
+        "name": "curve",
+        "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
+        "description": "The curve to use for the derived key. This must be a curve supported by\n[`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree).",
+        "required": true
+      },
+      {
+        "name": "path",
+        "type": "string[]",
+        "description": "The derivation path to use for the derived key, represented as an array of\npath segments. For example, the path `m/44'/1'/0'/0/0` would be represented\nas `['m', \"44'\", \"1'\", \"0'\", '0', '0']`.",
+        "required": true
+      },
+      {
+        "name": "source",
+        "type": "string | null",
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
+      }
+    ],
+    "result": [
+      {
+        "name": "depth",
+        "type": "number",
+        "description": "The 0-indexed path depth of this node.",
+        "required": true
+      },
+      {
+        "name": "masterFingerprint",
+        "type": "number | null",
+        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key.",
+        "required": false
+      },
+      {
+        "name": "parentFingerprint",
+        "type": "number",
+        "description": "The fingerprint of the parent key, or 0 if this is a master node.",
+        "required": true
+      },
+      {
+        "name": "index",
+        "type": "number",
+        "description": "The index of the node, or 0 if this is a master node.",
+        "required": true
+      },
+      {
+        "name": "network",
+        "type": "\"mainnet\" | \"testnet\" | null",
+        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`.",
+        "required": false
+      },
+      {
+        "name": "privateKey",
+        "type": "string | null",
+        "description": "The (optional) private key of this node.",
+        "required": false
+      },
+      {
+        "name": "publicKey",
+        "type": "string",
+        "description": "The public key of this node.",
+        "required": true
+      },
+      {
+        "name": "chainCode",
+        "type": "string",
+        "description": "The chain code of this node.",
+        "required": true
+      },
+      {
+        "name": "curve",
+        "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
+        "description": "The name of the curve used by the node.",
+        "required": true
+      }
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getBip32Entropy\": [\n      {\n        \"path\": [\"m\", \"44'\", \"3'\"],\n        \"curve\": \"secp256k1\" // Or \"ed25519\", \"ed25519Bip32\"\n      }\n    ]\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "import { SLIP10Node } from \"@metamask/key-tree\";\n\n// This example uses Dogecoin, which has a derivation path starting with\n// m/44'/3'.\nconst dogecoinNode = await snap.request({\n  method: \"snap_getBip32Entropy\",\n  params: {\n    // The path and curve must be specified in the initial permissions.\n    path: [\"m\", \"44'\", \"3'\"],\n    curve: \"secp256k1\",\n  },\n});\n\n// Next, create an instance of a SLIP-10 node for the Dogecoin node.\nconst dogecoinSlip10Node = await SLIP10Node.fromJSON(dogecoinNode);\n\n// m/44'/3'/0'\nconst accountKey0 = await dogecoinSlip10Node.derive([\"bip32:0'\"]);\n\n// m/44'/3'/1'\nconst accountKey1 = await dogecoinSlip10Node.derive([\"bip32:1'\"]);\n\n// Now, you can ask the user to sign transactions, etc.\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getBip32PublicKey",
+    "description": "Gets the [BIP-32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)\npublic key for the derivation path specified by the `path` parameter. Note\nthat this returns the public key, not the extended public key (`xpub`), or\nEthereum address.",
+    "parameters": [
+      {
+        "name": "curve",
+        "type": "\"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"",
+        "description": "The curve to use for the derived key. This must be a curve supported by\n[`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree).",
+        "required": true
+      },
+      {
+        "name": "path",
+        "type": "string[]",
+        "description": "The derivation path to use for the derived key, represented as an array of\npath segments. For example, the path `m/44'/1'/0'/0/0` would be represented\nas `['m', \"44'\", \"1'\", \"0'\", '0', '0']`.",
+        "required": true
+      },
+      {
+        "name": "compressed",
+        "type": "boolean | null",
+        "description": "Whether to return the compressed public key. Defaults to `false`.",
+        "required": false
+      },
+      {
+        "name": "source",
+        "type": "string | null",
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "string",
+      "description": "The public key as hexadecimal string. May be compressed or uncompressed\ndepending on the `compressed` parameter provided in the request parameters."
+    },
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getBip32PublicKey\": [\n      {\n        \"path\": [\"m\", \"44'\", \"3'\", \"0'\", \"0\", \"0\"],\n        \"curve\": \"secp256k1\"\n      }\n    ]\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "// This example uses Dogecoin, which has a derivation path starting with\n// \"m / 44' / 3'\".\nconst dogecoinPublicKey = await snap.request({\n  method: \"snap_getBip32PublicKey\",\n  params: {\n    // The path and curve must be specified in the initial permissions.\n    path: [\"m\", \"44'\", \"3'\", \"0'\", \"0\", \"0\"],\n    curve: \"secp256k1\",\n    compressed: false,\n  },\n});\n\n// '0x...'\nconsole.log(dogecoinPublicKey);\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getBip44Entropy",
+    "description": "Enables you to [manage users' non-EVM accounts](https://docs.metamask.io/snaps/features/non-evm-networks/)\nby deriving the [BIP-44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)\nkeys specified by the `coinType` parameter. The keys are derived using the\nentropy from the user's Secret Recovery Phrase.\n\nIf the keys you want to derive don't conform to the BIP-44 structure, use\n[`snap_getBip32Entropy`](https://docs.metamask.io/snaps/reference/snaps-api/snap_getbip32entropy)\ninstead.\n\nThis method is designed to be used with the [`@metamask/key-tree`](https://npmjs.com/package/@metamask/key-tree)\nmodule. `@metamask/key-tree` can help you get the [extended private keys](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#extended-keys)\nfor user addresses, but it's your responsibility to know how to use those\nkeys to, for example, derive an address for the relevant protocol or sign a\ntransaction for the user.",
+    "parameters": [
+      {
+        "name": "coinType",
+        "type": "number",
+        "description": "The coin type to use for the derived key, as specified in the\n[SLIP-44 registry](https://github.com/satoshilabs/slips/blob/master/slip-0044.md).",
+        "required": true
+      },
+      {
+        "name": "source",
+        "type": "string | null",
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
+      }
+    ],
+    "result": [
+      {
+        "name": "depth",
+        "type": "0 | 1 | 2 | 3 | 4 | 5",
+        "description": "The 0-indexed BIP-44 path depth of this node.\n\nA BIP-44 path is of the form:\n\n`m / 44' / coin_type' / account' / change / address_index`\n\nWith the following depths:\n\n`0 / 1 / 2 / 3 / 4 / 5`",
+        "required": true
+      },
+      {
+        "name": "masterFingerprint",
+        "type": "number | null",
+        "description": "The fingerprint of the master node, i.e., the node at depth 0. May be\nundefined if this node was created from an extended key.",
+        "required": false
+      },
+      {
+        "name": "parentFingerprint",
+        "type": "number",
+        "description": "The fingerprint of the parent key, or 0 if this is a master node.",
+        "required": true
+      },
+      {
+        "name": "index",
+        "type": "number",
+        "description": "The index of the node, or 0 if this is a master node.",
+        "required": true
+      },
+      {
+        "name": "network",
+        "type": "\"mainnet\" | \"testnet\" | null",
+        "description": "The network for the node. This is only used for extended keys, and defaults\nto `mainnet`.",
+        "required": false
+      },
+      {
+        "name": "privateKey",
+        "type": "string | null",
+        "description": "The hexadecimal string representation of the private key for this node.\nMay be `undefined` if the node is a public node.",
+        "required": false
+      },
+      {
+        "name": "publicKey",
+        "type": "string",
+        "description": "The hexadecimal string representation of the public key for this node.",
+        "required": true
+      },
+      {
+        "name": "chainCode",
+        "type": "string",
+        "description": "The hexadecimal string representation of the chain code for this node.",
+        "required": true
+      },
+      {
+        "name": "coin_type",
+        "type": "number",
+        "description": null,
+        "required": true
+      },
+      {
+        "name": "path",
+        "type": "`m / bip32:${number}' / bip32:${number}'`",
+        "description": null,
+        "required": true
+      }
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getBip44Entropy\": [\n      {\n        \"coinType\": 3\n      }\n    ]\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "import { getBIP44AddressKeyDeriver } from \"@metamask/key-tree\";\n\n// This example uses Dogecoin, which has coin_type 3.\nconst dogecoinNode = await snap.request({\n  method: \"snap_getBip44Entropy\",\n  params: {\n    coinType: 3,\n  },\n});\n\n// Next, create an address key deriver function for the Dogecoin coin_type\n// node. In this case, its path is: m/44'/3'/0'/0/address_index\nconst deriveDogecoinAddress = await getBIP44AddressKeyDeriver(dogecoinNode);\n\n// These are BIP-44 nodes containing the extended private keys for the\n// respective derivation paths.\n\n// m/44'/3'/0'/0/0\nconst addressKey0 = await deriveDogecoinAddress(0);\n\n// m/44'/3'/0'/0/1\nconst addressKey1 = await deriveDogecoinAddress(1);\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getClientStatus",
+    "description": "Get the status of the client running the Snap.",
+    "parameters": null,
+    "result": [
+      {
+        "name": "clientVersion",
+        "type": "string",
+        "description": "The semantic version of the client that the Snap is running in.",
+        "required": true
+      },
+      {
+        "name": "platformVersion",
+        "type": "string",
+        "description": "The Snaps Platform version that the client is running.",
+        "required": true
+      },
+      {
+        "name": "locked",
+        "type": "boolean",
+        "description": "A boolean flag that indicates whether the client is locked or not.",
+        "required": true
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "description": "A boolean flag that indicates whether the client is active or not.",
+        "required": true
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "import type { OnCronjobHandler } from \"@metamask/snaps-sdk\";\nimport { MethodNotFoundError } from \"@metamask/snaps-sdk\";\n\nexport const onCronjob: OnCronjobHandler = async ({ request }) => {\n  switch (request.method) {\n    case \"execute\":\n      // Find out if MetaMask is locked.\n      const { locked } = await snap.request({\n        method: \"snap_getClientStatus\",\n      });\n\n      if (!locked) {\n        // Do something that requires MetaMask to be unlocked, such as\n        // accessing the encrypted state.\n      }\n\n    default:\n      throw new MethodNotFoundError();\n  }\n};\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getEntropy",
+    "description": "Get a deterministic 256-bit entropy value, specific to the Snap and the\nuser's account. You can use this entropy to generate a private key, or any\nother value that requires a high level of randomness. Other Snaps can't\naccess this entropy, and it changes if the user's secret recovery phrase\nchanges.\n\nYou can optionally specify a salt to generate different entropy for different\npurposes. Using a salt results in entropy unrelated to the entropy generated\nwithout a salt.\n\nThis value is deterministic: it's always the same for the same Snap, user\naccount, and salt.",
+    "parameters": [
+      {
+        "name": "version",
+        "type": "1",
+        "description": "The version of the entropy to retrieve. This is reserved for future use,\nand as of now, only version 1 is supported.",
+        "required": true
+      },
+      {
+        "name": "salt",
+        "type": "string | null",
+        "description": "An arbitrary string to be used as a salt for the entropy. This can be used\nto generate different entropy for different purposes.",
+        "required": false
+      },
+      {
+        "name": "source",
+        "type": "string | null",
+        "description": "The ID of the entropy source to use. If not specified, the primary entropy\nsource will be used. For a list of available entropy sources, see the\n`snap_listEntropySources` method.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "`0x${string}`",
+      "description": "The entropy as a hexadecimal string."
+    },
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getEntropy\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const entropy = await snap.request({\n  method: \"snap_getEntropy\",\n  params: {\n    version: 1,\n    salt: \"foo\", // Optional.\n  },\n});\n\n// '0x...'\nconsole.log(entropy);\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getFile",
+    "description": "Gets a static file's content in UTF-8, Base64, or hexadecimal.\n\nThe file must be specified in [the Snap's manifest file](https://docs.metamask.io/snaps/features/static-files/).",
+    "parameters": [
+      {
+        "name": "path",
+        "type": "string",
+        "description": "The path to the file, relative to the Snap's package directory\n(that is, one level above `src`).",
+        "required": true
+      },
+      {
+        "name": "encoding",
+        "type": "\"base64\" | \"hex\" | \"utf8\" | null",
+        "description": "The encoding to use when retrieving the file. Defaults to `base64`.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "string",
+      "description": "The file content as a string in the requested encoding."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"source\": {\n    \"files\": [\"./files/my-file.bin\"]\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const contents = await snap.request({\n  method: \"snap_getFile\",\n  params: {\n    path: \"./files/myfile.bin\",\n    encoding: \"hex\",\n  },\n});\n\n// '0x...'\nconsole.log(contents);\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getInterfaceContext",
+    "description": "Get the context of an [interface](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/)\ncreated by [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The interface ID.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Record<string, Json> | null",
+      "description": "The context for the given interface."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "import { Box, Heading, Text } from \"@metamask/snaps-sdk/jsx\";\n\nconst interfaceId = await snap.request({\n  method: \"snap_createInterface\",\n  params: {\n    ui: (\n      <Box>\n        <Heading>Hello, world!</Heading>\n        <Text>Welcome to my Snap homepage!</Text>\n      </Box>\n    ),\n    context: {\n      key: \"value\",\n    },\n  },\n});\n\nconst context = await snap.request({\n  method: \"snap_getInterfaceContext\",\n  params: {\n    id: interfaceId,\n  },\n});\n\nconsole.log(context);\n// {\n//   key: 'value'\n// }\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getInterfaceState",
+    "description": "Get the form state of an [interface](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/)\ncreated by [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The interface ID.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Record<string, { addresses: `${string}:${string}:${string}`[]; accountId: string } | { name: string; size: number; contentType: string; contents: string } | { symbol: string; name: string; asset: `${string}:${string}/${string}:${string}` } | boolean | Record<string, { addresses: `${string}:${string}:${string}`[]; accountId: string } | { name: string; size: number; contentType: string; contents: string } | { symbol: string; name: string; asset: `${string}:${string}/${string}:${string}` } | boolean | string | null> | string | null>",
+      "description": "The state of the given interface. This is a `Record` of the form state, where\nthe keys are the `name` properties of the form fields, and the values are the\ncurrent values of those fields, depending on the type of the field.\n\nFor example, for a text field, the value would be a `string`, for a checkbox\nfield, the value would be a `boolean`, and for a file upload field, the value\nwould be a `File` object. The exact structure of the state depends on the\nform fields that were defined when the interface was created."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const state = await snap.request({\n  method: \"snap_getInterfaceState\",\n  params: {\n    id: interfaceId,\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getLocale",
+    "description": "Get the user's locale setting. You can use this method to localize text in\nyour Snap.\n\nNote that this method is deprecated. We recommend using\n[`snap_getPreferences`](https://docs.metamask.io/snaps/reference/snaps-api/snap_getpreferences)\ninstead, which provides access to the user's locale as well as other\npreferences.",
+    "parameters": null,
+    "result": {
+      "type": "string",
+      "description": "The user's locale setting as a [language code](https://github.com/MetaMask/metamask-extension/blob/develop/app/_locales/index.json)."
+    },
+    "examples": [],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getPreferences",
+    "description": "Gets the user's preferences.",
+    "parameters": null,
+    "result": [
+      {
+        "name": "locale",
+        "type": "string",
+        "description": "The user's locale setting as a language code.",
+        "required": true
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "description": "The user's preferred fiat currency code.",
+        "required": true
+      },
+      {
+        "name": "hideBalances",
+        "type": "boolean",
+        "description": "Whether the user has chosen to hide balances.",
+        "required": true
+      },
+      {
+        "name": "useSecurityAlerts",
+        "type": "boolean",
+        "description": "Whether to run transactions and signatures\nthrough security providers.",
+        "required": true
+      },
+      {
+        "name": "simulateOnChainActions",
+        "type": "boolean",
+        "description": "Whether to simulate transactions and\nsignatures.",
+        "required": true
+      },
+      {
+        "name": "useTokenDetection",
+        "type": "boolean",
+        "description": "Whether to auto-detect tokens.",
+        "required": true
+      },
+      {
+        "name": "batchCheckBalances",
+        "type": "boolean",
+        "description": "Whether to fetch balances in an aggregated\nmanner.",
+        "required": true
+      },
+      {
+        "name": "displayNftMedia",
+        "type": "boolean",
+        "description": "Whether to display NFT media.",
+        "required": true
+      },
+      {
+        "name": "useNftDetection",
+        "type": "boolean",
+        "description": "Whether to auto-detect NFTs.",
+        "required": true
+      },
+      {
+        "name": "useExternalPricingData",
+        "type": "boolean",
+        "description": "Whether to get token price data from an\nexternal source.",
+        "required": true
+      },
+      {
+        "name": "showTestnets",
+        "type": "boolean",
+        "description": "Whether to show testnets.",
+        "required": true
+      }
+    ],
+    "examples": [],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_getState",
+    "description": "Get the state of the Snap, or a specific value within the state. By default,\nthe data is automatically encrypted using a Snap-specific key and\nautomatically decrypted when retrieved. You can set `encrypted` to `false` to\nuse unencrypted storage (available when the client is locked).",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string | null",
+        "description": "The key of the state to retrieve. If not provided, the entire\nstate is retrieved. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax.",
+        "required": false
+      },
+      {
+        "name": "encrypted",
+        "type": "boolean | null",
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "Json",
+      "description": "The state of the Snap. If a key was provided in the request parameters, this\nis the value of that key in the state. Otherwise, this is the entire state."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_manageState\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const state = await snap.request({\n  method: \"snap_getState\",\n  params: {\n    key: \"some.nested.value\", // Optional, defaults to entire state\n    encrypted: true, // Optional, defaults to `true`\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_getWebSockets",
+    "description": "Get the connected WebSockets for the Snap.",
+    "parameters": null,
+    "result": {
+      "type": "{ id: string; url: string; protocols: string[] }[]",
+      "description": "An array of connected WebSockets for the Snap. Each WebSocket is represented\nby an object containing the following properties:\n\n- `id` - The unique identifier of the WebSocket connection.\n- `url` - The URL of the WebSocket connection.\n- `protocols` - An array of subprotocols used in the WebSocket connection (if\nany)."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "snap_listEntropySources",
+    "description": "Get a list of entropy sources available to the Snap. The requesting origin\nmust have at least one of the following permissions to access entropy source\nmetadata:\n\n- `snap_getBip32Entropy`\n- `snap_getBip32PublicKey`\n- `snap_getBip44Entropy`\n- `snap_getEntropy`",
+    "parameters": null,
+    "result": {
+      "type": "{ name: string; id: string; type: \"mnemonic\"; primary: boolean }[]",
+      "description": "An array of entropy sources available to the Snap. Each entropy source\nconsists of:\n\n- `name` - The name of the entropy source.\n- `id` - The ID of the entropy source.\n- `type` - The type of the entropy source. Currently, only `mnemonic` is\nsupported.\n- `primary` - Whether the entropy source is the primary source."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "snap_manageAccounts",
+    "description": "Manage account management Snap accounts. This method is organized into\nmultiple sub-methods which each take their own parameters:\n\n- `createAccount`\n- `updateAccount`\n- `deleteAccount`\n- `listAccounts`\n- `submitResponse`",
+    "parameters": [
+      {
+        "name": "method",
+        "type": "string",
+        "description": "The method to call on the Snap.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Json",
+      "description": "The result returned by the `snap_manageAccounts` method, which is the result\nreturned by the Snap."
+    },
+    "examples": [],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_manageState",
+    "description": "Allow the Snap to persist up to 64 MB of data to disk and retrieve it at\nwill. By default, the data is automatically encrypted using a Snap-specific\nkey and automatically decrypted when retrieved. You can set `encrypted` to\n`false` to use unencrypted storage (available when the client is locked).",
+    "parameters": [
+      {
+        "name": "operation",
+        "type": "\"clear\" | \"get\" | \"update\"",
+        "description": "The operation to perform on the state.",
+        "required": true
+      },
+      {
+        "name": "encrypted",
+        "type": "boolean | null",
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "Record<string, Json> | null",
+      "description": "If the operation is `get`, the result is the state. Otherwise, the result is\n`null`."
+    },
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_manageState\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "// Persist some data.\nawait snap.request({\n  method: \"snap_manageState\",\n  params: {\n    operation: \"update\",\n    newState: { hello: \"world\" },\n  },\n});\n\n// At a later time, get the stored data.\nconst persistedData = await snap.request({\n  method: \"snap_manageState\",\n  params: { operation: \"get\" },\n});\n\nconsole.log(persistedData);\n// { hello: 'world' }\n\n// If there's no need to store data anymore, clear it out.\nawait snap.request({\n  method: \"snap_manageState\",\n  params: {\n    operation: \"clear\",\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_notify",
+    "description": "Display a\n[notification](https://docs.metamask.io/snaps/features/notifications/) in\nMetaMask or natively in the OS. Snaps can trigger a short (up to 80\ncharacters) notification message for actionable or time sensitive\ninformation. `inApp` notifications can also include an optional\n[expanded view](https://docs.metamask.io/snaps/features/notifications/#expanded-view).\nThe expanded view has a title, content, and optional footer link shown when\na user clicks on the notification.",
+    "parameters": [
+      {
+        "name": "type",
+        "type": "\"inApp\" | \"native\"",
+        "description": "The notification type (`inApp` or `native`). We recommend\nusing `inApp` because native notifications may be rate-limited by the OS.",
+        "required": true
+      },
+      {
+        "name": "message",
+        "type": "string",
+        "description": "The message to display in the notification.",
+        "required": true
+      }
+    ],
+    "result": null,
+    "examples": [],
+    "subjectTypes": [
+      "snap"
+    ],
+    "restricted": true
+  },
+  {
+    "name": "snap_openWebSocket",
+    "description": "Open a WebSocket connection to the specified URL with optional protocols.\n\nNote: This method is only available to snaps that have the\n[`endowment:network-access`](https://docs.metamask.io/snaps/features/network-access/)\npermission.",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string",
+        "description": "The `wss://` URL of the WebSocket connection to open.",
+        "required": true
+      },
+      {
+        "name": "protocols",
+        "type": "string[] | null",
+        "description": "The optional protocols to use for the WebSocket\nconnection.",
+        "required": false
+      }
+    ],
+    "result": {
+      "type": "string",
+      "description": "The ID of the opened WebSocket connection, which can be used to reference the\nconnection in subsequent calls to [`snap_sendWebSocketMessage`](https://docs.metamask.io/snaps/reference/snaps-api/snap_sendwebsocketmessage)\nand [`snap_closeWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_closewebsocket)."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"endowment:network-access\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "// Open a connection to a WebSocket server, e.g., in the JSON-RPC handler of\n// the Snap:\nsnap.request({\n  method: \"snap_openWebSocket\",\n  params: {\n    url: \"wss://example.com/socket\",\n    protocols: [\"protocol1\", \"protocol2\"], // Optional\n  },\n});\n\n// Listen for events from the WebSocket connection in the `onWebSocketEvent`\n// handler of the Snap:\nexport const onWebSocketEvent: OnWebSocketEventHandler = async ({ event }) => {\n  switch (event.type) {\n    case \"open\":\n      console.log(`WebSocket connection opened with origin ${event.origin}`);\n      break;\n    case \"message\":\n      console.log(\n        `WebSocket message received from origin ${event.origin}:`,\n        event.data,\n      );\n      break;\n    case \"close\":\n      console.log(`WebSocket connection closed with origin ${event.origin}`);\n      break;\n    case \"error\":\n      console.error(\n        `WebSocket error from origin ${event.origin}:`,\n        event.error,\n      );\n      break;\n  }\n};\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_resolveInterface",
+    "description": "Resolve an interactive interface. For use in\n[custom dialogs](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The interface ID.",
+        "required": true
+      },
+      {
+        "name": "value",
+        "type": "Json",
+        "description": "The value to resolve the interface with.",
+        "required": true
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "snap_scheduleBackgroundEvent",
+    "description": "Schedule a background event for a Snap. The background event will trigger a\nJSON-RPC request to the Snap at the scheduled time, handled by the\n`onCronjob` entry point in the Snap.\n\nThe schedule can be defined using either an ISO 8601 date or duration string.\nFor example:\n\n- Using a date: `2026-12-31T23:59:59Z`\n- Using a duration: `P1DT2H` (which represents a duration of 1 day and 2\nhours)",
+    "parameters": [
+      {
+        "name": "request",
+        "type": "{ method: string; params?: JsonRpcParams }",
+        "description": "The request to be called when the event fires.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "string",
+      "description": "The ID of the scheduled background event."
+    },
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const id = await wallet.request({\n  method: \"snap_scheduleBackgroundEvent\",\n  params: {\n    date: \"2026-12-31T23:59:59Z\",\n    request: {\n      method: \"mySnapMethod\",\n      params: { foo: \"bar\" },\n    },\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_sendWebSocketMessage",
+    "description": "Send a message to an open WebSocket connection. The message will be sent to\nthe WebSocket connection with the specified ID, which must have been\npreviously opened by the snap using the [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket/)\nmethod.",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The ID of the WebSocket connection to send a message to.",
+        "required": true
+      },
+      {
+        "name": "message",
+        "type": "number[] | string",
+        "description": "The message to send.",
+        "required": true
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "await wallet.request({\n  method: \"snap_sendWebSocketMessage\",\n  params: {\n    id: \"websocket-connection-id\",\n    message: \"Hello, WebSocket!\", // or message: [1, 2, 3] for binary data\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_setState",
+    "description": "Allow the Snap to persist up to 64 MB of data to disk and retrieve it at\nwill. By default, the data is automatically encrypted using a Snap-specific\nkey and automatically decrypted when retrieved. You can set `encrypted` to\n`false` to use unencrypted storage (available when the client is locked).\n\nIf the key is `undefined`, the value is expected to be an object. In this\ncase, the value is set as the new root state.\n\nIf the key is not `undefined`, the value is set in the state at the key. If\nthe key does not exist, it is created (and any missing intermediate keys are\ncreated as well).",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string | null",
+        "description": "The key of the state to update. If not provided, the entire\nstate is updated. This may contain Lodash-style path syntax, e.g.,\n`a.b.c`, with the exception of array syntax.",
+        "required": false
+      },
+      {
+        "name": "value",
+        "type": "Json",
+        "description": "The value to set the state to.",
+        "required": true
+      },
+      {
+        "name": "encrypted",
+        "type": "boolean | null",
+        "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the client is unlocked, while unencrypted state can be used\nwhether the client is locked or unlocked.",
+        "required": false
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_manageState\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "// Set the entire state:\nawait snap.request({\n  method: \"snap_setState\",\n  params: {\n    value: {\n      some: {\n        nested: {\n          value: \"Hello, world!\",\n        },\n      },\n    },\n    encrypted: true, // Optional, defaults to `true`\n  },\n});\n\n// Set a specific value within the state:\nawait snap.request({\n  method: \"snap_setState\",\n  params: {\n    key: \"some.nested.value\",\n    value: \"Hello, world!\",\n    encrypted: true, // Optional, defaults to `true`\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "snap_updateInterface",
+    "description": "Update an interactive interface. For use in\n[interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).",
+    "parameters": [
+      {
+        "name": "id",
+        "type": "string",
+        "description": "The interface id.",
+        "required": true
+      },
+      {
+        "name": "ui",
+        "type": "JSXElement",
+        "description": "The components to display in the interface.",
+        "required": true
+      },
+      {
+        "name": "context",
+        "type": "Record<string, Json> | null",
+        "description": null,
+        "required": false
+      }
+    ],
+    "result": null,
+    "subjectTypes": [
+      "snap"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "wallet_getSnaps",
+    "description": "Get permitted and installed Snaps for the requesting origin.",
+    "parameters": null,
+    "result": {
+      "type": "Record<SnapId, { error: JsonRpcError } | Snap>",
+      "description": "A map of Snap IDs to either the Snap metadata or an error."
+    },
+    "subjectTypes": [
+      "snap",
+      "website"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const snaps = await snap.request({\n  method: \"wallet_getSnaps\",\n});\nconsole.log(snaps);\n// {\n//   'npm:example-snap': {\n//     id: 'npm:example-snap',\n//     version: '1.0.0',\n//     initialPermissions: { ... },\n//     blocked: false,\n//     enabled: true,\n//   },\n//   ...,\n// }\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "wallet_invokeKeyring",
+    "description": "Invoke a keyring method of a Snap. This calls the `onKeyringRequest` handler\nof the Snap.\n\nThe Snap must be installed and the dapp must have permission to communicate\nwith the Snap, or the request is rejected. The dapp can install the Snap and\nrequest permission to communicate with it using [`wallet_requestSnaps`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).",
+    "parameters": [
+      {
+        "name": "snapId",
+        "type": "string",
+        "description": "The ID of the Snap to invoke.",
+        "required": true
+      },
+      {
+        "name": "request",
+        "type": "Record<string, Json>",
+        "description": "The JSON-RPC request to send to the Snap.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Json",
+      "description": "The result returned by the Snap."
+    },
+    "subjectTypes": [
+      "snap",
+      "website"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "wallet_invokeSnap",
+    "description": "Invoke a method of a Snap, designated by the `snapId` parameter, with a\nJSON-RPC request specified in the `request` parameter. This is effectively a\nwrapper around [`wallet_snap`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_snap)\nthat allows for more convenient invocation of Snap methods without needing to\nspecify the full `wallet_snap` parameters.\n\nThe Snap must be installed and the dapp must have permission to communicate\nwith the Snap, or the request is rejected. The dapp can install the Snap and\nrequest permission to communicate with it using [`wallet_requestSnaps`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).",
+    "parameters": [
+      {
+        "name": "snapId",
+        "type": "string",
+        "description": "The ID of the Snap to invoke.",
+        "required": true
+      },
+      {
+        "name": "request",
+        "type": "Record<string, Json>",
+        "description": "The JSON-RPC request to send to the Snap.",
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Json",
+      "description": "The result of the Snap method call."
+    },
+    "subjectTypes": [
+      "snap",
+      "website"
+    ],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const result = await snap.request({\n  method: \"wallet_invokeSnap\",\n  params: {\n    snapId: \"npm:@metamask/example-snap\",\n    request: {\n      method: \"someMethod\",\n      params: { some: \"params\" },\n    },\n  },\n});\n"
+          }
+        ]
+      }
+    ],
+    "restricted": false
+  },
+  {
+    "name": "wallet_requestSnaps",
+    "description": "Request permission for a dapp to communicate with the specified Snaps and\nattempt to install them if they're not already installed.\n\nIf the Snap version range is specified, MetaMask attempts to install a\nversion of the Snap that satisfies the range. If a compatible version of the\nSnap is already installed, the request succeeds. If an incompatible version\nis installed, MetaMask attempts to update the Snap to the latest version that\nsatisfies the range. The request succeeds if the Snap is successfully\ninstalled.\n\nIf the installation of any Snap fails, or the user rejects the installation\nor permission request, this method returns the error that caused the failure.",
+    "parameters": {
+      "type": "Record<string, { version?: string }>",
+      "description": "An object mapping the IDs of the requested Snaps to optional SemVer version\nranges. The SemVer version ranges use the same semantics as NPM\n`package.json` ranges."
+    },
+    "result": {
+      "type": "Record<string, { error: JsonRpcError } | Snap>",
+      "description": "An object mapping the IDs of the requested Snaps to either the installed Snap\nor an error if the Snap failed to install or was not permitted."
+    },
+    "subjectTypes": [
+      "snap",
+      "website"
+    ],
+    "examples": [],
+    "restricted": false
+  },
+  {
+    "name": "wallet_snap",
+    "description": "Calls the specified JSON-RPC API method of the specified Snap. The Snap\nmust be installed and the dapp must have permission to communicate with the\nSnap, or the request is rejected. The dapp can install the Snap and request\npermission to communicate with it using\n[`wallet_requestSnaps`](http://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).",
+    "parameters": [
+      {
+        "name": "snapId",
+        "type": "string",
+        "description": null,
+        "required": true
+      },
+      {
+        "name": "request",
+        "type": "Record<string, Json>",
+        "description": null,
+        "required": true
+      }
+    ],
+    "result": {
+      "type": "Json",
+      "description": "The result of the Snap method call."
+    },
+    "examples": [],
+    "subjectTypes": [
+      "snap",
+      "website"
+    ],
+    "restricted": true
+  }
+]
