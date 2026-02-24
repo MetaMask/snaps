@@ -2460,10 +2460,8 @@ export class SnapController extends BaseController<
 
     await this.#clearStorageService();
 
-    // We want to remove all snaps & permissions, except for preinstalled snaps
-    if (this.#preinstalledSnaps) {
-      await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
-    }
+    // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
+    await this.init();
   }
 
   /**
