@@ -7,35 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
-- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
-- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
-- chore: Move example dependencies to devDependencies ([#3824](https://github.com/MetaMask/snaps/pull/3824))
-- release: `139.0.0` ([#3813](https://github.com/MetaMask/snaps/pull/3813))
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- release: `137.0.0` ([#3780](https://github.com/MetaMask/snaps/pull/3780))
-- release: `134.0.0` ([#3761](https://github.com/MetaMask/snaps/pull/3761))
-- release: `131.0.0` ([#3730](https://github.com/MetaMask/snaps/pull/3730))
-- release: `126.0.0` ([#3662](https://github.com/MetaMask/snaps/pull/3662))
-- chore: Bump @lavamoat/allow-scripts from 3.3.5 to 3.4.0 ([#3651](https://github.com/MetaMask/snaps/pull/3651))
-- chore: Bump @lavamoat/allow-scripts from 3.3.4 to 3.3.5 ([#3612](https://github.com/MetaMask/snaps/pull/3612))
-- release: 120.0.0 ([#3543](https://github.com/MetaMask/snaps/pull/3543))
-- release: `119.0.0` ([#3533](https://github.com/MetaMask/snaps/pull/3533))
-- release: `118.0.0` ([#3524](https://github.com/MetaMask/snaps/pull/3524))
-- release: `116.0.0` ([#3509](https://github.com/MetaMask/snaps/pull/3509))
-- feat: Add `snap_trackError` method for error tracking through Sentry ([#3498](https://github.com/MetaMask/snaps/pull/3498))
-- chore(dev-deps): Bump LavaMoat dependencies ([#3501](https://github.com/MetaMask/snaps/pull/3501))
-- release: `114.0.0` ([#3463](https://github.com/MetaMask/snaps/pull/3463))
-- release: `113.0.0` ([#3448](https://github.com/MetaMask/snaps/pull/3448))
-- chore!: Drop support for Node.js 18 and 21 ([#3447](https://github.com/MetaMask/snaps/pull/3447))
-- chore: Update TypeScript build target to ES2022 ([#3444](https://github.com/MetaMask/snaps/pull/3444))
-- chore: Bump `@swc/core`, `@swc/jest`, and `swc-loader` to latest version ([#3442](https://github.com/MetaMask/snaps/pull/3442))
-- release: `110.0.0` ([#3425](https://github.com/MetaMask/snaps/pull/3425))
-- Release 109.0.0 ([#3412](https://github.com/MetaMask/snaps/pull/3412))
-
 ## [1.0.0]
 
 ### Added

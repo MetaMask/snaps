@@ -7,17 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
-- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
-- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
-- chore: Bump @metamask/utils from 11.9.0 to 11.10.0 ([#3854](https://github.com/MetaMask/snaps/pull/3854))
-- chore: Bump @metamask/json-rpc-engine from 10.2.1 to 10.2.2 ([#3849](https://github.com/MetaMask/snaps/pull/3849))
-- chore: Bump lavamoat from 10.1.0 to 10.1.1 ([#3848](https://github.com/MetaMask/snaps/pull/3848))
-- chore: Bump @lavamoat/webpack from 1.5.7 to 1.5.8 ([#3847](https://github.com/MetaMask/snaps/pull/3847))
-- docs: Enable `typedoc` for `snaps-sdk` ([#3840](https://github.com/MetaMask/snaps/pull/3840))
-
 ## [11.0.0]
 
 ### Changed
