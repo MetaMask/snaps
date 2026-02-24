@@ -1352,8 +1352,10 @@ export class SnapController extends BaseController<
    *
    * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
    * runnable Snaps.
+   *
+   * @param waitForPlatform - Whether to wait for the platform to be ready before returning.
    */
-  async init() {
+  async init(waitForPlatform = true) {
     try {
       if (this.#preinstalledSnaps) {
         await this.#handlePreinstalledSnaps(this.#preinstalledSnaps);
@@ -1362,7 +1364,11 @@ export class SnapController extends BaseController<
       this.#controllerSetup.resolve();
 
       // Populate the `isReady` state.
-      await this.#ensureCanUsePlatform();
+      if (waitForPlatform) {
+        await this.#ensureCanUsePlatform();
+      } else {
+        this.#ensureCanUsePlatform().catch(logError);
+      }
 
       this.#callLifecycleHooks(METAMASK_ORIGIN, HandlerType.OnStart);
     } catch (error) {
@@ -2463,7 +2469,7 @@ export class SnapController extends BaseController<
     this.#controllerSetup = createDeferredPromise();
 
     // Re-initialize the controller after clearing the state, re-installing preinstalled Snaps etc.
-    await this.init();
+    await this.init(false);
   }
 
   /**
