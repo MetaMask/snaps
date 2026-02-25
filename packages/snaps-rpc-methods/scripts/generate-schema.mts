@@ -363,10 +363,6 @@ function getCleanTypeString(type: Type): string {
       const declaration =
         property.getValueDeclaration() ?? findDeclaration(property);
 
-      if (!declaration) {
-        return null;
-      }
-
       const propertyType = property.getTypeAtLocation(declaration);
       return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType)}`;
     });
