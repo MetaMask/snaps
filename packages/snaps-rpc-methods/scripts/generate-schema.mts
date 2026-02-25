@@ -387,11 +387,9 @@ function getCleanTypeString(type: Type): string {
  * and without truncating the type (e.g., to `string` or `object`).
  *
  * @param type - The type to get the string representation of.
- * @param seen - A set of type strings that have already been processed, to
- * avoid infinite recursion in case of circular type references.
  * @returns The string representation of the type.
  */
-function getTypeString(type: Type, seen = new Set<string>()): string {
+function getTypeString(type: Type): string {
   // Aliased types that are not properly represented with `getText()`, such as
   // `Record`.
   const aliasSymbol = type.getAliasSymbol();
@@ -409,7 +407,7 @@ function getTypeString(type: Type, seen = new Set<string>()): string {
       // `{ [x: string]: Json; }`.
       if (typeArguments.length > 0) {
         const stringifiedArguments = typeArguments.map((argument) =>
-          getTypeString(argument, seen),
+          getTypeString(argument),
         );
 
         return `${aliasName}<${stringifiedArguments.join(', ')}>`;
