@@ -224,15 +224,55 @@ function mergeBooleanTypes(types: string[]) {
 }
 
 /**
+ * Check if a plain type string represents the `params` property of a JSON-RPC
+ * request object, which can be defined as a union of `Json[]` and
+ * `Record<string, Json>`, with some additional intersection types for
+ * optionality guards. This is needed to handle a specific edge case where the
+ * type of the `params` property is represented as a complex intersection and
+ * union of types, and we want to recognize it and return the expected type
+ * alias (`JsonRpcParams`) in the schema.
+ *
+ * @param plainType - The plain type string to check.
+ * @returns `true` if the plain type string represents the `params` property of a
+ * JSON-RPC request object, or `false` otherwise.
+ */
+function isJsonRpcParams(plainType: string) {
+  return (
+    plainType === 'Json[] | Record<string, Json>' ||
+    plainType === 'Record<string, Json> | Json[]' ||
+    plainType === '(Json[] | Record<string, Json>) & ExactOptionalGuard' ||
+    plainType === '(Record<string, Json> | Json[]) & ExactOptionalGuard' ||
+    plainType ===
+      '((Record<string, Json> | Json[]) & ExactOptionalGuard) & JsonRpcParams' ||
+    plainType ===
+      '((Json[] | Record<string, Json>) & ExactOptionalGuard) & JsonRpcParams'
+  );
+}
+
+/**
  * Get a type alias for a plain type string, if it matches certain known types
  * that should be represented as a specific alias in the schema.
  *
- * @param plainType - The plain type string to get the alias for.
+ * @param type - The type to get the type alias for.
  * @returns The type alias for the plain type string, or `null` if there is no
  * specific alias for the plain type string.
  */
-function getTypeAlias(plainType: string) {
-  if (LITERAL_TYPES.includes(plainType)) {
+function getTypeAlias(type: Type) {
+  const plainType = type.getText(
+    undefined,
+
+    // This flag tells TypeScript to use type aliases when possible.
+    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+  );
+
+  const nonNullablePlainType = type
+    .getNonNullableType()
+    .getText(undefined, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope);
+
+  if (
+    LITERAL_TYPES.includes(plainType) ||
+    LITERAL_TYPES.includes(nonNullablePlainType)
+  ) {
     return plainType;
   }
 
@@ -241,24 +281,14 @@ function getTypeAlias(plainType: string) {
   }
 
   // Edge cases.
-  if (plainType === 'ComponentOrElement') {
+  if (
+    plainType === 'ComponentOrElement' ||
+    nonNullablePlainType === 'ComponentOrElement'
+  ) {
     return 'JSXElement';
   }
 
-  // This is a workaround for a specific issue where the type of the
-  // `params` property of the JSON-RPC request object is represented as a
-  // complex intersection and union of types. It may be possible to simplify
-  // this in the future by improving the way we extract the type of the `params`
-  // property, but for now we can just check for this specific case and return
-  // the expected type alias.
-  if (
-    plainType === 'Json[] | Record<string, Json>' ||
-    plainType === 'Record<string, Json> | Json[]' ||
-    plainType ===
-      '(((Record<string, Json> | Json[]) & ExactOptionalGuard) & JsonRpcParams) | undefined' ||
-    plainType ===
-      '(((Json[] | Record<string, Json>) & ExactOptionalGuard) & JsonRpcParams) | undefined'
-  ) {
+  if (isJsonRpcParams(plainType) || isJsonRpcParams(nonNullablePlainType)) {
     return 'JsonRpcParams';
   }
 
@@ -271,35 +301,20 @@ function getTypeAlias(plainType: string) {
  * readable string representation.
  *
  * @param type - The type to get the string representation of.
- * @param seen - A set of type strings that have already been processed, to
- * avoid infinite recursion in case of circular type references.
  * @returns The string representation of the type.
  */
-function getCleanTypeString(type: Type, seen = new Set<string>()): string {
-  const plainType = type.getText(
-    undefined,
-
-    // This flag tells TypeScript to use type aliases when possible.
-    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-  );
-
-  const alias = getTypeAlias(plainType);
+function getCleanTypeString(type: Type): string {
+  const alias = getTypeAlias(type);
   if (alias) {
     return alias;
   }
-
-  if (seen.has(plainType)) {
-    return plainType;
-  }
-
-  seen.add(plainType);
 
   // Process union types by getting the string representation of each type in
   // the union and joining them with ` | `.
   if (type.isUnion()) {
     const unionTypes = type.getUnionTypes();
     const unionTypeStrings = unionTypes.map((unionType) =>
-      getTypeString(unionType, seen),
+      getTypeString(unionType),
     );
 
     // TypeScript represents `boolean` as a union of `true` and `false`, so we
@@ -318,7 +333,6 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       return a.localeCompare(b);
     });
 
-    seen.delete(plainType);
     const uniqueTypes = [...new Set(sortedArray)];
     return uniqueTypes.join(' | ');
   }
@@ -328,10 +342,9 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
   if (type.isIntersection()) {
     const intersectionTypes = type.getIntersectionTypes();
     const intersectionTypeStrings = intersectionTypes.map((intersectionType) =>
-      getTypeString(intersectionType, seen),
+      getTypeString(intersectionType),
     );
 
-    seen.delete(plainType);
     return intersectionTypeStrings.join(' & ');
   }
 
@@ -355,14 +368,12 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       }
 
       const propertyType = property.getTypeAtLocation(declaration);
-      return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType, seen)}`;
+      return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType)}`;
     });
 
-    seen.delete(plainType);
     return `{ ${propertyStrings.join('; ')} }`;
   }
 
-  seen.delete(plainType);
   return type.getText(
     undefined,
     TypeFormatFlags.UseAliasDefinedOutsideCurrentScope |
@@ -411,7 +422,7 @@ function getTypeString(type: Type, seen = new Set<string>()): string {
     return typeNode.getText();
   }
 
-  return getCleanTypeString(type, seen);
+  return getCleanTypeString(type);
 }
 
 /**
@@ -663,7 +674,6 @@ function isPrimitiveType(type: Type): boolean {
  */
 function isUnionType(type: Type): type is Type<ts.UnionType> {
   if (type.isUnion()) {
-    console.log('Checking', type.getText());
     const unionTypes = type.getUnionTypes();
     if (unionTypes.length === 2) {
       return !type.isNullable();
@@ -832,18 +842,12 @@ function getTypeMethodParameters(
   }
 
   const type = typeNode.getType();
-  const plainType = type.getText(
-    undefined,
-
-    // This flag tells TypeScript to use type aliases when possible.
-    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-  );
 
   // Check for specific known types that should be represented as a specific
   // alias in the schema. This is a workaround for certain edge cases, where
   // the real types are too complex or not properly represented with
   // `getText()`.
-  const alias = getTypeAlias(plainType);
+  const alias = getTypeAlias(type);
   if (alias) {
     return {
       kind: 'primitive',
