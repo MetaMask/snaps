@@ -15,6 +15,7 @@ import type {
   TypeNode,
   UnionTypeNode,
   VariableDeclaration,
+  ts,
 } from 'ts-morph';
 import { Project, SymbolFlags, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
@@ -654,6 +655,27 @@ function isPrimitiveType(type: Type): boolean {
 }
 
 /**
+ * Check if a type is a union type. If the type is a union of some type with
+ * `null`, it's considered as nullable rather than a union type.
+ *
+ * @param type - The type to check.
+ * @returns `true` if the type is a union type, or `false` otherwise.
+ */
+function isUnionType(type: Type): type is Type<ts.UnionType> {
+  if (type.isUnion()) {
+    console.log('Checking', type.getText());
+    const unionTypes = type.getUnionTypes();
+    if (unionTypes.length === 2) {
+      return !type.isNullable();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Get the element type node of an array type node, if it is an array type or
  * a reference to an array type.
  *
@@ -856,7 +878,7 @@ function getTypeMethodParameters(
     };
   }
 
-  if (type.isUnion()) {
+  if (isUnionType(type)) {
     const referencedTypeNode = getUnionTypeNode(typeNode);
     if (referencedTypeNode) {
       const rawOptions = referencedTypeNode
