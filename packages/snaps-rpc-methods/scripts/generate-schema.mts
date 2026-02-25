@@ -890,24 +890,24 @@ function getTypeMethodParameters(
 
   if (isUnionType(type)) {
     const referencedTypeNode = getUnionTypeNode(typeNode);
-    if (referencedTypeNode) {
-      const rawOptions = referencedTypeNode
-        .getTypeNodes()
-        .map((memberTypeNode) =>
-          getTypeMethodParameters(memberTypeNode, object, isResponse),
-        )
-        .filter((option): option is MethodParameter => option !== null);
+    assert(referencedTypeNode, 'Union type node not found for union type.');
 
-      const { commonProperties, options } = extractCommonProperties(rawOptions);
+    const rawOptions = referencedTypeNode
+      .getTypeNodes()
+      .map((memberTypeNode) =>
+        getTypeMethodParameters(memberTypeNode, object, isResponse),
+      )
+      .filter((option): option is MethodParameter => option !== null);
 
-      return {
-        kind: 'union',
-        type: getTypeString(type),
-        description: getTypeNodeDescription(typeNode),
-        commonProperties,
-        options,
-      };
-    }
+    const { commonProperties, options } = extractCommonProperties(rawOptions);
+
+    return {
+      kind: 'union',
+      type: getTypeString(type),
+      description: getTypeNodeDescription(typeNode),
+      commonProperties,
+      options,
+    };
   }
 
   if (type.getProperties().length === 0) {
