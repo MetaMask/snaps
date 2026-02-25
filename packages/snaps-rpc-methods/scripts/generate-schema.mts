@@ -869,16 +869,22 @@ function getTypeMethodParameters(
     assert(elementType, 'Array element type not found.');
 
     const elementTypeNode = getArrayElementTypeNode(typeNode);
+    const element = getTypeMethodParameters(
+      elementTypeNode,
+      object,
+      isResponse,
+    );
+
+    assert(
+      element,
+      'Failed to get type method parameter for array element type.',
+    );
 
     return {
       kind: 'array',
       type: `${getTypeString(elementType)}[]`,
       description: getTypeNodeDescription(typeNode),
-      element: getTypeMethodParameters(
-        elementTypeNode,
-        object,
-        isResponse,
-      ) as MethodParameter,
+      element,
     };
   }
 
