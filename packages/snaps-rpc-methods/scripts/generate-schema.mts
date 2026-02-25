@@ -13,7 +13,9 @@ import type {
   Type,
   TypeAliasDeclaration,
   TypeNode,
+  UnionTypeNode,
   VariableDeclaration,
+  ts,
 } from 'ts-morph';
 import { Project, SymbolFlags, SyntaxKind, TypeFormatFlags } from 'ts-morph';
 
@@ -68,15 +70,38 @@ type Method = {
   restricted: boolean;
 };
 
-/**
- * The schema for a method parameter, including its name, type, and description.
- */
-type MethodParameter = {
+type CommonMethod = {
   type: string;
   name?: string;
   description?: string | null;
   required?: boolean;
 };
+
+type ObjectMethodParameter = CommonMethod & {
+  kind: 'object';
+  properties: MethodParameter[];
+};
+
+type PrimitiveMethodParameter = CommonMethod & {
+  kind: 'primitive';
+};
+
+type ArrayMethodParameter = CommonMethod & {
+  kind: 'array';
+  element: MethodParameter;
+};
+
+type UnionMethodParameter = CommonMethod & {
+  kind: 'union';
+  commonProperties: MethodParameter[];
+  options: MethodParameter[];
+};
+
+type MethodParameter =
+  | ObjectMethodParameter
+  | PrimitiveMethodParameter
+  | ArrayMethodParameter
+  | UnionMethodParameter;
 
 /**
  * The schema for a method example, including its title (if any), language, and
@@ -90,34 +115,6 @@ type MethodExample = {
     content: string;
   }[];
 };
-
-/**
- * Get the type of a property at the location of the implementation function of
- * a handler. This is needed to extract the type of the properties at the
- * correct location.
- *
- * @param symbol - The symbol of the handler, which is expected to be the symbol
- * of the object literal that defines the handler.
- * @param object - The object literal expression that defines the handler, which
- * is needed to find the correct property to extract the type from.
- * @returns The type of the property at the location of the implementation
- * function of the handler.
- */
-function getTypeAtLocation(symbol: Symbol, object: ObjectLiteralExpression) {
-  const property =
-    object.getProperty('implementation') ??
-    object.getProperty('specificationBuilder');
-
-  assert(
-    property,
-    'Property "implementation" or "specificationBuilder" not found.',
-  );
-
-  const typeAtLocation = symbol.getTypeAtLocation(property);
-  assert(typeAtLocation, 'Type at location not found.');
-
-  return typeAtLocation;
-}
 
 /**
  * Unwrap a `Promise` type node to get the underlying type, if the given type
@@ -227,15 +224,59 @@ function mergeBooleanTypes(types: string[]) {
 }
 
 /**
+ * Check if a plain type string represents the `params` property of a JSON-RPC
+ * request object, which can be defined as a union of `Json[]` and
+ * `Record<string, Json>`, with some additional intersection types for
+ * optionality guards. This is needed to handle a specific edge case where the
+ * type of the `params` property is represented as a complex intersection and
+ * union of types, and we want to recognize it and return the expected type
+ * alias (`JsonRpcParams`) in the schema.
+ *
+ * @param plainType - The plain type string to check.
+ * @returns `true` if the plain type string represents the `params` property of a
+ * JSON-RPC request object, or `false` otherwise.
+ */
+function isJsonRpcParams(plainType: string) {
+  return (
+    plainType === 'Json[] | Record<string, Json>' ||
+    plainType === 'Record<string, Json> | Json[]' ||
+    plainType === '(Json[] | Record<string, Json>) & ExactOptionalGuard' ||
+    plainType === '(Record<string, Json> | Json[]) & ExactOptionalGuard' ||
+    plainType ===
+      '((Record<string, Json> | Json[]) & ExactOptionalGuard) & JsonRpcParams' ||
+    plainType ===
+      '((Json[] | Record<string, Json>) & ExactOptionalGuard) & JsonRpcParams'
+  );
+}
+
+/**
  * Get a type alias for a plain type string, if it matches certain known types
  * that should be represented as a specific alias in the schema.
  *
- * @param plainType - The plain type string to get the alias for.
+ * @param type - The type to get the type alias for.
  * @returns The type alias for the plain type string, or `null` if there is no
  * specific alias for the plain type string.
  */
-function getTypeAlias(plainType: string) {
-  if (LITERAL_TYPES.includes(plainType)) {
+function getTypeAlias(type: Type) {
+  const plainType = type.getText(
+    undefined,
+
+    // This flag tells TypeScript to use type aliases when possible.
+    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
+  );
+
+  // This removes `null` and `undefined` from the type, which simplifies
+  // checking for certain types that may be nullable, e.g., only checking
+  // `Json[] | Record<string, Json>` instead of also having to check for
+  // `Json[] | Record<string, Json> | undefined`.
+  const nonNullablePlainType = type
+    .getNonNullableType()
+    .getText(undefined, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope);
+
+  if (
+    LITERAL_TYPES.includes(plainType) ||
+    LITERAL_TYPES.includes(nonNullablePlainType)
+  ) {
     return plainType;
   }
 
@@ -244,22 +285,14 @@ function getTypeAlias(plainType: string) {
   }
 
   // Edge cases.
-  if (plainType === 'ComponentOrElement') {
+  if (
+    plainType === 'ComponentOrElement' ||
+    nonNullablePlainType === 'ComponentOrElement'
+  ) {
     return 'JSXElement';
   }
 
-  // This is a workaround for a specific issue where the type of the
-  // `params` property of the JSON-RPC request object is represented as a
-  // complex intersection and union of types. It may be possible to simplify
-  // this in the future by improving the way we extract the type of the `params`
-  // property, but for now we can just check for this specific case and return
-  // the expected type alias.
-  if (
-    plainType ===
-      '(((Record<string, Json> | Json[]) & ExactOptionalGuard) & JsonRpcParams) | undefined' ||
-    plainType ===
-      '(((Json[] | Record<string, Json>) & ExactOptionalGuard) & JsonRpcParams) | undefined'
-  ) {
+  if (isJsonRpcParams(plainType) || isJsonRpcParams(nonNullablePlainType)) {
     return 'JsonRpcParams';
   }
 
@@ -272,35 +305,20 @@ function getTypeAlias(plainType: string) {
  * readable string representation.
  *
  * @param type - The type to get the string representation of.
- * @param seen - A set of type strings that have already been processed, to
- * avoid infinite recursion in case of circular type references.
  * @returns The string representation of the type.
  */
-function getCleanTypeString(type: Type, seen = new Set<string>()): string {
-  const plainType = type.getText(
-    undefined,
-
-    // This flag tells TypeScript to use type aliases when possible.
-    TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
-  );
-
-  const alias = getTypeAlias(plainType);
+function getCleanTypeString(type: Type): string {
+  const alias = getTypeAlias(type);
   if (alias) {
     return alias;
   }
-
-  if (seen.has(plainType)) {
-    return plainType;
-  }
-
-  seen.add(plainType);
 
   // Process union types by getting the string representation of each type in
   // the union and joining them with ` | `.
   if (type.isUnion()) {
     const unionTypes = type.getUnionTypes();
     const unionTypeStrings = unionTypes.map((unionType) =>
-      getTypeString(unionType, seen),
+      getTypeString(unionType),
     );
 
     // TypeScript represents `boolean` as a union of `true` and `false`, so we
@@ -319,7 +337,6 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
       return a.localeCompare(b);
     });
 
-    seen.delete(plainType);
     const uniqueTypes = [...new Set(sortedArray)];
     return uniqueTypes.join(' | ');
   }
@@ -329,32 +346,34 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
   if (type.isIntersection()) {
     const intersectionTypes = type.getIntersectionTypes();
     const intersectionTypeStrings = intersectionTypes.map((intersectionType) =>
-      getTypeString(intersectionType, seen),
+      getTypeString(intersectionType),
     );
 
-    seen.delete(plainType);
     return intersectionTypeStrings.join(' & ');
   }
 
   // For object types that are not arrays and have properties, we want to get a
   // more detailed string representation that includes the properties of the
   // object, with any fixes applied to the property types.
-  if (type.isObject() && !type.isArray() && type.getProperties().length > 0) {
+  if (
+    type.isObject() &&
+    !type.isArray() &&
+    !type.isUnion() &&
+    type.getProperties().length > 0
+  ) {
     const properties = type.getProperties();
     const propertyStrings = properties.map((property) => {
       const isOptional = property.hasFlags(SymbolFlags.Optional);
       const declaration =
         property.getValueDeclaration() ?? findDeclaration(property);
-      const propertyType = property.getTypeAtLocation(declaration);
 
-      return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType, seen)}`;
+      const propertyType = property.getTypeAtLocation(declaration);
+      return `${property.getName()}${isOptional ? '?' : ''}: ${getTypeString(propertyType)}`;
     });
 
-    seen.delete(plainType);
     return `{ ${propertyStrings.join('; ')} }`;
   }
 
-  seen.delete(plainType);
   return type.getText(
     undefined,
     TypeFormatFlags.UseAliasDefinedOutsideCurrentScope |
@@ -368,11 +387,9 @@ function getCleanTypeString(type: Type, seen = new Set<string>()): string {
  * and without truncating the type (e.g., to `string` or `object`).
  *
  * @param type - The type to get the string representation of.
- * @param seen - A set of type strings that have already been processed, to
- * avoid infinite recursion in case of circular type references.
  * @returns The string representation of the type.
  */
-function getTypeString(type: Type, seen = new Set<string>()): string {
+function getTypeString(type: Type): string {
   // Aliased types that are not properly represented with `getText()`, such as
   // `Record`.
   const aliasSymbol = type.getAliasSymbol();
@@ -390,7 +407,7 @@ function getTypeString(type: Type, seen = new Set<string>()): string {
       // `{ [x: string]: Json; }`.
       if (typeArguments.length > 0) {
         const stringifiedArguments = typeArguments.map((argument) =>
-          getTypeString(argument, seen),
+          getTypeString(argument),
         );
 
         return `${aliasName}<${stringifiedArguments.join(', ')}>`;
@@ -403,7 +420,7 @@ function getTypeString(type: Type, seen = new Set<string>()): string {
     return typeNode.getText();
   }
 
-  return getCleanTypeString(type, seen);
+  return getCleanTypeString(type);
 }
 
 /**
@@ -489,6 +506,10 @@ function unwrapInferMatchingTypeNode(declaration: TypeAliasDeclaration) {
  * if the type does not have any JSDoc comments.
  */
 function getTypeNodeDescription(typeNode: TypeNode) {
+  if (!typeNode.isKind(SyntaxKind.TypeReference)) {
+    return null;
+  }
+
   const typeReference = typeNode.asKindOrThrow(SyntaxKind.TypeReference);
   const identifier = typeReference
     .getTypeName()
@@ -585,6 +606,10 @@ function getObjectPropertyDescription(
   const propertyName = property.getName();
 
   const [declaration] = property.getDeclarations();
+  if (!declaration?.isKind(SyntaxKind.PropertySignature)) {
+    return null;
+  }
+
   const jsDocs = declaration
     .asKindOrThrow(SyntaxKind.PropertySignature)
     .getJsDocs();
@@ -605,23 +630,186 @@ function getObjectPropertyDescription(
 }
 
 /**
- * Get the method parameter object from a compiler type.
+ * Check if a type is a primitive type (string, number, boolean, or their
+ * literal types, null, undefined), or a union or intersection of primitive
+ * types.
  *
- * @param typeNode - The type node to get the method parameter from.
- * @returns The method parameter object, or `null` if the type is a nullable
- * type (e.g., `null`, `undefined`, `void`, or `never`).
+ * @param type - The type to check.
+ * @returns `true` if the type is a primitive type, or `false` otherwise.
  */
-function getTypeMethodParameter(typeNode: TypeNode): MethodParameter | null {
-  const type = typeNode.getType();
-  const typeString = getTypeString(type);
-  if (typeString === 'null') {
-    return null;
+function isPrimitiveType(type: Type): boolean {
+  if (type.isUnion()) {
+    return type
+      .getUnionTypes()
+      .every((unionType) => isPrimitiveType(unionType));
   }
 
-  return {
-    type: typeString,
-    description: getTypeNodeDescription(typeNode),
-  };
+  if (type.isIntersection()) {
+    return type
+      .getIntersectionTypes()
+      .every((intersectionType) => isPrimitiveType(intersectionType));
+  }
+
+  return (
+    type.isString() ||
+    type.isNumber() ||
+    type.isBoolean() ||
+    type.isStringLiteral() ||
+    type.isTemplateLiteral() ||
+    type.isBooleanLiteral() ||
+    type.isNumberLiteral() ||
+    type.isNull() ||
+    type.isUndefined()
+  );
+}
+
+/**
+ * Check if a type is a union type. If the type is a union of some type with
+ * `null`, it's considered as nullable rather than a union type.
+ *
+ * @param type - The type to check.
+ * @returns `true` if the type is a union type, or `false` otherwise.
+ */
+function isUnionType(type: Type): type is Type<ts.UnionType> {
+  if (type.isUnion()) {
+    const unionTypes = type.getUnionTypes();
+    if (unionTypes.length === 2) {
+      return !type.isNullable();
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Get the element type node of an array type node, if it is an array type or
+ * a reference to an array type.
+ *
+ * Handles three forms:
+ *
+ * - Direct `T[]` syntax (`SyntaxKind.ArrayType`)
+ * - Generic `Array<T>` syntax (a `TypeReference` with one type argument)
+ * - A named alias referencing an array type (e.g., `type Foo = Bar[]`)
+ *
+ * @param typeNode - The type node to get the element type node for.
+ * @returns The element type node, or `null` if it cannot be determined.
+ */
+function getArrayElementTypeNode(typeNode: TypeNode): TypeNode | null {
+  if (typeNode.isKind(SyntaxKind.ArrayType)) {
+    return typeNode.asKindOrThrow(SyntaxKind.ArrayType).getElementTypeNode();
+  }
+
+  const typeReference = typeNode.asKind(SyntaxKind.TypeReference);
+  if (typeReference) {
+    const [firstTypeArgument] = typeReference.getTypeArguments();
+    if (firstTypeArgument) {
+      return firstTypeArgument;
+    }
+  }
+
+  const type = typeNode.getType();
+  const declaration = getTypeAliasDeclaration(type);
+  const declarationTypeNode = declaration?.getTypeNode();
+  if (declarationTypeNode?.isKind(SyntaxKind.ArrayType)) {
+    return declarationTypeNode
+      .asKindOrThrow(SyntaxKind.ArrayType)
+      .getElementTypeNode();
+  }
+
+  return null;
+}
+
+/**
+ * Get the underlying union type node for a type node, if it is a union type or
+ * a reference to a union type.
+ *
+ * @param typeNode - The type node to get the union type node for, which may be
+ * a union type or a reference to a union type.
+ * @returns The underlying union type node if the given type node is a union
+ * type or a reference to a union type, or `null` if the given type node is not
+ * a union type or a reference to a union type.
+ */
+function getUnionTypeNode(typeNode: TypeNode): UnionTypeNode | null {
+  if (typeNode.isKind(SyntaxKind.UnionType)) {
+    return typeNode.asKindOrThrow(SyntaxKind.UnionType);
+  }
+
+  const type = typeNode.getType();
+  const declaration = getTypeAliasDeclaration(type);
+  const declarationTypeNode = declaration?.getTypeNode();
+  if (declarationTypeNode?.isKind(SyntaxKind.UnionType)) {
+    return declarationTypeNode.asKindOrThrow(SyntaxKind.UnionType);
+  }
+
+  return null;
+}
+
+/**
+ * Extract properties that are common to all object-typed union options,
+ * i.e., properties that appear in every object option with the same name and
+ * type string. Common properties are returned separately so they can be
+ * hoisted to the union level, and are removed from each option's property
+ * list.
+ *
+ * Non-object options (primitives, arrays, nested unions) are passed through
+ * unchanged.
+ *
+ * @param options - The union member parameters to process.
+ * @returns An object with `commonProperties` (the hoisted properties) and
+ * `options` (the options with those properties removed).
+ */
+function extractCommonProperties(options: MethodParameter[]): {
+  commonProperties: MethodParameter[];
+  options: MethodParameter[];
+} {
+  const objectOptions = options.filter(
+    (option): option is ObjectMethodParameter => option.kind === 'object',
+  );
+
+  if (objectOptions.length < 2) {
+    return { commonProperties: [], options };
+  }
+
+  const [firstOption, ...remainingOptions] = objectOptions;
+
+  // A property is common if every object option contains a property with the
+  // same name and the same type string.
+  const commonProperties = firstOption.properties.filter(
+    (property) =>
+      property.name !== undefined &&
+      remainingOptions.every((option) =>
+        option.properties.some(
+          (otherProperty) =>
+            otherProperty.name === property.name &&
+            otherProperty.type === property.type,
+        ),
+      ),
+  );
+
+  if (commonProperties.length === 0) {
+    return { commonProperties: [], options };
+  }
+
+  const commonPropertyNames = new Set(
+    commonProperties.map((property) => property.name),
+  );
+
+  const strippedOptions = options.map((option): MethodParameter => {
+    if (option.kind !== 'object') {
+      return option;
+    }
+
+    return {
+      ...option,
+      properties: option.properties.filter(
+        (property) => !commonPropertyNames.has(property.name),
+      ),
+    };
+  });
+
+  return { commonProperties, options: strippedOptions };
 }
 
 /**
@@ -631,13 +819,16 @@ function getTypeMethodParameter(typeNode: TypeNode): MethodParameter | null {
  * @param typeNode - The object type node to extract properties from.
  * @param object - The object literal expression that defines the type, which is
  * needed to find the correct property to extract the type from.
+ * @param isResponse - A boolean indicating whether the type node is for a
+ * response type, which may require special handling for certain edge cases.
  * @returns An array of properties, where each property includes its name,
  * type, and JSDoc description (if any).
  */
 function getTypeMethodParameters(
   typeNode: TypeNode | null,
   object: ObjectLiteralExpression,
-): MethodParameter | MethodParameter[] | null {
+  isResponse = false,
+): MethodParameter | null {
   if (!typeNode) {
     return null;
   }
@@ -649,27 +840,80 @@ function getTypeMethodParameters(
   }
 
   const type = typeNode.getType();
-  if (
-    type.isString() ||
-    type.isNumber() ||
-    type.isBoolean() ||
-    type.isTemplateLiteral()
-  ) {
-    return getTypeMethodParameter(typeNode);
+
+  // Check for specific known types that should be represented as a specific
+  // alias in the schema. This is a workaround for certain edge cases, where
+  // the real types are too complex or not properly represented with
+  // `getText()`.
+  const alias = getTypeAlias(type);
+  if (alias) {
+    return {
+      kind: 'primitive',
+      type: alias,
+      description: getTypeNodeDescription(typeNode),
+    };
+  }
+
+  if (isPrimitiveType(type)) {
+    return {
+      kind: 'primitive',
+      type: getTypeString(type),
+      description: getTypeNodeDescription(typeNode),
+    };
   }
 
   if (type.isArray()) {
     const elementType = type.getArrayElementType();
     assert(elementType, 'Array element type not found.');
 
+    const elementTypeNode = getArrayElementTypeNode(typeNode);
+    const element = getTypeMethodParameters(
+      elementTypeNode,
+      object,
+      isResponse,
+    );
+
+    assert(
+      element,
+      'Failed to get type method parameter for array element type.',
+    );
+
     return {
+      kind: 'array',
       type: `${getTypeString(elementType)}[]`,
       description: getTypeNodeDescription(typeNode),
+      element,
+    };
+  }
+
+  if (isUnionType(type)) {
+    const referencedTypeNode = getUnionTypeNode(typeNode);
+    assert(referencedTypeNode, 'Union type node not found for union type.');
+
+    const rawOptions = referencedTypeNode
+      .getTypeNodes()
+      .map((memberTypeNode) =>
+        getTypeMethodParameters(memberTypeNode, object, isResponse),
+      )
+      .filter((option): option is MethodParameter => option !== null);
+
+    const { commonProperties, options } = extractCommonProperties(rawOptions);
+
+    return {
+      kind: 'union',
+      type: getTypeString(type),
+      description: getTypeNodeDescription(typeNode),
+      commonProperties,
+      options,
     };
   }
 
   if (type.getProperties().length === 0) {
-    return getTypeMethodParameter(typeNode);
+    return {
+      kind: 'primitive',
+      type: getTypeString(type),
+      description: getTypeNodeDescription(typeNode),
+    };
   }
 
   // For each property of the `params` object, extract its name, type, and JSDoc
@@ -690,18 +934,43 @@ function getTypeMethodParameters(
   // if any, to get descriptions for the properties that may not be included in
   // the type itself.
   const propertyTags = getObjectJsDocPropertyTags(type);
-
-  return propertySignatures.map((property) => {
-    const propertyType = getTypeAtLocation(property, object);
+  const properties = propertySignatures.map((property): MethodParameter => {
     const isOptional = property.hasFlags(SymbolFlags.Optional);
+    const propertyName = property.getName();
+    const propertyDescription = getObjectPropertyDescription(
+      property,
+      propertyTags,
+    );
+
+    const [declaration] = property.getDeclarations();
+    const propertyTypeNode =
+      declaration.asKind(SyntaxKind.PropertySignature)?.getTypeNode() ?? null;
+
+    const parameter = getTypeMethodParameters(
+      propertyTypeNode,
+      object,
+      isResponse,
+    );
+
+    assert(
+      parameter,
+      'Failed to get type method parameter for object property.',
+    );
 
     return {
-      name: property.getName(),
-      type: getTypeString(propertyType),
-      description: getObjectPropertyDescription(property, propertyTags),
-      required: !isOptional,
+      ...parameter,
+      name: propertyName,
+      description: propertyDescription,
+      ...(!isResponse && { required: !isOptional }),
     };
   });
+
+  return {
+    kind: 'object',
+    type: getTypeString(type),
+    description: getTypeNodeDescription(typeNode),
+    properties,
+  };
 }
 
 /**
@@ -928,7 +1197,7 @@ function getMethodSignature(
 
   return [
     getTypeMethodParameters(requestTypeNode, object),
-    getTypeMethodParameters(responseTypeNode, object),
+    getTypeMethodParameters(responseTypeNode, object, true),
   ];
 }
 
@@ -1275,7 +1544,7 @@ function getRestrictedMethodSignature(
 
   return [
     getTypeMethodParameters(requestTypeNode, object),
-    getTypeMethodParameters(responseTypeNode, object),
+    getTypeMethodParameters(responseTypeNode, object, true),
   ];
 }
 
