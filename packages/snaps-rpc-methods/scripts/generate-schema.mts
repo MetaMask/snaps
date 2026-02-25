@@ -160,7 +160,7 @@ function findDeclaration(symbol: Symbol) {
   });
 
   if (!foundDeclaration) {
-    return null;
+    throw new Error(`Declaration not found for symbol: ${symbol.getName()}`);
   }
 
   return foundDeclaration;
