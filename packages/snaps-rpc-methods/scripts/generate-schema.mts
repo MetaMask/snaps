@@ -265,6 +265,10 @@ function getTypeAlias(type: Type) {
     TypeFormatFlags.UseAliasDefinedOutsideCurrentScope,
   );
 
+  // This removes `null` and `undefined` from the type, which simplifies
+  // checking for certain types that may be nullable, e.g., only checking
+  // `Json[] | Record<string, Json>` instead of also having to check for
+  // `Json[] | Record<string, Json> | undefined`.
   const nonNullablePlainType = type
     .getNonNullableType()
     .getText(undefined, TypeFormatFlags.UseAliasDefinedOutsideCurrentScope);
