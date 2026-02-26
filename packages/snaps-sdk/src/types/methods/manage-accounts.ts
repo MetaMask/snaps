@@ -5,19 +5,18 @@ import type { Json } from '@metamask/utils';
  */
 export type ManageAccountsParams = {
   /**
-   * The method to call on the Snap.
+   * The account management method to call.
    */
   method: string;
 
   /**
-   * The optional parameters to pass to the Snap method.
+   * The parameters to pass to the account management method.
    */
   params?: Json[] | Record<string, Json>;
 };
 
 /**
- * The result returned by the Snap. The structure of this result will depend on
- * the specific method that was called on the Snap, and is not defined by the
- * API.
+ * The result returned by the client. The structure of this result depends on
+ * the account management method that was called.
  */
 export type ManageAccountsResult = Json;
