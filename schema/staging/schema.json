@@ -5,7 +5,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ id: string }",
-      "description": "The request parameters for the `snap_cancelBackgroundEvent` method.",
+      "description": "An object containing the parameters for the `snap_cancelBackgroundEvent`\nmethod.",
       "properties": [
         {
           "kind": "primitive",
@@ -19,7 +19,7 @@
     "result": {
       "kind": "primitive",
       "type": "null",
-      "description": "The result returned for the `snap_cancelBackgroundEvent` method.\n\nThis method does not return anything."
+      "description": "This method does not return any data, so the result is always `null`."
     },
     "subjectTypes": [
       "snap"
@@ -42,7 +42,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ encrypted?: boolean | null }",
-      "description": "The request parameters for the `snap_clearState` method.",
+      "description": "An object containing the parameters for the `snap_clearState` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -56,7 +56,7 @@
     "result": {
       "kind": "primitive",
       "type": "null",
-      "description": "The result returned by the `snap_clearState` method."
+      "description": "This method does not return any data, so the result is always `null`."
     },
     "subjectTypes": [
       "snap"
@@ -79,7 +79,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ id: string }",
-      "description": "The request parameters for the `snap_closeWebSocket` method.",
+      "description": "An object containing the parameters for the `snap_closeWebSocket` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -93,7 +93,7 @@
     "result": {
       "kind": "primitive",
       "type": "null",
-      "description": "The result returned by the `snap_closeWebSocket` method."
+      "description": "This method does not return any data, so the result is always `null`."
     },
     "subjectTypes": [
       "snap"
@@ -107,7 +107,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ ui: JSXElement; context?: Record<string, Json> | null }",
-      "description": "The request parameters for the `snap_createInterface` method.",
+      "description": "An object containing the parameters for the `snap_createInterface` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -151,7 +151,7 @@
     "parameters": {
       "kind": "union",
       "type": "{ content: JSXElement } | { id: string } | { type: \"alert\"; content: JSXElement } | { type: \"alert\"; id: string } | { type: \"confirmation\"; content: JSXElement } | { type: \"confirmation\"; id: string } | { type: \"prompt\"; content: JSXElement; placeholder?: string | null } | { type: \"prompt\"; id: string; placeholder?: string | null }",
-      "description": "An object containing the contents of the dialog.\n\n- `type` - The type of dialog. Not providing a type will create a fully\n[custom dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).\nPossible values are:\n  - `alert` - An alert that can only be acknowledged.\n  - `confirmation` - A confirmation that can be accepted or rejected.\n  - `prompt` - A prompt where the user can enter a text response.\n\n- One of:\n  - `content` - The content of the alert, as a\n[custom UI](https://docs.metamask.io/snaps/features/custom-ui/) component.\n  - `id` - The ID of an\n[interactive interface](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).\n- `placeholder` - An optional placeholder text to display in the dialog. Only\napplicable for the `prompt` dialog.",
+      "description": "An object containing the contents of the dialog.",
       "commonProperties": [],
       "options": [
         {
@@ -162,7 +162,7 @@
             {
               "kind": "primitive",
               "type": "\"alert\"",
-              "description": null,
+              "description": "The literal string \"alert\" to indicate that this is an alert dialog.",
               "name": "type",
               "required": true
             }
@@ -176,7 +176,7 @@
                 {
                   "kind": "primitive",
                   "type": "JSXElement",
-                  "description": null,
+                  "description": "The content to display in the alert dialog.",
                   "name": "content",
                   "required": true
                 }
@@ -190,7 +190,7 @@
                 {
                   "kind": "primitive",
                   "type": "string",
-                  "description": null,
+                  "description": "The Snap interface ID, which can be used to display a previously\ncreated interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).",
                   "name": "id",
                   "required": true
                 }
@@ -206,7 +206,7 @@
             {
               "kind": "primitive",
               "type": "\"confirmation\"",
-              "description": null,
+              "description": "The literal string \"confirmation\" to indicate that this is a\nconfirmation dialog.",
               "name": "type",
               "required": true
             }
@@ -220,7 +220,7 @@
                 {
                   "kind": "primitive",
                   "type": "JSXElement",
-                  "description": null,
+                  "description": "The content to display in the confirmation dialog.",
                   "name": "content",
                   "required": true
                 }
@@ -234,7 +234,7 @@
                 {
                   "kind": "primitive",
                   "type": "string",
-                  "description": null,
+                  "description": "The Snap interface ID, which can be used to display a previously\ncreated interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).",
                   "name": "id",
                   "required": true
                 }
@@ -250,14 +250,14 @@
             {
               "kind": "primitive",
               "type": "\"prompt\"",
-              "description": null,
+              "description": "The literal string \"prompt\" to indicate that this is a prompt dialog.",
               "name": "type",
               "required": true
             },
             {
               "kind": "primitive",
               "type": "string",
-              "description": null,
+              "description": "An optional placeholder text to display in the text input.",
               "name": "placeholder",
               "required": false
             }
@@ -271,7 +271,7 @@
                 {
                   "kind": "primitive",
                   "type": "JSXElement",
-                  "description": null,
+                  "description": "The content to display in the prompt dialog.",
                   "name": "content",
                   "required": true
                 }
@@ -285,7 +285,7 @@
                 {
                   "kind": "primitive",
                   "type": "string",
-                  "description": null,
+                  "description": "The Snap interface ID, which can be used to display a previously\ncreated interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).",
                   "name": "id",
                   "required": true
                 }
@@ -357,12 +357,12 @@
     "parameters": {
       "kind": "primitive",
       "type": "null",
-      "description": "The request parameters for the `snap_getBackgroundEvents` method.\n\nThis method does not accept any parameters."
+      "description": "This method does not accept any parameters."
     },
     "result": {
       "kind": "array",
       "type": "{ id: string; scheduledAt: string; snapId: SnapId; date: string; request: { method: string; jsonrpc?: \"2.0\" | null; id?: number | string | null; params?: JsonRpcParams } }[]",
-      "description": "The result returned by the `snap_getBackgroundEvents` method.\n\nIt consists of an array background events (if any) for a snap.",
+      "description": "An array of scheduled background events.",
       "element": {
         "kind": "object",
         "type": "{ id: string; scheduledAt: string; snapId: SnapId; date: string; request: { method: string; jsonrpc?: \"2.0\" | null; id?: number | string | null; params?: JsonRpcParams } }",
@@ -400,25 +400,25 @@
               {
                 "kind": "primitive",
                 "type": "string",
-                "description": null,
+                "description": "The method to be called when the event is fired.",
                 "name": "method"
               },
               {
                 "kind": "primitive",
                 "type": "\"2.0\" | null",
-                "description": null,
+                "description": "The optional JSON-RPC version for the request, which is always \"2.0\" if\nprovided.",
                 "name": "jsonrpc"
               },
               {
                 "kind": "primitive",
                 "type": "number | string | null",
-                "description": null,
+                "description": "The optional ID for the request.",
                 "name": "id"
               },
               {
                 "kind": "primitive",
                 "type": "JsonRpcParams",
-                "description": null,
+                "description": "The optional parameters for the request.",
                 "name": "params"
               }
             ],
@@ -448,7 +448,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ curve: \"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"; path: string[] } & { source?: string | null }",
-      "description": "The request parameters for the `snap_getBip32Entropy` method.",
+      "description": "An object containing the parameters for the `snap_getBip32Entropy` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -481,7 +481,7 @@
     "result": {
       "kind": "object",
       "type": "{ depth: number; masterFingerprint?: number | null; parentFingerprint: number; index: number; network?: \"mainnet\" | \"testnet\" | null; privateKey?: string | null; publicKey: string; chainCode: string; curve: \"ed25519\" | \"ed25519Bip32\" | \"secp256k1\" }",
-      "description": "The result returned by the `snap_getBip32Entropy` method.",
+      "description": "A JSON-serializable SLIP-10 node containing the requested BIP-32 entropy.",
       "properties": [
         {
           "kind": "primitive",
@@ -566,7 +566,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ curve: \"ed25519\" | \"ed25519Bip32\" | \"secp256k1\"; path: string[] } & { compressed?: boolean | null; source?: string | null }",
-      "description": "The request parameters for the `snap_getBip32PublicKey` method.",
+      "description": "An object containing the parameters for the `snap_getBip32PublicKey` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -635,7 +635,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ coinType: number } & { source?: string | null }",
-      "description": "The request parameters for the `snap_getBip44Entropy` method.",
+      "description": "An object containing the parameters for the `snap_getBip44Entropy` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -656,7 +656,7 @@
     "result": {
       "kind": "object",
       "type": "{ depth: 0 | 1 | 2 | 3 | 4 | 5; masterFingerprint?: number | null; parentFingerprint: number; index: number; network?: \"mainnet\" | \"testnet\" | null; privateKey?: string | null; publicKey: string; chainCode: string } & { coin_type: number; path: `m / bip32:${number}' / bip32:${number}'` }",
-      "description": "The result returned by the `snap_getBip44Entropy` method.",
+      "description": "A JSON-serializable BIP-44 coin type node containing the requested BIP-44\nentropy.",
       "properties": [
         {
           "kind": "primitive",
@@ -748,7 +748,7 @@
     "result": {
       "kind": "object",
       "type": "{ clientVersion: string; platformVersion: string; locked: boolean; active: boolean }",
-      "description": "The result returned by the `snap_getClientStatus` method.\n\nIt returns an object containing useful information about the client.",
+      "description": "An object containing information about the client that the Snap is running\nin.",
       "properties": [
         {
           "kind": "primitive",
@@ -771,7 +771,7 @@
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "A boolean flag that indicates whether the client is active or not.",
+          "description": "A boolean flag that indicates whether the client is active or not. The\nclient is considered active if the client is visible.",
           "name": "active"
         }
       ]
@@ -797,7 +797,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ version: 1; salt?: string | null; source?: string | null }",
-      "description": "The request parameters for the `snap_getEntropy` method.",
+      "description": "An object containing the parameters for the `snap_getEntropy` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -854,7 +854,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ path: string; encoding?: \"base64\" | \"hex\" | \"utf8\" | null }",
-      "description": "The request parameters for the `snap_getFile` method.",
+      "description": "An object containing the parameters for the `snap_getFile` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -904,7 +904,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ id: string }",
-      "description": "The request parameters for the `snap_getInterfaceContext` method.",
+      "description": "An object containing the parameters for the `snap_getInterfaceContext`\nmethod.",
       "properties": [
         {
           "kind": "primitive",
@@ -918,7 +918,7 @@
     "result": {
       "kind": "primitive",
       "type": "Record<string, Json> | null",
-      "description": "The context for the given interface."
+      "description": "The context for the given interface. May be `null` if no context was provided\nwhen the interface was created."
     },
     "subjectTypes": [
       "snap"
@@ -941,7 +941,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ id: string }",
-      "description": "The request parameters for the `snap_getInterfaceState` method.",
+      "description": "An object containing the parameters for the `snap_getInterfaceState` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -994,72 +994,72 @@
     "result": {
       "kind": "object",
       "type": "{ locale: string; currency: string; hideBalances: boolean; useSecurityAlerts: boolean; simulateOnChainActions: boolean; useTokenDetection: boolean; batchCheckBalances: boolean; displayNftMedia: boolean; useNftDetection: boolean; useExternalPricingData: boolean; showTestnets: boolean }",
-      "description": "An object containing the user's preferences.",
+      "description": "An object containing the user's MetaMask preferences.",
       "properties": [
         {
           "kind": "primitive",
           "type": "string",
-          "description": "The user's locale setting as a language code.",
+          "description": "The user's locale setting as a [language\ncode](https://github.com/MetaMask/metamask-extension/blob/main/app/_locales/index.json).",
           "name": "locale"
         },
         {
           "kind": "primitive",
           "type": "string",
-          "description": "The user's preferred fiat currency code.",
+          "description": "The user's preferred fiat currency code (e.g., `\"usd\"`, `\"eur\"`).",
           "name": "currency"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether the user has chosen to hide balances.",
+          "description": "Whether the user has chosen to hide balances in the MetaMask UI.",
           "name": "hideBalances"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to run transactions and signatures\nthrough security providers.",
+          "description": "Whether to run transactions and signatures through security alert\nproviders before submitting.",
           "name": "useSecurityAlerts"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to simulate transactions and\nsignatures.",
+          "description": "Whether to simulate transactions and signatures to preview their effects\nbefore the user confirms.",
           "name": "simulateOnChainActions"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to auto-detect tokens.",
+          "description": "Whether to automatically detect and add ERC-20 tokens to the user's\nwallet.",
           "name": "useTokenDetection"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to fetch balances in an aggregated\nmanner.",
+          "description": "Whether to fetch token balances in an aggregated manner for improved\nperformance.",
           "name": "batchCheckBalances"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to display NFT media.",
+          "description": "Whether to display NFT media (images, videos) in the MetaMask UI.",
           "name": "displayNftMedia"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to auto-detect NFTs.",
+          "description": "Whether to automatically detect and add NFTs to the user's wallet.",
           "name": "useNftDetection"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to get token price data from an\nexternal source.",
+          "description": "Whether to fetch token price data from an external pricing source.",
           "name": "useExternalPricingData"
         },
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to show testnets.",
+          "description": "Whether to show testnet networks in the MetaMask UI.",
           "name": "showTestnets"
         }
       ]
@@ -1076,7 +1076,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ key?: string | null; encrypted?: boolean | null }",
-      "description": "The request parameters for the `snap_getState` method.",
+      "description": "An object containing the parameters for the `snap_getState` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -1126,12 +1126,12 @@
     "parameters": {
       "kind": "primitive",
       "type": "null",
-      "description": "The request parameters for the `snap_getWebSockets` method.\n\nThis method does not accept any parameters."
+      "description": "This method does not accept any parameters."
     },
     "result": {
       "kind": "array",
       "type": "{ id: string; url: string; protocols: string[] }[]",
-      "description": "An array of connected WebSockets for the Snap. Each WebSocket is represented\nby an object containing the following properties:\n\n- `id` - The unique identifier of the WebSocket connection.\n- `url` - The URL of the WebSocket connection.\n- `protocols` - An array of subprotocols used in the WebSocket connection (if\nany).",
+      "description": "An array of connected WebSockets for the Snap.",
       "element": {
         "kind": "object",
         "type": "{ id: string; url: string; protocols: string[] }",
@@ -1140,19 +1140,19 @@
           {
             "kind": "primitive",
             "type": "string",
-            "description": null,
+            "description": "The unique identifier of the WebSocket connection.",
             "name": "id"
           },
           {
             "kind": "primitive",
             "type": "string",
-            "description": null,
+            "description": "The URL of the WebSocket connection.",
             "name": "url"
           },
           {
             "kind": "array",
             "type": "string[]",
-            "description": null,
+            "description": "An array of subprotocols used in the WebSocket connection (if any).",
             "element": {
               "kind": "primitive",
               "type": "string",
@@ -1175,12 +1175,12 @@
     "parameters": {
       "kind": "primitive",
       "type": "null",
-      "description": "The request parameters for the `snap_listEntropySources` method."
+      "description": "This method does not accept any parameters."
     },
     "result": {
       "kind": "array",
       "type": "{ name: string; id: string; type: \"mnemonic\"; primary: boolean }[]",
-      "description": "An array of entropy sources available to the Snap. Each entropy source\nconsists of:\n\n- `name` - The name of the entropy source.\n- `id` - The ID of the entropy source.\n- `type` - The type of the entropy source. Currently, only `mnemonic` is\nsupported.\n- `primary` - Whether the entropy source is the primary source.",
+      "description": "An array of entropy sources available to the Snap.",
       "element": {
         "kind": "object",
         "type": "{ name: string; id: string; type: \"mnemonic\"; primary: boolean }",
@@ -1223,45 +1223,30 @@
     "name": "snap_manageAccounts",
     "description": "Manage account management Snap accounts. This method is organized into\nmultiple sub-methods which each take their own parameters:\n\n- `createAccount`\n- `updateAccount`\n- `deleteAccount`\n- `listAccounts`\n- `submitResponse`",
     "parameters": {
-      "kind": "union",
-      "type": "{ method: string } | { method: string; params: JsonRpcParams }",
-      "description": "The request parameters for the `snap_manageAccounts` method.",
-      "commonProperties": [
+      "kind": "object",
+      "type": "{ method: string; params?: JsonRpcParams }",
+      "description": "An object containing the parameters for the `snap_manageAccounts` method.",
+      "properties": [
         {
           "kind": "primitive",
           "type": "string",
-          "description": null,
+          "description": "The account management method to call.",
           "name": "method",
           "required": true
-        }
-      ],
-      "options": [
-        {
-          "kind": "object",
-          "type": "{ method: string }",
-          "description": null,
-          "properties": []
         },
         {
-          "kind": "object",
-          "type": "{ method: string; params: JsonRpcParams }",
-          "description": null,
-          "properties": [
-            {
-              "kind": "primitive",
-              "type": "JsonRpcParams",
-              "description": null,
-              "name": "params",
-              "required": true
-            }
-          ]
+          "kind": "primitive",
+          "type": "JsonRpcParams",
+          "description": "The parameters to pass to the account management method.",
+          "name": "params",
+          "required": false
         }
       ]
     },
     "result": {
       "kind": "primitive",
       "type": "Json",
-      "description": "The result returned by the `snap_manageAccounts` method, which is the result\nreturned by the Snap."
+      "description": "The result returned by the client. The structure of this result depends on\nthe account management method that was called."
     },
     "examples": [],
     "subjectTypes": [
@@ -1275,12 +1260,12 @@
     "parameters": {
       "kind": "union",
       "type": "{ operation: \"clear\"; encrypted?: boolean | null } | { operation: \"get\"; encrypted?: boolean | null } | { operation: \"update\"; encrypted?: boolean | null; newState: Record<string, Json> }",
-      "description": "The request parameters for the `snap_manageState` method.",
+      "description": "An object containing the parameters for the `snap_manageState` method.",
       "commonProperties": [
         {
           "kind": "primitive",
           "type": "boolean",
-          "description": "Whether to use the separate encrypted state, or the\nunencrypted state. Defaults to the encrypted state. Encrypted state can only\nbe used if the extension is unlocked, while unencrypted state can be used\nwhether the extension is locked or unlocked.",
+          "description": "Whether to use the encrypted or unencrypted state. Defaults to `true`\n(encrypted). Encrypted state is only accessible when the wallet is\nunlocked, while unencrypted state is accessible whether the wallet is\nlocked or unlocked. State can be cleared regardless of the wallet's lock\nstate, but this parameter determines which state is cleared.",
           "name": "encrypted",
           "required": false
         }
@@ -1289,12 +1274,12 @@
         {
           "kind": "object",
           "type": "{ operation: \"clear\"; encrypted?: boolean | null }",
-          "description": "The clear state operation, which clears the state.",
+          "description": "The `clear` operation, which deletes all stored state.",
           "properties": [
             {
               "kind": "primitive",
               "type": "\"clear\"",
-              "description": "The operation to perform on the state. Must be `clear`.",
+              "description": "The literal string \"clear\" to indicate that this is a clear operation.",
               "name": "operation",
               "required": true
             }
@@ -1303,12 +1288,12 @@
         {
           "kind": "object",
           "type": "{ operation: \"get\"; encrypted?: boolean | null }",
-          "description": "The get state operation, which retrieves the state.",
+          "description": "The `get` operation, which retrieves the stored state.",
           "properties": [
             {
               "kind": "primitive",
               "type": "\"get\"",
-              "description": "The operation to perform on the state. Must be `get`.",
+              "description": "The literal string \"get\" to indicate that this is a get operation.",
               "name": "operation",
               "required": true
             }
@@ -1317,19 +1302,19 @@
         {
           "kind": "object",
           "type": "{ operation: \"update\"; encrypted?: boolean | null; newState: Record<string, Json> }",
-          "description": "The update state operation, which updates the state.",
+          "description": "The `update` operation, which replaces the stored state with a new value.",
           "properties": [
             {
               "kind": "primitive",
               "type": "\"update\"",
-              "description": "The operation to perform on the state. Must be\n`update`.",
+              "description": "The literal string \"update\" to indicate that this is an update operation.",
               "name": "operation",
               "required": true
             },
             {
               "kind": "primitive",
               "type": "Record<string, Json>",
-              "description": "The new state to set.",
+              "description": "The new state to store. Must be a JSON-serializable object.",
               "name": "newState",
               "required": true
             }
@@ -1369,12 +1354,12 @@
     "parameters": {
       "kind": "union",
       "type": "{ type: \"inApp\"; message: string } | { type: \"inApp\"; message: string; content: JSXElement; title: string; footerLink?: { href: string; text: string } | null } | { type: \"native\"; message: string }",
-      "description": "The request parameters for the `snap_notify` method.",
+      "description": "An object containing the parameters for the `snap_notify` method.",
       "commonProperties": [
         {
           "kind": "primitive",
           "type": "string",
-          "description": null,
+          "description": "The message to display in the notification.",
           "name": "message",
           "required": true
         }
@@ -1388,7 +1373,7 @@
             {
               "kind": "primitive",
               "type": "\"native\"",
-              "description": null,
+              "description": "The literal string \"native\" to indicate that this is a native OS\nnotification. We recommend using `inApp` instead, as native\nnotifications may be rate-limited by the operating system.",
               "name": "type",
               "required": true
             }
@@ -1402,7 +1387,7 @@
             {
               "kind": "primitive",
               "type": "\"inApp\"",
-              "description": null,
+              "description": "The literal string \"inApp\" to indicate that this is an in-app\nnotification displayed in the MetaMask UI.",
               "name": "type",
               "required": true
             }
@@ -1416,40 +1401,40 @@
             {
               "kind": "primitive",
               "type": "\"inApp\"",
-              "description": null,
+              "description": "The literal string \"inApp\" to indicate that this is an in-app\nnotification displayed in the MetaMask UI.",
               "name": "type",
               "required": true
             },
             {
               "kind": "primitive",
               "type": "JSXElement",
-              "description": null,
+              "description": "The custom UI content to display when the notification is expanded.",
               "name": "content",
               "required": true
             },
             {
               "kind": "primitive",
               "type": "string",
-              "description": null,
+              "description": "The title of the expanded notification.",
               "name": "title",
               "required": true
             },
             {
               "kind": "object",
               "type": "{ href: string; text: string }",
-              "description": null,
+              "description": "An optional link to display in the footer of the expanded notification.",
               "properties": [
                 {
                   "kind": "primitive",
                   "type": "string",
-                  "description": null,
+                  "description": "The URL to navigate to when the link is clicked.",
                   "name": "href",
                   "required": true
                 },
                 {
                   "kind": "primitive",
                   "type": "string",
-                  "description": null,
+                  "description": "The link text to display.",
                   "name": "text",
                   "required": true
                 }
@@ -1464,7 +1449,7 @@
     "result": {
       "kind": "primitive",
       "type": "null",
-      "description": "The result returned by the `snap_notify` method.\n\nThis method does not return anything."
+      "description": "This method does not return any data, so the result is always `null`."
     },
     "examples": [],
     "subjectTypes": [
@@ -1567,25 +1552,25 @@
     "description": "Schedule a background event for a Snap. The background event will trigger a\nJSON-RPC request to the Snap at the scheduled time, handled by the\n`onCronjob` entry point in the Snap.\n\nThe schedule can be defined using either an ISO 8601 date or duration string.\nFor example:\n\n- Using a date: `2026-12-31T23:59:59Z`\n- Using a duration: `P1DT2H` (which represents a duration of 1 day and 2\nhours)",
     "parameters": {
       "kind": "union",
-      "type": "{ date: string; request: { method: string; params?: JsonRpcParams } } | { duration: string; request: { method: string; params?: JsonRpcParams } }",
-      "description": "The request parameters for the `snap_scheduleBackgroundEvent` method.\n\nNote: The date generated from a duration will be represented in UTC.",
+      "type": "{ date: string; request: { method: string; params?: JsonRpcParams | undefined } } | { duration: string; request: { method: string; params?: JsonRpcParams | undefined } }",
+      "description": "An object containing the parameters for the `snap_scheduleBackgroundEvent`\nmethod.",
       "commonProperties": [
         {
           "kind": "object",
-          "type": "{ method: string; params?: JsonRpcParams }",
-          "description": null,
+          "type": "{ method: string; params?: JsonRpcParams | undefined }",
+          "description": "The JSON-RPC request to call when the event fires.",
           "properties": [
             {
               "kind": "primitive",
               "type": "string",
-              "description": null,
+              "description": "The method to call.",
               "name": "method",
               "required": true
             },
             {
               "kind": "primitive",
               "type": "JsonRpcParams",
-              "description": null,
+              "description": "The parameters to pass to the method.",
               "name": "params",
               "required": false
             }
@@ -1597,13 +1582,13 @@
       "options": [
         {
           "kind": "object",
-          "type": "{ date: string; request: { method: string; params?: JsonRpcParams } }",
+          "type": "{ date: string; request: { method: string; params?: JsonRpcParams | undefined } }",
           "description": null,
           "properties": [
             {
               "kind": "primitive",
               "type": "string",
-              "description": null,
+              "description": "The ISO 8601 date string of when to fire the background event (e.g.,\n`\"2025-01-01T00:00:00Z\"`).",
               "name": "date",
               "required": true
             }
@@ -1611,13 +1596,13 @@
         },
         {
           "kind": "object",
-          "type": "{ duration: string; request: { method: string; params?: JsonRpcParams } }",
+          "type": "{ duration: string; request: { method: string; params?: JsonRpcParams | undefined } }",
           "description": null,
           "properties": [
             {
               "kind": "primitive",
               "type": "string",
-              "description": null,
+              "description": "The ISO 8601 duration string of how long to wait before firing the\nbackground event (e.g., `\"P1D\"` for one day). The resulting date will\nbe calculated in UTC.",
               "name": "duration",
               "required": true
             }
@@ -1770,26 +1755,26 @@
     "parameters": {
       "kind": "object",
       "type": "{ id: string; ui: JSXElement; context?: Record<string, Json> | null }",
-      "description": "The request parameters for the `snap_createInterface` method.",
+      "description": "An object containing the parameters for the `snap_updateInterface` method.",
       "properties": [
         {
           "kind": "primitive",
           "type": "string",
-          "description": "The interface id.",
+          "description": "The ID of the interface to update.",
           "name": "id",
           "required": true
         },
         {
           "kind": "primitive",
           "type": "JSXElement",
-          "description": "The components to display in the interface.",
+          "description": "The new custom UI content to display in the interface.",
           "name": "ui",
           "required": true
         },
         {
           "kind": "primitive",
           "type": "Record<string, Json>",
-          "description": null,
+          "description": "Optional context for the interface, which can be used to provide additional\ninformation about the interface to the Snap, without being part of the UI\nitself.",
           "name": "context",
           "required": false
         }
@@ -1798,7 +1783,7 @@
     "result": {
       "kind": "primitive",
       "type": "null",
-      "description": "The result returned by the `snap_updateInterface` method."
+      "description": "This method does not return any data, so the result is always `null`."
     },
     "subjectTypes": [
       "snap"
@@ -1837,7 +1822,7 @@
     "parameters": {
       "kind": "object",
       "type": "{ snapId: string; request: Record<string, Json> }",
-      "description": "The request parameters for the `wallet_invokeKeyring` method.",
+      "description": "An object containing the parameters for the `wallet_invokeKeyring` method.",
       "properties": [
         {
           "kind": "primitive",
@@ -1858,7 +1843,7 @@
     "result": {
       "kind": "primitive",
       "type": "Json",
-      "description": "The result returned by the Snap."
+      "description": "The result returned by the Snap. The structure of this result will depend on\nthe specific method that was called on the Snap, and is not defined by the\nAPI."
     },
     "subjectTypes": [
       "snap",
@@ -1894,7 +1879,7 @@
     "result": {
       "kind": "primitive",
       "type": "Json",
-      "description": "The result of the Snap method call."
+      "description": "The result returned by the Snap. The structure of this result will depend on\nthe specific method that was called on the Snap, and is not defined by the\nAPI."
     },
     "subjectTypes": [
       "snap",
@@ -1959,7 +1944,7 @@
     "result": {
       "kind": "primitive",
       "type": "Json",
-      "description": "The result of the Snap method call."
+      "description": "The result returned by the Snap. The structure of this result will depend on\nthe specific method that was called on the Snap, and is not defined by the\nAPI."
     },
     "examples": [],
     "subjectTypes": [
