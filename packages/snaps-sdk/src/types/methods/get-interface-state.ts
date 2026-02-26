@@ -1,7 +1,7 @@
 import type { InterfaceState } from '../interface';
 
 /**
- * The request parameters for the `snap_getInterfaceState` method.
+ * An object containing the parameters for the `snap_getInterfaceState` method.
  *
  * @property id - The interface ID.
  */

@@ -1,6 +1,4 @@
 /**
- * The request parameters for the `snap_getLocale` method.
- *
  * This method does not accept any parameters.
  */
 export type GetLocaleParams = never;

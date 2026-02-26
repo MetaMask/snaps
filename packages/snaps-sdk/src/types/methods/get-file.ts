@@ -10,7 +10,7 @@ export enum AuxiliaryFileEncoding {
 }
 
 /**
- * The request parameters for the `snap_getFile` method.
+ * An object containing the parameters for the `snap_getFile` method.
  */
 export type GetFileParams = {
   /**

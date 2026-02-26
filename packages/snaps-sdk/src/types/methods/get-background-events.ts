@@ -22,23 +22,35 @@ export type BackgroundEvent = {
   snapId: SnapId;
   date: string;
   request: {
+    /**
+     * The method to be called when the event is fired.
+     */
     method: string;
+
+    /**
+     * The optional JSON-RPC version for the request, which is always "2.0" if
+     * provided.
+     */
     jsonrpc?: '2.0' | undefined;
+
+    /**
+     * The optional ID for the request.
+     */
     id?: string | number | null | undefined;
+
+    /**
+     * The optional parameters for the request.
+     */
     params?: Json[] | Record<string, Json> | undefined;
   };
 };
 
 /**
- * The result returned by the `snap_getBackgroundEvents` method.
- *
- * It consists of an array background events (if any) for a snap.
+ * An array of scheduled background events.
  */
 export type GetBackgroundEventsResult = BackgroundEvent[];
 
 /**
- * The request parameters for the `snap_getBackgroundEvents` method.
- *
  * This method does not accept any parameters.
  */
 export type GetBackgroundEventsParams = never;

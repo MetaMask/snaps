@@ -13,32 +13,73 @@ export enum NotificationType {
 }
 
 /**
- * The request parameters for the `snap_notify` method.
- *
- * @property type - The notification type (`inApp` or `native`). We recommend
- * using `inApp` because native notifications may be rate-limited by the OS.
- * @property message - The message to display in the notification.
+ * An object containing the parameters for the `snap_notify` method.
  */
 export type NotifyParams =
   | {
+      /**
+       * The literal string "native" to indicate that this is a native OS
+       * notification. We recommend using `inApp` instead, as native
+       * notifications may be rate-limited by the operating system.
+       */
       type: EnumToUnion<NotificationType.Native>;
+
+      /**
+       * The message to display in the notification.
+       */
       message: string;
     }
   | {
+      /**
+       * The literal string "inApp" to indicate that this is an in-app
+       * notification displayed in the MetaMask UI.
+       */
       type: EnumToUnion<NotificationType.InApp>;
+
+      /**
+       * The message to display in the notification.
+       */
       message: string;
     }
   | {
+      /**
+       * The literal string "inApp" to indicate that this is an in-app
+       * notification displayed in the MetaMask UI.
+       */
       type: EnumToUnion<NotificationType.InApp>;
+
+      /**
+       * A short summary shown in the notification list.
+       */
       message: string;
+
+      /**
+       * The custom UI content to display when the notification is expanded.
+       */
       content: ComponentOrElement;
+
+      /**
+       * The title of the expanded notification.
+       */
       title: string;
-      footerLink?: { href: string; text: string };
+
+      /**
+       * An optional link to display in the footer of the expanded notification.
+       */
+      footerLink?: {
+        /**
+         * The URL to navigate to when the link is clicked.
+         */
+        href: string;
+
+        /**
+         * The link text to display.
+         */
+        text: string;
+      };
     };
 
 /**
- * The result returned by the `snap_notify` method.
- *
- * This method does not return anything.
+ * This method does not return any data, so the result is always `null`.
  */
 export type NotifyResult = null;

@@ -3,7 +3,7 @@ import type { JsonBIP44CoinTypeNode } from '@metamask/key-tree';
 import type { Bip44Entropy } from '../permissions';
 
 /**
- * The request parameters for the `snap_getBip44Entropy` method.
+ * An object containing the parameters for the `snap_getBip44Entropy` method.
  */
 export type GetBip44EntropyParams = Bip44Entropy & {
   /**
@@ -15,8 +15,7 @@ export type GetBip44EntropyParams = Bip44Entropy & {
 };
 
 /**
- * The result returned by the `snap_getBip44Entropy` method.
- *
- * @see https://github.com/MetaMask/key-tree#usage
+ * A JSON-serializable BIP-44 coin type node containing the requested BIP-44
+ * entropy.
  */
 export type GetBip44EntropyResult = JsonBIP44CoinTypeNode;

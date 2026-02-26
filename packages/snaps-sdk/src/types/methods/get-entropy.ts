@@ -1,7 +1,7 @@
 import type { Hex } from '@metamask/utils';
 
 /**
- * The request parameters for the `snap_getEntropy` method.
+ * An object containing the parameters for the `snap_getEntropy` method.
  */
 export type GetEntropyParams = {
   /**

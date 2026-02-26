@@ -1,20 +1,35 @@
 import type { Cronjob } from '../permissions';
 
 /**
- * The request parameters for the `snap_scheduleBackgroundEvent` method.
- *
- * Note: The date generated from a duration will be represented in UTC.
- *
- * @property date - The ISO 8601 date of when to fire the background event.
- * @property duration - The ISO 8601 duration of when to fire the background event.
- * @property request - The request to be called when the event fires.
+ * An object containing the parameters for the `snap_scheduleBackgroundEvent`
+ * method.
  */
 export type ScheduleBackgroundEventParams =
   | {
+      /**
+       * The ISO 8601 date string of when to fire the background event (e.g.,
+       * `"2025-01-01T00:00:00Z"`).
+       */
       date: string;
+
+      /**
+       * The JSON-RPC request to call when the event fires.
+       */
       request: Cronjob['request'];
     }
-  | { duration: string; request: Cronjob['request'] };
+  | {
+      /**
+       * The ISO 8601 duration string of how long to wait before firing the
+       * background event (e.g., `"P1D"` for one day). The resulting date will
+       * be calculated in UTC.
+       */
+      duration: string;
+
+      /**
+       * The JSON-RPC request to call when the event fires.
+       */
+      request: Cronjob['request'];
+    };
 
 /**
  * The ID of the scheduled background event.

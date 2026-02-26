@@ -1,5 +1,6 @@
 /**
- * The request parameters for the `snap_cancelBackgroundEvent` method.
+ * An object containing the parameters for the `snap_cancelBackgroundEvent`
+ * method.
  */
 export type CancelBackgroundEventParams = {
   /**
@@ -9,8 +10,6 @@ export type CancelBackgroundEventParams = {
 };
 
 /**
- * The result returned for the `snap_cancelBackgroundEvent` method.
- *
- * This method does not return anything.
+ * This method does not return any data, so the result is always `null`.
  */
 export type CancelBackgroundEventResult = null;

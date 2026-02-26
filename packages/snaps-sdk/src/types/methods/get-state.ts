@@ -1,7 +1,7 @@
 import type { Json } from '@metamask/utils';
 
 /**
- * The request parameters for the `snap_getState` method.
+ * An object containing the parameters for the `snap_getState` method.
  *
  * @property key - The key of the state to retrieve. If not provided, the entire
  * state is retrieved. This may contain Lodash-style path syntax, e.g.,
