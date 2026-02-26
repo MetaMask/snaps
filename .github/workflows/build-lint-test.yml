@@ -20,7 +20,7 @@ jobs:
         node-version: [20.x, 22.x]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -52,7 +52,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Build
@@ -79,7 +79,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Build
@@ -98,7 +98,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Build JSON-RPC schema
@@ -110,7 +110,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Restore build files
@@ -133,7 +133,7 @@ jobs:
     needs: prepare
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Lint
@@ -161,7 +161,7 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.test-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -241,7 +241,7 @@ jobs:
         package-name: ${{ fromJson(needs.prepare.outputs.e2e-workspace-package-names) }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
@@ -276,7 +276,7 @@ jobs:
         os: [macOS-latest, windows-latest]
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@8d22bad026f72ce0b5aab03c5525da63fb9ed324
         with:
           is-high-risk-environment: false
       - name: Build dependencies
