@@ -1,5 +1,5 @@
 /**
- * The request parameters for the `snap_closeWebSocket` method.
+ * An object containing the parameters for the `snap_closeWebSocket` method.
  *
  * @property id - The ID of the WebSocket connection to close.
  */
@@ -8,6 +8,6 @@ export type CloseWebSocketParams = {
 };
 
 /**
- * The result returned by the `snap_closeWebSocket` method.
+ * This method does not return any data, so the result is always `null`.
  */
 export type CloseWebSocketResult = null;

@@ -1,5 +1,5 @@
 /**
- * The request parameters for the `snap_clearState` method.
+ * An object containing the parameters for the `snap_clearState` method.
  *
  * @property encrypted - Whether to use the separate encrypted state, or the
  * unencrypted state. Defaults to the encrypted state. Encrypted state can only
@@ -11,6 +11,6 @@ export type ClearStateParams = {
 };
 
 /**
- * The result returned by the `snap_clearState` method.
+ * This method does not return any data, so the result is always `null`.
  */
 export type ClearStateResult = null;

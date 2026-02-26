@@ -3,7 +3,7 @@ import type { JsonSLIP10Node } from '@metamask/key-tree';
 import type { Bip32Entropy } from '../permissions';
 
 /**
- * The request parameters for the `snap_getBip32Entropy` method.
+ * An object containing the parameters for the `snap_getBip32Entropy` method.
  */
 export type GetBip32EntropyParams = Bip32Entropy & {
   /**
@@ -15,8 +15,6 @@ export type GetBip32EntropyParams = Bip32Entropy & {
 };
 
 /**
- * The result returned by the `snap_getBip32Entropy` method.
- *
- * @see https://github.com/MetaMask/key-tree#usage
+ * A JSON-serializable SLIP-10 node containing the requested BIP-32 entropy.
  */
 export type GetBip32EntropyResult = JsonSLIP10Node;

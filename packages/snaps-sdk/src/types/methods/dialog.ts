@@ -25,77 +25,102 @@ export type DefaultDialog =
 
 /**
  * An alert dialog.
- *
- * @property type - The type of dialog. Must be `alert`.
- * @property content - The content to display in the dialog.
- * @property id - The Snap interface ID.
  */
 export type AlertDialog =
   | {
+      /**
+       * The literal string "alert" to indicate that this is an alert dialog.
+       */
       type: EnumToUnion<DialogType.Alert>;
+
+      /**
+       * The content to display in the alert dialog.
+       */
       content: ComponentOrElement;
     }
   | {
+      /**
+       * The literal string "alert" to indicate that this is an alert dialog.
+       */
       type: EnumToUnion<DialogType.Alert>;
+
+      /**
+       * The Snap interface ID, which can be used to display a previously
+       * created interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+       */
       id: string;
     };
 
 /**
  * A confirmation dialog.
- *
- * @property type - The type of dialog. Must be `confirmation`.
- * @property content - The content to display in the dialog.
- * @property id - The Snap interface ID.
  */
 export type ConfirmationDialog =
   | {
+      /**
+       * The literal string "confirmation" to indicate that this is a
+       * confirmation dialog.
+       */
       type: EnumToUnion<DialogType.Confirmation>;
+
+      /**
+       * The content to display in the confirmation dialog.
+       */
       content: ComponentOrElement;
     }
   | {
+      /**
+       * The literal string "confirmation" to indicate that this is a
+       * confirmation dialog.
+       */
       type: EnumToUnion<DialogType.Confirmation>;
+
+      /**
+       * The Snap interface ID, which can be used to display a previously
+       * created interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+       */
       id: string;
     };
 
 /**
  * A prompt dialog.
- *
- * @property type - The type of dialog. Must be `prompt`.
- * @property content - The content to display in the dialog.
- * @property id - The Snap interface ID.
- * @property placeholder - An optional placeholder text to display in the text
- * input.
  */
 export type PromptDialog =
   | {
+      /**
+       * The literal string "prompt" to indicate that this is a prompt dialog.
+       */
       type: EnumToUnion<DialogType.Prompt>;
+
+      /**
+       * The content to display in the prompt dialog.
+       */
       content: ComponentOrElement;
+
+      /**
+       * An optional placeholder text to display in the text input.
+       */
       placeholder?: string;
     }
   | {
+      /**
+       * The literal string "prompt" to indicate that this is a prompt dialog.
+       */
       type: EnumToUnion<DialogType.Prompt>;
+
+      /**
+       * The Snap interface ID, which can be used to display a previously
+       * created interface. See [`snap_createInterface`](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+       */
       id: string;
+
+      /**
+       * An optional placeholder text to display in the text input.
+       */
       placeholder?: string;
     };
 
-/* eslint-disable jsdoc/check-indentation */
 /**
  * An object containing the contents of the dialog.
- *
- * - `type` - The type of dialog. Not providing a type will create a fully
- * [custom dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).
- * Possible values are:
- *   - `alert` - An alert that can only be acknowledged.
- *   - `confirmation` - A confirmation that can be accepted or rejected.
- *   - `prompt` - A prompt where the user can enter a text response.
- *
- * - One of:
- *   - `content` - The content of the alert, as a
- * [custom UI](https://docs.metamask.io/snaps/features/custom-ui/) component.
- *   - `id` - The ID of an
- * [interactive interface](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
- * - `placeholder` - An optional placeholder text to display in the dialog. Only
- * applicable for the `prompt` dialog.
  *
  * @property type - The type of dialog to display.
  * @property content - The content to display in the dialog.
@@ -108,7 +133,6 @@ export type DialogParams =
   | ConfirmationDialog
   | PromptDialog
   | DefaultDialog;
-/* eslint-enable jsdoc/check-indentation */
 
 /**
  * - If the dialog is an `alert`, the result is `null`.

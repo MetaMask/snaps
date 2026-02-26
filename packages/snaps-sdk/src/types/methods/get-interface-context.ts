@@ -1,7 +1,8 @@
 import type { InterfaceContext } from '../interface';
 
 /**
- * The request parameters for the `snap_getInterfaceContext` method.
+ * An object containing the parameters for the `snap_getInterfaceContext`
+ * method.
  *
  * @property id - The interface ID.
  */
@@ -10,6 +11,7 @@ export type GetInterfaceContextParams = {
 };
 
 /**
- * The context for the given interface.
+ * The context for the given interface. May be `null` if no context was provided
+ * when the interface was created.
  */
 export type GetInterfaceContextResult = InterfaceContext | null;

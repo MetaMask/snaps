@@ -1,10 +1,23 @@
 import type { SupportedCurve } from '@metamask/key-tree';
-import type { CaipChainId, JsonRpcRequest } from '@metamask/utils';
+import type { CaipChainId, JsonRpcParams } from '@metamask/utils';
 
 export type EmptyObject = Record<string, never>;
 
 type CronjobRequest = {
-  request: Omit<JsonRpcRequest, 'jsonrpc' | 'id'>;
+  /**
+   * The request to execute when the cronjob is triggered.
+   */
+  request: {
+    /**
+     * The method to call.
+     */
+    method: string;
+
+    /**
+     * The parameters to pass to the method.
+     */
+    params?: JsonRpcParams;
+  };
 };
 
 type CronjobWithExpression = CronjobRequest & {

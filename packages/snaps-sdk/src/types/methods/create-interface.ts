@@ -1,7 +1,7 @@
 import type { ComponentOrElement, InterfaceContext } from '..';
 
 /**
- * The request parameters for the `snap_createInterface` method.
+ * An object containing the parameters for the `snap_createInterface` method.
  */
 export type CreateInterfaceParams = {
   /**

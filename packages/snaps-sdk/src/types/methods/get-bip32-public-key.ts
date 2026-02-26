@@ -1,7 +1,7 @@
 import type { Bip32Entropy } from '../permissions';
 
 /**
- * The request parameters for the `snap_getBip32PublicKey` method.
+ * An object containing the parameters for the `snap_getBip32PublicKey` method.
  */
 export type GetBip32PublicKeyParams = Bip32Entropy & {
   /**

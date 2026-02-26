@@ -16,6 +16,8 @@ export type InvokeSnapParams = {
 };
 
 /**
- * The result of the Snap method call.
+ * The result returned by the Snap. The structure of this result will depend on
+ * the specific method that was called on the Snap, and is not defined by the
+ * API.
  */
 export type InvokeSnapResult = Json;
