@@ -9,7 +9,7 @@ export type GetPreferencesParams = never;
 export type GetPreferencesResult = {
   /**
    * The user's locale setting as a [language
-   * code](https://github.com/MetaMask/metamask-extension/blob/develop/app/_locales/index.json).
+   * code](https://github.com/MetaMask/metamask-extension/blob/main/app/_locales/index.json).
    */
   locale: string;
 
