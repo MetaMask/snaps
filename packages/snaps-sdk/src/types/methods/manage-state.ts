@@ -24,7 +24,8 @@ export type ClearStateOperation = {
    * Whether to use the encrypted or unencrypted state. Defaults to `true`
    * (encrypted). Encrypted state is only accessible when the wallet is
    * unlocked, while unencrypted state is accessible whether the wallet is
-   * locked or unlocked.
+   * locked or unlocked. State can be cleared regardless of the wallet's lock
+   * state, but this parameter determines which state is cleared.
    */
   encrypted?: boolean;
 };
