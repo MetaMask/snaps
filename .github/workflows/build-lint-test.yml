@@ -29,7 +29,7 @@ jobs:
         run: yarn workspace @metamask/snaps-execution-environments run build:lavamoat:test
       - name: Save "@metamask/snaps-execution-environments" build
         id: cache-snaps-execution-environments-build
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
           retention-days: 1
@@ -58,7 +58,7 @@ jobs:
       - name: Build
         run: yarn build:ci
       - name: Save build files
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
           retention-days: 1
@@ -195,7 +195,7 @@ jobs:
         shell: bash
       - name: Upload coverage artifact
         if: ${{ matrix.node-version == '22.x' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ steps.get-coverage-folder.outputs.artifact-name }}
           path: |
