@@ -116,7 +116,7 @@ jobs:
         run: |
           git diff --exit-code yarn.lock || echo "YARN_LOCK_CHANGED=true" >> "$GITHUB_OUTPUT"
       - name: Save yarn.lock
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: yarn.lock
@@ -148,7 +148,7 @@ jobs:
       - name: Build packages
         run: yarn build:ci
       - name: Save packages
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -187,7 +187,7 @@ jobs:
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
       - name: Save LavaMoat policies
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -226,7 +226,7 @@ jobs:
       - name: Update examples
         run: yarn build:examples
       - name: Save examples
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
