@@ -114,7 +114,7 @@ jobs:
         with:
           is-high-risk-environment: false
       - name: Restore build files
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Generate LavaMoat policy
@@ -166,11 +166,11 @@ jobs:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Install browsers
@@ -218,7 +218,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Download coverage artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: coverage-*
           merge-multiple: true
@@ -246,11 +246,11 @@ jobs:
           is-high-risk-environment: false
           node-version: ${{ matrix.node-version }}
       - name: Restore "@metamask/snaps-execution-environments" build
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: snaps-execution-environments-build-${{ runner.os }}-${{ matrix.node-version }}-${{ github.sha }}
       - name: Restore build files
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: build-source-${{ runner.os }}-${{ github.sha }}
       - name: Build snap
