@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           cache-node-modules: true
@@ -106,7 +106,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
       - name: Deduplicate yarn.lock
@@ -141,7 +141,7 @@ jobs:
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
@@ -180,7 +180,7 @@ jobs:
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
@@ -219,7 +219,7 @@ jobs:
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
