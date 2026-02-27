@@ -137,7 +137,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
@@ -172,11 +172,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Restore packages
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
@@ -211,11 +211,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Restore packages
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
@@ -264,7 +264,7 @@ jobs:
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Set commit prefix
@@ -275,7 +275,7 @@ jobs:
           git add yarn.lock
           git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
       - name: Restore LavaMoat policies
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit LavaMoat policies
@@ -283,7 +283,7 @@ jobs:
           git add packages/snaps-execution-environments/lavamoat
           git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
       - name: Restore examples
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Commit examples
