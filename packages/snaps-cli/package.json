@@ -103,7 +103,7 @@
     "url": "^0.11.1",
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2",
-    "webpack": "^5.97.1",
+    "webpack": "^5.104.1",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-merge": "^5.9.0",
     "yargs": "^17.7.1"

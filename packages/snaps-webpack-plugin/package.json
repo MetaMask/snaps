@@ -81,7 +81,7 @@
     "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
     "typescript": "~5.3.3",
-    "webpack": "^5.97.1"
+    "webpack": "^5.104.1"
   },
   "engines": {
     "node": "^20 || >=22"
