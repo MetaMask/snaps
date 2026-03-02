@@ -75,7 +75,7 @@
     "jest-silent-reporter": "^0.6.0",
     "memfs": "^3.4.13",
     "prettier": "^3.3.3",
-    "rollup": "^2.73.0",
+    "rollup": "^2.80.0",
     "typescript": "~5.3.3"
   },
   "engines": {
