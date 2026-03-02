@@ -107,7 +107,7 @@
     "jest-silent-reporter": "^0.6.0",
     "lint-staged": "^12.4.1",
     "lodash": "^4.17.23",
-    "minimatch": "^7.4.1",
+    "minimatch": "^7.4.8",
     "playwright": "^1.57.0",
     "prettier": "^3.3.3",
     "prettier-2": "npm:prettier@^2.8.8",
