@@ -7155,6 +7155,62 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('recovers if preinstalled source code is missing', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          hidden: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerOptions({
+        preinstalledSnaps,
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(
+            // @ts-expect-error Intentionally bricking sourceCode
+            getPersistedSnapObject({ preinstalled: true, sourceCode: null }),
+          ),
+        },
+      });
+
+      const [snapController] = await getSnapControllerWithEES(
+        snapControllerOptions,
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          method: 'foo',
+        },
+      });
+
+      expect(result).toContain('foo');
+
+      expect(log).toHaveBeenCalledWith(
+        'The source code for "npm:@metamask/example-snap" was missing and has been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      snapController.destroy();
+    });
+
     it('supports onUpdate for preinstalled Snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');

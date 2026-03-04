@@ -1390,10 +1390,14 @@ export class SnapController extends BaseController<
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
+      const isMissingSource =
+        isAlreadyInstalled &&
+        (await this.#getSourceCode(snapId).catch(() => null)) === null;
 
       // Disallow downgrades and overwriting non preinstalled snaps
       if (
         isAlreadyInstalled &&
+        !isMissingSource &&
         (!isUpdate || existingSnap.preinstalled !== true)
       ) {
         continue;
@@ -1501,6 +1505,17 @@ export class SnapController extends BaseController<
           this.getTruncatedExpect(snapId),
           METAMASK_ORIGIN,
           true,
+        );
+      }
+
+      if (isMissingSource) {
+        logWarning(
+          `The source code for "${snapId}" was missing and has been automatically restored. If you see this message, please file a bug report.`,
+        );
+        this.messenger.captureException?.(
+          new Error(
+            `The source code for "${snapId}" was missing and has been automatically restored. This could indicate persistence issues.`,
+          ),
         );
       }
     }
