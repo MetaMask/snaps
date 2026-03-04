@@ -1390,11 +1390,19 @@ export class SnapController extends BaseController<
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
+      const isPreinstalled = existingSnap?.preinstalled === true;
+      const isMissingSource =
+        isAlreadyInstalled &&
+        isPreinstalled &&
+        !(await this.#hasSourceCode(snapId));
 
       // Disallow downgrades and overwriting non preinstalled snaps
+      // As a mitigation for state corruption on mobile, if the source code is missing
+      // we allow overwriting and potentially downgrading the current version of the preinstalled Snap.
       if (
         isAlreadyInstalled &&
-        (!isUpdate || existingSnap.preinstalled !== true)
+        !isMissingSource &&
+        (!isUpdate || !isPreinstalled)
       ) {
         continue;
       }
@@ -1495,12 +1503,23 @@ export class SnapController extends BaseController<
           METAMASK_ORIGIN,
           true,
         );
-      } else {
+      } else if (!isMissingSource) {
         this.messenger.publish(
           'SnapController:snapInstalled',
           this.getTruncatedExpect(snapId),
           METAMASK_ORIGIN,
           true,
+        );
+      }
+
+      if (isMissingSource) {
+        logWarning(
+          `The source code for "${snapId}" was missing and has been automatically restored. If you see this message, please file a bug report.`,
+        );
+        this.messenger.captureException?.(
+          new Error(
+            `The source code for "${snapId}" was missing and has been automatically restored. This could indicate persistence issues.`,
+          ),
         );
       }
     }
@@ -4729,6 +4748,17 @@ export class SnapController extends BaseController<
       runtime.encryptionSalt = null;
       runtime.state = undefined;
     }
+  }
+
+  /**
+   * Check whether a Snap has valid source code in storage.
+   *
+   * @param snapId - The Snap ID.
+   * @returns True if the source code is valid, otherwise false.
+   */
+  async #hasSourceCode(snapId: SnapId): Promise<boolean> {
+    const sourceCode = await this.#getSourceCode(snapId).catch(() => null);
+    return typeof sourceCode === 'string';
   }
 
   /**

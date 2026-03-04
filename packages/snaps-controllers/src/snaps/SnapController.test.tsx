@@ -7155,6 +7155,73 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('recovers if preinstalled source code is missing', async () => {
+      const rootMessenger = getControllerMessenger();
+      jest.spyOn(rootMessenger, 'call');
+      const log = jest.spyOn(console, 'warn').mockImplementation();
+
+      const preinstalledSnaps = [
+        {
+          snapId: MOCK_SNAP_ID,
+          manifest: getSnapManifest(),
+          hidden: true,
+          files: [
+            {
+              path: DEFAULT_SOURCE_PATH,
+              value: stringToBytes(DEFAULT_SNAP_BUNDLE),
+            },
+            {
+              path: DEFAULT_ICON_PATH,
+              value: stringToBytes(DEFAULT_SNAP_ICON),
+            },
+          ],
+        },
+      ];
+
+      const snapControllerOptions = getSnapControllerOptions({
+        preinstalledSnaps,
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(
+            // @ts-expect-error Intentionally bricking sourceCode
+            getPersistedSnapObject({ preinstalled: true, sourceCode: null }),
+          ),
+        },
+      });
+
+      // Initializing the controller here will do the recovery.
+      const [snapController] = await getSnapControllerWithEES(
+        snapControllerOptions,
+      );
+
+      expect(log).toHaveBeenCalledWith(
+        'The source code for "npm:@metamask/example-snap" was missing and has been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        {
+          sourceCode: DEFAULT_SNAP_BUNDLE,
+        },
+      );
+
+      const result = await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: METAMASK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          method: 'foo',
+        },
+      });
+
+      expect(result).toContain('foo');
+
+      snapController.destroy();
+    });
+
     it('supports onUpdate for preinstalled Snaps', async () => {
       const rootMessenger = getControllerMessenger();
       jest.spyOn(rootMessenger, 'call');
@@ -7210,7 +7277,7 @@ describe('SnapController', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        12,
+        13,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
