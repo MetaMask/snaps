@@ -6626,7 +6626,7 @@ describe('SnapController', () => {
         snapControllerOptions,
       );
 
-      expect(snapControllerOptions.messenger.call).toHaveBeenCalledTimes(1);
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledTimes(2);
 
       snapController.destroy();
     });
@@ -7266,7 +7266,7 @@ describe('SnapController', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        12,
+        13,
         'ExecutionService:handleRpcRequest',
         MOCK_SNAP_ID,
         {
