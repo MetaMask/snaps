@@ -40,6 +40,7 @@ type Specification = ValidPermissionSpecification<{
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_getLocale` permission.
  * @deprecated - To be removed in favor of `snap_getPreferences`.
+ * @internal
  */
 export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,

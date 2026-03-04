@@ -3,7 +3,7 @@ import type { Json } from '@metamask/utils';
 import type { InvokeSnapParams } from './invoke-snap';
 
 /**
- * An object containing the parameters for the `wallet_invokeKeyring` method.
+ * The request to send to the Snap.
  *
  * @property snapId - The ID of the snap to invoke.
  * @property request - The JSON-RPC request to send to the Snap.

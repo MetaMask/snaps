@@ -153,7 +153,25 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
  * The expanded view has a title, content, and optional footer link shown when
  * a user clicks on the notification.
  *
- * @example In app notification
+ * @example Basic in app notification
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_notify": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * snap.request({
+ *   method: 'snap_notify',
+ *   params: {
+ *     type: 'inApp',
+ *     message: 'This is an in-app notification',
+ *   },
+ * });
+ * ```
+ *
+ * @example Expandable in app notification
  * ```json name="Manifest"
  * {
  *   "initialPermissions": {

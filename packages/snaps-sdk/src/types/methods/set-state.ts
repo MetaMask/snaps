@@ -11,6 +11,10 @@ import type { Json } from '@metamask/utils';
  * unencrypted state. Defaults to the encrypted state. Encrypted state can only
  * be used if the client is unlocked, while unencrypted state can be used
  * whether the client is locked or unlocked.
+ *
+ * Use the encrypted state for sensitive data (such as private keys or secrets),
+ * and the unencrypted state for non-sensitive data that needs to be accessed
+ * while the client is locked.
  */
 export type SetStateParams = {
   key?: string;
@@ -19,6 +23,6 @@ export type SetStateParams = {
 };
 
 /**
- * The result returned by the `snap_setState` method.
+ * This method does not return any data, so the result is always `null`.
  */
 export type SetStateResult = null;

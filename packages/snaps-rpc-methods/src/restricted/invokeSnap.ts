@@ -8,6 +8,7 @@ import type {
 import { PermissionType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
+  InvokeSnapParams,
   InvokeSnapResult,
   RequestSnapsParams,
   RequestSnapsResult,
@@ -60,11 +61,6 @@ type InvokeSnapSpecification = ValidPermissionSpecification<{
     onPermitted: PermissionSideEffect<AllowedActions, never>['onPermitted'];
   };
 }>;
-
-export type InvokeSnapParams = {
-  snapId: string;
-  request: Record<string, Json>;
-};
 
 /**
  * The side-effect method to handle the snap install.
@@ -161,6 +157,7 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
  *   },
  * });
  * console.log(result); // "Hello, world!"
+ * ```
  */
 export const invokeSnapBuilder = Object.freeze({
   targetName: WALLET_SNAP_PERMISSION_KEY,

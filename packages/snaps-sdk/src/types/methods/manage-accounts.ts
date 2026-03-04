@@ -1,7 +1,7 @@
 import type { Json } from '@metamask/utils';
 
 /**
- * An object containing the parameters for the `snap_manageAccounts` method.
+ * The account management request object.
  */
 export type ManageAccountsParams = {
   /**

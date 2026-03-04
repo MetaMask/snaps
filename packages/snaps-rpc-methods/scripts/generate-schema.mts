@@ -24,7 +24,7 @@ const SCHEMA_OUTPUT_PATH = resolve(process.cwd(), 'schema', 'schema.json');
 
 // Types which should be kept as-is, without trying to expand them or use type
 // aliases.
-const LITERAL_TYPES = ['Json', 'JsonRpcParams', 'SnapId'];
+const LITERAL_TYPES = ['JsonRpcParams', 'SnapId'];
 
 // Types which should be represented as `null` in the schema.
 const NULLABLE_TYPES = ['null', 'undefined', 'void', 'never'];
@@ -284,6 +284,11 @@ function getTypeAlias(type: Type) {
     return 'null';
   }
 
+  // Renaming `Json` to `JSON` for consistency in the documentation.
+  if (plainType === 'Json') {
+    return 'JSON';
+  }
+
   // Edge cases.
   if (
     plainType === 'ComponentOrElement' ||
@@ -292,7 +297,11 @@ function getTypeAlias(type: Type) {
     return 'JSXElement';
   }
 
-  if (isJsonRpcParams(plainType) || isJsonRpcParams(nonNullablePlainType)) {
+  if (
+    plainType === 'JsonRpcParams' ||
+    isJsonRpcParams(plainType) ||
+    isJsonRpcParams(nonNullablePlainType)
+  ) {
     return 'JsonRpcParams';
   }
 
@@ -969,6 +978,7 @@ function getTypeMethodParameters(
     kind: 'object',
     type: getTypeString(type),
     description: getTypeNodeDescription(typeNode),
+    required: properties.some((property) => property.required),
     properties,
   };
 }

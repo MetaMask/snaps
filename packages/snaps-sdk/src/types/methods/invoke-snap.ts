@@ -1,7 +1,7 @@
 import type { Json } from '@metamask/utils';
 
 /**
- * The request parameters for the `wallet_invokeSnap` method.
+ * The request to send to the Snap.
  */
 export type InvokeSnapParams = {
   /**
