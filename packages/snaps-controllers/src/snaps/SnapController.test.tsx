@@ -7189,8 +7189,23 @@ describe('SnapController', () => {
         },
       });
 
+      // Initializing the controller here will do the recovery.
       const [snapController] = await getSnapControllerWithEES(
         snapControllerOptions,
+      );
+
+      expect(log).toHaveBeenCalledWith(
+        'The source code for "npm:@metamask/example-snap" was missing and has been automatically restored. If you see this message, please file a bug report.',
+      );
+
+      expect(snapControllerOptions.messenger.call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        controllerName,
+        MOCK_SNAP_ID,
+        {
+          sourceCode: DEFAULT_SNAP_BUNDLE,
+        },
       );
 
       const result = await snapController.handleRequest({
@@ -7203,10 +7218,6 @@ describe('SnapController', () => {
       });
 
       expect(result).toContain('foo');
-
-      expect(log).toHaveBeenCalledWith(
-        'The source code for "npm:@metamask/example-snap" was missing and has been automatically restored. If you see this message, please file a bug report.',
-      );
 
       snapController.destroy();
     });
