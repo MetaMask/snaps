@@ -449,6 +449,11 @@ export const getControllerMessenger = () => {
     },
   );
 
+  messenger.registerActionHandler(
+    'SnapInterfaceController:displayInterface',
+    () => undefined,
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;

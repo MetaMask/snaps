@@ -48,6 +48,16 @@ export const CLIENT_ONLY_HANDLERS = Object.freeze([
 ]);
 
 /**
+ * Handlers which are expected to show a user interface.
+ */
+export const INTERFACE_HANDLERS = Object.freeze([
+  HandlerType.OnHomePage,
+  HandlerType.OnSettingsPage,
+  HandlerType.OnSignature,
+  HandlerType.OnTransaction,
+]);
+
+/**
  * A mapping of dynamic permission to their required dependencies, i.e., if the
  * dynamic permission is requested, at least one of its dependencies should
  * also be requested in order to use the dynamic permission.

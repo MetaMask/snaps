@@ -104,7 +104,7 @@ describe('SnapInterfaceController', () => {
         components,
       );
 
-      const { content, state } = rootMessenger.call(
+      const { content, state, displayed } = rootMessenger.call(
         'SnapInterfaceController:getInterface',
         MOCK_SNAP_ID,
         id,
@@ -118,6 +118,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(displayed).toBe(false);
     });
 
     it('calls the multichain asset controller to construct an asset selector state', async () => {

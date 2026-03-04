@@ -76,6 +76,11 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
+export type SnapInterfaceControllerDisplayInterfaceAction = {
+  type: `${typeof controllerName}:displayInterface`;
+  handler: SnapInterfaceController['displayInterface'];
+};
+
 type AccountsControllerGetAccountByAddressAction = {
   type: `AccountsController:getAccountByAddress`;
   handler: (address: string) => InternalAccount | undefined;
@@ -129,6 +134,7 @@ export type SnapInterfaceControllerActions =
   | DeleteInterface
   | UpdateInterfaceState
   | ResolveInterface
+  | SnapInterfaceControllerDisplayInterfaceAction
   | SnapInterfaceControllerGetStateAction;
 
 export type SnapInterfaceControllerStateChangeEvent =
@@ -182,6 +188,11 @@ export type StoredInterface = {
   state: InterfaceState;
   context: InterfaceContext | null;
   contentType: ContentType | null;
+
+  /**
+   * Whether the interface has been displayed in the UI at least once.
+   */
+  displayed: boolean;
 };
 
 export type SnapInterfaceControllerState = {
@@ -270,6 +281,11 @@ export class SnapInterfaceController extends BaseController<
       `${controllerName}:resolveInterface`,
       this.resolveInterface.bind(this),
     );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:displayInterface`,
+      this.displayInterface.bind(this),
+    );
   }
 
   /**
@@ -310,6 +326,7 @@ export class SnapInterfaceController extends BaseController<
         state: componentState,
         context: context ?? null,
         contentType: contentType ?? null,
+        displayed: false,
       };
     });
 
@@ -405,6 +422,19 @@ export class SnapInterfaceController extends BaseController<
     await this.#acceptApprovalRequest(id, value);
 
     this.deleteInterface(id);
+  }
+
+  /**
+   * Set the interface as displayed.
+   *
+   * @param id - The interface ID.
+   */
+  displayInterface(id: string) {
+    this.update((draftState) => {
+      if (draftState.interfaces[id]) {
+        draftState.interfaces[id].displayed = true;
+      }
+    });
   }
 
   /**
