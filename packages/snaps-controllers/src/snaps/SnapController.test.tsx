@@ -6626,7 +6626,7 @@ describe('SnapController', () => {
         snapControllerOptions,
       );
 
-      expect(snapControllerOptions.messenger.call).toHaveBeenCalledTimes(2);
+      expect(snapControllerOptions.messenger.call).toHaveBeenCalledTimes(1);
 
       snapController.destroy();
     });
