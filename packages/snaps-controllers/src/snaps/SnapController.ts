@@ -1393,8 +1393,7 @@ export class SnapController extends BaseController<
       // As a mitigation for state corruption on mobile, if the source code is missing
       // we allow overwriting current version of the preinstalled Snap.
       const isMissingSource =
-        isAlreadyInstalled &&
-        (await this.#getSourceCode(snapId).catch(() => null)) === null;
+        isAlreadyInstalled && !(await this.#hasSourceCode(snapId));
 
       // Disallow downgrades and overwriting non preinstalled snaps
       if (
@@ -4746,6 +4745,17 @@ export class SnapController extends BaseController<
       runtime.encryptionSalt = null;
       runtime.state = undefined;
     }
+  }
+
+  /**
+   * Check whether a Snap has valid source code in storage.
+   *
+   * @param snapId - The Snap ID.
+   * @returns True if the source code is valid, otherwise false.
+   */
+  async #hasSourceCode(snapId: SnapId): Promise<boolean> {
+    const sourceCode = await this.#getSourceCode(snapId).catch(() => null);
+    return typeof sourceCode === 'string';
   }
 
   /**
