@@ -147,6 +147,20 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
  * Snap, or the request is rejected. The dapp can install the Snap and request
  * permission to communicate with it using
  * [`wallet_requestSnaps`](http://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).
+ *
+ * @example
+ * ```ts
+ * const result = await ethereum.request({
+ *   method: 'wallet_snap',
+ *   params: {
+ *     snapId: 'npm:my-snap',
+ *     request: {
+ *       method: 'hello',
+ *       params: { name: 'world' },
+ *     },
+ *   },
+ * });
+ * console.log(result); // "Hello, world!"
  */
 export const invokeSnapBuilder = Object.freeze({
   targetName: WALLET_SNAP_PERMISSION_KEY,

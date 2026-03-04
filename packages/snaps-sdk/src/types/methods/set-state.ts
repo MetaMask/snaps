@@ -4,7 +4,7 @@ import type { Json } from '@metamask/utils';
  * The request parameters for the `snap_setState` method.
  *
  * @property key - The key of the state to update. If not provided, the entire
- * state is updated. This may contain Lodash-style path syntax, e.g.,
+ * state is updated. This may contain Lodash-style path syntax, for example,
  * `a.b.c`, with the exception of array syntax.
  * @property value - The value to set the state to.
  * @property encrypted - Whether to use the separate encrypted state, or the

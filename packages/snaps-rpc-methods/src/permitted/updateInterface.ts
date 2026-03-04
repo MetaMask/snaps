@@ -54,6 +54,37 @@ export type UpdateInterfaceMethodHooks = {
 /**
  * Update an interactive interface. For use in
  * [interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).
+ *
+ * @example
+ * ```tsx
+ * import { Box, Heading, Text } from '@metamask/snaps-sdk/jsx';
+ *
+ * // First, create an interface and get its ID.
+ * const id = await snap.request({
+ *   method: 'snap_createInterface',
+ *   params: {
+ *     ui: (
+ *       <Box>
+ *         ...
+ *       </Box>
+ *     ),
+ *   },
+ * });
+ *
+ * // Later, update the interface with new content using the ID.
+ * snap.request({
+ *   method: 'snap_updateInterface',
+ *   params: {
+ *     id: 'interface-id',
+ *     ui: (
+ *       <Box>
+ *         <Heading>Updated Interface</Heading>
+ *         <Text>This interface has been updated.</Text>
+ *       </Box>
+ *     ),
+ *   },
+ * });
+ * ```
  */
 export const updateInterfaceHandler = {
   methodNames: [methodName] as const,

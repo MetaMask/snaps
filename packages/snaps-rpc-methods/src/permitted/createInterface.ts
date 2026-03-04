@@ -48,7 +48,7 @@ export type CreateInterfaceMethodHooks = {
 };
 
 /**
- * Create an interactive interface for use in
+ * Create the interactive interface for use in
  * [interactive UI](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/).
  *
  * @example
