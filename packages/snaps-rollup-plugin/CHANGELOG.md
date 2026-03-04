@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
+- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
+- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
+
 ## [5.0.1]
 
 ### Changed

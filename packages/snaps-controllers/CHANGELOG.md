@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Recover if preinstalled Snaps source code is missing ([#3886](https://github.com/MetaMask/snaps/pull/3886))
+- chore: Bump @metamask/json-rpc-engine from 10.2.2 to 10.2.3 ([#3884](https://github.com/MetaMask/snaps/pull/3884))
+
 ## [18.0.1]
 
 ### Changed
