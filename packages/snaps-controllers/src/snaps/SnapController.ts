@@ -1503,7 +1503,7 @@ export class SnapController extends BaseController<
           METAMASK_ORIGIN,
           true,
         );
-      } else {
+      } else if (!isMissingSource) {
         this.messenger.publish(
           'SnapController:snapInstalled',
           this.getTruncatedExpect(snapId),
