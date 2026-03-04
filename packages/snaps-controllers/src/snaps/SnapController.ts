@@ -1390,12 +1390,12 @@ export class SnapController extends BaseController<
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
-      // As a mitigation for state corruption on mobile, if the source code is missing
-      // we allow overwriting current version of the preinstalled Snap.
       const isMissingSource =
         isAlreadyInstalled && !(await this.#hasSourceCode(snapId));
 
       // Disallow downgrades and overwriting non preinstalled snaps
+      // As a mitigation for state corruption on mobile, if the source code is missing
+      // we allow overwriting and potentially downgrading the current version of the preinstalled Snap.
       if (
         isAlreadyInstalled &&
         !isMissingSource &&
