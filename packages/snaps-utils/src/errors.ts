@@ -224,3 +224,5 @@ export const TrackableErrorStruct: Struct<TrackableError> = object({
   stack: nullable(string()),
   cause: nullable(lazy<TrackableError>(() => TrackableErrorStruct)),
 });
+
+export { isSnapError, isSerializedSnapError };
