@@ -73,6 +73,7 @@ describe('getGetInterfaceImplementation', () => {
       snapId: MOCK_SNAP_ID,
       context: null,
       contentType: null,
+      displayed: false,
     });
   });
 });
