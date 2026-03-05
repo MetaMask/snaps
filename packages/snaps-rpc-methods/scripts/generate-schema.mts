@@ -285,7 +285,7 @@ function getTypeAlias(type: Type) {
   }
 
   // Renaming `Json` to `JSON` for consistency in the documentation.
-  if (plainType === 'Json') {
+  if (plainType === 'Json' || nonNullablePlainType === 'Json') {
     return 'JSON';
   }
 
@@ -297,11 +297,7 @@ function getTypeAlias(type: Type) {
     return 'JSXElement';
   }
 
-  if (
-    plainType === 'JsonRpcParams' ||
-    isJsonRpcParams(plainType) ||
-    isJsonRpcParams(nonNullablePlainType)
-  ) {
+  if (isJsonRpcParams(plainType) || isJsonRpcParams(nonNullablePlainType)) {
     return 'JsonRpcParams';
   }
 
