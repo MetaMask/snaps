@@ -4,20 +4,16 @@ import {
   serializeCause,
 } from '@metamask/rpc-errors';
 import type { DataWithOptionalCause } from '@metamask/rpc-errors';
-import type {
-  SerializedSnapError,
-  SnapError,
-  TrackableError,
-} from '@metamask/snaps-sdk';
+import type { TrackableError } from '@metamask/snaps-sdk';
 import {
   getErrorMessage,
   getErrorStack,
-  SNAP_ERROR_CODE,
-  SNAP_ERROR_MESSAGE,
+  isSerializedSnapError,
+  isSnapError,
 } from '@metamask/snaps-sdk';
 import type { Struct } from '@metamask/superstruct';
 import { lazy, nullable, object, string } from '@metamask/superstruct';
-import type { Json, JsonRpcError } from '@metamask/utils';
+import type { Json } from '@metamask/utils';
 import { isObject, isJsonRpcError } from '@metamask/utils';
 
 export const SNAP_ERROR_WRAPPER_CODE = -31001;
@@ -107,37 +103,6 @@ export class WrappedSnapError extends Error {
   serialize() {
     return this.toJSON();
   }
-}
-
-/**
- * Check if an object is a `SnapError`.
- *
- * @param error - The object to check.
- * @returns Whether the object is a `SnapError`.
- */
-export function isSnapError(error: unknown): error is SnapError {
-  if (
-    isObject(error) &&
-    'serialize' in error &&
-    typeof error.serialize === 'function'
-  ) {
-    const serialized = error.serialize();
-    return isJsonRpcError(serialized) && isSerializedSnapError(serialized);
-  }
-
-  return false;
-}
-
-/**
- * Check if a JSON-RPC error is a `SnapError`.
- *
- * @param error - The object to check.
- * @returns Whether the object is a `SnapError`.
- */
-export function isSerializedSnapError(
-  error: JsonRpcError,
-): error is SerializedSnapError {
-  return error.code === SNAP_ERROR_CODE && error.message === SNAP_ERROR_MESSAGE;
 }
 
 /**
@@ -259,3 +224,5 @@ export const TrackableErrorStruct: Struct<TrackableError> = object({
   stack: nullable(string()),
   cause: nullable(lazy<TrackableError>(() => TrackableErrorStruct)),
 });
+
+export { isSnapError, isSerializedSnapError };

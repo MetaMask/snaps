@@ -1,5 +1,5 @@
 import type { Json, JsonRpcError } from '@metamask/utils';
-import { isJsonRpcError } from '@metamask/utils';
+import { isJsonRpcError, isObject } from '@metamask/utils';
 
 import {
   getErrorCause,
@@ -211,4 +211,35 @@ export function getJsonError(
     stack: getErrorStack(error) ?? null,
     cause: cause === null ? null : getJsonError(cause),
   };
+}
+
+/**
+ * Check if a JSON-RPC error is a `SnapError`.
+ *
+ * @param error - The object to check.
+ * @returns Whether the object is a `SnapError`.
+ */
+export function isSerializedSnapError(
+  error: JsonRpcError,
+): error is SerializedSnapError {
+  return error.code === SNAP_ERROR_CODE && error.message === SNAP_ERROR_MESSAGE;
+}
+
+/**
+ * Check if an object is a `SnapError`.
+ *
+ * @param error - The object to check.
+ * @returns Whether the object is a `SnapError`.
+ */
+export function isSnapError(error: unknown): error is SnapError {
+  if (
+    isObject(error) &&
+    'serialize' in error &&
+    typeof error.serialize === 'function'
+  ) {
+    const serialized = error.serialize();
+    return isJsonRpcError(serialized) && isSerializedSnapError(serialized);
+  }
+
+  return false;
 }

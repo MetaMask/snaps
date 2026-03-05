@@ -7,8 +7,6 @@ import {
 import { is } from '@metamask/superstruct';
 
 import {
-  isSerializedSnapError,
-  isSnapError,
   isWrappedSnapError,
   SNAP_ERROR_WRAPPER_CODE,
   SNAP_ERROR_WRAPPER_MESSAGE,
@@ -133,37 +131,6 @@ describe('WrappedSnapError', () => {
         },
       });
     });
-  });
-});
-
-describe('isSnapError', () => {
-  it('returns true if the error is a Snap error', () => {
-    const error = new SnapError('foo');
-
-    expect(isSnapError(error)).toBe(true);
-  });
-
-  it('returns false if the error is not a Snap error', () => {
-    const error = new Error('foo');
-
-    expect(isSnapError(error)).toBe(false);
-  });
-});
-
-describe('isSerializedSnapError', () => {
-  it('returns true if the error is a serialized Snap error', () => {
-    const error = new SnapError('foo').toJSON();
-
-    expect(isSerializedSnapError(error)).toBe(true);
-  });
-
-  it('returns false if the error is not a serialized Snap error', () => {
-    const error = {
-      code: -32603,
-      message: 'foo',
-    };
-
-    expect(isSerializedSnapError(error)).toBe(false);
   });
 });
 

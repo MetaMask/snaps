@@ -1,6 +1,11 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 
-import { getJsonError, SnapError } from './errors';
+import {
+  getJsonError,
+  isSerializedSnapError,
+  isSnapError,
+  SnapError,
+} from './errors';
 
 describe('SnapError', () => {
   it('creates an error from a message', () => {
@@ -284,6 +289,37 @@ describe('SnapError', () => {
     const error = new SnapError('foo');
 
     expect(error.serialize()).toStrictEqual(error.toJSON());
+  });
+});
+
+describe('isSnapError', () => {
+  it('returns true if the error is a Snap error', () => {
+    const error = new SnapError('foo');
+
+    expect(isSnapError(error)).toBe(true);
+  });
+
+  it('returns false if the error is not a Snap error', () => {
+    const error = new Error('foo');
+
+    expect(isSnapError(error)).toBe(false);
+  });
+});
+
+describe('isSerializedSnapError', () => {
+  it('returns true if the error is a serialized Snap error', () => {
+    const error = new SnapError('foo').toJSON();
+
+    expect(isSerializedSnapError(error)).toBe(true);
+  });
+
+  it('returns false if the error is not a serialized Snap error', () => {
+    const error = {
+      code: -32603,
+      message: 'foo',
+    };
+
+    expect(isSerializedSnapError(error)).toBe(false);
   });
 });
 
