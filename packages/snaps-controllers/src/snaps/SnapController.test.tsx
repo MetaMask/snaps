@@ -2964,7 +2964,7 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('calls `SnapInterfaceController:displayInterface` if the response includes content', async () => {
+    it('calls `SnapInterfaceController:setInterfaceDisplayed` if the response includes content', async () => {
       const rootMessenger = getControllerMessenger();
 
       const options = getSnapControllerOptions({
@@ -3013,7 +3013,7 @@ describe('SnapController', () => {
       });
 
       expect(options.messenger.call).toHaveBeenCalledWith(
-        'SnapInterfaceController:displayInterface',
+        'SnapInterfaceController:setInterfaceDisplayed',
         MOCK_INTERFACE_ID,
       );
 

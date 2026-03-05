@@ -76,9 +76,9 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
-export type SnapInterfaceControllerDisplayInterfaceAction = {
-  type: `${typeof controllerName}:displayInterface`;
-  handler: SnapInterfaceController['displayInterface'];
+export type SnapInterfaceControllerSetInterfaceDisplayedAction = {
+  type: `${typeof controllerName}:setInterfaceDisplayed`;
+  handler: SnapInterfaceController['setInterfaceDisplayed'];
 };
 
 type AccountsControllerGetAccountByAddressAction = {
@@ -134,7 +134,7 @@ export type SnapInterfaceControllerActions =
   | DeleteInterface
   | UpdateInterfaceState
   | ResolveInterface
-  | SnapInterfaceControllerDisplayInterfaceAction
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | SnapInterfaceControllerGetStateAction;
 
 export type SnapInterfaceControllerStateChangeEvent =
@@ -283,8 +283,8 @@ export class SnapInterfaceController extends BaseController<
     );
 
     this.messenger.registerActionHandler(
-      `${controllerName}:displayInterface`,
-      this.displayInterface.bind(this),
+      `${controllerName}:setInterfaceDisplayed`,
+      this.setInterfaceDisplayed.bind(this),
     );
   }
 
@@ -429,7 +429,7 @@ export class SnapInterfaceController extends BaseController<
    *
    * @param id - The interface ID.
    */
-  displayInterface(id: string) {
+  setInterfaceDisplayed(id: string) {
     this.update((draftState) => {
       if (draftState.interfaces[id]) {
         draftState.interfaces[id].displayed = true;

@@ -450,7 +450,7 @@ export const getControllerMessenger = () => {
   );
 
   messenger.registerActionHandler(
-    'SnapInterfaceController:displayInterface',
+    'SnapInterfaceController:setInterfaceDisplayed',
     () => undefined,
   );
 
@@ -498,7 +498,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:update',
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
-      'SnapInterfaceController:displayInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
       'SnapInterfaceController:getInterface',
       'StorageService:setItem',
       'StorageService:getItem',

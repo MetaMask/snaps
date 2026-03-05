@@ -176,7 +176,7 @@ import { forceStrict, validateMachine } from '../fsm';
 import type {
   CreateInterface,
   GetInterface,
-  SnapInterfaceControllerDisplayInterfaceAction,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '../interface';
 import { log } from '../logging';
 import type {
@@ -685,7 +685,7 @@ export type AllowedActions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
-  | SnapInterfaceControllerDisplayInterfaceAction
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | StorageServiceSetItemAction
   | StorageServiceGetItemAction
   | StorageServiceRemoveItemAction
@@ -3887,7 +3887,7 @@ export class SnapController extends BaseController<
         );
 
         this.messenger.call(
-          'SnapInterfaceController:displayInterface',
+          'SnapInterfaceController:setInterfaceDisplayed',
           transformedResult.id,
         );
       }
