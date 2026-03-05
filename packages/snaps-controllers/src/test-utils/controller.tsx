@@ -498,6 +498,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:update',
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:displayInterface',
       'SnapInterfaceController:getInterface',
       'StorageService:setItem',
       'StorageService:getItem',

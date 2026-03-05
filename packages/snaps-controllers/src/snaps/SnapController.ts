@@ -3875,7 +3875,10 @@ export class SnapController extends BaseController<
         true,
       );
 
-      if (INTERFACE_HANDLERS.includes(handlerType)) {
+      if (
+        INTERFACE_HANDLERS.includes(handlerType) &&
+        transformedResult !== null
+      ) {
         assert(
           isPlainObject(transformedResult) &&
             hasProperty(transformedResult, 'id') &&
