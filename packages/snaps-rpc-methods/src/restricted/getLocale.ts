@@ -40,7 +40,6 @@ type Specification = ValidPermissionSpecification<{
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_getLocale` permission.
  * @deprecated - To be removed in favor of `snap_getPreferences`.
- * @internal
  */
 export const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
@@ -68,6 +67,8 @@ const methodHooks: MethodHooksObject<GetLocaleMethodHooks> = {
  * [`snap_getPreferences`](https://docs.metamask.io/snaps/reference/snaps-api/snap_getpreferences)
  * instead, which provides access to the user's locale as well as other
  * preferences.
+ *
+ * @internal
  */
 export const getLocaleBuilder = Object.freeze({
   targetName: methodName,
