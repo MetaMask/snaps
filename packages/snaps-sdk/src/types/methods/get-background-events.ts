@@ -8,10 +8,10 @@ import type { SnapId } from '../snap';
  * Note: The date generated when scheduling an event with a duration will be
  * represented in UTC.
  *
- * @property id - The unique id representing the event.
- * @property scheduledAt - The ISO 8601 time stamp of when the event was
+ * @property id - The unique ID representing the event.
+ * @property scheduledAt - The ISO 8601 timestamp of when the event was
  * scheduled.
- * @property snapId - The id of the snap that scheduled the event.
+ * @property snapId - The ID of the Snap that scheduled the event.
  * @property date - The ISO 8601 date of when the event is scheduled for.
  * @property request - The request that is supplied to the `onCronjob` handler
  * when the event is fired.

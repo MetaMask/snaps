@@ -5,16 +5,21 @@ export type EmptyObject = Record<string, never>;
 
 type CronjobRequest = {
   /**
-   * The request to execute when the cronjob is triggered.
+   * The request to provide to the `onCronjob` handler for the Snap to determine
+   * how to handle the request, when the cronjob is triggered.
    */
   request: {
     /**
-     * The method to call.
+     * The method to call. This can be an arbitrary method, and is provided to
+     * the `onCronjob` handler for the Snap to determine how to handle the
+     * request.
      */
     method: string;
 
     /**
-     * The parameters to pass to the method.
+     * The parameters to pass to the method. This can be used to provide
+     * additional information about the request, and is provided to the
+     * `onCronjob` handler for the Snap to determine how to handle the request.
      */
     params?: JsonRpcParams;
   };

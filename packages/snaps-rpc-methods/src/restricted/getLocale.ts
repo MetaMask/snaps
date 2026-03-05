@@ -67,6 +67,8 @@ const methodHooks: MethodHooksObject<GetLocaleMethodHooks> = {
  * [`snap_getPreferences`](https://docs.metamask.io/snaps/reference/snaps-api/snap_getpreferences)
  * instead, which provides access to the user's locale as well as other
  * preferences.
+ *
+ * @internal
  */
 export const getLocaleBuilder = Object.freeze({
   targetName: methodName,

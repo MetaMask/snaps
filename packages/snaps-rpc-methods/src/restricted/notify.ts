@@ -152,6 +152,70 @@ const methodHooks: MethodHooksObject<NotifyMethodHooks> = {
  * [expanded view](https://docs.metamask.io/snaps/features/notifications/#expanded-view).
  * The expanded view has a title, content, and optional footer link shown when
  * a user clicks on the notification.
+ *
+ * @example Basic in app notification
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_notify": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * snap.request({
+ *   method: 'snap_notify',
+ *   params: {
+ *     type: 'inApp',
+ *     message: 'This is an in-app notification',
+ *   },
+ * });
+ * ```
+ *
+ * @example Expandable in app notification
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_notify": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * snap.request({
+ *   method: 'snap_notify',
+ *   params: {
+ *     type: 'inApp',
+ *     message: 'This is an in-app notification',
+ *     title: 'Notification Title',
+ *     content: (
+ *       <Box>
+ *         <Text>This is the expanded content of the notification.</Text>
+ *       </Box>
+ *     ),
+ *     footerLink: {
+ *       href: 'https://example.com',
+ *       text: 'Click here for more info',
+ *     },
+ *   },
+ * });
+ * ```
+ *
+ * @example Native notification
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_notify": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * snap.request({
+ *   method: 'snap_notify',
+ *   params: {
+ *     type: 'native',
+ *     message: 'This is a native notification',
+ *   },
+ * });
+ * ```
  */
 export const notifyBuilder = Object.freeze({
   targetName: methodName,

@@ -14,7 +14,7 @@ export type GetClientStatusResult = {
   clientVersion: string;
 
   /**
-   * The Snaps Platform version that the client is running.
+   * The Snaps platform version that the client is running.
    */
   platformVersion: string;
 

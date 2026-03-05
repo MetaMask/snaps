@@ -146,9 +146,25 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   getInterface: true,
 };
 
+/* eslint-disable jsdoc/check-indentation */
 /**
  * Display a [dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/)
  * in the MetaMask UI.
+ *
+ * - `type` - The type of dialog. Not providing a type will create a fully
+ * [custom dialog](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).
+ * Possible values are:
+ *   - `alert` - An alert that can only be acknowledged.
+ *   - `confirmation` - A confirmation that can be accepted or rejected.
+ *   - `prompt` - A prompt where the user can enter a text response.
+ *
+ * - One of:
+ *   - `content` - The content of the alert, as a
+ * [custom UI](https://docs.metamask.io/snaps/features/custom-ui/) component.
+ *   - `id` - The ID of an
+ * [interactive interface](https://docs.metamask.io/snaps/reference/snaps-api/snap_createinterface).
+ * - `placeholder` - An optional placeholder text to display in the dialog. Only
+ * applicable for the `prompt` dialog.
  *
  * @example
  * ```ts
@@ -177,6 +193,7 @@ export const dialogBuilder = Object.freeze({
   specificationBuilder,
   methodHooks,
 } as const);
+/* eslint-enable jsdoc/check-indentation */
 
 const AlertParametersWithContentStruct = object({
   type: enumValue(DialogType.Alert),

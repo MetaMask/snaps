@@ -6,13 +6,12 @@ import type {
   PermissionConstraint,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { InvokeSnapParams } from '@metamask/snaps-sdk';
 import type { SnapIds } from '@metamask/snaps-utils';
 import { SnapCaveatType, SnapIdsStruct } from '@metamask/snaps-utils';
 import { type } from '@metamask/superstruct';
 import type { Json } from '@metamask/utils';
 import { hasProperty, assertStruct } from '@metamask/utils';
-
-import type { InvokeSnapParams } from '../invokeSnap';
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.
