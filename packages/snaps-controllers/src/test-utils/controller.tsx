@@ -449,6 +449,11 @@ export const getControllerMessenger = () => {
     },
   );
 
+  messenger.registerActionHandler(
+    'SnapInterfaceController:setInterfaceDisplayed',
+    () => undefined,
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -493,6 +498,7 @@ export const getSnapControllerMessenger = (
       'SnapsRegistry:update',
       'SnapsRegistry:resolveVersion',
       'SnapInterfaceController:createInterface',
+      'SnapInterfaceController:setInterfaceDisplayed',
       'SnapInterfaceController:getInterface',
       'StorageService:setItem',
       'StorageService:getItem',

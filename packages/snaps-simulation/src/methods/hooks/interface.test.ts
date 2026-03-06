@@ -6,6 +6,7 @@ import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import {
   getCreateInterfaceImplementation,
   getGetInterfaceImplementation,
+  getSetInterfaceDisplayedImplementation,
 } from './interface';
 import {
   getRestrictedSnapInterfaceControllerMessenger,
@@ -73,6 +74,38 @@ describe('getGetInterfaceImplementation', () => {
       snapId: MOCK_SNAP_ID,
       context: null,
       contentType: null,
+      displayed: false,
     });
+  });
+});
+
+describe('getSetInterfaceDisplayedImplementation', () => {
+  it('returns the implementation of the `setInterfaceDisplayed` hook', () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const interfaceController = new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    jest.spyOn(controllerMessenger, 'call');
+
+    const fn = getSetInterfaceDisplayedImplementation(controllerMessenger);
+
+    const content = { type: NodeType.Text as const, value: 'bar' };
+
+    const id = interfaceController.createInterface(MOCK_SNAP_ID, content);
+
+    fn(MOCK_SNAP_ID, id);
+
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      MOCK_SNAP_ID,
+      id,
+    );
+
+    expect(interfaceController.getInterface(MOCK_SNAP_ID, id).displayed).toBe(
+      true,
+    );
   });
 });

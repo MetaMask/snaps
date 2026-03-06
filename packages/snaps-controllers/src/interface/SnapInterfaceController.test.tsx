@@ -104,7 +104,7 @@ describe('SnapInterfaceController', () => {
         components,
       );
 
-      const { content, state } = rootMessenger.call(
+      const { content, state, displayed } = rootMessenger.call(
         'SnapInterfaceController:getInterface',
         MOCK_SNAP_ID,
         id,
@@ -118,6 +118,7 @@ describe('SnapInterfaceController', () => {
 
       expect(content).toStrictEqual(getJsxElementFromComponent(components));
       expect(state).toStrictEqual({ foo: { bar: null } });
+      expect(displayed).toBe(false);
     });
 
     it('calls the multichain asset controller to construct an asset selector state', async () => {
@@ -904,6 +905,221 @@ describe('SnapInterfaceController', () => {
           'test',
         ),
       ).toThrow(`Interface with id 'test' not found.`);
+    });
+  });
+
+  describe('getInterfaceState', () => {
+    it('gets the interface state if the interface has been displayed', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const content = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const id = rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      rootMessenger.call(
+        'SnapInterfaceController:setInterfaceDisplayed',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      const state = rootMessenger.call(
+        'SnapInterfaceController:getInterfaceState',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(state).toStrictEqual({ foo: { bar: null } });
+    });
+
+    it('throws if the interface has not been displayed yet', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const content = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const id = rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:getInterfaceState',
+          MOCK_SNAP_ID,
+          id,
+        ),
+      ).toThrow(
+        `Interface with ID '${id}' has not been displayed yet. Interface state is not available until the interface has been displayed at least once.`,
+      );
+    });
+
+    it('throws if the interface does not exist', () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:getInterfaceState',
+          MOCK_SNAP_ID,
+          'test',
+        ),
+      ).toThrow(`Interface with id 'test' not found.`);
+    });
+
+    it('throws if the snap requesting the interface state is not the one that created it', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const content = (
+        <Form name="foo">
+          <Field label="Bar">
+            <Input name="bar" type="text" />
+          </Field>
+        </Form>
+      );
+
+      const id = rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        content,
+      );
+
+      rootMessenger.call(
+        'SnapInterfaceController:setInterfaceDisplayed',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:getInterfaceState',
+          'foo' as SnapId,
+          id,
+        ),
+      ).toThrow(`Interface not created by foo.`);
+    });
+  });
+
+  describe('setInterfaceDisplayed', () => {
+    it('sets the interface as displayed', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const id = rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        <Box>
+          <Text>foo</Text>
+        </Box>,
+      );
+
+      rootMessenger.call(
+        'SnapInterfaceController:setInterfaceDisplayed',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      const { displayed } = rootMessenger.call(
+        'SnapInterfaceController:getInterface',
+        MOCK_SNAP_ID,
+        id,
+      );
+
+      expect(displayed).toBe(true);
+    });
+
+    it('throws if the interface does not exist', () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:setInterfaceDisplayed',
+          MOCK_SNAP_ID,
+          'test',
+        ),
+      ).toThrow(`Interface with ID 'test' not found.`);
+    });
+
+    it('throws if the interface was not created by the snap', async () => {
+      const rootMessenger = getRootSnapInterfaceControllerMessenger();
+      const controllerMessenger =
+        getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
+
+      // eslint-disable-next-line no-new
+      new SnapInterfaceController({
+        messenger: controllerMessenger,
+      });
+
+      const id = rootMessenger.call(
+        'SnapInterfaceController:createInterface',
+        MOCK_SNAP_ID,
+        <Box>
+          <Text>foo</Text>
+        </Box>,
+      );
+
+      expect(() =>
+        rootMessenger.call(
+          'SnapInterfaceController:setInterfaceDisplayed',
+          'foo' as SnapId,
+          id,
+        ),
+      ).toThrow(`Interface with ID '${id}' not created by foo.`);
     });
   });
 

@@ -618,10 +618,10 @@ export function getPermittedHooks(
       ),
     getInterfaceState: (...args) =>
       controllerMessenger.call(
-        'SnapInterfaceController:getInterface',
+        'SnapInterfaceController:getInterfaceState',
         snapId,
         ...args,
-      ).state,
+      ),
     getInterfaceContext: (...args) =>
       controllerMessenger.call(
         'SnapInterfaceController:getInterface',

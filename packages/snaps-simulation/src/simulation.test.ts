@@ -577,8 +577,7 @@ describe('getPermittedHooks', () => {
   });
 
   it('returns the `getInterfaceState` hook', async () => {
-    // eslint-disable-next-line no-new
-    new SnapInterfaceController({
+    const controller = new SnapInterfaceController({
       messenger:
         getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
     });
@@ -603,12 +602,13 @@ describe('getPermittedHooks', () => {
     );
 
     const id = createInterface({ type: NodeType.Text as const, value: 'foo' });
+    controller.setInterfaceDisplayed(snapId, id);
 
     const result = getInterfaceState(id);
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
       2,
-      'SnapInterfaceController:getInterface',
+      'SnapInterfaceController:getInterfaceState',
       snapId,
       id,
     );

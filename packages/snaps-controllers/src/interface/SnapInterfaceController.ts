@@ -76,6 +76,16 @@ export type ResolveInterface = {
   handler: SnapInterfaceController['resolveInterface'];
 };
 
+export type SnapInterfaceControllerGetInterfaceStateAction = {
+  type: `${typeof controllerName}:getInterfaceState`;
+  handler: SnapInterfaceController['getInterfaceState'];
+};
+
+export type SnapInterfaceControllerSetInterfaceDisplayedAction = {
+  type: `${typeof controllerName}:setInterfaceDisplayed`;
+  handler: SnapInterfaceController['setInterfaceDisplayed'];
+};
+
 type AccountsControllerGetAccountByAddressAction = {
   type: `AccountsController:getAccountByAddress`;
   handler: (address: string) => InternalAccount | undefined;
@@ -129,6 +139,8 @@ export type SnapInterfaceControllerActions =
   | DeleteInterface
   | UpdateInterfaceState
   | ResolveInterface
+  | SnapInterfaceControllerGetInterfaceStateAction
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | SnapInterfaceControllerGetStateAction;
 
 export type SnapInterfaceControllerStateChangeEvent =
@@ -182,6 +194,11 @@ export type StoredInterface = {
   state: InterfaceState;
   context: InterfaceContext | null;
   contentType: ContentType | null;
+
+  /**
+   * Whether the interface has been displayed in the UI at least once.
+   */
+  displayed: boolean;
 };
 
 export type SnapInterfaceControllerState = {
@@ -252,6 +269,11 @@ export class SnapInterfaceController extends BaseController<
     );
 
     this.messenger.registerActionHandler(
+      `${controllerName}:getInterfaceState`,
+      this.getInterfaceState.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
       `${controllerName}:updateInterface`,
       this.updateInterface.bind(this),
     );
@@ -269,6 +291,11 @@ export class SnapInterfaceController extends BaseController<
     this.messenger.registerActionHandler(
       `${controllerName}:resolveInterface`,
       this.resolveInterface.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:setInterfaceDisplayed`,
+      this.setInterfaceDisplayed.bind(this),
     );
   }
 
@@ -310,6 +337,7 @@ export class SnapInterfaceController extends BaseController<
         state: componentState,
         context: context ?? null,
         contentType: contentType ?? null,
+        displayed: false,
       };
     });
 
@@ -327,6 +355,25 @@ export class SnapInterfaceController extends BaseController<
     this.#validateArgs(snapId, id);
 
     return this.state.interfaces[id];
+  }
+
+  /**
+   * Get the state of a given interface ID, if the interface has been displayed
+   * at least once.
+   *
+   * @param snapId - The snap ID requesting the interface state.
+   * @param id - The interface ID.
+   * @returns The interface state.
+   */
+  getInterfaceState(snapId: SnapId, id: string) {
+    const storedInterface = this.getInterface(snapId, id);
+    if (!storedInterface.displayed) {
+      throw new Error(
+        `Interface with ID '${id}' has not been displayed yet. Interface state is not available until the interface has been displayed at least once.`,
+      );
+    }
+
+    return storedInterface.state;
   }
 
   /**
@@ -405,6 +452,28 @@ export class SnapInterfaceController extends BaseController<
     await this.#acceptApprovalRequest(id, value);
 
     this.deleteInterface(id);
+  }
+
+  /**
+   * Set the interface as displayed.
+   *
+   * @param snapId - The snap ID requesting the update.
+   * @param id - The interface ID.
+   */
+  setInterfaceDisplayed(snapId: SnapId, id: string) {
+    if (!this.state.interfaces[id]) {
+      throw new Error(`Interface with ID '${id}' not found.`);
+    }
+
+    if (this.state.interfaces[id].snapId !== snapId) {
+      throw new Error(`Interface with ID '${id}' not created by ${snapId}.`);
+    }
+
+    this.update((draftState) => {
+      if (draftState.interfaces[id]) {
+        draftState.interfaces[id].displayed = true;
+      }
+    });
   }
 
   /**
