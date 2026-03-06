@@ -38,6 +38,28 @@ export type ResolveInterfaceMethodHooks = {
 /**
  * Resolve an interactive interface. For use in
  * [custom dialogs](https://docs.metamask.io/snaps/features/custom-ui/dialogs/#display-a-custom-dialog).
+ *
+ * @example
+ * ```ts
+ * const id = await snap.request({
+ *   method: 'snap_createInterface',
+ *   params: {
+ *     // The parameters to create the interface with.
+ *   },
+ * });
+ *
+ * // Later, when the user has interacted with the interface, and you want to
+ * // resolve it:
+ * await snap.request({
+ *   method: 'snap_resolveInterface',
+ *   params: {
+ *     id: interfaceId,
+ *     value: {
+ *       // The value to resolve the interface with.
+ *     },
+ *   },
+ * });
+ * ```
  */
 export const resolveInterfaceHandler = {
   methodNames: [methodName] as const,

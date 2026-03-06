@@ -25,6 +25,32 @@ export type GetWebSocketsMethodHooks = {
 
 /**
  * Get the connected WebSockets for the Snap.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "endowment:network-access": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const webSockets = await snap.request({ method: 'snap_getWebSockets' });
+ * console.log(webSockets);
+ * // Example output:
+ * // [
+ * //   {
+ * //     id: 'websocket-1',
+ * //     url: 'wss://example.com/socket',
+ * //     protocols: ['protocol1', 'protocol2'],
+ * //   },
+ * //   {
+ * //     id: 'websocket-2',
+ * //     url: 'ws://example.org/endpoint',
+ * //     protocols: [],
+ * //   },
+ * // ]
+ * ```
  */
 export const getWebSocketsHandler = {
   methodNames: [methodName] as const,

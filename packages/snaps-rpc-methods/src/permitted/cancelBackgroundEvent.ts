@@ -31,7 +31,7 @@ export type CancelBackgroundEventMethodHooks = {
  *
  * @example
  * ```ts
- * const id = snap.request({
+ * const id = await snap.request({
  *   method: 'snap_scheduleBackgroundEvent',
  *   params: {
  *     // ...

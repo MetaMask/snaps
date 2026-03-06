@@ -57,6 +57,27 @@ const methodHooks: MethodHooksObject<GetPreferencesMethodHooks> = {
 
 /**
  * Gets the user's preferences.
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_getPreferences": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const preferences = await snap.request({
+ *   method: 'snap_getPreferences',
+ * });
+ *
+ * console.log(preferences);
+ * // {
+ * //  locale: 'en',
+ * //  currency: 'usd',
+ * //  ...
+ * // }
+ * ```
  */
 export const getPreferencesBuilder = Object.freeze({
   targetName: methodName,

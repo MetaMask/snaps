@@ -37,6 +37,21 @@ export type CloseWebSocketParameters = InferMatching<
 /**
  * Closes a WebSocket connection that was previously opened with
  * [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket).
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "endowment:network-access": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * await snap.request({
+ *   method: 'snap_closeWebSocket',
+ *   params: { id: 'websocket-1' },
+ * });
+ * ```
  */
 export const closeWebSocketHandler = {
   methodNames: [methodName] as const,
