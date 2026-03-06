@@ -67,6 +67,34 @@ export type ListEntropySourcesHooks = {
  * - `snap_getBip32PublicKey`
  * - `snap_getBip44Entropy`
  * - `snap_getEntropy`
+ *
+ * @example
+ * ```json name="Manifest"
+ * {
+ *   "initialPermissions": {
+ *     "snap_getBip32Entropy": {}
+ *   }
+ * }
+ * ```
+ * ```ts name="Usage"
+ * const entropySources = await snap.request({ method: 'snap_listEntropySources' });
+ * console.log(entropySources);
+ * // Example output:
+ * // [
+ * //   {
+ * //     name: 'Mnemonic 1',
+ * //     id: 'mnemonic-1',
+ * //     type: 'mnemonic',
+ * //     primary: true,
+ * //   },
+ * //   {
+ * //     name: 'Mnemonic 2',
+ * //     id: 'mnemonic-2',
+ * //     type: 'mnemonic',
+ * //     primary: false,
+ * //   },
+ * // ]
+ * ```
  */
 export const listEntropySourcesHandler = {
   methodNames: [methodName] as const,

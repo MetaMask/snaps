@@ -1,11 +1,16 @@
 /**
  * An object describing the WebSocket message to send.
- *
- * @property id - The ID of the WebSocket connection to send a message to.
- * @property message - The message to send.
  */
 export type SendWebSocketMessageParams = {
+  /**
+   * The ID of the WebSocket connection to send a message to.
+   */
   id: string;
+
+  /**
+   * The message to send. This can be either a string or an array of numbers
+   * representing binary data.
+   */
   message: string | number[];
 };
 

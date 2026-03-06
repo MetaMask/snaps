@@ -47,6 +47,17 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
  *
  * If the installation of any Snap fails, or the user rejects the installation
  * or permission request, this method returns the error that caused the failure.
+ *
+ * @example
+ * ```ts
+ * const result = await snap.request({
+ *   method: 'wallet_requestSnaps',
+ *   params: {
+ *     'npm:@metamask/example-snap': {},
+ *     'npm:@metamask/another-snap': { version: '1.2.3' },
+ *   },
+ * });
+ * ```
  */
 export const requestSnapsHandler = {
   methodNames: [methodName] as const,
