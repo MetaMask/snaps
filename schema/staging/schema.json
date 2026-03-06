@@ -30,7 +30,7 @@
         "examples": [
           {
             "language": "ts",
-            "content": "const id = snap.request({\n  method: \"snap_scheduleBackgroundEvent\",\n  params: {\n    // ...\n  },\n});\n\n// Later, when you want to cancel the background event:\nsnap.request({\n  method: \"snap_cancelBackgroundEvent\",\n  params: { id },\n});\n"
+            "content": "const id = await snap.request({\n  method: \"snap_scheduleBackgroundEvent\",\n  params: {\n    // ...\n  },\n});\n\n// Later, when you want to cancel the background event:\nsnap.request({\n  method: \"snap_cancelBackgroundEvent\",\n  params: { id },\n});\n"
           }
         ]
       }
@@ -101,7 +101,22 @@
     "subjectTypes": [
       "snap"
     ],
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"endowment:network-access\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "await snap.request({\n  method: \"snap_closeWebSocket\",\n  params: { id: \"websocket-1\" },\n});\n"
+          }
+        ]
+      }
+    ],
     "restricted": false
   },
   {
@@ -1074,7 +1089,22 @@
         }
       ]
     },
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getPreferences\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const preferences = await snap.request({\n  method: \"snap_getPreferences\",\n});\n\nconsole.log(preferences);\n// {\n//  locale: 'en',\n//  currency: 'usd',\n//  ...\n// }\n"
+          }
+        ]
+      }
+    ],
     "subjectTypes": [
       "snap"
     ],
@@ -1178,7 +1208,22 @@
     "subjectTypes": [
       "snap"
     ],
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"endowment:network-access\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const webSockets = await snap.request({ method: \"snap_getWebSockets\" });\nconsole.log(webSockets);\n// Example output:\n// [\n//   {\n//     id: 'websocket-1',\n//     url: 'wss://example.com/socket',\n//     protocols: ['protocol1', 'protocol2'],\n//   },\n//   {\n//     id: 'websocket-2',\n//     url: 'ws://example.org/endpoint',\n//     protocols: [],\n//   },\n// ]\n"
+          }
+        ]
+      }
+    ],
     "restricted": false
   },
   {
@@ -1229,7 +1274,22 @@
     "subjectTypes": [
       "snap"
     ],
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"snap_getBip32Entropy\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
+            "language": "ts",
+            "content": "const entropySources = await snap.request({\n  method: \"snap_listEntropySources\",\n});\nconsole.log(entropySources);\n// Example output:\n// [\n//   {\n//     name: 'Mnemonic 1',\n//     id: 'mnemonic-1',\n//     type: 'mnemonic',\n//     primary: true,\n//   },\n//   {\n//     name: 'Mnemonic 2',\n//     id: 'mnemonic-2',\n//     type: 'mnemonic',\n//     primary: false,\n//   },\n// ]\n"
+          }
+        ]
+      }
+    ],
     "restricted": false
   },
   {
@@ -1612,7 +1672,16 @@
     "subjectTypes": [
       "snap"
     ],
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const id = await snap.request({\n  method: \"snap_createInterface\",\n  params: {\n    // The parameters to create the interface with.\n  },\n});\n\n// Later, when the user has interacted with the interface, and you want to\n// resolve it:\nawait snap.request({\n  method: \"snap_resolveInterface\",\n  params: {\n    id: interfaceId,\n    value: {\n      // The value to resolve the interface with.\n    },\n  },\n});\n"
+          }
+        ]
+      }
+    ],
     "restricted": false
   },
   {
@@ -1702,7 +1771,7 @@
   },
   {
     "name": "snap_sendWebSocketMessage",
-    "description": "Send a message to an open WebSocket connection. The message will be sent to\nthe WebSocket connection with the specified ID, which must have been\npreviously opened by the snap using the [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket/)\nmethod.",
+    "description": "Send a message to an open WebSocket connection. The message will be sent to\nthe WebSocket connection with the specified ID, which must have been\npreviously opened by the Snap using the [`snap_openWebSocket`](https://docs.metamask.io/snaps/reference/snaps-api/snap_openwebsocket/)\nmethod.",
     "parameters": {
       "kind": "object",
       "type": "{ id: string; message: number[] | string }",
@@ -1719,7 +1788,7 @@
         {
           "kind": "union",
           "type": "number[] | string",
-          "description": "The message to send.",
+          "description": "The message to send. This can be either a string or an array of numbers\nrepresenting binary data.",
           "commonProperties": [],
           "options": [
             {
@@ -1755,6 +1824,12 @@
       {
         "examples": [
           {
+            "name": "Manifest",
+            "language": "json",
+            "content": "{\n  \"initialPermissions\": {\n    \"endowment:network-access\": {}\n  }\n}\n"
+          },
+          {
+            "name": "Usage",
             "language": "ts",
             "content": "await wallet.request({\n  method: \"snap_sendWebSocketMessage\",\n  params: {\n    id: \"websocket-connection-id\",\n    message: \"Hello, WebSocket!\", // or message: [1, 2, 3] for binary data\n  },\n});\n"
           }
@@ -1998,7 +2073,16 @@
       "snap",
       "website"
     ],
-    "examples": [],
+    "examples": [
+      {
+        "examples": [
+          {
+            "language": "ts",
+            "content": "const result = await snap.request({\n  method: \"wallet_requestSnaps\",\n  params: {\n    \"npm:@metamask/example-snap\": {},\n    \"npm:@metamask/another-snap\": { version: \"1.2.3\" },\n  },\n});\n"
+          }
+        ]
+      }
+    ],
     "restricted": false
   },
   {
