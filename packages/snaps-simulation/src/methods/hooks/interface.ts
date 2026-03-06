@@ -47,3 +47,20 @@ export function getGetInterfaceImplementation(
       id,
     );
 }
+
+/**
+ * Get the implementation of the `setInterfaceDisplayed` hook.
+ *
+ * @param controllerMessenger - The controller messenger used to call actions.
+ * @returns The implementation of the `setInterfaceDisplayed` hook.
+ */
+export function getSetInterfaceDisplayedImplementation(
+  controllerMessenger: RootControllerMessenger,
+) {
+  return (snapId: SnapId, id: string) =>
+    controllerMessenger.call(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      snapId,
+      id,
+    );
+}

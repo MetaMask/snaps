@@ -457,9 +457,18 @@ export class SnapInterfaceController extends BaseController<
   /**
    * Set the interface as displayed.
    *
+   * @param snapId - The snap ID requesting the update.
    * @param id - The interface ID.
    */
-  setInterfaceDisplayed(id: string) {
+  setInterfaceDisplayed(snapId: SnapId, id: string) {
+    if (!this.state.interfaces[id]) {
+      throw new Error(`Interface with ID '${id}' not found.`);
+    }
+
+    if (this.state.interfaces[id].snapId !== snapId) {
+      throw new Error(`Interface with ID '${id}' not created by ${snapId}.`);
+    }
+
     this.update((draftState) => {
       if (draftState.interfaces[id]) {
         draftState.interfaces[id].displayed = true;

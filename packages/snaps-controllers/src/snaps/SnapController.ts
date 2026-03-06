@@ -3888,6 +3888,7 @@ export class SnapController extends BaseController<
 
         this.messenger.call(
           'SnapInterfaceController:setInterfaceDisplayed',
+          snapId,
           transformedResult.id,
         );
       }

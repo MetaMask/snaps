@@ -3014,6 +3014,7 @@ describe('SnapController', () => {
 
       expect(options.messenger.call).toHaveBeenCalledWith(
         'SnapInterfaceController:setInterfaceDisplayed',
+        MOCK_SNAP_ID,
         MOCK_INTERFACE_ID,
       );
 

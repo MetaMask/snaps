@@ -99,9 +99,10 @@ export type DialogMethodHooks = {
   /**
    * Set the interface as displayed.
    *
+   * @param snapId - The Snap ID requesting the interface.
    * @param id - The interface ID.
    */
-  setInterfaceDisplayed: (id: string) => void;
+  setInterfaceDisplayed: (snapId: string, id: string) => void;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -333,7 +334,7 @@ export function getDialogImplementation({
         validatedParams.content as Component,
       );
 
-      setInterfaceDisplayed(id);
+      setInterfaceDisplayed(origin, id);
 
       return requestUserApproval({
         id: approvalType === DIALOG_APPROVAL_TYPES.default ? id : undefined,
@@ -344,7 +345,7 @@ export function getDialogImplementation({
     }
 
     validateInterface(origin, validatedParams.id, getInterface);
-    setInterfaceDisplayed(validatedParams.id);
+    setInterfaceDisplayed(origin, validatedParams.id);
 
     return requestUserApproval({
       id:
