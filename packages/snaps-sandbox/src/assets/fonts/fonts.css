@@ -5,43 +5,43 @@
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: normal;
   font-weight: 400;
-  src: url('./CentraNo1-Book.woff2') format('woff2');
+  src: url('./Geist-Regular.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: italic;
   font-weight: 400;
-  src: url('./CentraNo1-Book-Italic.woff2') format('woff2');
+  src: url('./Geist-RegularItalic.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: normal;
   font-weight: 500;
-  src: url('./CentraNo1-Medium.woff2') format('woff2');
+  src: url('./Geist-Medium.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: italic;
   font-weight: 500;
-  src: url('./CentraNo1-Medium-Italic.woff2') format('woff2');
+  src: url('./Geist-MediumItalic.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: normal;
   font-weight: 700;
-  src: url('./CentraNo1-Bold.woff2') format('woff2');
+  src: url('./Geist-Bold.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: 'Centra No1';
+  font-family: 'Geist';
   font-style: italic;
   font-weight: 700;
-  src: url('./CentraNo1-Bold-Italic.woff2') format('woff2');
+  src: url('./Geist-BoldItalic.woff2') format('woff2');
 }
