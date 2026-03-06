@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.4.1]
+
 ### Uncategorized
 
 - chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
@@ -450,7 +452,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.4.1...HEAD
+[8.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.4.0...@metamask/snaps-cli@8.4.1
 [8.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.3.0...@metamask/snaps-cli@8.4.0
 [8.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.2.0...@metamask/snaps-cli@8.3.0
 [8.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-cli@8.1.1...@metamask/snaps-cli@8.2.0
