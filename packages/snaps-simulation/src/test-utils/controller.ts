@@ -32,6 +32,8 @@ export const getRootControllerMessenger = (mocked = true) => {
     );
   }
 
+  jest.spyOn(messenger, 'call');
+
   return messenger;
 };
 
