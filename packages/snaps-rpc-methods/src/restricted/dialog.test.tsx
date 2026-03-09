@@ -256,7 +256,7 @@ describe('implementation', () => {
     });
 
     expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('bar');
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
   });
 
   it('sets an interface as displayed if content is passed without an ID', async () => {
@@ -273,7 +273,7 @@ describe('implementation', () => {
     });
 
     expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('bar');
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
   });
 
   it('throws if the requested interface does not exist.', async () => {
