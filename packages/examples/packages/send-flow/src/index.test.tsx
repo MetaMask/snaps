@@ -44,7 +44,6 @@ describe('onRpcRequest', () => {
 
       expect(sendFlowInterface).toRender(
         <SendFlow
-          account={getStateFromAccount(MOCK_ACCOUNT_1)}
           asset={getStateFromAsset(
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
             MOCK_ASSETS,

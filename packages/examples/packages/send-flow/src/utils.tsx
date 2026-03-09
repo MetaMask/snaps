@@ -45,11 +45,6 @@ export async function generateSendFlow({
     },
   });
 
-  const { sendForm } = (await snap.request({
-    method: 'snap_getInterfaceState',
-    params: { id: interfaceId },
-  })) as { sendForm: SendFormState };
-
   await snap.request({
     method: 'snap_updateInterface',
     params: {
@@ -58,7 +53,6 @@ export async function generateSendFlow({
         <SendFlow
           fiatCurrency={fiatCurrency}
           useFiat={false}
-          account={sendForm.account}
           total={{ amount: 0, fiat: 0 }}
           fees={fees}
         />
