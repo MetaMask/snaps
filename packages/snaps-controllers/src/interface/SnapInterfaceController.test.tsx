@@ -1092,10 +1092,10 @@ describe('SnapInterfaceController', () => {
           MOCK_SNAP_ID,
           'test',
         ),
-      ).toThrow(`Interface with ID 'test' not found.`);
+      ).toThrow(`Interface with id 'test' not found.`);
     });
 
-    it('throws if the interface was not created by the snap', async () => {
+    it('throws if the interface was not created by the Snap', async () => {
       const rootMessenger = getRootSnapInterfaceControllerMessenger();
       const controllerMessenger =
         getRestrictedSnapInterfaceControllerMessenger(rootMessenger);
@@ -1119,7 +1119,7 @@ describe('SnapInterfaceController', () => {
           'foo' as SnapId,
           id,
         ),
-      ).toThrow(`Interface with ID '${id}' not created by foo.`);
+      ).toThrow(`Interface not created by foo.`);
     });
   });
 

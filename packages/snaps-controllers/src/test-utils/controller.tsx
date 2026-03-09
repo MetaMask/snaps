@@ -22,7 +22,7 @@ import {
   SnapEndowments,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { ContentType, type SnapId } from '@metamask/snaps-sdk';
 import { Text } from '@metamask/snaps-sdk/jsx';
 import type { PersistedSnap, Snap } from '@metamask/snaps-utils';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -435,7 +435,7 @@ export const getControllerMessenger = () => {
 
   messenger.registerActionHandler(
     'SnapInterfaceController:getInterface',
-    (snapId, id) => {
+    (snapId, id): StoredInterface => {
       if (id !== MOCK_INTERFACE_ID) {
         throw new Error(`Interface with id '${id}' not found.`);
       }
@@ -443,9 +443,11 @@ export const getControllerMessenger = () => {
       return {
         snapId,
         content: <Text>console.log('hello world');</Text>,
+        contentType: ContentType.Dialog,
         state: {},
         context: null,
-      } as StoredInterface;
+        displayed: false,
+      };
     },
   );
 
