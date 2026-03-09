@@ -3867,14 +3867,6 @@ export class SnapController extends BaseController<
         result,
       );
 
-      this.#recordSnapRpcRequestFinish(
-        snapId,
-        transformedRequest.id,
-        handlerType,
-        origin,
-        true,
-      );
-
       if (
         INTERFACE_HANDLERS.includes(handlerType) &&
         transformedResult !== null
@@ -3892,6 +3884,14 @@ export class SnapController extends BaseController<
           transformedResult.id,
         );
       }
+
+      this.#recordSnapRpcRequestFinish(
+        snapId,
+        transformedRequest.id,
+        handlerType,
+        origin,
+        true,
+      );
 
       return transformedResult;
     } catch (error) {
