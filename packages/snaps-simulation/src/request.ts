@@ -1,5 +1,4 @@
 import type { AbstractExecutionService } from '@metamask/snaps-controllers';
-import { INTERFACE_HANDLERS } from '@metamask/snaps-controllers';
 import {
   type ComponentOrElement,
   ComponentOrElementStruct,
@@ -106,22 +105,6 @@ export function handleRequest({
       store.dispatch(clearTrackables());
 
       try {
-        if (INTERFACE_HANDLERS.includes(handler)) {
-          const displayedInterfaceId = await getInterfaceFromResult(
-            result,
-            snapId,
-            controllerMessenger,
-          );
-
-          if (displayedInterfaceId) {
-            controllerMessenger.call(
-              'SnapInterfaceController:setInterfaceDisplayed',
-              snapId,
-              displayedInterfaceId,
-            );
-          }
-        }
-
         const getInterfaceFn = await getInterfaceApi(
           result,
           snapId,
@@ -269,6 +252,12 @@ export async function getInterfaceApi(
   const id = interfaceId ?? contentId;
 
   if (id) {
+    controllerMessenger.call(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      snapId,
+      id,
+    );
+
     return () => {
       const { content } = controllerMessenger.call(
         'SnapInterfaceController:getInterface',
