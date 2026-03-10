@@ -256,7 +256,14 @@ const IconNameStruct: Struct<`${IconName}`, null> = nullUnion(
 export const IconStruct: Describe<IconElement> = element('Icon', {
   name: IconNameStruct,
   color: optional(
-    nullUnion([literal('default'), literal('primary'), literal('muted')]),
+    nullUnion([
+      literal('default'),
+      literal('primary'),
+      literal('muted'),
+      literal('error'),
+      literal('success'),
+      literal('warning'),
+    ]),
   ),
   size: optional(nullUnion([literal('md'), literal('inherit')])),
 });
