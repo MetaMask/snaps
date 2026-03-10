@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Add `displayed` property to stored interfaces ([#3888](https://github.com/MetaMask/snaps/pull/3888))
+
 ## [18.0.2]
 
 ### Changed
