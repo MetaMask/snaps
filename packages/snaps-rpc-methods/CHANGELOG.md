@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **BREAKING:** Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
 - **BREAKING:** Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
-- Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
 
 ### Fixed
 
