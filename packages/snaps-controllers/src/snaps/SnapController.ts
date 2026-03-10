@@ -128,7 +128,7 @@ import type {
   CaipAssetTypeOrId,
 } from '@metamask/utils';
 import {
-  isPlainObject,
+  isObject,
   assert,
   assertIsJsonRpcRequest,
   assertStruct,
@@ -3872,7 +3872,7 @@ export class SnapController extends BaseController<
         transformedResult !== null
       ) {
         assert(
-          isPlainObject(transformedResult) &&
+          isObject(transformedResult) &&
             hasProperty(transformedResult, 'id') &&
             typeof transformedResult.id === 'string',
           'Interface response must have an ID.',
