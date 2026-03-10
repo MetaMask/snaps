@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.1]
+
+### Changed
+
+- Use latest versions of example Snaps ([#3896](https://github.com/MetaMask/snaps/pull/3896))
+
 ## [3.4.0]
 
 ### Added
@@ -95,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Use correct method names for background events example Snap ([#3411](https://https://github.com/MetaMask/snaps/pull/3411))
+- Use correct method names for background events example Snap ([#3411](https://github.com/MetaMask/snaps/pull/3411))
 
 ## [2.23.0]
 
@@ -430,7 +436,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.1...HEAD
+[3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.0...@metamask/test-snaps@3.4.1
 [3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.3.0...@metamask/test-snaps@3.4.0
 [3.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.2.0...@metamask/test-snaps@3.3.0
 [3.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.1.0...@metamask/test-snaps@3.2.0

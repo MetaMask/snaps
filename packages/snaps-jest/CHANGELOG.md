@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.1.1]
 
-### Uncategorized
+### Changed
 
 - Track whether interface has been displayed before allowing `snap_getInterfaceState` ([#3888](https://github.com/MetaMask/snaps/pull/3888))
 
