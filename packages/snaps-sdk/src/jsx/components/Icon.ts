@@ -279,6 +279,17 @@ export enum IconName {
 }
 
 /**
+ * The colors available to the {@link Link} component.
+ */
+export type IconColor =
+  | 'default'
+  | 'primary'
+  | 'muted'
+  | 'error'
+  | 'success'
+  | 'warning';
+
+/**
  * The props of the {@link Icon} component.
  *
  * @property name - The name of the icon to display from a pre-defined list.
@@ -288,7 +299,7 @@ export enum IconName {
  */
 export type IconProps = {
   name: `${IconName}`;
-  color?: 'default' | 'primary' | 'muted' | undefined;
+  color?: IconColor | undefined;
   size?: 'md' | 'inherit' | undefined;
 };
 
