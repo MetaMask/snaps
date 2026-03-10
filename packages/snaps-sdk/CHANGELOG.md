@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.0]
+
+### Changed
+
+- Allow additional icon colors in `Icon` component ([#3895](https://github.com/MetaMask/snaps/pull/3895))
+  - This adds the `warning`, `error`, and `success` colors to the `Icon`
+    component.
+- Move `isSnapError` and `isSerializedSnapError` to SDK ([#3891](https://github.com/MetaMask/snaps/pull/3891))
+
+### Removed
+
+- **BREAKING:** Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
+- **BREAKING:** Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
+- **BREAKING:** Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
+
 ## [10.4.0]
 
 ### Added
@@ -689,7 +704,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...HEAD
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...@metamask/snaps-sdk@11.0.0
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...@metamask/snaps-sdk@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...@metamask/snaps-sdk@10.3.0
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.1.0...@metamask/snaps-sdk@10.2.0

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1]
+
+### Changed
+
+- Update interface logic ([#3888](https://github.com/MetaMask/snaps/pull/3888))
+
 ## [1.2.0]
 
 ### Changed
@@ -37,7 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of the `@metamask/send-flow-example-snap` example.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.2.1...HEAD
+[1.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.2.0...@metamask/send-flow-example-snap@1.2.1
 [1.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.2...@metamask/send-flow-example-snap@1.2.0
 [1.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.1...@metamask/send-flow-example-snap@1.1.2
 [1.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/send-flow-example-snap@1.1.0...@metamask/send-flow-example-snap@1.1.1

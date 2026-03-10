@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "UBekcOiuZrD3v1JJGX9Xf9krGOcH7mTzN+jxBHUeCUI=",
+    "shasum": "GmBTMyB7cDl4yF0S64RSbL+/YV2I6zHP/DlYNLGbo5c=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -21,6 +21,6 @@
       "dapps": true
     }
   },
-  "platformVersion": "10.4.0",
+  "platformVersion": "11.0.0",
   "manifestVersion": "0.1"
 }

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.1]
+
+### Changed
+
+- Track whether interface has been displayed before allowing `snap_getInterfaceState` ([#3888](https://github.com/MetaMask/snaps/pull/3888))
+
 ## [10.1.0]
 
 ### Changed
@@ -478,7 +484,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.1...HEAD
+[10.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.0...@metamask/snaps-jest@10.1.1
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.0.0...@metamask/snaps-jest@10.1.0
 [10.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.8.0...@metamask/snaps-jest@10.0.0
 [9.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@9.7.0...@metamask/snaps-jest@9.8.0
