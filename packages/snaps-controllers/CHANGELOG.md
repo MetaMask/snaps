@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [18.0.3]
 
-### Uncategorized
+### Changed
 
-- chore: Add `displayed` property to stored interfaces ([#3888](https://github.com/MetaMask/snaps/pull/3888))
+- Track whether interface has been displayed before allowing `snap_getInterfaceState` ([#3888](https://github.com/MetaMask/snaps/pull/3888))
 
 ## [18.0.2]
 

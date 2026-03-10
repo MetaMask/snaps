@@ -7,25 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [10.5.0]
+## [11.0.0]
 
-### Uncategorized
+### Changed
 
-- feat: Allow additional icon colors ([#3895](https://github.com/MetaMask/snaps/pull/3895))
-- docs: Add examples to remaining RPC methods ([#3893](https://github.com/MetaMask/snaps/pull/3893))
-- feat: Move `isSnapError` and `isSerializedSnapError` to SDK ([#3891](https://github.com/MetaMask/snaps/pull/3891))
-- docs: Update docs with feedback from docs team ([#3885](https://github.com/MetaMask/snaps/pull/3885))
-- docs: Update documentation for JSON-RPC methods ([#3875](https://github.com/MetaMask/snaps/pull/3875))
-- docs: Update documentation RPC methods ([#3868](https://github.com/MetaMask/snaps/pull/3868))
-- chore!: Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
-- chore!: Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
-- feat: Add script to extract RPC method documentation ([#3853](https://github.com/MetaMask/snaps/pull/3853))
-- chore!: Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
-- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
-- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
-- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
-- chore: Bump @metamask/utils from 11.9.0 to 11.10.0 ([#3854](https://github.com/MetaMask/snaps/pull/3854))
-- docs: Enable `typedoc` for `snaps-sdk` ([#3840](https://github.com/MetaMask/snaps/pull/3840))
+- Allow additional icon colors in `Icon` component ([#3895](https://github.com/MetaMask/snaps/pull/3895))
+  - This adds the `warning`, `error`, and `success` colors to the `Icon`
+    component.
+- Move `isSnapError` and `isSerializedSnapError` to SDK ([#3891](https://github.com/MetaMask/snaps/pull/3891))
+
+### Removed
+
+- **BREAKING:** Remove `snap_getCurrencyRate` ([#3866](https://github.com/MetaMask/snaps/pull/3866))
+- **BREAKING:** Remove deprecated UI builders ([#3859](https://github.com/MetaMask/snaps/pull/3859))
+- **BREAKING:** Remove `snap_experimentalProviderRequest` ([#3858](https://github.com/MetaMask/snaps/pull/3858))
 
 ## [10.4.0]
 
@@ -709,8 +704,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.5.0...HEAD
-[10.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...@metamask/snaps-sdk@10.5.0
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...HEAD
+[11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...@metamask/snaps-sdk@11.0.0
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...@metamask/snaps-sdk@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...@metamask/snaps-sdk@10.3.0
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.1.0...@metamask/snaps-sdk@10.2.0
