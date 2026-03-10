@@ -463,10 +463,12 @@ export class SnapInterfaceController extends BaseController<
   setInterfaceDisplayed(snapId: SnapId, id: string) {
     this.#validateArgs(snapId, id);
 
+    if (this.state.interfaces[id]?.displayed) {
+      return;
+    }
+
     this.update((draftState) => {
-      if (draftState.interfaces[id]) {
-        draftState.interfaces[id].displayed = true;
-      }
+      draftState.interfaces[id].displayed = true;
     });
   }
 
