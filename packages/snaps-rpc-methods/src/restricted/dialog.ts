@@ -95,6 +95,14 @@ export type DialogMethodHooks = {
    * @param id - The interface ID.
    */
   getInterface: GetInterface;
+
+  /**
+   * Set the interface as displayed.
+   *
+   * @param snapId - The Snap ID requesting the interface.
+   * @param id - The interface ID.
+   */
+  setInterfaceDisplayed: (snapId: string, id: string) => void;
 };
 
 type DialogSpecificationBuilderOptions = {
@@ -144,6 +152,7 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {
   requestUserApproval: true,
   createInterface: true,
   getInterface: true,
+  setInterfaceDisplayed: true,
 };
 
 /* eslint-disable jsdoc/check-indentation */
@@ -297,6 +306,8 @@ export type DialogParameters = InferMatching<
  * This function should return a Promise that resolves with the appropriate value when the user has approved or rejected the request.
  * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
  * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
+ * @param hooks.setInterfaceDisplayed - A function that sets the interface as
+ * displayed in SnapInterfaceController.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
@@ -304,6 +315,7 @@ export function getDialogImplementation({
   requestUserApproval,
   createInterface,
   getInterface,
+  setInterfaceDisplayed,
 }: DialogMethodHooks) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
@@ -339,6 +351,8 @@ export function getDialogImplementation({
         validatedParams.content as Component,
       );
 
+      setInterfaceDisplayed(origin, id);
+
       return requestUserApproval({
         id: approvalType === DIALOG_APPROVAL_TYPES.default ? id : undefined,
         origin,
@@ -348,6 +362,7 @@ export function getDialogImplementation({
     }
 
     validateInterface(origin, validatedParams.id, getInterface);
+    setInterfaceDisplayed(origin, validatedParams.id);
 
     return requestUserApproval({
       id:

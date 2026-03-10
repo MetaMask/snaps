@@ -190,6 +190,99 @@ describe('handleRequest', () => {
     await snap.executionService.terminateAllSnaps();
   });
 
+  it('sets an interface as displayed if the handler returns a component', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    // eslint-disable-next-line no-new
+    new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onHomePage = async (request) => {
+          return ({
+            content: {
+              type: 'Text',
+              props: {
+                children: 'Hello, world!',
+              },
+              key: null,
+            },
+          });
+        };
+      `,
+      port: 4242,
+    });
+
+    const options = getMockOptions();
+    const snap = await installSnap(snapId, { options });
+    await handleRequest({
+      ...snap,
+      controllerMessenger,
+      simulationOptions: options,
+      handler: HandlerType.OnHomePage,
+      request: {
+        method: '',
+      },
+    });
+
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      snapId,
+      expect.any(String),
+    );
+
+    await closeServer();
+    await snap.executionService.terminateAllSnaps();
+  });
+
+  it('sets an interface as displayed if the handler returns an interface ID', async () => {
+    const controllerMessenger = getRootControllerMessenger();
+
+    const interfaceController = new SnapInterfaceController({
+      messenger:
+        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
+    });
+
+    const content = { type: NodeType.Text as const, value: 'foo' };
+    const id = interfaceController.createInterface(
+      'local:http://localhost:4242' as SnapId,
+      content,
+    );
+
+    const { snapId, close: closeServer } = await getMockServer({
+      sourceCode: `
+        module.exports.onHomePage = async (request) => {
+          return ({ id: '${id}' });
+        };
+      `,
+      port: 4242,
+    });
+
+    const options = getMockOptions();
+    const snap = await installSnap(snapId, { options });
+    await handleRequest({
+      ...snap,
+      controllerMessenger,
+      simulationOptions: options,
+      handler: HandlerType.OnHomePage,
+      request: {
+        method: '',
+      },
+    });
+
+    expect(controllerMessenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      snapId,
+      id,
+    );
+
+    await closeServer();
+    await snap.executionService.terminateAllSnaps();
+  });
+
   it('gracefully handles returned invalid UI', async () => {
     const controllerMessenger = getRootControllerMessenger();
 
@@ -472,7 +565,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.clickElement('foo');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      4,
+      5,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -521,7 +614,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.typeInField('foo', 'bar');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      5,
+      6,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -576,7 +669,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectInDropdown('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      5,
+      6,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -631,7 +724,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectFromRadioGroup('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      5,
+      6,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {
@@ -690,7 +783,7 @@ describe('getInterfaceApi', () => {
     await snapInterface.selectFromSelector('foo', 'option2');
 
     expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      5,
+      6,
       'ExecutionService:handleRpcRequest',
       MOCK_SNAP_ID,
       {

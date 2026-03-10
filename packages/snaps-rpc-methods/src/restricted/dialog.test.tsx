@@ -19,6 +19,7 @@ describe('builder', () => {
         requestUserApproval: true,
         createInterface: true,
         getInterface: true,
+        setInterfaceDisplayed: true,
       },
     });
   });
@@ -30,6 +31,7 @@ describe('builder', () => {
           requestUserApproval: jest.fn(),
           createInterface: jest.fn(),
           getInterface: jest.fn(),
+          setInterfaceDisplayed: jest.fn(),
         },
       }),
     ).toStrictEqual({
@@ -52,6 +54,7 @@ describe('implementation', () => {
         state: {},
         snapId: 'foo',
       }),
+      setInterfaceDisplayed: jest.fn(),
     }) as DialogMethodHooks;
 
   it('accepts string dialog types', async () => {
@@ -147,6 +150,7 @@ describe('implementation', () => {
         state: {},
         snapId: 'foo',
       }),
+      setInterfaceDisplayed: jest.fn(),
     };
 
     const implementation = getDialogImplementation(hooks);
@@ -238,6 +242,40 @@ describe('implementation', () => {
     });
   });
 
+  it('sets an interface as displayed', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        id: 'bar',
+      },
+    });
+
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
+  });
+
+  it('sets an interface as displayed if content is passed without an ID', async () => {
+    const hooks = getMockDialogHooks();
+    const implementation = getDialogImplementation(hooks);
+
+    await implementation({
+      context: { origin: 'foo' },
+      method: 'snap_dialog',
+      params: {
+        type: 'alert',
+        content: <Text>Foo</Text>,
+      },
+    });
+
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
+    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
+  });
+
   it('throws if the requested interface does not exist.', async () => {
     const hooks = {
       requestUserApproval: jest.fn(),
@@ -245,6 +283,7 @@ describe('implementation', () => {
       getInterface: jest.fn().mockImplementation((_snapId, id) => {
         throw new Error(`Interface with id '${id}' not found.`);
       }),
+      setInterfaceDisplayed: jest.fn(),
     };
 
     const implementation = getDialogImplementation(hooks);

@@ -2917,6 +2917,7 @@ describe('SnapController', () => {
           state: {},
           context: { foo: 'bar' },
           contentType: null,
+          displayed: false,
         }),
       );
 
@@ -2958,6 +2959,63 @@ describe('SnapController', () => {
             },
           },
         },
+      );
+
+      snapController.destroy();
+    });
+
+    it('calls `SnapInterfaceController:setInterfaceDisplayed` if the response includes content', async () => {
+      const rootMessenger = getControllerMessenger();
+
+      const options = getSnapControllerOptions({
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      });
+      const snapController = await getSnapController(options);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.TransactionInsight]: {
+            caveats: [{ type: SnapCaveatType.TransactionOrigin, value: false }],
+            date: 1664187844588,
+            id: 'izn0WGUO8cvq_jqvLQuQP',
+            invoker: MOCK_SNAP_ID,
+            parentCapability: SnapEndowments.TransactionInsight,
+          },
+        }),
+      );
+
+      rootMessenger.registerActionHandler(
+        'ExecutionService:handleRpcRequest',
+        async () =>
+          Promise.resolve({
+            content: <Text>Some text</Text>,
+          }),
+      );
+
+      expect(
+        await snapController.handleRequest({
+          snapId: MOCK_SNAP_ID,
+          origin: METAMASK_ORIGIN,
+          handler: HandlerType.OnTransaction,
+          request: {
+            jsonrpc: '2.0',
+            method: '',
+            params: {},
+            id: 1,
+          },
+        }),
+      ).toStrictEqual({
+        id: MOCK_INTERFACE_ID,
+      });
+
+      expect(options.messenger.call).toHaveBeenCalledWith(
+        'SnapInterfaceController:setInterfaceDisplayed',
+        MOCK_SNAP_ID,
+        MOCK_INTERFACE_ID,
       );
 
       snapController.destroy();

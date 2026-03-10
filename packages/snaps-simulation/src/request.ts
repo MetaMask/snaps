@@ -252,6 +252,17 @@ export async function getInterfaceApi(
   const id = interfaceId ?? contentId;
 
   if (id) {
+    try {
+      controllerMessenger.call(
+        'SnapInterfaceController:setInterfaceDisplayed',
+        snapId,
+        id,
+      );
+    } catch {
+      // The call will fail for invalid interfaces, but we can just ignore that
+      // here.
+    }
+
     return () => {
       const { content } = controllerMessenger.call(
         'SnapInterfaceController:getInterface',

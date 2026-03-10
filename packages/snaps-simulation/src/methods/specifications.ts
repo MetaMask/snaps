@@ -22,6 +22,7 @@ import {
   getCreateInterfaceImplementation,
   getGetInterfaceImplementation,
   getRequestUserApprovalImplementation,
+  getSetInterfaceDisplayedImplementation,
 } from './hooks';
 import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
@@ -105,6 +106,8 @@ export function getPermissionSpecifications({
       updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
       createInterface: getCreateInterfaceImplementation(controllerMessenger),
       getInterface: getGetInterfaceImplementation(controllerMessenger),
+      setInterfaceDisplayed:
+        getSetInterfaceDisplayedImplementation(controllerMessenger),
     }),
   };
 }

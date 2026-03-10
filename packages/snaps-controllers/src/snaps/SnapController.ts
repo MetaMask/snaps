@@ -128,6 +128,7 @@ import type {
   CaipAssetTypeOrId,
 } from '@metamask/utils';
 import {
+  isObject,
   assert,
   assertIsJsonRpcRequest,
   assertStruct,
@@ -152,6 +153,7 @@ import {
   ALLOWED_PERMISSIONS,
   CLIENT_ONLY_HANDLERS,
   DYNAMIC_PERMISSION_DEPENDENCIES,
+  INTERFACE_HANDLERS,
   LEGACY_ENCRYPTION_KEY_DERIVATION_OPTIONS,
   METAMASK_ORIGIN,
   STATE_DEBOUNCE_TIMEOUT,
@@ -171,7 +173,11 @@ import { SnapsRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
 import { Timer } from './Timer';
 import { forceStrict, validateMachine } from '../fsm';
-import type { CreateInterface, GetInterface } from '../interface';
+import type {
+  CreateInterface,
+  GetInterface,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
+} from '../interface';
 import { log } from '../logging';
 import type {
   ExecuteSnapAction,
@@ -679,6 +685,7 @@ export type AllowedActions =
   | ResolveVersion
   | CreateInterface
   | GetInterface
+  | SnapInterfaceControllerSetInterfaceDisplayedAction
   | StorageServiceSetItemAction
   | StorageServiceGetItemAction
   | StorageServiceRemoveItemAction
@@ -3878,6 +3885,24 @@ export class SnapController extends BaseController<
         transformedRequest,
         result,
       );
+
+      if (
+        INTERFACE_HANDLERS.includes(handlerType) &&
+        transformedResult !== null
+      ) {
+        assert(
+          isObject(transformedResult) &&
+            hasProperty(transformedResult, 'id') &&
+            typeof transformedResult.id === 'string',
+          'Interface response must have an ID.',
+        );
+
+        this.messenger.call(
+          'SnapInterfaceController:setInterfaceDisplayed',
+          snapId,
+          transformedResult.id,
+        );
+      }
 
       this.#recordSnapRpcRequestFinish(
         snapId,
