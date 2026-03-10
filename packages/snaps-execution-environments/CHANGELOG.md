@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- chore: Bump `ses` from `1.14.0` to `1.15.0` ([#3880](https://github.com/MetaMask/snaps/pull/3880))
+- Bump `ses` from `1.14.0` to `1.15.0` ([#3880](https://github.com/MetaMask/snaps/pull/3880))
 
 ## [11.0.0]
 
