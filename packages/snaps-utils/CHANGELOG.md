@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** Move `isSnapError` and `isSerializedSnapError` to `@metamask/snaps-sdk` ([#3891](https://github.com/MetaMask/snaps/pull/3891))
+- Move `isSnapError` and `isSerializedSnapError` to `@metamask/snaps-sdk` ([#3891](https://github.com/MetaMask/snaps/pull/3891))
+  - They are re-exported from this package for backwards compatibility, but will
+    be removed in a future release.
 
 ### Removed
 
