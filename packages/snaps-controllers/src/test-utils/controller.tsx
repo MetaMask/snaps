@@ -68,6 +68,7 @@ import type {
   MultichainRouterAllowedActions,
   MultichainRouterEvents,
 } from '../multichain';
+import type { AbstractExecutionService } from '../services';
 import type {
   AllowedActions,
   AllowedEvents,
@@ -691,7 +692,7 @@ export const getSnapController = async (
 
 export const getSnapControllerWithEES = async (
   options = getSnapControllerOptions(),
-  service?: ReturnType<typeof getNodeEES>,
+  service?: AbstractExecutionService<unknown>,
   init = true,
 ) => {
   const _service =
