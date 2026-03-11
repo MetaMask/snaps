@@ -320,6 +320,15 @@ export abstract class AbstractExecutionService<WorkerType>
       }
     });
 
+    // An error handler is not attached to the RPC stream until `setupSnapProvider`
+    // We must set it up here to prevent errors from bubbling up if the stream is
+    // destroyed before `setupSnapProvider` is called.
+    rpcStream.on('error', (error) => {
+      if (!error.message?.match('Premature close')) {
+        logError(`Snap: "${snapId}" - RPC stream failure:`, error);
+      }
+    });
+
     const originalWrite = rpcStream.write.bind(rpcStream);
 
     // @ts-expect-error Hack to inspect the messages being written to the stream.

@@ -1860,6 +1860,7 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  // This test also ensures that we do not throw "Premature close"
   it('throws if the execution environment fails', async () => {
     const rootMessenger = getControllerMessenger();
     const options = getSnapControllerOptions({
@@ -1869,7 +1870,7 @@ describe('SnapController', () => {
 
     class BrickedExecutionService extends AbstractExecutionService<null> {
       constructor(messenger: ExecutionServiceMessenger) {
-        super({ messenger, setupSnapProvider: jest.fn() });
+        super({ messenger, setupSnapProvider: jest.fn(), pingTimeout: 1 });
       }
 
       protected async terminateJob(
@@ -1902,7 +1903,9 @@ describe('SnapController', () => {
           id: 1,
         },
       }),
-    ).rejects.toThrow('foo');
+    ).rejects.toThrow(
+      'The executor for "npm:@metamask/example-snap" was unreachable. The executor did not respond in time.',
+    );
 
     snapController.destroy();
   });
