@@ -13,6 +13,7 @@ import type {
   CaveatConstraint,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
+import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   WALLET_SNAP_PERMISSION_KEY,
@@ -59,6 +60,7 @@ import {
   DEFAULT_ICON_PATH,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
   MOCK_INITIAL_PERMISSIONS,
+  MockWindowPostMessageStream,
 } from '@metamask/snaps-utils/test-utils';
 import type { SemVerRange, SemVerVersion, Json } from '@metamask/utils';
 import {
@@ -93,8 +95,12 @@ import {
   SNAP_APPROVAL_RESULT,
   SNAP_APPROVAL_UPDATE,
 } from './SnapController';
-import { setupMultiplex } from '../services';
-import type { NodeThreadExecutionService } from '../services/node';
+import { AbstractExecutionService, setupMultiplex } from '../services';
+import type {
+  ExecutionServiceMessenger,
+  NodeThreadExecutionService,
+  TerminateJobArgs,
+} from '../services/node';
 import type { SnapControllerStateWithStorageService } from '../test-utils';
 import {
   approvalControllerMock,
@@ -1849,6 +1855,56 @@ describe('SnapController', () => {
     expect(results[1].status).toBe('rejected');
     expect((results[1] as PromiseRejectedResult).reason.message).toBe(
       `The snap "${snap.id}" has been terminated during execution.`,
+    );
+
+    snapController.destroy();
+  });
+
+  // This test also ensures that we do not throw "Premature close"
+  it('throws if the execution environment fails', async () => {
+    const rootMessenger = getControllerMessenger();
+    const options = getSnapControllerOptions({
+      rootMessenger,
+      state: { snaps: getPersistedSnapsState() },
+    });
+
+    class BrickedExecutionService extends AbstractExecutionService<null> {
+      constructor(messenger: ExecutionServiceMessenger) {
+        super({ messenger, setupSnapProvider: jest.fn(), pingTimeout: 1 });
+      }
+
+      protected async terminateJob(
+        _job: TerminateJobArgs<null>,
+      ): Promise<void> {
+        // no-op
+      }
+
+      protected async initEnvStream(
+        _snapId: string,
+      ): Promise<{ worker: null; stream: BasePostMessageStream }> {
+        return { worker: null, stream: new MockWindowPostMessageStream() };
+      }
+    }
+
+    const [snapController] = await getSnapControllerWithEES(
+      options,
+      new BrickedExecutionService(getNodeEESMessenger(rootMessenger)),
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(
+      'The executor for "npm:@metamask/example-snap" was unreachable. The executor did not respond in time.',
     );
 
     snapController.destroy();
