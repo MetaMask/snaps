@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Attach error handler to RPC stream ([#3898](https://github.com/MetaMask/snaps/pull/3898))
+
 ## [18.0.3]
 
 ### Changed
