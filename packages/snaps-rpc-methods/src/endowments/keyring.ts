@@ -9,8 +9,15 @@ import type {
 } from '@metamask/permission-controller';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { KeyringOrigins } from '@metamask/snaps-utils';
-import { assertIsKeyringOrigins, SnapCaveatType } from '@metamask/snaps-utils';
+import type {
+  KeyringCapabilities,
+  KeyringOrigins,
+} from '@metamask/snaps-utils';
+import {
+  assertIsKeyringCapabilities,
+  assertIsKeyringOrigins,
+  SnapCaveatType,
+} from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { assert, hasProperty, isPlainObject } from '@metamask/utils';
 
@@ -45,11 +52,13 @@ const specificationBuilder: PermissionSpecificationBuilder<
     targetName: permissionName,
     allowedCaveats: [
       SnapCaveatType.KeyringOrigin,
+      SnapCaveatType.KeyringCapabilities,
       SnapCaveatType.MaxRequestTime,
     ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.KeyringOrigin },
+      { type: SnapCaveatType.KeyringCapabilities, optional: true },
       { type: SnapCaveatType.MaxRequestTime, optional: true },
     ]),
     subjectTypes: [SubjectType.Snap],
@@ -62,8 +71,8 @@ export const keyringEndowmentBuilder = Object.freeze({
 } as const);
 
 /**
- * Validate the value of a caveat. This does not validate the type of the
- * caveat itself, only the value of the caveat.
+ * Validate the value of a keyring origins caveat. This does not validate the
+ * type of the caveat itself, only the value of the caveat.
  *
  * @param caveat - The caveat to validate.
  * @throws If the caveat value is invalid.
@@ -80,9 +89,38 @@ function validateCaveatOrigins(caveat: Caveat<string, any>) {
 }
 
 /**
+ * Validate the value of a keyring capabilities caveat. This does not validate
+ * the type of the caveat itself, only the value of the caveat.
+ *
+ * @param caveat - The caveat to validate.
+ * @throws If the caveat value is invalid.
+ */
+function validateCaveatCapabilities(caveat: Caveat<string, any>) {
+  if (!hasProperty(caveat, 'value') || !isPlainObject(caveat.value)) {
+    throw rpcErrors.invalidParams({
+      message: 'Invalid keyring capabilities: Expected a plain object.',
+    });
+  }
+
+  const { value } = caveat;
+  assertIsKeyringCapabilities(value, rpcErrors.invalidParams);
+}
+
+/**
+ * Expected shape of the keyring endowment value from `initialPermissions`.
+ * The mapper assumes this shape for typing only; it does not validate.
+ * Invalid data is rejected when the permission is requested (see validator).
+ */
+type KeyringCaveatMapperInput = KeyringOrigins & {
+  capabilities?: KeyringCapabilities;
+};
+
+/**
  * Map a raw value from the `initialPermissions` to a caveat specification.
- * Note that this function does not do any validation, that's handled by the
- * PermissionsController when the permission is requested.
+ * This function only maps: it does not validate. The permission validator
+ * runs when the permission is requested and will reject invalid caveats.
+ * We assume the manifest supplies a KeyringCaveatMapperInput-shaped value;
+ * the public signature accepts Json to satisfy CaveatMapperFunction.
  *
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
@@ -90,14 +128,22 @@ function validateCaveatOrigins(caveat: Caveat<string, any>) {
 export function getKeyringCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
-  return {
-    caveats: [
-      {
-        type: SnapCaveatType.KeyringOrigin,
-        value,
-      },
-    ],
-  };
+  const input = value as KeyringCaveatMapperInput;
+  const caveats: PermissionConstraint['caveats'] = [
+    {
+      type: SnapCaveatType.KeyringOrigin,
+      value: { allowedOrigins: input.allowedOrigins } as Json,
+    },
+  ];
+
+  if (hasProperty(input, 'capabilities')) {
+    caveats.push({
+      type: SnapCaveatType.KeyringCapabilities,
+      value: { capabilities: input.capabilities } as Json,
+    });
+  }
+
+  return { caveats };
 }
 
 /**
@@ -120,12 +166,36 @@ export function getKeyringCaveatOrigins(
   return caveat.value;
 }
 
+/**
+ * Getter function to get the {@link KeyringCapabilities} caveat value from a
+ * permission.
+ *
+ * @param permission - The permission to get the caveat value from.
+ * @returns The caveat value, or `null` if the permission does not have a
+ * {@link KeyringCapabilities} caveat.
+ */
+export function getKeyringCaveatCapabilities(
+  permission?: PermissionConstraint,
+): KeyringCapabilities | null {
+  const caveat = permission?.caveats?.find(
+    (permCaveat) => permCaveat.type === SnapCaveatType.KeyringCapabilities,
+  ) as Caveat<string, KeyringCapabilities> | undefined;
+
+  assert(caveat);
+  return caveat.value;
+}
+
 export const keyringCaveatSpecifications: Record<
-  SnapCaveatType.KeyringOrigin,
+  SnapCaveatType.KeyringOrigin | SnapCaveatType.KeyringCapabilities,
   CaveatSpecificationConstraint
 > = {
   [SnapCaveatType.KeyringOrigin]: Object.freeze({
     type: SnapCaveatType.KeyringOrigin,
     validator: (caveat: Caveat<string, any>) => validateCaveatOrigins(caveat),
+  }),
+  [SnapCaveatType.KeyringCapabilities]: Object.freeze({
+    type: SnapCaveatType.KeyringCapabilities,
+    validator: (caveat: Caveat<string, any>) =>
+      validateCaveatCapabilities(caveat),
   }),
 };

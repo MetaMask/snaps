@@ -81,6 +81,7 @@
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
     "@metamask/key-tree": "^10.1.1",
+    "@metamask/keyring-api": "^21.5.0",
     "@metamask/messenger": "^0.3.0",
     "@metamask/permission-controller": "^12.2.0",
     "@metamask/rpc-errors": "^7.0.3",

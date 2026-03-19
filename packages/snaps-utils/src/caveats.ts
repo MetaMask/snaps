@@ -35,6 +35,11 @@ export enum SnapCaveatType {
   KeyringOrigin = 'keyringOrigin',
 
   /**
+   * Caveat specifying the capabilities supported by a keyring Snap, used by `endowment:keyring`.
+   */
+  KeyringCapabilities = 'keyringCapabilities',
+
+  /**
    * Caveat specifying the snap IDs that can be interacted with.
    */
   SnapIds = 'snapIds',

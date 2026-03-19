@@ -3,6 +3,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 
 import { SnapEndowments } from './enum';
 import {
+  getKeyringCaveatCapabilities,
   getKeyringCaveatMapper,
   getKeyringCaveatOrigins,
   keyringCaveatSpecifications,
@@ -18,6 +19,7 @@ describe('endowment:keyring', () => {
       endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.KeyringOrigin,
+        SnapCaveatType.KeyringCapabilities,
         SnapCaveatType.MaxRequestTime,
       ],
       subjectTypes: [SubjectType.Snap],
@@ -44,7 +46,7 @@ describe('endowment:keyring', () => {
           caveats: [{ type: 'foo', value: 'bar' }],
         }),
       ).toThrow(
-        'Expected the following caveats: "keyringOrigin", "maxRequestTime", received "foo".',
+        'Expected the following caveats: "keyringOrigin", "keyringCapabilities", "maxRequestTime", received "foo".',
       );
 
       expect(() =>
@@ -61,7 +63,7 @@ describe('endowment:keyring', () => {
 });
 
 describe('getKeyringCaveatMapper', () => {
-  it('maps a value to a caveat', () => {
+  it('maps a value to a caveat without capabilities', () => {
     expect(
       getKeyringCaveatMapper({ allowedOrigins: ['foo.com'] }),
     ).toStrictEqual({
@@ -69,6 +71,36 @@ describe('getKeyringCaveatMapper', () => {
         {
           type: SnapCaveatType.KeyringOrigin,
           value: { allowedOrigins: ['foo.com'] },
+        },
+      ],
+    });
+  });
+
+  it('maps a value to caveats including capabilities', () => {
+    expect(
+      getKeyringCaveatMapper({
+        allowedOrigins: ['foo.com'],
+        capabilities: {
+          scopes: ['bip122:000000000019d6689c085ae165831e93'],
+          bip44: { derivePath: true },
+        },
+      }),
+    ).toStrictEqual({
+      caveats: [
+        {
+          type: SnapCaveatType.KeyringOrigin,
+          value: {
+            allowedOrigins: ['foo.com'],
+          },
+        },
+        {
+          type: SnapCaveatType.KeyringCapabilities,
+          value: {
+            capabilities: {
+              scopes: ['bip122:000000000019d6689c085ae165831e93'],
+              bip44: { derivePath: true },
+            },
+          },
         },
       ],
     });
@@ -118,8 +150,34 @@ describe('getKeyringCaveatOrigins', () => {
   });
 });
 
+describe('getKeyringCaveatCapabilities', () => {
+  it('returns the capabilities from the caveat', () => {
+    expect(
+      // @ts-expect-error Missing other required permission types.
+      getKeyringCaveatCapabilities({
+        caveats: [
+          {
+            type: SnapCaveatType.KeyringCapabilities,
+            value: {
+              capabilities: {
+                scopes: ['bip122:000000000019d6689c085ae165831e93'],
+                bip44: { derivePath: true },
+              },
+            },
+          },
+        ],
+      }),
+    ).toStrictEqual({
+      capabilities: {
+        scopes: ['bip122:000000000019d6689c085ae165831e93'],
+        bip44: { derivePath: true },
+      },
+    });
+  });
+});
+
 describe('keyringCaveatSpecifications', () => {
-  describe('validator', () => {
+  describe('keyringOrigin validator', () => {
     it('throws if the caveat values are invalid', () => {
       expect(() =>
         keyringCaveatSpecifications[SnapCaveatType.KeyringOrigin].validator?.(
@@ -140,6 +198,73 @@ describe('keyringCaveatSpecifications', () => {
       ).toThrow(
         'Invalid keyring origins: At path: foo -- Expected a value of type `never`, but received: `"bar"`.',
       );
+    });
+  });
+
+  describe('keyringCapabilities validator', () => {
+    it('throws if the caveat value is not a plain object', () => {
+      expect(() =>
+        keyringCaveatSpecifications[
+          SnapCaveatType.KeyringCapabilities
+        ].validator?.(
+          // @ts-expect-error Missing value type.
+          {
+            type: SnapCaveatType.KeyringCapabilities,
+          },
+        ),
+      ).toThrow('Invalid keyring capabilities: Expected a plain object.');
+    });
+
+    it('throws if the caveat value has invalid fields', () => {
+      expect(() =>
+        keyringCaveatSpecifications[
+          SnapCaveatType.KeyringCapabilities
+        ].validator?.({
+          type: SnapCaveatType.KeyringCapabilities,
+          value: { foo: 'bar' },
+        }),
+      ).toThrow('Invalid keyring capabilities');
+    });
+
+    it('throws if scopes is missing', () => {
+      expect(() =>
+        keyringCaveatSpecifications[
+          SnapCaveatType.KeyringCapabilities
+        ].validator?.({
+          type: SnapCaveatType.KeyringCapabilities,
+          value: { capabilities: { bip44: { derivePath: true } } },
+        }),
+      ).toThrow('Invalid keyring capabilities');
+    });
+
+    it('does not throw for a valid capabilities value', () => {
+      expect(() =>
+        keyringCaveatSpecifications[
+          SnapCaveatType.KeyringCapabilities
+        ].validator?.({
+          type: SnapCaveatType.KeyringCapabilities,
+          value: {
+            capabilities: {
+              scopes: ['bip122:000000000019d6689c085ae165831e93'],
+              bip44: {
+                derivePath: true,
+                deriveIndex: true,
+                deriveIndexRange: true,
+                discover: true,
+              },
+              privateKey: {
+                importFormats: [
+                  {
+                    encoding: 'base58',
+                    type: 'bip122:p2pkh',
+                  },
+                ],
+                exportFormats: [{ encoding: 'base58' }],
+              },
+            },
+          },
+        }),
+      ).not.toThrow();
     });
   });
 });
