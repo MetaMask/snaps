@@ -1,6 +1,6 @@
 import type {
-  AcceptRequest,
-  HasApprovalRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerHasRequestAction,
 } from '@metamask/approval-controller';
 import type {
   ControllerGetStateAction,
@@ -123,8 +123,8 @@ type PhishingControllerTestOrigin = {
 
 export type SnapInterfaceControllerAllowedActions =
   | PhishingControllerTestOrigin
-  | HasApprovalRequest
-  | AcceptRequest
+  | ApprovalControllerHasRequestAction
+  | ApprovalControllerAcceptRequestAction
   | GetSnap
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
