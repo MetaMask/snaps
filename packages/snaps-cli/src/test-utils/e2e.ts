@@ -28,6 +28,9 @@ export class TestRunner extends EventEmitter {
     this.#process = fork(command, options, {
       cwd: workingDirectory,
       stdio: 'pipe',
+      env: {
+        NODE_OPTIONS: '--no-deprecation',
+      },
     });
 
     this.#process.stdout?.on('data', (data) => {
