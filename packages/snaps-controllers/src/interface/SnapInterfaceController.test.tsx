@@ -673,7 +673,7 @@ describe('SnapInterfaceController', () => {
 
       expect(controllerMessenger.call).toHaveBeenNthCalledWith(
         1,
-        'SnapController:get',
+        'SnapController:getSnap',
         MOCK_SNAP_ID,
       );
     });
