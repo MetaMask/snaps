@@ -53,7 +53,6 @@ export type {
   SnapControllerGetRunnableSnapsAction,
   SnapControllerGetPermittedSnapsAction,
   SnapControllerInstallSnapsAction,
-  SnapControllerDestroyAction,
   SnapControllerHandleRequestAction,
   SnapControllerSetClientActiveAction,
 } from './SnapController-method-action-types';

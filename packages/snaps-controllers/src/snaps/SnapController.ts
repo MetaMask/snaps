@@ -236,7 +236,6 @@ export const MESSENGER_EXPOSED_METHODS = [
   'getRunnableSnaps',
   'getPermittedSnaps',
   'installSnaps',
-  'destroy',
   'handleRequest',
   'setClientActive',
 ] as const;

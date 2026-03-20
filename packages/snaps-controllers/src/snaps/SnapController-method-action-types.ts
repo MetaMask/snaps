@@ -347,11 +347,6 @@ export type SnapControllerInstallSnapsAction = {
   handler: SnapController['installSnaps'];
 };
 
-export type SnapControllerDestroyAction = {
-  type: `SnapController:destroy`;
-  handler: SnapController['destroy'];
-};
-
 /**
  * Passes a JSON-RPC request object to the RPC handler function of a snap.
  *
@@ -411,6 +406,5 @@ export type SnapControllerMethodActions =
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerGetPermittedSnapsAction
   | SnapControllerInstallSnapsAction
-  | SnapControllerDestroyAction
   | SnapControllerHandleRequestAction
   | SnapControllerSetClientActiveAction;
