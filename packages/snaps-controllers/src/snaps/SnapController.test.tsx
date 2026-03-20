@@ -12423,7 +12423,7 @@ describe('SnapController', () => {
   });
 
   describe('SnapController:disconnectOrigin', () => {
-    it('calls SnapController.removeSnapFromSubject()', async () => {
+    it('calls SnapController.disconnectOrigin()', async () => {
       const permittedSnaps = [
         MOCK_SNAP_ID,
         MOCK_LOCAL_SNAP_ID,
@@ -12447,13 +12447,13 @@ describe('SnapController', () => {
 
       const removeSnapFromSubjectSpy = jest.spyOn(
         snapController,
-        'removeSnapFromSubject',
+        'disconnectOrigin',
       );
 
       const callActionSpy = jest.spyOn(options.messenger, 'call');
 
       options.messenger.call(
-        'SnapController:removeSnapFromSubject',
+        'SnapController:disconnectOrigin',
         MOCK_ORIGIN,
         MOCK_SNAP_ID,
       );

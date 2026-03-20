@@ -228,7 +228,7 @@ export const MESSENGER_EXPOSED_METHODS = [
   'clearState',
   'removeSnap',
   'removeSnaps',
-  'removeSnapFromSubject',
+  'disconnectOrigin',
   'revokeDynamicSnapPermissions',
   'incrementActiveReferences',
   'decrementActiveReferences',
@@ -1186,8 +1186,8 @@ export class SnapController extends BaseController<
     );
 
     this.messenger.registerActionHandler(
-      `${controllerName}:removeSnapFromSubject`,
-      (...args) => this.removeSnapFromSubject(...args),
+      `${controllerName}:disconnectOrigin`,
+      (...args) => this.disconnectOrigin(...args),
     );
 
     this.messenger.registerActionHandler(
@@ -2430,7 +2430,7 @@ export class SnapController extends BaseController<
       );
 
       for (const origin of Object.keys(revokedInitialConnections)) {
-        this.removeSnapFromSubject(origin, snapId);
+        this.disconnectOrigin(origin, snapId);
       }
     }
 
@@ -2490,12 +2490,13 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Removes a snap's permission (caveat) from the specified subject.
+   * Disconnect the Snap from the given origin, meaning the origin can no longer
+   * interact with the Snap until it is reconnected.
    *
-   * @param origin - The origin from which to remove the snap.
+   * @param origin - The origin from which to remove the Snap.
    * @param snapId - The id of the snap to remove.
    */
-  removeSnapFromSubject(origin: string, snapId: SnapId) {
+  disconnectOrigin(origin: string, snapId: SnapId) {
     const subjectPermissions = this.messenger.call(
       'PermissionController:getPermissions',
       origin,
@@ -2567,7 +2568,7 @@ export class SnapController extends BaseController<
       'PermissionController:getSubjectNames',
     );
     for (const subject of subjects) {
-      this.removeSnapFromSubject(subject, snapId);
+      this.disconnectOrigin(subject, snapId);
     }
   }
 

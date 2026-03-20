@@ -35,7 +35,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DecrementActiveReferences` is now `SnapControllerDecrementActiveReferencesAction`.
   - `InstallSnaps` is now `SnapControllerInstallSnapsAction`.
     - Note: The method is now called `installSnaps` instead of `install`.
-  - `DisconnectOrigin` is now `SnapControllerRemoveSnapFromSubjectAction`.
+  - `DisconnectOrigin` is now `SnapControllerDisconnectOriginAction`.
+    - Note: The method is now called `disconnectOrigin` instead of `removeSnapFromSubject`.
   - `RevokeDynamicPermissions` is now `SnapControllerRevokeDynamicSnapPermissionsAction`.
   - `GetSnapFile` is now `SnapControllerGetSnapFileAction`.
   - `IsMinimumPlatformVersion` is now `SnapControllerIsMinimumPlatformVersionAction`.

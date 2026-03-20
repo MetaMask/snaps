@@ -259,14 +259,15 @@ export type SnapControllerRemoveSnapsAction = {
 };
 
 /**
- * Removes a snap's permission (caveat) from the specified subject.
+ * Disconnect the Snap from the given origin, meaning the origin can no longer
+ * interact with the Snap until it is reconnected.
  *
- * @param origin - The origin from which to remove the snap.
+ * @param origin - The origin from which to remove the Snap.
  * @param snapId - The id of the snap to remove.
  */
-export type SnapControllerRemoveSnapFromSubjectAction = {
-  type: `SnapController:removeSnapFromSubject`;
-  handler: SnapController['removeSnapFromSubject'];
+export type SnapControllerDisconnectOriginAction = {
+  type: `SnapController:disconnectOrigin`;
+  handler: SnapController['disconnectOrigin'];
 };
 
 /**
@@ -398,7 +399,7 @@ export type SnapControllerMethodActions =
   | SnapControllerClearStateAction
   | SnapControllerRemoveSnapAction
   | SnapControllerRemoveSnapsAction
-  | SnapControllerRemoveSnapFromSubjectAction
+  | SnapControllerDisconnectOriginAction
   | SnapControllerRevokeDynamicSnapPermissionsAction
   | SnapControllerIncrementActiveReferencesAction
   | SnapControllerDecrementActiveReferencesAction
