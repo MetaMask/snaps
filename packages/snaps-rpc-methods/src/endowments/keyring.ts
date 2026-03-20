@@ -111,9 +111,7 @@ function validateCaveatCapabilities(caveat: Caveat<string, any>) {
  * The mapper assumes this shape for typing only; it does not validate.
  * Invalid data is rejected when the permission is requested (see validator).
  */
-type KeyringCaveatMapperInput = KeyringOrigins & {
-  capabilities?: KeyringCapabilities;
-};
+type KeyringCaveatMapperInput = KeyringOrigins & KeyringCapabilities;
 
 /**
  * Map a raw value from the `initialPermissions` to a caveat specification.
