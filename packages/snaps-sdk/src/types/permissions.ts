@@ -1,5 +1,9 @@
 import type { SupportedCurve } from '@metamask/key-tree';
-import type { CaipChainId, JsonRpcParams } from '@metamask/utils';
+import type {
+  CaipChainId,
+  JsonRpcParams,
+  NonEmptyArray,
+} from '@metamask/utils';
 
 export type EmptyObject = Record<string, never>;
 
@@ -74,6 +78,62 @@ export type RequestedSnap = {
   version?: string;
 };
 
+/**
+ * Supported encoding formats for private keys.
+ *
+ * Mirrors `PrivateKeyEncoding` from `@metamask/keyring-api`.
+ * Keep in sync with `PrivateKeyEncoding` in `@metamask/keyring-api`.
+ */
+type PrivateKeyEncoding = 'hexadecimal' | 'base58';
+
+/**
+ * Supported account types for keyring accounts.
+ *
+ * Mirrors `KeyringAccountType` from `@metamask/keyring-api`.
+ * Keep in sync with `KeyringAccountType` in `@metamask/keyring-api`.
+ */
+type KeyringAccountType =
+  | 'eip155:eoa'
+  | 'eip155:erc4337'
+  | 'bip122:p2pkh'
+  | 'bip122:p2sh'
+  | 'bip122:p2wpkh'
+  | 'bip122:p2tr'
+  | 'solana:data-account'
+  | 'tron:eoa'
+  | 'entropy:account';
+
+/**
+ * Capabilities object supported by a keyring Snap.
+ *
+ * Mirrors the shape validated by `KeyringCapabilitiesStruct` in
+ * `@metamask/keyring-api`. Keep in sync with that struct.
+ *
+ * Runtime validation uses the struct in `@metamask/snaps-utils`; this type
+ * exists purely for the `InitialPermissions` type signature.
+ */
+type Capabilities = {
+  scopes: NonEmptyArray<CaipChainId>;
+  bip44?: {
+    derivePath?: boolean;
+    deriveIndex?: boolean;
+    deriveIndexRange?: boolean;
+    discover?: boolean;
+  };
+  privateKey?: {
+    importFormats?: {
+      encoding: PrivateKeyEncoding;
+      type?: KeyringAccountType;
+    }[];
+    exportFormats?: {
+      encoding: PrivateKeyEncoding;
+    }[];
+  };
+  custom?: {
+    createAccounts?: boolean;
+  };
+};
+
 export type InitialPermissions = Partial<{
   'endowment:cronjob': {
     jobs?: Cronjob[];
@@ -82,6 +142,7 @@ export type InitialPermissions = Partial<{
   'endowment:ethereum-provider': EmptyObject;
   'endowment:keyring': {
     allowedOrigins?: string[];
+    capabilities?: Capabilities;
     maxRequestTime?: number;
   };
   'endowment:lifecycle-hooks'?: {
