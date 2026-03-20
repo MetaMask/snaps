@@ -10,10 +10,10 @@ import { assert, createDeferredPromise } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
 import type {
-  HandleSnapRequest,
-  SnapInstalled,
-  SnapUninstalled,
-  SnapUpdated,
+  SnapControllerHandleRequestAction,
+  SnapControllerSnapInstalledEvent,
+  SnapControllerSnapUninstalledEvent,
+  SnapControllerSnapUpdatedEvent,
 } from '../snaps';
 import { METAMASK_ORIGIN } from '../snaps';
 
@@ -53,12 +53,12 @@ export type WebSocketServiceActions =
   | WebSocketServiceSendMessageAction
   | WebSocketServiceGetAllAction;
 
-export type WebSocketServiceAllowedActions = HandleSnapRequest;
+export type WebSocketServiceAllowedActions = SnapControllerHandleRequestAction;
 
 export type WebSocketServiceEvents =
-  | SnapUninstalled
-  | SnapUpdated
-  | SnapInstalled;
+  | SnapControllerSnapUninstalledEvent
+  | SnapControllerSnapUpdatedEvent
+  | SnapControllerSnapInstalledEvent;
 
 export type WebSocketServiceMessenger = Messenger<
   'WebSocketService',

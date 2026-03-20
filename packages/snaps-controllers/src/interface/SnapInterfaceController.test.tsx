@@ -646,7 +646,7 @@ describe('SnapInterfaceController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'SnapController:get',
+        'SnapController:getSnap',
         () => undefined,
       );
 
@@ -2024,7 +2024,7 @@ describe('SnapInterfaceController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

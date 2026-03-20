@@ -2,10 +2,10 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { Messenger } from '@metamask/messenger';
 import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
-import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { pipeline } from 'readable-stream';
 
 import { MOCK_BLOCK_NUMBER } from './constants';
+import type { RootMessenger } from './controller';
 import type {
   ExecutionService,
   ExecutionServiceActions,
@@ -15,12 +15,7 @@ import type {
 } from '../services';
 import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
 
-export const getNodeEESMessenger = (
-  messenger: MockControllerMessenger<
-    ExecutionServiceActions,
-    ExecutionServiceEvents
-  >,
-) => {
+export const getNodeEESMessenger = (messenger: RootMessenger) => {
   const executionServiceMessenger = new Messenger<
     'ExecutionService',
     ExecutionServiceActions,

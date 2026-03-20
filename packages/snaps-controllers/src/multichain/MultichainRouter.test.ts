@@ -7,7 +7,7 @@ import {
 import { MultichainRouter } from './MultichainRouter';
 import { METAMASK_ORIGIN } from '../snaps/constants';
 import {
-  getRootMultichainRouterMessenger,
+  getMultichainRouterRootMessenger,
   getRestrictedMultichainRouterMessenger,
   BTC_CAIP2,
   BTC_CONNECTED_ACCOUNTS,
@@ -22,7 +22,7 @@ import {
 describe('MultichainRouter', () => {
   describe('handleRequest', () => {
     it('can route signing requests to account Snaps without address resolution', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring({
         submitRequest: jest.fn().mockResolvedValue({
@@ -71,7 +71,7 @@ describe('MultichainRouter', () => {
     });
 
     it('can route signing requests to account Snaps using address resolution', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring({
         submitRequest: jest.fn().mockResolvedValue({
@@ -123,7 +123,7 @@ describe('MultichainRouter', () => {
     });
 
     it('disallows routing to unconnected accounts', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -166,7 +166,7 @@ describe('MultichainRouter', () => {
     });
 
     it('can route protocol requests to protocol Snaps', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -181,7 +181,7 @@ describe('MultichainRouter', () => {
         () => [],
       );
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -237,7 +237,7 @@ describe('MultichainRouter', () => {
     });
 
     it('throws if no suitable Snaps are found', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -252,7 +252,7 @@ describe('MultichainRouter', () => {
         () => [],
       );
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [];
       });
 
@@ -271,7 +271,7 @@ describe('MultichainRouter', () => {
     });
 
     it('throws if address resolution fails', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -320,7 +320,7 @@ describe('MultichainRouter', () => {
     });
 
     it('throws if address resolution returns an address that isnt available', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -372,7 +372,7 @@ describe('MultichainRouter', () => {
     });
 
     it(`throws if address resolution returns a lower case address that isn't available`, async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -425,7 +425,7 @@ describe('MultichainRouter', () => {
 
   describe('getSupportedMethods', () => {
     it('returns a set of both protocol and account Snap methods', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -435,7 +435,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -455,7 +455,7 @@ describe('MultichainRouter', () => {
     });
 
     it('handles lack of protocol Snaps', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -465,7 +465,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -485,7 +485,7 @@ describe('MultichainRouter', () => {
     });
 
     it('handles lack of account Snaps', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -495,7 +495,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -517,7 +517,7 @@ describe('MultichainRouter', () => {
 
   describe('getSupportedAccounts', () => {
     it('returns a set of accounts for the requested scope', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -542,7 +542,7 @@ describe('MultichainRouter', () => {
 
   describe('isSupportedScope', () => {
     it('returns true if an account Snap exists', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -552,7 +552,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -572,7 +572,7 @@ describe('MultichainRouter', () => {
     });
 
     it('returns true if a protocol Snap exists', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -582,7 +582,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [getTruncatedSnap()];
       });
 
@@ -602,7 +602,7 @@ describe('MultichainRouter', () => {
     });
 
     it('returns false if no Snap is found', async () => {
-      const rootMessenger = getRootMultichainRouterMessenger();
+      const rootMessenger = getMultichainRouterRootMessenger();
       const messenger = getRestrictedMultichainRouterMessenger(rootMessenger);
       const withSnapKeyring = getMockWithSnapKeyring();
 
@@ -612,7 +612,7 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAll', () => {
+      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
         return [];
       });
 

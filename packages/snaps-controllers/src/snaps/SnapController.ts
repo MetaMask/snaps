@@ -171,6 +171,7 @@ import type {
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
+import type { SnapControllerMethodActions } from './SnapController-method-action-types';
 import { Timer } from './Timer';
 import { forceStrict, validateMachine } from '../fsm';
 import type {
@@ -204,6 +205,41 @@ import {
 } from '../utils';
 
 export const controllerName = 'SnapController';
+
+export const MESSENGER_EXPOSED_METHODS = [
+  'init',
+  'updateRegistry',
+  'startSnap',
+  'enableSnap',
+  'disableSnap',
+  'stopSnap',
+  'stopAllSnaps',
+  'isSnapRunning',
+  'hasSnap',
+  'getSnap',
+  'getSnapExpect',
+  'getTruncatedSnap',
+  'getTruncatedSnapExpect',
+  'updateSnapState',
+  'clearSnapState',
+  'getSnapState',
+  'getSnapFile',
+  'isMinimumPlatformVersion',
+  'clearState',
+  'removeSnap',
+  'removeSnaps',
+  'removeSnapFromSubject',
+  'revokeDynamicSnapPermissions',
+  'incrementActiveReferences',
+  'decrementActiveReferences',
+  'getAllSnaps',
+  'getRunnableSnaps',
+  'getPermittedSnaps',
+  'installSnaps',
+  'destroy',
+  'handleRequest',
+  'setClientActive',
+] as const;
 
 // TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
@@ -359,188 +395,21 @@ type PendingApproval = {
 
 // Controller Messenger Actions
 
-/**
- * Initialise the SnapController. This should be called after all controllers
- * are created.
- */
-export type SnapControllerInitAction = {
-  type: `${typeof controllerName}:init`;
-  handler: SnapController['init'];
-};
-
-/**
- * Gets the specified Snap from state.
- */
-export type GetSnap = {
-  type: `${typeof controllerName}:get`;
-  handler: SnapController['get'];
-};
-
-/**
- * Handles sending an inbound request to a snap and returns its result.
- */
-export type HandleSnapRequest = {
-  type: `${typeof controllerName}:handleRequest`;
-  handler: SnapController['handleRequest'];
-};
-
-/**
- * Gets the specified Snap's persisted state.
- */
-export type GetSnapState = {
-  type: `${typeof controllerName}:getSnapState`;
-  handler: SnapController['getSnapState'];
-};
-
-/**
- * Checks if the specified snap exists in state.
- */
-export type HasSnap = {
-  type: `${typeof controllerName}:has`;
-  handler: SnapController['has'];
-};
-
-/**
- * Updates the specified Snap's persisted state.
- */
-export type UpdateSnapState = {
-  type: `${typeof controllerName}:updateSnapState`;
-  handler: SnapController['updateSnapState'];
-};
-
-/**
- * Clears the specified Snap's persisted state.
- */
-export type ClearSnapState = {
-  type: `${typeof controllerName}:clearSnapState`;
-  handler: SnapController['clearSnapState'];
-};
-
-/**
- * Checks all installed snaps against the blocklist.
- */
-export type UpdateRegistry = {
-  type: `${typeof controllerName}:updateRegistry`;
-  handler: SnapController['updateRegistry'];
-};
-
-export type EnableSnap = {
-  type: `${typeof controllerName}:enable`;
-  handler: SnapController['enableSnap'];
-};
-
-export type DisableSnap = {
-  type: `${typeof controllerName}:disable`;
-  handler: SnapController['disableSnap'];
-};
-
-export type RemoveSnap = {
-  type: `${typeof controllerName}:remove`;
-  handler: SnapController['removeSnap'];
-};
-
-export type GetPermittedSnaps = {
-  type: `${typeof controllerName}:getPermitted`;
-  handler: SnapController['getPermittedSnaps'];
-};
-
-export type GetAllSnaps = {
-  type: `${typeof controllerName}:getAll`;
-  handler: SnapController['getAllSnaps'];
-};
-
-export type GetRunnableSnaps = {
-  type: `${typeof controllerName}:getRunnableSnaps`;
-  handler: SnapController['getRunnableSnaps'];
-};
-
-export type StopAllSnaps = {
-  type: `${typeof controllerName}:stopAllSnaps`;
-  handler: SnapController['stopAllSnaps'];
-};
-
-export type IncrementActiveReferences = {
-  type: `${typeof controllerName}:incrementActiveReferences`;
-  handler: SnapController['incrementActiveReferences'];
-};
-
-export type DecrementActiveReferences = {
-  type: `${typeof controllerName}:decrementActiveReferences`;
-  handler: SnapController['decrementActiveReferences'];
-};
-
-export type InstallSnaps = {
-  type: `${typeof controllerName}:install`;
-  handler: SnapController['installSnaps'];
-};
-
-export type DisconnectOrigin = {
-  type: `${typeof controllerName}:disconnectOrigin`;
-  handler: SnapController['removeSnapFromSubject'];
-};
-
-export type RevokeDynamicPermissions = {
-  type: `${typeof controllerName}:revokeDynamicPermissions`;
-  handler: SnapController['revokeDynamicSnapPermissions'];
-};
-
-export type GetSnapFile = {
-  type: `${typeof controllerName}:getFile`;
-  handler: SnapController['getSnapFile'];
-};
-
-export type IsMinimumPlatformVersion = {
-  type: `${typeof controllerName}:isMinimumPlatformVersion`;
-  handler: SnapController['isMinimumPlatformVersion'];
-};
-
-export type SetClientActive = {
-  type: `${typeof controllerName}:setClientActive`;
-  handler: SnapController['setClientActive'];
-};
-
 export type SnapControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   SnapControllerState
 >;
 
 export type SnapControllerActions =
-  | SnapControllerInitAction
-  | ClearSnapState
-  | GetSnap
-  | GetSnapState
-  | HandleSnapRequest
-  | HasSnap
-  | UpdateRegistry
-  | UpdateSnapState
-  | EnableSnap
-  | DisableSnap
-  | RemoveSnap
-  | GetPermittedSnaps
-  | InstallSnaps
-  | GetAllSnaps
-  | GetRunnableSnaps
-  | IncrementActiveReferences
-  | DecrementActiveReferences
-  | DisconnectOrigin
-  | RevokeDynamicPermissions
-  | GetSnapFile
   | SnapControllerGetStateAction
-  | StopAllSnaps
-  | IsMinimumPlatformVersion
-  | SetClientActive;
+  | SnapControllerMethodActions;
 
 // Controller Messenger Events
-
-export type SnapStateChange = {
-  type: `${typeof controllerName}:stateChange`;
-  payload: [SnapControllerState, Patch[]];
-};
 
 /**
  * Emitted when an installed snap has been blocked.
  */
-export type SnapBlocked = {
+export type SnapControllerSnapBlockedEvent = {
   type: `${typeof controllerName}:snapBlocked`;
   payload: [snapId: string, blockedSnapInfo?: BlockReason];
 };
@@ -548,7 +417,7 @@ export type SnapBlocked = {
 /**
  * Emitted when a snap installation or update is started.
  */
-export type SnapInstallStarted = {
+export type SnapControllerSnapInstallStartedEvent = {
   type: `${typeof controllerName}:snapInstallStarted`;
   payload: [snapId: SnapId, origin: string, isUpdate: boolean];
 };
@@ -556,7 +425,7 @@ export type SnapInstallStarted = {
 /**
  * Emitted when a snap installation or update failed.
  */
-export type SnapInstallFailed = {
+export type SnapControllerSnapInstallFailedEvent = {
   type: `${typeof controllerName}:snapInstallFailed`;
   payload: [snapId: SnapId, origin: string, isUpdate: boolean, error: string];
 };
@@ -565,7 +434,7 @@ export type SnapInstallFailed = {
  * Emitted when a snap has been started after being added and authorized during
  * installation.
  */
-export type SnapInstalled = {
+export type SnapControllerSnapInstalledEvent = {
   type: `${typeof controllerName}:snapInstalled`;
   payload: [snap: TruncatedSnap, origin: string, preinstalled: boolean];
 };
@@ -573,7 +442,7 @@ export type SnapInstalled = {
 /**
  * Emitted when a snap that has previously been fully installed, is uninstalled.
  */
-export type SnapUninstalled = {
+export type SnapControllerSnapUninstalledEvent = {
   type: `${typeof controllerName}:snapUninstalled`;
   payload: [snap: TruncatedSnap];
 };
@@ -581,7 +450,7 @@ export type SnapUninstalled = {
 /**
  * Emitted when an installed snap has been unblocked.
  */
-export type SnapUnblocked = {
+export type SnapControllerSnapUnblockedEvent = {
   type: `${typeof controllerName}:snapUnblocked`;
   payload: [snapId: string];
 };
@@ -589,7 +458,7 @@ export type SnapUnblocked = {
 /**
  * Emitted when a snap is updated.
  */
-export type SnapUpdated = {
+export type SnapControllerSnapUpdatedEvent = {
   type: `${typeof controllerName}:snapUpdated`;
   payload: [
     snap: TruncatedSnap,
@@ -602,7 +471,7 @@ export type SnapUpdated = {
 /**
  * Emitted when a snap is rolled back.
  */
-export type SnapRolledback = {
+export type SnapControllerSnapRolledbackEvent = {
   type: `${typeof controllerName}:snapRolledback`;
   payload: [snap: TruncatedSnap, failedVersion: string];
 };
@@ -611,7 +480,7 @@ export type SnapRolledback = {
  * Emitted when a Snap is terminated. This is different from the snap being
  * stopped as it can also be triggered when a snap fails initialization.
  */
-export type SnapTerminated = {
+export type SnapControllerSnapTerminatedEvent = {
   type: `${typeof controllerName}:snapTerminated`;
   payload: [snap: TruncatedSnap];
 };
@@ -620,7 +489,7 @@ export type SnapTerminated = {
  * Emitted when a Snap is enabled by a user.
  * This is not emitted by default when installing a snap.
  */
-export type SnapEnabled = {
+export type SnapControllerSnapEnabledEvent = {
   type: `${typeof controllerName}:snapEnabled`;
   payload: [snap: TruncatedSnap];
 };
@@ -628,7 +497,7 @@ export type SnapEnabled = {
 /**
  * Emitted when a Snap is disabled by a user.
  */
-export type SnapDisabled = {
+export type SnapControllerSnapDisabledEvent = {
   type: `${typeof controllerName}:snapDisabled`;
   payload: [snap: TruncatedSnap];
 };
@@ -641,24 +510,23 @@ export type SnapControllerStateChangeEvent = ControllerStateChangeEvent<
   SnapControllerState
 >;
 
-type KeyringControllerLock = {
+type KeyringControllerLockEvent = {
   type: 'KeyringController:lock';
   payload: [];
 };
 
 export type SnapControllerEvents =
-  | SnapBlocked
-  | SnapInstalled
-  | SnapUninstalled
-  | SnapInstallStarted
-  | SnapInstallFailed
-  | SnapStateChange
-  | SnapUnblocked
-  | SnapUpdated
-  | SnapRolledback
-  | SnapTerminated
-  | SnapEnabled
-  | SnapDisabled
+  | SnapControllerSnapBlockedEvent
+  | SnapControllerSnapInstalledEvent
+  | SnapControllerSnapUninstalledEvent
+  | SnapControllerSnapInstallStartedEvent
+  | SnapControllerSnapInstallFailedEvent
+  | SnapControllerSnapUnblockedEvent
+  | SnapControllerSnapUpdatedEvent
+  | SnapControllerSnapRolledbackEvent
+  | SnapControllerSnapTerminatedEvent
+  | SnapControllerSnapEnabledEvent
+  | SnapControllerSnapDisabledEvent
   | SnapControllerStateChangeEvent;
 
 export type AllowedActions =
@@ -693,12 +561,12 @@ export type AllowedActions =
 
 export type AllowedEvents =
   | ExecutionServiceEvents
-  | SnapInstalled
-  | SnapUpdated
-  | KeyringControllerLock
+  | SnapControllerSnapInstalledEvent
+  | SnapControllerSnapUpdatedEvent
+  | KeyringControllerLockEvent
   | SnapsRegistryStateChangeEvent;
 
-type SnapControllerMessenger = Messenger<
+export type SnapControllerMessenger = Messenger<
   typeof controllerName,
   SnapControllerActions | AllowedActions,
   SnapControllerEvents | AllowedEvents
@@ -1138,7 +1006,10 @@ export class SnapController extends BaseController<
     );
 
     this.#initializeStateMachine();
-    this.#registerMessageHandlers();
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
+    );
 
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
@@ -1178,7 +1049,7 @@ export class SnapController extends BaseController<
   // In the future, side-effects could be added to the machine during transitions.
   #initializeStateMachine() {
     const disableGuard = ({ snapId }: StatusContext) => {
-      return this.getExpect(snapId).enabled;
+      return this.getSnapExpect(snapId).enabled;
     };
 
     const statusConfig: StateMachine.Config<
@@ -1236,125 +1107,6 @@ export class SnapController extends BaseController<
   }
 
   /**
-   * Constructor helper for registering the controller's messaging system
-   * actions.
-   */
-  #registerMessageHandlers(): void {
-    this.messenger.registerActionHandler(
-      `${controllerName}:init`,
-      async (...args) => this.init(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:clearSnapState`,
-      (...args) => this.clearSnapState(...args),
-    );
-
-    this.messenger.registerActionHandler(`${controllerName}:get`, (...args) =>
-      this.get(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getSnapState`,
-      async (...args) => this.getSnapState(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:handleRequest`,
-      async (...args) => this.handleRequest(...args),
-    );
-
-    this.messenger.registerActionHandler(`${controllerName}:has`, (...args) =>
-      this.has(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:updateRegistry`,
-      async () => this.updateRegistry(),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:updateSnapState`,
-      async (...args) => this.updateSnapState(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:enable`,
-      (...args) => this.enableSnap(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:disable`,
-      async (...args) => this.disableSnap(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:remove`,
-      async (...args) => this.removeSnap(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getPermitted`,
-      (...args) => this.getPermittedSnaps(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:install`,
-      async (...args) => this.installSnaps(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getAll`,
-      (...args) => this.getAllSnaps(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getRunnableSnaps`,
-      (...args) => this.getRunnableSnaps(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:incrementActiveReferences`,
-      (...args) => this.incrementActiveReferences(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:decrementActiveReferences`,
-      (...args) => this.decrementActiveReferences(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:disconnectOrigin`,
-      (...args) => this.removeSnapFromSubject(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:revokeDynamicPermissions`,
-      (...args) => this.revokeDynamicSnapPermissions(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getFile`,
-      async (...args) => this.getSnapFile(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:stopAllSnaps`,
-      async (...args) => this.stopAllSnaps(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:isMinimumPlatformVersion`,
-      (...args) => this.isMinimumPlatformVersion(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:setClientActive`,
-      (...args) => this.setClientActive(...args),
-    );
-  }
-
-  /**
    * Initialise the SnapController.
    *
    * Currently this method sets up the controller and calls the `onStart` lifecycle hook for all
@@ -1393,7 +1145,7 @@ export class SnapController extends BaseController<
       hidden,
       hideSnapBranding,
     } of preinstalledSnaps) {
-      const existingSnap = this.get(snapId);
+      const existingSnap = this.getSnap(snapId);
       const isAlreadyInstalled = existingSnap !== undefined;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
@@ -1505,7 +1257,7 @@ export class SnapController extends BaseController<
       if (isUpdate) {
         this.messenger.publish(
           'SnapController:snapUpdated',
-          this.getTruncatedExpect(snapId),
+          this.getTruncatedSnapExpect(snapId),
           existingSnap.version,
           METAMASK_ORIGIN,
           true,
@@ -1513,7 +1265,7 @@ export class SnapController extends BaseController<
       } else if (!isMissingSource) {
         this.messenger.publish(
           'SnapController:snapInstalled',
-          this.getTruncatedExpect(snapId),
+          this.getTruncatedSnapExpect(snapId),
           METAMASK_ORIGIN,
           true,
         );
@@ -1684,7 +1436,7 @@ export class SnapController extends BaseController<
 
   /**
    * Blocks an installed snap and prevents it from being started again. Emits
-   * {@link SnapBlocked}. Does nothing if the snap is not installed.
+   * {@link SnapControllerSnapBlockedEvent}. Does nothing if the snap is not installed.
    *
    * @param snapId - The snap to block.
    * @param blockedSnapInfo - Information detailing why the snap is blocked.
@@ -1693,7 +1445,7 @@ export class SnapController extends BaseController<
     snapId: SnapId,
     blockedSnapInfo?: BlockReason,
   ): Promise<void> {
-    if (!this.has(snapId)) {
+    if (!this.hasSnap(snapId)) {
       return;
     }
 
@@ -1720,13 +1472,13 @@ export class SnapController extends BaseController<
 
   /**
    * Unblocks a snap so that it can be enabled and started again. Emits
-   * {@link SnapUnblocked}. Does nothing if the snap is not installed or already
+   * {@link SnapControllerSnapUnblockedEvent}. Does nothing if the snap is not installed or already
    * unblocked.
    *
    * @param snapId - The id of the snap to unblock.
    */
   #unblockSnap(snapId: SnapId) {
-    if (!this.has(snapId) || !this.state.snaps[snapId].blocked) {
+    if (!this.hasSnap(snapId) || !this.state.snaps[snapId].blocked) {
       return;
     }
 
@@ -1918,7 +1670,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to enable.
    */
   enableSnap(snapId: SnapId): void {
-    this.getExpect(snapId);
+    this.getSnapExpect(snapId);
 
     if (this.state.snaps[snapId].blocked) {
       throw new Error(`Snap "${snapId}" is blocked and cannot be enabled.`);
@@ -1930,7 +1682,7 @@ export class SnapController extends BaseController<
 
     this.messenger.publish(
       'SnapController:snapEnabled',
-      this.getTruncatedExpect(snapId),
+      this.getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -1941,7 +1693,7 @@ export class SnapController extends BaseController<
    * @returns A promise that resolves once the snap has been disabled.
    */
   async disableSnap(snapId: SnapId): Promise<void> {
-    if (!this.has(snapId)) {
+    if (!this.hasSnap(snapId)) {
       throw new Error(`Snap "${snapId}" not found.`);
     }
 
@@ -1949,13 +1701,13 @@ export class SnapController extends BaseController<
       state.snaps[snapId].enabled = false;
     });
 
-    if (this.isRunning(snapId)) {
+    if (this.isSnapRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
     this.messenger.publish(
       'SnapController:snapDisabled',
-      this.getTruncatedExpect(snapId),
+      this.getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -1990,7 +1742,7 @@ export class SnapController extends BaseController<
     runtime.stopPromise = promise;
 
     try {
-      if (this.isRunning(snapId)) {
+      if (this.isSnapRunning(snapId)) {
         await this.#terminateSnap(snapId);
       }
     } finally {
@@ -1999,7 +1751,7 @@ export class SnapController extends BaseController<
       runtime.pendingInboundRequests = [];
       runtime.pendingOutboundRequests = 0;
       runtime.stopPromise = null;
-      if (this.isRunning(snapId)) {
+      if (this.isSnapRunning(snapId)) {
         this.#transition(snapId, statusEvent);
       }
       resolve();
@@ -2019,7 +1771,7 @@ export class SnapController extends BaseController<
       | SnapStatusEvents.Crash = SnapStatusEvents.Stop,
   ): Promise<void> {
     const snaps = Object.values(this.state.snaps).filter((snap) =>
-      this.isRunning(snap.id),
+      this.isSnapRunning(snap.id),
     );
     const promises = snaps.map(async (snap) =>
       this.stopSnap(snap.id, statusEvent),
@@ -2049,7 +1801,7 @@ export class SnapController extends BaseController<
 
     this.messenger.publish(
       'SnapController:snapTerminated',
-      this.getTruncatedExpect(snapId),
+      this.getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -2060,8 +1812,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to check.
    * @returns `true` if the snap is running, otherwise `false`.
    */
-  isRunning(snapId: SnapId): boolean {
-    return this.getExpect(snapId).status === 'running';
+  isSnapRunning(snapId: SnapId): boolean {
+    return this.getSnapExpect(snapId).status === 'running';
   }
 
   /**
@@ -2070,8 +1822,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to check for.
    * @returns `true` if the snap exists in the controller state, otherwise `false`.
    */
-  has(snapId: SnapId): boolean {
-    return Boolean(this.get(snapId));
+  hasSnap(snapId: SnapId): boolean {
+    return Boolean(this.getSnap(snapId));
   }
 
   /**
@@ -2082,7 +1834,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to get.
    * @returns The entire snap object from the controller state.
    */
-  get(snapId: string): Snap | undefined {
+  getSnap(snapId: string): Snap | undefined {
     return this.state.snaps[snapId as SnapId];
   }
 
@@ -2091,13 +1843,13 @@ export class SnapController extends BaseController<
    * This should not be used if the snap is to be serializable, as e.g.
    * the snap sourceCode may be quite large.
    *
-   * @see {@link SnapController.get}
+   * @see {@link SnapController.getSnap}
    * @throws {@link Error}. If the snap doesn't exist
    * @param snapId - The id of the snap to get.
    * @returns The entire snap object.
    */
-  getExpect(snapId: SnapId): Snap {
-    const snap = this.get(snapId);
+  getSnapExpect(snapId: SnapId): Snap {
+    const snap = this.getSnap(snapId);
     assert(snap !== undefined, `Snap "${snapId}" not found.`);
     return snap;
   }
@@ -2110,8 +1862,8 @@ export class SnapController extends BaseController<
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
   // TODO(ritave): this.get returns undefined, this.getTruncated returns null
-  getTruncated(snapId: SnapId): TruncatedSnap | null {
-    const snap = this.get(snapId);
+  getTruncatedSnap(snapId: SnapId): TruncatedSnap | null {
+    const snap = this.getSnap(snapId);
 
     return snap ? truncateSnap(snap) : null;
   }
@@ -2123,8 +1875,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to get.
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
-  getTruncatedExpect(snapId: SnapId): TruncatedSnap {
-    return truncateSnap(this.getExpect(snapId));
+  getTruncatedSnapExpect(snapId: SnapId): TruncatedSnap {
+    return truncateSnap(this.getSnapExpect(snapId));
   }
 
   /**
@@ -2430,7 +2182,7 @@ export class SnapController extends BaseController<
     path: string,
     encoding: AuxiliaryFileEncoding = AuxiliaryFileEncoding.Base64,
   ): Promise<string | null> {
-    const snap = this.getExpect(snapId);
+    const snap = this.getSnapExpect(snapId);
     const normalizedPath = normalizeRelative(path);
     const value = snap.auxiliaryFiles?.find(
       (file) => file.path === normalizedPath,
@@ -2459,7 +2211,7 @@ export class SnapController extends BaseController<
    * @returns True if the platform version is equal or greater to the passed version, false otherwise.
    */
   isMinimumPlatformVersion(snapId: SnapId, version: SemVerVersion): boolean {
-    const snap = this.getExpect(snapId);
+    const snap = this.getSnapExpect(snapId);
 
     const { platformVersion } = snap.manifest;
 
@@ -2522,14 +2274,14 @@ export class SnapController extends BaseController<
     }
 
     snapIds.forEach((snapId) => {
-      const snap = this.getExpect(snapId);
+      const snap = this.getSnapExpect(snapId);
       assert(snap.removable !== false, `${snapId} is not removable.`);
     });
 
     await Promise.all(
       snapIds.map(async (snapId) => {
-        const snap = this.getExpect(snapId);
-        const truncated = this.getTruncatedExpect(snapId);
+        const snap = this.getSnapExpect(snapId);
+        const truncated = this.getTruncatedSnapExpect(snapId);
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
@@ -2777,8 +2529,8 @@ export class SnapController extends BaseController<
       )?.value ?? {};
     return Object.keys(snaps).reduce<RequestSnapsResult>(
       (permittedSnaps, snapId) => {
-        const snap = this.get(snapId);
-        const truncatedSnap = this.getTruncated(snapId as SnapId);
+        const snap = this.getSnap(snapId);
+        const truncatedSnap = this.getTruncatedSnap(snapId as SnapId);
 
         if (truncatedSnap && snap?.status !== SnapStatus.Installing) {
           permittedSnaps[snapId] = truncatedSnap;
@@ -2840,10 +2592,10 @@ export class SnapController extends BaseController<
 
         // Existing snaps may need to be updated, unless they should be re-installed (e.g. local snaps)
         // Everything else is treated as an install
-        const isUpdate = this.has(snapId) && !location.shouldAlwaysReload;
+        const isUpdate = this.hasSnap(snapId) && !location.shouldAlwaysReload;
 
         if (isUpdate && this.#isValidUpdate(snapId, version)) {
-          const existingSnap = this.getExpect(snapId);
+          const existingSnap = this.getSnapExpect(snapId);
           pendingUpdates.push({ snapId, oldVersion: existingSnap.version });
           let rollbackSnapshot = this.#getRollbackSnapshot(snapId);
           if (rollbackSnapshot === undefined) {
@@ -2868,7 +2620,7 @@ export class SnapController extends BaseController<
       pendingInstalls.forEach((snapId) =>
         this.messenger.publish(
           `SnapController:snapInstalled`,
-          this.getTruncatedExpect(snapId),
+          this.getTruncatedSnapExpect(snapId),
           origin,
           false,
         ),
@@ -2877,7 +2629,7 @@ export class SnapController extends BaseController<
       pendingUpdates.forEach(({ snapId, oldVersion }) =>
         this.messenger.publish(
           `SnapController:snapUpdated`,
-          this.getTruncatedExpect(snapId),
+          this.getTruncatedSnapExpect(snapId),
           oldVersion,
           origin,
           false,
@@ -2886,7 +2638,9 @@ export class SnapController extends BaseController<
 
       snapIds.forEach((snapId) => this.#rollbackSnapshots.delete(snapId));
     } catch (error) {
-      const installed = pendingInstalls.filter((snapId) => this.has(snapId));
+      const installed = pendingInstalls.filter((snapId) =>
+        this.hasSnap(snapId),
+      );
       await this.removeSnaps(installed);
       const snapshottedSnaps = [...this.#rollbackSnapshots.keys()];
       const snapsToRollback = pendingUpdates
@@ -2916,7 +2670,7 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     versionRange: SemVerRange,
   ): Promise<TruncatedSnap> {
-    const existingSnap = this.getTruncated(snapId);
+    const existingSnap = this.getTruncatedSnap(snapId);
 
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
@@ -2948,7 +2702,7 @@ export class SnapController extends BaseController<
     );
 
     // Existing snaps must be stopped before overwriting
-    if (existingSnap && this.isRunning(snapId)) {
+    if (existingSnap && this.isSnapRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
 
@@ -2978,7 +2732,7 @@ export class SnapController extends BaseController<
         sourceCode,
       });
 
-      const truncated = this.getTruncatedExpect(snapId);
+      const truncated = this.getTruncatedSnapExpect(snapId);
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
@@ -3091,7 +2845,7 @@ export class SnapController extends BaseController<
     }
     await this.#ensureCanUsePlatform();
 
-    const snap = this.getExpect(snapId);
+    const snap = this.getSnapExpect(snapId);
 
     const { preinstalled, removable, hidden, hideSnapBranding } = snap;
 
@@ -3190,7 +2944,7 @@ export class SnapController extends BaseController<
         approvedNewPermissions = newPermissions;
       }
 
-      if (this.isRunning(snapId)) {
+      if (this.isSnapRunning(snapId)) {
         await this.stopSnap(snapId, SnapStatusEvents.Stop);
       }
 
@@ -3245,7 +2999,7 @@ export class SnapController extends BaseController<
         throw new Error(`Snap ${snapId} crashed with updated source code.`);
       }
 
-      const truncatedSnap = this.getTruncatedExpect(snapId);
+      const truncatedSnap = this.getTruncatedSnapExpect(snapId);
 
       if (pendingApproval) {
         this.#updateApproval(pendingApproval.id, {
@@ -3357,7 +3111,7 @@ export class SnapController extends BaseController<
 
   async #startSnap(snapData: { snapId: SnapId; sourceCode: string }) {
     const { snapId } = snapData;
-    if (this.isRunning(snapId)) {
+    if (this.isSnapRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
@@ -3733,7 +3487,7 @@ export class SnapController extends BaseController<
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     await this.#ensureCanUsePlatform();
 
-    const snap = this.get(snapId);
+    const snap = this.getSnap(snapId);
 
     assert(
       snap,
@@ -3836,7 +3590,7 @@ export class SnapController extends BaseController<
       await runtime.stopPromise;
     }
 
-    if (!this.isRunning(snapId)) {
+    if (!this.isSnapRunning(snapId)) {
       if (!runtime.startPromise) {
         runtime.startPromise = this.startSnap(snapId);
       }
@@ -3869,7 +3623,7 @@ export class SnapController extends BaseController<
 
       if (result === hasTimedOut) {
         const stopping =
-          runtime.stopPromise !== null || !this.isRunning(snapId);
+          runtime.stopPromise !== null || !this.isSnapRunning(snapId);
         throw new Error(
           stopping
             ? `${snapId} was stopped and the request was cancelled. This is likely because the Snap crashed.`
@@ -3925,7 +3679,8 @@ export class SnapController extends BaseController<
 
       const [jsonRpcError, handled] = unwrapError(error);
 
-      const stopping = runtime.stopPromise !== null || !this.isRunning(snapId);
+      const stopping =
+        runtime.stopPromise !== null || !this.isSnapRunning(snapId);
 
       if (!handled) {
         if (!stopping) {
@@ -4299,7 +4054,7 @@ export class SnapController extends BaseController<
       runtime.lastRequest = Date.now();
     }
 
-    const snap = this.get(snapId);
+    const snap = this.getSnap(snapId);
 
     if (isTrackableHandler(handlerType) && !snap?.preinstalled) {
       try {
@@ -4372,7 +4127,7 @@ export class SnapController extends BaseController<
 
     await this.stopSnap(snapId, SnapStatusEvents.Stop);
     // Always set to stopped even if it wasn't running initially
-    if (this.get(snapId)?.status !== SnapStatus.Stopped) {
+    if (this.getSnap(snapId)?.status !== SnapStatus.Stopped) {
       this.#transition(snapId, SnapStatusEvents.Stop);
     }
 
@@ -4396,7 +4151,7 @@ export class SnapController extends BaseController<
 
     // Reset snap status, as we may have been in another state when we stored state patches
     // But now we are 100% in a stopped state
-    if (this.get(snapId)?.status !== SnapStatus.Stopped) {
+    if (this.getSnap(snapId)?.status !== SnapStatus.Stopped) {
       this.update((state) => {
         state.snaps[snapId].status = SnapStatus.Stopped;
       });
@@ -4416,7 +4171,7 @@ export class SnapController extends BaseController<
       previousInitialConnections ?? {},
     );
 
-    const truncatedSnap = this.getTruncatedExpect(snapId);
+    const truncatedSnap = this.getTruncatedSnapExpect(snapId);
 
     this.messenger.publish(
       'SnapController:snapRolledback',
@@ -4454,7 +4209,7 @@ export class SnapController extends BaseController<
       return;
     }
 
-    const snap = this.get(snapId);
+    const snap = this.getSnap(snapId);
     const interpreter = interpret(this.#statusMachine);
     interpreter.start({
       context: { snapId },
@@ -4678,7 +4433,7 @@ export class SnapController extends BaseController<
    * @returns `true` if validation checks pass and `false` if they do not.
    */
   #isValidUpdate(snapId: SnapId, newVersionRange: SemVerRange): boolean {
-    const existingSnap = this.getExpect(snapId);
+    const existingSnap = this.getSnapExpect(snapId);
 
     if (satisfiesVersionRange(existingSnap.version, newVersionRange)) {
       return false;

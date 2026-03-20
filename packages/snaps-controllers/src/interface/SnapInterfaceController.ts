@@ -40,7 +40,7 @@ import {
   isMatchingChainId,
   validateInterfaceContext,
 } from './utils';
-import type { GetSnap } from '../snaps';
+import type { SnapControllerGetSnapAction } from '../snaps';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
@@ -125,7 +125,7 @@ export type SnapInterfaceControllerAllowedActions =
   | PhishingControllerTestOrigin
   | ApprovalControllerHasRequestAction
   | ApprovalControllerAcceptRequestAction
-  | GetSnap
+  | SnapControllerGetSnapAction
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
@@ -598,7 +598,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The snap.
    */
   #getSnap(id: string) {
-    return this.messenger.call('SnapController:get', id);
+    return this.messenger.call('SnapController:getSnap', id);
   }
 
   #hasPermission(snapId: SnapId, permission: string) {

@@ -36,9 +36,6 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
     return Promise.resolve({ worker, stream });
   }
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected async terminateJob(
     jobWrapper: TerminateJobArgs<Worker>,
   ): Promise<void> {

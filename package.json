@@ -24,9 +24,10 @@
     "changelog:validate": "yarn workspaces foreach --all --parallel --interlaced --verbose run changelog:validate",
     "child-workspace-package-names-as-json": "ts-node scripts/child-workspace-package-names-as-json.ts",
     "clean": "yarn workspaces foreach --all --parallel --verbose run clean",
+    "generate-method-action-types": "yarn workspaces foreach --all --parallel --interlaced --verbose run generate-method-action-types",
     "get-release-tag": "ts-node --swc scripts/get-release-tag.ts",
     "install-chrome": "./scripts/install-chrome.sh",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies && yarn generate-method-action-types --check",
     "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe",
@@ -120,7 +121,8 @@
     "tsx": "^4.20.3",
     "typescript": "~5.3.3",
     "typescript-eslint": "^8.6.0",
-    "vite": "^6.4.1"
+    "vite": "^6.4.1",
+    "yargs": "^18.0.0"
   },
   "packageManager": "yarn@4.10.3",
   "engines": {

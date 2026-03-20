@@ -22,8 +22,11 @@ import {
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
+import type {
+  SnapControllerGetAllSnapsAction,
+  SnapControllerHandleRequestAction,
+} from '../snaps';
 import { getRunnableSnaps } from '../snaps';
-import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
 
 export type MultichainRouterHandleRequestAction = {
   type: `${typeof name}:handleRequest`;
@@ -72,8 +75,8 @@ export type MultichainRouterActions =
   | MultichainRouterIsSupportedScopeAction;
 
 export type MultichainRouterAllowedActions =
-  | GetAllSnaps
-  | HandleSnapRequest
+  | SnapControllerGetAllSnapsAction
+  | SnapControllerHandleRequestAction
   | GetPermissions
   | AccountsControllerListMultichainAccountsAction;
 
@@ -260,7 +263,7 @@ export class MultichainRouter {
    * @returns A list of all the protocol Snaps available and their RPC methods.
    */
   #getProtocolSnaps(scope: CaipChainId) {
-    const allSnaps = this.#messenger.call('SnapController:getAll');
+    const allSnaps = this.#messenger.call('SnapController:getAllSnaps');
     const filteredSnaps = getRunnableSnaps(allSnaps);
 
     return filteredSnaps.reduce<ProtocolSnap[]>((accumulator, snap) => {
