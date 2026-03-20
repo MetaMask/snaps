@@ -352,12 +352,6 @@ export type SnapRuntimeData = {
   getStateMutex: Mutex;
 };
 
-export type SnapError = {
-  message: string;
-  code: number;
-  data?: Json;
-};
-
 // Types that probably should be defined elsewhere in prod
 type StoredSnaps = Record<SnapId, Snap>;
 
