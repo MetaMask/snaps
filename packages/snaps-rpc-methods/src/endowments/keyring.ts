@@ -181,8 +181,7 @@ export function getKeyringCaveatCapabilities(
     (permCaveat) => permCaveat.type === SnapCaveatType.KeyringCapabilities,
   ) as Caveat<string, KeyringCapabilities> | undefined;
 
-  assert(caveat);
-  return caveat.value;
+  return caveat?.value ?? null;
 }
 
 export const keyringCaveatSpecifications: Record<

@@ -174,6 +174,24 @@ describe('getKeyringCaveatCapabilities', () => {
       },
     });
   });
+
+  it('returns null when the capabilities caveat is absent', () => {
+    expect(
+      // @ts-expect-error Missing other required permission types.
+      getKeyringCaveatCapabilities({
+        caveats: [
+          {
+            type: SnapCaveatType.KeyringOrigin,
+            value: { allowedOrigins: ['foo.com'] },
+          },
+        ],
+      }),
+    ).toBeNull();
+  });
+
+  it('returns null when permission is undefined', () => {
+    expect(getKeyringCaveatCapabilities(undefined)).toBeNull();
+  });
 });
 
 describe('keyringCaveatSpecifications', () => {
