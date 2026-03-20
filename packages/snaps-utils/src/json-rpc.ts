@@ -1,12 +1,14 @@
-import { KeyringCapabilitiesStruct as CapabilitiesStruct } from '@metamask/keyring-api';
-import type { KeyringCapabilities as Capabilities } from '@metamask/keyring-api';
 import { SubjectType } from '@metamask/permission-controller';
 import type { Infer } from '@metamask/superstruct';
 import {
   array,
   boolean,
+  enums,
+  exactOptional,
+  nonempty,
   object,
   optional,
+  partial,
   refine,
   string,
 } from '@metamask/superstruct';
@@ -16,6 +18,7 @@ import type {
 } from '@metamask/utils';
 import {
   assertStruct,
+  CaipChainIdStruct,
   isJsonRpcFailure,
   isJsonRpcSuccess,
 } from '@metamask/utils';
@@ -100,6 +103,74 @@ export function assertIsKeyringOrigins(
     ErrorWrapper,
   );
 }
+
+/**
+ * Supported encoding formats for private keys.
+ *
+ * Mirrors `PrivateKeyEncoding` from `@metamask/keyring-api` to avoid pulling
+ * in that package's Node.js-only transitive dependencies into browser bundles.
+ */
+const PrivateKeyEncodingStruct = enums(['hexadecimal', 'base58']);
+
+/**
+ * Supported account types for keyring accounts.
+ *
+ * Mirrors `KeyringAccountTypeStruct` from `@metamask/keyring-api`.
+ */
+const KeyringAccountTypeStruct = enums([
+  'eip155:eoa',
+  'eip155:erc4337',
+  'bip122:p2pkh',
+  'bip122:p2sh',
+  'bip122:p2wpkh',
+  'bip122:p2tr',
+  'solana:data-account',
+  'tron:eoa',
+  'entropy:account',
+]);
+
+/**
+ * Struct for the capabilities object supported by a keyring Snap.
+ *
+ * Mirrors `KeyringCapabilitiesStruct` from `@metamask/keyring-api` to avoid
+ * pulling in that package's Node.js-only transitive dependencies into browser
+ * bundles (via `@ethereumjs/util` → `micro-ftch`).
+ *
+ * Keep in sync with `KeyringCapabilitiesStruct` in `@metamask/keyring-api`.
+ */
+const CapabilitiesStruct = object({
+  scopes: nonempty(array(CaipChainIdStruct)),
+  bip44: exactOptional(
+    object({
+      derivePath: exactOptional(boolean()),
+      deriveIndex: exactOptional(boolean()),
+      deriveIndexRange: exactOptional(boolean()),
+      discover: exactOptional(boolean()),
+    }),
+  ),
+  privateKey: exactOptional(
+    object({
+      importFormats: exactOptional(
+        array(
+          object({
+            encoding: PrivateKeyEncodingStruct,
+            type: exactOptional(KeyringAccountTypeStruct),
+          }),
+        ),
+      ),
+      exportFormats: exactOptional(
+        array(object({ encoding: PrivateKeyEncodingStruct })),
+      ),
+    }),
+  ),
+  custom: exactOptional(
+    partial(
+      object({
+        createAccounts: boolean(),
+      }),
+    ),
+  ),
+});
 
 export const KeyringCapabilitiesStruct = object({
   capabilities: optional(CapabilitiesStruct),
