@@ -687,6 +687,7 @@ export const getSnapController = async (
   if (init) {
     await controller.init();
   }
+
   return controller;
 };
 
@@ -1011,7 +1012,7 @@ export const getRestrictedMultichainRouterMessenger = (
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAll',
+      'SnapController:getAllSnaps',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],

@@ -1006,10 +1006,7 @@ export class SnapController extends BaseController<
     );
 
     this.#initializeStateMachine();
-    this.messenger.registerMethodActionHandlers(
-      this,
-      MESSENGER_EXPOSED_METHODS,
-    );
+    this.#registerMessageHandlers();
 
     Object.values(this.state?.snaps ?? {}).forEach((snap) =>
       this.#setupRuntime(snap.id),
@@ -1104,6 +1101,127 @@ export class SnapController extends BaseController<
     };
     this.#statusMachine = createMachine(statusConfig);
     validateMachine(this.#statusMachine);
+  }
+
+  /**
+   * Constructor helper for registering the controller's messaging system
+   * actions.
+   */
+  #registerMessageHandlers(): void {
+    this.messenger.registerActionHandler(
+      `${controllerName}:init`,
+      async (...args) => this.init(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:clearSnapState`,
+      (...args) => this.clearSnapState(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getSnap`,
+      (...args) => this.getSnap(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getSnapState`,
+      async (...args) => this.getSnapState(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:handleRequest`,
+      async (...args) => this.handleRequest(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:hasSnap`,
+      (...args) => this.hasSnap(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:updateRegistry`,
+      async () => this.updateRegistry(),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:updateSnapState`,
+      async (...args) => this.updateSnapState(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:enableSnap`,
+      (...args) => this.enableSnap(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:disableSnap`,
+      async (...args) => this.disableSnap(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:removeSnap`,
+      async (...args) => this.removeSnap(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getPermittedSnaps`,
+      (...args) => this.getPermittedSnaps(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:installSnaps`,
+      async (...args) => this.installSnaps(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getAllSnaps`,
+      (...args) => this.getAllSnaps(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getRunnableSnaps`,
+      (...args) => this.getRunnableSnaps(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:incrementActiveReferences`,
+      (...args) => this.incrementActiveReferences(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:decrementActiveReferences`,
+      (...args) => this.decrementActiveReferences(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:removeSnapFromSubject`,
+      (...args) => this.removeSnapFromSubject(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:revokeDynamicSnapPermissions`,
+      (...args) => this.revokeDynamicSnapPermissions(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:getSnapFile`,
+      async (...args) => this.getSnapFile(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:stopAllSnaps`,
+      async (...args) => this.stopAllSnaps(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:isMinimumPlatformVersion`,
+      (...args) => this.isMinimumPlatformVersion(...args),
+    );
+
+    this.messenger.registerActionHandler(
+      `${controllerName}:setClientActive`,
+      (...args) => this.setClientActive(...args),
+    );
   }
 
   /**

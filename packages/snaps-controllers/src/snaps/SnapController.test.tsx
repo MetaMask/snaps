@@ -12507,7 +12507,7 @@ describe('SnapController', () => {
 
       const snapController = await getSnapController(options);
 
-      expect(async () =>
+      expect(() =>
         options.messenger.call(
           'SnapController:revokeDynamicSnapPermissions',
           MOCK_SNAP_ID,

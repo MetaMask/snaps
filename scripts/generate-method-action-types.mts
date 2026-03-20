@@ -1,38 +1,14 @@
 #!yarn tsx
 
-/* eslint-disable no-console */
+// ESLint is saying `ts` can be replaced with named imports, but this doesn't
+// seem to actually work with the current TypeScript version.
+/* eslint-disable no-console, import-x/no-named-as-default-member */
 
 import { assert, hasProperty, isObject } from '@metamask/utils';
 import { ESLint } from 'eslint';
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  type ArrayLiteralExpression,
-  type ClassDeclaration,
-  type Identifier,
-  type MethodDeclaration,
-  type Node,
-  type Program,
-  type SourceFile,
-  type Type,
-  createProgram,
-  createSourceFile,
-  findConfigFile,
-  forEachChild,
-  getJSDocCommentsAndTags,
-  isArrayLiteralExpression,
-  isAsExpression,
-  isClassDeclaration,
-  isIdentifier,
-  isJSDoc,
-  isMethodDeclaration,
-  isStringLiteral,
-  isVariableStatement,
-  parseJsonConfigFileContent,
-  readConfigFile,
-  ScriptTarget,
-  sys,
-} from 'typescript';
+import ts from 'typescript';
 import yargs from 'yargs';
 
 type MethodInfo = {
@@ -347,7 +323,7 @@ type VisitorContext = {
   exposedMethods: string[];
   className: string;
   methods: MethodInfo[];
-  sourceFile: SourceFile;
+  sourceFile: ts.SourceFile;
 };
 
 /**
@@ -356,37 +332,37 @@ type VisitorContext = {
  * @param context - The visitor context.
  * @returns A function to visit nodes.
  */
-function createASTVisitor(context: VisitorContext): (node: Node) => void {
+function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
   /**
    * Visits AST nodes to find exposed methods and controller class.
    *
    * @param node - The AST node to visit.
    */
-  function visitNode(node: Node): void {
-    if (isVariableStatement(node)) {
+  function visitNode(node: ts.Node): void {
+    if (ts.isVariableStatement(node)) {
       const declaration = node.declarationList.declarations[0];
       if (
-        isIdentifier(declaration.name) &&
+        ts.isIdentifier(declaration.name) &&
         declaration.name.text === 'MESSENGER_EXPOSED_METHODS'
       ) {
         if (declaration.initializer) {
-          let arrayExpression: ArrayLiteralExpression | undefined;
+          let arrayExpression: ts.ArrayLiteralExpression | undefined;
 
           // Handle direct array literal
-          if (isArrayLiteralExpression(declaration.initializer)) {
+          if (ts.isArrayLiteralExpression(declaration.initializer)) {
             arrayExpression = declaration.initializer;
           }
           // Handle "as const" assertion: expression is wrapped in type assertion
           else if (
-            isAsExpression(declaration.initializer) &&
-            isArrayLiteralExpression(declaration.initializer.expression)
+            ts.isAsExpression(declaration.initializer) &&
+            ts.isArrayLiteralExpression(declaration.initializer.expression)
           ) {
             arrayExpression = declaration.initializer.expression;
           }
 
           if (arrayExpression) {
             context.exposedMethods = arrayExpression.elements
-              .filter(isStringLiteral)
+              .filter(ts.isStringLiteral)
               .map((element) => element.text);
           }
         }
@@ -394,7 +370,7 @@ function createASTVisitor(context: VisitorContext): (node: Node) => void {
     }
 
     // Find the controller or service class
-    if (isClassDeclaration(node) && node.name) {
+    if (ts.isClassDeclaration(node) && node.name) {
       const classText = node.name.text;
       if (classText.includes('Controller') || classText.includes('Service')) {
         context.className = classText;
@@ -403,9 +379,9 @@ function createASTVisitor(context: VisitorContext): (node: Node) => void {
         const seenMethods = new Set<string>();
         for (const member of node.members) {
           if (
-            isMethodDeclaration(member) &&
+            ts.isMethodDeclaration(member) &&
             member.name &&
-            isIdentifier(member.name)
+            ts.isIdentifier(member.name)
           ) {
             const methodName = member.name.text;
             if (
@@ -426,7 +402,7 @@ function createASTVisitor(context: VisitorContext): (node: Node) => void {
       }
     }
 
-    forEachChild(node, visitNode);
+    ts.forEachChild(node, visitNode);
   }
 
   return visitNode;
@@ -439,29 +415,32 @@ function createASTVisitor(context: VisitorContext): (node: Node) => void {
  * @param filePath - Absolute path to the source file.
  * @returns A TypeScript program, or null if no tsconfig was found.
  */
-function createProgramForFile(filePath: string): Program | null {
-  const configPath = findConfigFile(
+function createProgramForFile(filePath: string): ts.Program | null {
+  const configPath = ts.findConfigFile(
     path.dirname(filePath),
-    sys.fileExists.bind(sys),
+    ts.sys.fileExists.bind(ts.sys),
     'tsconfig.json',
   );
   if (!configPath) {
     return null;
   }
 
-  const { config, error } = readConfigFile(configPath, sys.readFile.bind(sys));
+  const { config, error } = ts.readConfigFile(
+    configPath,
+    ts.sys.readFile.bind(ts.sys),
+  );
 
   if (error) {
     return null;
   }
 
-  const parsedConfig = parseJsonConfigFileContent(
+  const parsedConfig = ts.parseJsonConfigFileContent(
     config,
-    sys,
+    ts.sys,
     path.dirname(configPath),
   );
 
-  return createProgram({
+  return ts.createProgram({
     rootNames: parsedConfig.fileNames,
     options: parsedConfig.options,
   });
@@ -475,13 +454,13 @@ function createProgramForFile(filePath: string): Program | null {
  * @returns The class declaration node, or null if not found.
  */
 function findClassInSourceFile(
-  sourceFile: SourceFile,
+  sourceFile: ts.SourceFile,
   className: string,
-): ClassDeclaration | null {
+): ts.ClassDeclaration | null {
   return (
     sourceFile.statements.find(
-      (node): node is ClassDeclaration =>
-        isClassDeclaration(node) && node.name?.text === className,
+      (node): node is ts.ClassDeclaration =>
+        ts.isClassDeclaration(node) && node.name?.text === className,
     ) ?? null
   );
 }
@@ -495,9 +474,9 @@ function findClassInSourceFile(
  * @returns The method declaration node, or null if not found.
  */
 function findMethodInHierarchy(
-  classType: Type,
+  classType: ts.Type,
   methodName: string,
-): MethodDeclaration | null {
+): ts.MethodDeclaration | null {
   const symbol = classType.getProperty(methodName);
   if (!symbol) {
     return null;
@@ -509,7 +488,7 @@ function findMethodInHierarchy(
   }
 
   for (const declaration of declarations) {
-    if (isMethodDeclaration(declaration)) {
+    if (ts.isMethodDeclaration(declaration)) {
       return declaration;
     }
   }
@@ -528,10 +507,10 @@ async function parseControllerFile(
 ): Promise<ControllerInfo | null> {
   try {
     const content = await fs.promises.readFile(filePath, 'utf8');
-    const sourceFile = createSourceFile(
+    const sourceFile = ts.createSourceFile(
       filePath,
       content,
-      ScriptTarget.Latest,
+      ts.ScriptTarget.Latest,
       true,
     );
 
@@ -613,14 +592,17 @@ async function parseControllerFile(
  * @param sourceFile - The source file.
  * @returns The JSDoc comment.
  */
-function extractJSDoc(node: MethodDeclaration, sourceFile: SourceFile): string {
-  const jsDocTags = getJSDocCommentsAndTags(node);
+function extractJSDoc(
+  node: ts.MethodDeclaration,
+  sourceFile: ts.SourceFile,
+): string {
+  const jsDocTags = ts.getJSDocCommentsAndTags(node);
   if (jsDocTags.length === 0) {
     return '';
   }
 
   const jsDoc = jsDocTags[0];
-  if (isJSDoc(jsDoc)) {
+  if (ts.isJSDoc(jsDoc)) {
     const fullText = sourceFile.getFullText();
     const start = jsDoc.getFullStart();
     const end = jsDoc.getEnd();
@@ -672,11 +654,11 @@ function formatJSDoc(rawJsDoc: string): string {
  * @param node - The method declaration node.
  * @returns The method signature.
  */
-function extractMethodSignature(node: MethodDeclaration): string {
+function extractMethodSignature(node: ts.MethodDeclaration): string {
   // Since we're just using the method reference in the handler type,
   // we don't need the full signature - just return the method name
   // The actual signature will be inferred from the controller class
-  return node.name ? (node.name as Identifier).text : '';
+  return node.name ? (node.name as ts.Identifier).text : '';
 }
 
 /**
