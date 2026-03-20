@@ -6,7 +6,33 @@ import { assert, hasProperty, isObject } from '@metamask/utils';
 import { ESLint } from 'eslint';
 import * as fs from 'fs';
 import * as path from 'path';
-import ts from 'typescript';
+import {
+  type ArrayLiteralExpression,
+  type ClassDeclaration,
+  type Identifier,
+  type MethodDeclaration,
+  type Node,
+  type Program,
+  type SourceFile,
+  type Type,
+  createProgram,
+  createSourceFile,
+  findConfigFile,
+  forEachChild,
+  getJSDocCommentsAndTags,
+  isArrayLiteralExpression,
+  isAsExpression,
+  isClassDeclaration,
+  isIdentifier,
+  isJSDoc,
+  isMethodDeclaration,
+  isStringLiteral,
+  isVariableStatement,
+  parseJsonConfigFileContent,
+  readConfigFile,
+  ScriptTarget,
+  sys,
+} from 'typescript';
 import yargs from 'yargs';
 
 type MethodInfo = {
@@ -321,7 +347,7 @@ type VisitorContext = {
   exposedMethods: string[];
   className: string;
   methods: MethodInfo[];
-  sourceFile: ts.SourceFile;
+  sourceFile: SourceFile;
 };
 
 /**
@@ -330,37 +356,37 @@ type VisitorContext = {
  * @param context - The visitor context.
  * @returns A function to visit nodes.
  */
-function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
+function createASTVisitor(context: VisitorContext): (node: Node) => void {
   /**
    * Visits AST nodes to find exposed methods and controller class.
    *
    * @param node - The AST node to visit.
    */
-  function visitNode(node: ts.Node): void {
-    if (ts.isVariableStatement(node)) {
+  function visitNode(node: Node): void {
+    if (isVariableStatement(node)) {
       const declaration = node.declarationList.declarations[0];
       if (
-        ts.isIdentifier(declaration.name) &&
+        isIdentifier(declaration.name) &&
         declaration.name.text === 'MESSENGER_EXPOSED_METHODS'
       ) {
         if (declaration.initializer) {
-          let arrayExpression: ts.ArrayLiteralExpression | undefined;
+          let arrayExpression: ArrayLiteralExpression | undefined;
 
           // Handle direct array literal
-          if (ts.isArrayLiteralExpression(declaration.initializer)) {
+          if (isArrayLiteralExpression(declaration.initializer)) {
             arrayExpression = declaration.initializer;
           }
           // Handle "as const" assertion: expression is wrapped in type assertion
           else if (
-            ts.isAsExpression(declaration.initializer) &&
-            ts.isArrayLiteralExpression(declaration.initializer.expression)
+            isAsExpression(declaration.initializer) &&
+            isArrayLiteralExpression(declaration.initializer.expression)
           ) {
             arrayExpression = declaration.initializer.expression;
           }
 
           if (arrayExpression) {
             context.exposedMethods = arrayExpression.elements
-              .filter(ts.isStringLiteral)
+              .filter(isStringLiteral)
               .map((element) => element.text);
           }
         }
@@ -368,7 +394,7 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
     }
 
     // Find the controller or service class
-    if (ts.isClassDeclaration(node) && node.name) {
+    if (isClassDeclaration(node) && node.name) {
       const classText = node.name.text;
       if (classText.includes('Controller') || classText.includes('Service')) {
         context.className = classText;
@@ -377,9 +403,9 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
         const seenMethods = new Set<string>();
         for (const member of node.members) {
           if (
-            ts.isMethodDeclaration(member) &&
+            isMethodDeclaration(member) &&
             member.name &&
-            ts.isIdentifier(member.name)
+            isIdentifier(member.name)
           ) {
             const methodName = member.name.text;
             if (
@@ -400,7 +426,7 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
       }
     }
 
-    ts.forEachChild(node, visitNode);
+    forEachChild(node, visitNode);
   }
 
   return visitNode;
@@ -413,32 +439,29 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
  * @param filePath - Absolute path to the source file.
  * @returns A TypeScript program, or null if no tsconfig was found.
  */
-function createProgramForFile(filePath: string): ts.Program | null {
-  const configPath = ts.findConfigFile(
+function createProgramForFile(filePath: string): Program | null {
+  const configPath = findConfigFile(
     path.dirname(filePath),
-    ts.sys.fileExists.bind(ts.sys),
+    sys.fileExists.bind(sys),
     'tsconfig.json',
   );
   if (!configPath) {
     return null;
   }
 
-  const { config, error } = ts.readConfigFile(
-    configPath,
-    ts.sys.readFile.bind(ts.sys),
-  );
+  const { config, error } = readConfigFile(configPath, sys.readFile.bind(sys));
 
   if (error) {
     return null;
   }
 
-  const parsedConfig = ts.parseJsonConfigFileContent(
+  const parsedConfig = parseJsonConfigFileContent(
     config,
-    ts.sys,
+    sys,
     path.dirname(configPath),
   );
 
-  return ts.createProgram({
+  return createProgram({
     rootNames: parsedConfig.fileNames,
     options: parsedConfig.options,
   });
@@ -452,13 +475,13 @@ function createProgramForFile(filePath: string): ts.Program | null {
  * @returns The class declaration node, or null if not found.
  */
 function findClassInSourceFile(
-  sourceFile: ts.SourceFile,
+  sourceFile: SourceFile,
   className: string,
-): ts.ClassDeclaration | null {
+): ClassDeclaration | null {
   return (
     sourceFile.statements.find(
-      (node): node is ts.ClassDeclaration =>
-        ts.isClassDeclaration(node) && node.name?.text === className,
+      (node): node is ClassDeclaration =>
+        isClassDeclaration(node) && node.name?.text === className,
     ) ?? null
   );
 }
@@ -472,9 +495,9 @@ function findClassInSourceFile(
  * @returns The method declaration node, or null if not found.
  */
 function findMethodInHierarchy(
-  classType: ts.Type,
+  classType: Type,
   methodName: string,
-): ts.MethodDeclaration | null {
+): MethodDeclaration | null {
   const symbol = classType.getProperty(methodName);
   if (!symbol) {
     return null;
@@ -486,7 +509,7 @@ function findMethodInHierarchy(
   }
 
   for (const declaration of declarations) {
-    if (ts.isMethodDeclaration(declaration)) {
+    if (isMethodDeclaration(declaration)) {
       return declaration;
     }
   }
@@ -505,10 +528,10 @@ async function parseControllerFile(
 ): Promise<ControllerInfo | null> {
   try {
     const content = await fs.promises.readFile(filePath, 'utf8');
-    const sourceFile = ts.createSourceFile(
+    const sourceFile = createSourceFile(
       filePath,
       content,
-      ts.ScriptTarget.Latest,
+      ScriptTarget.Latest,
       true,
     );
 
@@ -590,17 +613,14 @@ async function parseControllerFile(
  * @param sourceFile - The source file.
  * @returns The JSDoc comment.
  */
-function extractJSDoc(
-  node: ts.MethodDeclaration,
-  sourceFile: ts.SourceFile,
-): string {
-  const jsDocTags = ts.getJSDocCommentsAndTags(node);
+function extractJSDoc(node: MethodDeclaration, sourceFile: SourceFile): string {
+  const jsDocTags = getJSDocCommentsAndTags(node);
   if (jsDocTags.length === 0) {
     return '';
   }
 
   const jsDoc = jsDocTags[0];
-  if (ts.isJSDoc(jsDoc)) {
+  if (isJSDoc(jsDoc)) {
     const fullText = sourceFile.getFullText();
     const start = jsDoc.getFullStart();
     const end = jsDoc.getEnd();
@@ -652,11 +672,11 @@ function formatJSDoc(rawJsDoc: string): string {
  * @param node - The method declaration node.
  * @returns The method signature.
  */
-function extractMethodSignature(node: ts.MethodDeclaration): string {
+function extractMethodSignature(node: MethodDeclaration): string {
   // Since we're just using the method reference in the handler type,
   // we don't need the full signature - just return the method name
   // The actual signature will be inferred from the controller class
-  return node.name ? (node.name as ts.Identifier).text : '';
+  return node.name ? (node.name as Identifier).text : '';
 }
 
 /**
