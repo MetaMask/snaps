@@ -1,7 +1,7 @@
 import {
   ORIGIN_METAMASK,
-  type AddApprovalRequest,
-  type UpdateRequestState,
+  type ApprovalControllerAddRequestAction,
+  type ApprovalControllerUpdateRequestStateAction,
 } from '@metamask/approval-controller';
 import type {
   ControllerGetStateAction,
@@ -673,12 +673,12 @@ export type AllowedActions =
   | RevokeAllPermissions
   | RevokePermissionForAllSubjects
   | GrantPermissions
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | HandleRpcRequestAction
   | ExecuteSnapAction
   | TerminateSnapAction
   | UpdateCaveat
-  | UpdateRequestState
+  | ApprovalControllerUpdateRequestStateAction
   | GetResult
   | GetMetadata
   | Update
