@@ -241,7 +241,6 @@ export const MESSENGER_EXPOSED_METHODS = [
   'setClientActive',
 ] as const;
 
-// TODO: Figure out how to name these
 export const SNAP_APPROVAL_INSTALL = 'wallet_installSnap';
 export const SNAP_APPROVAL_UPDATE = 'wallet_updateSnap';
 export const SNAP_APPROVAL_RESULT = 'wallet_installSnapResult';
