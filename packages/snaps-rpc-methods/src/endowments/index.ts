@@ -146,7 +146,10 @@ export { getRpcCaveatOrigins } from './rpc';
 export { getSignatureOriginCaveat } from './signature-insight';
 export { getTransactionOriginCaveat } from './transaction-insight';
 export { getChainIdsCaveat, getLookupMatchersCaveat } from './name-lookup';
-export { getKeyringCaveatOrigins } from './keyring';
+export {
+  getKeyringCaveatOrigins,
+  getKeyringCaveatCapabilities,
+} from './keyring';
 export { getMaxRequestTimeCaveat } from './caveats';
 export { getCronjobCaveatJobs } from './cronjob';
 export { getProtocolCaveatScopes } from './protocol';
