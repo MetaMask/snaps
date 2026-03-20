@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add capabilities caveat for `endowment:keyring` ([#XXXX](https://github.com/MetaMask/snaps/pull/XXXX))
-  - `KeyringCapabilities` and `KeyringCapabilitiesStruct` from `@metamask/keyring-api` are now re-exported from this package as well.
+- Add `KeyringCapabilities` type and `KeyringCapabilitiesStruct` / `assertIsKeyringCapabilities` exports for the `endowment:keyring` capabilities caveat ([#3903](https://github.com/MetaMask/snaps/pull/3903))
 
 ## [12.1.1]
 
