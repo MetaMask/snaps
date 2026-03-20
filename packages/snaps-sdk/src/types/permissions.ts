@@ -1,9 +1,5 @@
 import type { SupportedCurve } from '@metamask/key-tree';
-import type {
-  CaipChainId,
-  JsonRpcParams,
-  NonEmptyArray,
-} from '@metamask/utils';
+import type { CaipChainId, JsonRpcParams } from '@metamask/utils';
 
 export type EmptyObject = Record<string, never>;
 
@@ -113,7 +109,7 @@ type KeyringAccountType =
  * exists purely for the `InitialPermissions` type signature.
  */
 type Capabilities = {
-  scopes: NonEmptyArray<CaipChainId>;
+  scopes: CaipChainId[];
   bip44?: {
     derivePath?: boolean;
     deriveIndex?: boolean;

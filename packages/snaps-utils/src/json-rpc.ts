@@ -4,11 +4,9 @@ import {
   array,
   boolean,
   enums,
-  exactOptional,
   nonempty,
   object,
   optional,
-  partial,
   refine,
   string,
 } from '@metamask/superstruct';
@@ -140,35 +138,33 @@ const KeyringAccountTypeStruct = enums([
  */
 const CapabilitiesStruct = object({
   scopes: nonempty(array(CaipChainIdStruct)),
-  bip44: exactOptional(
+  bip44: optional(
     object({
-      derivePath: exactOptional(boolean()),
-      deriveIndex: exactOptional(boolean()),
-      deriveIndexRange: exactOptional(boolean()),
-      discover: exactOptional(boolean()),
+      derivePath: optional(boolean()),
+      deriveIndex: optional(boolean()),
+      deriveIndexRange: optional(boolean()),
+      discover: optional(boolean()),
     }),
   ),
-  privateKey: exactOptional(
+  privateKey: optional(
     object({
-      importFormats: exactOptional(
+      importFormats: optional(
         array(
           object({
             encoding: PrivateKeyEncodingStruct,
-            type: exactOptional(KeyringAccountTypeStruct),
+            type: optional(KeyringAccountTypeStruct),
           }),
         ),
       ),
-      exportFormats: exactOptional(
+      exportFormats: optional(
         array(object({ encoding: PrivateKeyEncodingStruct })),
       ),
     }),
   ),
-  custom: exactOptional(
-    partial(
-      object({
-        createAccounts: boolean(),
-      }),
-    ),
+  custom: optional(
+    object({
+      createAccounts: optional(boolean()),
+    }),
   ),
 });
 
