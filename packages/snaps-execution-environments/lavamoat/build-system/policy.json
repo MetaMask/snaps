@@ -5,21 +5,432 @@
         "ts-loader": true
       }
     },
+    "terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true
+      }
+    },
+    "vitest>magic-string>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true
+      }
+    },
+    "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "vitest>magic-string>@jridgewell/sourcemap-codec": true
+      }
+    },
     "@swc/core": false,
+    "webpack>@webassemblyjs/ast": {
+      "globals": {
+        "console.warn": true,
+        "exports": true
+      },
+      "packages": {
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers": true,
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true
+      }
+    },
+    "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers": {
+      "packages": {
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@webassemblyjs/floating-point-hex-parser": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/helper-api-error": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": {
+      "packages": {
+        "webpack>@webassemblyjs/ast": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": true,
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": {
+      "packages": {
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754>@xtuc/ieee754": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128": {
+      "packages": {
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-edit": {
+      "packages": {
+        "webpack>@webassemblyjs/ast": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": true,
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-opt": true,
+        "webpack>@webassemblyjs/wasm-parser": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": {
+      "globals": {
+        "exports": true,
+        "require": true
+      },
+      "packages": {
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/utf8": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-opt": {
+      "packages": {
+        "webpack>@webassemblyjs/ast": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": true,
+        "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": true,
+        "webpack>@webassemblyjs/wasm-parser": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-parser": {
+      "globals": {
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "webpack>@webassemblyjs/ast": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/helper-api-error": true,
+        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128": true,
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/utf8": true
+      }
+    },
+    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": {
+      "globals": {
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      }
+    },
+    "terser>acorn": {
+      "globals": {
+        "console": true
+      }
+    },
+    "webpack>schema-utils>ajv-formats": {
+      "packages": {
+        "webpack>schema-utils>ajv": true
+      }
+    },
+    "webpack>schema-utils>ajv-keywords": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "webpack>schema-utils>ajv": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "webpack>schema-utils>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "eslint>fast-deep-equal": true,
+        "webpack>schema-utils>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true
+      }
+    },
+    "webpack>browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "webpack>browserslist>caniuse-lite": true,
+        "webpack>browserslist>electron-to-chromium": true,
+        "webpack>browserslist>node-releases": true
+      }
+    },
+    "webpack>chrome-trace-event": {
+      "builtin": {
+        "stream.Readable": true
+      },
+      "globals": {
+        "process.hrtime": true,
+        "process.pid": true
+      }
+    },
+    "webpack>enhanced-resolve": {
+      "builtin": {
+        "module.findPnpApi": true,
+        "path.basename": true,
+        "path.posix.normalize": true,
+        "path.win32.normalize": true,
+        "process.nextTick": true,
+        "process.versions.pnp": true
+      },
+      "globals": {
+        "Buffer.isBuffer": true,
+        "URL": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>graceful-fs": true,
+        "webpack>tapable": true
+      }
+    },
+    "webpack>es-module-lexer": {
+      "globals": {
+        "Buffer": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "WebAssembly.compile": true,
+        "WebAssembly.instantiate": true,
+        "atob": true
+      }
+    },
+    "tsx>esbuild": {
+      "builtin": {
+        "child_process.execFileSync": true,
+        "child_process.spawn": true,
+        "crypto.randomBytes": true,
+        "fs.chmodSync": true,
+        "fs.copyFileSync": true,
+        "fs.existsSync": true,
+        "fs.mkdirSync": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.unlink": true,
+        "fs.unlinkSync": true,
+        "fs.writeFile": true,
+        "fs.writeFileSync": true,
+        "os.arch": true,
+        "os.endianness": true,
+        "os.tmpdir": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "tty.isatty": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "URL": true,
+        "WebAssembly.Module": true,
+        "__dirname": true,
+        "__filename": true,
+        "console.log": true,
+        "console.warn": true,
+        "process.cwd": true,
+        "process.env.ESBUILD_BINARY_PATH": true,
+        "process.env.ESBUILD_MAX_BUFFER": true,
+        "process.env.ESBUILD_WORKER_THREADS": true,
+        "process.platform": true,
+        "process.versions.node.split": true,
+        "setTimeout": true
+      }
+    },
+    "webpack>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "eslint>eslint-scope>esrecurse": true,
+        "webpack>eslint-scope>estraverse": true
+      }
+    },
+    "eslint>eslint-scope>esrecurse": {
+      "packages": {
+        "eslint>esquery>estraverse": true
+      }
+    },
+    "webpack>events": {
+      "globals": {
+        "console": true
+      }
+    },
+    "webpack>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
+      }
+    },
+    "eslint>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
     "html-webpack-plugin": {
       "builtin": {
         "url": true
       }
     },
     "webpack>terser-webpack-plugin>jest-worker": {
+      "builtin": {
+        "child_process": true,
+        "os": true,
+        "path": true,
+        "stream": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "__dirname": true,
+        "clearTimeout": true,
+        "process": true,
+        "setTimeout": true
+      },
       "packages": {
+        "@metamask/auto-changelog>execa>merge-stream": true,
+        "webpack>terser-webpack-plugin>jest-worker>supports-color": true,
         "webpack>terser-webpack-plugin": true
       }
     },
+    "webpack>json-parse-even-better-errors": {
+      "globals": {
+        "Buffer.isBuffer": true
+      }
+    },
     "webpack>loader-runner": {
+      "builtin": {
+        "fs": true,
+        "url": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "console.error": true,
+        "process.nextTick": true,
+        "setImmediate": true
+      },
       "packages": {
         "html-webpack-plugin": true,
         "ts-loader": true
+      }
+    },
+    "@metamask/auto-changelog>execa>merge-stream": {
+      "builtin": {
+        "stream.PassThrough": true
+      }
+    },
+    "webpack>mime-types": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "webpack>mime-types>mime-db": true
+      }
+    },
+    "webpack>neo-async": {
+      "globals": {
+        "clearTimeout": true,
+        "console": true,
+        "define": true,
+        "process": true,
+        "setImmediate": true,
+        "setTimeout": true
+      }
+    },
+    "webpack>terser-webpack-plugin>serialize-javascript>randombytes": {
+      "builtin": {
+        "crypto.randomBytes": true
+      }
+    },
+    "webpack>schema-utils": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "webpack>schema-utils>ajv-formats": true,
+        "webpack>schema-utils>ajv-keywords": true,
+        "webpack>schema-utils>ajv": true
+      }
+    },
+    "webpack>terser-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "webpack>terser-webpack-plugin>serialize-javascript>randombytes": true
+      }
+    },
+    "webpack>terser-webpack-plugin>jest-worker>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint>chalk>supports-color>has-flag": true
+      }
+    },
+    "webpack>tapable": {
+      "builtin": {
+        "util.deprecate": true
+      }
+    },
+    "terser": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "process": true,
+        "require": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map": true
+      }
+    },
+    "webpack>terser-webpack-plugin": {
+      "builtin": {
+        "os.availableParallelism": true,
+        "os.cpus": true,
+        "path.dirname": true,
+        "path.relative": true
+      },
+      "globals": {
+        "Buffer.isBuffer": true,
+        "__dirname": true,
+        "__filename": true,
+        "process.stderr.write": true,
+        "process.stdout.write": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
+        "@swc/core": true,
+        "tsx>esbuild": true,
+        "webpack>terser-webpack-plugin>jest-worker": true,
+        "webpack>schema-utils": true,
+        "webpack>terser-webpack-plugin>serialize-javascript": true,
+        "terser": true
       }
     },
     "ts-loader": {
@@ -28,6 +439,151 @@
       }
     },
     "typescript": {
+    },
+    "eslint>ajv>uri-js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "webpack>watchpack": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.readlinkSync": true,
+        "fs.watch": true,
+        "os.platform": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process.env.WATCHPACK_POLLING": true,
+        "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
+        "process.env.WATCHPACK_WATCHER_LIMIT": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.stderr.write": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>glob-to-regexp": true,
+        "webpack>graceful-fs": true
+      }
+    },
+    "webpack": {
+      "builtin": {
+        "buffer.constants.MAX_LENGTH": true,
+        "crypto": true,
+        "events": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "http": true,
+        "https": true,
+        "inspector": true,
+        "module.builtinModules": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.dirname": true,
+        "path.posix.isAbsolute": true,
+        "path.posix.join": true,
+        "path.posix.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "path.win32.dirname": true,
+        "path.win32.isAbsolute": true,
+        "path.win32.join": true,
+        "path.win32.relative": true,
+        "querystring.parse": true,
+        "stream.pipeline": true,
+        "url.URL": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect.custom": true,
+        "vm.createContext": true,
+        "vm.runInContext": true,
+        "vm.runInThisContext": true,
+        "zlib.constants.BROTLI_MODE_TEXT": true,
+        "zlib.constants.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING": true,
+        "zlib.constants.BROTLI_PARAM_MODE": true,
+        "zlib.constants.BROTLI_PARAM_QUALITY": true,
+        "zlib.constants.BROTLI_PARAM_SIZE_HINT": true,
+        "zlib.constants.Z_BEST_SPEED": true,
+        "zlib.createBrotliCompress": true,
+        "zlib.createBrotliDecompress": true,
+        "zlib.createGunzip": true,
+        "zlib.createGzip": true,
+        "zlib.createInflate": true
+      },
+      "globals": {
+        "Buffer.allocUnsafe": true,
+        "Buffer.allocUnsafeSlow": true,
+        "Buffer.byteLength": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "Buffer.prototype.readBigUInt64LE": true,
+        "Buffer.prototype.writeBigUInt64LE": true,
+        "URL": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true,
+        "__dirname": true,
+        "__webpack_require__": true,
+        "clearTimeout": true,
+        "console.clear": true,
+        "console.error": true,
+        "console.log": true,
+        "console.profile": true,
+        "console.profileEnd": true,
+        "console.warn": true,
+        "process.cwd": true,
+        "process.env": true,
+        "process.hrtime": true,
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.versions.modules": true,
+        "process.versions.pnp": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>@webassemblyjs/ast": true,
+        "webpack>@webassemblyjs/wasm-edit": true,
+        "webpack>@webassemblyjs/wasm-parser": true,
+        "terser>acorn": true,
+        "webpack>browserslist": true,
+        "webpack>chrome-trace-event": true,
+        "webpack>enhanced-resolve": true,
+        "webpack>es-module-lexer": true,
+        "webpack>eslint-scope": true,
+        "webpack>events": true,
+        "webpack>glob-to-regexp": true,
+        "webpack>graceful-fs": true,
+        "webpack>json-parse-even-better-errors": true,
+        "webpack>loader-runner": true,
+        "webpack>mime-types": true,
+        "webpack>neo-async": true,
+        "webpack>schema-utils": true,
+        "webpack>tapable": true,
+        "webpack>terser-webpack-plugin": true,
+        "webpack>watchpack": true,
+        "webpack>webpack-sources": true
+      }
+    },
+    "webpack>webpack-sources": {
+      "globals": {
+        "Buffer.byteLength": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "process": true
+      }
     }
   }
 }

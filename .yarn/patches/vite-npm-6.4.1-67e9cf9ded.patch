@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index fa8f76bccac73b7fbffab77a7b2ca37f7d8a0848..5d8f6e47e428088b48b3dba7d1a6edd4a51689bd 100644
+--- a/package.json
++++ b/package.json
+@@ -32,7 +32,6 @@
+     "./types/*": {
+       "types": "./types/*"
+     },
+-    "./types/internal/*": null,
+     "./package.json": "./package.json"
+   },
+   "typesVersions": {
