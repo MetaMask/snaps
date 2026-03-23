@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911))
+- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912))
   - `SnapController` actions:
     - `GetSnap` is now `SnapControllerGetSnapAction`.
       - Note: The method is now called `getSnap` instead of `get`.
