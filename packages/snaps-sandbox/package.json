@@ -67,7 +67,7 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "typescript": "~5.3.3",
-    "vite": "^6.4.1",
+    "vite": "patch:vite@npm%3A6.4.1#~/.yarn/patches/vite-npm-6.4.1-67e9cf9ded.patch",
     "vitest": "^3.1.1"
   },
   "engines": {

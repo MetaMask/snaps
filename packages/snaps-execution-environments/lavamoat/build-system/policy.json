@@ -5,14 +5,14 @@
         "ts-loader": true
       }
     },
-    "lavamoat>@babel/code-frame": {
+    "@testing-library/dom>@babel/code-frame": {
       "globals": {
         "console.warn": true,
         "process": true
       },
       "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>js-tokens": true,
+        "depcheck>@babel/parser>@babel/types>@babel/helper-validator-identifier": true,
+        "@testing-library/dom>@babel/code-frame>js-tokens": true,
         "vite>postcss>picocolors": true
       }
     },
@@ -22,7 +22,7 @@
         "console.warn": true
       },
       "packages": {
-        "@metamask/snaps-utils>@babel/types": true,
+        "depcheck>@babel/parser>@babel/types": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true,
         "depcheck>@babel/traverse>@babel/generator>jsesc": true
@@ -30,79 +30,70 @@
     },
     "depcheck>@babel/traverse>@babel/template": {
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/parser": true,
-        "@metamask/snaps-utils>@babel/types": true
+        "depcheck>@babel/parser>@babel/types": true
       }
     },
-    "depcheck>@babel/traverse": {
+    "@lavamoat/node>lavamoat-tofu>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/traverse>@babel/generator": true,
-        "depcheck>@babel/parser": true,
+        "@lavamoat/node>lavamoat-tofu>@babel/traverse>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/template": true,
-        "@metamask/snaps-utils>@babel/types": true,
+        "@lavamoat/node>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "eslint>debug": true,
-        "depcheck>@babel/traverse>globals": true
+        "@lavamoat/node>lavamoat-tofu>@babel/traverse>globals": true
       }
     },
-    "@metamask/snaps-utils>@babel/types": {
+    "depcheck>@babel/parser>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
-        "@metamask/snaps-utils>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+        "depcheck>@babel/parser>@babel/types>@babel/helper-string-parser": true,
+        "depcheck>@babel/parser>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "@lavamoat/node>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "depcheck>@babel/parser>@babel/types>@babel/helper-string-parser": true,
+        "depcheck>@babel/parser>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
         "vitest>magic-string>@jridgewell/sourcemap-codec": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
       }
     },
     "terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+        "TextDecoder": true
       }
     },
     "vitest>magic-string>@jridgewell/sourcemap-codec": {
       "globals": {
         "Buffer": true,
-        "TextDecoder": true,
-        "define": true
+        "TextDecoder": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
       "packages": {
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
         "vitest>magic-string>@jridgewell/sourcemap-codec": true
       }
     },
-    "lavamoat>@lavamoat/aa": {
+    "@lavamoat/webpack>@lavamoat/aa": {
       "builtin": {
         "node:fs.lstatSync": true,
         "node:fs.readFileSync": true,
@@ -132,17 +123,18 @@
         "process._rawDebug": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
-        "lavamoat>@lavamoat/aa": true,
+        "@lavamoat/webpack>@babel/parser": true,
+        "@lavamoat/webpack>@lavamoat/aa": true,
         "@lavamoat/webpack>browser-resolve": true,
-        "lavamoat>lavamoat-core": true,
+        "@lavamoat/node>lavamoat-core": true,
         "webpack": true
       }
     },
     "@swc/core": false,
     "webpack>@webassemblyjs/ast": {
       "globals": {
-        "console.warn": true
+        "console.warn": true,
+        "exports": true
       },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers": true,
@@ -153,7 +145,7 @@
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@webassemblyjs/floating-point-hex-parser": true,
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/helper-api-error": true,
-        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": true
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": true
       }
     },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": {
@@ -171,7 +163,7 @@
     },
     "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128": {
       "packages": {
-        "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": true
+        "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": true
       }
     },
     "webpack>@webassemblyjs/wasm-edit": {
@@ -186,6 +178,10 @@
       }
     },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": {
+      "globals": {
+        "exports": true,
+        "require": true
+      },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": true,
@@ -215,7 +211,7 @@
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/utf8": true
       }
     },
-    "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": {
+    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128>@xtuc/long": {
       "globals": {
         "WebAssembly.Instance": true,
         "WebAssembly.Module": true
@@ -223,8 +219,7 @@
     },
     "terser>acorn": {
       "globals": {
-        "console": true,
-        "define": true
+        "console": true
       }
     },
     "webpack>schema-utils>ajv-formats": {
@@ -257,11 +252,9 @@
       }
     },
     "ts-loader>micromatch>braces": {
-      "globals": {
-        "console.log": true
-      },
       "packages": {
-        "ts-loader>micromatch>braces>fill-range": true
+        "ts-loader>micromatch>braces>fill-range": true,
+        "vite>tinyglobby>picomatch": true
       }
     },
     "@lavamoat/webpack>browser-resolve": {
@@ -300,14 +293,9 @@
         "webpack>browserslist>node-releases": true
       }
     },
-    "terser>source-map-support>buffer-from": {
-      "globals": {
-        "Buffer": true
-      }
-    },
     "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "webpack>webpack-cli>webpack-dev-server>express>qs>side-channel>es-errors": true,
         "depcheck>is-core-module>hasown>function-bind": true
       }
     },
@@ -368,13 +356,14 @@
         "terser>source-map-support>source-map": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
         "webpack-merge>clone-deep>is-plain-object": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
       }
     },
     "webpack-merge>clone-deep": {
@@ -419,7 +408,7 @@
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "webpack>webpack-cli>webpack-dev-server>express>qs>side-channel>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>gopd": true
       }
     },
@@ -542,17 +531,22 @@
         "eslint>esquery>estraverse": true
       }
     },
+    "webpack>events": {
+      "globals": {
+        "console": true
+      }
+    },
     "ts-loader>micromatch>braces>fill-range": {
       "builtin": {
-        "util.inspect": true
+        "util": true
       },
       "packages": {
         "ts-loader>micromatch>braces>fill-range>to-regex-range": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own>for-in": true
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>for-own>for-in": true
       }
     },
     "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": {
@@ -565,7 +559,7 @@
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "webpack>webpack-cli>webpack-dev-server>express>qs>side-channel>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true,
         "depcheck>is-core-module>hasown>function-bind": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>get-proto": true,
@@ -592,6 +586,8 @@
         "util": true
       },
       "globals": {
+        "___graceful-fs_previous": "write",
+        "___graceful-fs_queue": "write",
         "clearTimeout": true,
         "console.error": true,
         "process": true,
@@ -727,20 +723,17 @@
         "console.warn": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>kind-of": {
+    "@lavamoat/node>lavamoat-core>merge-deep>kind-of": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>kind-of>is-buffer": true
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of>is-buffer": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
-      "globals": {
-        "Buffer": true
-      },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>kind-of>is-buffer": true
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of>is-buffer": true
       }
     },
-    "lavamoat>lavamoat-core": {
+    "@lavamoat/node>lavamoat-core": {
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
@@ -755,28 +748,28 @@
       },
       "packages": {
         "@lavamoat/webpack>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
-        "lavamoat>lavamoat-core>merge-deep": true
+        "@lavamoat/node>lavamoat-tofu": true,
+        "@lavamoat/node>lavamoat-core>merge-deep": true
       }
     },
-    "lavamoat>lavamoat-tofu": {
+    "@lavamoat/node>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "@lavamoat/node>lavamoat-tofu>@babel/parser": true,
+        "@lavamoat/node>lavamoat-tofu>@babel/traverse": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
       "globals": {
         "process.env.TRAVIS": true,
         "process.env.UNLAZY": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
       "globals": {
-        "process.env.UNLAZY": true
+        "process.env": true
       }
     },
     "webpack>loader-runner": {
@@ -801,11 +794,11 @@
         "define": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep": {
+    "@lavamoat/node>lavamoat-core>merge-deep": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>arr-union": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+        "@lavamoat/node>lavamoat-core>merge-deep>arr-union": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of": true
       }
     },
     "@metamask/auto-changelog>execa>merge-stream": {
@@ -815,7 +808,7 @@
     },
     "ts-loader>micromatch": {
       "builtin": {
-        "util.inspect": true
+        "util": true
       },
       "packages": {
         "ts-loader>micromatch>braces": true,
@@ -830,10 +823,10 @@
         "webpack>mime-types>mime-db": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true
       }
     },
     "webpack>neo-async": {
@@ -954,12 +947,6 @@
         "webpack>schema-utils>ajv": true
       }
     },
-    "depcheck>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      }
-    },
     "webpack>terser-webpack-plugin>serialize-javascript": {
       "globals": {
         "URL": true
@@ -971,18 +958,18 @@
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "webpack>webpack-cli>webpack-dev-server>express>qs>side-channel>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>gopd": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": true
       }
     },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
       "packages": {
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true
       }
     },
     "webpack-merge>clone-deep>shallow-clone": {
@@ -994,40 +981,15 @@
         "webpack-merge>clone-deep>kind-of": true
       }
     },
-    "jest>@jest/core>jest-runner>source-map-support": {
-      "builtin": {
-        "fs": true,
-        "module": true,
-        "path.dirname": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "XMLHttpRequest": true,
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "terser>source-map-support>buffer-from": true,
-        "terser>source-map-support>source-map": true
-      }
-    },
     "ts-loader>source-map": {
       "builtin": {
         "fs.readFile": true,
         "path.join": true
-      },
-      "globals": {
-        "WebAssembly.instantiate": true,
-        "__dirname": true,
-        "console.debug": true,
-        "console.time": true,
-        "console.timeEnd": true,
-        "fetch": true
       }
     },
     "jest>@jest/core>strip-ansi": {
       "packages": {
-        "@types/jest>pretty-format>ansi-regex": true
+        "jest>@jest/core>strip-ansi>ansi-regex": true
       }
     },
     "eslint>chalk>supports-color": {
@@ -1068,12 +1030,11 @@
         "btoa": true,
         "console.log": true,
         "console.warn": true,
-        "define": true,
-        "process": true
+        "process": true,
+        "require": true
       },
       "packages": {
-        "terser>@jridgewell/source-map": true,
-        "terser>acorn": true
+        "terser>@jridgewell/source-map": true
       }
     },
     "webpack>terser-webpack-plugin": {
@@ -1336,6 +1297,7 @@
         "webpack>enhanced-resolve": true,
         "webpack>es-module-lexer": true,
         "webpack>eslint-scope": true,
+        "webpack>events": true,
         "webpack>glob-to-regexp": true,
         "webpack>graceful-fs": true,
         "webpack>json-parse-even-better-errors": true,

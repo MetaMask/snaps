@@ -6,7 +6,7 @@
   },
   "include": [
     "./src",
-    "webpack.config.js",
+    "webpack.config.mjs",
     "scripts",
     "package.json",
     "vitest.config.mts",

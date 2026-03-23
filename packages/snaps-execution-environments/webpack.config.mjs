@@ -2,14 +2,16 @@
 // have any declarations, and it currently makes using it from LavaMoat Node
 // more difficult.
 
-const LavaMoatPlugin = require('@lavamoat/webpack');
-const { readFileSync } = require('fs');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { isBuiltin } = require('module');
-const { resolve } = require('path');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
-const { ProvidePlugin, Compilation } = require('webpack');
-const { merge } = require('webpack-merge');
+import { LavaMoatPlugin } from '@lavamoat/webpack';
+import { readFileSync } from 'fs';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { isBuiltin } from 'module';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'path';
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import webpack from 'webpack';
+import { merge } from 'webpack-merge';
 
 /**
  * Whether to generate a policy file for the build.
@@ -29,12 +31,28 @@ const IS_PRODUCTION =
   process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test';
 
 /**
+ * The path to the root `node_modules` directory.
+ *
+ * @type {string}
+ */
+const NODE_MODULES_PATH = resolve(
+  fileURLToPath(import.meta.url),
+  '..',
+  '..',
+  '..',
+  'node_modules',
+);
+
+/**
  * The SES bundle used for the lockdown script.
  *
  * @type {string}
  */
 // eslint-disable-next-line n/no-sync
-const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
+const SES_BUNDLE = readFileSync(
+  resolve(NODE_MODULES_PATH, 'ses', 'dist', 'ses.cjs'),
+  'utf-8',
+);
 
 /**
  * @typedef {import('webpack').Configuration} Configuration
@@ -53,6 +71,9 @@ const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
  * configuration for this entry point. This is merged with the base
  * configuration.
  */
+
+// eslint-disable-next-line no-shadow
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * The default Webpack configuration for web-based entry points.
@@ -172,7 +193,7 @@ const baseConfig = {
   },
 
   plugins: [
-    new ProvidePlugin({
+    new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
   ],
@@ -184,7 +205,7 @@ const baseConfig = {
       // safely ignore it if it's not available.
       crypto: false,
 
-      stream: require.resolve('stream-browserify'),
+      stream: resolve(NODE_MODULES_PATH, 'stream-browserify', 'index.js'),
     },
 
     plugins: [
@@ -255,7 +276,8 @@ const configs = ENTRY_POINTS.map(
               compilation.hooks.processAssets.tap(
                 {
                   name: PLUGIN_NAME,
-                  stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
+                  stage:
+                    webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
                 },
                 (assets) => {
                   // Remove `lockdown` from the assets, since we inline the SES
@@ -276,4 +298,4 @@ const configs = ENTRY_POINTS.map(
     }),
 );
 
-module.exports = configs;
+export default configs;
