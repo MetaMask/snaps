@@ -17,9 +17,9 @@ import {
 import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type {
   ExecutionServiceActions,
+  SnapInterfaceControllerStateChangeEvent,
   SnapInterfaceControllerActions,
   SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerStateChangeEvent,
 } from '@metamask/snaps-controllers';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,

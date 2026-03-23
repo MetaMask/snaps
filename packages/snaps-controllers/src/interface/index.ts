@@ -1,5 +1,7 @@
 export type {
   ExpandedView,
+  SnapInterfaceControllerActions,
+  SnapInterfaceControllerAllowedActions,
   SnapInterfaceControllerGetStateAction,
   SnapInterfaceControllerState,
   SnapInterfaceControllerStateChangeEvent,
