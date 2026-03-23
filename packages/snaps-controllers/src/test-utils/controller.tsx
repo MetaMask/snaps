@@ -54,13 +54,13 @@ import type { Json } from '@metamask/utils';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
-import type { CronjobControllerMessenger } from '../cronjob';
+import type { CronjobControllerMessenger } from '../cronjob/CronjobController';
 import type { SnapInsightsControllerMessenger } from '../insights';
 import type {
   SnapInterfaceControllerMessenger,
   StoredInterface,
 } from '../interface/SnapInterfaceController';
-import type { MultichainRouterMessenger } from '../multichain';
+import type { MultichainRouterMessenger } from '../multichain/MultichainRouter';
 import type {
   AbstractExecutionService,
   ExecutionServiceMessenger,

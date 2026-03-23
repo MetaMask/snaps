@@ -22,31 +22,11 @@ import {
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
+import type { MultichainRouterMethodActions } from './MultichainRouter-method-action-types';
 import type {
-  SnapControllerGetAllSnapsAction,
+  SnapControllerGetRunnableSnapsAction,
   SnapControllerHandleRequestAction,
 } from '../snaps';
-import { getRunnableSnaps } from '../snaps';
-
-export type MultichainRouterHandleRequestAction = {
-  type: `${typeof name}:handleRequest`;
-  handler: MultichainRouter['handleRequest'];
-};
-
-export type MultichainRouterGetSupportedMethodsAction = {
-  type: `${typeof name}:getSupportedMethods`;
-  handler: MultichainRouter['getSupportedMethods'];
-};
-
-export type MultichainRouterGetSupportedAccountsAction = {
-  type: `${typeof name}:getSupportedAccounts`;
-  handler: MultichainRouter['getSupportedAccounts'];
-};
-
-export type MultichainRouterIsSupportedScopeAction = {
-  type: `${typeof name}:isSupportedScope`;
-  handler: MultichainRouter['isSupportedScope'];
-};
 
 type SnapKeyring = {
   submitRequest: (request: {
@@ -68,14 +48,10 @@ export type AccountsControllerListMultichainAccountsAction = {
   handler: (chainId?: CaipChainId) => InternalAccount[];
 };
 
-export type MultichainRouterActions =
-  | MultichainRouterHandleRequestAction
-  | MultichainRouterGetSupportedMethodsAction
-  | MultichainRouterGetSupportedAccountsAction
-  | MultichainRouterIsSupportedScopeAction;
+export type MultichainRouterActions = MultichainRouterMethodActions;
 
 export type MultichainRouterAllowedActions =
-  | SnapControllerGetAllSnapsAction
+  | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
   | GetPermissions
   | AccountsControllerListMultichainAccountsAction;
@@ -99,6 +75,13 @@ type ProtocolSnap = {
 
 const name = 'MultichainRouter';
 
+const MESSENGER_EXPOSED_METHODS = [
+  'handleRequest',
+  'getSupportedMethods',
+  'getSupportedAccounts',
+  'isSupportedScope',
+] as const;
+
 export class MultichainRouter {
   name: typeof name = name;
 
@@ -112,24 +95,9 @@ export class MultichainRouter {
     this.#messenger = messenger;
     this.#withSnapKeyring = withSnapKeyring;
 
-    this.#messenger.registerActionHandler(
-      `${name}:handleRequest`,
-      async (...args) => this.handleRequest(...args),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${name}:getSupportedMethods`,
-      (...args) => this.getSupportedMethods(...args),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${name}:getSupportedAccounts`,
-      (...args) => this.getSupportedAccounts(...args),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${name}:isSupportedScope`,
-      (...args) => this.isSupportedScope(...args),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -263,8 +231,9 @@ export class MultichainRouter {
    * @returns A list of all the protocol Snaps available and their RPC methods.
    */
   #getProtocolSnaps(scope: CaipChainId) {
-    const allSnaps = this.#messenger.call('SnapController:getAllSnaps');
-    const filteredSnaps = getRunnableSnaps(allSnaps);
+    const filteredSnaps = this.#messenger.call(
+      'SnapController:getRunnableSnaps',
+    );
 
     return filteredSnaps.reduce<ProtocolSnap[]>((accumulator, snap) => {
       const permissions = this.#messenger.call(

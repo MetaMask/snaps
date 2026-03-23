@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912))
+- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912), [#3913](https://github.com/MetaMask/snaps/pull/3913))
   - `SnapController` actions:
     - `GetSnap` is now `SnapControllerGetSnapAction`.
       - Note: The method is now called `getSnap` instead of `get`.
@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SnapTerminated` is now `SnapControllerSnapTerminatedEvent`.
   - `SnapEnabled` is now `SnapControllerSnapEnabledEvent`.
   - `SnapDisabled` is now `SnapControllerSnapDisabledEvent`.
+- **BREAKING:** `MutlichainRouter` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
 
 ### Removed
 
