@@ -206,7 +206,9 @@ import {
 
 export const controllerName = 'SnapController';
 
-export const MESSENGER_EXPOSED_METHODS = [
+// This is used by the `generate-method-action-types` script.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const MESSENGER_EXPOSED_METHODS = [
   'init',
   'updateRegistry',
   'enableSnap',

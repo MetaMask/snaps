@@ -21,6 +21,7 @@ import { castDraft } from 'immer';
 import { DateTime } from 'luxon';
 import { nanoid } from 'nanoid';
 
+import type { CronjobControllerMethodActions } from './CronjobController-method-action-types';
 import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 import type {
   SnapControllerHandleRequestAction,
@@ -43,41 +44,15 @@ export type CronjobControllerStateChangeEvent = ControllerStateChangeEvent<
   CronjobControllerState
 >;
 
-/**
- * Initialise the CronjobController. This should be called after all controllers
- * are created.
- */
-export type CronjobControllerInitAction = {
-  type: `${typeof controllerName}:init`;
-  handler: CronjobController['init'];
-};
-
-export type Schedule = {
-  type: `${typeof controllerName}:schedule`;
-  handler: CronjobController['schedule'];
-};
-
-export type Cancel = {
-  type: `${typeof controllerName}:cancel`;
-  handler: CronjobController['cancel'];
-};
-
-export type Get = {
-  type: `${typeof controllerName}:get`;
-  handler: CronjobController['get'];
-};
-
 export type CronjobControllerActions =
   | CronjobControllerGetStateAction
-  | SnapControllerHandleRequestAction
-  | GetPermissions
-  | Schedule
-  | Cancel
-  | Get
-  | CronjobControllerInitAction;
+  | CronjobControllerMethodActions;
 
-export type CronjobControllerEvents =
-  | CronjobControllerStateChangeEvent
+export type CronjobControllerEvents = CronjobControllerStateChangeEvent;
+
+type AllowedActions = GetPermissions | SnapControllerHandleRequestAction;
+
+type AllowedEvents =
   | SnapControllerSnapInstalledEvent
   | SnapControllerSnapUninstalledEvent
   | SnapControllerSnapUpdatedEvent
@@ -86,8 +61,8 @@ export type CronjobControllerEvents =
 
 export type CronjobControllerMessenger = Messenger<
   typeof controllerName,
-  CronjobControllerActions,
-  CronjobControllerEvents
+  CronjobControllerActions | AllowedActions,
+  CronjobControllerEvents | AllowedEvents
 >;
 
 export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
@@ -157,6 +132,13 @@ export type CronjobControllerState = {
 
 const controllerName = 'CronjobController';
 
+const MESSENGER_EXPOSED_METHODS = [
+  'init',
+  'schedule',
+  'cancel',
+  'get',
+] as const;
+
 /**
  * The cronjob controller is responsible for managing cronjobs and background
  * events for Snaps. It allows Snaps to schedule events that will be executed
@@ -220,22 +202,9 @@ export class CronjobController extends BaseController<
       this.#handleSnapUpdatedEvent,
     );
 
-    this.messenger.registerActionHandler(`${controllerName}:init`, (...args) =>
-      this.init(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:schedule`,
-      (...args) => this.schedule(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:cancel`,
-      (...args) => this.cancel(...args),
-    );
-
-    this.messenger.registerActionHandler(`${controllerName}:get`, (...args) =>
-      this.get(...args),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
