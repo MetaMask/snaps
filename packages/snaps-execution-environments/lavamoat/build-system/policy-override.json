@@ -5,6 +5,38 @@
         "ts-loader": true
       }
     },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep": {
+      "packages": {
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of": true,
+        "webpack-merge>clone-deep>is-plain-object": true
+      }
+    },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone": {
+      "packages": {
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": true
+      }
+    },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>kind-of": {
+      "packages": {
+        "@lavamoat/node>lavamoat-core>merge-deep>kind-of>is-buffer": true
+      }
+    },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>lazy-cache": {
+      "globals": {
+        "process.env": true
+      }
+    },
+    "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object": {
+      "packages": {
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>is-extendable": true,
+        "@lavamoat/node>lavamoat-core>merge-deep>clone-deep>shallow-clone>mixin-object>for-in": true
+      }
+    },
     "@swc/core": false,
     "depcheck>readdirp>picomatch": {
       "builtin": {

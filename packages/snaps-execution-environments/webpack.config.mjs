@@ -2,22 +2,17 @@
 // have any declarations, and it currently makes using it from LavaMoat Node
 // more difficult.
 
+import { LavaMoatPlugin } from '@lavamoat/webpack';
+import { readFileSync } from 'fs';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { isBuiltin } from 'module';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-// TODO: Replace imports below with ESM imports.
-// eslint-disable-next-line no-shadow
-const require = createRequire(import.meta.url);
-
-const LavaMoatPlugin = require('@lavamoat/webpack');
-const { readFileSync } = require('fs');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { isBuiltin } = require('module');
-const { resolve } = require('path');
-const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
-const { ProvidePlugin, Compilation } = require('webpack');
-const { merge } = require('webpack-merge');
+import { resolve } from 'path';
+import { TsconfigPathsPlugin } from 'tsconfig-paths-webpack-plugin';
+import webpack from 'webpack';
+import { merge } from 'webpack-merge';
 
 /**
  * Whether to generate a policy file for the build.
@@ -35,6 +30,9 @@ const UPDATE_POLICY = process.env.LAVAMOAT_GENERATE_POLICY === 'true';
 const IS_PRODUCTION =
   // eslint-disable-next-line n/no-process-env
   process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test';
+
+// eslint-disable-next-line no-shadow
+const require = createRequire(import.meta.url);
 
 /**
  * The SES bundle used for the lockdown script.
@@ -183,7 +181,7 @@ const baseConfig = {
   },
 
   plugins: [
-    new ProvidePlugin({
+    new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
   ],
@@ -266,7 +264,8 @@ const configs = ENTRY_POINTS.map(
               compilation.hooks.processAssets.tap(
                 {
                   name: PLUGIN_NAME,
-                  stage: Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
+                  stage:
+                    webpack.Compilation.PROCESS_ASSETS_STAGE_OPTIMIZE_INLINE,
                 },
                 (assets) => {
                   // Remove `lockdown` from the assets, since we inline the SES
