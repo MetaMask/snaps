@@ -31,8 +31,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Note: The method is now called `getAllSnaps` instead of `getAll`.
   - `GetRunnableSnaps` is now `SnapControllerGetRunnableSnapsAction`.
   - `StopAllSnaps` is now `SnapControllerStopAllSnapsAction`.
-  - `IncrementActiveReferences` is now `SnapControllerIncrementActiveReferencesAction`.
-  - `DecrementActiveReferences` is now `SnapControllerDecrementActiveReferencesAction`.
   - `InstallSnaps` is now `SnapControllerInstallSnapsAction`.
     - Note: The method is now called `installSnaps` instead of `install`.
   - `DisconnectOrigin` is now `SnapControllerDisconnectOriginAction`.
@@ -54,6 +52,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SnapTerminated` is now `SnapControllerSnapTerminatedEvent`.
   - `SnapEnabled` is now `SnapControllerSnapEnabledEvent`.
   - `SnapDisabled` is now `SnapControllerSnapDisabledEvent`.
+
+### Removed
+
+- **BREAKING:** `incrementActiveReferences` and `decrementActiveReferences` actions were removed ([#3907](https://github.com/MetaMask/snaps/pull/3907))
 
 ## [18.0.4]
 

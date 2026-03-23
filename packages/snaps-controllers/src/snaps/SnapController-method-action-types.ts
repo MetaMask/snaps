@@ -233,26 +233,6 @@ export type SnapControllerRevokeDynamicSnapPermissionsAction = {
 };
 
 /**
- * Handles incrementing the activeReferences counter.
- *
- * @param snapId - The snap id of the snap that was referenced.
- */
-export type SnapControllerIncrementActiveReferencesAction = {
-  type: `SnapController:incrementActiveReferences`;
-  handler: SnapController['incrementActiveReferences'];
-};
-
-/**
- * Handles decrement the activeReferences counter.
- *
- * @param snapId - The snap id of the snap that was referenced..
- */
-export type SnapControllerDecrementActiveReferencesAction = {
-  type: `SnapController:decrementActiveReferences`;
-  handler: SnapController['decrementActiveReferences'];
-};
-
-/**
  * Gets all snaps in their truncated format.
  *
  * @returns All installed snaps in their truncated format.
@@ -347,8 +327,6 @@ export type SnapControllerMethodActions =
   | SnapControllerRemoveSnapsAction
   | SnapControllerDisconnectOriginAction
   | SnapControllerRevokeDynamicSnapPermissionsAction
-  | SnapControllerIncrementActiveReferencesAction
-  | SnapControllerDecrementActiveReferencesAction
   | SnapControllerGetAllSnapsAction
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerGetPermittedSnapsAction

@@ -40,8 +40,6 @@ export type {
   SnapControllerRemoveSnapsAction,
   SnapControllerDisconnectOriginAction,
   SnapControllerRevokeDynamicSnapPermissionsAction,
-  SnapControllerIncrementActiveReferencesAction,
-  SnapControllerDecrementActiveReferencesAction,
   SnapControllerGetAllSnapsAction,
   SnapControllerGetRunnableSnapsAction,
   SnapControllerGetPermittedSnapsAction,

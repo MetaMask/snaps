@@ -226,8 +226,6 @@ export const MESSENGER_EXPOSED_METHODS = [
   'removeSnaps',
   'disconnectOrigin',
   'revokeDynamicSnapPermissions',
-  'incrementActiveReferences',
-  'decrementActiveReferences',
   'getAllSnaps',
   'getRunnableSnaps',
   'getPermittedSnaps',
