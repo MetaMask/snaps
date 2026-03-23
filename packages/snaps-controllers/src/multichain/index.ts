@@ -4,5 +4,4 @@ export type {
   MultichainRouterGetSupportedMethodsAction,
   MultichainRouterHandleRequestAction,
   MultichainRouterIsSupportedScopeAction,
-  MultichainRouterMethodActions,
 } from './MultichainRouter-method-action-types';
