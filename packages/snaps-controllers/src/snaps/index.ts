@@ -23,7 +23,6 @@ export { SnapController } from './SnapController';
 export type {
   SnapControllerInitAction,
   SnapControllerUpdateRegistryAction,
-  SnapControllerStartSnapAction,
   SnapControllerEnableSnapAction,
   SnapControllerDisableSnapAction,
   SnapControllerStopSnapAction,
@@ -31,9 +30,6 @@ export type {
   SnapControllerIsSnapRunningAction,
   SnapControllerHasSnapAction,
   SnapControllerGetSnapAction,
-  SnapControllerGetSnapExpectAction,
-  SnapControllerGetTruncatedSnapAction,
-  SnapControllerGetTruncatedSnapExpectAction,
   SnapControllerUpdateSnapStateAction,
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapStateAction,
