@@ -31,7 +31,7 @@ describe('SnapInsightsController', () => {
       },
     );
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -157,7 +157,7 @@ describe('SnapInsightsController', () => {
       },
     );
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -285,7 +285,7 @@ describe('SnapInsightsController', () => {
       messenger: controllerMessenger,
     });
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -388,7 +388,7 @@ describe('SnapInsightsController', () => {
       messenger: controllerMessenger,
     });
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -456,7 +456,7 @@ describe('SnapInsightsController', () => {
   it('ignores insight if transaction has already been signed', async () => {
     const rootMessenger = getRootSnapInsightsControllerMessenger();
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -556,7 +556,7 @@ describe('SnapInsightsController', () => {
       messenger: controllerMessenger,
     });
 
-    rootMessenger.registerActionHandler('SnapController:getAll', () => {
+    rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
       return [getTruncatedSnap(), getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID })];
     });
 
@@ -661,7 +661,7 @@ describe('SnapInsightsController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

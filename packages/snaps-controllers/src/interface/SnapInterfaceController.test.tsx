@@ -646,7 +646,7 @@ describe('SnapInterfaceController', () => {
       );
 
       rootMessenger.registerActionHandler(
-        'SnapController:get',
+        'SnapController:getSnap',
         () => undefined,
       );
 
@@ -673,7 +673,7 @@ describe('SnapInterfaceController', () => {
 
       expect(controllerMessenger.call).toHaveBeenNthCalledWith(
         1,
-        'SnapController:get',
+        'SnapController:getSnap',
         MOCK_SNAP_ID,
       );
     });
@@ -2024,7 +2024,7 @@ describe('SnapInterfaceController', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

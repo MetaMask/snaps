@@ -19,7 +19,10 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 
 import type { DeleteInterface } from '../interface';
-import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
+import type {
+  SnapControllerGetAllSnapsAction,
+  SnapControllerHandleRequestAction,
+} from '../snaps';
 import { getRunnableSnaps } from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
@@ -33,8 +36,8 @@ import type {
 const controllerName = 'SnapInsightsController';
 
 export type SnapInsightsControllerAllowedActions =
-  | HandleSnapRequest
-  | GetAllSnaps
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetAllSnapsAction
   | GetPermissions
   | DeleteInterface;
 
@@ -143,7 +146,7 @@ export class SnapInsightsController extends BaseController<
    * @returns A list of objects containing Snap IDs and the permission object.
    */
   #getSnapsWithPermission(permissionName: string) {
-    const allSnaps = this.messenger.call('SnapController:getAll');
+    const allSnaps = this.messenger.call('SnapController:getAllSnaps');
     const filteredSnaps = getRunnableSnaps(allSnaps);
 
     return filteredSnaps.reduce<SnapWithPermission[]>((accumulator, snap) => {

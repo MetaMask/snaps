@@ -8,6 +8,11 @@ import {
   isVaultUpdated,
   keyFromPassword,
 } from '@metamask/browser-passworder';
+import type {
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
@@ -49,37 +54,28 @@ import type { Json } from '@metamask/utils';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
+import type { CronjobControllerMessenger } from '../cronjob';
+import type { SnapInsightsControllerMessenger } from '../insights';
 import type {
-  CronjobControllerActions,
-  CronjobControllerEvents,
-} from '../cronjob';
-import type {
-  SnapInsightsControllerAllowedActions,
-  SnapInsightsControllerAllowedEvents,
-} from '../insights';
-import type {
-  SnapInterfaceControllerActions,
-  SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerEvents,
+  SnapInterfaceControllerMessenger,
   StoredInterface,
 } from '../interface/SnapInterfaceController';
+import type { MultichainRouterMessenger } from '../multichain';
 import type {
-  MultichainRouterActions,
-  MultichainRouterAllowedActions,
-  MultichainRouterEvents,
-} from '../multichain';
-import type { AbstractExecutionService } from '../services';
+  AbstractExecutionService,
+  ExecutionServiceMessenger,
+} from '../services';
 import type {
-  AllowedActions,
-  AllowedEvents,
-  PersistedSnapControllerState,
-  SnapControllerActions,
-  SnapControllerEvents,
-  SnapControllerStateChangeEvent,
   SnapsRegistryActions,
   SnapsRegistryEvents,
+  SnapsRegistryMessenger,
 } from '../snaps';
 import { SnapController } from '../snaps';
+import type {
+  PersistedSnapControllerState,
+  SnapControllerMessenger,
+  SnapControllerStateChangeEvent,
+} from '../snaps/SnapController';
 import type { KeyDerivationOptions } from '../types';
 import type {
   WebSocketServiceActions,
@@ -329,11 +325,22 @@ export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
   },
 };
 
-export const getControllerMessenger = () => {
-  const messenger = new MockControllerMessenger<
-    SnapControllerActions | AllowedActions,
-    SnapControllerEvents | AllowedEvents
-  >();
+/**
+ * The type of the messenger populated with all external actions and events
+ * required by the controller under test.
+ */
+export type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<
+    SnapControllerMessenger | SnapsRegistryMessenger | ExecutionServiceMessenger
+  >,
+  MessengerEvents<
+    SnapControllerMessenger | SnapsRegistryMessenger | ExecutionServiceMessenger
+  >
+>;
+
+export const getRootMessenger = () => {
+  const messenger: RootMessenger = new MockControllerMessenger();
 
   messenger.registerActionHandler(
     'PermissionController:hasPermission',
@@ -463,16 +470,9 @@ export const getControllerMessenger = () => {
 };
 
 export const getSnapControllerMessenger = (
-  messenger: ReturnType<
-    typeof getControllerMessenger
-  > = getControllerMessenger(),
+  messenger: RootMessenger = getRootMessenger(),
 ) => {
-  const snapControllerMessenger = new Messenger<
-    'SnapController',
-    SnapControllerActions | AllowedActions,
-    SnapControllerEvents | AllowedEvents,
-    any
-  >({
+  const snapControllerMessenger: SnapControllerMessenger = new Messenger({
     namespace: 'SnapController',
     parent: messenger,
   });
@@ -582,10 +582,10 @@ export const getSnapControllerEncryptor = () => {
 export type GetSnapControllerOptionsParam = Omit<
   PartialSnapControllerConstructorParamsWithStorage,
   'messenger'
-> & { rootMessenger?: ReturnType<typeof getControllerMessenger> };
+> & { rootMessenger?: ReturnType<typeof getRootMessenger> };
 
 export const getSnapControllerOptions = ({
-  rootMessenger = getControllerMessenger(),
+  rootMessenger = getRootMessenger(),
   ...opts
 }: GetSnapControllerOptionsParam = {}) => {
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
@@ -608,7 +608,7 @@ export const getSnapControllerOptions = ({
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     ...opts,
   } as SnapControllerConstructorParamsWithStorage & {
-    rootMessenger: ReturnType<typeof getControllerMessenger>;
+    rootMessenger: ReturnType<typeof getRootMessenger>;
   };
 
   options.state = {
@@ -643,7 +643,7 @@ export const extractSourceCodeFromSnapsState = (
 };
 
 export const getStorageService = (
-  messenger: ReturnType<typeof getControllerMessenger>,
+  messenger: ReturnType<typeof getRootMessenger>,
   initialData?: InitialStorageData,
 ) => {
   const storageServiceMessenger = new Messenger<
@@ -687,6 +687,7 @@ export const getSnapController = async (
   if (init) {
     await controller.init();
   }
+
   return controller;
 };
 
@@ -696,7 +697,6 @@ export const getSnapControllerWithEES = async (
   init = true,
 ) => {
   const _service =
-    // @ts-expect-error: TODO: Investigate type mismatch.
     service ?? getNodeEES(getNodeEESMessenger(options.rootMessenger));
 
   const { snaps, snapsData } = extractSourceCodeFromSnapsState(
@@ -733,12 +733,16 @@ export const getPersistedSnapsState = (
   }, {});
 };
 
+type CronjobControllerRootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<CronjobControllerMessenger>,
+  MessengerEvents<CronjobControllerMessenger>
+>;
+
 // Mock controller messenger for Cronjob Controller
 export const getRootCronjobControllerMessenger = () => {
-  const messenger = new MockControllerMessenger<
-    CronjobControllerActions | AllowedActions,
-    CronjobControllerEvents | AllowedEvents
-  >();
+  const messenger: CronjobControllerRootMessenger =
+    new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
 
@@ -746,24 +750,16 @@ export const getRootCronjobControllerMessenger = () => {
 };
 
 export const getRestrictedCronjobControllerMessenger = (
-  messenger: ReturnType<
-    typeof getRootCronjobControllerMessenger
-  > = getRootCronjobControllerMessenger(),
+  messenger: CronjobControllerRootMessenger = getRootCronjobControllerMessenger(),
   mocked = true,
 ) => {
-  const cronjobControllerMessenger = new Messenger<
-    'CronjobController',
-    CronjobControllerActions | AllowedActions,
-    CronjobControllerEvents | AllowedEvents,
-    any
-  >({
+  const cronjobControllerMessenger: CronjobControllerMessenger = new Messenger({
     namespace: 'CronjobController',
     parent: messenger,
   });
 
   messenger.delegate({
     actions: [
-      'PermissionController:hasPermission',
       'PermissionController:getPermissions',
       'SnapController:handleRequest',
     ],
@@ -778,13 +774,6 @@ export const getRestrictedCronjobControllerMessenger = (
   });
 
   if (mocked) {
-    messenger.registerActionHandler(
-      'PermissionController:hasPermission',
-      () => {
-        return true;
-      },
-    );
-
     messenger.registerActionHandler(
       'PermissionController:getPermissions',
       () => {
@@ -825,12 +814,20 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   >({ namespace: 'SnapsRegistry', parent: messenger });
 };
 
+/**
+ * The type of the messenger populated with all external actions and events
+ * required by the controller under test.
+ */
+type SnapInterfaceControllerRootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<SnapInterfaceControllerMessenger>,
+  MessengerEvents<SnapInterfaceControllerMessenger>
+>;
+
 // Mock controller messenger for Interface Controller
 export const getRootSnapInterfaceControllerMessenger = () => {
-  const messenger = new MockControllerMessenger<
-    SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-    SnapInterfaceControllerEvents
-  >();
+  const messenger: SnapInterfaceControllerRootMessenger =
+    new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
 
@@ -843,12 +840,8 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   > = getRootSnapInterfaceControllerMessenger(),
   mocked = true,
 ) => {
-  const snapInterfaceControllerMessenger = new Messenger<
-    'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions,
-    SnapInterfaceControllerEvents,
-    any
-  >({ namespace: 'SnapInterfaceController', parent: messenger });
+  const snapInterfaceControllerMessenger: SnapInterfaceControllerMessenger =
+    new Messenger({ namespace: 'SnapInterfaceController', parent: messenger });
 
   messenger.delegate({
     actions: [
@@ -857,7 +850,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'ApprovalController:acceptRequest',
       'MultichainAssetsController:getState',
       'AccountsController:getAccountByAddress',
-      'SnapController:get',
+      'SnapController:getSnap',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
       'PermissionController:hasPermission',
@@ -920,9 +913,12 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       ],
     );
 
-    messenger.registerActionHandler('SnapController:get', (snapId: string) => {
-      return getSnapObject({ id: snapId as SnapId });
-    });
+    messenger.registerActionHandler(
+      'SnapController:getSnap',
+      (snapId: string) => {
+        return getSnapObject({ id: snapId as SnapId });
+      },
+    );
   }
 
   jest.spyOn(snapInterfaceControllerMessenger, 'call');
@@ -930,12 +926,16 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
   return snapInterfaceControllerMessenger;
 };
 
+type RootSnapInsightsControllerMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<SnapInsightsControllerMessenger>,
+  MessengerEvents<SnapInsightsControllerMessenger>
+>;
+
 // Mock controller messenger for Insight Controller
 export const getRootSnapInsightsControllerMessenger = () => {
-  const messenger = new MockControllerMessenger<
-    SnapInsightsControllerAllowedActions,
-    SnapInsightsControllerAllowedEvents
-  >();
+  const messenger: RootSnapInsightsControllerMessenger =
+    new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
 
@@ -943,16 +943,9 @@ export const getRootSnapInsightsControllerMessenger = () => {
 };
 
 export const getRestrictedSnapInsightsControllerMessenger = (
-  messenger: ReturnType<
-    typeof getRootSnapInsightsControllerMessenger
-  > = getRootSnapInsightsControllerMessenger(),
+  messenger: RootSnapInsightsControllerMessenger = getRootSnapInsightsControllerMessenger(),
 ) => {
-  const controllerMessenger = new Messenger<
-    'SnapInsightsController',
-    SnapInsightsControllerAllowedActions,
-    SnapInsightsControllerAllowedEvents,
-    any
-  >({
+  const controllerMessenger: SnapInsightsControllerMessenger = new Messenger({
     namespace: 'SnapInsightsController',
     parent: messenger,
   });
@@ -960,7 +953,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAll',
+      'SnapController:getAllSnaps',
       'SnapController:handleRequest',
       'SnapInterfaceController:deleteInterface',
     ],
@@ -993,12 +986,15 @@ export async function waitForStateChange(
   });
 }
 
+type MultichainRouterRootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<MultichainRouterMessenger>
+>;
+
 // Mock controller messenger for Multichain Router
-export const getRootMultichainRouterMessenger = () => {
-  const messenger = new MockControllerMessenger<
-    MultichainRouterActions | MultichainRouterAllowedActions,
-    MultichainRouterEvents
-  >();
+export const getMultichainRouterRootMessenger = () => {
+  const messenger: MultichainRouterRootMessenger =
+    new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
 
@@ -1006,21 +1002,17 @@ export const getRootMultichainRouterMessenger = () => {
 };
 
 export const getRestrictedMultichainRouterMessenger = (
-  messenger: ReturnType<
-    typeof getRootMultichainRouterMessenger
-  > = getRootMultichainRouterMessenger(),
+  messenger: MultichainRouterRootMessenger = getMultichainRouterRootMessenger(),
 ) => {
-  const controllerMessenger = new Messenger<
-    'MultichainRouter',
-    MultichainRouterActions | MultichainRouterAllowedActions,
-    never,
-    any
-  >({ namespace: 'MultichainRouter', parent: messenger });
+  const controllerMessenger: MultichainRouterMessenger = new Messenger({
+    namespace: 'MultichainRouter',
+    parent: messenger,
+  });
 
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAll',
+      'SnapController:getAllSnaps',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],

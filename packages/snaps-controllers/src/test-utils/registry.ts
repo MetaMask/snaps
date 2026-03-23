@@ -1,12 +1,11 @@
-import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-
+import type { RootMessenger } from './controller';
 import type { SnapsRegistry } from '../snaps';
 import { SnapsRegistryStatus } from '../snaps';
 
 export class MockSnapsRegistry implements SnapsRegistry {
   readonly #messenger;
 
-  constructor(messenger: MockControllerMessenger<any, any>) {
+  constructor(messenger: RootMessenger) {
     this.#messenger = messenger;
 
     this.#messenger.registerActionHandler(

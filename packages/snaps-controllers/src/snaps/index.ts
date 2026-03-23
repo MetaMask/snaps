@@ -1,5 +1,51 @@
 export * from './constants';
 export * from './location';
-export * from './SnapController';
+export type {
+  SnapControllerGetStateAction,
+  SnapControllerSnapBlockedEvent,
+  SnapControllerSnapDisabledEvent,
+  SnapControllerSnapEnabledEvent,
+  SnapControllerSnapInstalledEvent,
+  SnapControllerSnapInstallFailedEvent,
+  SnapControllerSnapInstallStartedEvent,
+  SnapControllerSnapRolledbackEvent,
+  SnapControllerSnapTerminatedEvent,
+  SnapControllerSnapUnblockedEvent,
+  SnapControllerSnapUninstalledEvent,
+  SnapControllerSnapUpdatedEvent,
+  SnapControllerState,
+  SnapControllerStateChangeEvent,
+  PreinstalledSnapFile,
+  PreinstalledSnap,
+  PersistedSnapControllerState,
+} from './SnapController';
+export { SnapController } from './SnapController';
+export type {
+  SnapControllerInitAction,
+  SnapControllerUpdateRegistryAction,
+  SnapControllerEnableSnapAction,
+  SnapControllerDisableSnapAction,
+  SnapControllerStopSnapAction,
+  SnapControllerStopAllSnapsAction,
+  SnapControllerIsSnapRunningAction,
+  SnapControllerHasSnapAction,
+  SnapControllerGetSnapAction,
+  SnapControllerUpdateSnapStateAction,
+  SnapControllerClearSnapStateAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerGetSnapFileAction,
+  SnapControllerIsMinimumPlatformVersionAction,
+  SnapControllerClearStateAction,
+  SnapControllerRemoveSnapAction,
+  SnapControllerRemoveSnapsAction,
+  SnapControllerDisconnectOriginAction,
+  SnapControllerRevokeDynamicSnapPermissionsAction,
+  SnapControllerGetAllSnapsAction,
+  SnapControllerGetRunnableSnapsAction,
+  SnapControllerGetPermittedSnapsAction,
+  SnapControllerInstallSnapsAction,
+  SnapControllerHandleRequestAction,
+  SnapControllerSetClientActiveAction,
+} from './SnapController-method-action-types';
 export * from './selectors';
 export * from './registry';

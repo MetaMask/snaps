@@ -23,13 +23,13 @@ import { nanoid } from 'nanoid';
 
 import { getCronjobSpecificationSchedule, getExecutionDate } from './utils';
 import type {
-  HandleSnapRequest,
-  SnapDisabled,
-  SnapEnabled,
-  SnapInstalled,
-  SnapUninstalled,
-  SnapUpdated,
-} from '..';
+  SnapControllerHandleRequestAction,
+  SnapControllerSnapDisabledEvent,
+  SnapControllerSnapEnabledEvent,
+  SnapControllerSnapInstalledEvent,
+  SnapControllerSnapUninstalledEvent,
+  SnapControllerSnapUpdatedEvent,
+} from '../snaps';
 import { METAMASK_ORIGIN } from '../snaps/constants';
 import { Timer } from '../snaps/Timer';
 
@@ -37,6 +37,7 @@ export type CronjobControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
   CronjobControllerState
 >;
+
 export type CronjobControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
   CronjobControllerState
@@ -68,7 +69,7 @@ export type Get = {
 
 export type CronjobControllerActions =
   | CronjobControllerGetStateAction
-  | HandleSnapRequest
+  | SnapControllerHandleRequestAction
   | GetPermissions
   | Schedule
   | Cancel
@@ -77,11 +78,11 @@ export type CronjobControllerActions =
 
 export type CronjobControllerEvents =
   | CronjobControllerStateChangeEvent
-  | SnapInstalled
-  | SnapUninstalled
-  | SnapUpdated
-  | SnapEnabled
-  | SnapDisabled;
+  | SnapControllerSnapInstalledEvent
+  | SnapControllerSnapUninstalledEvent
+  | SnapControllerSnapUpdatedEvent
+  | SnapControllerSnapEnabledEvent
+  | SnapControllerSnapDisabledEvent;
 
 export type CronjobControllerMessenger = Messenger<
   typeof controllerName,

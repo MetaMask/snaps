@@ -22,20 +22,22 @@ import type { MethodHooksObject } from '../utils';
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
 // Redeclare installSnaps action type to avoid circular dependencies
-export type InstallSnaps = {
-  type: `SnapController:install`;
+export type SnapControllerInstallSnapsAction = {
+  type: `SnapController:installSnaps`;
   handler: (
     origin: string,
     requestedSnaps: RequestSnapsParams,
   ) => Promise<RequestSnapsResult>;
 };
 
-export type GetPermittedSnaps = {
-  type: `SnapController:getPermitted`;
+export type SnapControllerGetPermittedSnapsAction = {
+  type: `SnapController:getPermittedSnaps`;
   handler: (origin: string) => RequestSnapsResult;
 };
 
-type AllowedActions = InstallSnaps | GetPermittedSnaps;
+type AllowedActions =
+  | SnapControllerInstallSnapsAction
+  | SnapControllerGetPermittedSnapsAction;
 
 export type InvokeSnapMethodHooks = {
   handleSnapRpcRequest: ({
@@ -78,7 +80,7 @@ export const handleSnapInstall: PermissionSideEffect<
     .value as RequestSnapsParams;
 
   const permittedSnaps = messenger.call(
-    `SnapController:getPermitted`,
+    `SnapController:getPermittedSnaps`,
     requestData.metadata.origin,
   );
 
@@ -93,7 +95,7 @@ export const handleSnapInstall: PermissionSideEffect<
   );
 
   return messenger.call(
-    `SnapController:install`,
+    `SnapController:installSnaps`,
     requestData.metadata.origin,
     dedupedSnaps,
   );
