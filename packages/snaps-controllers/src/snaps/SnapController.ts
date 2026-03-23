@@ -175,8 +175,8 @@ import type { SnapControllerMethodActions } from './SnapController-method-action
 import { Timer } from './Timer';
 import { forceStrict, validateMachine } from '../fsm';
 import type {
-  CreateInterface,
-  GetInterface,
+  SnapInterfaceControllerCreateInterfaceAction,
+  SnapInterfaceControllerGetInterfaceAction,
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '../interface';
 import { log } from '../logging';
@@ -539,8 +539,8 @@ export type AllowedActions =
   | GetMetadata
   | Update
   | ResolveVersion
-  | CreateInterface
-  | GetInterface
+  | SnapInterfaceControllerCreateInterfaceAction
+  | SnapInterfaceControllerGetInterfaceAction
   | SnapInterfaceControllerSetInterfaceDisplayedAction
   | StorageServiceSetItemAction
   | StorageServiceGetItemAction

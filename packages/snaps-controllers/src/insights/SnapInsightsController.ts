@@ -18,7 +18,7 @@ import type { Json, SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 
-import type { DeleteInterface } from '../interface';
+import type { SnapInterfaceControllerDeleteInterfaceAction } from '../interface';
 import type {
   SnapControllerGetAllSnapsAction,
   SnapControllerHandleRequestAction,
@@ -39,7 +39,7 @@ export type SnapInsightsControllerAllowedActions =
   | SnapControllerHandleRequestAction
   | SnapControllerGetAllSnapsAction
   | GetPermissions
-  | DeleteInterface;
+  | SnapInterfaceControllerDeleteInterfaceAction;
 
 export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
