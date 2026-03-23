@@ -12223,10 +12223,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
+"graceful-fs@npm:4.2.11":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10/bf152d0ed1dc159239db1ba1f74fdbc40cb02f626770dcd5815c427ce0688c2635a06ed69af364396da4636d0408fcf7d4afdf7881724c3307e46aff30ca49e2
+  languageName: node
+  linkType: hard
+
+"graceful-fs@patch:graceful-fs@npm%3A4.2.11#~/.yarn/patches/graceful-fs-npm-4.2.11-24bb648a68.patch":
+  version: 4.2.11
+  resolution: "graceful-fs@patch:graceful-fs@npm%3A4.2.11#~/.yarn/patches/graceful-fs-npm-4.2.11-24bb648a68.patch::version=4.2.11&hash=053b86"
+  checksum: 10/0afcf8a9541c4f149b604528e95e970c86876a7f1fce88865ea40deb17732c0446cad45d934bdccb553ad8fed6bf53649848874b541748f5f492c4792681f498
   languageName: node
   linkType: hard
 

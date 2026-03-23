@@ -17,6 +17,12 @@
       }
     },
     "typescript": {},
+    "webpack>graceful-fs": {
+      "globals": {
+        "___graceful-fs_previous": "write",
+        "___graceful-fs_queue": "write"
+      }
+    },
     "webpack>loader-runner": {
       "packages": {
         "html-webpack-plugin": true,

@@ -1,0 +1,131 @@
+diff --git a/graceful-fs.js b/graceful-fs.js
+index 8d5b89e4fa7fdbaebf58556cc044d2a912bce5de..7c34dcf6400831d186c8d6eb5726224bf6f3b1a0 100644
+--- a/graceful-fs.js
++++ b/graceful-fs.js
+@@ -5,28 +5,10 @@ var clone = require('./clone.js')
+ 
+ var util = require('util')
+ 
+-/* istanbul ignore next - node 0.x polyfill */
+-var gracefulQueue
+-var previousSymbol
+-
+-/* istanbul ignore else - node 0.x polyfill */
+-if (typeof Symbol === 'function' && typeof Symbol.for === 'function') {
+-  gracefulQueue = Symbol.for('graceful-fs.queue')
+-  // This is used in testing by future versions
+-  previousSymbol = Symbol.for('graceful-fs.previous')
+-} else {
+-  gracefulQueue = '___graceful-fs.queue'
+-  previousSymbol = '___graceful-fs.previous'
+-}
+-
+ function noop () {}
+ 
+ function publishQueue(context, queue) {
+-  Object.defineProperty(context, gracefulQueue, {
+-    get: function() {
+-      return queue
+-    }
+-  })
++  context['___graceful-fs_queue'] = queue
+ }
+ 
+ var debug = noop
+@@ -40,9 +22,9 @@ else if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || ''))
+   }
+ 
+ // Once time initialization
+-if (!fs[gracefulQueue]) {
++if (!fs['___graceful-fs_queue']) {
+   // This queue can be shared by multiple loaded instances
+-  var queue = global[gracefulQueue] || []
++  var queue = global['___graceful-fs_queue'] || []
+   publishQueue(fs, queue)
+ 
+   // Patch fs.close/closeSync to shared queue version, because we need
+@@ -62,7 +44,7 @@ if (!fs[gracefulQueue]) {
+       })
+     }
+ 
+-    Object.defineProperty(close, previousSymbol, {
++    Object.defineProperty(close, '___graceful-fs_previous', {
+       value: fs$close
+     })
+     return close
+@@ -75,7 +57,7 @@ if (!fs[gracefulQueue]) {
+       resetQueue()
+     }
+ 
+-    Object.defineProperty(closeSync, previousSymbol, {
++    Object.defineProperty(closeSync, '___graceful-fs_previous', {
+       value: fs$closeSync
+     })
+     return closeSync
+@@ -83,14 +65,14 @@ if (!fs[gracefulQueue]) {
+ 
+   if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
+     process.on('exit', function() {
+-      debug(fs[gracefulQueue])
+-      require('assert').equal(fs[gracefulQueue].length, 0)
++      debug(fs['___graceful-fs_queue'])
++      require('assert').equal(fs['___graceful-fs_queue'].length, 0)
+     })
+   }
+ }
+ 
+-if (!global[gracefulQueue]) {
+-  publishQueue(global, fs[gracefulQueue]);
++if (!global['___graceful-fs_queue']) {
++  publishQueue(global, fs['___graceful-fs_queue']);
+ }
+ 
+ module.exports = patch(clone(fs))
+@@ -370,7 +352,7 @@ function patch (fs) {
+ 
+ function enqueue (elem) {
+   debug('ENQUEUE', elem[0].name, elem[1])
+-  fs[gracefulQueue].push(elem)
++  fs['___graceful-fs_queue'].push(elem)
+   retry()
+ }
+ 
+@@ -382,12 +364,12 @@ var retryTimer
+ // delay between attempts so that we'll retry these jobs sooner
+ function resetQueue () {
+   var now = Date.now()
+-  for (var i = 0; i < fs[gracefulQueue].length; ++i) {
++  for (var i = 0; i < fs['___graceful-fs_queue'].length; ++i) {
+     // entries that are only a length of 2 are from an older version, don't
+     // bother modifying those since they'll be retried anyway.
+-    if (fs[gracefulQueue][i].length > 2) {
+-      fs[gracefulQueue][i][3] = now // startTime
+-      fs[gracefulQueue][i][4] = now // lastTime
++    if (fs['___graceful-fs_queue'][i].length > 2) {
++      fs['___graceful-fs_queue'][i][3] = now // startTime
++      fs['___graceful-fs_queue'][i][4] = now // lastTime
+     }
+   }
+   // call retry to make sure we're actively processing the queue
+@@ -399,10 +381,10 @@ function retry () {
+   clearTimeout(retryTimer)
+   retryTimer = undefined
+ 
+-  if (fs[gracefulQueue].length === 0)
++  if (fs['___graceful-fs_queue'].length === 0)
+     return
+ 
+-  var elem = fs[gracefulQueue].shift()
++  var elem = fs['___graceful-fs_queue'].shift()
+   var fn = elem[0]
+   var args = elem[1]
+   // these items may be unset if they were added by an older graceful-fs
+@@ -437,7 +419,7 @@ function retry () {
+     } else {
+       // if we can't do this job yet, push it to the end of the queue
+       // and let the next iteration check again
+-      fs[gracefulQueue].push(elem)
++      fs['___graceful-fs_queue'].push(elem)
+     }
+   }
+ 

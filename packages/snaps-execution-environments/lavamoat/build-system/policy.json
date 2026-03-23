@@ -273,6 +273,8 @@
         "util": true
       },
       "globals": {
+        "___graceful-fs_previous": "write",
+        "___graceful-fs_queue": "write",
         "clearTimeout": true,
         "console.error": true,
         "process": true,
