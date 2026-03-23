@@ -1170,16 +1170,6 @@ export class SnapController extends BaseController<
     );
 
     this.messenger.registerActionHandler(
-      `${controllerName}:incrementActiveReferences`,
-      (...args) => this.incrementActiveReferences(...args),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:decrementActiveReferences`,
-      (...args) => this.decrementActiveReferences(...args),
-    );
-
-    this.messenger.registerActionHandler(
       `${controllerName}:disconnectOrigin`,
       (...args) => this.disconnectOrigin(...args),
     );

@@ -2080,10 +2080,7 @@ describe('SnapController', () => {
     await snapController.startSnap(snap.id);
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
-    rootMessenger.call(
-      'SnapController:incrementActiveReferences',
-      MOCK_SNAP_ID,
-    );
+    snapController.incrementActiveReferences(snap.id);
 
     expect(
       await snapController.handleRequest({
@@ -2104,10 +2101,7 @@ describe('SnapController', () => {
     // Should still be running after idle timeout
     expect(snapController.state.snaps[snap.id].status).toBe('running');
 
-    options.rootMessenger.call(
-      'SnapController:decrementActiveReferences',
-      MOCK_SNAP_ID,
-    );
+    snapController.decrementActiveReferences(snap.id);
 
     await sleep(100);
 
