@@ -3770,10 +3770,26 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/messenger@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/messenger@npm:0.3.0"
-  checksum: 10/84e9f4193646d749c7260a4958b13974b3c8738cc2e414116279ed31734e1edba687ff56ddbfdb75033bce30aaa9eeb7c391bccb87a66dbc99a902882271f673
+"@metamask/messenger@npm:@metamask-previews/messenger@0.3.0-preview-a462582":
+  version: 0.3.0-preview-a462582
+  resolution: "@metamask-previews/messenger@npm:0.3.0-preview-a462582"
+  peerDependencies:
+    "@metamask/utils": ^11.9.0
+    eslint: ">=8"
+    typescript: ~5.3.3
+    yargs: ^17.7.2
+  peerDependenciesMeta:
+    "@metamask/utils":
+      optional: true
+    eslint:
+      optional: true
+    typescript:
+      optional: true
+    yargs:
+      optional: true
+  bin:
+    messenger-generate-action-types: ./dist/generate-action-types/cli.mjs
+  checksum: 10/210e6f1e05178b8778ed2799ca0ad32936cceb7c191b86bfb105e312f78187b48129bad229e841e6c1851babefed5c7b81d7377bdcf5461c8fbd8ad0890399dd
   languageName: node
   linkType: hard
 
