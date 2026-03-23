@@ -209,7 +209,6 @@ export const controllerName = 'SnapController';
 export const MESSENGER_EXPOSED_METHODS = [
   'init',
   'updateRegistry',
-  'startSnap',
   'enableSnap',
   'disableSnap',
   'stopSnap',
@@ -217,9 +216,6 @@ export const MESSENGER_EXPOSED_METHODS = [
   'isSnapRunning',
   'hasSnap',
   'getSnap',
-  'getSnapExpect',
-  'getTruncatedSnap',
-  'getTruncatedSnapExpect',
   'updateSnapState',
   'clearSnapState',
   'getSnapState',

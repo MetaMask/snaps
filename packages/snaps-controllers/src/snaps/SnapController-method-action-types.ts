@@ -29,17 +29,6 @@ export type SnapControllerUpdateRegistryAction = {
 };
 
 /**
- * Starts the given snap. Throws an error if no such snap exists
- * or if it is already running.
- *
- * @param snapId - The id of the Snap to start.
- */
-export type SnapControllerStartSnapAction = {
-  type: `SnapController:startSnap`;
-  handler: SnapController['startSnap'];
-};
-
-/**
  * Enables the given snap. A snap can only be started if it is enabled. A snap
  * can only be enabled if it isn't blocked.
  *
@@ -120,45 +109,6 @@ export type SnapControllerHasSnapAction = {
 export type SnapControllerGetSnapAction = {
   type: `SnapController:getSnap`;
   handler: SnapController['getSnap'];
-};
-
-/**
- * Gets the snap with the given id, throws if doesn't.
- * This should not be used if the snap is to be serializable, as e.g.
- * the snap sourceCode may be quite large.
- *
- * @see {@link SnapController.getSnap}
- * @throws {@link Error}. If the snap doesn't exist
- * @param snapId - The id of the snap to get.
- * @returns The entire snap object.
- */
-export type SnapControllerGetSnapExpectAction = {
-  type: `SnapController:getSnapExpect`;
-  handler: SnapController['getSnapExpect'];
-};
-
-/**
- * Gets the snap with the given id if it exists, excluding any
- * non-serializable or expensive-to-serialize data.
- *
- * @param snapId - The id of the Snap to get.
- * @returns A truncated version of the snap state, that is less expensive to serialize.
- */
-export type SnapControllerGetTruncatedSnapAction = {
-  type: `SnapController:getTruncatedSnap`;
-  handler: SnapController['getTruncatedSnap'];
-};
-
-/**
- * Gets the snap with the given id, throw if it doesn't exist.
- *
- * @throws {@link Error}. If snap doesn't exist
- * @param snapId - The id of the snap to get.
- * @returns A truncated version of the snap state, that is less expensive to serialize.
- */
-export type SnapControllerGetTruncatedSnapExpectAction = {
-  type: `SnapController:getTruncatedSnapExpect`;
-  handler: SnapController['getTruncatedSnapExpect'];
 };
 
 /**
@@ -380,7 +330,6 @@ export type SnapControllerSetClientActiveAction = {
 export type SnapControllerMethodActions =
   | SnapControllerInitAction
   | SnapControllerUpdateRegistryAction
-  | SnapControllerStartSnapAction
   | SnapControllerEnableSnapAction
   | SnapControllerDisableSnapAction
   | SnapControllerStopSnapAction
@@ -388,9 +337,6 @@ export type SnapControllerMethodActions =
   | SnapControllerIsSnapRunningAction
   | SnapControllerHasSnapAction
   | SnapControllerGetSnapAction
-  | SnapControllerGetSnapExpectAction
-  | SnapControllerGetTruncatedSnapAction
-  | SnapControllerGetTruncatedSnapExpectAction
   | SnapControllerUpdateSnapStateAction
   | SnapControllerClearSnapStateAction
   | SnapControllerGetSnapStateAction
