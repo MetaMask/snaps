@@ -6,7 +6,6 @@ import { LavaMoatPlugin } from '@lavamoat/webpack';
 import { readFileSync } from 'fs';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { isBuiltin } from 'module';
-import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'path';
@@ -31,8 +30,18 @@ const IS_PRODUCTION =
   // eslint-disable-next-line n/no-process-env
   process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test';
 
-// eslint-disable-next-line no-shadow
-const require = createRequire(import.meta.url);
+/**
+ * The path to the root `node_modules` directory.
+ *
+ * @type {string}
+ */
+const NODE_MODULES_PATH = resolve(
+  fileURLToPath(import.meta.url),
+  '..',
+  '..',
+  '..',
+  'node_modules',
+);
 
 /**
  * The SES bundle used for the lockdown script.
@@ -40,7 +49,10 @@ const require = createRequire(import.meta.url);
  * @type {string}
  */
 // eslint-disable-next-line n/no-sync
-const SES_BUNDLE = readFileSync(require.resolve('ses'), 'utf-8');
+const SES_BUNDLE = readFileSync(
+  resolve(NODE_MODULES_PATH, 'ses', 'dist', 'ses.cjs'),
+  'utf-8',
+);
 
 /**
  * @typedef {import('webpack').Configuration} Configuration
@@ -193,7 +205,7 @@ const baseConfig = {
       // safely ignore it if it's not available.
       crypto: false,
 
-      stream: require.resolve('stream-browserify'),
+      stream: resolve(NODE_MODULES_PATH, 'stream-browserify', 'index.js'),
     },
 
     plugins: [
