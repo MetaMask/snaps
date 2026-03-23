@@ -1012,7 +1012,7 @@ export const getRestrictedMultichainRouterMessenger = (
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAllSnaps',
+      'SnapController:getRunnableSnaps',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],
