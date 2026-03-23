@@ -116,7 +116,7 @@ export type SnapInterfaceControllerStateChangeEvent =
 
 type OtherNotification = { type: string; [key: string]: unknown };
 
-export type ExpandedView = {
+type ExpandedView = {
   title: string;
   interfaceId: string;
   footerLink?: { href: string; text: string };
