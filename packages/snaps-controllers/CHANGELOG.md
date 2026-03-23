@@ -9,36 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** All `SnapController` action types were renamed from `DoSomething` to `SnapControllerDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907))
-  - `GetSnap` is now `SnapControllerGetSnapAction`.
-    - Note: The method is now called `getSnap` instead of `get`.
-  - `HandleSnapRequest` is now `SnapControllerHandleRequestAction`.
-  - `GetSnapState` is now `SnapControllerGetSnapStateAction`.
-  - `HasSnap` is now `SnapControllerHasSnapAction`.
-    - Note: The method is now called `hasSnap` instead of `has`.
-  - `UpdateSnapState` is now `SnapControllerUpdateSnapStateAction`.
-  - `ClearSnapState` is now `SnapControllerClearSnapStateAction`.
-  - `UpdateRegistry` is now `SnapControllerUpdateRegistryAction`.
-  - `EnableSnap` is now `SnapControllerEnableSnapAction`.
-    - Note: The method is now called `enableSnap` instead of `enable`.
-  - `DisableSnap` is now `SnapControllerDisableSnapAction`.
-    - Note: The method is now called `disableSnap` instead of `disable`.
-  - `RemoveSnap` is now `SnapControllerRemoveSnapAction`.
-    - Note: The method is now called `removeSnap` instead of `remove`.
-  - `GetPermittedSnaps` is now `SnapControllerGetPermittedSnapsAction`.
-    - Note: The method is now called `getPermittedSnaps` instead of `getPermitted`.
-  - `GetAllSnaps` is now `SnapControllerGetAllSnapsAction`.
-    - Note: The method is now called `getAllSnaps` instead of `getAll`.
-  - `GetRunnableSnaps` is now `SnapControllerGetRunnableSnapsAction`.
-  - `StopAllSnaps` is now `SnapControllerStopAllSnapsAction`.
-  - `InstallSnaps` is now `SnapControllerInstallSnapsAction`.
-    - Note: The method is now called `installSnaps` instead of `install`.
-  - `DisconnectOrigin` is now `SnapControllerDisconnectOriginAction`.
-    - Note: The method is now called `disconnectOrigin` instead of `removeSnapFromSubject`.
-  - `RevokeDynamicPermissions` is now `SnapControllerRevokeDynamicSnapPermissionsAction`.
-  - `GetSnapFile` is now `SnapControllerGetSnapFileAction`.
-  - `IsMinimumPlatformVersion` is now `SnapControllerIsMinimumPlatformVersionAction`.
-  - `SetClientActive` is now `SnapControllerSetClientActiveAction`.
+- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911))
+  - `SnapController` actions:
+    - `GetSnap` is now `SnapControllerGetSnapAction`.
+      - Note: The method is now called `getSnap` instead of `get`.
+    - `HandleSnapRequest` is now `SnapControllerHandleRequestAction`.
+    - `GetSnapState` is now `SnapControllerGetSnapStateAction`.
+    - `HasSnap` is now `SnapControllerHasSnapAction`.
+      - Note: The method is now called `hasSnap` instead of `has`.
+    - `UpdateSnapState` is now `SnapControllerUpdateSnapStateAction`.
+    - `ClearSnapState` is now `SnapControllerClearSnapStateAction`.
+    - `UpdateRegistry` is now `SnapControllerUpdateRegistryAction`.
+    - `EnableSnap` is now `SnapControllerEnableSnapAction`.
+      - Note: The method is now called `enableSnap` instead of `enable`.
+    - `DisableSnap` is now `SnapControllerDisableSnapAction`.
+      - Note: The method is now called `disableSnap` instead of `disable`.
+    - `RemoveSnap` is now `SnapControllerRemoveSnapAction`.
+      - Note: The method is now called `removeSnap` instead of `remove`.
+    - `GetPermittedSnaps` is now `SnapControllerGetPermittedSnapsAction`.
+      - Note: The method is now called `getPermittedSnaps` instead of `getPermitted`.
+    - `GetAllSnaps` is now `SnapControllerGetAllSnapsAction`.
+      - Note: The method is now called `getAllSnaps` instead of `getAll`.
+    - `GetRunnableSnaps` is now `SnapControllerGetRunnableSnapsAction`.
+    - `StopAllSnaps` is now `SnapControllerStopAllSnapsAction`.
+    - `InstallSnaps` is now `SnapControllerInstallSnapsAction`.
+      - Note: The method is now called `installSnaps` instead of `install`.
+    - `DisconnectOrigin` is now `SnapControllerDisconnectOriginAction`.
+      - Note: The method is now called `disconnectOrigin` instead of `removeSnapFromSubject`.
+    - `RevokeDynamicPermissions` is now `SnapControllerRevokeDynamicSnapPermissionsAction`.
+    - `GetSnapFile` is now `SnapControllerGetSnapFileAction`.
+    - `IsMinimumPlatformVersion` is now `SnapControllerIsMinimumPlatformVersionAction`.
+    - `SetClientActive` is now `SnapControllerSetClientActiveAction`.
+  - `CronjobController` actions:
+    - `Schedule` is now `CronjobControllerScheduleAction`.
+    - `Cancel` is now `CronjobControllerCancelAction`.
+    - `Get` is now `CronjobControllerGetAction`.
 - **BREAKING:** All `SnapController` event types were renamed from `OnSomething` to `SnapControllerOnSomethingEvent` ([#3907](https://github.com/MetaMask/snaps/pull/3907))
   - `SnapStateChange` was removed in favour of `SnapControllerStateChangeEvent`.
   - `SnapBlocked` is now `SnapControllerSnapBlockedEvent`.
