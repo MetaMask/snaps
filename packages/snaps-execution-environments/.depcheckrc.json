@@ -13,6 +13,7 @@
     "eslint-plugin-*",
     "jest-silent-reporter",
     "prettier-plugin-packagejson",
+    "stream-browserify",
     "ts-loader",
     "ts-node",
     "typedoc",
