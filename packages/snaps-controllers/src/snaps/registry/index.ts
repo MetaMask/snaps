@@ -6,12 +6,12 @@ export type {
 } from './registry';
 export { SnapsRegistryStatus } from './registry';
 export type {
-  SnapsRegistryActions,
+  SnapsRegistryControllerActions,
   SnapsRegistryControllerArgs,
-  SnapsRegistryGetStateAction,
-  SnapsRegistryMessenger,
-  SnapsRegistryState,
-  SnapsRegistryStateChangeEvent,
+  SnapsRegistryControllerGetStateAction,
+  SnapsRegistryControllerMessenger,
+  SnapsRegistryControllerState,
+  SnapsRegistryControllerStateChangeEvent,
 } from './SnapsRegistryController';
 export { SnapsRegistryController } from './SnapsRegistryController';
 export type {

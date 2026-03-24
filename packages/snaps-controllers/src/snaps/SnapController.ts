@@ -167,7 +167,7 @@ import type {
   SnapsRegistryControllerUpdateRegistryAction,
   SnapsRegistryInfo,
   SnapsRegistryRequest,
-  SnapsRegistryStateChangeEvent,
+  SnapsRegistryControllerStateChangeEvent,
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
@@ -552,7 +552,7 @@ export type AllowedEvents =
   | SnapControllerSnapInstalledEvent
   | SnapControllerSnapUpdatedEvent
   | KeyringControllerLockEvent
-  | SnapsRegistryStateChangeEvent;
+  | SnapsRegistryControllerStateChangeEvent;
 
 export type SnapControllerMessenger = Messenger<
   typeof controllerName,

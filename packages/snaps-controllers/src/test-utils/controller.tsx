@@ -63,9 +63,9 @@ import type {
 import type { MultichainRoutingServiceMessenger } from '../multichain/MultichainRoutingService';
 import type { ExecutionService, ExecutionServiceMessenger } from '../services';
 import type {
-  SnapsRegistryActions,
+  SnapsRegistryControllerActions,
   SnapsRegistryEvents,
-  SnapsRegistryMessenger,
+  SnapsRegistryControllerMessenger,
 } from '../snaps';
 import { SnapController } from '../snaps';
 import type {
@@ -329,10 +329,14 @@ export const MOCK_INSIGHTS_PERMISSIONS_NO_ORIGINS: Record<
 export type RootMessenger = Messenger<
   MockAnyNamespace,
   MessengerActions<
-    SnapControllerMessenger | SnapsRegistryMessenger | ExecutionServiceMessenger
+    | SnapControllerMessenger
+    | SnapsRegistryControllerMessenger
+    | ExecutionServiceMessenger
   >,
   MessengerEvents<
-    SnapControllerMessenger | SnapsRegistryMessenger | ExecutionServiceMessenger
+    | SnapControllerMessenger
+    | SnapsRegistryControllerMessenger
+    | ExecutionServiceMessenger
   >
 >;
 
@@ -792,7 +796,7 @@ export const getRestrictedCronjobControllerMessenger = (
 // Mock controller messenger for registry
 export const getRootSnapsRegistryControllerMessenger = () => {
   const messenger = new MockControllerMessenger<
-    SnapsRegistryActions,
+    SnapsRegistryControllerActions,
     SnapsRegistryEvents
   >();
 
@@ -808,7 +812,7 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
 ) => {
   return new Messenger<
     'SnapsRegistry',
-    SnapsRegistryActions,
+    SnapsRegistryControllerActions,
     SnapsRegistryEvents,
     any
   >({ namespace: 'SnapsRegistry', parent: messenger });

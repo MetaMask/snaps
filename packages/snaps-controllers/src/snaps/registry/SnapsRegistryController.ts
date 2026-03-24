@@ -49,8 +49,8 @@ export type ClientConfig = {
 };
 
 export type SnapsRegistryControllerArgs = {
-  messenger: SnapsRegistryMessenger;
-  state?: SnapsRegistryState;
+  messenger: SnapsRegistryControllerMessenger;
+  state?: SnapsRegistryControllerState;
   fetchFunction?: typeof fetch;
   url?: JsonSnapsRegistryUrl;
   recentFetchThreshold?: number;
@@ -59,29 +59,31 @@ export type SnapsRegistryControllerArgs = {
   clientConfig: ClientConfig;
 };
 
-export type SnapsRegistryGetStateAction = ControllerGetStateAction<
+export type SnapsRegistryControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
-  SnapsRegistryState
+  SnapsRegistryControllerState
 >;
 
-export type SnapsRegistryActions =
-  | SnapsRegistryGetStateAction
+export type SnapsRegistryControllerActions =
+  | SnapsRegistryControllerGetStateAction
   | SnapsRegistryControllerMethodActions;
 
-export type SnapsRegistryStateChangeEvent = ControllerStateChangeEvent<
+export type SnapsRegistryControllerStateChangeEvent =
+  ControllerStateChangeEvent<
+    typeof controllerName,
+    SnapsRegistryControllerState
+  >;
+
+export type SnapsRegistryControllerEvents =
+  SnapsRegistryControllerStateChangeEvent;
+
+export type SnapsRegistryControllerMessenger = Messenger<
   typeof controllerName,
-  SnapsRegistryState
+  SnapsRegistryControllerActions,
+  SnapsRegistryControllerEvents
 >;
 
-export type SnapsRegistryEvents = SnapsRegistryStateChangeEvent;
-
-export type SnapsRegistryMessenger = Messenger<
-  typeof controllerName,
-  SnapsRegistryActions,
-  SnapsRegistryEvents
->;
-
-export type SnapsRegistryState = {
+export type SnapsRegistryControllerState = {
   database: SnapsRegistryDatabase | null;
   signature: string | null;
   lastUpdated: number | null;
@@ -106,8 +108,8 @@ const defaultState = {
 
 export class SnapsRegistryController extends BaseController<
   typeof controllerName,
-  SnapsRegistryState,
-  SnapsRegistryMessenger
+  SnapsRegistryControllerState,
+  SnapsRegistryControllerMessenger
 > {
   readonly #url: JsonSnapsRegistryUrl;
 
