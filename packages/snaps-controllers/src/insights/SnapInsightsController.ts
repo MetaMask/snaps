@@ -20,14 +20,13 @@ import { hasProperty, hexToBigInt } from '@metamask/utils';
 
 import type { SnapInterfaceControllerDeleteInterfaceAction } from '../interface';
 import type {
-  SnapControllerGetAllSnapsAction,
+  SnapControllerGetRunnableSnapsAction,
   SnapControllerHandleRequestAction,
 } from '../snaps';
-import { getRunnableSnaps } from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
-  SignatureStateChange,
+  SignatureControllerStateChangeEvent,
   SignatureControllerState,
   StateSignature,
   TransactionControllerTransactionStatusUpdatedEvent,
@@ -36,9 +35,9 @@ import type {
 const controllerName = 'SnapInsightsController';
 
 export type SnapInsightsControllerAllowedActions =
-  | SnapControllerHandleRequestAction
-  | SnapControllerGetAllSnapsAction
   | GetPermissions
+  | SnapControllerGetRunnableSnapsAction
+  | SnapControllerHandleRequestAction
   | SnapInterfaceControllerDeleteInterfaceAction;
 
 export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
@@ -59,7 +58,7 @@ export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 export type SnapInsightsControllerAllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
-  | SignatureStateChange;
+  | SignatureControllerStateChangeEvent;
 
 export type SnapInsightsControllerMessenger = Messenger<
   typeof controllerName,
@@ -146,8 +145,9 @@ export class SnapInsightsController extends BaseController<
    * @returns A list of objects containing Snap IDs and the permission object.
    */
   #getSnapsWithPermission(permissionName: string) {
-    const allSnaps = this.messenger.call('SnapController:getAllSnaps');
-    const filteredSnaps = getRunnableSnaps(allSnaps);
+    const filteredSnaps = this.messenger.call(
+      'SnapController:getRunnableSnaps',
+    );
 
     return filteredSnaps.reduce<SnapWithPermission[]>((accumulator, snap) => {
       const permissions = this.messenger.call(

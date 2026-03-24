@@ -953,7 +953,7 @@ export const getRestrictedSnapInsightsControllerMessenger = (
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAllSnaps',
+      'SnapController:getRunnableSnaps',
       'SnapController:handleRequest',
       'SnapInterfaceController:deleteInterface',
     ],
