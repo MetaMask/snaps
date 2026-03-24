@@ -372,11 +372,7 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
     // Find the controller or service class
     if (ts.isClassDeclaration(node) && node.name) {
       const classText = node.name.text;
-      if (
-        classText.includes('Controller') ||
-        classText.includes('Service') ||
-        classText.includes('Router')
-      ) {
+      if (classText.includes('Controller') || classText.includes('Service')) {
         context.className = classText;
 
         // Extract method info for exposed methods
