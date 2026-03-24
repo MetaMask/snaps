@@ -1,6 +1,5 @@
 export type {
   WebSocketServiceActions,
-  WebSocketServiceEvents,
   WebSocketServiceMessenger,
 } from './WebSocketService';
 export { WebSocketService } from './WebSocketService';
