@@ -334,28 +334,6 @@ type VisitorContext = {
  */
 function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
   /**
-   * Gets the class members from a class declaration or type alias declaration
-   * node.
-   *
-   * @param node - The class declaration or type alias declaration node.
-   * @returns The class members, or null if the node is not a class or type
-   * alias declaration.
-   */
-  function getClassMembers(
-    node: ts.ClassDeclaration | ts.TypeAliasDeclaration,
-  ): ts.NodeArray<ts.ClassElement> | ts.NodeArray<ts.TypeElement> | null {
-    if (ts.isClassDeclaration(node)) {
-      return node.members;
-    }
-
-    if (ts.isTypeAliasDeclaration(node) && ts.isTypeLiteralNode(node.type)) {
-      return node.type.members;
-    }
-
-    return null;
-  }
-
-  /**
    * Visits AST nodes to find exposed methods and controller class.
    *
    * @param node - The AST node to visit.
@@ -392,22 +370,14 @@ function createASTVisitor(context: VisitorContext): (node: ts.Node) => void {
     }
 
     // Find the controller or service class
-    if (
-      (ts.isClassDeclaration(node) || ts.isTypeAliasDeclaration(node)) &&
-      node.name
-    ) {
+    if (ts.isClassDeclaration(node) && node.name) {
       const classText = node.name.text;
-      if (classText.endsWith('Controller') || classText.endsWith('Service')) {
+      if (classText.includes('Controller') || classText.includes('Service')) {
         context.className = classText;
-
-        const members = getClassMembers(node);
-        if (!members) {
-          return;
-        }
 
         // Extract method info for exposed methods
         const seenMethods = new Set<string>();
-        for (const member of members) {
+        for (const member of node.members) {
           if (
             ts.isMethodDeclaration(member) &&
             member.name &&
@@ -486,12 +456,11 @@ function createProgramForFile(filePath: string): ts.Program | null {
 function findClassInSourceFile(
   sourceFile: ts.SourceFile,
   className: string,
-): ts.ClassDeclaration | ts.TypeAliasDeclaration | null {
+): ts.ClassDeclaration | null {
   return (
     sourceFile.statements.find(
-      (node): node is ts.ClassDeclaration | ts.TypeAliasDeclaration =>
-        (ts.isClassDeclaration(node) || ts.isTypeAliasDeclaration(node)) &&
-        node.name?.text === className,
+      (node): node is ts.ClassDeclaration =>
+        ts.isClassDeclaration(node) && node.name?.text === className,
     ) ?? null
   );
 }
