@@ -54,13 +54,13 @@ import type { Json } from '@metamask/utils';
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
 import { MockSnapsRegistry } from './registry';
-import type { CronjobControllerMessenger } from '../cronjob';
+import type { CronjobControllerMessenger } from '../cronjob/CronjobController';
 import type { SnapInsightsControllerMessenger } from '../insights';
 import type {
   SnapInterfaceControllerMessenger,
   StoredInterface,
 } from '../interface/SnapInterfaceController';
-import type { MultichainRouterMessenger } from '../multichain';
+import type { MultichainRoutingServiceMessenger } from '../multichain/MultichainRoutingService';
 import type {
   AbstractExecutionService,
   ExecutionServiceMessenger,
@@ -986,14 +986,14 @@ export async function waitForStateChange(
   });
 }
 
-type MultichainRouterRootMessenger = Messenger<
+type MultichainRoutingServiceRootMessenger = Messenger<
   MockAnyNamespace,
-  MessengerActions<MultichainRouterMessenger>
+  MessengerActions<MultichainRoutingServiceMessenger>
 >;
 
 // Mock controller messenger for Multichain Router
-export const getMultichainRouterRootMessenger = () => {
-  const messenger: MultichainRouterRootMessenger =
+export const getMultichainRoutingServiceRootMessenger = () => {
+  const messenger: MultichainRoutingServiceRootMessenger =
     new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
@@ -1001,18 +1001,18 @@ export const getMultichainRouterRootMessenger = () => {
   return messenger;
 };
 
-export const getRestrictedMultichainRouterMessenger = (
-  messenger: MultichainRouterRootMessenger = getMultichainRouterRootMessenger(),
+export const getRestrictedMultichainRoutingServiceMessenger = (
+  messenger: MultichainRoutingServiceRootMessenger = getMultichainRoutingServiceRootMessenger(),
 ) => {
-  const controllerMessenger: MultichainRouterMessenger = new Messenger({
-    namespace: 'MultichainRouter',
+  const controllerMessenger: MultichainRoutingServiceMessenger = new Messenger({
+    namespace: 'MultichainRoutingService',
     parent: messenger,
   });
 
   messenger.delegate({
     actions: [
       'PermissionController:getPermissions',
-      'SnapController:getAllSnaps',
+      'SnapController:getRunnableSnaps',
       'SnapController:handleRequest',
       'AccountsController:listMultichainAccounts',
     ],
