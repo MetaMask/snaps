@@ -9,9 +9,9 @@ import type { RootMessenger } from './controller';
 import type {
   ExecutionServiceActions,
   ExecutionServiceEvents,
-  SetupSnapProvider,
   SnapExecutionData,
 } from '../services';
+import type { SetupSnapProvider } from '../services/ExecutionService';
 import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
 
 export const getNodeEESMessenger = (messenger: RootMessenger) => {

@@ -5,7 +5,6 @@ export type {
   ExecutionServiceOutboundRequestEvent,
   ExecutionServiceOutboundResponseEvent,
   ExecutionServiceUnhandledErrorEvent,
-  SetupSnapProvider,
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';
