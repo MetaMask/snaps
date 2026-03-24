@@ -64,7 +64,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SnapTerminated` is now `SnapControllerSnapTerminatedEvent`.
   - `SnapEnabled` is now `SnapControllerSnapEnabledEvent`.
   - `SnapDisabled` is now `SnapControllerSnapDisabledEvent`.
-- **BREAKING:** `MultichainRouter` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
+- **BREAKING:**: Rename `MultichainRouter` to `MultichainRoutingService` and update action types accordingly ([#3913](https://github.com/MetaMask/snaps/pull/3913))
+  - This is consistent with the naming of other services.
+- **BREAKING:** `MultichainRoutingService` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
 
 ### Removed
 

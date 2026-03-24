@@ -1,7 +1,7 @@
-export { MultichainRouter } from './MultichainRouter';
+export { MultichainRoutingService } from './MultichainRoutingService';
 export type {
-  MultichainRouterGetSupportedAccountsAction,
-  MultichainRouterGetSupportedMethodsAction,
-  MultichainRouterHandleRequestAction,
-  MultichainRouterIsSupportedScopeAction,
-} from './MultichainRouter-method-action-types';
+  MultichainRoutingServiceGetSupportedAccountsAction,
+  MultichainRoutingServiceGetSupportedMethodsAction,
+  MultichainRoutingServiceHandleRequestAction,
+  MultichainRoutingServiceIsSupportedScopeAction,
+} from './MultichainRoutingService-method-action-types';

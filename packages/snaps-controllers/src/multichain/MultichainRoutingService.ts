@@ -22,7 +22,7 @@ import {
 } from '@metamask/utils';
 import { nanoid } from 'nanoid';
 
-import type { MultichainRouterMethodActions } from './MultichainRouter-method-action-types';
+import type { MultichainRoutingServiceMethodActions } from './MultichainRoutingService-method-action-types';
 import type {
   SnapControllerGetRunnableSnapsAction,
   SnapControllerHandleRequestAction,
@@ -48,23 +48,24 @@ export type AccountsControllerListMultichainAccountsAction = {
   handler: (chainId?: CaipChainId) => InternalAccount[];
 };
 
-export type MultichainRouterActions = MultichainRouterMethodActions;
+export type MultichainRoutingServiceActions =
+  MultichainRoutingServiceMethodActions;
 
-export type MultichainRouterAllowedActions =
+export type MultichainRoutingServiceAllowedActions =
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
   | GetPermissions
   | AccountsControllerListMultichainAccountsAction;
 
-export type MultichainRouterEvents = never;
+export type MultichainRoutingServiceEvents = never;
 
-export type MultichainRouterMessenger = Messenger<
+export type MultichainRoutingServiceMessenger = Messenger<
   typeof name,
-  MultichainRouterActions | MultichainRouterAllowedActions
+  MultichainRoutingServiceActions | MultichainRoutingServiceAllowedActions
 >;
 
-export type MultichainRouterArgs = {
-  messenger: MultichainRouterMessenger;
+export type MultichainRoutingServiceArgs = {
+  messenger: MultichainRoutingServiceMessenger;
   withSnapKeyring: WithSnapKeyringFunction;
 };
 
@@ -73,7 +74,7 @@ type ProtocolSnap = {
   methods: string[];
 };
 
-const name = 'MultichainRouter';
+const name = 'MultichainRoutingService';
 
 const MESSENGER_EXPOSED_METHODS = [
   'handleRequest',
@@ -82,16 +83,16 @@ const MESSENGER_EXPOSED_METHODS = [
   'isSupportedScope',
 ] as const;
 
-export class MultichainRouter {
+export class MultichainRoutingService {
   name: typeof name = name;
 
   state = null;
 
-  readonly #messenger: MultichainRouterMessenger;
+  readonly #messenger: MultichainRoutingServiceMessenger;
 
   readonly #withSnapKeyring: WithSnapKeyringFunction;
 
-  constructor({ messenger, withSnapKeyring }: MultichainRouterArgs) {
+  constructor({ messenger, withSnapKeyring }: MultichainRoutingServiceArgs) {
     this.#messenger = messenger;
     this.#withSnapKeyring = withSnapKeyring;
 
@@ -260,7 +261,7 @@ export class MultichainRouter {
    * Handle an incoming JSON-RPC request tied to a specific scope by routing
    * to either a protocol Snap or an account Snap.
    *
-   * Note: Addresses are considered case-sensitive by the MultichainRouter as
+   * Note: Addresses are considered case-sensitive by the MultichainRoutingService as
    * not all non-EVM chains are case-insensitive.
    *
    * @param options - An options bag.
