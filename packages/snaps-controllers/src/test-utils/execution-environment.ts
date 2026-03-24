@@ -7,7 +7,6 @@ import { pipeline } from 'readable-stream';
 import { MOCK_BLOCK_NUMBER } from './constants';
 import type { RootMessenger } from './controller';
 import type {
-  ExecutionService,
   ExecutionServiceActions,
   ExecutionServiceEvents,
   SetupSnapProvider,
@@ -59,7 +58,7 @@ export const getNodeEES = (
       }),
   });
 
-export class ExecutionEnvironmentStub implements ExecutionService {
+export class ExecutionEnvironmentStub {
   name: 'ExecutionService' = 'ExecutionService' as const;
 
   state = null;

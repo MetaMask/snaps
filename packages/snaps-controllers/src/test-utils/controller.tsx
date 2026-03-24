@@ -61,10 +61,7 @@ import type {
   StoredInterface,
 } from '../interface/SnapInterfaceController';
 import type { MultichainRoutingServiceMessenger } from '../multichain/MultichainRoutingService';
-import type {
-  AbstractExecutionService,
-  ExecutionServiceMessenger,
-} from '../services';
+import type { ExecutionService, ExecutionServiceMessenger } from '../services';
 import type {
   SnapsRegistryActions,
   SnapsRegistryEvents,
@@ -426,7 +423,10 @@ export const getRootMessenger = () => {
     () => undefined,
   );
 
-  messenger.registerActionHandler('ExecutionService:executeSnap', asyncNoOp);
+  messenger.registerActionHandler(
+    'ExecutionService:executeSnap',
+    async () => 'OK',
+  );
   messenger.registerActionHandler(
     'ExecutionService:handleRpcRequest',
     asyncNoOp,
@@ -693,7 +693,7 @@ export const getSnapController = async (
 
 export const getSnapControllerWithEES = async (
   options = getSnapControllerOptions(),
-  service?: AbstractExecutionService<unknown>,
+  service?: ExecutionService,
   init = true,
 ) => {
   const _service =

@@ -3,10 +3,10 @@ import { ProcessParentMessageStream } from '@metamask/post-message-stream/node';
 import type { ChildProcess } from 'child_process';
 import { fork } from 'child_process';
 
-import type { TerminateJobArgs } from '..';
-import { AbstractExecutionService } from '..';
+import type { TerminateJobArgs } from '../ExecutionService';
+import { ExecutionService } from '../ExecutionService';
 
-export class NodeProcessExecutionService extends AbstractExecutionService<ChildProcess> {
+export class NodeProcessExecutionService extends ExecutionService<ChildProcess> {
   protected async initEnvStream(snapId: string): Promise<{
     worker: ChildProcess;
     stream: BasePostMessageStream;

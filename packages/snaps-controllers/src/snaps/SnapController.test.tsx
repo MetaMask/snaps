@@ -95,11 +95,11 @@ import {
   SNAP_APPROVAL_RESULT,
   SNAP_APPROVAL_UPDATE,
 } from './SnapController';
-import { AbstractExecutionService, setupMultiplex } from '../services';
+import { ExecutionService, setupMultiplex } from '../services';
+import type { TerminateJobArgs } from '../services/ExecutionService';
 import type {
   ExecutionServiceMessenger,
   NodeThreadExecutionService,
-  TerminateJobArgs,
 } from '../services/node';
 import type { SnapControllerStateWithStorageService } from '../test-utils';
 import {
@@ -1870,7 +1870,7 @@ describe('SnapController', () => {
       state: { snaps: getPersistedSnapsState() },
     });
 
-    class BrickedExecutionService extends AbstractExecutionService<null> {
+    class BrickedExecutionService extends ExecutionService<null> {
       constructor(messenger: ExecutionServiceMessenger) {
         super({ messenger, setupSnapProvider: jest.fn(), pingTimeout: 1 });
       }
@@ -2139,7 +2139,10 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'ExecutionService:executeSnap',
-      async () => await sleep(300),
+      async () => {
+        await sleep(300);
+        return 'OK';
+      },
     );
 
     const snap = snapController.getSnapExpect(MOCK_SNAP_ID);

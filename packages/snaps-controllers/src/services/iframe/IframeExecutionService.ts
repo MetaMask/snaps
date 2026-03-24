@@ -6,14 +6,14 @@ import { withTimeout } from '../../utils';
 import type {
   ExecutionServiceArgs,
   TerminateJobArgs,
-} from '../AbstractExecutionService';
-import { AbstractExecutionService } from '../AbstractExecutionService';
+} from '../ExecutionService';
+import { ExecutionService } from '../ExecutionService';
 
 type IframeExecutionEnvironmentServiceArgs = {
   iframeUrl: URL;
 } & ExecutionServiceArgs;
 
-export class IframeExecutionService extends AbstractExecutionService<Window> {
+export class IframeExecutionService extends ExecutionService<Window> {
   public iframeUrl: URL;
 
   constructor({

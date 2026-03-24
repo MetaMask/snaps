@@ -78,10 +78,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - This is consistent with the naming of other services.
 - **BREAKING:** `MultichainRoutingService` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
 - **BREAKING:** `SnapInsightsController` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3915](https://github.com/MetaMask/snaps/pull/3915))
+- **RREAKING:** Replace `ExecutionService` interface with abstract class ([#3916](https://github.com/MetaMask/snaps/pull/3916))
+  - The `ExecutionService` is now an abstract class and replaces the previous `AbstractExecutionService` class interface.
 
 ### Removed
 
-- **BREAKING:** `incrementActiveReferences` and `decrementActiveReferences` actions were removed ([#3907](https://github.com/MetaMask/snaps/pull/3907))
+- **RREAKING:** Remove `AbstractExecutionService` class in favour of `ExecutionService` ([#3916](https://github.com/MetaMask/snaps/pull/3916))
+- **BREAKING:** Remove `incrementActiveReferences` and `decrementActiveReferences` actions ([#3907](https://github.com/MetaMask/snaps/pull/3907))
 
 ## [18.0.4]
 

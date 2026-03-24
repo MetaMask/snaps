@@ -2,7 +2,7 @@ import type {
   EnvironmentContext,
   JestEnvironmentConfig,
 } from '@jest/environment';
-import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { ExecutionService } from '@metamask/snaps-controllers';
 import type { SnapId } from '@metamask/snaps-sdk';
 import { installSnap } from '@metamask/snaps-simulation';
 import type {
@@ -85,7 +85,7 @@ export class SnapsEnvironment extends NodeEnvironment {
   async installSnap<
     Service extends new (
       ...args: any[]
-    ) => InstanceType<typeof AbstractExecutionService>,
+    ) => InstanceType<typeof ExecutionService>,
   >(
     snapId: string = this.snapId,
     options: Partial<InstallSnapOptions<Service>> = {},

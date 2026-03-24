@@ -12,7 +12,7 @@ import {
   type Caveat,
   type RequestedPermissions,
 } from '@metamask/permission-controller';
-import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { ExecutionService } from '@metamask/snaps-controllers';
 import {
   detectSnapLocation,
   fetchSnap,
@@ -88,7 +88,7 @@ export type ExecutionServiceOptions<
   Service extends new (...args: any[]) => any,
 > = Omit<
   ConstructorParameters<Service>[0],
-  keyof ConstructorParameters<typeof AbstractExecutionService<unknown>>[0]
+  keyof ConstructorParameters<typeof ExecutionService>[0]
 >;
 
 /**
@@ -102,9 +102,7 @@ export type ExecutionServiceOptions<
  * @template Service - The type of the execution service.
  */
 export type InstallSnapOptions<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService<unknown>>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 > =
   ExecutionServiceOptions<Service> extends Record<string, never>
     ? {
@@ -121,7 +119,7 @@ export type InstallSnapOptions<
 export type InstalledSnap = {
   snapId: SnapId;
   store: Store;
-  executionService: InstanceType<typeof AbstractExecutionService>;
+  executionService: InstanceType<typeof ExecutionService>;
   controllerMessenger: Messenger<
     NamespacedName,
     ActionConstraint,
@@ -406,9 +404,7 @@ export type MultichainMiddlewareHooks = {
  * @template Service - The type of the execution service.
  */
 export async function installSnap<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 >(
   snapId: SnapId,
   {
@@ -481,8 +477,8 @@ export async function installSnap<
   });
 
   // Create execution service.
-  const ExecutionService = executionService ?? NodeThreadExecutionService;
-  const service = new ExecutionService({
+  const ActualService = executionService ?? NodeThreadExecutionService;
+  const service = new ActualService({
     ...executionServiceOptions,
     messenger: new Messenger({
       namespace: 'ExecutionService',

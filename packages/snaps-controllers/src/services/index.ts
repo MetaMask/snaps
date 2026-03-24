@@ -1,15 +1,15 @@
-export * from './AbstractExecutionService';
 export type {
-  ExecutionService,
   ExecutionServiceActions,
   ExecutionServiceEvents,
   ExecutionServiceMessenger,
   ExecutionServiceOutboundRequestEvent,
   ExecutionServiceOutboundResponseEvent,
   ExecutionServiceUnhandledErrorEvent,
+  SetupSnapProvider,
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';
+export { ExecutionService, setupMultiplex } from './ExecutionService';
 export type {
   ExecutionServiceTerminateSnapAction,
   ExecutionServiceTerminateAllSnapsAction,
