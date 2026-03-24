@@ -26,6 +26,7 @@ import type {
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';
+import { MESSENGER_EXPOSED_METHODS } from './ExecutionService';
 import { log } from '../logging';
 import { Timer } from '../snaps/Timer';
 import { hasTimedOut, withTimeout } from '../utils';
@@ -60,9 +61,9 @@ export type Job<WorkerType> = {
 export type TerminateJobArgs<WorkerType> = Partial<Job<WorkerType>> &
   Pick<Job<WorkerType>, 'id'>;
 
-/** 
+/**
   Statuses used for diagnostic purposes
-  - created: The initial state, no initialization has started 
+  - created: The initial state, no initialization has started
   - initializing: Snap execution environment is initializing
   - initialized: Snap execution environment has initialized
   - executing: Snap source code is being executed
@@ -115,33 +116,9 @@ export abstract class AbstractExecutionService<WorkerType>
     this.#terminationTimeout = terminationTimeout;
     this.#usePing = usePing;
 
-    this.#registerMessageHandlers();
-  }
-
-  /**
-   * Constructor helper for registering the controller's messaging system
-   * actions.
-   */
-  #registerMessageHandlers(): void {
-    this.#messenger.registerActionHandler(
-      `${controllerName}:handleRpcRequest`,
-      async (snapId: string, options: SnapRpcHookArgs) =>
-        this.handleRpcRequest(snapId, options),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${controllerName}:executeSnap`,
-      async (data: SnapExecutionData) => this.executeSnap(data),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${controllerName}:terminateSnap`,
-      async (snapId: string) => this.terminateSnap(snapId),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${controllerName}:terminateAllSnaps`,
-      async () => this.terminateAllSnaps(),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

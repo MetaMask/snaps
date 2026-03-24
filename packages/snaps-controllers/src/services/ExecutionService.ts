@@ -2,6 +2,8 @@ import type { Messenger } from '@metamask/messenger';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type { Json } from '@metamask/utils';
 
+import type { ExecutionServiceMethodActions } from './ExecutionService-method-action-types';
+
 type TerminateSnap = (snapId: string) => Promise<void>;
 type TerminateAll = () => Promise<void>;
 type ExecuteSnap = (snapData: SnapExecutionData) => Promise<unknown>;
@@ -10,6 +12,13 @@ type HandleRpcRequest = (
   snapId: string,
   options: SnapRpcHookArgs,
 ) => Promise<unknown>;
+
+export const MESSENGER_EXPOSED_METHODS = [
+  'terminateSnap',
+  'terminateAllSnaps',
+  'executeSnap',
+  'handleRpcRequest',
+] as const;
 
 export type ExecutionService = {
   // These fields are required for modular initialisation of the execution
@@ -35,65 +44,27 @@ export type SnapErrorJson = {
   data?: Json;
 };
 
-type ControllerName = 'ExecutionService';
-
-export type ErrorMessageEvent = {
+export type ExecutionServiceUnhandledErrorEvent = {
   type: 'ExecutionService:unhandledError';
   payload: [string, SnapErrorJson];
 };
 
-export type OutboundRequest = {
+export type ExecutionServiceOutboundRequestEvent = {
   type: 'ExecutionService:outboundRequest';
   payload: [string];
 };
 
-export type OutboundResponse = {
+export type ExecutionServiceOutboundResponseEvent = {
   type: 'ExecutionService:outboundResponse';
   payload: [string];
 };
 
 export type ExecutionServiceEvents =
-  | ErrorMessageEvent
-  | OutboundRequest
-  | OutboundResponse;
+  | ExecutionServiceUnhandledErrorEvent
+  | ExecutionServiceOutboundRequestEvent
+  | ExecutionServiceOutboundResponseEvent;
 
-/**
- * Handles RPC request.
- */
-export type HandleRpcRequestAction = {
-  type: `${ControllerName}:handleRpcRequest`;
-  handler: ExecutionService['handleRpcRequest'];
-};
-
-/**
- * Executes a given snap.
- */
-export type ExecuteSnapAction = {
-  type: `${ControllerName}:executeSnap`;
-  handler: ExecutionService['executeSnap'];
-};
-
-/**
- * Terminates a given snap.
- */
-export type TerminateSnapAction = {
-  type: `${ControllerName}:terminateSnap`;
-  handler: ExecutionService['terminateSnap'];
-};
-
-/**
- * Terminates all snaps.
- */
-export type TerminateAllSnapsAction = {
-  type: `${ControllerName}:terminateAllSnaps`;
-  handler: ExecutionService['terminateAllSnaps'];
-};
-
-export type ExecutionServiceActions =
-  | HandleRpcRequestAction
-  | ExecuteSnapAction
-  | TerminateSnapAction
-  | TerminateAllSnapsAction;
+export type ExecutionServiceActions = ExecutionServiceMethodActions;
 
 export type ExecutionServiceMessenger = Messenger<
   'ExecutionService',
