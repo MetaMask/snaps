@@ -181,9 +181,12 @@ describe('MultichainRouter', () => {
         () => [],
       );
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
@@ -252,9 +255,12 @@ describe('MultichainRouter', () => {
         () => [],
       );
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [];
+        },
+      );
 
       await expect(
         messenger.call('MultichainRouter:handleRequest', {
@@ -435,9 +441,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -465,9 +474,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -495,9 +507,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -552,9 +567,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
@@ -582,9 +600,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [getTruncatedSnap()];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'PermissionController:getPermissions',
@@ -612,9 +633,12 @@ describe('MultichainRouter', () => {
         withSnapKeyring,
       });
 
-      rootMessenger.registerActionHandler('SnapController:getAllSnaps', () => {
-        return [];
-      });
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
