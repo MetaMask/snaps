@@ -1982,18 +1982,16 @@ describe('SnapController', () => {
       });
 
     const rootMessenger = getRootMessenger();
-    const [snapController, service] = await getSnapControllerWithEES(
-      getSnapControllerOptions({
-        maxRequestTime: 50,
-        rootMessenger,
-        detectSnapLocation: loopbackDetect({
-          manifest,
-          files: [sourceCode, svgIcon as VirtualFile],
-        }),
+    const options = getSnapControllerOptions({
+      maxRequestTime: 50,
+      rootMessenger,
+      detectSnapLocation: loopbackDetect({
+        manifest,
+        files: [sourceCode, svgIcon as VirtualFile],
       }),
-    );
+    });
 
-    const spy = jest.spyOn(service, 'executeSnap');
+    const [snapController, service] = await getSnapControllerWithEES(options);
 
     await snapController.installSnaps(MOCK_ORIGIN, {
       [MOCK_SNAP_ID]: {},
@@ -2043,7 +2041,21 @@ describe('SnapController', () => {
 
     expect(await promise).toBe('foo');
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      8,
+      'ExecutionService:executeSnap',
+      expect.objectContaining({
+        snapId: MOCK_SNAP_ID,
+      }),
+    );
+
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      19,
+      'ExecutionService:executeSnap',
+      expect.objectContaining({
+        snapId: MOCK_SNAP_ID,
+      }),
+    );
 
     // @ts-expect-error Accessing protected value.
     service.terminateJob = originalTerminateFunction;
