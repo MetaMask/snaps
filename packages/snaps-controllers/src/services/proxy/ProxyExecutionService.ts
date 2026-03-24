@@ -4,15 +4,15 @@ import { nanoid } from 'nanoid';
 import type {
   ExecutionServiceArgs,
   TerminateJobArgs,
-} from '../AbstractExecutionService';
-import { AbstractExecutionService } from '../AbstractExecutionService';
+} from '../ExecutionService';
+import { ExecutionService } from '../ExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type ProxyExecutionEnvironmentServiceArgs = {
   stream: BasePostMessageStream;
 } & ExecutionServiceArgs;
 
-export class ProxyExecutionService extends AbstractExecutionService<string> {
+export class ProxyExecutionService extends ExecutionService<string> {
   readonly #stream: BasePostMessageStream;
 
   /**

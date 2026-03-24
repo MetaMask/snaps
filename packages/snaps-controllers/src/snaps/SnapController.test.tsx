@@ -95,11 +95,11 @@ import {
   SNAP_APPROVAL_RESULT,
   SNAP_APPROVAL_UPDATE,
 } from './SnapController';
-import { AbstractExecutionService, setupMultiplex } from '../services';
+import { ExecutionService, setupMultiplex } from '../services';
+import type { TerminateJobArgs } from '../services/ExecutionService';
 import type {
   ExecutionServiceMessenger,
   NodeThreadExecutionService,
-  TerminateJobArgs,
 } from '../services/node';
 import type { SnapControllerStateWithStorageService } from '../test-utils';
 import {
@@ -1870,7 +1870,7 @@ describe('SnapController', () => {
       state: { snaps: getPersistedSnapsState() },
     });
 
-    class BrickedExecutionService extends AbstractExecutionService<null> {
+    class BrickedExecutionService extends ExecutionService<null> {
       constructor(messenger: ExecutionServiceMessenger) {
         super({ messenger, setupSnapProvider: jest.fn(), pingTimeout: 1 });
       }
@@ -1982,18 +1982,16 @@ describe('SnapController', () => {
       });
 
     const rootMessenger = getRootMessenger();
-    const [snapController, service] = await getSnapControllerWithEES(
-      getSnapControllerOptions({
-        maxRequestTime: 50,
-        rootMessenger,
-        detectSnapLocation: loopbackDetect({
-          manifest,
-          files: [sourceCode, svgIcon as VirtualFile],
-        }),
+    const options = getSnapControllerOptions({
+      maxRequestTime: 50,
+      rootMessenger,
+      detectSnapLocation: loopbackDetect({
+        manifest,
+        files: [sourceCode, svgIcon as VirtualFile],
       }),
-    );
+    });
 
-    const spy = jest.spyOn(service, 'executeSnap');
+    const [snapController, service] = await getSnapControllerWithEES(options);
 
     await snapController.installSnaps(MOCK_ORIGIN, {
       [MOCK_SNAP_ID]: {},
@@ -2043,7 +2041,21 @@ describe('SnapController', () => {
 
     expect(await promise).toBe('foo');
 
-    expect(spy).toHaveBeenCalledTimes(2);
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      8,
+      'ExecutionService:executeSnap',
+      expect.objectContaining({
+        snapId: MOCK_SNAP_ID,
+      }),
+    );
+
+    expect(options.messenger.call).toHaveBeenNthCalledWith(
+      19,
+      'ExecutionService:executeSnap',
+      expect.objectContaining({
+        snapId: MOCK_SNAP_ID,
+      }),
+    );
 
     // @ts-expect-error Accessing protected value.
     service.terminateJob = originalTerminateFunction;
@@ -2127,7 +2139,10 @@ describe('SnapController', () => {
 
     rootMessenger.registerActionHandler(
       'ExecutionService:executeSnap',
-      async () => await sleep(300),
+      async () => {
+        await sleep(300);
+        return 'OK';
+      },
     );
 
     const snap = snapController.getSnapExpect(MOCK_SNAP_ID);

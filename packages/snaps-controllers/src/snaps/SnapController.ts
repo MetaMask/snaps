@@ -181,11 +181,11 @@ import type {
 } from '../interface';
 import { log } from '../logging';
 import type {
-  ExecuteSnapAction,
   ExecutionServiceEvents,
-  HandleRpcRequestAction,
+  ExecutionServiceExecuteSnapAction,
+  ExecutionServiceHandleRpcRequestAction,
+  ExecutionServiceTerminateSnapAction,
   SnapErrorJson,
-  TerminateSnapAction,
 } from '../services';
 import type {
   EncryptionResult,
@@ -530,9 +530,9 @@ export type AllowedActions =
   | RevokePermissionForAllSubjects
   | GrantPermissions
   | ApprovalControllerAddRequestAction
-  | HandleRpcRequestAction
-  | ExecuteSnapAction
-  | TerminateSnapAction
+  | ExecutionServiceHandleRpcRequestAction
+  | ExecutionServiceExecuteSnapAction
+  | ExecutionServiceTerminateSnapAction
   | UpdateCaveat
   | ApprovalControllerUpdateRequestStateAction
   | GetResult

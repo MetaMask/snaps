@@ -1,4 +1,4 @@
-import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { ExecutionService } from '@metamask/snaps-controllers';
 import {
   type ComponentOrElement,
   ComponentOrElementStruct,
@@ -38,7 +38,7 @@ import type {
 export type HandleRequestOptions = {
   snapId: SnapId;
   store: Store;
-  executionService: AbstractExecutionService<unknown>;
+  executionService: ExecutionService;
   handler: HandlerType;
   controllerMessenger: RootControllerMessenger;
   simulationOptions: SimulationOptions;
