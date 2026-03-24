@@ -7,6 +7,8 @@ export type {
   ExecutionServiceOutboundRequestEvent,
   ExecutionServiceOutboundResponseEvent,
   ExecutionServiceUnhandledErrorEvent,
+  SnapErrorJson,
+  SnapExecutionData,
 } from './ExecutionService';
 export type {
   ExecutionServiceTerminateSnapAction,
