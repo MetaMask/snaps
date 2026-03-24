@@ -9,22 +9,22 @@ export class MockSnapsRegistry implements SnapsRegistry {
     this.#messenger = messenger;
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:get',
+      'SnapsRegistryController:getSnap',
       this.get.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:getMetadata',
+      'SnapsRegistryController:getSnapMetadata',
       this.getMetadata.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:resolveVersion',
+      'SnapsRegistryController:resolveSnapVersion',
       this.resolveVersion.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:update',
+      'SnapsRegistryController:updateRegistry',
       this.update.bind(this),
     );
   }
@@ -49,7 +49,7 @@ export class MockSnapsRegistry implements SnapsRegistry {
 
   update = jest.fn().mockImplementation(() => {
     this.#messenger.publish(
-      'SnapsRegistry:stateChange',
+      'SnapsRegistryController:stateChange',
       {
         database: { verifiedSnaps: {}, blockedSnaps: [] },
         lastUpdated: Date.now(),

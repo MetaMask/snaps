@@ -817,7 +817,7 @@ describe('SnapController', () => {
 
     expect(options.messenger.call).toHaveBeenNthCalledWith(
       2,
-      'SnapsRegistry:get',
+      'SnapsRegistryController:getSnap',
       {
         [MOCK_SNAP_ID]: {
           version: '1.0.0',

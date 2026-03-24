@@ -161,13 +161,13 @@ import {
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
 import type {
-  GetMetadata,
-  GetResult,
-  ResolveVersion,
+  SnapsRegistryControllerGetSnapAction,
+  SnapsRegistryControllerGetSnapMetadataAction,
+  SnapsRegistryControllerResolveSnapVersionAction,
+  SnapsRegistryControllerUpdateRegistryAction,
   SnapsRegistryInfo,
   SnapsRegistryRequest,
   SnapsRegistryStateChangeEvent,
-  Update,
 } from './registry';
 import { SnapsRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
@@ -535,10 +535,10 @@ export type AllowedActions =
   | ExecutionServiceTerminateSnapAction
   | UpdateCaveat
   | ApprovalControllerUpdateRequestStateAction
-  | GetResult
-  | GetMetadata
-  | Update
-  | ResolveVersion
+  | SnapsRegistryControllerGetSnapAction
+  | SnapsRegistryControllerGetSnapMetadataAction
+  | SnapsRegistryControllerUpdateRegistryAction
+  | SnapsRegistryControllerResolveSnapVersionAction
   | SnapInterfaceControllerCreateInterfaceAction
   | SnapInterfaceControllerGetInterfaceAction
   | SnapInterfaceControllerSetInterfaceDisplayedAction
@@ -980,7 +980,7 @@ export class SnapController extends BaseController<
     );
 
     this.messenger.subscribe(
-      'SnapsRegistry:stateChange',
+      'SnapsRegistryController:stateChange',
       () => {
         this.#handleRegistryUpdate().catch((error) => {
           logError(
@@ -1003,7 +1003,7 @@ export class SnapController extends BaseController<
     this.#trackSnapExport = throttleTracking(
       (snapId: SnapId, handler: string, success: boolean, origin: string) => {
         const snapMetadata = this.messenger.call(
-          'SnapsRegistry:getMetadata',
+          'SnapsRegistryController:getSnapMetadata',
           snapId,
         );
         this.#trackEvent({
@@ -1457,7 +1457,7 @@ export class SnapController extends BaseController<
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
-    await this.messenger.call('SnapsRegistry:update');
+    await this.messenger.call('SnapsRegistryController:updateRegistry');
   }
 
   /**
@@ -1469,7 +1469,7 @@ export class SnapController extends BaseController<
    */
   async #handleRegistryUpdate() {
     const blockedSnaps = await this.messenger.call(
-      'SnapsRegistry:get',
+      'SnapsRegistryController:getSnap',
       Object.values(this.state.snaps).reduce<SnapsRegistryRequest>(
         (blockListArg, snap) => {
           blockListArg[snap.id] = {
@@ -1596,9 +1596,12 @@ export class SnapController extends BaseController<
       platformVersion: string | undefined;
     },
   ) {
-    const results = await this.messenger.call('SnapsRegistry:get', {
-      [snapId]: snapInfo,
-    });
+    const results = await this.messenger.call(
+      'SnapsRegistryController:getSnap',
+      {
+        [snapId]: snapInfo,
+      },
+    );
 
     const result = results[snapId];
     if (result.status === SnapsRegistryStatus.Blocked) {
@@ -3137,7 +3140,7 @@ export class SnapController extends BaseController<
     versionRange: SemVerRange,
   ): Promise<SemVerRange> {
     return await this.messenger.call(
-      'SnapsRegistry:resolveVersion',
+      'SnapsRegistryController:resolveSnapVersion',
       snapId,
       versionRange,
     );
