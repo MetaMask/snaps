@@ -1,7 +1,7 @@
 export type {
   SnapInterfaceControllerActions,
-  SnapInterfaceControllerAllowedActions,
   SnapInterfaceControllerGetStateAction,
+  SnapInterfaceControllerMessenger,
   SnapInterfaceControllerState,
   SnapInterfaceControllerStateChangeEvent,
   StoredInterface,

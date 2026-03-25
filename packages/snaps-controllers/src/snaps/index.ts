@@ -2,6 +2,7 @@ export * from './constants';
 export * from './location';
 export type {
   SnapControllerGetStateAction,
+  SnapControllerMessenger,
   SnapControllerSnapBlockedEvent,
   SnapControllerSnapDisabledEvent,
   SnapControllerSnapEnabledEvent,
