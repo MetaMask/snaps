@@ -164,7 +164,7 @@ import type {
   SnapsRegistryControllerGetSnapAction,
   SnapsRegistryControllerGetSnapMetadataAction,
   SnapsRegistryControllerResolveSnapVersionAction,
-  SnapsRegistryControllerUpdateRegistryAction,
+  SnapsRegistryControllerRequestUpdateAction,
   SnapsRegistryInfo,
   SnapsRegistryRequest,
   SnapsRegistryControllerStateChangeEvent,
@@ -537,8 +537,8 @@ export type AllowedActions =
   | ApprovalControllerUpdateRequestStateAction
   | SnapsRegistryControllerGetSnapAction
   | SnapsRegistryControllerGetSnapMetadataAction
-  | SnapsRegistryControllerUpdateRegistryAction
   | SnapsRegistryControllerResolveSnapVersionAction
+  | SnapsRegistryControllerRequestUpdateAction
   | SnapInterfaceControllerCreateInterfaceAction
   | SnapInterfaceControllerGetInterfaceAction
   | SnapInterfaceControllerSetInterfaceDisplayedAction
@@ -1457,7 +1457,7 @@ export class SnapController extends BaseController<
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
-    await this.messenger.call('SnapsRegistryController:updateRegistry');
+    await this.messenger.call('SnapsRegistryController:requestUpdate');
   }
 
   /**

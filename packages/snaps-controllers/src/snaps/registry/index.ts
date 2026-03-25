@@ -11,7 +11,7 @@ export type {
   SnapsRegistryControllerGetSnapAction,
   SnapsRegistryControllerGetSnapMetadataAction,
   SnapsRegistryControllerResolveSnapVersionAction,
-  SnapsRegistryControllerUpdateRegistryAction,
+  SnapsRegistryControllerRequestUpdateAction,
 } from './SnapsRegistryController-method-action-types';
 export type {
   SnapsRegistryInfo,

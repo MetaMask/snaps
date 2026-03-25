@@ -10,9 +10,9 @@ import type { SnapsRegistryController } from './SnapsRegistryController';
  *
  * If an existing update is in progress this function will await that update.
  */
-export type SnapsRegistryControllerUpdateRegistryAction = {
-  type: `SnapsRegistryController:updateRegistry`;
-  handler: SnapsRegistryController['updateRegistry'];
+export type SnapsRegistryControllerRequestUpdateAction = {
+  type: `SnapsRegistryController:requestUpdate`;
+  handler: SnapsRegistryController['requestUpdate'];
 };
 
 export type SnapsRegistryControllerGetSnapAction = {
@@ -49,7 +49,7 @@ export type SnapsRegistryControllerGetSnapMetadataAction = {
  * Union of all SnapsRegistryController action types.
  */
 export type SnapsRegistryControllerMethodActions =
-  | SnapsRegistryControllerUpdateRegistryAction
+  | SnapsRegistryControllerRequestUpdateAction
   | SnapsRegistryControllerGetSnapAction
   | SnapsRegistryControllerResolveSnapVersionAction
   | SnapsRegistryControllerGetSnapMetadataAction;

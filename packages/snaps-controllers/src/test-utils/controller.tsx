@@ -502,7 +502,7 @@ export const getSnapControllerMessenger = (
       'SubjectMetadataController:addSubjectMetadata',
       'SnapsRegistryController:getSnap',
       'SnapsRegistryController:getSnapMetadata',
-      'SnapsRegistryController:updateRegistry',
+      'SnapsRegistryController:requestUpdate',
       'SnapsRegistryController:resolveSnapVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:setInterfaceDisplayed',

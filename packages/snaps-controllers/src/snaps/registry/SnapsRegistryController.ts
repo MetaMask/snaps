@@ -96,7 +96,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getSnap',
   'getSnapMetadata',
   'resolveSnapVersion',
-  'updateRegistry',
+  'requestUpdate',
 ] as const;
 
 const defaultState = {
@@ -198,7 +198,7 @@ export class SnapsRegistryController extends BaseController<
    *
    * If an existing update is in progress this function will await that update.
    */
-  async updateRegistry() {
+  async requestUpdate() {
     // If an update is ongoing, wait for that.
     if (this.#currentUpdate) {
       await this.#currentUpdate;
@@ -258,7 +258,7 @@ export class SnapsRegistryController extends BaseController<
 
   async #getDatabase(): Promise<SnapsRegistryDatabase | null> {
     if (this.state.database === null) {
-      await this.updateRegistry();
+      await this.requestUpdate();
     }
 
     return this.state.database;
@@ -300,7 +300,7 @@ export class SnapsRegistryController extends BaseController<
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
     if (this.#refetchOnAllowlistMiss && !refetch) {
-      await this.updateRegistry();
+      await this.requestUpdate();
       return this.#getSingle(snapId, snapInfo, true);
     }
     return {
@@ -340,7 +340,7 @@ export class SnapsRegistryController extends BaseController<
     const versions = database?.verifiedSnaps[snapId]?.versions ?? null;
 
     if (!versions && this.#refetchOnAllowlistMiss && !refetch) {
-      await this.updateRegistry();
+      await this.requestUpdate();
       return this.resolveSnapVersion(snapId, versionRange, true);
     }
 
@@ -367,7 +367,7 @@ export class SnapsRegistryController extends BaseController<
     const targetVersion = getTargetVersion(compatibleVersions, versionRange);
 
     if (!targetVersion && this.#refetchOnAllowlistMiss && !refetch) {
-      await this.updateRegistry();
+      await this.requestUpdate();
       return this.resolveSnapVersion(snapId, versionRange, true);
     }
 

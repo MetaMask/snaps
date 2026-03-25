@@ -584,7 +584,7 @@ describe('SnapsRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      await messenger.call('SnapsRegistryController:updateRegistry');
+      await messenger.call('SnapsRegistryController:requestUpdate');
       const result = messenger.call(
         'SnapsRegistryController:getSnapMetadata',
         MOCK_SNAP_ID,
@@ -601,7 +601,7 @@ describe('SnapsRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      await messenger.call('SnapsRegistryController:updateRegistry');
+      await messenger.call('SnapsRegistryController:requestUpdate');
       const result = messenger.call(
         'SnapsRegistryController:getSnapMetadata',
         'foo',
@@ -618,7 +618,7 @@ describe('SnapsRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      await messenger.call('SnapsRegistryController:updateRegistry');
+      await messenger.call('SnapsRegistryController:requestUpdate');
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
@@ -638,7 +638,7 @@ describe('SnapsRegistryController', () => {
           databaseUnavailable: false,
         },
       });
-      await messenger.call('SnapsRegistryController:updateRegistry');
+      await messenger.call('SnapsRegistryController:requestUpdate');
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
       expect(spy).not.toHaveBeenCalled();
@@ -650,8 +650,8 @@ describe('SnapsRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
       const { messenger } = getRegistry();
-      await messenger.call('SnapsRegistryController:updateRegistry');
-      await messenger.call('SnapsRegistryController:updateRegistry');
+      await messenger.call('SnapsRegistryController:requestUpdate');
+      await messenger.call('SnapsRegistryController:requestUpdate');
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
@@ -663,8 +663,8 @@ describe('SnapsRegistryController', () => {
 
       const { messenger } = getRegistry();
       await Promise.all([
-        messenger.call('SnapsRegistryController:updateRegistry'),
-        messenger.call('SnapsRegistryController:updateRegistry'),
+        messenger.call('SnapsRegistryController:requestUpdate'),
+        messenger.call('SnapsRegistryController:requestUpdate'),
       ]);
 
       expect(fetchMock).toHaveBeenCalledTimes(2);

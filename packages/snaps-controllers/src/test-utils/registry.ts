@@ -24,7 +24,7 @@ export class MockSnapsRegistry implements SnapsRegistry {
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistryController:updateRegistry',
+      'SnapsRegistryController:requestUpdate',
       this.update.bind(this),
     );
   }
