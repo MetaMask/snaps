@@ -53,7 +53,7 @@ import type { Json } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
-import { MockSnapsRegistry } from './registry';
+import { MockSnapRegistryController } from './registry';
 import type { CronjobControllerMessenger } from '../cronjob/CronjobController';
 import type { SnapInsightsControllerMessenger } from '../insights';
 import type {
@@ -430,7 +430,7 @@ export const getRootMessenger = () => {
   messenger.registerActionHandler('ExecutionService:terminateSnap', asyncNoOp);
 
   // eslint-disable-next-line no-new
-  new MockSnapsRegistry(messenger);
+  new MockSnapRegistryController(messenger);
 
   messenger.registerActionHandler(
     'SnapInterfaceController:createInterface',

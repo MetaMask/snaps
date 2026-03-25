@@ -1,7 +1,7 @@
 import type { RootMessenger } from './controller';
 import { SnapRegistryStatus } from '../snaps';
 
-export class MockSnapsRegistry {
+export class MockSnapRegistryController {
   readonly #messenger;
 
   constructor(messenger: RootMessenger) {
