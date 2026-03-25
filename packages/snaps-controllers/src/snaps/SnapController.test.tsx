@@ -87,7 +87,7 @@ import {
   METAMASK_ORIGIN,
   STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
-import { SnapsRegistryStatus } from './registry';
+import { SnapRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
   controllerName,
@@ -817,7 +817,7 @@ describe('SnapController', () => {
 
     expect(options.messenger.call).toHaveBeenNthCalledWith(
       2,
-      'SnapsRegistryController:get',
+      'SnapRegistryController:get',
       {
         [MOCK_SNAP_ID]: {
           version: '1.0.0',
@@ -1091,7 +1091,7 @@ describe('SnapController', () => {
     // Mock resolve to succeed, but registry.get() will fail later
     registry.resolveVersion.mockReturnValue('1.0.0');
     registry.get.mockReturnValue({
-      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Unavailable },
+      [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Unavailable },
     });
 
     await expect(
@@ -1151,7 +1151,7 @@ describe('SnapController', () => {
       });
 
     registry.get.mockResolvedValueOnce({
-      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Verified },
+      [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Verified },
     });
 
     registry.resolveVersion.mockReturnValue('1.1.0');
@@ -8940,7 +8940,7 @@ describe('SnapController', () => {
       );
 
       registry.get.mockResolvedValueOnce({
-        [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Blocked },
+        [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Blocked },
       });
 
       await expect(
@@ -10569,7 +10569,7 @@ describe('SnapController', () => {
       // Block snap A, ignore B.
       registry.get.mockResolvedValueOnce({
         [mockSnapA.id]: {
-          status: SnapsRegistryStatus.Blocked,
+          status: SnapRegistryStatus.Blocked,
           reason: { explanation, infoUrl },
         },
       });
@@ -10629,7 +10629,7 @@ describe('SnapController', () => {
 
       // Block the snap
       registry.get.mockResolvedValueOnce({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
       await waitForStateChange(options.messenger);
@@ -10683,8 +10683,8 @@ describe('SnapController', () => {
       // Indicate that both snaps A and B are unblocked, and update blocked
       // states.
       registry.get.mockResolvedValueOnce({
-        [mockSnapA.id]: { status: SnapsRegistryStatus.Unverified },
-        [mockSnapB.id]: { status: SnapsRegistryStatus.Unverified },
+        [mockSnapA.id]: { status: SnapRegistryStatus.Unverified },
+        [mockSnapB.id]: { status: SnapRegistryStatus.Unverified },
       });
       await snapController.updateRegistry();
 
@@ -10736,7 +10736,7 @@ describe('SnapController', () => {
 
       // Resolve the blocklist and wait for the call to complete
       resolveBlockListPromise({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await updateBlockList;
 
@@ -10774,7 +10774,7 @@ describe('SnapController', () => {
 
       // Block the snap
       registry.get.mockResolvedValueOnce({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
 

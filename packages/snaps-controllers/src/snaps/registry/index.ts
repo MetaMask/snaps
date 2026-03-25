@@ -1,24 +1,23 @@
 export type {
-  SnapsRegistryControllerActions,
-  SnapsRegistryControllerEvents,
-  SnapsRegistryControllerArgs,
-  SnapsRegistryControllerGetStateAction,
-  SnapsRegistryControllerMessenger,
-  SnapsRegistryControllerState,
-  SnapsRegistryControllerStateChangeEvent,
-} from './SnapsRegistryController';
-export { SnapsRegistryController } from './SnapsRegistryController';
+  SnapRegistryControllerActions,
+  SnapRegistryControllerEvents,
+  SnapRegistryControllerArgs,
+  SnapRegistryControllerGetStateAction,
+  SnapRegistryControllerMessenger,
+  SnapRegistryControllerState,
+  SnapRegistryControllerStateChangeEvent,
+} from './SnapRegistryController';
+export { SnapRegistryController } from './SnapRegistryController';
 export type {
-  SnapsRegistryControllerGetAction,
-  SnapsRegistryControllerGetMetadataAction,
-  SnapsRegistryControllerMethodActions,
-  SnapsRegistryControllerRequestUpdateAction,
-  SnapsRegistryControllerResolveVersionAction,
-} from './SnapsRegistryController-method-action-types';
+  SnapRegistryControllerGetAction,
+  SnapRegistryControllerGetMetadataAction,
+  SnapRegistryControllerRequestUpdateAction,
+  SnapRegistryControllerResolveVersionAction,
+} from './SnapRegistryController-method-action-types';
 export type {
-  SnapsRegistryInfo,
-  SnapsRegistryMetadata,
-  SnapsRegistryRequest,
-  SnapsRegistryResult,
+  SnapRegistryInfo,
+  SnapRegistryMetadata,
+  SnapRegistryRequest,
+  SnapRegistryResult,
 } from './types';
-export { SnapsRegistryStatus } from './types';
+export { SnapRegistryStatus } from './types';

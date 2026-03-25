@@ -20,14 +20,14 @@ import {
   satisfiesVersionRange,
 } from '@metamask/utils';
 
-import type { SnapsRegistryControllerMethodActions } from './SnapsRegistryController-method-action-types';
+import type { SnapRegistryControllerMethodActions } from './SnapRegistryController-method-action-types';
 import type {
-  SnapsRegistryInfo,
-  SnapsRegistryMetadata,
-  SnapsRegistryRequest,
-  SnapsRegistryResult,
+  SnapRegistryInfo,
+  SnapRegistryMetadata,
+  SnapRegistryRequest,
+  SnapRegistryResult,
 } from './types';
-import { SnapsRegistryStatus } from './types';
+import { SnapRegistryStatus } from './types';
 
 const SNAP_REGISTRY_URL =
   'https://acl.execution.metamask.io/latest/registry.json';
@@ -48,9 +48,9 @@ export type ClientConfig = {
   version: SemVerVersion;
 };
 
-export type SnapsRegistryControllerArgs = {
-  messenger: SnapsRegistryControllerMessenger;
-  state?: SnapsRegistryControllerState;
+export type SnapRegistryControllerArgs = {
+  messenger: SnapRegistryControllerMessenger;
+  state?: SnapRegistryControllerState;
   fetchFunction?: typeof fetch;
   url?: JsonSnapsRegistryUrl;
   recentFetchThreshold?: number;
@@ -59,38 +59,37 @@ export type SnapsRegistryControllerArgs = {
   clientConfig: ClientConfig;
 };
 
-export type SnapsRegistryControllerGetStateAction = ControllerGetStateAction<
+export type SnapRegistryControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
-  SnapsRegistryControllerState
+  SnapRegistryControllerState
 >;
 
-export type SnapsRegistryControllerActions =
-  | SnapsRegistryControllerGetStateAction
-  | SnapsRegistryControllerMethodActions;
+export type SnapRegistryControllerActions =
+  | SnapRegistryControllerGetStateAction
+  | SnapRegistryControllerMethodActions;
 
-export type SnapsRegistryControllerStateChangeEvent =
-  ControllerStateChangeEvent<
-    typeof controllerName,
-    SnapsRegistryControllerState
-  >;
-
-export type SnapsRegistryControllerEvents =
-  SnapsRegistryControllerStateChangeEvent;
-
-export type SnapsRegistryControllerMessenger = Messenger<
+export type SnapRegistryControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
-  SnapsRegistryControllerActions,
-  SnapsRegistryControllerEvents
+  SnapRegistryControllerState
 >;
 
-export type SnapsRegistryControllerState = {
+export type SnapRegistryControllerEvents =
+  SnapRegistryControllerStateChangeEvent;
+
+export type SnapRegistryControllerMessenger = Messenger<
+  typeof controllerName,
+  SnapRegistryControllerActions,
+  SnapRegistryControllerEvents
+>;
+
+export type SnapRegistryControllerState = {
   database: SnapsRegistryDatabase | null;
   signature: string | null;
   lastUpdated: number | null;
   databaseUnavailable: boolean;
 };
 
-const controllerName = 'SnapsRegistryController';
+const controllerName = 'SnapRegistryController';
 
 const MESSENGER_EXPOSED_METHODS = [
   'get',
@@ -106,10 +105,10 @@ const defaultState = {
   databaseUnavailable: false,
 };
 
-export class SnapsRegistryController extends BaseController<
+export class SnapRegistryController extends BaseController<
   typeof controllerName,
-  SnapsRegistryControllerState,
-  SnapsRegistryControllerMessenger
+  SnapRegistryControllerState,
+  SnapRegistryControllerMessenger
 > {
   readonly #url: JsonSnapsRegistryUrl;
 
@@ -137,7 +136,7 @@ export class SnapsRegistryController extends BaseController<
     fetchFunction = globalThis.fetch.bind(undefined),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
     refetchOnAllowlistMiss = true,
-  }: SnapsRegistryControllerArgs) {
+  }: SnapRegistryControllerArgs) {
     super({
       messenger,
       metadata: {
@@ -266,9 +265,9 @@ export class SnapsRegistryController extends BaseController<
 
   async #getSingle(
     snapId: string,
-    snapInfo: SnapsRegistryInfo,
+    snapInfo: SnapRegistryInfo,
     refetch = false,
-  ): Promise<SnapsRegistryResult> {
+  ): Promise<SnapRegistryResult> {
     const database = await this.#getDatabase();
 
     const blockedEntry = database?.blockedSnaps.find((blocked) => {
@@ -284,7 +283,7 @@ export class SnapsRegistryController extends BaseController<
 
     if (blockedEntry) {
       return {
-        status: SnapsRegistryStatus.Blocked,
+        status: SnapRegistryStatus.Blocked,
         reason: blockedEntry.reason,
       };
     }
@@ -296,7 +295,7 @@ export class SnapsRegistryController extends BaseController<
       !clientRange ||
       satisfiesVersionRange(this.#clientConfig.version, clientRange);
     if (version && version.checksum === snapInfo.checksum && isCompatible) {
-      return { status: SnapsRegistryStatus.Verified };
+      return { status: SnapRegistryStatus.Verified };
     }
     // For now, if we have an allowlist miss, we can refetch once and try again.
     if (this.#refetchOnAllowlistMiss && !refetch) {
@@ -305,16 +304,16 @@ export class SnapsRegistryController extends BaseController<
     }
     return {
       status: this.state.databaseUnavailable
-        ? SnapsRegistryStatus.Unavailable
-        : SnapsRegistryStatus.Unverified,
+        ? SnapRegistryStatus.Unavailable
+        : SnapRegistryStatus.Unverified,
     };
   }
 
   async get(
-    snaps: SnapsRegistryRequest,
-  ): Promise<Record<string, SnapsRegistryResult>> {
+    snaps: SnapRegistryRequest,
+  ): Promise<Record<string, SnapRegistryResult>> {
     return Object.entries(snaps).reduce<
-      Promise<Record<string, SnapsRegistryResult>>
+      Promise<Record<string, SnapRegistryResult>>
     >(async (previousPromise, [snapId, snapInfo]) => {
       const result = await this.#getSingle(snapId, snapInfo);
       const acc = await previousPromise;
@@ -388,7 +387,7 @@ export class SnapsRegistryController extends BaseController<
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  getMetadata(snapId: string): SnapsRegistryMetadata | null {
+  getMetadata(snapId: string): SnapRegistryMetadata | null {
     return this.state?.database?.verifiedSnaps[snapId]?.metadata ?? null;
   }
 

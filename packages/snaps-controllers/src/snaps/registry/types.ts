@@ -5,19 +5,19 @@ import type {
 import type { SnapId } from '@metamask/snaps-sdk';
 import type { SemVerVersion } from '@metamask/utils';
 
-export type SnapsRegistryInfo = { version: SemVerVersion; checksum: string };
-export type SnapsRegistryRequest = Record<SnapId, SnapsRegistryInfo>;
-export type SnapsRegistryMetadata =
+export type SnapRegistryInfo = { version: SemVerVersion; checksum: string };
+export type SnapRegistryRequest = Record<SnapId, SnapRegistryInfo>;
+export type SnapRegistryMetadata =
   SnapsRegistryDatabase['verifiedSnaps'][SnapId]['metadata'];
 
-export enum SnapsRegistryStatus {
+export enum SnapRegistryStatus {
   Unverified = 0,
   Blocked = 1,
   Verified = 2,
   Unavailable = 3,
 }
 
-export type SnapsRegistryResult = {
-  status: SnapsRegistryStatus;
+export type SnapRegistryResult = {
+  status: SnapRegistryStatus;
   reason?: BlockReason;
 };

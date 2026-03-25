@@ -62,7 +62,7 @@ import type {
 } from '../interface/SnapInterfaceController';
 import type { MultichainRoutingServiceMessenger } from '../multichain/MultichainRoutingService';
 import type { ExecutionService, ExecutionServiceMessenger } from '../services';
-import type { SnapsRegistryControllerMessenger } from '../snaps';
+import type { SnapRegistryControllerMessenger } from '../snaps';
 import { SnapController } from '../snaps';
 import type {
   PersistedSnapControllerState,
@@ -322,12 +322,12 @@ export type RootMessenger = Messenger<
   MockAnyNamespace,
   MessengerActions<
     | SnapControllerMessenger
-    | SnapsRegistryControllerMessenger
+    | SnapRegistryControllerMessenger
     | ExecutionServiceMessenger
   >,
   MessengerEvents<
     | SnapControllerMessenger
-    | SnapsRegistryControllerMessenger
+    | SnapRegistryControllerMessenger
     | ExecutionServiceMessenger
   >
 >;
@@ -492,10 +492,10 @@ export const getSnapControllerMessenger = (
       'PermissionController:getSubjectNames',
       'SubjectMetadataController:getSubjectMetadata',
       'SubjectMetadataController:addSubjectMetadata',
-      'SnapsRegistryController:get',
-      'SnapsRegistryController:getMetadata',
-      'SnapsRegistryController:requestUpdate',
-      'SnapsRegistryController:resolveVersion',
+      'SnapRegistryController:get',
+      'SnapRegistryController:getMetadata',
+      'SnapRegistryController:requestUpdate',
+      'SnapRegistryController:resolveVersion',
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
       'SnapInterfaceController:getInterface',
@@ -509,7 +509,7 @@ export const getSnapControllerMessenger = (
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      'SnapsRegistryController:stateChange',
+      'SnapRegistryController:stateChange',
     ],
     messenger: snapControllerMessenger,
   });
@@ -785,14 +785,14 @@ export const getRestrictedCronjobControllerMessenger = (
   return cronjobControllerMessenger;
 };
 
-type SnapsRegistryControllerRootMessenger = Messenger<
+type SnapRegistryControllerRootMessenger = Messenger<
   MockAnyNamespace,
-  MessengerActions<SnapsRegistryControllerMessenger>,
-  MessengerEvents<SnapsRegistryControllerMessenger>
+  MessengerActions<SnapRegistryControllerMessenger>,
+  MessengerEvents<SnapRegistryControllerMessenger>
 >;
 
-export const getRootSnapsRegistryControllerMessenger = () => {
-  const messenger: SnapsRegistryControllerRootMessenger =
+export const getRootSnapRegistryControllerMessenger = () => {
+  const messenger: SnapRegistryControllerRootMessenger =
     new MockControllerMessenger();
 
   jest.spyOn(messenger, 'call');
@@ -800,13 +800,13 @@ export const getRootSnapsRegistryControllerMessenger = () => {
   return messenger;
 };
 
-export const getRestrictedSnapsRegistryControllerMessenger = (
+export const getRestrictedSnapRegistryControllerMessenger = (
   rootMessenger: ReturnType<
-    typeof getRootSnapsRegistryControllerMessenger
-  > = getRootSnapsRegistryControllerMessenger(),
+    typeof getRootSnapRegistryControllerMessenger
+  > = getRootSnapRegistryControllerMessenger(),
 ) => {
-  const messenger: SnapsRegistryControllerMessenger = new Messenger({
-    namespace: 'SnapsRegistryController',
+  const messenger: SnapRegistryControllerMessenger = new Messenger({
+    namespace: 'SnapRegistryController',
     parent: rootMessenger,
   });
 

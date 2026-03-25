@@ -3,21 +3,21 @@
  * Do not edit manually.
  */
 
-import type { SnapsRegistryController } from './SnapsRegistryController';
+import type { SnapRegistryController } from './SnapRegistryController';
 
 /**
  * Triggers an update of the registry database.
  *
  * If an existing update is in progress this function will await that update.
  */
-export type SnapsRegistryControllerRequestUpdateAction = {
-  type: `SnapsRegistryController:requestUpdate`;
-  handler: SnapsRegistryController['requestUpdate'];
+export type SnapRegistryControllerRequestUpdateAction = {
+  type: `SnapRegistryController:requestUpdate`;
+  handler: SnapRegistryController['requestUpdate'];
 };
 
-export type SnapsRegistryControllerGetAction = {
-  type: `SnapsRegistryController:get`;
-  handler: SnapsRegistryController['get'];
+export type SnapRegistryControllerGetAction = {
+  type: `SnapRegistryController:get`;
+  handler: SnapRegistryController['get'];
 };
 
 /**
@@ -28,9 +28,9 @@ export type SnapsRegistryControllerGetAction = {
  * @param refetch - An optional flag used to determine if we are refetching the registry.
  * @returns An allowlisted version within the specified version range if available otherwise returns the input version range.
  */
-export type SnapsRegistryControllerResolveVersionAction = {
-  type: `SnapsRegistryController:resolveVersion`;
-  handler: SnapsRegistryController['resolveVersion'];
+export type SnapRegistryControllerResolveVersionAction = {
+  type: `SnapRegistryController:resolveVersion`;
+  handler: SnapRegistryController['resolveVersion'];
 };
 
 /**
@@ -40,16 +40,16 @@ export type SnapsRegistryControllerResolveVersionAction = {
  * @returns The metadata for the given snap ID, or `null` if the snap is not
  * verified.
  */
-export type SnapsRegistryControllerGetMetadataAction = {
-  type: `SnapsRegistryController:getMetadata`;
-  handler: SnapsRegistryController['getMetadata'];
+export type SnapRegistryControllerGetMetadataAction = {
+  type: `SnapRegistryController:getMetadata`;
+  handler: SnapRegistryController['getMetadata'];
 };
 
 /**
- * Union of all SnapsRegistryController action types.
+ * Union of all SnapRegistryController action types.
  */
-export type SnapsRegistryControllerMethodActions =
-  | SnapsRegistryControllerRequestUpdateAction
-  | SnapsRegistryControllerGetAction
-  | SnapsRegistryControllerResolveVersionAction
-  | SnapsRegistryControllerGetMetadataAction;
+export type SnapRegistryControllerMethodActions =
+  | SnapRegistryControllerRequestUpdateAction
+  | SnapRegistryControllerGetAction
+  | SnapRegistryControllerResolveVersionAction
+  | SnapRegistryControllerGetMetadataAction;
