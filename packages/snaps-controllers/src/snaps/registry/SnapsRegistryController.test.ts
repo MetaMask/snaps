@@ -7,9 +7,9 @@ import {
 import type { SemVerRange, SemVerVersion } from '@metamask/utils';
 import fetchMock from 'jest-fetch-mock';
 
-import { SnapsRegistryStatus } from './registry';
 import type { SnapsRegistryControllerArgs } from './SnapsRegistryController';
 import { SnapsRegistryController } from './SnapsRegistryController';
+import { SnapsRegistryStatus } from './types';
 import { getRestrictedSnapsRegistryControllerMessenger } from '../../test-utils';
 
 // Public key for the private key:

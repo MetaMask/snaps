@@ -1,11 +1,4 @@
 export type {
-  SnapsRegistryInfo,
-  SnapsRegistryMetadata,
-  SnapsRegistryRequest,
-  SnapsRegistryResult,
-} from './registry';
-export { SnapsRegistryStatus } from './registry';
-export type {
   SnapsRegistryControllerActions,
   SnapsRegistryControllerArgs,
   SnapsRegistryControllerGetStateAction,
@@ -20,3 +13,10 @@ export type {
   SnapsRegistryControllerResolveSnapVersionAction,
   SnapsRegistryControllerUpdateRegistryAction,
 } from './SnapsRegistryController-method-action-types';
+export type {
+  SnapsRegistryInfo,
+  SnapsRegistryMetadata,
+  SnapsRegistryRequest,
+  SnapsRegistryResult,
+} from './types';
+export { SnapsRegistryStatus } from './types';

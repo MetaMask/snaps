@@ -20,14 +20,14 @@ import {
   satisfiesVersionRange,
 } from '@metamask/utils';
 
+import type { SnapsRegistryControllerMethodActions } from './SnapsRegistryController-method-action-types';
 import type {
   SnapsRegistryInfo,
   SnapsRegistryMetadata,
   SnapsRegistryRequest,
   SnapsRegistryResult,
-} from './registry';
-import { SnapsRegistryStatus } from './registry';
-import type { SnapsRegistryControllerMethodActions } from './SnapsRegistryController-method-action-types';
+} from './types';
+import { SnapsRegistryStatus } from './types';
 
 const SNAP_REGISTRY_URL =
   'https://acl.execution.metamask.io/latest/registry.json';
