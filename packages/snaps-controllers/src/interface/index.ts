@@ -1,5 +1,7 @@
 export type {
   SnapInterfaceControllerActions,
+  SnapInterfaceControllerArgs,
+  SnapInterfaceControllerEvents,
   SnapInterfaceControllerGetStateAction,
   SnapInterfaceControllerMessenger,
   SnapInterfaceControllerState,

@@ -1,14 +1,11 @@
 import { Messenger } from '@metamask/messenger';
-import type { SnapInterfaceControllerAllowedActions } from '@metamask/snaps-controllers';
+import type { SnapInterfaceControllerMessenger } from '@metamask/snaps-controllers';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 
-import type { RootControllerAllowedActions } from '../controllers';
+import type { RootControllerMessenger } from '../controllers';
 
 export const getRootControllerMessenger = (mocked = true) => {
-  const messenger = new MockControllerMessenger<
-    RootControllerAllowedActions,
-    any
-  >();
+  const messenger: RootControllerMessenger = new MockControllerMessenger();
 
   if (mocked) {
     messenger.registerActionHandler('PhishingController:testOrigin', () => ({
@@ -42,12 +39,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
     typeof getRootControllerMessenger
   > = getRootControllerMessenger(),
 ) => {
-  const controllerMessenger = new Messenger<
-    'SnapInterfaceController',
-    SnapInterfaceControllerAllowedActions,
-    never,
-    any
-  >({
+  const controllerMessenger: SnapInterfaceControllerMessenger = new Messenger({
     namespace: 'SnapInterfaceController',
     parent: messenger,
   });

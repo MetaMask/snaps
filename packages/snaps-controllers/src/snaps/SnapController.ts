@@ -512,7 +512,7 @@ export type SnapControllerEvents =
   | SnapControllerSnapDisabledEvent
   | SnapControllerStateChangeEvent;
 
-export type AllowedActions =
+type AllowedActions =
   | GetEndowments
   | GetPermissions
   | GetSubjects
@@ -542,7 +542,7 @@ export type AllowedActions =
   | StorageServiceRemoveItemAction
   | StorageServiceClearAction;
 
-export type AllowedEvents =
+type AllowedEvents =
   | ExecutionServiceEvents
   | SnapControllerSnapInstalledEvent
   | SnapControllerSnapUpdatedEvent
@@ -580,7 +580,7 @@ type DynamicFeatureFlags = {
   disableSnaps?: boolean;
 };
 
-type SnapControllerArgs = {
+export type SnapControllerArgs = {
   /**
    * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
    */
