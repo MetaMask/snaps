@@ -93,7 +93,7 @@ type PhishingControllerTestOrigin = {
   handler: (origin: string) => { result: boolean; type: string };
 };
 
-export type SnapInterfaceControllerAllowedActions =
+type AllowedActions =
   | PhishingControllerTestOrigin
   | ApprovalControllerHasRequestAction
   | ApprovalControllerAcceptRequestAction
@@ -143,14 +143,15 @@ type NotificationListUpdatedEvent = {
   payload: [Notification[]];
 };
 
+type AllowedEvents = NotificationListUpdatedEvent;
+
 export type SnapInterfaceControllerEvents =
-  | SnapInterfaceControllerStateChangeEvent
-  | NotificationListUpdatedEvent;
+  SnapInterfaceControllerStateChangeEvent;
 
 export type SnapInterfaceControllerMessenger = Messenger<
   typeof controllerName,
-  SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerEvents
+  SnapInterfaceControllerActions | AllowedActions,
+  SnapInterfaceControllerEvents | AllowedEvents
 >;
 
 export type StoredInterface = {

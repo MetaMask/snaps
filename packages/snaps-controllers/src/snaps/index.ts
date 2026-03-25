@@ -1,7 +1,11 @@
 export * from './constants';
 export * from './location';
 export type {
+  SnapControllerActions,
+  SnapControllerArgs,
+  SnapControllerEvents,
   SnapControllerGetStateAction,
+  SnapControllerMessenger,
   SnapControllerSnapBlockedEvent,
   SnapControllerSnapDisabledEvent,
   SnapControllerSnapEnabledEvent,

@@ -1,5 +1,6 @@
 export type {
   ExecutionServiceActions,
+  ExecutionServiceArgs,
   ExecutionServiceEvents,
   ExecutionServiceMessenger,
   ExecutionServiceOutboundRequestEvent,

@@ -51,7 +51,7 @@ export type AccountsControllerListMultichainAccountsAction = {
 export type MultichainRoutingServiceActions =
   MultichainRoutingServiceMethodActions;
 
-export type MultichainRoutingServiceAllowedActions =
+type AllowedActions =
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
   | GetPermissions
@@ -61,7 +61,7 @@ export type MultichainRoutingServiceEvents = never;
 
 export type MultichainRoutingServiceMessenger = Messenger<
   typeof name,
-  MultichainRoutingServiceActions | MultichainRoutingServiceAllowedActions
+  MultichainRoutingServiceActions | AllowedActions
 >;
 
 export type MultichainRoutingServiceArgs = {

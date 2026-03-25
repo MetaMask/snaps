@@ -1,5 +1,9 @@
 export type {
+  CronjobControllerActions,
+  CronjobControllerArgs,
+  CronjobControllerEvents,
   CronjobControllerGetStateAction,
+  CronjobControllerMessenger,
   CronjobControllerState,
   CronjobControllerStateChangeEvent,
   CronjobControllerStateManager,

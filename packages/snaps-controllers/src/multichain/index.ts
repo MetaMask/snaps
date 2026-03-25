@@ -1,3 +1,8 @@
+export type {
+  MultichainRoutingServiceActions,
+  MultichainRoutingServiceEvents,
+  MultichainRoutingServiceMessenger,
+} from './MultichainRoutingService';
 export { MultichainRoutingService } from './MultichainRoutingService';
 export type {
   MultichainRoutingServiceGetSupportedAccountsAction,

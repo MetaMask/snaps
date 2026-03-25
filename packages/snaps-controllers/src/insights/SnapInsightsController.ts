@@ -34,7 +34,7 @@ import type {
 
 const controllerName = 'SnapInsightsController';
 
-export type SnapInsightsControllerAllowedActions =
+type AllowedActions =
   | GetPermissions
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
@@ -55,15 +55,15 @@ export type SnapInsightControllerStateChangeEvent = ControllerStateChangeEvent<
 
 export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
 
-export type SnapInsightsControllerAllowedEvents =
+type AllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
   | SignatureControllerStateChangeEvent;
 
 export type SnapInsightsControllerMessenger = Messenger<
   typeof controllerName,
-  SnapInsightsControllerActions | SnapInsightsControllerAllowedActions,
-  SnapInsightControllerEvents | SnapInsightsControllerAllowedEvents
+  SnapInsightsControllerActions | AllowedActions,
+  SnapInsightControllerEvents | AllowedEvents
 >;
 
 export type SnapInsight = {
