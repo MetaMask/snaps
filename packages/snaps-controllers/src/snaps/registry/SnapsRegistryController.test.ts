@@ -681,7 +681,13 @@ describe('SnapsRegistryController', () => {
           registry.metadata,
           'includeInDebugSnapshot',
         ),
-      ).toMatchInlineSnapshot(`{}`);
+      ).toMatchInlineSnapshot(`
+        {
+          "databaseUnavailable": false,
+          "lastUpdated": null,
+          "signature": null,
+        }
+      `);
     });
 
     it('includes expected state in state logs', () => {

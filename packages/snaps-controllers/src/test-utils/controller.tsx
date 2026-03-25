@@ -811,11 +811,11 @@ export const getRestrictedSnapsRegistryControllerMessenger = (
   > = getRootSnapsRegistryControllerMessenger(),
 ) => {
   return new Messenger<
-    'SnapsRegistry',
+    'SnapsRegistryController',
     SnapsRegistryControllerActions,
     SnapsRegistryEvents,
     any
-  >({ namespace: 'SnapsRegistry', parent: messenger });
+  >({ namespace: 'SnapsRegistryController', parent: messenger });
 };
 
 /**
