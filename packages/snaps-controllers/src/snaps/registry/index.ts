@@ -8,10 +8,11 @@ export type {
 } from './SnapsRegistryController';
 export { SnapsRegistryController } from './SnapsRegistryController';
 export type {
-  SnapsRegistryControllerGetSnapAction,
-  SnapsRegistryControllerGetSnapMetadataAction,
-  SnapsRegistryControllerResolveSnapVersionAction,
+  SnapsRegistryControllerGetAction,
+  SnapsRegistryControllerGetMetadataAction,
+  SnapsRegistryControllerMethodActions,
   SnapsRegistryControllerRequestUpdateAction,
+  SnapsRegistryControllerResolveVersionAction,
 } from './SnapsRegistryController-method-action-types';
 export type {
   SnapsRegistryInfo,

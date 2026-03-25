@@ -9,17 +9,17 @@ export class MockSnapsRegistry implements SnapsRegistry {
     this.#messenger = messenger;
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistryController:getSnap',
+      'SnapsRegistryController:get',
       this.get.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistryController:getSnapMetadata',
+      'SnapsRegistryController:getMetadata',
       this.getMetadata.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistryController:resolveSnapVersion',
+      'SnapsRegistryController:resolveVersion',
       this.resolveVersion.bind(this),
     );
 

@@ -15,9 +15,9 @@ export type SnapsRegistryControllerRequestUpdateAction = {
   handler: SnapsRegistryController['requestUpdate'];
 };
 
-export type SnapsRegistryControllerGetSnapAction = {
-  type: `SnapsRegistryController:getSnap`;
-  handler: SnapsRegistryController['getSnap'];
+export type SnapsRegistryControllerGetAction = {
+  type: `SnapsRegistryController:get`;
+  handler: SnapsRegistryController['get'];
 };
 
 /**
@@ -28,9 +28,9 @@ export type SnapsRegistryControllerGetSnapAction = {
  * @param refetch - An optional flag used to determine if we are refetching the registry.
  * @returns An allowlisted version within the specified version range if available otherwise returns the input version range.
  */
-export type SnapsRegistryControllerResolveSnapVersionAction = {
-  type: `SnapsRegistryController:resolveSnapVersion`;
-  handler: SnapsRegistryController['resolveSnapVersion'];
+export type SnapsRegistryControllerResolveVersionAction = {
+  type: `SnapsRegistryController:resolveVersion`;
+  handler: SnapsRegistryController['resolveVersion'];
 };
 
 /**
@@ -40,9 +40,9 @@ export type SnapsRegistryControllerResolveSnapVersionAction = {
  * @returns The metadata for the given snap ID, or `null` if the snap is not
  * verified.
  */
-export type SnapsRegistryControllerGetSnapMetadataAction = {
-  type: `SnapsRegistryController:getSnapMetadata`;
-  handler: SnapsRegistryController['getSnapMetadata'];
+export type SnapsRegistryControllerGetMetadataAction = {
+  type: `SnapsRegistryController:getMetadata`;
+  handler: SnapsRegistryController['getMetadata'];
 };
 
 /**
@@ -50,6 +50,6 @@ export type SnapsRegistryControllerGetSnapMetadataAction = {
  */
 export type SnapsRegistryControllerMethodActions =
   | SnapsRegistryControllerRequestUpdateAction
-  | SnapsRegistryControllerGetSnapAction
-  | SnapsRegistryControllerResolveSnapVersionAction
-  | SnapsRegistryControllerGetSnapMetadataAction;
+  | SnapsRegistryControllerGetAction
+  | SnapsRegistryControllerResolveVersionAction
+  | SnapsRegistryControllerGetMetadataAction;

@@ -93,9 +93,9 @@ export type SnapsRegistryControllerState = {
 const controllerName = 'SnapsRegistryController';
 
 const MESSENGER_EXPOSED_METHODS = [
-  'getSnap',
-  'getSnapMetadata',
-  'resolveSnapVersion',
+  'get',
+  'getMetadata',
+  'resolveVersion',
   'requestUpdate',
 ] as const;
 
@@ -310,7 +310,7 @@ export class SnapsRegistryController extends BaseController<
     };
   }
 
-  async getSnap(
+  async get(
     snaps: SnapsRegistryRequest,
   ): Promise<Record<string, SnapsRegistryResult>> {
     return Object.entries(snaps).reduce<
@@ -331,7 +331,7 @@ export class SnapsRegistryController extends BaseController<
    * @param refetch - An optional flag used to determine if we are refetching the registry.
    * @returns An allowlisted version within the specified version range if available otherwise returns the input version range.
    */
-  async resolveSnapVersion(
+  async resolveVersion(
     snapId: string,
     versionRange: SemVerRange,
     refetch = false,
@@ -341,7 +341,7 @@ export class SnapsRegistryController extends BaseController<
 
     if (!versions && this.#refetchOnAllowlistMiss && !refetch) {
       await this.requestUpdate();
-      return this.resolveSnapVersion(snapId, versionRange, true);
+      return this.resolveVersion(snapId, versionRange, true);
     }
 
     // If we cannot narrow down the version range we return the unaltered version range.
@@ -368,7 +368,7 @@ export class SnapsRegistryController extends BaseController<
 
     if (!targetVersion && this.#refetchOnAllowlistMiss && !refetch) {
       await this.requestUpdate();
-      return this.resolveSnapVersion(snapId, versionRange, true);
+      return this.resolveVersion(snapId, versionRange, true);
     }
 
     // If we cannot narrow down the version range we return the unaltered version range.
@@ -388,7 +388,7 @@ export class SnapsRegistryController extends BaseController<
    * @returns The metadata for the given snap ID, or `null` if the snap is not
    * verified.
    */
-  getSnapMetadata(snapId: string): SnapsRegistryMetadata | null {
+  getMetadata(snapId: string): SnapsRegistryMetadata | null {
     return this.state?.database?.verifiedSnaps[snapId]?.metadata ?? null;
   }
 

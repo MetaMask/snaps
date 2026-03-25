@@ -57,14 +57,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `TerminateSnap` is now `ExecutionServiceTerminateSnapAction`.
     - `GetExecutionStatus` is now `ExecutionServiceGetExecutionStatusAction`.
   - `SnapsRegistryController` actions:
-    - `GetResult` is now `SnapsRegistryControllerGetSnapAction`.
-      - Note: The method is now called `getSnap` instead of `get`.
-    - `GetMetadata` is now `SnapsRegistryControllerGetSnapMetadataAction`.
-      - Note: The method is now called `getSnapMetadata` instead of `getMetadata`.
-    - `ResolveVersion` is now `SnapsRegistryControllerResolveSnapVersionAction`.
-      - Note: The method is now called `resolveSnapVersion` instead of `resolveVersion`.
-    - `Update` is now `SnapsRegistryControllerUpdateRegistryAction`.
-      - Note: The method is now called `updateRegistry` instead of `update`.
+    - `GetResult` is now `SnapsRegistryControllerGetAction`.
+    - `GetMetadata` is now `SnapsRegistryControllerGetMetadataAction`.
+    - `ResolveVersion` is now `SnapsRegistryControllerResolveVersionAction`.
+    - `Update` is now `SnapsRegistryControllerRequestUpdateAction`.
+      - Note: The method is now called `requestUpdate` instead of `update`.
 - **BREAKING:** All event types were renamed from `OnSomething` to `ControllerOnSomethingEvent` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3916](https://github.com/MetaMask/snaps/pull/3916))
   - `SnapController` events:
     - `SnapStateChange` was removed in favour of `SnapControllerStateChangeEvent`.

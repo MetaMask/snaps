@@ -138,7 +138,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -159,7 +159,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_EMPTY_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -179,7 +179,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -199,7 +199,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: 'bar',
@@ -219,7 +219,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: 'foo',
@@ -240,7 +240,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       'npm:@consensys/starknet-snap': {
         version: '0.1.10' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -267,7 +267,7 @@ describe('SnapsRegistryController', () => {
         database: { verifiedSnaps: {}, blockedSnaps: [] },
       },
     });
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -287,7 +287,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -307,7 +307,7 @@ describe('SnapsRegistryController', () => {
       .mockResponseOnce(JSON.stringify(MOCK_COMPATIBILITY_SIGNATURE_FILE));
 
     const { messenger } = getRegistry();
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.1.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -332,7 +332,7 @@ describe('SnapsRegistryController', () => {
       },
     });
 
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -357,7 +357,7 @@ describe('SnapsRegistryController', () => {
       },
     });
 
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.1' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -376,7 +376,7 @@ describe('SnapsRegistryController', () => {
 
     const { messenger } = getRegistry();
 
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -399,7 +399,7 @@ describe('SnapsRegistryController', () => {
 
     const { messenger } = getRegistry();
 
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -423,7 +423,7 @@ describe('SnapsRegistryController', () => {
         '0x034ca27b046507d1a9997bddc991b56d96b93d4adac3a96dfe01ce450bfb661455',
     });
 
-    const result = await messenger.call('SnapsRegistryController:getSnap', {
+    const result = await messenger.call('SnapsRegistryController:get', {
       [MOCK_SNAP_ID]: {
         version: '1.0.0' as SemVerVersion,
         checksum: DEFAULT_SNAP_SHASUM,
@@ -445,7 +445,7 @@ describe('SnapsRegistryController', () => {
 
       const { messenger } = getRegistry();
       const result = await messenger.call(
-        'SnapsRegistryController:resolveSnapVersion',
+        'SnapsRegistryController:resolveVersion',
         MOCK_SNAP_ID,
         '^1.0.0' as SemVerRange,
       );
@@ -460,7 +460,7 @@ describe('SnapsRegistryController', () => {
 
       const { messenger } = getRegistry();
       const result = await messenger.call(
-        'SnapsRegistryController:resolveSnapVersion',
+        'SnapsRegistryController:resolveVersion',
         MOCK_SNAP_ID,
         '^1.0.0' as SemVerRange,
       );
@@ -477,7 +477,7 @@ describe('SnapsRegistryController', () => {
         clientConfig: { type: 'extension', version: '15.0.0' as SemVerVersion },
       });
       const result = await messenger.call(
-        'SnapsRegistryController:resolveSnapVersion',
+        'SnapsRegistryController:resolveVersion',
         MOCK_SNAP_ID,
         '^1.0.0' as SemVerRange,
       );
@@ -496,7 +496,7 @@ describe('SnapsRegistryController', () => {
       const { messenger } = getRegistry();
       expect(
         await messenger.call(
-          'SnapsRegistryController:resolveSnapVersion',
+          'SnapsRegistryController:resolveVersion',
           MOCK_SNAP_ID,
           range,
         ),
@@ -512,7 +512,7 @@ describe('SnapsRegistryController', () => {
       const { messenger } = getRegistry();
       expect(
         await messenger.call(
-          'SnapsRegistryController:resolveSnapVersion',
+          'SnapsRegistryController:resolveVersion',
           MOCK_SNAP_ID,
           range,
         ),
@@ -532,7 +532,7 @@ describe('SnapsRegistryController', () => {
         },
       });
       const result = await messenger.call(
-        'SnapsRegistryController:resolveSnapVersion',
+        'SnapsRegistryController:resolveVersion',
         MOCK_SNAP_ID,
         '^1.0.0' as SemVerRange,
       );
@@ -568,7 +568,7 @@ describe('SnapsRegistryController', () => {
         },
       });
       const result = await messenger.call(
-        'SnapsRegistryController:resolveSnapVersion',
+        'SnapsRegistryController:resolveVersion',
         MOCK_SNAP_ID,
         '^1.0.0' as SemVerRange,
       );
@@ -586,7 +586,7 @@ describe('SnapsRegistryController', () => {
       const { messenger } = getRegistry();
       await messenger.call('SnapsRegistryController:requestUpdate');
       const result = messenger.call(
-        'SnapsRegistryController:getSnapMetadata',
+        'SnapsRegistryController:getMetadata',
         MOCK_SNAP_ID,
       );
 
@@ -603,7 +603,7 @@ describe('SnapsRegistryController', () => {
       const { messenger } = getRegistry();
       await messenger.call('SnapsRegistryController:requestUpdate');
       const result = messenger.call(
-        'SnapsRegistryController:getSnapMetadata',
+        'SnapsRegistryController:getMetadata',
         'foo',
       );
 
