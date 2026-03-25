@@ -294,11 +294,6 @@ export type SnapRuntimeData = {
   lastRequest: null | number;
 
   /**
-   * The current number of active references where this Snap is being used
-   */
-  activeReferences: number;
-
-  /**
    * The current pending inbound requests, meaning requests that are processed by snaps.
    */
   pendingInboundRequests: PendingRequest[];
@@ -1675,7 +1670,6 @@ export class SnapController extends BaseController<
       entries
         .filter(
           ([_snapId, runtime]) =>
-            runtime.activeReferences === 0 &&
             runtime.pendingInboundRequests.length === 0 &&
             runtime.lastRequest &&
             this.#maxIdleTime &&
@@ -2567,30 +2561,6 @@ export class SnapController extends BaseController<
     if (this.messenger.call('PermissionController:hasPermissions', snapId)) {
       this.messenger.call('PermissionController:revokeAllPermissions', snapId);
     }
-  }
-
-  /**
-   * Handles incrementing the activeReferences counter.
-   *
-   * @param snapId - The snap id of the snap that was referenced.
-   */
-  incrementActiveReferences(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    runtime.activeReferences += 1;
-  }
-
-  /**
-   * Handles decrement the activeReferences counter.
-   *
-   * @param snapId - The snap id of the snap that was referenced..
-   */
-  decrementActiveReferences(snapId: SnapId) {
-    const runtime = this.#getRuntimeExpect(snapId);
-    assert(
-      runtime.activeReferences > 0,
-      'SnapController reference management is in an invalid state.',
-    );
-    runtime.activeReferences -= 1;
   }
 
   /**
@@ -4324,7 +4294,6 @@ export class SnapController extends BaseController<
       installPromise: null,
       encryptionKey: null,
       encryptionSalt: null,
-      activeReferences: 0,
       pendingInboundRequests: [],
       pendingOutboundRequests: 0,
       interpreter,

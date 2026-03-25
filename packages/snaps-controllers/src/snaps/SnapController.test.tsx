@@ -2063,67 +2063,6 @@ describe('SnapController', () => {
     await service.terminateAllSnaps();
   });
 
-  it('does not kill snaps with open sessions', async () => {
-    const sourceCode = `
-      module.exports.onRpcRequest = () => 'foo bar';
-    `;
-
-    const rootMessenger = getRootMessenger();
-
-    const options = getSnapControllerOptions({
-      rootMessenger,
-      idleTimeCheckInterval: 10,
-      maxIdleTime: 50,
-      state: {
-        snaps: getPersistedSnapsState(
-          getPersistedSnapObject({
-            manifest: getSnapManifest({
-              shasum: await getSnapChecksum(getMockSnapFiles({ sourceCode })),
-            }),
-            sourceCode,
-          }),
-        ),
-      },
-    });
-    const [snapController, service] = await getSnapControllerWithEES(options);
-
-    const snap = snapController.getSnapExpect(MOCK_SNAP_ID);
-
-    await snapController.startSnap(snap.id);
-    expect(snapController.state.snaps[snap.id].status).toBe('running');
-
-    snapController.incrementActiveReferences(snap.id);
-
-    expect(
-      await snapController.handleRequest({
-        snapId: snap.id,
-        origin: MOCK_ORIGIN,
-        handler: HandlerType.OnRpcRequest,
-        request: {
-          jsonrpc: '2.0',
-          method: 'test',
-          params: {},
-          id: 1,
-        },
-      }),
-    ).toBe('foo bar');
-
-    await sleep(100);
-
-    // Should still be running after idle timeout
-    expect(snapController.state.snaps[snap.id].status).toBe('running');
-
-    snapController.decrementActiveReferences(snap.id);
-
-    await sleep(100);
-
-    // Should be terminated by idle timeout now
-    expect(snapController.state.snaps[snap.id].status).toBe('stopped');
-
-    snapController.destroy();
-    await service.terminateAllSnaps();
-  });
-
   it(`shouldn't time out a long running snap on start up`, async () => {
     const rootMessenger = getRootMessenger();
 
