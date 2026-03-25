@@ -93,8 +93,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - **RREAKING:** Remove `AbstractExecutionService` class in favour of `ExecutionService` ([#3916](https://github.com/MetaMask/snaps/pull/3916))
-- **BREAKING:** Remove `incrementActiveReferences` and `decrementActiveReferences` actions and methods ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3920](https://github.com/MetaMask/snaps/pull/3920))
+- **BREAKING:** Remove `incrementActiveReferences` and `decrementActiveReferences` actions and methods from `SnapController` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3920](https://github.com/MetaMask/snaps/pull/3920))
   - This was never used in production.
+- **BREAKING:** Remove public `getTruncatedSnap` and `getTruncatedSnapExpect` methods from `SnapController` ([#3923](https://github.com/MetaMask/snaps/pull/3923))
 
 ## [18.0.4]
 
