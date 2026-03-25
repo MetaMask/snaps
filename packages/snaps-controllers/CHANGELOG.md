@@ -84,7 +84,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - **RREAKING:** Remove `AbstractExecutionService` class in favour of `ExecutionService` ([#3916](https://github.com/MetaMask/snaps/pull/3916))
-- **BREAKING:** Remove `incrementActiveReferences` and `decrementActiveReferences` actions ([#3907](https://github.com/MetaMask/snaps/pull/3907))
+- **BREAKING:** Remove `activeReferences` runtime data, `incrementActiveReferences` and `decrementActiveReferences` actions ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3920](https://github.com/MetaMask/snaps/pull/3920))
+  - This was never used in production.
 
 ## [18.0.4]
 
