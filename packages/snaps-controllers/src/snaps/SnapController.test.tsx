@@ -87,7 +87,7 @@ import {
   METAMASK_ORIGIN,
   STATE_DEBOUNCE_TIMEOUT,
 } from './constants';
-import { SnapsRegistryStatus } from './registry';
+import { SnapRegistryStatus } from './registry';
 import type { SnapControllerState } from './SnapController';
 import {
   controllerName,
@@ -127,7 +127,7 @@ import {
   MOCK_SNAP_PERMISSIONS,
   MOCK_SNAP_SUBJECT_METADATA,
   MOCK_WALLET_SNAP_PERMISSION,
-  MockSnapsRegistry,
+  MockSnapRegistryController,
   sleep,
   waitForStateChange,
 } from '../test-utils';
@@ -817,7 +817,7 @@ describe('SnapController', () => {
 
     expect(options.messenger.call).toHaveBeenNthCalledWith(
       2,
-      'SnapsRegistry:get',
+      'SnapRegistryController:get',
       {
         [MOCK_SNAP_ID]: {
           version: '1.0.0',
@@ -1048,7 +1048,7 @@ describe('SnapController', () => {
 
   it('throws an error if snap is not on allowlist and allowlisting is required but resolve succeeds', async () => {
     const rootMessenger = getRootMessenger();
-    const registry = new MockSnapsRegistry(rootMessenger);
+    const registry = new MockSnapRegistryController(rootMessenger);
 
     const controller = await getSnapController(
       getSnapControllerOptions({
@@ -1077,7 +1077,7 @@ describe('SnapController', () => {
 
   it('throws an error if the registry is unavailable and allowlisting is required but resolve succeeds', async () => {
     const rootMessenger = getRootMessenger();
-    const registry = new MockSnapsRegistry(rootMessenger);
+    const registry = new MockSnapRegistryController(rootMessenger);
 
     const controller = await getSnapController(
       getSnapControllerOptions({
@@ -1091,7 +1091,7 @@ describe('SnapController', () => {
     // Mock resolve to succeed, but registry.get() will fail later
     registry.resolveVersion.mockReturnValue('1.0.0');
     registry.get.mockReturnValue({
-      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Unavailable },
+      [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Unavailable },
     });
 
     await expect(
@@ -1141,7 +1141,7 @@ describe('SnapController', () => {
 
   it('resolves to allowlisted version when allowlisting is required', async () => {
     const rootMessenger = getRootMessenger();
-    const registry = new MockSnapsRegistry(rootMessenger);
+    const registry = new MockSnapRegistryController(rootMessenger);
 
     const { manifest, sourceCode, svgIcon } =
       await getMockSnapFilesWithUpdatedChecksum({
@@ -1151,7 +1151,7 @@ describe('SnapController', () => {
       });
 
     registry.get.mockResolvedValueOnce({
-      [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Verified },
+      [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Verified },
     });
 
     registry.resolveVersion.mockReturnValue('1.1.0');
@@ -1181,7 +1181,7 @@ describe('SnapController', () => {
 
   it('does not use registry resolving when allowlist is not required', async () => {
     const rootMessenger = getRootMessenger();
-    const registry = new MockSnapsRegistry(rootMessenger);
+    const registry = new MockSnapRegistryController(rootMessenger);
 
     const controller = await getSnapController(
       getSnapControllerOptions({
@@ -8857,7 +8857,7 @@ describe('SnapController', () => {
 
     it('throws an error if the new version of the snap is blocked', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const { manifest } = await getMockSnapFilesWithUpdatedChecksum({
         manifest: getSnapManifest({
@@ -8879,7 +8879,7 @@ describe('SnapController', () => {
       );
 
       registry.get.mockResolvedValueOnce({
-        [MOCK_SNAP_ID]: { status: SnapsRegistryStatus.Blocked },
+        [MOCK_SNAP_ID]: { status: SnapRegistryStatus.Blocked },
       });
 
       await expect(
@@ -10458,7 +10458,7 @@ describe('SnapController', () => {
   describe('updateRegistry', () => {
     it('updates the registry database', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const snapController = await getSnapController(
         getSnapControllerOptions({
@@ -10470,14 +10470,14 @@ describe('SnapController', () => {
       );
       await snapController.updateRegistry();
 
-      expect(registry.update).toHaveBeenCalled();
+      expect(registry.requestUpdate).toHaveBeenCalled();
 
       snapController.destroy();
     });
 
     it('blocks snaps as expected', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA' as SnapId,
@@ -10508,7 +10508,7 @@ describe('SnapController', () => {
       // Block snap A, ignore B.
       registry.get.mockResolvedValueOnce({
         [mockSnapA.id]: {
-          status: SnapsRegistryStatus.Blocked,
+          status: SnapRegistryStatus.Blocked,
           reason: { explanation, infoUrl },
         },
       });
@@ -10548,7 +10548,7 @@ describe('SnapController', () => {
 
     it('stops running snaps when they are blocked', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
@@ -10568,7 +10568,7 @@ describe('SnapController', () => {
 
       // Block the snap
       registry.get.mockResolvedValueOnce({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
       await waitForStateChange(options.messenger);
@@ -10583,7 +10583,7 @@ describe('SnapController', () => {
 
     it('unblocks snaps as expected', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const mockSnapA = getMockSnapData({
         id: 'npm:exampleA' as SnapId,
@@ -10622,8 +10622,8 @@ describe('SnapController', () => {
       // Indicate that both snaps A and B are unblocked, and update blocked
       // states.
       registry.get.mockResolvedValueOnce({
-        [mockSnapA.id]: { status: SnapsRegistryStatus.Unverified },
-        [mockSnapB.id]: { status: SnapsRegistryStatus.Unverified },
+        [mockSnapA.id]: { status: SnapRegistryStatus.Unverified },
+        [mockSnapB.id]: { status: SnapRegistryStatus.Unverified },
       });
       await snapController.updateRegistry();
 
@@ -10646,7 +10646,7 @@ describe('SnapController', () => {
     it('updating blocked snaps does not throw if a snap is removed while fetching the blocklist', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
@@ -10675,7 +10675,7 @@ describe('SnapController', () => {
 
       // Resolve the blocklist and wait for the call to complete
       resolveBlockListPromise({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await updateBlockList;
 
@@ -10689,7 +10689,7 @@ describe('SnapController', () => {
     it('logs but does not throw unexpected errors while blocking', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const mockSnap = getMockSnapData({
         id: 'npm:example' as SnapId,
@@ -10713,7 +10713,7 @@ describe('SnapController', () => {
 
       // Block the snap
       registry.get.mockResolvedValueOnce({
-        [mockSnap.id]: { status: SnapsRegistryStatus.Blocked },
+        [mockSnap.id]: { status: SnapRegistryStatus.Blocked },
       });
       await snapController.updateRegistry();
 
@@ -10732,7 +10732,7 @@ describe('SnapController', () => {
 
     it('updates preinstalled Snaps', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       // Simulate previous permissions, some of which will be removed
       rootMessenger.registerActionHandler(
@@ -10828,7 +10828,7 @@ describe('SnapController', () => {
 
     it('does not update preinstalled Snaps when the feature flag is off', async () => {
       const rootMessenger = getRootMessenger();
-      const registry = new MockSnapsRegistry(rootMessenger);
+      const registry = new MockSnapRegistryController(rootMessenger);
 
       const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
 

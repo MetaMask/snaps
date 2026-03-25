@@ -1,31 +1,30 @@
 import type { RootMessenger } from './controller';
-import type { SnapsRegistry } from '../snaps';
-import { SnapsRegistryStatus } from '../snaps';
+import { SnapRegistryStatus } from '../snaps';
 
-export class MockSnapsRegistry implements SnapsRegistry {
+export class MockSnapRegistryController {
   readonly #messenger;
 
   constructor(messenger: RootMessenger) {
     this.#messenger = messenger;
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:get',
+      'SnapRegistryController:get',
       this.get.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:getMetadata',
+      'SnapRegistryController:getMetadata',
       this.getMetadata.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:resolveVersion',
+      'SnapRegistryController:resolveVersion',
       this.resolveVersion.bind(this),
     );
 
     this.#messenger.registerActionHandler(
-      'SnapsRegistry:update',
-      this.update.bind(this),
+      'SnapRegistryController:requestUpdate',
+      this.requestUpdate.bind(this),
     );
   }
 
@@ -34,7 +33,7 @@ export class MockSnapsRegistry implements SnapsRegistry {
       Object.keys(snaps).reduce(
         (acc, snapId) => ({
           ...acc,
-          [snapId]: { status: SnapsRegistryStatus.Unverified },
+          [snapId]: { status: SnapRegistryStatus.Unverified },
         }),
         {},
       ),
@@ -47,9 +46,9 @@ export class MockSnapsRegistry implements SnapsRegistry {
 
   getMetadata = jest.fn().mockReturnValue(null);
 
-  update = jest.fn().mockImplementation(() => {
+  requestUpdate = jest.fn().mockImplementation(() => {
     this.#messenger.publish(
-      'SnapsRegistry:stateChange',
+      'SnapRegistryController:stateChange',
       {
         database: { verifiedSnaps: {}, blockedSnaps: [] },
         lastUpdated: Date.now(),

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912), [#3916](https://github.com/MetaMask/snaps/pull/3916))
+- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912), [#3916](https://github.com/MetaMask/snaps/pull/3916), [#3918](https://github.com/MetaMask/snaps/pull/3918))
   - `SnapController` actions:
     - `GetSnap` is now `SnapControllerGetSnapAction`.
       - Note: The method is now called `getSnap` instead of `get`.
@@ -56,6 +56,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `HandleRequest` is now `ExecutionServiceHandleRequestAction`.
     - `TerminateSnap` is now `ExecutionServiceTerminateSnapAction`.
     - `GetExecutionStatus` is now `ExecutionServiceGetExecutionStatusAction`.
+  - `SnapRegistryController` actions:
+    - `GetResult` is now `SnapRegistryControllerGetAction`.
+    - `GetMetadata` is now `SnapRegistryControllerGetMetadataAction`.
+    - `ResolveVersion` is now `SnapRegistryControllerResolveVersionAction`.
+    - `Update` is now `SnapRegistryControllerRequestUpdateAction`.
+      - Note: The method is now called `requestUpdate` instead of `update`.
 - **BREAKING:** All event types were renamed from `OnSomething` to `ControllerOnSomethingEvent` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3916](https://github.com/MetaMask/snaps/pull/3916))
   - `SnapController` events:
     - `SnapStateChange` was removed in favour of `SnapControllerStateChangeEvent`.
@@ -76,6 +82,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `OutboundResponse` is now `ExecutionServiceOutboundResponseEvent`.
 - **BREAKING:**: Rename `MultichainRouter` to `MultichainRoutingService` and update action types accordingly ([#3913](https://github.com/MetaMask/snaps/pull/3913))
   - This is consistent with the naming of other services.
+- **BREAKING:** Rename `JsonSnapsRegistry` to `SnapRegistryController` and update action types accordingly ([#3918](https://github.com/MetaMask/snaps/pull/3918))
+  - This is consistent with the naming of other controllers.
+  - The controller name is now `SnapRegistryController` instead of `SnapsRegistry` as well.
 - **BREAKING:** `MultichainRoutingService` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
 - **BREAKING:** `SnapInsightsController` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3915](https://github.com/MetaMask/snaps/pull/3915))
 - **RREAKING:** Replace `ExecutionService` interface with abstract class ([#3916](https://github.com/MetaMask/snaps/pull/3916))
