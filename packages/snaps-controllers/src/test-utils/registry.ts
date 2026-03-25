@@ -24,7 +24,7 @@ export class MockSnapRegistryController {
 
     this.#messenger.registerActionHandler(
       'SnapRegistryController:requestUpdate',
-      this.update.bind(this),
+      this.requestUpdate.bind(this),
     );
   }
 
@@ -46,7 +46,7 @@ export class MockSnapRegistryController {
 
   getMetadata = jest.fn().mockReturnValue(null);
 
-  update = jest.fn().mockImplementation(() => {
+  requestUpdate = jest.fn().mockImplementation(() => {
     this.#messenger.publish(
       'SnapRegistryController:stateChange',
       {

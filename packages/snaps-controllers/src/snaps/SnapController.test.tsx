@@ -10531,7 +10531,7 @@ describe('SnapController', () => {
       );
       await snapController.updateRegistry();
 
-      expect(registry.update).toHaveBeenCalled();
+      expect(registry.requestUpdate).toHaveBeenCalled();
 
       snapController.destroy();
     });
