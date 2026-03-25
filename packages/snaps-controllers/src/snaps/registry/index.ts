@@ -1,5 +1,6 @@
 export type {
   SnapsRegistryControllerActions,
+  SnapsRegistryControllerEvents,
   SnapsRegistryControllerArgs,
   SnapsRegistryControllerGetStateAction,
   SnapsRegistryControllerMessenger,
