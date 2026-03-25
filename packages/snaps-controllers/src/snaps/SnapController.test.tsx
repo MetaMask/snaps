@@ -8979,11 +8979,11 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.1.0' },
       });
 
-      const newSnapTruncated = controller.getTruncatedSnap(MOCK_SNAP_ID);
-
       const newSnap = controller.getSnap(MOCK_SNAP_ID);
 
-      expect(result).toStrictEqual({ [MOCK_SNAP_ID]: newSnapTruncated });
+      expect(result).toStrictEqual({
+        [MOCK_SNAP_ID]: getTruncatedSnap(newSnap),
+      });
       expect(newSnap?.version).toBe('1.1.0');
       expect(newSnap?.versionHistory).toStrictEqual([
         {
@@ -9090,7 +9090,7 @@ describe('SnapController', () => {
       );
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapUpdated).toHaveBeenCalledWith(
-        newSnapTruncated,
+        getTruncatedSnap(newSnap),
         '1.0.0',
         MOCK_ORIGIN,
         false,
@@ -9362,11 +9362,11 @@ describe('SnapController', () => {
         [MOCK_SNAP_ID]: { version: '1.1.0' },
       });
 
-      const newSnapTruncated = controller.getTruncatedSnap(MOCK_SNAP_ID);
-
       const newSnap = controller.getSnap(MOCK_SNAP_ID);
 
-      expect(result).toStrictEqual({ [MOCK_SNAP_ID]: newSnapTruncated });
+      expect(result).toStrictEqual({
+        [MOCK_SNAP_ID]: getTruncatedSnap(newSnap),
+      });
       expect(newSnap?.version).toBe('1.1.0');
       expect(newSnap?.versionHistory).toStrictEqual([
         {

@@ -1348,7 +1348,7 @@ export class SnapController extends BaseController<
       if (isUpdate) {
         this.messenger.publish(
           'SnapController:snapUpdated',
-          this.getTruncatedSnapExpect(snapId),
+          this.#getTruncatedSnapExpect(snapId),
           existingSnap.version,
           METAMASK_ORIGIN,
           true,
@@ -1356,7 +1356,7 @@ export class SnapController extends BaseController<
       } else if (!isMissingSource) {
         this.messenger.publish(
           'SnapController:snapInstalled',
-          this.getTruncatedSnapExpect(snapId),
+          this.#getTruncatedSnapExpect(snapId),
           METAMASK_ORIGIN,
           true,
         );
@@ -1772,7 +1772,7 @@ export class SnapController extends BaseController<
 
     this.messenger.publish(
       'SnapController:snapEnabled',
-      this.getTruncatedSnapExpect(snapId),
+      this.#getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -1797,7 +1797,7 @@ export class SnapController extends BaseController<
 
     this.messenger.publish(
       'SnapController:snapDisabled',
-      this.getTruncatedSnapExpect(snapId),
+      this.#getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -1891,7 +1891,7 @@ export class SnapController extends BaseController<
 
     this.messenger.publish(
       'SnapController:snapTerminated',
-      this.getTruncatedSnapExpect(snapId),
+      this.#getTruncatedSnapExpect(snapId),
     );
   }
 
@@ -1952,7 +1952,7 @@ export class SnapController extends BaseController<
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
   // TODO(ritave): this.get returns undefined, this.getTruncated returns null
-  getTruncatedSnap(snapId: SnapId): TruncatedSnap | null {
+  #getTruncatedSnap(snapId: SnapId): TruncatedSnap | null {
     const snap = this.getSnap(snapId);
 
     return snap ? truncateSnap(snap) : null;
@@ -1965,7 +1965,7 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the snap to get.
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
-  getTruncatedSnapExpect(snapId: SnapId): TruncatedSnap {
+  #getTruncatedSnapExpect(snapId: SnapId): TruncatedSnap {
     return truncateSnap(this.getSnapExpect(snapId));
   }
 
@@ -2371,7 +2371,7 @@ export class SnapController extends BaseController<
     await Promise.all(
       snapIds.map(async (snapId) => {
         const snap = this.getSnapExpect(snapId);
-        const truncated = this.getTruncatedSnapExpect(snapId);
+        const truncated = this.#getTruncatedSnapExpect(snapId);
         // Disable the snap and revoke all of its permissions before deleting
         // it. This ensures that the snap will not be restarted or otherwise
         // affect the host environment while we are deleting it.
@@ -2597,7 +2597,7 @@ export class SnapController extends BaseController<
     return Object.keys(snaps).reduce<RequestSnapsResult>(
       (permittedSnaps, snapId) => {
         const snap = this.getSnap(snapId);
-        const truncatedSnap = this.getTruncatedSnap(snapId as SnapId);
+        const truncatedSnap = this.#getTruncatedSnap(snapId as SnapId);
 
         if (truncatedSnap && snap?.status !== SnapStatus.Installing) {
           permittedSnaps[snapId] = truncatedSnap;
@@ -2687,7 +2687,7 @@ export class SnapController extends BaseController<
       pendingInstalls.forEach((snapId) =>
         this.messenger.publish(
           `SnapController:snapInstalled`,
-          this.getTruncatedSnapExpect(snapId),
+          this.#getTruncatedSnapExpect(snapId),
           origin,
           false,
         ),
@@ -2696,7 +2696,7 @@ export class SnapController extends BaseController<
       pendingUpdates.forEach(({ snapId, oldVersion }) =>
         this.messenger.publish(
           `SnapController:snapUpdated`,
-          this.getTruncatedSnapExpect(snapId),
+          this.#getTruncatedSnapExpect(snapId),
           oldVersion,
           origin,
           false,
@@ -2737,7 +2737,7 @@ export class SnapController extends BaseController<
     location: SnapLocation,
     versionRange: SemVerRange,
   ): Promise<TruncatedSnap> {
-    const existingSnap = this.getTruncatedSnap(snapId);
+    const existingSnap = this.#getTruncatedSnap(snapId);
 
     // For devX we always re-install local snaps.
     if (existingSnap && !location.shouldAlwaysReload) {
@@ -2799,7 +2799,7 @@ export class SnapController extends BaseController<
         sourceCode,
       });
 
-      const truncated = this.getTruncatedSnapExpect(snapId);
+      const truncated = this.#getTruncatedSnapExpect(snapId);
 
       this.#updateApproval(pendingApproval.id, {
         loading: false,
@@ -3066,7 +3066,7 @@ export class SnapController extends BaseController<
         throw new Error(`Snap ${snapId} crashed with updated source code.`);
       }
 
-      const truncatedSnap = this.getTruncatedSnapExpect(snapId);
+      const truncatedSnap = this.#getTruncatedSnapExpect(snapId);
 
       if (pendingApproval) {
         this.#updateApproval(pendingApproval.id, {
@@ -4238,7 +4238,7 @@ export class SnapController extends BaseController<
       previousInitialConnections ?? {},
     );
 
-    const truncatedSnap = this.getTruncatedSnapExpect(snapId);
+    const truncatedSnap = this.#getTruncatedSnapExpect(snapId);
 
     this.messenger.publish(
       'SnapController:snapRolledback',
