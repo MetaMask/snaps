@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.0.2]
+
 ### Uncategorized
 
 - chore: Bump lavamoat from 10.1.1 to 11.0.0 ([#3908](https://github.com/MetaMask/snaps/pull/3908))
@@ -616,7 +618,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.2...HEAD
+[11.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.1...@metamask/snaps-execution-environments@11.0.2
 [11.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.0...@metamask/snaps-execution-environments@11.0.1
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.1...@metamask/snaps-execution-environments@11.0.0
 [10.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.0...@metamask/snaps-execution-environments@10.4.1
