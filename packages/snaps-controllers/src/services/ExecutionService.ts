@@ -2,7 +2,7 @@ import { asV2Middleware } from '@metamask/json-rpc-engine';
 import { JsonRpcEngineV2 as JsonRpcEngine } from '@metamask/json-rpc-engine/v2';
 import { createStreamMiddleware } from '@metamask/json-rpc-middleware-stream';
 import type { Messenger } from '@metamask/messenger';
-import ObjectMultiplex from '@metamask/object-multiplex';
+import type ObjectMultiplex from '@metamask/object-multiplex';
 import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { SNAP_STREAM_NAMES, logError, logWarning } from '@metamask/snaps-utils';
@@ -22,6 +22,7 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
 import type { ExecutionServiceMethodActions } from './ExecutionService-method-action-types';
+import { setupMultiplex } from './multiplex';
 import { log } from '../logging';
 import { Timer } from '../snaps/Timer';
 import { hasTimedOut, withTimeout } from '../utils';
@@ -518,24 +519,4 @@ export abstract class ExecutionService<WorkerType = unknown> {
       },
     });
   }
-}
-
-/**
- * Sets up stream multiplexing for the given stream.
- *
- * @param connectionStream - The stream to mux.
- * @param streamName - The name of the stream, for identification in errors.
- * @returns The multiplexed stream.
- */
-export function setupMultiplex(
-  connectionStream: Duplex,
-  streamName: string,
-): ObjectMultiplex {
-  const mux = new ObjectMultiplex();
-  pipeline(connectionStream, mux, connectionStream, (error) => {
-    if (error && !error.message?.match('Premature close')) {
-      logError(`"${streamName}" stream failure.`, error);
-    }
-  });
-  return mux;
 }
