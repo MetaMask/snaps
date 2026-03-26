@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump lavamoat from 10.1.1 to 11.0.0 ([#3908](https://github.com/MetaMask/snaps/pull/3908))
+- chore: Bump @lavamoat/webpack from 1.5.8 to 2.0.0 ([#3909](https://github.com/MetaMask/snaps/pull/3909))
+- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
+
 ## [11.0.1]
 
 ### Changed

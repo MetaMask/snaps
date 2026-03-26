@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- refactor!: Standardise all controllers and services ([#3922](https://github.com/MetaMask/snaps/pull/3922))
+- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
+
 ## [10.1.1]
 
 ### Changed

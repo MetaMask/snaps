@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- refactor!: Standardise all controllers and services ([#3922](https://github.com/MetaMask/snaps/pull/3922))
+- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
+- chore: Bump @metamask/permission-controller from 12.2.0 to 12.2.1 ([#3901](https://github.com/MetaMask/snaps/pull/3901))
+- chore: Bump fast-xml-parser from 5.4.1 to 5.5.6 ([#3905](https://github.com/MetaMask/snaps/pull/3905))
+
 ## [12.1.1]
 
 ### Changed
