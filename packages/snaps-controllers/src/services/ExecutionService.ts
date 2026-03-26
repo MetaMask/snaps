@@ -72,7 +72,7 @@ type ExecutionStatus =
   | 'executing'
   | 'running';
 
-export const MESSENGER_EXPOSED_METHODS = [
+const MESSENGER_EXPOSED_METHODS = [
   'terminateSnap',
   'terminateAllSnaps',
   'executeSnap',
