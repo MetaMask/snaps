@@ -9,13 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.0.0]
 
-### Uncategorized
-
-- refactor!: Standardise all controllers and services ([#3922](https://github.com/MetaMask/snaps/pull/3922))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
-- chore: Bump @metamask/permission-controller from 12.2.0 to 12.2.1 ([#3901](https://github.com/MetaMask/snaps/pull/3901))
-- chore: Bump @metamask/approval-controller from 8.0.0 to 9.0.0 ([#3902](https://github.com/MetaMask/snaps/pull/3902))
-
 ### Changed
 
 - **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912), [#3916](https://github.com/MetaMask/snaps/pull/3916), [#3918](https://github.com/MetaMask/snaps/pull/3918))

@@ -9,10 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [10.1.2]
 
-### Uncategorized
+### Changed
 
-- refactor!: Standardise all controllers and services ([#3922](https://github.com/MetaMask/snaps/pull/3922))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
+- Bump `@metamask/snaps-controllers` from `18.0.4` to `19.0.0` and handle breaking changes ([#3922](https://github.com/MetaMask/snaps/pull/3922))
 
 ## [10.1.1]
 

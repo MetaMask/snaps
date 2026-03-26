@@ -9,12 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.1.2]
 
-### Uncategorized
+### Changed
 
-- refactor!: Standardise all controllers and services ([#3922](https://github.com/MetaMask/snaps/pull/3922))
-- chore: Bump @metamask/chain-agnostic-permission from 1.4.0 to 1.5.0 ([#3919](https://github.com/MetaMask/snaps/pull/3919))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
-- chore: Bump @metamask/permission-controller from 12.2.0 to 12.2.1 ([#3901](https://github.com/MetaMask/snaps/pull/3901))
+- Bump `@metamask/snaps-controllers` from `18.0.4` to `19.0.0` and handle breaking changes ([#3922](https://github.com/MetaMask/snaps/pull/3922))
 
 ## [4.1.1]
 
