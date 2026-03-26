@@ -4430,6 +4430,7 @@ __metadata:
     typescript: "npm:~5.3.3"
     typescript-eslint: "npm:^8.6.0"
     vite: "npm:^6.4.1"
+    yargs: "npm:^17.7.1"
   languageName: unknown
   linkType: soft
 

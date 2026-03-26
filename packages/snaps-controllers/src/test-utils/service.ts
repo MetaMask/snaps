@@ -6,7 +6,7 @@ import { pipeline } from 'readable-stream';
 import type { Duplex } from 'readable-stream';
 
 import { MOCK_BLOCK_NUMBER } from './constants';
-import type { ErrorMessageEvent } from '../services';
+import type { ExecutionServiceUnhandledErrorEvent } from '../services';
 import { setupMultiplex } from '../services';
 
 export const createService = <
@@ -18,9 +18,11 @@ export const createService = <
     'messenger' | 'setupSnapProvider'
   >,
 ) => {
-  const messenger = new Messenger<'ExecutionService', never, ErrorMessageEvent>(
-    { namespace: 'ExecutionService' },
-  );
+  const messenger = new Messenger<
+    'ExecutionService',
+    never,
+    ExecutionServiceUnhandledErrorEvent
+  >({ namespace: 'ExecutionService' });
 
   const service = new ServiceClass({
     messenger,

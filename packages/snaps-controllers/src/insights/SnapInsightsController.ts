@@ -18,13 +18,15 @@ import type { Json, SnapId } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import { hasProperty, hexToBigInt } from '@metamask/utils';
 
-import type { DeleteInterface } from '../interface';
-import type { GetAllSnaps, HandleSnapRequest } from '../snaps';
-import { getRunnableSnaps } from '../snaps';
+import type { SnapInterfaceControllerDeleteInterfaceAction } from '../interface';
+import type {
+  SnapControllerGetRunnableSnapsAction,
+  SnapControllerHandleRequestAction,
+} from '../snaps';
 import type {
   TransactionControllerUnapprovedTransactionAddedEvent,
   TransactionMeta,
-  SignatureStateChange,
+  SignatureControllerStateChangeEvent,
   SignatureControllerState,
   StateSignature,
   TransactionControllerTransactionStatusUpdatedEvent,
@@ -32,11 +34,11 @@ import type {
 
 const controllerName = 'SnapInsightsController';
 
-export type SnapInsightsControllerAllowedActions =
-  | HandleSnapRequest
-  | GetAllSnaps
+type AllowedActions =
   | GetPermissions
-  | DeleteInterface;
+  | SnapControllerGetRunnableSnapsAction
+  | SnapControllerHandleRequestAction
+  | SnapInterfaceControllerDeleteInterfaceAction;
 
 export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
   typeof controllerName,
@@ -46,22 +48,23 @@ export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
 export type SnapInsightsControllerActions =
   SnapInsightsControllerGetStateAction;
 
-export type SnapInsightControllerStateChangeEvent = ControllerStateChangeEvent<
+export type SnapInsightsControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
   SnapInsightsControllerState
 >;
 
-export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
+export type SnapInsightsControllerEvents =
+  SnapInsightsControllerStateChangeEvent;
 
-export type SnapInsightsControllerAllowedEvents =
+type AllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
   | TransactionControllerTransactionStatusUpdatedEvent
-  | SignatureStateChange;
+  | SignatureControllerStateChangeEvent;
 
 export type SnapInsightsControllerMessenger = Messenger<
   typeof controllerName,
-  SnapInsightsControllerActions | SnapInsightsControllerAllowedActions,
-  SnapInsightControllerEvents | SnapInsightsControllerAllowedEvents
+  SnapInsightsControllerActions | AllowedActions,
+  SnapInsightsControllerEvents | AllowedEvents
 >;
 
 export type SnapInsight = {
@@ -143,8 +146,9 @@ export class SnapInsightsController extends BaseController<
    * @returns A list of objects containing Snap IDs and the permission object.
    */
   #getSnapsWithPermission(permissionName: string) {
-    const allSnaps = this.messenger.call('SnapController:getAll');
-    const filteredSnaps = getRunnableSnaps(allSnaps);
+    const filteredSnaps = this.messenger.call(
+      'SnapController:getRunnableSnaps',
+    );
 
     return filteredSnaps.reduce<SnapWithPermission[]>((accumulator, snap) => {
       const permissions = this.messenger.call(

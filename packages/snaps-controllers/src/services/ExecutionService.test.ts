@@ -3,7 +3,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
 
-import type { ExecutionServiceArgs } from './AbstractExecutionService';
+import type { ExecutionServiceArgs } from './ExecutionService';
 import { NodeThreadExecutionService } from './node';
 import { createService } from '../test-utils';
 
@@ -18,7 +18,7 @@ class MockExecutionService extends NodeThreadExecutionService {
   }
 }
 
-describe('AbstractExecutionService', () => {
+describe('ExecutionService', () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });

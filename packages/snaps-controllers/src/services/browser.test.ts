@@ -2,7 +2,7 @@ import * as BrowserExport from './browser';
 
 describe('browser entrypoint', () => {
   const expectedExports = [
-    'AbstractExecutionService',
+    'ExecutionService',
     'setupMultiplex',
     'IframeExecutionService',
     'OffscreenExecutionService',

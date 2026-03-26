@@ -62,6 +62,7 @@
     "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-controllers",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-controllers",
+    "generate-method-action-types": "tsx ../../scripts/generate-method-action-types.mts",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",

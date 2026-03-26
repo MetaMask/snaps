@@ -10,7 +10,10 @@ import {
   MOCK_LOCAL_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
-import type { InstallSnaps, GetPermittedSnaps } from './invokeSnap';
+import type {
+  SnapControllerInstallSnapsAction,
+  SnapControllerGetPermittedSnapsAction,
+} from './invokeSnap';
 import {
   invokeSnapBuilder,
   getInvokeSnapImplementation,
@@ -113,20 +116,23 @@ describe('implementation', () => {
 describe('handleSnapInstall', () => {
   it('calls SnapController:install with the right parameters', async () => {
     const messenger = new MockControllerMessenger<
-      InstallSnaps | GetPermittedSnaps,
+      SnapControllerGetPermittedSnapsAction | SnapControllerInstallSnapsAction,
       never
     >();
 
     const sideEffectMessenger = new Messenger<
       'PermissionController',
-      InstallSnaps | GetPermittedSnaps,
+      SnapControllerGetPermittedSnapsAction | SnapControllerInstallSnapsAction,
       never,
       any
     >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
       messenger: sideEffectMessenger,
-      actions: ['SnapController:install', 'SnapController:getPermitted'],
+      actions: [
+        'SnapController:installSnaps',
+        'SnapController:getPermittedSnaps',
+      ],
     });
 
     const expectedResult = {
@@ -134,11 +140,14 @@ describe('handleSnapInstall', () => {
     };
 
     messenger.registerActionHandler(
-      'SnapController:install',
+      'SnapController:installSnaps',
       async () => expectedResult,
     );
 
-    messenger.registerActionHandler('SnapController:getPermitted', () => ({}));
+    messenger.registerActionHandler(
+      'SnapController:getPermittedSnaps',
+      () => ({}),
+    );
 
     jest.spyOn(sideEffectMessenger, 'call');
 
@@ -166,7 +175,7 @@ describe('handleSnapInstall', () => {
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(
-      'SnapController:install',
+      'SnapController:installSnaps',
       MOCK_ORIGIN,
       requestedSnaps,
     );
@@ -176,20 +185,23 @@ describe('handleSnapInstall', () => {
 
   it('dedupes snaps before calling installSnaps', async () => {
     const messenger = new MockControllerMessenger<
-      InstallSnaps | GetPermittedSnaps,
+      SnapControllerGetPermittedSnapsAction | SnapControllerInstallSnapsAction,
       never
     >();
 
     const sideEffectMessenger = new Messenger<
       'PermissionController',
-      InstallSnaps | GetPermittedSnaps,
+      SnapControllerGetPermittedSnapsAction | SnapControllerInstallSnapsAction,
       never,
       any
     >({ namespace: 'PermissionController', parent: messenger });
 
     messenger.delegate({
       messenger: sideEffectMessenger,
-      actions: ['SnapController:install', 'SnapController:getPermitted'],
+      actions: [
+        'SnapController:installSnaps',
+        'SnapController:getPermittedSnaps',
+      ],
     });
 
     const expectedResult = {
@@ -197,11 +209,11 @@ describe('handleSnapInstall', () => {
     };
 
     messenger.registerActionHandler(
-      'SnapController:install',
+      'SnapController:installSnaps',
       async () => expectedResult,
     );
 
-    messenger.registerActionHandler('SnapController:getPermitted', () => ({
+    messenger.registerActionHandler('SnapController:getPermittedSnaps', () => ({
       [MOCK_SNAP_ID]: getTruncatedSnap(),
     }));
 
@@ -232,7 +244,7 @@ describe('handleSnapInstall', () => {
     });
 
     expect(sideEffectMessenger.call).toHaveBeenCalledWith(
-      'SnapController:install',
+      'SnapController:installSnaps',
       MOCK_ORIGIN,
       { [MOCK_LOCAL_SNAP_ID]: {} },
     );

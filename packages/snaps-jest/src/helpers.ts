@@ -1,4 +1,4 @@
-import type { AbstractExecutionService } from '@metamask/snaps-controllers';
+import type { ExecutionService } from '@metamask/snaps-controllers';
 import type {
   AccountSelectorState,
   AssetSelectorState,
@@ -35,9 +35,7 @@ const log = createModuleLogger(rootLogger, 'helpers');
  * @returns The options.
  */
 function getOptions<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 >(
   snapId: SnapId | Partial<InstallSnapOptions<Service>> | undefined,
   options: Partial<InstallSnapOptions<Service>>,
@@ -102,9 +100,7 @@ export async function installSnap(): Promise<Snap>;
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 >(options: Partial<InstallSnapOptions<Service>>): Promise<Snap>;
 
 /**
@@ -140,9 +136,7 @@ export async function installSnap<
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 >(
   snapId: SnapId,
   options?: Partial<InstallSnapOptions<Service>>,
@@ -181,9 +175,7 @@ export async function installSnap<
  * @throws If the built-in server is not running, and no snap ID is provided.
  */
 export async function installSnap<
-  Service extends new (
-    ...args: any[]
-  ) => InstanceType<typeof AbstractExecutionService>,
+  Service extends new (...args: any[]) => InstanceType<typeof ExecutionService>,
 >(
   snapId?: SnapId | Partial<InstallSnapOptions<Service>>,
   options: Partial<InstallSnapOptions<Service>> = {},

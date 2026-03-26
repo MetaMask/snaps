@@ -4,15 +4,15 @@ import { nanoid } from 'nanoid';
 import type {
   ExecutionServiceArgs,
   TerminateJobArgs,
-} from '../AbstractExecutionService';
-import { AbstractExecutionService } from '../AbstractExecutionService';
+} from '../ExecutionService';
+import { ExecutionService } from '../ExecutionService';
 import { ProxyPostMessageStream } from '../ProxyPostMessageStream';
 
 type ProxyExecutionEnvironmentServiceArgs = {
   stream: BasePostMessageStream;
 } & ExecutionServiceArgs;
 
-export class ProxyExecutionService extends AbstractExecutionService<string> {
+export class ProxyExecutionService extends ExecutionService<string> {
   readonly #stream: BasePostMessageStream;
 
   /**
@@ -47,9 +47,6 @@ export class ProxyExecutionService extends AbstractExecutionService<string> {
    *
    * @param job - The job to terminate.
    */
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected async terminateJob(job: TerminateJobArgs<string>) {
     // The `AbstractExecutionService` will have already closed the job stream,
     // so we write to the runtime stream directly.
