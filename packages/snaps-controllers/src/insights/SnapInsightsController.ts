@@ -48,12 +48,13 @@ export type SnapInsightsControllerGetStateAction = ControllerGetStateAction<
 export type SnapInsightsControllerActions =
   SnapInsightsControllerGetStateAction;
 
-export type SnapInsightControllerStateChangeEvent = ControllerStateChangeEvent<
+export type SnapInsightsControllerStateChangeEvent = ControllerStateChangeEvent<
   typeof controllerName,
   SnapInsightsControllerState
 >;
 
-export type SnapInsightControllerEvents = SnapInsightControllerStateChangeEvent;
+export type SnapInsightsControllerEvents =
+  SnapInsightsControllerStateChangeEvent;
 
 type AllowedEvents =
   | TransactionControllerUnapprovedTransactionAddedEvent
@@ -63,7 +64,7 @@ type AllowedEvents =
 export type SnapInsightsControllerMessenger = Messenger<
   typeof controllerName,
   SnapInsightsControllerActions | AllowedActions,
-  SnapInsightControllerEvents | AllowedEvents
+  SnapInsightsControllerEvents | AllowedEvents
 >;
 
 export type SnapInsight = {

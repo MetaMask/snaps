@@ -1,12 +1,12 @@
 // Subset of exports meant for browser environments, omits Node.js services
 export type {
   ExecutionServiceActions,
+  ExecutionServiceArgs,
   ExecutionServiceEvents,
   ExecutionServiceMessenger,
   ExecutionServiceOutboundRequestEvent,
   ExecutionServiceOutboundResponseEvent,
   ExecutionServiceUnhandledErrorEvent,
-  SetupSnapProvider,
   SnapErrorJson,
   SnapExecutionData,
 } from './ExecutionService';

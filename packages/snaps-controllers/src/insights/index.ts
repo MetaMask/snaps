@@ -2,8 +2,10 @@ export type {
   SnapInsight,
   SnapInsightsControllerActions,
   SnapInsightsControllerArgs,
-  SnapInsightControllerEvents,
+  SnapInsightsControllerEvents,
+  SnapInsightsControllerGetStateAction,
   SnapInsightsControllerMessenger,
   SnapInsightsControllerState,
+  SnapInsightsControllerStateChangeEvent,
 } from './SnapInsightsController';
 export { SnapInsightsController } from './SnapInsightsController';
