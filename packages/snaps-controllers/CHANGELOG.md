@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `SnapController` actions:
     - `GetSnap` is now `SnapControllerGetSnapAction`.
       - Note: The method is now called `getSnap` instead of `get`.
+      - Note: It now returns `null` if a Snap is not found, instead of
+        `undefined`.
     - `HandleSnapRequest` is now `SnapControllerHandleRequestAction`.
     - `GetSnapState` is now `SnapControllerGetSnapStateAction`.
     - `HasSnap` is now `SnapControllerHasSnapAction`.

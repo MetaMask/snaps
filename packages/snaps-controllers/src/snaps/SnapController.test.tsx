@@ -1299,7 +1299,7 @@ describe('SnapController', () => {
       MOCK_SNAP_ID,
     );
 
-    expect(controller.getSnap(MOCK_SNAP_ID)).toBeUndefined();
+    expect(controller.getSnap(MOCK_SNAP_ID)).toBeNull();
 
     expect(options.messenger.publish).not.toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
@@ -8445,7 +8445,7 @@ describe('SnapController', () => {
 
       expect(detect).toHaveBeenCalledTimes(5);
 
-      expect(controller.getSnap(snapId3)).toBeUndefined();
+      expect(controller.getSnap(snapId3)).toBeNull();
       expect(controller.getSnap(snapId1)?.manifest.version).toBe(oldVersion);
       expect(controller.getSnap(snapId2)?.manifest.version).toBe(oldVersion);
       expect(controller.getSnap(snapId1)?.status).toBe('stopped');
@@ -8597,7 +8597,7 @@ describe('SnapController', () => {
 
       expect(detect).toHaveBeenCalledTimes(4);
 
-      expect(controller.getSnap(snapId3)).toBeUndefined();
+      expect(controller.getSnap(snapId3)).toBeNull();
       expect(controller.getSnap(snapId1)?.manifest.version).toBe(oldVersion);
       expect(controller.getSnap(snapId2)?.manifest.version).toBe(oldVersion);
       expect(listener).toHaveBeenCalledTimes(0);

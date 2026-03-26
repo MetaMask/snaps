@@ -1237,7 +1237,7 @@ export class SnapController extends BaseController<
       hideSnapBranding,
     } of preinstalledSnaps) {
       const existingSnap = this.getSnap(snapId);
-      const isAlreadyInstalled = existingSnap !== undefined;
+      const isAlreadyInstalled = existingSnap !== null;
       const isUpdate =
         isAlreadyInstalled && gtVersion(manifest.version, existingSnap.version);
       const isPreinstalled = existingSnap?.preinstalled === true;
@@ -1924,8 +1924,8 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to get.
    * @returns The entire snap object from the controller state.
    */
-  getSnap(snapId: string): Snap | undefined {
-    return this.state.snaps[snapId as SnapId];
+  getSnap(snapId: string): Snap | null {
+    return this.state.snaps[snapId as SnapId] ?? null;
   }
 
   /**
@@ -1940,7 +1940,7 @@ export class SnapController extends BaseController<
    */
   getSnapExpect(snapId: SnapId): Snap {
     const snap = this.getSnap(snapId);
-    assert(snap !== undefined, `Snap "${snapId}" not found.`);
+    assert(snap !== null, `Snap "${snapId}" not found.`);
     return snap;
   }
 
@@ -1951,7 +1951,6 @@ export class SnapController extends BaseController<
    * @param snapId - The id of the Snap to get.
    * @returns A truncated version of the snap state, that is less expensive to serialize.
    */
-  // TODO(ritave): this.get returns undefined, this.getTruncated returns null
   #getTruncatedSnap(snapId: SnapId): TruncatedSnap | null {
     const snap = this.getSnap(snapId);
 
