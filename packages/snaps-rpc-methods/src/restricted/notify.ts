@@ -96,7 +96,7 @@ export type NotifyMethodHooks = {
     context?: InterfaceContext,
     contentType?: ContentType,
   ) => Promise<string>;
-  getSnap: (snapId: string) => Snap | undefined;
+  getSnap: (snapId: string) => Snap | null;
 };
 
 type SpecificationBuilderOptions = {
