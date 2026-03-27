@@ -1,5 +1,5 @@
 import type { Messenger } from '@metamask/messenger';
-import type { GetPermissions } from '@metamask/permission-controller';
+import type { PermissionControllerGetPermissionsAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   getProtocolCaveatScopes,
@@ -54,7 +54,7 @@ export type MultichainRoutingServiceActions =
 type AllowedActions =
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
-  | GetPermissions
+  | PermissionControllerGetPermissionsAction
   | AccountsControllerListMultichainAccountsAction;
 
 export type MultichainRoutingServiceEvents = never;

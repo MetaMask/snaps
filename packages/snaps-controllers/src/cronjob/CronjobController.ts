@@ -4,7 +4,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { GetPermissions } from '@metamask/permission-controller';
+import type { PermissionControllerGetPermissionsAction } from '@metamask/permission-controller';
 import {
   getCronjobCaveatJobs,
   SnapEndowments,
@@ -50,7 +50,9 @@ export type CronjobControllerActions =
 
 export type CronjobControllerEvents = CronjobControllerStateChangeEvent;
 
-type AllowedActions = GetPermissions | SnapControllerHandleRequestAction;
+type AllowedActions =
+  | PermissionControllerGetPermissionsAction
+  | SnapControllerHandleRequestAction;
 
 type AllowedEvents =
   | SnapControllerSnapInstalledEvent

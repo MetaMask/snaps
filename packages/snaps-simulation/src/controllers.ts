@@ -8,11 +8,7 @@ import type {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { Messenger } from '@metamask/messenger';
-import type {
-  CaveatSpecificationConstraint,
-  PermissionControllerMessenger,
-  PermissionSpecificationConstraint,
-} from '@metamask/permission-controller';
+import type { PermissionControllerMessenger } from '@metamask/permission-controller';
 import {
   PermissionController,
   SubjectMetadataController,
@@ -67,10 +63,7 @@ export type GetControllersOptions = {
 };
 
 export type Controllers = {
-  permissionController: PermissionController<
-    PermissionSpecificationConstraint,
-    CaveatSpecificationConstraint
-  >;
+  permissionController: PermissionController;
   subjectMetadataController: SubjectMetadataController;
   interfaceController: SnapInterfaceController;
 };
