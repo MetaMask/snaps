@@ -3609,9 +3609,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.3":
-  version: 10.2.3
-  resolution: "@metamask/json-rpc-engine@npm:10.2.3"
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.3, @metamask/json-rpc-engine@npm:^10.2.4":
+  version: 10.2.4
+  resolution: "@metamask/json-rpc-engine@npm:10.2.4"
   dependencies:
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
@@ -3619,7 +3619,7 @@ __metadata:
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     klona: "npm:^2.0.6"
-  checksum: 10/8895ffcfc0dbf5542476dfd9771cb288feaf6fd7e9628e02c10232b3b8f0feabe3a0ad3e3480e3260a69aaafcf8f58d1d89410e7f43e97a08350b3ec3e767b1d
+  checksum: 10/b207dd2a9a44674c141c2e027c082974464a37beada98a27e80fe59c9bd44e2c2a992edf8a8d7e3ed461fa27ed372c95d4e27df18752b558c10bf540b7fe7bcd
   languageName: node
   linkType: hard
 
@@ -4218,7 +4218,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
@@ -4296,7 +4296,7 @@ __metadata:
     "@lavamoat/lavatube": "npm:^1.0.0"
     "@lavamoat/webpack": "npm:^2.0.0"
     "@metamask/auto-changelog": "npm:^5.3.2"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/providers": "npm:^22.1.1"
@@ -4477,7 +4477,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^5.3.2"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/permission-controller": "npm:^12.2.1"
@@ -4576,7 +4576,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/chain-agnostic-permission": "npm:^1.5.0"
-    "@metamask/json-rpc-engine": "npm:^10.2.3"
+    "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^0.3.0"
