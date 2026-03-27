@@ -12,22 +12,22 @@ import type { CryptographicFunctions } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
-  GetEndowments,
-  GetPermissions,
-  GetSubjectMetadata,
-  AddSubjectMetadata,
-  GetSubjects,
-  GrantPermissions,
-  HasPermission,
-  HasPermissions,
+  PermissionControllerGetEndowmentsAction,
+  PermissionControllerGetPermissionsAction,
+  SubjectMetadataControllerGetSubjectMetadataAction,
+  SubjectMetadataControllerAddSubjectMetadataAction,
+  PermissionControllerGetSubjectNamesAction,
+  PermissionControllerGrantPermissionsAction,
+  PermissionControllerHasPermissionAction,
+  PermissionControllerHasPermissionsAction,
   PermissionConstraint,
   PermissionsRequest,
   RequestedPermissions,
-  RevokeAllPermissions,
-  RevokePermissionForAllSubjects,
-  RevokePermissions,
+  PermissionControllerRevokeAllPermissionsAction,
+  PermissionControllerRevokePermissionForAllSubjectsAction,
+  PermissionControllerRevokePermissionsAction,
   SubjectPermissions,
-  UpdateCaveat,
+  PermissionControllerUpdateCaveatAction,
   ValidPermission,
 } from '@metamask/permission-controller';
 import { SubjectType } from '@metamask/permission-controller';
@@ -513,22 +513,22 @@ export type SnapControllerEvents =
   | SnapControllerStateChangeEvent;
 
 type AllowedActions =
-  | GetEndowments
-  | GetPermissions
-  | GetSubjects
-  | GetSubjectMetadata
-  | AddSubjectMetadata
-  | HasPermission
-  | HasPermissions
-  | RevokePermissions
-  | RevokeAllPermissions
-  | RevokePermissionForAllSubjects
-  | GrantPermissions
+  | PermissionControllerGetEndowmentsAction
+  | PermissionControllerGetPermissionsAction
+  | PermissionControllerGetSubjectNamesAction
+  | SubjectMetadataControllerGetSubjectMetadataAction
+  | SubjectMetadataControllerAddSubjectMetadataAction
+  | PermissionControllerHasPermissionAction
+  | PermissionControllerHasPermissionsAction
+  | PermissionControllerRevokePermissionsAction
+  | PermissionControllerRevokeAllPermissionsAction
+  | PermissionControllerRevokePermissionForAllSubjectsAction
+  | PermissionControllerGrantPermissionsAction
+  | PermissionControllerUpdateCaveatAction
   | ApprovalControllerAddRequestAction
   | ExecutionServiceHandleRpcRequestAction
   | ExecutionServiceExecuteSnapAction
   | ExecutionServiceTerminateSnapAction
-  | UpdateCaveat
   | ApprovalControllerUpdateRequestStateAction
   | SnapRegistryControllerGetAction
   | SnapRegistryControllerGetMetadataAction

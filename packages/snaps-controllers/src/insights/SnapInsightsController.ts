@@ -6,7 +6,7 @@ import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
-  GetPermissions,
+  PermissionControllerGetPermissionsAction,
   ValidPermission,
 } from '@metamask/permission-controller';
 import {
@@ -35,7 +35,7 @@ import type {
 const controllerName = 'SnapInsightsController';
 
 type AllowedActions =
-  | GetPermissions
+  | PermissionControllerGetPermissionsAction
   | SnapControllerGetRunnableSnapsAction
   | SnapControllerHandleRequestAction
   | SnapInterfaceControllerDeleteInterfaceAction;

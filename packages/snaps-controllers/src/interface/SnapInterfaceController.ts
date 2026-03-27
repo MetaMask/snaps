@@ -8,7 +8,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { HasPermission } from '@metamask/permission-controller';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import type {
   InterfaceState,
   SnapId,
@@ -102,7 +102,7 @@ type AllowedActions =
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerListMultichainAccountsAction
-  | HasPermission;
+  | PermissionControllerHasPermissionAction;
 
 export type SnapInterfaceControllerActions =
   | SnapInterfaceControllerGetStateAction
