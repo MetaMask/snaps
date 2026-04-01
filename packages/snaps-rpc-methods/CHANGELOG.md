@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [15.0.2]
+
 ### Uncategorized
 
 - chore: Bump messenger and controller dependencies ([#3930](https://github.com/MetaMask/snaps/pull/3930))
@@ -593,7 +595,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.2...HEAD
+[15.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...@metamask/snaps-rpc-methods@15.0.2
 [15.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.0...@metamask/snaps-rpc-methods@15.0.1
 [15.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.3.0...@metamask/snaps-rpc-methods@15.0.0
 [14.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...@metamask/snaps-rpc-methods@14.3.0

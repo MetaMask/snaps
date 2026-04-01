@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.0.1]
+
 ### Uncategorized
 
 - chore: Bump messenger and controller dependencies ([#3930](https://github.com/MetaMask/snaps/pull/3930))
@@ -1174,7 +1176,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.1...HEAD
+[19.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.0...@metamask/snaps-controllers@19.0.1
 [19.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.4...@metamask/snaps-controllers@19.0.0
 [18.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.3...@metamask/snaps-controllers@18.0.4
 [18.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.2...@metamask/snaps-controllers@18.0.3
