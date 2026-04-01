@@ -9,10 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.0.1]
 
-### Uncategorized
+### Changed
 
-- chore: Bump messenger and controller dependencies ([#3930](https://github.com/MetaMask/snaps/pull/3930))
-- chore: Bump @metamask/json-rpc-engine from 10.2.3 to 10.2.4 ([#3925](https://github.com/MetaMask/snaps/pull/3925))
+- Bump `@metamask/approval-controller` from `^9.0.0` to `^9.0.1` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+- Bump `@metamask/base-controller` from `^9.0.0` to `^9.0.1` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+- Bump `@metamask/json-rpc-engine` from `^10.2.3` to `^10.2.4` ([#3925](https://github.com/MetaMask/snaps/pull/3925))
+- Bump `@metamask/messenger` from `^0.3.0` to `^1.0.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+- Bump `@metamask/permission-controller` from `^12.2.1` to `^12.3.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+- Bump `@metamask/storage-service` from `^1.0.0` to `^1.0.1` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
 
 ## [19.0.0]
 
