@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump messenger and controller dependencies ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+- chore: Bump @metamask/json-rpc-engine from 10.2.3 to 10.2.4 ([#3925](https://github.com/MetaMask/snaps/pull/3925))
+
 ## [4.1.2]
 
 ### Changed

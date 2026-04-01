@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump messenger and controller dependencies ([#3930](https://github.com/MetaMask/snaps/pull/3930))
+
 ## [12.1.2]
 
 ### Changed
