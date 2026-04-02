@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `KeyringCapabilities` type and `KeyringCapabilitiesStruct` / `assertIsKeyringCapabilities` exports for the `endowment:keyring` capabilities caveat ([#3903](https://github.com/MetaMask/snaps/pull/3903))
 
+### Changed
+
+- Bump `@metamask/messenger` from `^1.0.0` to `^1.1.0` ([#3934](https://github.com/MetaMask/snaps/pull/3934))
+
 ## [12.1.2]
 
 ### Changed
