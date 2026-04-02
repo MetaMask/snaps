@@ -129,7 +129,7 @@ export function getKeyringCaveatMapper(
     value: value.allowedOrigins,
   });
 
-  if (hasProperty(value, 'capabilities')) {
+  if (value.capabilities) {
     caveats.push({
       type: SnapCaveatType.KeyringCapabilities,
       value: value.capabilities,
