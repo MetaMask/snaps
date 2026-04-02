@@ -2,25 +2,25 @@ import {
   caip25CaveatBuilder,
   Caip25CaveatType,
 } from '@metamask/chain-agnostic-permission';
-import { Messenger } from '@metamask/messenger';
 import type {
-  CaveatSpecificationConstraint,
-  PermissionSpecificationConstraint,
-  PermissionControllerActions,
-  SubjectMetadataControllerActions,
-} from '@metamask/permission-controller';
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
+import type { PermissionControllerMessenger } from '@metamask/permission-controller';
 import {
   PermissionController,
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/permission-controller';
-import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import type {
-  ExecutionServiceActions,
-  SnapInterfaceControllerActions,
-  SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerStateChangeEvent,
+  ExecutionServiceMessenger,
+  SnapControllerMessenger,
+  SnapInterfaceControllerMessenger,
+  SnapRegistryControllerMessenger,
 } from '@metamask/snaps-controllers';
+import { SnapInterfaceController } from '@metamask/snaps-controllers';
 import {
   caveatSpecifications as snapsCaveatsSpecifications,
   endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications,
@@ -37,20 +37,22 @@ import type { SimulationOptions } from './options';
 import type { RestrictedMiddlewareHooks } from './simulation';
 import type { RunSagaFunction } from './store';
 
-export type RootControllerAllowedActions =
-  | SnapInterfaceControllerActions
-  | SnapInterfaceControllerAllowedActions
-  | PermissionControllerActions
-  | ExecutionServiceActions
-  | SubjectMetadataControllerActions;
-
-export type RootControllerAllowedEvents =
-  SnapInterfaceControllerStateChangeEvent;
-
 export type RootControllerMessenger = Messenger<
-  any,
-  RootControllerAllowedActions,
-  RootControllerAllowedEvents
+  MockAnyNamespace,
+  MessengerActions<
+    | ExecutionServiceMessenger
+    | PermissionControllerMessenger
+    | SnapControllerMessenger
+    | SnapInterfaceControllerMessenger
+    | SnapRegistryControllerMessenger
+  >,
+  MessengerEvents<
+    | ExecutionServiceMessenger
+    | PermissionControllerMessenger
+    | SnapControllerMessenger
+    | SnapInterfaceControllerMessenger
+    | SnapRegistryControllerMessenger
+  >
 >;
 
 export type GetControllersOptions = {
@@ -61,10 +63,7 @@ export type GetControllersOptions = {
 };
 
 export type Controllers = {
-  permissionController: PermissionController<
-    PermissionSpecificationConstraint,
-    CaveatSpecificationConstraint
-  >;
+  permissionController: PermissionController;
   subjectMetadataController: SubjectMetadataController;
   interfaceController: SnapInterfaceController;
 };
@@ -85,10 +84,11 @@ export function getControllers(options: GetControllersOptions): Controllers {
     subjectCacheLimit: 100,
   });
 
-  const interfaceControllerMessenger = new Messenger({
-    namespace: 'SnapInterfaceController',
-    parent: controllerMessenger,
-  });
+  const interfaceControllerMessenger: SnapInterfaceControllerMessenger =
+    new Messenger({
+      namespace: 'SnapInterfaceController',
+      parent: controllerMessenger,
+    });
 
   controllerMessenger.delegate({
     messenger: interfaceControllerMessenger,

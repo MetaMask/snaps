@@ -86,13 +86,17 @@ export const getSnapObject = ({
   } as const;
 };
 
-export const getTruncatedSnap = ({
-  initialPermissions = getSnapManifest().initialPermissions,
-  id = MOCK_SNAP_ID,
-  version = getSnapManifest().version,
-  enabled = true,
-  blocked = false,
-}: GetTruncatedSnapOptions = {}): TruncatedSnap => {
+export const getTruncatedSnap = (
+  options: GetTruncatedSnapOptions | null = null,
+): TruncatedSnap => {
+  const {
+    initialPermissions = getSnapManifest().initialPermissions,
+    id = MOCK_SNAP_ID,
+    version = getSnapManifest().version,
+    enabled = true,
+    blocked = false,
+  } = options ?? {};
+
   return {
     initialPermissions,
     id,

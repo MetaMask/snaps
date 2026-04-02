@@ -1,6 +1,6 @@
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 
-import type { ExecutionServiceArgs } from '../AbstractExecutionService';
+import type { ExecutionServiceArgs } from '../ExecutionService';
 import { ProxyExecutionService } from '../proxy/ProxyExecutionService';
 
 type OffscreenExecutionEnvironmentServiceArgs = {

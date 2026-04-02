@@ -346,7 +346,7 @@ function getMarkdownLinks(text: string) {
 export function validateLink(
   link: string,
   isOnPhishingList: (url: string) => boolean,
-  getSnap: (id: string) => Snap | undefined,
+  getSnap: (id: string) => Snap | null,
 ) {
   try {
     const url = new URL(link);
@@ -398,7 +398,7 @@ export function validateLink(
 export function validateTextLinks(
   text: string,
   isOnPhishingList: (url: string) => boolean,
-  getSnap: (id: string) => Snap | undefined,
+  getSnap: (id: string) => Snap | null,
 ) {
   const links = getMarkdownLinks(text);
 
@@ -445,7 +445,7 @@ export function validateJsxElements(
     hasPermission,
   }: {
     isOnPhishingList: (url: string) => boolean;
-    getSnap: (id: string) => Snap | undefined;
+    getSnap: (id: string) => Snap | null;
     getAccountByAddress: (
       address: CaipAccountId,
     ) => InternalAccount | undefined;

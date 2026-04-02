@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-controllers",
-  "version": "18.0.4",
+  "version": "19.0.0",
   "description": "Controllers for MetaMask Snaps",
   "keywords": [
     "MetaMask",
@@ -62,6 +62,7 @@
     "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-controllers",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-controllers",
+    "generate-method-action-types": "tsx ../../scripts/generate-method-action-types.mts",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
@@ -79,21 +80,21 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^9.0.0",
-    "@metamask/base-controller": "^9.0.0",
-    "@metamask/json-rpc-engine": "^10.2.3",
+    "@metamask/approval-controller": "^9.0.1",
+    "@metamask/base-controller": "^9.0.1",
+    "@metamask/json-rpc-engine": "^10.2.4",
     "@metamask/json-rpc-middleware-stream": "^8.0.8",
     "@metamask/key-tree": "^10.1.1",
-    "@metamask/messenger": "^0.3.0",
+    "@metamask/messenger": "^1.0.0",
     "@metamask/object-multiplex": "^2.1.0",
-    "@metamask/permission-controller": "^12.2.1",
+    "@metamask/permission-controller": "^12.3.0",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-registry": "^4.0.0",
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/storage-service": "^1.0.0",
+    "@metamask/storage-service": "^1.0.1",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.10.0",
     "@xstate/fsm": "^2.0.0",
@@ -111,7 +112,7 @@
     "tar-stream": "^3.1.7"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "^3.4.3",
+    "@lavamoat/allow-scripts": "^4.0.0",
     "@metamask/auto-changelog": "^5.3.2",
     "@metamask/browser-passworder": "^6.0.0",
     "@noble/hashes": "^1.7.1",

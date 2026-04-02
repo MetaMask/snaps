@@ -7,6 +7,100 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.0.0]
+
+### Changed
+
+- **BREAKING:** All action types were renamed from `DoSomething` to `ControllerNameDoSomethingAction` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3911](https://github.com/MetaMask/snaps/pull/3911), [#3912](https://github.com/MetaMask/snaps/pull/3912), [#3916](https://github.com/MetaMask/snaps/pull/3916), [#3918](https://github.com/MetaMask/snaps/pull/3918))
+  - `SnapController` actions:
+    - `GetSnap` is now `SnapControllerGetSnapAction`.
+      - Note: The method is now called `getSnap` instead of `get`.
+      - Note: It now returns `null` if a Snap is not found, instead of
+        `undefined`.
+    - `HandleSnapRequest` is now `SnapControllerHandleRequestAction`.
+    - `GetSnapState` is now `SnapControllerGetSnapStateAction`.
+    - `HasSnap` is now `SnapControllerHasSnapAction`.
+      - Note: The method is now called `hasSnap` instead of `has`.
+    - `UpdateSnapState` is now `SnapControllerUpdateSnapStateAction`.
+    - `ClearSnapState` is now `SnapControllerClearSnapStateAction`.
+    - `UpdateRegistry` is now `SnapControllerUpdateRegistryAction`.
+    - `EnableSnap` is now `SnapControllerEnableSnapAction`.
+      - Note: The method is now called `enableSnap` instead of `enable`.
+    - `DisableSnap` is now `SnapControllerDisableSnapAction`.
+      - Note: The method is now called `disableSnap` instead of `disable`.
+    - `RemoveSnap` is now `SnapControllerRemoveSnapAction`.
+      - Note: The method is now called `removeSnap` instead of `remove`.
+    - `GetPermittedSnaps` is now `SnapControllerGetPermittedSnapsAction`.
+      - Note: The method is now called `getPermittedSnaps` instead of `getPermitted`.
+    - `GetAllSnaps` is now `SnapControllerGetAllSnapsAction`.
+      - Note: The method is now called `getAllSnaps` instead of `getAll`.
+    - `GetRunnableSnaps` is now `SnapControllerGetRunnableSnapsAction`.
+    - `StopAllSnaps` is now `SnapControllerStopAllSnapsAction`.
+    - `InstallSnaps` is now `SnapControllerInstallSnapsAction`.
+      - Note: The method is now called `installSnaps` instead of `install`.
+    - `DisconnectOrigin` is now `SnapControllerDisconnectOriginAction`.
+      - Note: The method is now called `disconnectOrigin` instead of `removeSnapFromSubject`.
+    - `RevokeDynamicPermissions` is now `SnapControllerRevokeDynamicSnapPermissionsAction`.
+    - `GetSnapFile` is now `SnapControllerGetSnapFileAction`.
+    - `IsMinimumPlatformVersion` is now `SnapControllerIsMinimumPlatformVersionAction`.
+    - `SetClientActive` is now `SnapControllerSetClientActiveAction`.
+  - `CronjobController` actions:
+    - `Schedule` is now `CronjobControllerScheduleAction`.
+    - `Cancel` is now `CronjobControllerCancelAction`.
+    - `Get` is now `CronjobControllerGetAction`.
+  - `SnapInterfaceController` actions:
+    - `CreateInterface` is now `SnapInterfaceControllerCreateInterfaceAction`.
+    - `GetInterface` is now `SnapInterfaceControllerGetInterfaceAction`.
+    - `UpdateInterface` is now `SnapInterfaceControllerUpdateInterfaceAction`.
+    - `DeleteInterface` is now `SnapInterfaceControllerDeleteInterfaceAction`.
+    - `UpdateInterfaceState` is now `SnapInterfaceControllerUpdateInterfaceStateAction`.
+    - `ResolveInterface` is now `SnapInterfaceControllerResolveInterfaceAction`.
+  - `ExecutionService` actions:
+    - `ExecuteSnap` is now `ExecutionServiceExecuteSnapAction`.
+    - `HandleRequest` is now `ExecutionServiceHandleRequestAction`.
+    - `TerminateSnap` is now `ExecutionServiceTerminateSnapAction`.
+    - `GetExecutionStatus` is now `ExecutionServiceGetExecutionStatusAction`.
+  - `SnapRegistryController` actions:
+    - `GetResult` is now `SnapRegistryControllerGetAction`.
+    - `GetMetadata` is now `SnapRegistryControllerGetMetadataAction`.
+    - `ResolveVersion` is now `SnapRegistryControllerResolveVersionAction`.
+    - `Update` is now `SnapRegistryControllerRequestUpdateAction`.
+      - Note: The method is now called `requestUpdate` instead of `update`.
+- **BREAKING:** All event types were renamed from `OnSomething` to `ControllerOnSomethingEvent` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3916](https://github.com/MetaMask/snaps/pull/3916))
+  - `SnapController` events:
+    - `SnapStateChange` was removed in favour of `SnapControllerStateChangeEvent`.
+    - `SnapBlocked` is now `SnapControllerSnapBlockedEvent`.
+    - `SnapInstallStarted` is now `SnapControllerSnapInstallStartedEvent`.
+    - `SnapInstallFailed` is now `SnapControllerSnapInstallFailedEvent`.
+    - `SnapInstalled` is now `SnapControllerSnapInstalledEvent`.
+    - `SnapUninstalled` is now `SnapControllerSnapUninstalledEvent`.
+    - `SnapUnblocked` is now `SnapControllerSnapUnblockedEvent`.
+    - `SnapUpdated` is now `SnapControllerSnapUpdatedEvent`.
+    - `SnapRolledback` is now `SnapControllerSnapRolledbackEvent`.
+    - `SnapTerminated` is now `SnapControllerSnapTerminatedEvent`.
+    - `SnapEnabled` is now `SnapControllerSnapEnabledEvent`.
+    - `SnapDisabled` is now `SnapControllerSnapDisabledEvent`.
+  - `ExecutionService` events:
+    - `ErrorMessageEvent` is now `ExecutionServiceUnhandledErrorEvent`.
+    - `OutboundRequest` is now `ExecutionServiceOutboundRequestEvent`.
+    - `OutboundResponse` is now `ExecutionServiceOutboundResponseEvent`.
+- **BREAKING:**: Rename `MultichainRouter` to `MultichainRoutingService` and update action types accordingly ([#3913](https://github.com/MetaMask/snaps/pull/3913))
+  - This is consistent with the naming of other services.
+- **BREAKING:** Rename `JsonSnapsRegistry` to `SnapRegistryController` and update action types accordingly ([#3918](https://github.com/MetaMask/snaps/pull/3918))
+  - This is consistent with the naming of other controllers.
+  - The controller name is now `SnapRegistryController` instead of `SnapsRegistry` as well.
+- **BREAKING:** `MultichainRoutingService` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3913](https://github.com/MetaMask/snaps/pull/3913))
+- **BREAKING:** `SnapInsightsController` now requires `SnapController:getRunnableSnaps` instead of `SnapController:getAllSnaps` ([#3915](https://github.com/MetaMask/snaps/pull/3915))
+- **RREAKING:** Replace `ExecutionService` interface with abstract class ([#3916](https://github.com/MetaMask/snaps/pull/3916))
+  - The `ExecutionService` is now an abstract class and replaces the previous `AbstractExecutionService` class interface.
+
+### Removed
+
+- **RREAKING:** Remove `AbstractExecutionService` class in favour of `ExecutionService` ([#3916](https://github.com/MetaMask/snaps/pull/3916))
+- **BREAKING:** Remove `incrementActiveReferences` and `decrementActiveReferences` actions and methods from `SnapController` ([#3907](https://github.com/MetaMask/snaps/pull/3907), [#3920](https://github.com/MetaMask/snaps/pull/3920))
+  - This was never used in production.
+- **BREAKING:** Remove public `getTruncatedSnap` and `getTruncatedSnapExpect` methods from `SnapController` ([#3923](https://github.com/MetaMask/snaps/pull/3923))
+
 ## [18.0.4]
 
 ### Fixed
@@ -1075,7 +1169,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.0...HEAD
+[19.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.4...@metamask/snaps-controllers@19.0.0
 [18.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.3...@metamask/snaps-controllers@18.0.4
 [18.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.2...@metamask/snaps-controllers@18.0.3
 [18.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@18.0.1...@metamask/snaps-controllers@18.0.2

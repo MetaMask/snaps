@@ -2,25 +2,19 @@ import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { Messenger } from '@metamask/messenger';
 import { logError, type SnapRpcHookArgs } from '@metamask/snaps-utils';
-import type { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
 import { pipeline } from 'readable-stream';
 
 import { MOCK_BLOCK_NUMBER } from './constants';
+import type { RootMessenger } from './controller';
 import type {
-  ExecutionService,
   ExecutionServiceActions,
   ExecutionServiceEvents,
-  SetupSnapProvider,
   SnapExecutionData,
 } from '../services';
+import type { SetupSnapProvider } from '../services/ExecutionService';
 import { NodeThreadExecutionService, setupMultiplex } from '../services/node';
 
-export const getNodeEESMessenger = (
-  messenger: MockControllerMessenger<
-    ExecutionServiceActions,
-    ExecutionServiceEvents
-  >,
-) => {
+export const getNodeEESMessenger = (messenger: RootMessenger) => {
   const executionServiceMessenger = new Messenger<
     'ExecutionService',
     ExecutionServiceActions,
@@ -64,7 +58,7 @@ export const getNodeEES = (
       }),
   });
 
-export class ExecutionEnvironmentStub implements ExecutionService {
+export class ExecutionEnvironmentStub {
   name: 'ExecutionService' = 'ExecutionService' as const;
 
   state = null;

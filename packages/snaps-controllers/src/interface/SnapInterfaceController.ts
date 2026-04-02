@@ -8,7 +8,7 @@ import type {
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type { HasPermission } from '@metamask/permission-controller';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import type {
   InterfaceState,
   SnapId,
@@ -34,57 +34,29 @@ import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
+import type { SnapInterfaceControllerMethodActions } from './SnapInterfaceController-method-action-types';
 import {
   constructState,
   getJsxInterface,
   isMatchingChainId,
   validateInterfaceContext,
 } from './utils';
-import type { GetSnap } from '../snaps';
+import type { SnapControllerGetSnapAction } from '../snaps';
 
 const MAX_UI_CONTENT_SIZE = 10_000_000; // 10 mb
 
 const controllerName = 'SnapInterfaceController';
 
-export type CreateInterface = {
-  type: `${typeof controllerName}:createInterface`;
-  handler: SnapInterfaceController['createInterface'];
-};
-
-export type GetInterface = {
-  type: `${typeof controllerName}:getInterface`;
-  handler: SnapInterfaceController['getInterface'];
-};
-
-export type UpdateInterface = {
-  type: `${typeof controllerName}:updateInterface`;
-  handler: SnapInterfaceController['updateInterface'];
-};
-
-export type DeleteInterface = {
-  type: `${typeof controllerName}:deleteInterface`;
-  handler: SnapInterfaceController['deleteInterface'];
-};
-
-export type UpdateInterfaceState = {
-  type: `${typeof controllerName}:updateInterfaceState`;
-  handler: SnapInterfaceController['updateInterfaceState'];
-};
-
-export type ResolveInterface = {
-  type: `${typeof controllerName}:resolveInterface`;
-  handler: SnapInterfaceController['resolveInterface'];
-};
-
-export type SnapInterfaceControllerGetInterfaceStateAction = {
-  type: `${typeof controllerName}:getInterfaceState`;
-  handler: SnapInterfaceController['getInterfaceState'];
-};
-
-export type SnapInterfaceControllerSetInterfaceDisplayedAction = {
-  type: `${typeof controllerName}:setInterfaceDisplayed`;
-  handler: SnapInterfaceController['setInterfaceDisplayed'];
-};
+const MESSENGER_EXPOSED_METHODS = [
+  'createInterface',
+  'getInterface',
+  'getInterfaceState',
+  'updateInterface',
+  'deleteInterface',
+  'updateInterfaceState',
+  'resolveInterface',
+  'setInterfaceDisplayed',
+] as const;
 
 type AccountsControllerGetAccountByAddressAction = {
   type: `AccountsController:getAccountByAddress`;
@@ -121,27 +93,20 @@ type PhishingControllerTestOrigin = {
   handler: (origin: string) => { result: boolean; type: string };
 };
 
-export type SnapInterfaceControllerAllowedActions =
+type AllowedActions =
   | PhishingControllerTestOrigin
   | ApprovalControllerHasRequestAction
   | ApprovalControllerAcceptRequestAction
-  | GetSnap
+  | SnapControllerGetSnapAction
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerListMultichainAccountsAction
-  | HasPermission;
+  | PermissionControllerHasPermissionAction;
 
 export type SnapInterfaceControllerActions =
-  | CreateInterface
-  | GetInterface
-  | UpdateInterface
-  | DeleteInterface
-  | UpdateInterfaceState
-  | ResolveInterface
-  | SnapInterfaceControllerGetInterfaceStateAction
-  | SnapInterfaceControllerSetInterfaceDisplayedAction
-  | SnapInterfaceControllerGetStateAction;
+  | SnapInterfaceControllerGetStateAction
+  | SnapInterfaceControllerMethodActions;
 
 export type SnapInterfaceControllerStateChangeEvent =
   ControllerStateChangeEvent<
@@ -151,7 +116,7 @@ export type SnapInterfaceControllerStateChangeEvent =
 
 type OtherNotification = { type: string; [key: string]: unknown };
 
-export type ExpandedView = {
+type ExpandedView = {
   title: string;
   interfaceId: string;
   footerLink?: { href: string; text: string };
@@ -178,14 +143,15 @@ type NotificationListUpdatedEvent = {
   payload: [Notification[]];
 };
 
+type AllowedEvents = NotificationListUpdatedEvent;
+
 export type SnapInterfaceControllerEvents =
-  | SnapInterfaceControllerStateChangeEvent
-  | NotificationListUpdatedEvent;
+  SnapInterfaceControllerStateChangeEvent;
 
 export type SnapInterfaceControllerMessenger = Messenger<
   typeof controllerName,
-  SnapInterfaceControllerActions | SnapInterfaceControllerAllowedActions,
-  SnapInterfaceControllerEvents
+  SnapInterfaceControllerActions | AllowedActions,
+  SnapInterfaceControllerEvents | AllowedEvents
 >;
 
 export type StoredInterface = {
@@ -250,52 +216,9 @@ export class SnapInterfaceController extends BaseController<
       this.#onNotificationsListUpdated.bind(this),
     );
 
-    this.#registerMessageHandlers();
-  }
-
-  /**
-   * Constructor helper for registering this controller's messaging system
-   * actions.
-   */
-  #registerMessageHandlers() {
-    this.messenger.registerActionHandler(
-      `${controllerName}:createInterface`,
-      this.createInterface.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getInterface`,
-      this.getInterface.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:getInterfaceState`,
-      this.getInterfaceState.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:updateInterface`,
-      this.updateInterface.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:deleteInterface`,
-      this.deleteInterface.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:updateInterfaceState`,
-      this.updateInterfaceState.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:resolveInterface`,
-      this.resolveInterface.bind(this),
-    );
-
-    this.messenger.registerActionHandler(
-      `${controllerName}:setInterfaceDisplayed`,
-      this.setInterfaceDisplayed.bind(this),
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -598,7 +521,7 @@ export class SnapInterfaceController extends BaseController<
    * @returns The snap.
    */
   #getSnap(id: string) {
-    return this.messenger.call('SnapController:get', id);
+    return this.messenger.call('SnapController:getSnap', id);
   }
 
   #hasPermission(snapId: SnapId, permission: string) {

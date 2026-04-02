@@ -2,10 +2,10 @@ import type { BasePostMessageStream } from '@metamask/post-message-stream';
 import { ThreadParentMessageStream } from '@metamask/post-message-stream/node';
 import { Worker } from 'worker_threads';
 
-import type { TerminateJobArgs } from '..';
-import { AbstractExecutionService } from '..';
+import { ExecutionService } from '../ExecutionService';
+import type { TerminateJobArgs } from '../ExecutionService';
 
-export class NodeThreadExecutionService extends AbstractExecutionService<Worker> {
+export class NodeThreadExecutionService extends ExecutionService<Worker> {
   protected async initEnvStream(snapId: string): Promise<{
     worker: Worker;
     stream: BasePostMessageStream;
@@ -36,9 +36,6 @@ export class NodeThreadExecutionService extends AbstractExecutionService<Worker>
     return Promise.resolve({ worker, stream });
   }
 
-  // TODO: Either fix this lint violation or explain why it's necessary to
-  //  ignore.
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   protected async terminateJob(
     jobWrapper: TerminateJobArgs<Worker>,
   ): Promise<void> {

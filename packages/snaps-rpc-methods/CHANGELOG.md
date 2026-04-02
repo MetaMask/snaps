@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Snap manifests can now declare a `capabilities` object under `endowment:keyring` describing the capabilities supported by the keyring.
   - New `getKeyringCaveatCapabilities` function to retrieve the capabilities caveat value from a permission.
 
+## [15.0.1]
+
+### Changed
+
+- Bump `@metamask/snaps-controllers` from `18.0.4` to `19.0.0` and handle breaking changes ([#3922](https://github.com/MetaMask/snaps/pull/3922))
+
 ## [15.0.0]
 
 ### Changed
@@ -588,7 +594,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...HEAD
+[15.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.0...@metamask/snaps-rpc-methods@15.0.1
 [15.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.3.0...@metamask/snaps-rpc-methods@15.0.0
 [14.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...@metamask/snaps-rpc-methods@14.3.0
 [14.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.1.1...@metamask/snaps-rpc-methods@14.2.0

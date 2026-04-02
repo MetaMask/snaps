@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-execution-environments",
-  "version": "11.0.1",
+  "version": "11.0.2",
   "description": "Snap sandbox environments for executing SES javascript",
   "keywords": [
     "MetaMask",
@@ -66,7 +66,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/json-rpc-engine": "^10.2.3",
+    "@metamask/json-rpc-engine": "^10.2.4",
     "@metamask/object-multiplex": "^2.1.0",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/providers": "^22.1.1",
@@ -80,9 +80,9 @@
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "@lavamoat/allow-scripts": "^3.4.3",
+    "@lavamoat/allow-scripts": "^4.0.0",
     "@lavamoat/lavatube": "^1.0.0",
-    "@lavamoat/webpack": "^1.5.8",
+    "@lavamoat/webpack": "^2.0.0",
     "@metamask/auto-changelog": "^5.3.2",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
@@ -101,7 +101,7 @@
     "jest-environment-node": "^29.5.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-silent-reporter": "^0.6.0",
-    "lavamoat": "^10.1.1",
+    "lavamoat": "^11.0.0",
     "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "serve-handler": "^6.1.5",

@@ -1,17 +1,17 @@
 import type { WebViewInterface } from './WebViewMessageStream';
 import { WebViewMessageStream } from './WebViewMessageStream';
-import { AbstractExecutionService } from '../AbstractExecutionService';
+import { ExecutionService } from '../ExecutionService';
 import type {
   ExecutionServiceArgs,
   TerminateJobArgs,
-} from '../AbstractExecutionService';
+} from '../ExecutionService';
 
 export type WebViewExecutionServiceArgs = ExecutionServiceArgs & {
   createWebView: (jobId: string) => Promise<WebViewInterface>;
   removeWebView: (jobId: string) => void;
 };
 
-export class WebViewExecutionService extends AbstractExecutionService<WebViewInterface> {
+export class WebViewExecutionService extends ExecutionService<WebViewInterface> {
   readonly #createWebView;
 
   readonly #removeWebView;
