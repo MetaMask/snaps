@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [15.0.2]
+
 ### Changed
 
-- Bump `@metamask/messenger` from `^1.0.0` to `^1.1.0` ([#3934](https://github.com/MetaMask/snaps/pull/3934))
+- Bump `@metamask/json-rpc-engine` from `^10.2.3` to `^10.2.4` ([#3925](https://github.com/MetaMask/snaps/pull/3925))
+- Bump `@metamask/messenger` from `^0.3.0` to `^1.1.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930), [#3934](https://github.com/MetaMask/snaps/pull/3934))
+- Bump `@metamask/permission-controller` from `^12.2.1` to `^12.3.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
 
 ## [15.0.1]
 
@@ -592,7 +596,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.2...HEAD
+[15.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...@metamask/snaps-rpc-methods@15.0.2
 [15.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.0...@metamask/snaps-rpc-methods@15.0.1
 [15.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.3.0...@metamask/snaps-rpc-methods@15.0.0
 [14.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@14.2.0...@metamask/snaps-rpc-methods@14.3.0
