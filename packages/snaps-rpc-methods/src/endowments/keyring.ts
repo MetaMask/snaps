@@ -126,17 +126,17 @@ export function getKeyringCaveatMapper(
 
   caveats.push({
     type: SnapCaveatType.KeyringOrigin,
-    value: { allowedOrigins: value.allowedOrigins },
+    value: value.allowedOrigins,
   });
 
   if (hasProperty(value, 'capabilities')) {
     caveats.push({
       type: SnapCaveatType.KeyringCapabilities,
-      value: { capabilities: value.capabilities },
+      value: value.capabilities,
     });
   }
 
-  return { caveats: caveats as unknown as NonEmptyArray<CaveatConstraint> };
+  return { caveats: caveats as NonEmptyArray<CaveatConstraint> };
 }
 
 /**
