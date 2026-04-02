@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "12.1.3",
+  "version": "12.1.2",
   "description": "A collection of utilities for MetaMask Snaps",
   "keywords": [
     "MetaMask",
