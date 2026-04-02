@@ -17,6 +17,7 @@ export * from './handlers';
 export * from './iframe';
 export * from './json';
 export * from './json-rpc';
+export * from './keyring';
 export * from './localization';
 export * from './logging';
 export * from './manifest';

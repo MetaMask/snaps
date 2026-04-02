@@ -1,5 +1,6 @@
 import type {
   Caveat,
+  CaveatConstraint,
   CaveatSpecificationConstraint,
   EndowmentGetterParams,
   PermissionConstraint,
@@ -19,7 +20,7 @@ import {
   SnapCaveatType,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isPlainObject } from '@metamask/utils';
+import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
@@ -107,18 +108,9 @@ function validateCaveatCapabilities(caveat: Caveat<string, any>) {
 }
 
 /**
- * Expected shape of the keyring endowment value from `initialPermissions`.
- * The mapper assumes this shape for typing only; it does not validate.
- * Invalid data is rejected when the permission is requested (see validator).
- */
-type KeyringCaveatMapperInput = KeyringOrigins & KeyringCapabilities;
-
-/**
  * Map a raw value from the `initialPermissions` to a caveat specification.
- * This function only maps: it does not validate. The permission validator
- * runs when the permission is requested and will reject invalid caveats.
- * We assume the manifest supplies a KeyringCaveatMapperInput-shaped value;
- * the public signature accepts Json to satisfy CaveatMapperFunction.
+ * Note that this function does not do any validation, that's handled by the
+ * PermissionsController when the permission is requested.
  *
  * @param value - The raw value from the `initialPermissions`.
  * @returns The caveat specification.
@@ -126,22 +118,25 @@ type KeyringCaveatMapperInput = KeyringOrigins & KeyringCapabilities;
 export function getKeyringCaveatMapper(
   value: Json,
 ): Pick<PermissionConstraint, 'caveats'> {
-  const input = value as KeyringCaveatMapperInput;
-  const caveats: PermissionConstraint['caveats'] = [
-    {
-      type: SnapCaveatType.KeyringOrigin,
-      value: { allowedOrigins: input.allowedOrigins } as Json,
-    },
-  ];
+  if (!value || !isObject(value) || Object.keys(value).length === 0) {
+    return { caveats: null };
+  }
 
-  if (hasProperty(input, 'capabilities')) {
+  const caveats = [];
+
+  caveats.push({
+    type: SnapCaveatType.KeyringOrigin,
+    value: { allowedOrigins: value.allowedOrigins },
+  });
+
+  if (hasProperty(value, 'capabilities')) {
     caveats.push({
       type: SnapCaveatType.KeyringCapabilities,
-      value: { capabilities: input.capabilities } as Json,
+      value: { capabilities: value.capabilities },
     });
   }
 
-  return { caveats };
+  return { caveats: caveats as unknown as NonEmptyArray<CaveatConstraint> };
 }
 
 /**
