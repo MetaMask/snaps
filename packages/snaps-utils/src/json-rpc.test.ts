@@ -110,7 +110,6 @@ describe('assertIsKeyringOrigin', () => {
   });
 });
 
-
 describe('isOriginAllowed', () => {
   it('returns `true` if all origins are allowed', () => {
     const origins: RpcOrigins = {

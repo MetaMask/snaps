@@ -33,8 +33,8 @@ import {
 import { isDerivationPathEqual } from '../array';
 import { CronjobSpecificationArrayStruct } from '../cronjob';
 import { SIP_6_MAGIC_VALUE, STATE_ENCRYPTION_MAGIC_VALUE } from '../entropy';
-import { KeyringCapabilitiesStruct } from '../keyring';
 import { KeyringOriginsStruct, RpcOriginsStruct } from '../json-rpc';
+import { KeyringCapabilitiesStruct } from '../keyring';
 import { SnapIdStruct } from '../snaps';
 import { mergeStructs, type InferMatching } from '../structs';
 import { NameStruct, NpmSnapFileNames, uri } from '../types';
