@@ -63,6 +63,15 @@ describe('endowment:keyring', () => {
 });
 
 describe('getKeyringCaveatMapper', () => {
+  it.each([null, undefined, false, 0, '', [], {}])(
+    'returns null caveats for %p',
+    (value) => {
+      expect(getKeyringCaveatMapper(value as never)).toStrictEqual({
+        caveats: null,
+      });
+    },
+  );
+
   it('maps a value to a caveat without capabilities', () => {
     expect(
       getKeyringCaveatMapper({ allowedOrigins: ['foo.com'] }),
