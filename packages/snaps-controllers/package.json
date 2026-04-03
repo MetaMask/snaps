@@ -62,7 +62,6 @@
     "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
     "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-controllers",
     "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-controllers",
-    "generate-method-action-types": "messenger-generate-action-types",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
     "lint:ci": "yarn lint",
     "lint:dependencies": "depcheck",
@@ -113,6 +112,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
+    "@metamask-previews/messenger-cli": "0.0.0-preview-2951c0e",
     "@metamask/auto-changelog": "^5.3.2",
     "@metamask/browser-passworder": "^6.0.0",
     "@noble/hashes": "^1.7.1",
