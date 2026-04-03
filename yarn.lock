@@ -2816,17 +2816,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/messenger-cli@npm:0.0.0-preview-2951c0e":
-  version: 0.0.0-preview-2951c0e
-  resolution: "@metamask-previews/messenger-cli@npm:0.0.0-preview-2951c0e"
+"@metamask-previews/messenger-cli@npm:0.0.0-preview-4a2a8e8f6":
+  version: 0.0.0-preview-4a2a8e8f6
+  resolution: "@metamask-previews/messenger-cli@npm:0.0.0-preview-4a2a8e8f6"
   dependencies:
     "@metamask/utils": "npm:^11.9.0"
-    eslint: "npm:^9.39.1"
-    typescript: "npm:~5.3.3"
     yargs: "npm:^17.7.2"
+  peerDependencies:
+    eslint: ">=8"
+    typescript: ">=5.0.0"
   bin:
-    messenger-action-types-codegen: ./dist/cli.mjs
-  checksum: 10/941328b1dcb72cac260d734bc95606a2115e54505e3f66280950818db1c40812bde0b66054b4a00188627c4c6e338e81ff512e4e4527d9205dce8512e9f23b16
+    messenger-action-types: ./dist/cli.mjs
+  checksum: 10/b07153a2c8a5d80559b8ed155dc869c1fafb9cf7a5739a5d1aac94712139bc29eb568060dd6266b2148a1d4a6f3691bcfd5fc8c660176bc78361bb0e945c814f
   languageName: node
   linkType: hard
 
@@ -4236,7 +4237,7 @@ __metadata:
   resolution: "@metamask/snaps-controllers@workspace:packages/snaps-controllers"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
-    "@metamask-previews/messenger-cli": "npm:0.0.0-preview-2951c0e"
+    "@metamask-previews/messenger-cli": "npm:0.0.0-preview-4a2a8e8f6"
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/base-controller": "npm:^9.0.1"
@@ -10931,7 +10932,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.11.0, eslint@npm:^9.39.1":
+"eslint@npm:^9.11.0":
   version: 9.39.4
   resolution: "eslint@npm:9.39.4"
   dependencies:

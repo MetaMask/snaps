@@ -68,6 +68,8 @@
     "lint:eslint": "eslint . --cache",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "messenger-action-types:check": "messenger-action-types --check",
+    "messenger-action-types:generate": "messenger-action-types --generate",
     "publish:preview": "yarn npm publish --tag preview",
     "since-latest-release": "../../scripts/since-latest-release.sh",
     "test": "jest --reporters=jest-silent-reporter && yarn test:browser",
@@ -112,7 +114,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask-previews/messenger-cli": "0.0.0-preview-2951c0e",
+    "@metamask-previews/messenger-cli": "0.0.0-preview-4a2a8e8f6",
     "@metamask/auto-changelog": "^5.3.2",
     "@metamask/browser-passworder": "^6.0.0",
     "@noble/hashes": "^1.7.1",
