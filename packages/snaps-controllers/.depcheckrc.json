@@ -3,6 +3,7 @@
   "ignores": [
     "@lavamoat/allow-scripts",
     "@lavamoat/preinstall-always-fail",
+    "@metamask-previews/messenger-cli",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
     "@testing-library/dom",
