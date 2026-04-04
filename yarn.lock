@@ -2816,21 +2816,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-previews/messenger-cli@npm:0.0.0-preview-4a2a8e8f6":
-  version: 0.0.0-preview-4a2a8e8f6
-  resolution: "@metamask-previews/messenger-cli@npm:0.0.0-preview-4a2a8e8f6"
-  dependencies:
-    "@metamask/utils": "npm:^11.9.0"
-    yargs: "npm:^17.7.2"
-  peerDependencies:
-    eslint: ">=8"
-    typescript: ">=5.0.0"
-  bin:
-    messenger-action-types: ./dist/cli.mjs
-  checksum: 10/b07153a2c8a5d80559b8ed155dc869c1fafb9cf7a5739a5d1aac94712139bc29eb568060dd6266b2148a1d4a6f3691bcfd5fc8c660176bc78361bb0e945c814f
-  languageName: node
-  linkType: hard
-
 "@metamask/action-utils@npm:^1.0.0":
   version: 1.1.1
   resolution: "@metamask/action-utils@npm:1.1.1"
@@ -3785,6 +3770,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/messenger-cli@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/messenger-cli@npm:0.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^11.9.0"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    eslint: ">=8"
+    typescript: ">=5.0.0"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  bin:
+    messenger-action-types: ./dist/cli.mjs
+  checksum: 10/dd359df00f2eba98dcfe5f3d8352d859f2e814220e709efe989ecb68c611ba32ea515fd6099a770a706066f1820abd07a134a2acf5fc6b883518c5d19991a8e2
+  languageName: node
+  linkType: hard
+
 "@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/messenger@npm:1.1.0"
@@ -4237,7 +4240,6 @@ __metadata:
   resolution: "@metamask/snaps-controllers@workspace:packages/snaps-controllers"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
-    "@metamask-previews/messenger-cli": "npm:0.0.0-preview-4a2a8e8f6"
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/base-controller": "npm:^9.0.1"
@@ -4246,6 +4248,7 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^1.1.0"
+    "@metamask/messenger-cli": "npm:^0.1.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^12.3.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
