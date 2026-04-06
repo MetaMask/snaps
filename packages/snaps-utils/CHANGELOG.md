@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `KeyringCapabilities` type and `KeyringCapabilitiesStruct` / `assertIsKeyringCapabilities` exports for the `endowment:keyring` capabilities caveat ([#3903](https://github.com/MetaMask/snaps/pull/3903))
 
+## [12.1.3]
+
 ### Changed
 
-- Bump `@metamask/messenger` from `^1.0.0` to `^1.1.0` ([#3934](https://github.com/MetaMask/snaps/pull/3934))
+- Bump `@metamask/messenger` from `^0.3.0` to `^1.1.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930), [#3934](https://github.com/MetaMask/snaps/pull/3934))
+- Bump `@metamask/permission-controller` from `^12.2.1` to `^12.3.0` ([#3930](https://github.com/MetaMask/snaps/pull/3930))
 
 ## [12.1.2]
 
@@ -807,7 +810,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.3...HEAD
+[12.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.2...@metamask/snaps-utils@12.1.3
 [12.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.1...@metamask/snaps-utils@12.1.2
 [12.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.1.0...@metamask/snaps-utils@12.1.1
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.0.1...@metamask/snaps-utils@12.1.0
