@@ -5,6 +5,7 @@
     "@lavamoat/preinstall-always-fail",
     "@metamask/auto-changelog",
     "@metamask/eslint-*",
+    "@metamask/messenger-cli",
     "@testing-library/dom",
     "@types/*",
     "@typescript-eslint/*",
