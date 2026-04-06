@@ -98,9 +98,7 @@ describe('getKeyringCaveatMapper', () => {
       caveats: [
         {
           type: SnapCaveatType.KeyringOrigin,
-          value: {
-            allowedOrigins: ['foo.com'],
-          },
+          value: { allowedOrigins: ['foo.com'] },
         },
         {
           type: SnapCaveatType.KeyringCapabilities,

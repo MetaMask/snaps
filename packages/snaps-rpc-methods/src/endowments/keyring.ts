@@ -122,17 +122,17 @@ export function getKeyringCaveatMapper(
     return { caveats: null };
   }
 
-  const caveats = [];
-
-  caveats.push({
-    type: SnapCaveatType.KeyringOrigin,
-    value: value.allowedOrigins,
-  });
+  const caveats: CaveatConstraint[] = [
+    {
+      type: SnapCaveatType.KeyringOrigin,
+      value: { allowedOrigins: value.allowedOrigins },
+    },
+  ];
 
   if (value.capabilities) {
     caveats.push({
       type: SnapCaveatType.KeyringCapabilities,
-      value: value.capabilities,
+      value: { capabilities: value.capabilities },
     });
   }
 
