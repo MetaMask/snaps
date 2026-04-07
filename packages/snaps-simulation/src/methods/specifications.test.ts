@@ -97,6 +97,7 @@ describe('getPermissionSpecifications', () => {
         "endowment:keyring": {
           "allowedCaveats": [
             "keyringOrigin",
+            "keyringCapabilities",
             "maxRequestTime",
           ],
           "endowmentGetter": [Function],

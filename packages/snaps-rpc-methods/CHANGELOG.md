@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `capabilities` caveat support to `endowment:keyring` ([#3903](https://github.com/MetaMask/snaps/pull/3903))
+  - Snap manifests can now declare a `capabilities` object under `endowment:keyring` describing the capabilities supported by the keyring.
+  - New `getKeyringCaveatCapabilities` function to retrieve the capabilities caveat value from a permission.
+
 ## [15.0.2]
 
 ### Changed

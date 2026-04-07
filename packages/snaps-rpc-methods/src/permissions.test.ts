@@ -46,6 +46,7 @@ describe('buildSnapEndowmentSpecifications', () => {
         "endowment:keyring": {
           "allowedCaveats": [
             "keyringOrigin",
+            "keyringCapabilities",
             "maxRequestTime",
           ],
           "endowmentGetter": [Function],
