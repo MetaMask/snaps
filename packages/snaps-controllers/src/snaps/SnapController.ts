@@ -167,7 +167,7 @@ import type {
   SnapRegistryControllerRequestUpdateAction,
   SnapRegistryInfo,
   SnapRegistryRequest,
-  SnapRegistryControllerStateChangeEvent,
+  SnapRegistryControllerRegistryUpdatedEvent,
 } from './registry';
 import { SnapRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
@@ -547,7 +547,7 @@ type AllowedEvents =
   | SnapControllerSnapInstalledEvent
   | SnapControllerSnapUpdatedEvent
   | KeyringControllerLockEvent
-  | SnapRegistryControllerStateChangeEvent;
+  | SnapRegistryControllerRegistryUpdatedEvent;
 
 export type SnapControllerMessenger = Messenger<
   typeof controllerName,
@@ -974,19 +974,15 @@ export class SnapController extends BaseController<
       this.#handleLock.bind(this),
     );
 
-    this.messenger.subscribe(
-      'SnapRegistryController:stateChange',
-      () => {
-        this.#handleRegistryUpdate().catch((error) => {
-          logError(
-            `Error when processing Snaps registry update: ${getErrorMessage(
-              error,
-            )}`,
-          );
-        });
-      },
-      ({ database }) => database,
-    );
+    this.messenger.subscribe('SnapRegistryController:registryUpdated', () => {
+      this.#handleRegistryUpdate().catch((error) => {
+        logError(
+          `Error when processing Snaps registry update: ${getErrorMessage(
+            error,
+          )}`,
+        );
+      });
+    });
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
@@ -1452,15 +1448,7 @@ export class SnapController extends BaseController<
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
-    const updated = await this.messenger.call(
-      'SnapRegistryController:requestUpdate',
-    );
-
-    // When returning false, the `:stateChange` event is not emitted, so we force update.
-    // We do this to enable mainly to provide a path to retry OTA updates.
-    if (!updated) {
-      await this.#handleRegistryUpdate();
-    }
+    await this.messenger.call('SnapRegistryController:requestUpdate');
   }
 
   /**

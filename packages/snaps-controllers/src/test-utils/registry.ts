@@ -57,6 +57,6 @@ export class MockSnapRegistryController {
       },
       [],
     );
-    return true;
+    this.#messenger.publish('SnapRegistryController:registryUpdated', true);
   });
 }

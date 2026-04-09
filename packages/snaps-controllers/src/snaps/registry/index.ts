@@ -6,6 +6,7 @@ export type {
   SnapRegistryControllerMessenger,
   SnapRegistryControllerState,
   SnapRegistryControllerStateChangeEvent,
+  SnapRegistryControllerRegistryUpdatedEvent,
 } from './SnapRegistryController';
 export { SnapRegistryController } from './SnapRegistryController';
 export type {

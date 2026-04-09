@@ -10848,8 +10848,10 @@ describe('SnapController', () => {
         preinstalled: true,
       });
 
-      // Indicate no registry update performed
-      registry.requestUpdate.mockResolvedValue(false);
+      // Indicate no database update performed
+      registry.requestUpdate.mockImplementation(() => {
+        rootMessenger.publish('SnapRegistryController:registryUpdated', false);
+      });
 
       const updateVersion = '1.2.1';
 
@@ -10882,6 +10884,8 @@ describe('SnapController', () => {
       const snapController = await getSnapController(options);
 
       await snapController.updateRegistry();
+      await waitForStateChange(options.messenger);
+      await sleep(100);
 
       const updatedSnap = snapController.getSnap(snapId);
       assert(updatedSnap);

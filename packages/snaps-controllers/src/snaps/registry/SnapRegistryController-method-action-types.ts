@@ -9,8 +9,6 @@ import type { SnapRegistryController } from './SnapRegistryController';
  * Triggers an update of the registry database.
  *
  * If an existing update is in progress this function will await that update.
- *
- * @returns True if an update was performed, otherwise false.
  */
 export type SnapRegistryControllerRequestUpdateAction = {
   type: `SnapRegistryController:requestUpdate`;

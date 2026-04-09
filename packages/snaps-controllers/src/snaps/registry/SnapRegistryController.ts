@@ -73,8 +73,14 @@ export type SnapRegistryControllerStateChangeEvent = ControllerStateChangeEvent<
   SnapRegistryControllerState
 >;
 
+export type SnapRegistryControllerRegistryUpdatedEvent = {
+  type: `${typeof controllerName}:registryUpdated`;
+  payload: [databaseUpdated: boolean];
+};
+
 export type SnapRegistryControllerEvents =
-  SnapRegistryControllerStateChangeEvent;
+  | SnapRegistryControllerStateChangeEvent
+  | SnapRegistryControllerRegistryUpdatedEvent;
 
 export type SnapRegistryControllerMessenger = Messenger<
   typeof controllerName,
@@ -122,7 +128,7 @@ export class SnapRegistryController extends BaseController<
 
   readonly #refetchOnAllowlistMiss: boolean;
 
-  #currentUpdate: Promise<boolean> | null;
+  #currentUpdate: Promise<void> | null;
 
   constructor({
     messenger,
@@ -196,34 +202,31 @@ export class SnapRegistryController extends BaseController<
    * Triggers an update of the registry database.
    *
    * If an existing update is in progress this function will await that update.
-   *
-   * @returns True if an update was performed, otherwise false.
    */
-  async requestUpdate(): Promise<boolean> {
+  async requestUpdate() {
     // If an update is ongoing, wait for that.
     if (this.#currentUpdate) {
-      return await this.#currentUpdate;
+      await this.#currentUpdate;
+      return;
     }
     // If no update exists, create promise and store globally.
     if (this.#currentUpdate === null) {
       this.#currentUpdate = this.#update();
     }
-    const result = await this.#currentUpdate;
+    await this.#currentUpdate;
     this.#currentUpdate = null;
-    return result;
   }
 
   /**
    * Updates the registry database if the registry hasn't been updated recently.
    *
    * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
-   *
-   * @returns True if an update was performed, otherwise false.
    */
-  async #update(): Promise<boolean> {
+  async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
-      return false;
+      this.messenger.publish('SnapRegistryController:registryUpdated', false);
+      return;
     }
 
     try {
@@ -240,7 +243,8 @@ export class SnapRegistryController extends BaseController<
           state.lastUpdated = Date.now();
           state.databaseUnavailable = false;
         });
-        return false;
+        this.messenger.publish('SnapRegistryController:registryUpdated', false);
+        return;
       }
 
       await this.#verifySignature(database, signatureJson);
@@ -252,13 +256,13 @@ export class SnapRegistryController extends BaseController<
         state.signature = signatureJson.signature;
       });
 
-      return true;
+      this.messenger.publish('SnapRegistryController:registryUpdated', true);
     } catch {
       // Ignore
       this.update((state) => {
         state.databaseUnavailable = true;
       });
-      return false;
+      this.messenger.publish('SnapRegistryController:registryUpdated', false);
     }
   }
 
