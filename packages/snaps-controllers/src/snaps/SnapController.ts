@@ -1444,7 +1444,7 @@ export class SnapController extends BaseController<
   /**
    * Trigger an update of the registry.
    *
-   * This will _always_ check if preinstalled Snaps can be updated and whether any Snaps need to beblocked/unblocked.
+   * As a side-effect, this will _always_ check if preinstalled Snaps can be updated and whether any Snaps need to be blocked/unblocked.
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
