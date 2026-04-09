@@ -262,7 +262,6 @@ export class SnapRegistryController extends BaseController<
       this.update((state) => {
         state.databaseUnavailable = true;
       });
-      this.messenger.publish('SnapRegistryController:registryUpdated', false);
     }
   }
 
