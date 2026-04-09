@@ -21,7 +21,7 @@ export type SnapControllerInitAction = {
 /**
  * Trigger an update of the registry.
  *
- * As a side-effect of this, preinstalled Snaps may be updated and Snaps may be blocked/unblocked.
+ * This will _always_ check if preinstalled Snaps can be updated and whether any Snaps need to beblocked/unblocked.
  */
 export type SnapControllerUpdateRegistryAction = {
   type: `SnapController:updateRegistry`;
