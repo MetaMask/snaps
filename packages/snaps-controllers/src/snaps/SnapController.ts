@@ -1448,11 +1448,19 @@ export class SnapController extends BaseController<
   /**
    * Trigger an update of the registry.
    *
-   * As a side-effect of this, preinstalled Snaps may be updated and Snaps may be blocked/unblocked.
+   * This will _always_ check if preinstalled Snaps can be updated and whether any Snaps need to beblocked/unblocked.
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();
-    await this.messenger.call('SnapRegistryController:requestUpdate');
+    const updated = await this.messenger.call(
+      'SnapRegistryController:requestUpdate',
+    );
+
+    // When returning false, the `:stateChange` event is not emitted, so we force update.
+    // We do this to enable mainly to provide a path to retry OTA updates.
+    if (!updated) {
+      await this.#handleRegistryUpdate();
+    }
   }
 
   /**

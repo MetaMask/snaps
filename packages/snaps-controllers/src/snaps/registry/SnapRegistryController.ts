@@ -122,7 +122,7 @@ export class SnapRegistryController extends BaseController<
 
   readonly #refetchOnAllowlistMiss: boolean;
 
-  #currentUpdate: Promise<void> | null;
+  #currentUpdate: Promise<boolean> | null;
 
   constructor({
     messenger,
@@ -196,30 +196,34 @@ export class SnapRegistryController extends BaseController<
    * Triggers an update of the registry database.
    *
    * If an existing update is in progress this function will await that update.
+   *
+   * @returns True if an update was performed, otherwise false.
    */
-  async requestUpdate() {
+  async requestUpdate(): Promise<boolean> {
     // If an update is ongoing, wait for that.
     if (this.#currentUpdate) {
-      await this.#currentUpdate;
-      return;
+      return await this.#currentUpdate;
     }
     // If no update exists, create promise and store globally.
     if (this.#currentUpdate === null) {
       this.#currentUpdate = this.#update();
     }
-    await this.#currentUpdate;
+    const result = await this.#currentUpdate;
     this.#currentUpdate = null;
+    return result;
   }
 
   /**
    * Updates the registry database if the registry hasn't been updated recently.
    *
    * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
+   *
+   * @returns True if an update was performed, otherwise false.
    */
-  async #update() {
+  async #update(): Promise<boolean> {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
-      return;
+      return false;
     }
 
     try {
@@ -236,7 +240,7 @@ export class SnapRegistryController extends BaseController<
           state.lastUpdated = Date.now();
           state.databaseUnavailable = false;
         });
-        return;
+        return false;
       }
 
       await this.#verifySignature(database, signatureJson);
@@ -247,11 +251,14 @@ export class SnapRegistryController extends BaseController<
         state.databaseUnavailable = false;
         state.signature = signatureJson.signature;
       });
+
+      return true;
     } catch {
       // Ignore
       this.update((state) => {
         state.databaseUnavailable = true;
       });
+      return false;
     }
   }
 

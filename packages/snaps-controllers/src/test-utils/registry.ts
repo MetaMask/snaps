@@ -57,5 +57,6 @@ export class MockSnapRegistryController {
       },
       [],
     );
+    return true;
   });
 }
