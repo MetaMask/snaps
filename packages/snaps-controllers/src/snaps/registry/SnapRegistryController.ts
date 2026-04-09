@@ -73,8 +73,14 @@ export type SnapRegistryControllerStateChangeEvent = ControllerStateChangeEvent<
   SnapRegistryControllerState
 >;
 
+export type SnapRegistryControllerRegistryUpdatedEvent = {
+  type: `${typeof controllerName}:registryUpdated`;
+  payload: [databaseUpdated: boolean];
+};
+
 export type SnapRegistryControllerEvents =
-  SnapRegistryControllerStateChangeEvent;
+  | SnapRegistryControllerStateChangeEvent
+  | SnapRegistryControllerRegistryUpdatedEvent;
 
 export type SnapRegistryControllerMessenger = Messenger<
   typeof controllerName,
@@ -219,6 +225,7 @@ export class SnapRegistryController extends BaseController<
   async #update() {
     // No-op if we recently fetched the registry.
     if (this.#wasRecentlyFetched()) {
+      this.messenger.publish('SnapRegistryController:registryUpdated', false);
       return;
     }
 
@@ -236,6 +243,7 @@ export class SnapRegistryController extends BaseController<
           state.lastUpdated = Date.now();
           state.databaseUnavailable = false;
         });
+        this.messenger.publish('SnapRegistryController:registryUpdated', false);
         return;
       }
 
@@ -247,11 +255,14 @@ export class SnapRegistryController extends BaseController<
         state.databaseUnavailable = false;
         state.signature = signatureJson.signature;
       });
+
+      this.messenger.publish('SnapRegistryController:registryUpdated', true);
     } catch {
       // Ignore
       this.update((state) => {
         state.databaseUnavailable = true;
       });
+      this.messenger.publish('SnapRegistryController:registryUpdated', false);
     }
   }
 

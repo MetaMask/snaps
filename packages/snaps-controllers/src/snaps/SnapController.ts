@@ -167,7 +167,7 @@ import type {
   SnapRegistryControllerRequestUpdateAction,
   SnapRegistryInfo,
   SnapRegistryRequest,
-  SnapRegistryControllerStateChangeEvent,
+  SnapRegistryControllerRegistryUpdatedEvent,
 } from './registry';
 import { SnapRegistryStatus } from './registry';
 import { getRunnableSnaps } from './selectors';
@@ -547,7 +547,7 @@ type AllowedEvents =
   | SnapControllerSnapInstalledEvent
   | SnapControllerSnapUpdatedEvent
   | KeyringControllerLockEvent
-  | SnapRegistryControllerStateChangeEvent;
+  | SnapRegistryControllerRegistryUpdatedEvent;
 
 export type SnapControllerMessenger = Messenger<
   typeof controllerName,
@@ -974,19 +974,15 @@ export class SnapController extends BaseController<
       this.#handleLock.bind(this),
     );
 
-    this.messenger.subscribe(
-      'SnapRegistryController:stateChange',
-      () => {
-        this.#handleRegistryUpdate().catch((error) => {
-          logError(
-            `Error when processing Snaps registry update: ${getErrorMessage(
-              error,
-            )}`,
-          );
-        });
-      },
-      ({ database }) => database,
-    );
+    this.messenger.subscribe('SnapRegistryController:registryUpdated', () => {
+      this.#handleRegistryUpdate().catch((error) => {
+        logError(
+          `Error when processing Snaps registry update: ${getErrorMessage(
+            error,
+          )}`,
+        );
+      });
+    });
 
     this.#initializeStateMachine();
     this.#registerMessageHandlers();
@@ -1448,7 +1444,7 @@ export class SnapController extends BaseController<
   /**
    * Trigger an update of the registry.
    *
-   * As a side-effect of this, preinstalled Snaps may be updated and Snaps may be blocked/unblocked.
+   * As a side-effect, this will _always_ check if preinstalled Snaps can be updated and whether any Snaps need to be blocked/unblocked.
    */
   async updateRegistry(): Promise<void> {
     await this.#ensureCanUsePlatform();

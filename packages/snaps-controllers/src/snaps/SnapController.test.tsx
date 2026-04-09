@@ -10826,6 +10826,107 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('retries updating preinstalled Snaps', async () => {
+      const rootMessenger = getRootMessenger();
+      const registry = new MockSnapRegistryController(rootMessenger);
+
+      // Simulate previous permissions, some of which will be removed
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => {
+          return {
+            [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+            [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+          };
+        },
+      );
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({
+        id: snapId,
+        preinstalled: true,
+      });
+
+      // Indicate no database update performed
+      registry.requestUpdate.mockImplementation(() => {
+        rootMessenger.publish('SnapRegistryController:registryUpdated', false);
+      });
+
+      const updateVersion = '1.2.1';
+
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+      const fetchFunction = jest.fn().mockResolvedValueOnce({
+        // eslint-disable-next-line no-restricted-globals
+        headers: new Headers({ 'content-length': '5477' }),
+        ok: true,
+        body: Readable.toWeb(
+          createReadStream(
+            path.resolve(
+              __dirname,
+              `../../test/fixtures/metamask-jsx-example-snap-${updateVersion}.tgz`,
+            ),
+          ),
+        ),
+      });
+
+      const options = getSnapControllerOptions({
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(mockSnap),
+        },
+        fetchFunction,
+        featureFlags: {
+          autoUpdatePreinstalledSnaps: true,
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      await snapController.updateRegistry();
+      await waitForStateChange(options.messenger);
+      await sleep(100);
+
+      const updatedSnap = snapController.getSnap(snapId);
+      assert(updatedSnap);
+
+      expect(updatedSnap.version).toStrictEqual(updateVersion);
+      expect(updatedSnap.preinstalled).toBe(true);
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        7,
+        'StorageService:setItem',
+        controllerName,
+        snapId,
+        { sourceCode: expect.any(String) },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        9,
+        'PermissionController:revokePermissions',
+        { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
+      );
+
+      expect(options.messenger.call).toHaveBeenNthCalledWith(
+        10,
+        'PermissionController:grantPermissions',
+        {
+          approvedPermissions: {
+            'endowment:rpc': {
+              caveats: [{ type: 'rpcOrigin', value: { dapps: true } }],
+            },
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_dialog: {},
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_manageState: {},
+          },
+          subject: { origin: snapId },
+        },
+      );
+
+      snapController.destroy();
+    });
+
     it('does not update preinstalled Snaps when the feature flag is off', async () => {
       const rootMessenger = getRootMessenger();
       const registry = new MockSnapRegistryController(rootMessenger);

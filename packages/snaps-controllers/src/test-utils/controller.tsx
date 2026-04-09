@@ -509,7 +509,7 @@ export const getSnapControllerMessenger = (
       'ExecutionService:outboundRequest',
       'ExecutionService:outboundResponse',
       'KeyringController:lock',
-      'SnapRegistryController:stateChange',
+      'SnapRegistryController:registryUpdated',
     ],
     messenger: snapControllerMessenger,
   });
