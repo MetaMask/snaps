@@ -2792,20 +2792,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/webpack@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@lavamoat/webpack@npm:2.0.0"
+"@lavamoat/webpack@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@lavamoat/webpack@npm:2.1.1"
   dependencies:
     "@babel/parser": "npm:7.28.3"
     "@lavamoat/aa": "npm:^5.0.0"
     "@lavamoat/types": "npm:^1.0.0"
     browser-resolve: "npm:2.0.0"
     json-stable-stringify: "npm:1.3.0"
-    lavamoat-core: "npm:^18.0.0"
+    lavamoat-core: "npm:^18.0.1"
     ses: "npm:1.15.0"
   peerDependencies:
     webpack: ^5.80.2
-  checksum: 10/551be412b0de2df78d3c1095fd8ef643ab7111f7bc44bb53de673f923e17940d8cc0a4e5ce6ebea1dd16b5722db34d7c487416d7fd3351a65c22b92cbd9e48e8
+  checksum: 10/90e343c99b55f1aba45bf6aba3e3500bd0678bc9be53c96373c5f26d9eadf65fc09ad003196e5b6d6d65be374ea978aa7ca1207118f2e1faff2f33477452cc58
   languageName: node
   linkType: hard
 
@@ -4320,7 +4320,7 @@ __metadata:
     "@esbuild-plugins/node-modules-polyfill": "npm:^0.2.2"
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@lavamoat/lavatube": "npm:^1.0.0"
-    "@lavamoat/webpack": "npm:^2.0.0"
+    "@lavamoat/webpack": "npm:^2.1.1"
     "@metamask/auto-changelog": "npm:^5.3.2"
     "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/object-multiplex": "npm:^2.1.0"
@@ -8411,13 +8411,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"arr-union@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "arr-union@npm:3.1.0"
-  checksum: 10/b5b0408c6eb7591143c394f3be082fee690ddd21f0fdde0a0a01106799e847f67fcae1b7e56b0a0c173290e29c6aca9562e82b300708a268bc8f88f3d6613cb9
-  languageName: node
-  linkType: hard
-
 "array-differ@npm:^3.0.0":
   version: 3.0.0
   resolution: "array-differ@npm:3.0.0"
@@ -9384,19 +9377,6 @@ __metadata:
     strip-ansi: "npm:^6.0.1"
     wrap-ansi: "npm:^7.0.0"
   checksum: 10/eaa5561aeb3135c2cddf7a3b3f562fc4238ff3b3fc666869ef2adf264be0f372136702f16add9299087fb1907c2e4ec5dbfe83bd24bce815c70a80c6c1a2e950
-  languageName: node
-  linkType: hard
-
-"clone-deep@npm:^0.2.4":
-  version: 0.2.4
-  resolution: "clone-deep@npm:0.2.4"
-  dependencies:
-    for-own: "npm:^0.1.3"
-    is-plain-object: "npm:^2.0.1"
-    kind-of: "npm:^3.0.2"
-    lazy-cache: "npm:^1.0.3"
-    shallow-clone: "npm:^0.1.2"
-  checksum: 10/bcf9752052130c270c47d3e1c357497354b91d682f507e0079bec5950975b3293b619d9e100d70874606d716f2376e84956b045759a09af703e1038ecad6c438
   languageName: node
   linkType: hard
 
@@ -11607,29 +11587,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"for-in@npm:^0.1.3":
-  version: 0.1.8
-  resolution: "for-in@npm:0.1.8"
-  checksum: 10/f5bdad7811700ee6a0f96b33d72a1db966aea75a1f03c7245d147f8369305e709f53a55ee7ae8eaddcfa85c7c89bca78472be8f1bc605475ce5bb2c70f77f8da
-  languageName: node
-  linkType: hard
-
-"for-in@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "for-in@npm:1.0.2"
-  checksum: 10/09f4ae93ce785d253ac963d94c7f3432d89398bf25ac7a24ed034ca393bf74380bdeccc40e0f2d721a895e54211b07c8fad7132e8157827f6f7f059b70b4043d
-  languageName: node
-  linkType: hard
-
-"for-own@npm:^0.1.3":
-  version: 0.1.5
-  resolution: "for-own@npm:0.1.5"
-  dependencies:
-    for-in: "npm:^1.0.1"
-  checksum: 10/07eb0a2e98eb55ce13b56dd11ef4fb5e619ba7380aaec388b9eec1946153d74fa734ce409e8434020557e9489a50c34bc004d55754f5863bf7d77b441d8dee8c
-  languageName: node
-  linkType: hard
-
 "foreground-child@npm:^3.1.0":
   version: 3.1.1
   resolution: "foreground-child@npm:3.1.1"
@@ -12613,13 +12570,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-buffer@npm:^1.0.2, is-buffer@npm:^1.1.5":
-  version: 1.1.6
-  resolution: "is-buffer@npm:1.1.6"
-  checksum: 10/f63da109e74bbe8947036ed529d43e4ae0c5fcd0909921dce4917ad3ea212c6a87c29f525ba1d17c0858c18331cf1046d4fc69ef59ed26896b25c8288a627133
-  languageName: node
-  linkType: hard
-
 "is-builtin-module@npm:^3.2.1":
   version: 3.2.1
   resolution: "is-builtin-module@npm:3.2.1"
@@ -12671,13 +12621,6 @@ __metadata:
   bin:
     is-docker: cli.js
   checksum: 10/b698118f04feb7eaf3338922bd79cba064ea54a1c3db6ec8c0c8d8ee7613e7e5854d802d3ef646812a8a3ace81182a085dfa0a71cc68b06f3fa794b9783b3c90
-  languageName: node
-  linkType: hard
-
-"is-extendable@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "is-extendable@npm:0.1.1"
-  checksum: 10/3875571d20a7563772ecc7a5f36cb03167e9be31ad259041b4a8f73f33f885441f778cee1f1fe0085eb4bc71679b9d8c923690003a36a6a5fdf8023e6e3f0672
   languageName: node
   linkType: hard
 
@@ -12800,7 +12743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-plain-object@npm:^2.0.1, is-plain-object@npm:^2.0.4":
+"is-plain-object@npm:^2.0.4":
   version: 2.0.4
   resolution: "is-plain-object@npm:2.0.4"
   dependencies:
@@ -13787,24 +13730,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kind-of@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "kind-of@npm:2.0.1"
-  dependencies:
-    is-buffer: "npm:^1.0.2"
-  checksum: 10/7d174a5e3e73417c3211999e27892f404d8bc3252e52848568f6cf1ec9afab8c9f263d7c74b277b58a951f9f7a89145f1d6e3901ec4915a3ed60f9cf36a302a3
-  languageName: node
-  linkType: hard
-
-"kind-of@npm:^3.0.2":
-  version: 3.2.2
-  resolution: "kind-of@npm:3.2.2"
-  dependencies:
-    is-buffer: "npm:^1.1.5"
-  checksum: 10/b6e7eed10f9dea498500e73129c9bf289bc417568658648aecfc2e104aa32683b908e5d349563fc78d6752da0ea60c9ed1dda4b24dd85a0c8fc0c7376dc0acac
-  languageName: node
-  linkType: hard
-
 "kind-of@npm:^6.0.2":
   version: 6.0.3
   resolution: "kind-of@npm:6.0.3"
@@ -13836,19 +13761,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "lavamoat-core@npm:18.0.0"
+"lavamoat-core@npm:^18.0.0, lavamoat-core@npm:^18.0.1":
+  version: 18.0.1
+  resolution: "lavamoat-core@npm:18.0.1"
   dependencies:
     "@babel/types": "npm:7.27.3"
     "@lavamoat/types": "npm:^1.0.0"
     json-stable-stringify: "npm:1.3.0"
     lavamoat-tofu: "npm:^9.0.0"
-    merge-deep: "npm:3.0.3"
     ses: "npm:1.15.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/428f83e985d39e4dc6f08de46e19f1ec4f98430f77551fc468a7e0cb15e2b4e9544401656cd26056e8af66684fcef52b6d7f00e665b146b8ca74a2869491a6eb
+  checksum: 10/84bc6a9926cc12f558c3545d3781aeb2181443445a4a6321cb1c9baa3ba461cf8e5c224919e8aa54f54ee8b0d06770cdeccff3de2a9ad909a4708f8b40ca25c6
   languageName: node
   linkType: hard
 
@@ -13887,20 +13811,6 @@ __metadata:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
   checksum: 10/06c7f72b6d6d93eeaa866211ec215b8a7dd90743133799f96d35e72958eca47fe473f095bf6557bdfc4e4476d120287cc14a158d824304159f5d972504a4377e
-  languageName: node
-  linkType: hard
-
-"lazy-cache@npm:^0.2.3":
-  version: 0.2.7
-  resolution: "lazy-cache@npm:0.2.7"
-  checksum: 10/b4538aff20db586c354f31de3ed59ea2c8d5dc4f01141bf49f07601e7ca0d7ed43a3f49362ade49b1e18ab1f3d121df0f2c9ea9b599b44dd54fb0c0db253c8b9
-  languageName: node
-  linkType: hard
-
-"lazy-cache@npm:^1.0.3":
-  version: 1.0.4
-  resolution: "lazy-cache@npm:1.0.4"
-  checksum: 10/e6650c22e5de1cc3f4a0c25d2b35fe9cd400473c1b3562be9fceadf8f368d708b54d24f5aa51b321b090da65b36426823a8f706b8dbdd68270db0daba812c5d3
   languageName: node
   linkType: hard
 
@@ -14343,17 +14253,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"merge-deep@npm:3.0.3":
-  version: 3.0.3
-  resolution: "merge-deep@npm:3.0.3"
-  dependencies:
-    arr-union: "npm:^3.1.0"
-    clone-deep: "npm:^0.2.4"
-    kind-of: "npm:^3.0.2"
-  checksum: 10/d2eb367b8300327c66a3e1e01eb06251f51b440bf5bfa5f0f8065ae95bf3af620d21fcd0ab2eb50e74f5119aac40ffd26c85e3bf82f79082e8757675f5885d3d
-  languageName: node
-  linkType: hard
-
 "merge-descriptors@npm:1.0.3":
   version: 1.0.3
   resolution: "merge-descriptors@npm:1.0.3"
@@ -14653,16 +14552,6 @@ __metadata:
   dependencies:
     minipass: "npm:^7.1.2"
   checksum: 10/f47365cc2cb7f078cbe7e046eb52655e2e7e97f8c0a9a674f4da60d94fb0624edfcec9b5db32e8ba5a99a5f036f595680ae6fe02a262beaa73026e505cc52f99
-  languageName: node
-  linkType: hard
-
-"mixin-object@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "mixin-object@npm:2.0.1"
-  dependencies:
-    for-in: "npm:^0.1.3"
-    is-extendable: "npm:^0.1.1"
-  checksum: 10/7d0eb7c2f06435fcc01d132824b4c973a0df689a117d8199d79911b506363b6f4f86a84458a63f3acfa7388f3052612cfe27105400b4932678452925a9739a4c
   languageName: node
   linkType: hard
 
@@ -16919,18 +16808,6 @@ __metadata:
   bin:
     sha.js: bin.js
   checksum: 10/39c0993592c2ab34eb2daae2199a2a1d502713765aecb611fd97c0c4ab7cd53e902d628e1962aaf384bafd28f55951fef46dcc78799069ce41d74b03aa13b5a7
-  languageName: node
-  linkType: hard
-
-"shallow-clone@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "shallow-clone@npm:0.1.2"
-  dependencies:
-    is-extendable: "npm:^0.1.1"
-    kind-of: "npm:^2.0.1"
-    lazy-cache: "npm:^0.2.3"
-    mixin-object: "npm:^2.0.1"
-  checksum: 10/cc4c85c6e42186fec33a81a85622c48dbcfdf280f3a7bd0800b4de57df8e365a8760aa2e31dd79df365b317dddb2fd0bbd92be0aab14dbd2de6a65992eab2177
   languageName: node
   linkType: hard
 
