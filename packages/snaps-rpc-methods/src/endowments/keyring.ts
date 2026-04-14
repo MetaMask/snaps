@@ -145,8 +145,6 @@ export function getKeyringCaveatMapper(
  *
  * @param permission - The permission to get the caveat value from.
  * @returns The caveat value.
- * @throws If the permission does not have a valid {@link KeyringOrigins}
- * caveat.
  */
 export function getKeyringCaveatOrigins(
   permission?: PermissionConstraint,
