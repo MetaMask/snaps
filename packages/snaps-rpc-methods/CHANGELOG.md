@@ -9,17 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.1.0]
 
-### Uncategorized
-
-- feat: Add `CollapsibleSection` ([#3952](https://github.com/MetaMask/snaps/pull/3952))
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- chore: Bump @metamask/messenger from 1.1.0 to 1.1.1 ([#3944](https://github.com/MetaMask/snaps/pull/3944))
-
 ### Added
 
 - Add `capabilities` caveat support to `endowment:keyring` ([#3903](https://github.com/MetaMask/snaps/pull/3903))
   - Snap manifests can now declare a `capabilities` object under `endowment:keyring` describing the capabilities supported by the keyring.
   - New `getKeyringCaveatCapabilities` function to retrieve the capabilities caveat value from a permission.
+
+### Changed
+
+- Bump `@metamask/messenger` from `^1.1.0` to `^1.1.1` ([#3944](https://github.com/MetaMask/snaps/pull/3944))
+- Bump `@metamask/utils` from `^11.10.0` to `^11.11.0` ([#3935](https://github.com/MetaMask/snaps/pull/3935))
 
 ## [15.0.2]
 

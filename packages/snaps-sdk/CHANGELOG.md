@@ -9,12 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `CollapsibleSection` ([#3952](https://github.com/MetaMask/snaps/pull/3952))
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- feat: add capabilities to keyring endowment ([#3903](https://github.com/MetaMask/snaps/pull/3903))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
+- Add `CollapsibleSection` component ([#3952](https://github.com/MetaMask/snaps/pull/3952))
+- Add types for `KeyringCapabilities` ([#3903](https://github.com/MetaMask/snaps/pull/3903))
+
+### Changed
+
+- Bump `@metamask/utils` from `^11.10.0` to `^11.11.0` ([#3935](https://github.com/MetaMask/snaps/pull/3935))
 
 ## [11.0.0]
 
