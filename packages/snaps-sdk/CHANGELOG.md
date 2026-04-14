@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.0]
+
+### Added
+
+- Add `CollapsibleSection` component ([#3952](https://github.com/MetaMask/snaps/pull/3952))
+- Add types for `KeyringCapabilities` ([#3903](https://github.com/MetaMask/snaps/pull/3903))
+
+### Changed
+
+- Bump `@metamask/utils` from `^11.10.0` to `^11.11.0` ([#3935](https://github.com/MetaMask/snaps/pull/3935))
+
 ## [11.0.0]
 
 ### Changed
@@ -704,7 +715,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.0...HEAD
+[11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...@metamask/snaps-sdk@11.1.0
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...@metamask/snaps-sdk@11.0.0
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...@metamask/snaps-sdk@10.4.0
 [10.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.2.0...@metamask/snaps-sdk@10.3.0
