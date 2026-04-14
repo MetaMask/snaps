@@ -30,15 +30,8 @@ describe('endowment:keyring', () => {
   });
 
   describe('validator', () => {
-    it('throws if the caveat is not a single "keyringOrigin"', () => {
+    it('throws if the caveats are invalid', () => {
       const specification = keyringEndowmentBuilder.specificationBuilder({});
-
-      expect(() =>
-        specification.validator({
-          // @ts-expect-error Missing other required permission types.
-          caveats: undefined,
-        }),
-      ).toThrow('Expected the following caveats: "keyringOrigin".');
 
       expect(() =>
         // @ts-expect-error Missing other required permission types.
@@ -147,13 +140,13 @@ describe('getKeyringCaveatOrigins', () => {
     ).toStrictEqual({ allowedOrigins: ['foo.com'] });
   });
 
-  it('throws if there is no "keyringOrigin" caveat', () => {
-    expect(() =>
+  it('returns an empty array when no origins are provided', () => {
+    expect(
       // @ts-expect-error Missing other required permission types.
       getKeyringCaveatOrigins({
-        caveats: [{ type: 'foo', value: 'bar' }],
+        caveats: null,
       }),
-    ).toThrow('Assertion failed.');
+    ).toStrictEqual({ allowedOrigins: [] });
   });
 });
 
