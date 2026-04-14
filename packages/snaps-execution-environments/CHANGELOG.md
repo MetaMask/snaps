@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Export endowment factories via `@metamask/snaps-execution-environments/endowments` sub-path ([#XXXX](https://github.com/MetaMask/snaps/pull/XXXX))
+  - Exports endowment factory modules: `timeout`, `interval`, `date`, `textEncoder`, `textDecoder`, `crypto`, `math`
+
 ## [11.0.2]
 
 ### Changed
