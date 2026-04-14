@@ -20,7 +20,7 @@ import {
   SnapCaveatType,
 } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
-import { assert, hasProperty, isObject, isPlainObject } from '@metamask/utils';
+import { hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
 import { createGenericPermissionValidator } from './caveats';
 import { SnapEndowments } from './enum';
@@ -58,7 +58,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     ],
     endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
-      { type: SnapCaveatType.KeyringOrigin },
+      { type: SnapCaveatType.KeyringOrigin, optional: true },
       { type: SnapCaveatType.KeyringCapabilities, optional: true },
       { type: SnapCaveatType.MaxRequestTime, optional: true },
     ]),
@@ -155,8 +155,7 @@ export function getKeyringCaveatOrigins(
     (permCaveat) => permCaveat.type === SnapCaveatType.KeyringOrigin,
   ) as Caveat<string, KeyringOrigins> | undefined;
 
-  assert(caveat);
-  return caveat.value;
+  return caveat?.value ?? { allowedOrigins: [] };
 }
 
 /**
