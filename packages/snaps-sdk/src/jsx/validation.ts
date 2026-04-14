@@ -776,6 +776,8 @@ export const CollapsibleSectionStruct: Describe<CollapsibleSectionElement> =
   element('CollapsibleSection', {
     children: BoxChildrenStruct,
     label: string(),
+    isLoading: optional(boolean()),
+    isExpanded: optional(boolean()),
     direction: optional(
       nullUnion([literal('horizontal'), literal('vertical')]),
     ),

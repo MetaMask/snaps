@@ -90,6 +90,8 @@ describe('CollapsibleSection', () => {
         label="Details"
         direction="horizontal"
         alignment="space-between"
+        isLoading={false}
+        isExpanded={true}
       >
         <Text>Hello</Text>
         <Text>World</Text>
@@ -103,6 +105,8 @@ describe('CollapsibleSection', () => {
         label: 'Details',
         direction: 'horizontal',
         alignment: 'space-between',
+        isExpanded: true,
+        isLoading: false,
         children: [
           {
             type: 'Text',

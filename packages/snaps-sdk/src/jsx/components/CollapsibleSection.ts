@@ -6,6 +6,8 @@ import { createSnapComponent } from '../component';
  *
  * @property children - The children of the collapsible section.
  * @property label - The label of the collapsible section.
+ * @property isLoading - Whether the section is still loading.
+ * @property isExpanded - Whether the section should start expanded.
  * @property direction - The direction to stack the components within the section. Defaults to `vertical`.
  * @property alignment - The alignment mode to use within the section. Defaults to `start`.
  * @category Component Props
@@ -14,6 +16,8 @@ export type CollapsibleSectionProps = {
   // We can't use `JSXElement` because it causes a circular reference.
   children: SnapsChildren<GenericSnapElement>;
   label: string;
+  isLoading?: boolean;
+  isExpanded?: boolean;
   direction?: 'vertical' | 'horizontal' | undefined;
   alignment?:
     | 'start'
