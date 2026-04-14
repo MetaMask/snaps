@@ -3,6 +3,7 @@ import type { AvatarElement } from './Avatar';
 import type { BannerElement } from './Banner';
 import type { BoxElement } from './Box';
 import type { CardElement } from './Card';
+import type { CollapsibleSectionElement } from './CollapsibleSection';
 import type { ContainerElement } from './Container';
 import type { CopyableElement } from './Copyable';
 import type { DividerElement } from './Divider';
@@ -27,6 +28,7 @@ export * from './Address';
 export * from './Avatar';
 export * from './Box';
 export * from './Card';
+export * from './CollapsibleSection';
 export * from './Copyable';
 export * from './Divider';
 export * from './Value';
@@ -66,6 +68,7 @@ export type JSXElement =
   | LinkElement
   | RowElement
   | SectionElement
+  | CollapsibleSectionElement
   | SpinnerElement
   | TextElement
   | TooltipElement

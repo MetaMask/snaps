@@ -39,6 +39,7 @@ import {
   AddressInput,
   AccountSelector,
   DateTimePicker,
+  CollapsibleSection,
 } from './components';
 import {
   AddressStruct,
@@ -82,6 +83,7 @@ import {
   AddressInputStruct,
   AccountSelectorStruct,
   DateTimePickerStruct,
+  CollapsibleSectionStruct,
 } from './validation';
 
 describe('KeyStruct', () => {
@@ -1663,6 +1665,77 @@ describe('SectionStruct', () => {
     </Section>,
   ])('does not validate "%p"', (value) => {
     expect(is(value, SectionStruct)).toBe(false);
+  });
+});
+
+describe('CollapsibleSectionStruct', () => {
+  it.each([
+    <CollapsibleSection label="Details">
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+    </CollapsibleSection>,
+    <CollapsibleSection label="Transaction details">
+      <Row label="From">
+        <Address address="0x1234567890123456789012345678901234567890" />
+      </Row>
+      <Row
+        label="To"
+        variant="warning"
+        tooltip="This address has been deemed dangerous."
+      >
+        <Address address="0x0000000000000000000000000000000000000000" />
+      </Row>
+    </CollapsibleSection>,
+    <CollapsibleSection
+      label="Details"
+      direction="horizontal"
+      alignment="space-between"
+    >
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </CollapsibleSection>,
+    <CollapsibleSection label="Details" direction="horizontal">
+      <Text>foo</Text>
+      <Row label="label">
+        <Image src="<svg />" alt="alt" />
+      </Row>
+    </CollapsibleSection>,
+  ])('validates a collapsible section element', (value) => {
+    expect(is(value, CollapsibleSectionStruct)).toBe(true);
+  });
+
+  it.each([
+    'foo',
+    42,
+    null,
+    undefined,
+    {},
+    [],
+    // @ts-expect-error - Invalid props.
+    <CollapsibleSection />,
+    // @ts-expect-error - Invalid props.
+    <CollapsibleSection label="Details" />,
+    // @ts-expect-error - Invalid props.
+    <CollapsibleSection label="Details"></CollapsibleSection>,
+    // @ts-expect-error - Missing label.
+    <CollapsibleSection>
+      <Text>foo</Text>
+    </CollapsibleSection>,
+    <Text>foo</Text>,
+    <Box>
+      <Text>foo</Text>
+    </Box>,
+    // @ts-expect-error - Invalid props.
+    <CollapsibleSection label="Details" direction="diagonal">
+      <Box>
+        <Text>Hello world!</Text>
+      </Box>
+    </CollapsibleSection>,
+  ])('does not validate "%p"', (value) => {
+    expect(is(value, CollapsibleSectionStruct)).toBe(false);
   });
 });
 
