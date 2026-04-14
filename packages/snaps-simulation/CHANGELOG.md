@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- feat: add capabilities to keyring endowment ([#3903](https://github.com/MetaMask/snaps/pull/3903))
-- chore: Bump @metamask/messenger from 1.1.0 to 1.1.1 ([#3944](https://github.com/MetaMask/snaps/pull/3944))
-
 ## [4.1.3]
 
 ### Changed
