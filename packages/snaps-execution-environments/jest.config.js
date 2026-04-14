@@ -10,6 +10,7 @@ module.exports = deepmerge(baseConfig, {
   coverageReporters: ['html', 'json-summary', 'json'],
   coveragePathIgnorePatterns: [
     './src/index.ts',
+    './src/endowments.ts',
     './src/iframe/index.ts',
     './src/offscreen/index.ts',
     './src/webworker/executor/index.ts',
