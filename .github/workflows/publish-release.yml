@@ -74,6 +74,7 @@ jobs:
           name: publish-release-artifacts-${{ github.sha }}
           include-hidden-files: true
           retention-days: 4
+          if-no-files-found: error
           path: |
             ./packages/**/dist
             ./node_modules/.yarn-state.yml
