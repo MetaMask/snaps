@@ -1039,10 +1039,10 @@ export const BoxChildStruct = typedUnion([
   IconStruct,
   SelectorStruct,
   SectionStruct,
-  CollapsibleSectionStruct,
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  CollapsibleSectionStruct,
 ]);
 
 /**
@@ -1114,10 +1114,10 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   SelectorStruct,
   SelectorOptionStruct,
   SectionStruct,
-  CollapsibleSectionStruct,
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  CollapsibleSectionStruct,
 ]);
 
 /**
