@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [15.1.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Make `KeyringOrigin` caveat explicitly optional ([#3955](https://github.com/MetaMask/snaps/pull/3955))
+- Make `KeyringOrigin` caveat explicitly optional ([#3955](https://github.com/MetaMask/snaps/pull/3955))
 
 ## [15.1.0]
 
