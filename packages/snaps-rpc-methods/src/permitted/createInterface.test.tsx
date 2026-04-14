@@ -195,7 +195,7 @@ describe('snap_createInterface', () => {
       error: {
         code: -32602,
         message:
-          'Invalid params: At path: ui -- Expected type to be one of: "AccountSelector", "Address", "AssetSelector", "AddressInput", "Bold", "Box", "Button", "Copyable", "DateTimePicker", "Divider", "Dropdown", "RadioGroup", "Field", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Banner", "Skeleton", "Container", but received: undefined.',
+          'Invalid params: At path: ui -- Expected type to be one of: "AccountSelector", "Address", "AssetSelector", "AddressInput", "Bold", "Box", "Button", "Copyable", "DateTimePicker", "Divider", "Dropdown", "RadioGroup", "Field", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Banner", "Skeleton", "CollapsibleSection", "Container", but received: undefined.',
         stack: expect.any(String),
       },
       id: 1,

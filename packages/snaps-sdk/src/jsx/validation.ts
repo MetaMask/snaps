@@ -81,6 +81,7 @@ import type {
   SelectorOptionElement,
   BannerElement,
   DateTimePickerElement,
+  CollapsibleSectionElement,
 } from './components';
 import { IconName } from './components';
 import type { Describe } from '../internals';
@@ -769,6 +770,29 @@ export const SectionStruct: Describe<SectionElement> = element('Section', {
 });
 
 /**
+ * A struct for the {@link CollapsibleSectionElement} type.
+ */
+export const CollapsibleSectionStruct: Describe<CollapsibleSectionElement> =
+  element('CollapsibleSection', {
+    children: BoxChildrenStruct,
+    label: string(),
+    isLoading: optional(boolean()),
+    isExpanded: optional(boolean()),
+    direction: optional(
+      nullUnion([literal('horizontal'), literal('vertical')]),
+    ),
+    alignment: optional(
+      nullUnion([
+        literal('start'),
+        literal('center'),
+        literal('end'),
+        literal('space-between'),
+        literal('space-around'),
+      ]),
+    ),
+  });
+
+/**
  * A subset of JSX elements that are allowed as children of the Footer component.
  * This set should include a single button or a tuple of two buttons.
  */
@@ -1020,6 +1044,7 @@ export const BoxChildStruct = typedUnion([
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  CollapsibleSectionStruct,
 ]);
 
 /**
@@ -1094,6 +1119,7 @@ export const JSXElementStruct: Describe<JSXElement> = typedUnion([
   AvatarStruct,
   BannerStruct,
   SkeletonStruct,
+  CollapsibleSectionStruct,
 ]);
 
 /**
