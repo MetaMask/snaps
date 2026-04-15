@@ -10515,16 +10515,19 @@ describe('SnapController', () => {
       await snapController.updateRegistry();
 
       // Ensure that CheckSnapBlockListArg is correct
-      expect(registry.get).toHaveBeenCalledWith({
-        [mockSnapA.id]: {
-          version: mockSnapA.manifest.version,
-          checksum: mockSnapA.manifest.source.shasum,
+      expect(registry.get).toHaveBeenCalledWith(
+        {
+          [mockSnapA.id]: {
+            version: mockSnapA.manifest.version,
+            checksum: mockSnapA.manifest.source.shasum,
+          },
+          [mockSnapB.id]: {
+            version: mockSnapB.manifest.version,
+            checksum: mockSnapB.manifest.source.shasum,
+          },
         },
-        [mockSnapB.id]: {
-          version: mockSnapB.manifest.version,
-          checksum: mockSnapB.manifest.source.shasum,
-        },
-      });
+        true,
+      );
 
       // A is blocked and disabled
       expect(snapController.getSnap(mockSnapA.id)?.blocked).toBe(true);

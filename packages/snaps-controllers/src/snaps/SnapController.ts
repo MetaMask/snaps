@@ -1471,6 +1471,7 @@ export class SnapController extends BaseController<
         },
         {},
       ),
+      true,
     );
 
     await Promise.all(
@@ -1496,6 +1497,7 @@ export class SnapController extends BaseController<
           const resolvedVersion = await this.#resolveAllowlistVersion(
             snap.id,
             preinstalledVersionRange,
+            true,
           );
 
           if (
@@ -3100,11 +3102,13 @@ export class SnapController extends BaseController<
   async #resolveAllowlistVersion(
     snapId: SnapId,
     versionRange: SemVerRange,
+    skipRefetch = false,
   ): Promise<SemVerRange> {
     return await this.messenger.call(
       'SnapRegistryController:resolveVersion',
       snapId,
       versionRange,
+      skipRefetch,
     );
   }
 
