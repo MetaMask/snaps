@@ -1471,6 +1471,7 @@ export class SnapController extends BaseController<
         },
         {},
       ),
+      true,
     );
 
     await Promise.all(

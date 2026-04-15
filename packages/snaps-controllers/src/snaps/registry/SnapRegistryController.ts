@@ -321,11 +321,12 @@ export class SnapRegistryController extends BaseController<
 
   async get(
     snaps: SnapRegistryRequest,
+    skipRefetch = false,
   ): Promise<Record<string, SnapRegistryResult>> {
     return Object.entries(snaps).reduce<
       Promise<Record<string, SnapRegistryResult>>
     >(async (previousPromise, [snapId, snapInfo]) => {
-      const result = await this.#getSingle(snapId, snapInfo);
+      const result = await this.#getSingle(snapId, snapInfo, skipRefetch);
       const acc = await previousPromise;
       acc[snapId] = result;
       return acc;
