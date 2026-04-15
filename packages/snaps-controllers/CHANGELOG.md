@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Skip refetching the registry in `handleRegistryUpdate` ([#3961](https://github.com/MetaMask/snaps/pull/3961))
+- Skip refetching the registry in `handleRegistryUpdate` ([#3961](https://github.com/MetaMask/snaps/pull/3961))
 
 ## [20.0.0]
 
