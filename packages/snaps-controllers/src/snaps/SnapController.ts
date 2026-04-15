@@ -3101,13 +3101,13 @@ export class SnapController extends BaseController<
   async #resolveAllowlistVersion(
     snapId: SnapId,
     versionRange: SemVerRange,
-    refetch = false,
+    skipRefetch = false,
   ): Promise<SemVerRange> {
     return await this.messenger.call(
       'SnapRegistryController:resolveVersion',
       snapId,
       versionRange,
-      refetch,
+      skipRefetch,
     );
   }
 
