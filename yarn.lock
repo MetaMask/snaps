@@ -2905,18 +2905,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/base-controller@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/base-controller@npm:9.0.1"
-  dependencies:
-    "@metamask/messenger": "npm:^1.0.0"
-    "@metamask/utils": "npm:^11.9.0"
-    immer: "npm:^9.0.6"
-  checksum: 10/bc5052c9a38c21a52003e9a79de1f609ff127d939c87eb7b9ebe01cdf05ce2a9ee8e4635dd96f193e9951983e9554d9381af303fbadaae740445ffb2424698e8
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^9.1.0":
+"@metamask/base-controller@npm:^9.0.1, @metamask/base-controller@npm:^9.1.0":
   version: 9.1.0
   resolution: "@metamask/base-controller@npm:9.1.0"
   dependencies:
