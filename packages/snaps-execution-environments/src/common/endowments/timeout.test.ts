@@ -61,6 +61,16 @@ describe('Timeout endowments', () => {
     ).toBeUndefined();
   }, 200);
 
+  it('should default to minimum timeout when timeout is undefined', async () => {
+    const { setTimeout: _setTimeout } = timeout.factory();
+
+    expect(
+      await new Promise((resolve) => {
+        _setTimeout(resolve, undefined);
+      }),
+    ).toBeUndefined();
+  }, 300);
+
   it('the attenuated setTimeout should throw if passed a non-function', () => {
     const { setTimeout: _setTimeout } = timeout.factory();
 

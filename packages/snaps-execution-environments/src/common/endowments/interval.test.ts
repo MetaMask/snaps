@@ -71,6 +71,21 @@ describe('Interval endowments', () => {
     expect(await promise).toBeUndefined();
   });
 
+  it('should default to minimum interval when timeout is undefined', async () => {
+    const { setInterval: _setInterval, clearInterval: _clearInterval } =
+      interval.factory();
+
+    const promise = new Promise((resolve) => {
+      const handle = _setInterval(() => {
+        _clearInterval(handle);
+        resolve(undefined);
+      }, undefined);
+    });
+
+    jest.advanceTimersByTime(100);
+    expect(await promise).toBeUndefined();
+  });
+
   it('the attenuated setInterval should throw if passed a non-function', () => {
     const { setInterval: _setInterval } = interval.factory();
 

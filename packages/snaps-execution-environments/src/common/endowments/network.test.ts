@@ -200,4 +200,10 @@ describe('Network endowments', () => {
       expect(await result.json()).toStrictEqual({});
     });
   });
+
+  it('throws when notify is not provided', () => {
+    expect(() => network.factory()).toThrow(
+      'The "notify" callback is required by the network endowment factory.',
+    );
+  });
 });
