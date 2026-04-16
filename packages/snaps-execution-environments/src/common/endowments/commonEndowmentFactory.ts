@@ -13,7 +13,8 @@ import { rootRealmGlobal } from '../globalObject';
 
 /**
  * A function for sending JSON-RPC notifications from an endowment.
- * Used by the network endowment to signal outbound request lifecycle events.
+ * Used by endowments that perform outbound operations (e.g., network `fetch`)
+ * to signal request lifecycle events.
  */
 export type NotifyFunction = (
   notification: Omit<JsonRpcNotification, 'jsonrpc'>,
@@ -38,9 +39,9 @@ export type EndowmentFactoryOptions = {
 };
 
 /**
- * The object returned by an endowment factory. Contains the named endowment
- * values (keyed by name) and an optional teardown function for lifecycle
- * management.
+ * The object returned by an endowment factory. Contains the endowment values
+ * keyed by their global name (e.g., `setTimeout`, `Date`) and an optional
+ * teardown function for lifecycle management.
  */
 export type EndowmentFactoryResult = {
   /**
