@@ -84,7 +84,9 @@ function getMessage(sourceLabel: string, message: unknown, ...args: unknown[]) {
  * @param options.sourceLabel - Label identifying the source of the console call.
  * @returns The {@link console} object with the replaced methods.
  */
-function createConsole({ sourceLabel }: ConsoleEndowmentOptions) {
+function createConsole(
+  { sourceLabel }: ConsoleEndowmentOptions = {} as ConsoleEndowmentOptions,
+) {
   assert(
     sourceLabel !== undefined,
     'The "sourceLabel" option is required by the console endowment factory.',

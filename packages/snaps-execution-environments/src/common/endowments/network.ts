@@ -174,7 +174,9 @@ class AlteredResponse extends Response {
  * @returns An object containing a wrapped `fetch`
  * function, as well as a teardown function.
  */
-const createNetwork = ({ notify }: NetworkEndowmentOptions) => {
+const createNetwork = (
+  { notify }: NetworkEndowmentOptions = {} as NetworkEndowmentOptions,
+) => {
   assert(
     notify,
     'The "notify" callback is required by the network endowment factory.',
