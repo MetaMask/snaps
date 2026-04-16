@@ -3,10 +3,6 @@ import { assert } from '@metamask/utils';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import { withTeardown } from '../utils';
 
-type NetworkEndowmentOptions = Required<
-  Pick<EndowmentFactoryOptions, 'notify'>
->;
-
 /**
  * This class wraps a Response object.
  * That way, a teardown process can stop any processes left.
@@ -174,9 +170,7 @@ class AlteredResponse extends Response {
  * @returns An object containing a wrapped `fetch`
  * function, as well as a teardown function.
  */
-const createNetwork = (
-  { notify }: NetworkEndowmentOptions = {} as NetworkEndowmentOptions,
-) => {
+const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
   assert(
     notify,
     'The "notify" callback is required by the network endowment factory.',

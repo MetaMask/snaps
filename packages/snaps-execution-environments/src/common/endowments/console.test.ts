@@ -181,7 +181,6 @@ describe('Console endowment', () => {
       'The "sourceLabel" option is required by the console endowment factory.',
     );
 
-    // @ts-expect-error: Testing runtime guard for missing required option.
     expect(() => consoleEndowment.factory({})).toThrow(
       'The "sourceLabel" option is required by the console endowment factory.',
     );

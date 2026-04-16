@@ -3,10 +3,6 @@ import { assert } from '@metamask/utils';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import { rootRealmGlobal } from '../globalObject';
 
-type ConsoleEndowmentOptions = Required<
-  Pick<EndowmentFactoryOptions, 'sourceLabel'>
->;
-
 export const consoleAttenuatedMethods = new Set([
   'log',
   'assert',
@@ -84,9 +80,7 @@ function getMessage(sourceLabel: string, message: unknown, ...args: unknown[]) {
  * @param options.sourceLabel - Label identifying the source of the console call.
  * @returns The {@link console} object with the replaced methods.
  */
-function createConsole(
-  { sourceLabel }: ConsoleEndowmentOptions = {} as ConsoleEndowmentOptions,
-) {
+function createConsole({ sourceLabel }: EndowmentFactoryOptions = {}) {
   assert(
     sourceLabel !== undefined,
     'The "sourceLabel" option is required by the console endowment factory.',

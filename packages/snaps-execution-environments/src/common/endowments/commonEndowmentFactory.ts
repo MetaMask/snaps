@@ -108,18 +108,16 @@ const commonEndowments: CommonEndowmentSpecification[] = [
  * @returns An object with common endowments.
  */
 const buildCommonEndowments = (): EndowmentFactory[] => {
-  // Console and network have narrower option types for their public API,
-  // but are widened here for internal dispatch via EndowmentFactory[].
   const endowmentFactories: EndowmentFactory[] = [
     crypto,
     interval,
     math,
-    network as EndowmentFactory,
+    network,
     timeout,
     textDecoder,
     textEncoder,
     date,
-    consoleEndowment as EndowmentFactory,
+    consoleEndowment,
   ];
 
   commonEndowments.forEach((endowmentSpecification) => {
