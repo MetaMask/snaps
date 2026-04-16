@@ -5,7 +5,7 @@
         "ts-loader": true
       }
     },
-    "lavamoat>@babel/code-frame": {
+    "@testing-library/dom>@babel/code-frame": {
       "globals": {
         "console.warn": true,
         "process": true
@@ -30,7 +30,7 @@
     },
     "depcheck>@babel/traverse>@babel/template": {
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/parser": true,
         "@metamask/snaps-utils>@babel/types": true
       }
@@ -40,13 +40,13 @@
         "console.log": true
       },
       "packages": {
-        "lavamoat>@babel/code-frame": true,
+        "@testing-library/dom>@babel/code-frame": true,
         "depcheck>@babel/traverse>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
         "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/template": true,
         "@metamask/snaps-utils>@babel/types": true,
-        "eslint>debug": true,
-        "depcheck>@babel/traverse>globals": true
+        "eslint>debug": true
       }
     },
     "@metamask/snaps-utils>@babel/types": {
@@ -64,17 +64,11 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
         "vitest>magic-string>@jridgewell/sourcemap-codec": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -737,7 +731,7 @@
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
