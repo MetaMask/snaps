@@ -52,13 +52,13 @@ type ConsoleFunctions = {
  * Gets the appropriate (prepended) message to pass to one of the attenuated
  * method calls.
  *
- * @param snapId - Id of the snap that we're getting a message for.
- * @param message - The id of the snap that will interact with the endowment.
+ * @param sourceLabel - Label identifying the source of the console call.
+ * @param message - The first argument passed to the console method.
  * @param args - The array of additional arguments.
  * @returns An array of arguments to be passed into an attenuated console method call.
  */
-function getMessage(snapId: string, message: unknown, ...args: unknown[]) {
-  const prefix = `[Snap: ${snapId}]`;
+function getMessage(sourceLabel: string, message: unknown, ...args: unknown[]) {
+  const prefix = `[${sourceLabel}]`;
 
   // If the first argument is a string, prepend the prefix to the message, and keep the
   // rest of the arguments as-is.
@@ -76,11 +76,11 @@ function getMessage(snapId: string, message: unknown, ...args: unknown[]) {
  * {@link console} object, but with some methods replaced.
  *
  * @param options - Factory options used in construction of the endowment.
- * @param options.snapId - The id of the snap that will interact with the endowment.
+ * @param options.sourceLabel - Label identifying the source of the console call.
  * @returns The {@link console} object with the replaced methods.
  */
-function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
-  assert(snapId !== undefined);
+function createConsole({ sourceLabel }: EndowmentFactoryOptions = {}) {
+  assert(sourceLabel !== undefined);
   const keys = Object.getOwnPropertyNames(
     rootRealmGlobal.console,
   ) as (keyof typeof console)[];
@@ -103,7 +103,7 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
       ) => {
         rootRealmGlobal.console.assert(
           value,
-          ...getMessage(snapId, message, ...optionalParams),
+          ...getMessage(sourceLabel, message, ...optionalParams),
         );
       },
       ...consoleFunctions.reduce<ConsoleFunctions>((target, key) => {
@@ -111,7 +111,7 @@ function createConsole({ snapId }: EndowmentFactoryOptions = {}) {
           ...target,
           [key]: (message?: unknown, ...optionalParams: any[]) => {
             rootRealmGlobal.console[key](
-              ...getMessage(snapId, message, ...optionalParams),
+              ...getMessage(sourceLabel, message, ...optionalParams),
             );
           },
         };
