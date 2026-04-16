@@ -3,6 +3,10 @@ import { assert } from '@metamask/utils';
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
 import { rootRealmGlobal } from '../globalObject';
 
+type ConsoleEndowmentOptions = Required<
+  Pick<EndowmentFactoryOptions, 'sourceLabel'>
+>;
+
 export const consoleAttenuatedMethods = new Set([
   'log',
   'assert',
@@ -13,8 +17,9 @@ export const consoleAttenuatedMethods = new Set([
 ]);
 
 /**
- * A set of all the `console` values that will be passed to the snap. This has
- * all the values that are available in both the browser and Node.js.
+ * A set of all the `console` method names that will be included in the
+ * attenuated console object. Covers values available in both browser and
+ * Node.js.
  */
 export const consoleMethods = new Set([
   'debug',
@@ -72,15 +77,18 @@ function getMessage(sourceLabel: string, message: unknown, ...args: unknown[]) {
 }
 
 /**
- * Create a a {@link console} object, with the same properties as the global
+ * Create a {@link console} object, with the same properties as the global
  * {@link console} object, but with some methods replaced.
  *
  * @param options - Factory options used in construction of the endowment.
  * @param options.sourceLabel - Label identifying the source of the console call.
  * @returns The {@link console} object with the replaced methods.
  */
-function createConsole({ sourceLabel }: EndowmentFactoryOptions = {}) {
-  assert(sourceLabel !== undefined);
+function createConsole({ sourceLabel }: ConsoleEndowmentOptions) {
+  assert(
+    sourceLabel !== undefined,
+    'The "sourceLabel" option is required by the console endowment factory.',
+  );
   const keys = Object.getOwnPropertyNames(
     rootRealmGlobal.console,
   ) as (keyof typeof console)[];

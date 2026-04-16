@@ -1,9 +1,13 @@
 /**
  * Public endowment factory exports for use outside the Snaps ecosystem.
  *
+ * **Prerequisite**: These factories call the SES `harden()` global internally.
+ * The consuming environment must have loaded SES and called `lockdown()` before
+ * invoking any factory function.
+ *
  * Each module provides a `names` array and a `factory` function. Call
  * `factory()` to obtain hardened endowment values (and an optional
- * `teardownFunction` for timer-based endowments).
+ * `teardownFunction` for stateful endowments that manage resources).
  *
  * @example
  * ```ts
@@ -13,7 +17,7 @@
  * // { setTimeout, clearTimeout, teardownFunction }
  *
  * const dateEndowment = date.factory();
- * // { Date } (with noise-added Date.now)
+ * // { Date } (with attenuated Date.now)
  * ```
  *
  * @module endowments
@@ -37,5 +41,4 @@ export type {
   EndowmentFactoryOptions,
   EndowmentFactoryResult,
   EndowmentFactory,
-  CommonEndowmentSpecification,
 } from './common/endowments/commonEndowmentFactory';

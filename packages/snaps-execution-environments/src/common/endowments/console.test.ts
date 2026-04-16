@@ -39,7 +39,7 @@ describe('Console endowment', () => {
       expect(console.log).not.toStrictEqual(rootRealmGlobal.console.log);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -78,7 +78,7 @@ describe('Console endowment', () => {
       expect(console.error).not.toStrictEqual(rootRealmGlobal.console.error);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -99,7 +99,7 @@ describe('Console endowment', () => {
       expect(console.assert).not.toStrictEqual(rootRealmGlobal.console.assert);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -121,7 +121,7 @@ describe('Console endowment', () => {
       expect(console.debug).not.toStrictEqual(rootRealmGlobal.console.debug);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -142,7 +142,7 @@ describe('Console endowment', () => {
       expect(console.info).not.toStrictEqual(rootRealmGlobal.console.info);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -163,7 +163,7 @@ describe('Console endowment', () => {
       expect(console.warn).not.toStrictEqual(rootRealmGlobal.console.warn);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
+    it('prefixes output with the source label', () => {
       const { console } = consoleEndowment.factory({
         sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
       });
@@ -174,5 +174,21 @@ describe('Console endowment', () => {
         `[Snap: ${MOCK_SNAP_ID}] This is a warn message.`,
       );
     });
+  });
+
+  it('throws when sourceLabel is not provided', () => {
+    // @ts-expect-error: Testing runtime guard for missing required option.
+    expect(() => consoleEndowment.factory({})).toThrow(
+      'The "sourceLabel" option is required by the console endowment factory.',
+    );
+  });
+
+  it('supports arbitrary source labels for non-Snap consumers', () => {
+    const { console } = consoleEndowment.factory({
+      sourceLabel: 'ocap-kernel: vat-42',
+    });
+    const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
+    console.log('test message');
+    expect(logSpy).toHaveBeenCalledWith('[ocap-kernel: vat-42] test message');
   });
 });

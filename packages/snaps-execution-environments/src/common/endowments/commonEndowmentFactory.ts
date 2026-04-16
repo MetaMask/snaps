@@ -24,9 +24,9 @@ export type NotifyFunction = (
  */
 export type EndowmentFactoryOptions = {
   /**
-   * A label identifying the source of endowment interactions (e.g., console
-   * output). The caller controls the format — Snaps passes `Snap: ${snapId}`,
-   * but external consumers may use any label.
+   * A label identifying the source of endowment interactions, used as a
+   * prefix in console output. For example, passing `"MyApp"` causes console
+   * messages to be prefixed with `[MyApp]`.
    */
   sourceLabel?: string;
 
@@ -44,9 +44,10 @@ export type EndowmentFactoryOptions = {
  */
 export type EndowmentFactoryResult = {
   /**
-   * An optional function that performs cleanup when the execution environment
-   * becomes idle. Must not render endowments unusable — only restore them to
-   * their initial state, since they may be reused without reconstruction.
+   * An optional function that performs cleanup when active resources (e.g.,
+   * pending timers or open network connections) should be released. Must not
+   * render endowments unusable — only restore them to their initial state,
+   * since they may be reused without reconstruction.
    */
   teardownFunction?: () => Promise<void> | void;
   [key: string]: unknown;
@@ -106,16 +107,18 @@ const commonEndowments: CommonEndowmentSpecification[] = [
  * @returns An object with common endowments.
  */
 const buildCommonEndowments = (): EndowmentFactory[] => {
+  // Console and network have narrower option types for their public API,
+  // but are widened here for internal dispatch via EndowmentFactory[].
   const endowmentFactories: EndowmentFactory[] = [
     crypto,
     interval,
     math,
-    network,
+    network as EndowmentFactory,
     timeout,
     textDecoder,
     textEncoder,
     date,
-    consoleEndowment,
+    consoleEndowment as EndowmentFactory,
   ];
 
   commonEndowments.forEach((endowmentSpecification) => {
