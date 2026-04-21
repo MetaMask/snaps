@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
@@ -627,7 +629,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.1.0...HEAD
+[11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.2...@metamask/snaps-execution-environments@11.1.0
 [11.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.1...@metamask/snaps-execution-environments@11.0.2
 [11.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.0...@metamask/snaps-execution-environments@11.0.1
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@10.4.1...@metamask/snaps-execution-environments@11.0.0
