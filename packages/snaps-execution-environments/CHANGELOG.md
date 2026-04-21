@@ -9,15 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.1.0]
 
-### Uncategorized
-
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- chore: Bump @lavamoat/webpack from 2.0.0 to 2.1.1 ([#3945](https://github.com/MetaMask/snaps/pull/3945))
-- chore: Bump @metamask/json-rpc-engine from 10.2.3 to 10.2.4 ([#3925](https://github.com/MetaMask/snaps/pull/3925))
-
 ### Added
 
 - Export endowment factories via `@metamask/snaps-execution-environments/endowments` ([#3957](https://github.com/MetaMask/snaps/pull/3957))
+
+### Changed
+
+- Bump `@metamask/utils` from `11.10.0` to `11.11.0` ([#3935](https://github.com/MetaMask/snaps/pull/3935))
+- Bump `@metamask/json-rpc-engine` from `10.2.3` to `10.2.4` ([#3925](https://github.com/MetaMask/snaps/pull/3925))
+- Bump `@lavamoat/webpack` from `2.0.0` to `2.1.1` ([#3945](https://github.com/MetaMask/snaps/pull/3945))
 
 ## [11.0.2]
 
