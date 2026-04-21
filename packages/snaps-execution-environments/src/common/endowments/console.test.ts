@@ -16,7 +16,7 @@ describe('Console endowment', () => {
 
   it('returns console properties from rootRealmGlobal', () => {
     const { console }: { console: Partial<typeof rootRealmGlobal.console> } =
-      consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      consoleEndowment.factory({ sourceLabel: `Snap: ${MOCK_SNAP_ID}` });
     const consoleProperties = Object.getOwnPropertyNames(
       rootRealmGlobal.console,
     );
@@ -33,12 +33,16 @@ describe('Console endowment', () => {
 
   describe('log', () => {
     it('does not return the original console.log', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.log).not.toStrictEqual(rootRealmGlobal.console.log);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       console.log('This is a log message.');
       expect(logSpy).toHaveBeenCalledTimes(1);
@@ -48,7 +52,9 @@ describe('Console endowment', () => {
     });
 
     it('can handle non-string message types', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
       console.log(12345);
       console.log({ foo: 'bar' });
@@ -66,12 +72,16 @@ describe('Console endowment', () => {
 
   describe('error', () => {
     it('does not return the original console.error', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.error).not.toStrictEqual(rootRealmGlobal.console.error);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const errorSpy = jest.spyOn(rootRealmGlobal.console, 'error');
       console.error('This is an error message.');
       expect(errorSpy).toHaveBeenCalledTimes(1);
@@ -83,12 +93,16 @@ describe('Console endowment', () => {
 
   describe('assert', () => {
     it('does not return the original console.assert', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.assert).not.toStrictEqual(rootRealmGlobal.console.assert);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const assertSpy = jest.spyOn(rootRealmGlobal.console, 'assert');
       console.assert(1 > 2, 'This is an assert message.');
       expect(assertSpy).toHaveBeenCalledTimes(1);
@@ -101,12 +115,16 @@ describe('Console endowment', () => {
 
   describe('debug', () => {
     it('does not return the original console.debug', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.debug).not.toStrictEqual(rootRealmGlobal.console.debug);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const debugSpy = jest.spyOn(rootRealmGlobal.console, 'debug');
       console.debug('This is a debug message.');
       expect(debugSpy).toHaveBeenCalledTimes(1);
@@ -118,12 +136,16 @@ describe('Console endowment', () => {
 
   describe('info', () => {
     it('does not return the original console.info', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.info).not.toStrictEqual(rootRealmGlobal.console.info);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const infoSpy = jest.spyOn(rootRealmGlobal.console, 'info');
       console.info('This is an info message.');
       expect(infoSpy).toHaveBeenCalledTimes(1);
@@ -135,12 +157,16 @@ describe('Console endowment', () => {
 
   describe('warn', () => {
     it('does not return the original console.warn', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       expect(console.warn).not.toStrictEqual(rootRealmGlobal.console.warn);
     });
 
-    it('will log a message identifying the source of the call (snap id)', () => {
-      const { console } = consoleEndowment.factory({ snapId: MOCK_SNAP_ID });
+    it('prefixes output with the source label', () => {
+      const { console } = consoleEndowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+      });
       const warnSpy = jest.spyOn(rootRealmGlobal.console, 'warn');
       console.warn('This is a warn message.');
       expect(warnSpy).toHaveBeenCalledTimes(1);
@@ -148,5 +174,24 @@ describe('Console endowment', () => {
         `[Snap: ${MOCK_SNAP_ID}] This is a warn message.`,
       );
     });
+  });
+
+  it('throws when sourceLabel is not provided', () => {
+    expect(() => consoleEndowment.factory()).toThrow(
+      'The "sourceLabel" option is required by the console endowment factory.',
+    );
+
+    expect(() => consoleEndowment.factory({})).toThrow(
+      'The "sourceLabel" option is required by the console endowment factory.',
+    );
+  });
+
+  it('supports arbitrary source labels for non-Snap consumers', () => {
+    const { console } = consoleEndowment.factory({
+      sourceLabel: 'ocap-kernel: vat-42',
+    });
+    const logSpy = jest.spyOn(rootRealmGlobal.console, 'log');
+    console.log('test message');
+    expect(logSpy).toHaveBeenCalledWith('[ocap-kernel: vat-42] test message');
   });
 });

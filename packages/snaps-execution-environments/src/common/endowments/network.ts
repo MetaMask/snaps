@@ -157,20 +157,24 @@ class AlteredResponse extends Response {
 /**
  * Create a network endowment, consisting of a `fetch` function.
  * This allows us to provide a teardown function, so that we can cancel
- * any pending requests, connections, streams, etc. that may be open when a snap
- * is terminated.
+ * any pending requests, connections, streams, etc. that may be open when the
+ * execution context is torn down.
  *
  * This wraps the original implementation of `fetch`,
  * to ensure that a bad actor cannot get access to the original function, thus
  * potentially preventing the network requests from being torn down.
  *
  * @param options - An options bag.
- * @param options.notify - A reference to the notify function of the snap executor.
+ * @param options.notify - A notification callback for outbound request
+ * lifecycle events.
  * @returns An object containing a wrapped `fetch`
  * function, as well as a teardown function.
  */
 const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
-  assert(notify, 'Notify must be passed to network endowment factory');
+  assert(
+    notify,
+    'The "notify" callback is required by the network endowment factory.',
+  );
   // Open fetch calls or open body streams
   const openConnections = new Set<{ cancel: () => Promise<void> }>();
   // Track last teardown count

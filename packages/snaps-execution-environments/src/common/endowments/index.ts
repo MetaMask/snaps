@@ -3,23 +3,13 @@ import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
 import { logWarning } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
-import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
+import type {
+  EndowmentFactoryOptions,
+  EndowmentFactoryResult,
+  NotifyFunction,
+} from './commonEndowmentFactory';
 import buildCommonEndowments from './commonEndowmentFactory';
-import type { NotifyFunction } from '../BaseSnapExecutor';
 import { rootRealmGlobal } from '../globalObject';
-
-type EndowmentFactoryResult = {
-  /**
-   * A function that performs any necessary teardown when the snap becomes idle.
-   *
-   * NOTE:** The endowments are not reconstructed if the snap is re-invoked
-   * before being terminated, so the teardown operation must not render the
-   * endowments unusable; it should simply restore the endowments to their
-   * original state.
-   */
-  teardownFunction?: () => Promise<void> | void;
-  [key: string]: unknown;
-};
 
 /**
  * Retrieve consolidated endowment factories for common endowments.
@@ -89,7 +79,7 @@ export function createEndowments({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const { teardownFunction, ...endowment } = endowmentFactories.get(
             endowmentName,
-          )!({ snapId, notify });
+          )!({ sourceLabel: `Snap: ${snapId}`, notify });
           Object.assign(attenuatedEndowments, endowment);
           if (teardownFunction) {
             teardowns.push(teardownFunction);

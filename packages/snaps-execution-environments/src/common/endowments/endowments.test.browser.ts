@@ -43,7 +43,10 @@ describe('endowments', () => {
     const modules = buildCommonEndowments();
     modules.forEach((endowment) =>
       // @ts-expect-error: Partial mock.
-      endowment.factory({ snapId: MOCK_SNAP_ID, notify: mockNotify }),
+      endowment.factory({
+        sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
+        notify: mockNotify,
+      }),
     );
 
     // Specially attenuated endowments or endowments that require
@@ -70,7 +73,7 @@ describe('endowments', () => {
     });
     const { Date: DateAttenuated } = date.factory();
     const { console: consoleAttenuated } = consoleEndowment.factory({
-      snapId: MOCK_SNAP_ID,
+      sourceLabel: `Snap: ${MOCK_SNAP_ID}`,
     });
 
     const TEST_ENDOWMENTS = {

@@ -89,9 +89,7 @@ export type InvokeSnap = (
   args: InvokeSnapArgs | undefined,
 ) => Promise<Json>;
 
-export type NotifyFunction = (
-  notification: Omit<JsonRpcNotification, 'jsonrpc'>,
-) => Promise<void>;
+export type { NotifyFunction } from './endowments/commonEndowmentFactory';
 
 export class BaseSnapExecutor {
   readonly #snapData: Map<string, SnapData>;

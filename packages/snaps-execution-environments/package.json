@@ -28,6 +28,16 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./endowments": {
+      "import": {
+        "types": "./dist/endowments.d.mts",
+        "default": "./dist/endowments.mjs"
+      },
+      "require": {
+        "types": "./dist/endowments.d.cts",
+        "default": "./dist/endowments.cjs"
+      }
+    },
     "./node-process": "./dist/webpack/node-process/bundle.js",
     "./node-thread": "./dist/webpack/node-thread/bundle.js",
     "./package.json": "./package.json"

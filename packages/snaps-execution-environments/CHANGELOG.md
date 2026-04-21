@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Export endowment factories via `@metamask/snaps-execution-environments/endowments` ([#3957](https://github.com/MetaMask/snaps/pull/3957))
+
 ## [11.0.2]
 
 ### Changed

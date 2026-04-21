@@ -1,3 +1,5 @@
+import type { JsonRpcNotification } from '@metamask/utils';
+
 import consoleEndowment from './console';
 import crypto from './crypto';
 import date from './date';
@@ -7,19 +9,64 @@ import network from './network';
 import textDecoder from './textDecoder';
 import textEncoder from './textEncoder';
 import timeout from './timeout';
-import type { NotifyFunction } from '../BaseSnapExecutor';
 import { rootRealmGlobal } from '../globalObject';
 
+/**
+ * A function for sending JSON-RPC notifications from an endowment.
+ * Used by endowments that perform outbound operations (e.g., network `fetch`)
+ * to signal request lifecycle events.
+ */
+export type NotifyFunction = (
+  notification: Omit<JsonRpcNotification, 'jsonrpc'>,
+) => Promise<void>;
+
+/**
+ * Options passed to endowment factory functions.
+ */
 export type EndowmentFactoryOptions = {
-  snapId?: string;
+  /**
+   * A label identifying the source of endowment interactions, used as a
+   * prefix in console output. For example, passing `"MyApp"` causes console
+   * messages to be prefixed with `[MyApp]`.
+   */
+  sourceLabel?: string;
+
+  /**
+   * A notification callback used by endowments that perform outbound
+   * operations (e.g., network `fetch`).
+   */
   notify?: NotifyFunction;
 };
 
-export type EndowmentFactory = {
-  names: readonly string[];
-  factory: (options?: EndowmentFactoryOptions) => { [key: string]: unknown };
+/**
+ * The object returned by an endowment factory. Contains the endowment values
+ * keyed by their global name (e.g., `setTimeout`, `Date`) and an optional
+ * teardown function for lifecycle management.
+ */
+export type EndowmentFactoryResult = {
+  /**
+   * An optional function that performs cleanup when active resources (e.g.,
+   * pending timers or open network connections) should be released. Must not
+   * render endowments unusable — only restore them to their initial state,
+   * since they may be reused without reconstruction.
+   */
+  teardownFunction?: () => Promise<void> | void;
+  [key: string]: unknown;
 };
 
+/**
+ * Describes an endowment factory module. Each module exposes the names of
+ * the endowments it provides and a factory function that produces them.
+ */
+export type EndowmentFactory = {
+  names: readonly string[];
+  factory: (options?: EndowmentFactoryOptions) => EndowmentFactoryResult;
+};
+
+/**
+ * Describes a simple global value that should be hardened and exposed as an
+ * endowment without additional attenuation.
+ */
 export type CommonEndowmentSpecification = {
   endowment: unknown;
   name: string;
