@@ -114,7 +114,6 @@ export default defineConfig({
       // The files to exclude from the coverage report.
       exclude: [
         'src/**/index.ts',
-        'src/endowments.ts',
         'src/**/*.d.ts',
         'src/**/*.test.ts',
         'src/**/test-utils/**',
