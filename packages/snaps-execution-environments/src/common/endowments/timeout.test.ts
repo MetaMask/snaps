@@ -66,9 +66,9 @@ describe('Timeout endowments', () => {
 
     expect(
       await new Promise((resolve) => {
-        _setTimeout(resolve, undefined);
+        _setTimeout(() => resolve('foo'), undefined);
       }),
-    ).toBeUndefined();
+    ).toBe('foo');
   }, 300);
 
   it('the attenuated setTimeout should throw if passed a non-function', () => {

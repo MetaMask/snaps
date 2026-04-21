@@ -78,12 +78,12 @@ describe('Interval endowments', () => {
     const promise = new Promise((resolve) => {
       const handle = _setInterval(() => {
         _clearInterval(handle);
-        resolve(undefined);
+        resolve('foo');
       }, undefined);
     });
 
-    jest.advanceTimersByTime(100);
-    expect(await promise).toBeUndefined();
+    jest.advanceTimersByTime(10);
+    expect(await promise).toBe('foo');
   });
 
   it('the attenuated setInterval should throw if passed a non-function', () => {
