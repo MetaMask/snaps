@@ -1,6 +1,7 @@
-import type {
-  PermissionConstraint,
-  PermissionSpecificationConstraint,
+import {
+  createRestrictedMethodMessenger,
+  type PermissionConstraint,
+  type PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
 import type { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
@@ -14,6 +15,7 @@ import {
   restrictedMethodPermissionBuilders,
 } from './restricted';
 import { selectHooks } from './utils';
+import { Messenger } from '@metamask/messenger';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
@@ -64,10 +66,12 @@ export const buildSnapEndowmentSpecifications = (
 export const buildSnapRestrictedMethodSpecifications = (
   excludedPermissions: string[],
   hooks: Record<string, unknown>,
+  messenger: Messenger<string>,
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-  >((specifications, { targetName, specificationBuilder, methodHooks }) => {
+   // @ts-expect-error TypeScript not convinced actionNames exists.
+  >((specifications, { targetName, specificationBuilder, methodHooks, actionNames }) => {
     if (!excludedPermissions.includes(targetName)) {
       specifications[targetName] = specificationBuilder({
         // @ts-expect-error The selectHooks type is wonky
@@ -75,6 +79,11 @@ export const buildSnapRestrictedMethodSpecifications = (
           hooks,
           methodHooks,
         ) as Pick<typeof hooks, keyof typeof methodHooks>,
+        messenger: createRestrictedMethodMessenger({
+          namespace: targetName,
+          rootMessenger: messenger,
+          actionNames,
+        })
       });
     }
     return specifications;
