@@ -8,6 +8,7 @@ import type {
 } from '@metamask/messenger';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import {
+  createPermissionMiddleware,
   PermissionDoesNotExistError,
   type Caveat,
   type RequestedPermissions,
@@ -454,8 +455,9 @@ export async function installSnap<
     options,
   });
 
-  const permissionMiddleware = permissionController.createPermissionMiddleware({
+  const permissionMiddleware = createPermissionMiddleware({
     origin: snapId,
+    messenger: controllerMessenger,
   });
 
   const engine = createJsonRpcEngine({
