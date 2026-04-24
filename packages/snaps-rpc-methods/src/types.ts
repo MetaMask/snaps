@@ -48,3 +48,17 @@ export type PermittedHandlerExport<
   hookNames: HookNames<Hooks>;
   methodNames: string[];
 };
+
+export type HdKeyring = {
+    type: 'hd',
+    seed?: Uint8Array;
+    mnemonic?: Uint8Array;
+}
+
+export type KeyringControllerWithKeyringAction = {
+    type: 'KeyringController:withKeyring';
+    handler: (selector: {
+      type: string;
+      index?: number;
+    } | { id: string }, operation: (args: { keyring: HdKeyring }) => Promise<unknown>) => Promise<unknown>;
+};
