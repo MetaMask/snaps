@@ -90,29 +90,34 @@ export function getPermissionSpecifications({
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({}),
     ...buildSnapEndowmentSpecifications(EXCLUDED_SNAP_ENDOWMENTS),
-    ...buildSnapRestrictedMethodSpecifications(EXCLUDED_SNAP_PERMISSIONS, {
-      // Shared hooks.
-      ...hooks,
+    ...buildSnapRestrictedMethodSpecifications(
+      EXCLUDED_SNAP_PERMISSIONS,
+      {
+        // Shared hooks.
+        ...hooks,
 
-      // Snaps-specific hooks.
-      clearSnapState: getClearSnapStateMethodImplementation(runSaga),
-      getPreferences: getGetPreferencesMethodImplementation(options),
-      getSnapState: getGetSnapStateMethodImplementation(runSaga),
-      getUnlockPromise: asyncResolve(true),
+        // Snaps-specific hooks.
+        clearSnapState: getClearSnapStateMethodImplementation(runSaga),
+        getPreferences: getGetPreferencesMethodImplementation(options),
+        getSnapState: getGetSnapStateMethodImplementation(runSaga),
+        getUnlockPromise: asyncResolve(true),
 
-      // TODO: Allow the user to specify the result of this function.
-      isOnPhishingList: resolve(false),
+        // TODO: Allow the user to specify the result of this function.
+        isOnPhishingList: resolve(false),
 
-      maybeUpdatePhishingList: asyncResolve(),
-      requestUserApproval: getRequestUserApprovalImplementation(runSaga),
-      showInAppNotification: getShowInAppNotificationImplementation(runSaga),
-      showNativeNotification: getShowNativeNotificationImplementation(runSaga),
-      updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
-      createInterface: getCreateInterfaceImplementation(controllerMessenger),
-      getInterface: getGetInterfaceImplementation(controllerMessenger),
-      setInterfaceDisplayed:
-        getSetInterfaceDisplayedImplementation(controllerMessenger),
-    }),
+        maybeUpdatePhishingList: asyncResolve(),
+        requestUserApproval: getRequestUserApprovalImplementation(runSaga),
+        showInAppNotification: getShowInAppNotificationImplementation(runSaga),
+        showNativeNotification:
+          getShowNativeNotificationImplementation(runSaga),
+        updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
+        createInterface: getCreateInterfaceImplementation(controllerMessenger),
+        getInterface: getGetInterfaceImplementation(controllerMessenger),
+        setInterfaceDisplayed:
+          getSetInterfaceDisplayedImplementation(controllerMessenger),
+      },
+      controllerMessenger,
+    ),
   };
 }
 
