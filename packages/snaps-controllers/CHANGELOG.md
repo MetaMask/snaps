@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.2]
 
-### Uncategorized
+### Fixed
 
-- fix: Increase iframe unload timeout ([#3971](https://github.com/MetaMask/snaps/pull/3971))
+- Increase iframe unload timeout ([#3971](https://github.com/MetaMask/snaps/pull/3971))
 
 ## [20.0.1]
 
