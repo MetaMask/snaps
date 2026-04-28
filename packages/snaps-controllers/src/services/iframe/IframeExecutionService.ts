@@ -48,7 +48,7 @@ export class IframeExecutionService extends ExecutionService<Window> {
         iframe.addEventListener('load', () => resolve(), { once: true });
         iframe.src = 'about:blank';
       }),
-      10,
+      1_000,
     );
 
     iframe.remove();
