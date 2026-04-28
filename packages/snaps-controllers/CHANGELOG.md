@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.2]
+
 ### Uncategorized
 
 - fix: Increase iframe unload timeout ([#3971](https://github.com/MetaMask/snaps/pull/3971))
@@ -1199,7 +1201,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.2...HEAD
+[20.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.1...@metamask/snaps-controllers@20.0.2
 [20.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.0...@metamask/snaps-controllers@20.0.1
 [20.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.1...@metamask/snaps-controllers@20.0.0
 [19.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@19.0.0...@metamask/snaps-controllers@19.0.1
