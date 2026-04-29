@@ -166,17 +166,7 @@ export class MultichainRoutingService {
     scope: CaipChainId,
     request: JsonRpcRequest,
   ) {
-    const accounts = this.#messenger
-      .call('AccountsController:listMultichainAccounts', scope)
-      .filter(
-        (
-          account: InternalAccount,
-        ): account is InternalAccount & {
-          metadata: Required<InternalAccount['metadata']>;
-        } =>
-          Boolean(account.metadata.snap?.enabled) &&
-          account.methods.includes(request.method),
-      );
+    const accounts = this.#getSupportedAccountsMetadata(scope, request.method);
 
     // If no accounts can service the request, return null.
     if (accounts.length === 0) {
@@ -349,12 +339,31 @@ export class MultichainRoutingService {
    * Get a list of metadata for supported accounts for a given scope from the client.
    *
    * @param scope - The CAIP-2 scope.
+   * @param method - An optional method that the account should support.
    * @returns A list of metadata for the supported accounts.
    */
-  #getSupportedAccountsMetadata(scope: CaipChainId): InternalAccount[] {
+  #getSupportedAccountsMetadata(
+    scope: CaipChainId,
+    method?: string,
+  ): (InternalAccount & {
+    metadata: Required<InternalAccount['metadata']>;
+  })[] {
+    const runnableSnaps = this.#messenger
+      .call('SnapController:getRunnableSnaps')
+      .map((snap) => snap.id);
     return this.#messenger
       .call('AccountsController:listMultichainAccounts', scope)
-      .filter((account: InternalAccount) => account.metadata.snap?.enabled);
+      .filter(
+        (
+          account: InternalAccount,
+        ): account is InternalAccount & {
+          metadata: Required<InternalAccount['metadata']>;
+        } =>
+          account.metadata.snap?.id !== undefined &&
+          runnableSnaps.includes(account.metadata.snap?.id) &&
+          ((method !== undefined && account.methods.includes(method)) ||
+            method === undefined),
+      );
   }
 
   /**
@@ -395,10 +404,10 @@ export class MultichainRoutingService {
    * @returns True if the router can service the scope, otherwise false.
    */
   isSupportedScope(scope: CaipChainId): boolean {
-    const hasAccountSnap = this.#messenger
-      .call('AccountsController:listMultichainAccounts', scope)
-      .some((account: InternalAccount) => account.metadata.snap?.enabled);
     // We currently assume here that if one Snap exists that service the scope, we can service the scope generally.
-    return hasAccountSnap || this.#getProtocolSnaps(scope).length > 0;
+    return (
+      this.#getSupportedAccountsMetadata(scope).length > 0 ||
+      this.#getProtocolSnaps(scope).length > 0
+    );
   }
 }

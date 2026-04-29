@@ -15,7 +15,7 @@ export type InternalAccount = {
   scopes: CaipChainId[];
   metadata: {
     name: string;
-    snap?: { id: SnapId; enabled: boolean; name: string };
+    snap?: { id: SnapId };
   };
 };
 

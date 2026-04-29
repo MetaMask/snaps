@@ -38,6 +38,13 @@ describe('MultichainRoutingService', () => {
       });
 
       rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
+
+      rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
         () => MOCK_BTC_ACCOUNTS,
       );
@@ -91,6 +98,13 @@ describe('MultichainRoutingService', () => {
       });
 
       rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
+
+      rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
         () => MOCK_SOLANA_ACCOUNTS,
       );
@@ -141,6 +155,13 @@ describe('MultichainRoutingService', () => {
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
@@ -231,7 +252,7 @@ describe('MultichainRoutingService', () => {
       });
 
       expect(messenger.call).toHaveBeenNthCalledWith(
-        5,
+        6,
         'SnapController:handleRequest',
         {
           snapId: MOCK_SNAP_ID,
@@ -303,6 +324,13 @@ describe('MultichainRoutingService', () => {
       });
 
       rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
+
+      rootMessenger.registerActionHandler(
         'SnapController:handleRequest',
         async ({ handler }) => {
           if (handler === HandlerType.OnKeyringRequest) {
@@ -351,6 +379,13 @@ describe('MultichainRoutingService', () => {
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'SnapController:handleRequest',
@@ -404,6 +439,13 @@ describe('MultichainRoutingService', () => {
         messenger,
         withSnapKeyring,
       });
+
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
+      );
 
       rootMessenger.registerActionHandler(
         'SnapController:handleRequest',
@@ -575,6 +617,13 @@ describe('MultichainRoutingService', () => {
       rootMessenger.registerActionHandler(
         'AccountsController:listMultichainAccounts',
         () => MOCK_SOLANA_ACCOUNTS,
+      );
+
+      rootMessenger.registerActionHandler(
+        'SnapController:getRunnableSnaps',
+        () => {
+          return [getTruncatedSnap()];
+        },
       );
 
       expect(
