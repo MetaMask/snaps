@@ -22,9 +22,7 @@ export const MOCK_BTC_ACCOUNTS = [
       lastSelected: 1729154128902,
       name: 'Bitcoin Account',
       snap: {
-        enabled: true,
         id: MOCK_SNAP_ID,
-        name: 'Bitcoin',
       },
     },
     methods: ['sendBitcoin'],
@@ -50,9 +48,7 @@ export const MOCK_SOLANA_ACCOUNTS = [
       lastSelected: 1729154128902,
       name: 'Solana Account',
       snap: {
-        enabled: true,
         id: MOCK_SNAP_ID,
-        name: 'Solana',
       },
     },
     methods: ['signAndSendTransaction'],
