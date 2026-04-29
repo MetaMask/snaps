@@ -351,6 +351,7 @@ export class MultichainRoutingService {
     const runnableSnaps = this.#messenger
       .call('SnapController:getRunnableSnaps')
       .map((snap) => snap.id);
+
     return this.#messenger
       .call('AccountsController:listMultichainAccounts', scope)
       .filter(
