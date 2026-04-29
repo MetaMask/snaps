@@ -361,8 +361,7 @@ export class MultichainRoutingService {
         } =>
           account.metadata.snap?.id !== undefined &&
           runnableSnaps.includes(account.metadata.snap?.id) &&
-          ((method !== undefined && account.methods.includes(method)) ||
-            method === undefined),
+          (method === undefined || account.methods.includes(method)),
       );
   }
 
