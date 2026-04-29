@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.3]
 
-### Uncategorized
+### Fixed
 
-- fix: Stop relying on account metadata for `MultichainRoutingService` ([#3974](https://github.com/MetaMask/snaps/pull/3974))
+- Stop relying on account metadata for `MultichainRoutingService` ([#3974](https://github.com/MetaMask/snaps/pull/3974))
 
 ## [20.0.2]
 
