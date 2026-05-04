@@ -4,7 +4,6 @@ export * from './get-entropy-sources';
 export * from './get-mnemonic';
 export * from './get-preferences';
 export * from './get-snap';
-export * from './interface';
 export * from './notifications';
 export * from './permitted';
 export * from './request-user-approval';
