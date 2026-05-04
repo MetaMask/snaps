@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceStateParams,
@@ -11,6 +10,7 @@ import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 import { UI_PERMISSIONS } from '../utils';
 

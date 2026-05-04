@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import type { GetClientStatusResult } from '@metamask/snaps-sdk';
 import { getPlatformVersion } from '@metamask/snaps-utils';
 import type {
@@ -8,6 +7,7 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_getClientStatus';

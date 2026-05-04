@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
@@ -11,6 +10,7 @@ import { create, object, string, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_closeWebSocket';

@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
   EntropySource,
@@ -13,6 +12,7 @@ import { getBip32EntropyBuilder } from '../restricted/getBip32Entropy';
 import { getBip32PublicKeyBuilder } from '../restricted/getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../restricted/getBip44Entropy';
 import { getEntropyBuilder } from '../restricted/getEntropy';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 /**

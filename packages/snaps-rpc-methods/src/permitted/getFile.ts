@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { GetFileParams, GetFileResult } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, enumValue } from '@metamask/snaps-sdk';
@@ -8,6 +7,7 @@ import { object, optional, string, union } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 export const GetFileArgsStruct = object({

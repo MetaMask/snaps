@@ -1,5 +1,9 @@
 import { caip25EndowmentBuilder } from '@metamask/chain-agnostic-permission';
-import type { GenericPermissionController } from '@metamask/permission-controller';
+import type {
+  GenericPermissionController,
+  PermissionSpecificationConstraint,
+  PermissionSpecificationMap,
+} from '@metamask/permission-controller';
 import {
   endowmentPermissionBuilders,
   buildSnapEndowmentSpecifications,
@@ -81,7 +85,7 @@ export function getPermissionSpecifications({
   hooks,
   runSaga,
   options,
-}: GetPermissionSpecificationsOptions) {
+}: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
   return {
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({}),

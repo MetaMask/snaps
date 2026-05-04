@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   SetStateParams,
@@ -31,6 +30,7 @@ import {
   manageStateBuilder,
   STORAGE_SIZE_LIMIT,
 } from '../restricted/manageState';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
