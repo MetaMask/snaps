@@ -2905,14 +2905,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/base-controller@npm:^9.0.1":
-  version: 9.0.1
-  resolution: "@metamask/base-controller@npm:9.0.1"
+"@metamask/base-controller@npm:^9.0.1, @metamask/base-controller@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@metamask/base-controller@npm:9.1.0"
   dependencies:
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/messenger": "npm:^1.1.1"
     "@metamask/utils": "npm:^11.9.0"
     immer: "npm:^9.0.6"
-  checksum: 10/bc5052c9a38c21a52003e9a79de1f609ff127d939c87eb7b9ebe01cdf05ce2a9ee8e4635dd96f193e9951983e9554d9381af303fbadaae740445ffb2424698e8
+  checksum: 10/752b70b35026fdf31ea8feef638f06286dbbde8d17e1ba804085fdbedbb076d900d2d7b6db3d2af284b3aa8fa84c95a0ceea6a3a46ee7b7e29433f037e9afc69
   languageName: node
   linkType: hard
 
@@ -4241,7 +4241,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/auto-changelog": "npm:^5.3.2"
-    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/json-rpc-engine": "npm:^10.2.4"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
