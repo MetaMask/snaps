@@ -60,6 +60,12 @@ import {
   getEndTraceImplementation,
   getStartTraceImplementation,
   getSetCurrentChainImplementation,
+  getClearSnapStateMethodImplementation,
+  getGetSnapStateMethodImplementation,
+  getUpdateSnapStateMethodImplementation,
+  getRequestUserApprovalImplementation,
+  getShowInAppNotificationImplementation,
+  getShowNativeNotificationImplementation,
 } from './methods/hooks';
 import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
@@ -809,6 +815,57 @@ export function registerActions(
       await runSaga(resolveWithSaga, value).toPromise();
 
       return { value };
+    },
+  );
+
+  controllerMessenger.registerActionHandler(
+    'ApprovalController:addRequest',
+    // @ts-expect-error Types of property 'requestData' are incompatible.
+    getRequestUserApprovalImplementation(runSaga),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'SnapController:getSnap',
+    getGetSnapImplementation(true),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'SnapController:getSnapState',
+    getGetSnapStateMethodImplementation(runSaga),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'SnapController:updateSnapState',
+    getUpdateSnapStateMethodImplementation(runSaga),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'SnapController:clearSnapState',
+    getClearSnapStateMethodImplementation(runSaga),
+  );
+
+  const showNativeNotification =
+    getShowNativeNotificationImplementation(runSaga);
+  const showInAppNotification = getShowInAppNotificationImplementation(runSaga);
+
+  controllerMessenger.registerActionHandler(
+    // @ts-expect-error - `RateLimitController` is not part of the simulation messenger types.
+    'RateLimitController:call',
+    async (_origin: string, type: string, ...args: unknown[]) => {
+      switch (type) {
+        case 'showNativeNotification':
+          return await showNativeNotification(args[0] as string, {
+            type: 'native',
+            message: args[1] as string,
+          });
+        case 'showInAppNotification':
+          return await showInAppNotification(
+            args[0] as string,
+            args[1] as Parameters<typeof showInAppNotification>[1],
+          );
+        default:
+          throw new Error(`Unsupported rate limited call: ${type}`);
+      }
     },
   );
 }

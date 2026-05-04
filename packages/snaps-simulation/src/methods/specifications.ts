@@ -16,21 +16,9 @@ import {
   EXCLUDED_SNAP_ENDOWMENTS,
   EXCLUDED_SNAP_PERMISSIONS,
 } from './constants';
-import {
-  getGetPreferencesMethodImplementation,
-  getClearSnapStateMethodImplementation,
-  getGetSnapStateMethodImplementation,
-  getUpdateSnapStateMethodImplementation,
-  getShowInAppNotificationImplementation,
-  getShowNativeNotificationImplementation,
-  getCreateInterfaceImplementation,
-  getGetInterfaceImplementation,
-  getRequestUserApprovalImplementation,
-  getSetInterfaceDisplayedImplementation,
-} from './hooks';
+import { getGetPreferencesMethodImplementation } from './hooks';
 import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
-import type { RunSagaFunction } from '../store';
 
 export type PermissionSpecificationsHooks = {
   /**
@@ -44,7 +32,6 @@ export type PermissionSpecificationsHooks = {
 export type GetPermissionSpecificationsOptions = {
   controllerMessenger: RootControllerMessenger;
   hooks: PermissionSpecificationsHooks;
-  runSaga: RunSagaFunction;
   options: SimulationOptions;
 };
 
@@ -75,15 +62,12 @@ export function asyncResolve<Type>(result?: Type) {
  * @param options - The options.
  * @param options.controllerMessenger - The controller messenger.
  * @param options.hooks - The hooks.
- * @param options.runSaga - The function to run a saga outside the usual Redux
- * flow.
  * @param options.options - The simulation options.
  * @returns The permission specifications for the Snap.
  */
 export function getPermissionSpecifications({
   controllerMessenger,
   hooks,
-  runSaga,
   options,
 }: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
   return {
@@ -97,24 +81,13 @@ export function getPermissionSpecifications({
         ...hooks,
 
         // Snaps-specific hooks.
-        clearSnapState: getClearSnapStateMethodImplementation(runSaga),
         getPreferences: getGetPreferencesMethodImplementation(options),
-        getSnapState: getGetSnapStateMethodImplementation(runSaga),
         getUnlockPromise: asyncResolve(true),
 
         // TODO: Allow the user to specify the result of this function.
         isOnPhishingList: resolve(false),
 
         maybeUpdatePhishingList: asyncResolve(),
-        requestUserApproval: getRequestUserApprovalImplementation(runSaga),
-        showInAppNotification: getShowInAppNotificationImplementation(runSaga),
-        showNativeNotification:
-          getShowNativeNotificationImplementation(runSaga),
-        updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
-        createInterface: getCreateInterfaceImplementation(controllerMessenger),
-        getInterface: getGetInterfaceImplementation(controllerMessenger),
-        setInterfaceDisplayed:
-          getSetInterfaceDisplayedImplementation(controllerMessenger),
       },
       controllerMessenger,
     ),
