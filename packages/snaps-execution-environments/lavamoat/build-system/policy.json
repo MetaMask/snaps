@@ -42,11 +42,11 @@
       "packages": {
         "lavamoat>@babel/code-frame": true,
         "depcheck>@babel/traverse>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
         "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse>@babel/template": true,
         "@metamask/snaps-utils>@babel/types": true,
-        "eslint>debug": true,
-        "depcheck>@babel/traverse>globals": true
+        "eslint>debug": true
       }
     },
     "@metamask/snaps-utils>@babel/types": {
@@ -64,17 +64,11 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
         "vitest>magic-string>@jridgewell/sourcemap-codec": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -132,7 +126,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "depcheck>@babel/parser": true,
+        "@lavamoat/webpack>@babel/parser": true,
         "lavamoat>@lavamoat/aa": true,
         "@lavamoat/webpack>browser-resolve": true,
         "lavamoat>lavamoat-core": true,
@@ -308,7 +302,7 @@
     },
     "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": {
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "depcheck>resolve>es-errors": true,
         "depcheck>is-core-module>hasown>function-bind": true
       }
     },
@@ -411,7 +405,7 @@
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "depcheck>resolve>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>gopd": true
       }
     },
@@ -552,7 +546,7 @@
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>call-bind-apply-helpers": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>es-define-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "depcheck>resolve>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-object-atoms": true,
         "depcheck>is-core-module>hasown>function-bind": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>get-proto": true,
@@ -889,6 +883,7 @@
         "process.versions.pnp": true
       },
       "packages": {
+        "depcheck>resolve>es-errors": true,
         "depcheck>is-core-module": true,
         "depcheck>resolve>path-parse": true
       }
@@ -920,7 +915,7 @@
     "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>define-data-property": true,
-        "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>es-errors": true,
+        "depcheck>resolve>es-errors": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>get-intrinsic>gopd": true,
         "@lavamoat/webpack>json-stable-stringify>call-bind>set-function-length>has-property-descriptors": true
