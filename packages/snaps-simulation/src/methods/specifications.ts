@@ -1,4 +1,5 @@
 import { caip25EndowmentBuilder } from '@metamask/chain-agnostic-permission';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   GenericPermissionController,
   PermissionSpecificationConstraint,
@@ -16,35 +17,23 @@ import {
   EXCLUDED_SNAP_ENDOWMENTS,
   EXCLUDED_SNAP_PERMISSIONS,
 } from './constants';
-import {
-  getGetPreferencesMethodImplementation,
-  getClearSnapStateMethodImplementation,
-  getGetSnapStateMethodImplementation,
-  getUpdateSnapStateMethodImplementation,
-  getShowInAppNotificationImplementation,
-  getShowNativeNotificationImplementation,
-  getCreateInterfaceImplementation,
-  getGetInterfaceImplementation,
-  getRequestUserApprovalImplementation,
-  getSetInterfaceDisplayedImplementation,
-} from './hooks';
+import { getGetPreferencesMethodImplementation } from './hooks';
 import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
-import type { RunSagaFunction } from '../store';
 
 export type PermissionSpecificationsHooks = {
   /**
-   * A hook that returns the user's secret recovery phrase.
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
    *
-   * @returns The user's secret recovery phrase.
+   * @returns The cryptographic functions to use for the client.
    */
-  getMnemonic: () => Promise<Uint8Array>;
+  getClientCryptography: () => CryptographicFunctions;
 };
 
 export type GetPermissionSpecificationsOptions = {
   controllerMessenger: RootControllerMessenger;
   hooks: PermissionSpecificationsHooks;
-  runSaga: RunSagaFunction;
   options: SimulationOptions;
 };
 
@@ -75,44 +64,35 @@ export function asyncResolve<Type>(result?: Type) {
  * @param options - The options.
  * @param options.controllerMessenger - The controller messenger.
  * @param options.hooks - The hooks.
- * @param options.runSaga - The function to run a saga outside the usual Redux
- * flow.
  * @param options.options - The simulation options.
  * @returns The permission specifications for the Snap.
  */
 export function getPermissionSpecifications({
   controllerMessenger,
   hooks,
-  runSaga,
   options,
 }: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
   return {
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({}),
     ...buildSnapEndowmentSpecifications(EXCLUDED_SNAP_ENDOWMENTS),
-    ...buildSnapRestrictedMethodSpecifications(EXCLUDED_SNAP_PERMISSIONS, {
-      // Shared hooks.
-      ...hooks,
+    ...buildSnapRestrictedMethodSpecifications(
+      EXCLUDED_SNAP_PERMISSIONS,
+      {
+        // Shared hooks.
+        ...hooks,
 
-      // Snaps-specific hooks.
-      clearSnapState: getClearSnapStateMethodImplementation(runSaga),
-      getPreferences: getGetPreferencesMethodImplementation(options),
-      getSnapState: getGetSnapStateMethodImplementation(runSaga),
-      getUnlockPromise: asyncResolve(true),
+        // Snaps-specific hooks.
+        getPreferences: getGetPreferencesMethodImplementation(options),
+        getUnlockPromise: asyncResolve(true),
 
-      // TODO: Allow the user to specify the result of this function.
-      isOnPhishingList: resolve(false),
+        // TODO: Allow the user to specify the result of this function.
+        isOnPhishingList: resolve(false),
 
-      maybeUpdatePhishingList: asyncResolve(),
-      requestUserApproval: getRequestUserApprovalImplementation(runSaga),
-      showInAppNotification: getShowInAppNotificationImplementation(runSaga),
-      showNativeNotification: getShowNativeNotificationImplementation(runSaga),
-      updateSnapState: getUpdateSnapStateMethodImplementation(runSaga),
-      createInterface: getCreateInterfaceImplementation(controllerMessenger),
-      getInterface: getGetInterfaceImplementation(controllerMessenger),
-      setInterfaceDisplayed:
-        getSetInterfaceDisplayedImplementation(controllerMessenger),
-    }),
+        maybeUpdatePhishingList: asyncResolve(),
+      },
+      controllerMessenger,
+    ),
   };
 }
 

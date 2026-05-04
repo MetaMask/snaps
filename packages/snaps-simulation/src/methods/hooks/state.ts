@@ -65,7 +65,7 @@ function* updateSnapStateImplementation(
 export function getUpdateSnapStateMethodImplementation(
   runSaga: RunSagaFunction,
 ) {
-  return (...args: Parameters<typeof updateSnapStateImplementation>) => {
+  return async (...args: Parameters<typeof updateSnapStateImplementation>) => {
     runSaga(updateSnapStateImplementation, ...args).result();
   };
 }

@@ -1,4 +1,3 @@
-import type { DialogMethodHooks } from './dialog';
 import { dialogBuilder } from './dialog';
 import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
 import { getBip32EntropyBuilder } from './getBip32Entropy';
@@ -12,7 +11,6 @@ import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
 import type { GetPreferencesMethodHooks } from './getPreferences';
 import { getPreferencesBuilder } from './getPreferences';
-import type { InvokeSnapMethodHooks } from './invokeSnap';
 import { invokeSnapBuilder } from './invokeSnap';
 import type { ManageAccountsMethodHooks } from './manageAccounts';
 import { manageAccountsBuilder } from './manageAccounts';
@@ -24,12 +22,10 @@ import { notifyBuilder } from './notify';
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionEntropy } from './manageState';
 
-export type RestrictedMethodHooks = DialogMethodHooks &
-  GetBip32EntropyMethodHooks &
+export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
   GetBip32PublicKeyMethodHooks &
   GetBip44EntropyMethodHooks &
   GetEntropyHooks &
-  InvokeSnapMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
