@@ -19,7 +19,6 @@ import { getMockOptions } from '../test-utils/options';
 const MOCK_HOOKS = {
   getClientCryptography: jest.fn(),
   getMnemonic: jest.fn(),
-  getMnemonicSeed: jest.fn(),
   getIsLocked: jest.fn(),
 };
 
@@ -41,8 +40,6 @@ describe('getPermissionSpecifications', () => {
   it('returns the permission specifications', async () => {
     expect(
       getPermissionSpecifications({
-        hooks: MOCK_HOOKS,
-        runSaga: jest.fn(),
         options: getMockOptions(),
         controllerMessenger: new Messenger<MockAnyNamespace>({
           namespace: MOCK_ANY_NAMESPACE,

@@ -6,6 +6,7 @@ import type {
   CryptographicFunctions,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { MagicValue } from '@metamask/snaps-utils';
 import { refine, string } from '@metamask/superstruct';
@@ -18,10 +19,9 @@ import {
   stringToBytes,
 } from '@metamask/utils';
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
-import { Messenger } from '@metamask/messenger';
 
 import { SnapEndowments } from './endowments';
-import type { HdKeyring, KeyringControllerWithKeyringAction } from './types';
+import type { KeyringControllerWithKeyringAction } from './types';
 
 const HARDENED_VALUE = 0x80000000;
 
@@ -395,7 +395,7 @@ const HD_KEYRING = 'hd';
  * @returns The mnemonic.
  */
 export async function getMnemonic(
-  messenger: Messenger<string, KeyringControllerWithKeyringAction, never>,
+  messenger: Messenger<string, KeyringControllerWithKeyringAction>,
   source?: string | undefined,
 ): Promise<Uint8Array> {
   if (!source) {
@@ -405,7 +405,7 @@ export async function getMnemonic(
         type: HD_KEYRING,
         index: 0,
       },
-      async ({ keyring }) => (keyring as HdKeyring).mnemonic,
+      async ({ keyring }) => keyring.mnemonic,
     )) as Uint8Array | null;
 
     if (!mnemonic) {
@@ -423,7 +423,7 @@ export async function getMnemonic(
       },
       async ({ keyring }) => ({
         type: keyring.type,
-        mnemonic: (keyring as HdKeyring).mnemonic,
+        mnemonic: keyring.mnemonic,
       }),
     );
 
@@ -454,7 +454,7 @@ export async function getMnemonic(
  * @returns The mnemonic seed.
  */
 export async function getMnemonicSeed(
-  messenger: Messenger<string, KeyringControllerWithKeyringAction, never>,
+  messenger: Messenger<string, KeyringControllerWithKeyringAction>,
   source?: string | undefined,
 ): Promise<Uint8Array> {
   if (!source) {
@@ -464,7 +464,7 @@ export async function getMnemonicSeed(
         type: HD_KEYRING,
         index: 0,
       },
-      async ({ keyring }) => (keyring as HdKeyring).seed,
+      async ({ keyring }) => keyring.seed,
     )) as Uint8Array | null;
 
     if (!seed) {
@@ -482,7 +482,7 @@ export async function getMnemonicSeed(
       },
       async ({ keyring }) => ({
         type: keyring.type,
-        seed: (keyring as HdKeyring).seed,
+        seed: keyring.seed,
       }),
     );
 
