@@ -367,6 +367,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-validator-identifier@npm:^7.28.5":
+  version: 7.28.5
+  resolution: "@babel/helper-validator-identifier@npm:7.28.5"
+  checksum: 10/8e5d9b0133702cfacc7f368bf792f0f8ac0483794877c6dca5fcb73810ee138e27527701826fb58a40a004f3a5ec0a2f3c3dd5e326d262530b119918f3132ba7
+  languageName: node
+  linkType: hard
+
 "@babel/helper-validator-option@npm:^7.22.15, @babel/helper-validator-option@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/helper-validator-option@npm:7.27.1"
@@ -1477,6 +1484,16 @@ __metadata:
     "@babel/helper-string-parser": "npm:^7.27.1"
     "@babel/helper-validator-identifier": "npm:^7.27.1"
   checksum: 10/a24e6accd85c4747b974b3d68a3210d0aa1180c1a77b287ffcb7401cd2edad7bdecadaeb40fe5191be3990c3a5252943f7de7c09da13ed269adbb054b97056ee
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:7.29.0":
+  version: 7.29.0
+  resolution: "@babel/types@npm:7.29.0"
+  dependencies:
+    "@babel/helper-string-parser": "npm:^7.27.1"
+    "@babel/helper-validator-identifier": "npm:^7.28.5"
+  checksum: 10/bfc2b211210f3894dcd7e6a33b2d1c32c93495dc1e36b547376aa33441abe551ab4bc1640d4154ee2acd8e46d3bbc925c7224caae02fcaf0e6a771e97fccc661
   languageName: node
   linkType: hard
 
@@ -2784,11 +2801,11 @@ __metadata:
   linkType: hard
 
 "@lavamoat/types@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@lavamoat/types@npm:1.0.0"
+  version: 1.0.1
+  resolution: "@lavamoat/types@npm:1.0.1"
   dependencies:
-    "@babel/types": "npm:7.27.3"
-  checksum: 10/43b293409870176ed82161b11c606228acb8933c922f1798d20c6397ce3989368570aa6e00e465c906c8fb9e80701014a62f9449fcfc470f3200bf9b82bc5d4e
+    "@babel/types": "npm:7.29.0"
+  checksum: 10/51d7a1346ad4ba980e9c713bdd7178d6925522d35f35788c39181d0e17a5440250e5525211bd87f618691a0e46dc05f61191a425fb44147dffcb6443233186fa
   languageName: node
   linkType: hard
 
