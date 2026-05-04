@@ -1,5 +1,6 @@
 import type { CryptographicFunctions } from '@metamask/key-tree';
 import { BIP44CoinTypeNode } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -15,22 +16,13 @@ import type {
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 
+import type { KeyringControllerWithKeyringAction } from '../types';
 import type { MethodHooksObject } from '../utils';
-import { getValueFromEntropySource } from '../utils';
+import { getMnemonicSeed, getValueFromEntropySource } from '../utils';
 
 const targetName = 'snap_getBip44Entropy';
 
 export type GetBip44EntropyMethodHooks = {
-  /**
-   * Get the mnemonic seed of the provided source. If no source is provided, the
-   * mnemonic seed of the primary keyring will be returned.
-   *
-   * @param source - The optional ID of the source to get the mnemonic of.
-   * @returns The mnemonic seed of the provided source, or the default source if no
-   * source is provided.
-   */
-  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
-
   /**
    * Waits for the extension to be unlocked.
    *
@@ -48,8 +40,12 @@ export type GetBip44EntropyMethodHooks = {
   getClientCryptography: () => CryptographicFunctions | undefined;
 };
 
+export type GetBip44EntropyMessengerActions =
+  KeyringControllerWithKeyringAction;
+
 type GetBip44EntropySpecificationBuilderOptions = {
   methodHooks: GetBip44EntropyMethodHooks;
+  messenger: Messenger<string, GetBip44EntropyMessengerActions>;
 };
 
 type GetBip44EntropySpecification = ValidPermissionSpecification<{
@@ -66,6 +62,7 @@ type GetBip44EntropySpecification = ValidPermissionSpecification<{
  * BIP-32 coin type.
  *
  * @param options - The specification builder options.
+ * @param options.messenger - The messenger.
  * @param options.methodHooks - The RPC method hooks needed by the method
  * implementation.
  * @returns The specification for the `snap_getBip44Entropy` permission.
@@ -74,12 +71,18 @@ const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   GetBip44EntropySpecificationBuilderOptions,
   GetBip44EntropySpecification
-> = ({ methodHooks }: GetBip44EntropySpecificationBuilderOptions) => {
+> = ({
+  methodHooks,
+  messenger,
+}: GetBip44EntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName,
     allowedCaveats: [SnapCaveatType.PermittedCoinTypes],
-    methodImplementation: getBip44EntropyImplementation(methodHooks),
+    methodImplementation: getBip44EntropyImplementation({
+      methodHooks,
+      messenger,
+    }),
     validator: ({ caveats }) => {
       if (
         caveats?.length !== 1 ||
@@ -95,7 +98,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 };
 
 const methodHooks: MethodHooksObject<GetBip44EntropyMethodHooks> = {
-  getMnemonicSeed: true,
   getUnlockPromise: true,
   getClientCryptography: true,
 };
@@ -157,27 +159,27 @@ export const getBip44EntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
   methodHooks,
+  actionNames: ['KeyringController:withKeyring'],
 } as const);
 
 /**
  * Builds the method implementation for `snap_getBip44Entropy`.
  *
- * @param hooks - The RPC method hooks.
- * @param hooks.getMnemonicSeed - A function to retrieve the BIP-39 seed
- * of the user.
- * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
+ * @param options - The options.
+ * @param options.messenger - The messenger.
+ * @param options.methodHooks - The RPC method hooks.
+ * @param options.methodHooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
  * locked.
- * @param hooks.getClientCryptography - A function to retrieve the cryptographic
+ * @param options.methodHooks.getClientCryptography - A function to retrieve the cryptographic
  * functions to use for the client.
  * @returns The method implementation which returns a `BIP44CoinTypeNode`.
  * @throws If the params are invalid.
  */
 export function getBip44EntropyImplementation({
-  getMnemonicSeed,
-  getUnlockPromise,
-  getClientCryptography,
-}: GetBip44EntropyMethodHooks) {
+  methodHooks: { getUnlockPromise, getClientCryptography },
+  messenger,
+}: GetBip44EntropySpecificationBuilderOptions) {
   return async function getBip44Entropy(
     args: RestrictedMethodOptions<GetBip44EntropyParams>,
   ): Promise<GetBip44EntropyResult> {
@@ -186,7 +188,7 @@ export function getBip44EntropyImplementation({
     // `args.params` is validated by the decorator, so it's safe to assert here.
     const params = args.params as GetBip44EntropyParams;
     const seed = await getValueFromEntropySource(
-      getMnemonicSeed,
+      getMnemonicSeed.bind(null, messenger),
       params.source,
     );
 
