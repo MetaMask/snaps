@@ -70,7 +70,7 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
     "@metamask/auto-changelog": "^6.1.0",
-    "@metamask/json-rpc-engine": "^10.2.4",
+    "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/messenger": "^1.2.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
