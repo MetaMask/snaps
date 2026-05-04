@@ -30,7 +30,6 @@ import type {
   SnapInterfaceControllerGetInterfaceAction,
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '../types';
-import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
 
@@ -49,8 +48,6 @@ const PlaceholderStruct = optional(size(string(), 1, 40));
 
 export type Placeholder = Infer<typeof PlaceholderStruct>;
 
-export type DialogMethodHooks = Record<string, never>;
-
 export type DialogMessengerActions =
   | ApprovalControllerAddRequestAction
   | SnapInterfaceControllerCreateInterfaceAction
@@ -59,7 +56,6 @@ export type DialogMessengerActions =
 
 type DialogSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: DialogMethodHooks;
   messenger: Messenger<string, DialogMessengerActions>;
 };
 
@@ -81,7 +77,6 @@ type DialogSpecification = ValidPermissionSpecification<{
  * @param options.allowedCaveats - The optional allowed caveats for the
  * permission.
  * @param options.messenger - The messenger.
- * @param options.methodHooks - The RPC method hooks.
  * @returns The specification for the `snap_dialog` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
@@ -90,19 +85,16 @@ const specificationBuilder: PermissionSpecificationBuilder<
   DialogSpecification
 > = ({
   allowedCaveats = null,
-  methodHooks,
   messenger,
 }: DialogSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: methodName,
     allowedCaveats,
-    methodImplementation: getDialogImplementation({ methodHooks, messenger }),
+    methodImplementation: getDialogImplementation({ messenger }),
     subjectTypes: [SubjectType.Snap],
   };
 };
-
-const methodHooks: MethodHooksObject<DialogMethodHooks> = {};
 
 /* eslint-disable jsdoc/check-indentation */
 /**
@@ -149,7 +141,6 @@ const methodHooks: MethodHooksObject<DialogMethodHooks> = {};
 export const dialogBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
-  methodHooks,
   actionNames: [
     'ApprovalController:addRequest',
     'SnapInterfaceController:createInterface',

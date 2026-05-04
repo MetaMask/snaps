@@ -36,7 +36,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
-import { hasProperty } from '@metamask/utils';
+import { assertExhaustive, hasProperty } from '@metamask/utils';
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
@@ -846,7 +846,11 @@ export function registerActions(
   controllerMessenger.registerActionHandler(
     // @ts-expect-error - `RateLimitController` is not part of the simulation messenger types.
     'RateLimitController:call',
-    async (_origin: string, type: string, ...args: unknown[]) => {
+    async (
+      _origin: string,
+      type: 'showNativeNotification' | 'showInAppNotification',
+      ...args: unknown[]
+    ) => {
       switch (type) {
         case 'showNativeNotification':
           return await showNativeNotification(args[0] as string, {
@@ -858,8 +862,9 @@ export function registerActions(
             args[0] as string,
             args[1] as Parameters<typeof showInAppNotification>[1],
           );
+        /* istanbul ignore next */
         default:
-          throw new Error(`Unsupported rate limited call: ${type}`);
+          return assertExhaustive(type);
       }
     },
   );
