@@ -18,7 +18,6 @@ import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
 import type { SnapControllerHandleRequestAction } from '../types';
-import type { MethodHooksObject } from '../utils';
 
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
@@ -40,13 +39,10 @@ type AllowedActions =
   | SnapControllerInstallSnapsAction
   | SnapControllerGetPermittedSnapsAction;
 
-export type InvokeSnapMethodHooks = Record<string, never>;
-
 export type InvokeSnapMessengerActions = SnapControllerHandleRequestAction;
 
 type InvokeSnapSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: InvokeSnapMethodHooks;
   messenger: Messenger<string, InvokeSnapMessengerActions>;
 };
 
@@ -107,20 +103,18 @@ export const handleSnapInstall: PermissionSideEffect<
  *
  * @param options - The specification builder options.
  * @param options.messenger - The messenger.
- * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `wallet_snap_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   InvokeSnapSpecificationBuilderOptions,
   InvokeSnapSpecification
-> = ({ methodHooks, messenger }: InvokeSnapSpecificationBuilderOptions) => {
+> = ({ messenger }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: WALLET_SNAP_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.SnapIds],
     methodImplementation: getInvokeSnapImplementation({
-      methodHooks,
       messenger,
     }),
     validator: ({ caveats }) => {
@@ -135,8 +129,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     },
   };
 };
-
-const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {};
 
 /**
  * Calls the specified JSON-RPC API method of the specified Snap. The Snap
@@ -163,7 +155,6 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {};
 export const invokeSnapBuilder = Object.freeze({
   targetName: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,
-  methodHooks,
   actionNames: ['SnapController:handleRequest'],
 } as const);
 

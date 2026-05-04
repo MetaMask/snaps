@@ -2,7 +2,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import { mnemonicPhraseToBytes, mnemonicToSeed } from '@metamask/key-tree';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import {
   detectSnapLocation,
@@ -20,7 +20,7 @@ import {
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
 
-import { DEFAULT_SRP } from './constants';
+import { DEFAULT_ALTERNATIVE_SRP, DEFAULT_SRP } from './constants';
 import { MOCK_CAVEAT } from './middleware/multichain/test-utils';
 import {
   getMultichainHooks,
@@ -945,5 +945,57 @@ describe('registerActions', () => {
         [mockedAccounts[1].id]: [],
       },
     });
+  });
+
+  it('registers `KeyringController:withKeyring`', async () => {
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+
+    expect(
+      await controllerMessenger.call(
+        'KeyringController:withKeyring',
+        { type: 'hd' },
+        ({ keyring }) => keyring,
+      ),
+    ).toStrictEqual({
+      type: 'hd',
+      mnemonic: mnemonicPhraseToBytes(DEFAULT_SRP),
+      seed: await mnemonicToSeed(DEFAULT_SRP),
+    });
+
+    expect(
+      await controllerMessenger.call(
+        'KeyringController:withKeyring',
+        { id: 'alternative' },
+        ({ keyring }) => keyring,
+      ),
+    ).toStrictEqual({
+      type: 'hd',
+      mnemonic: mnemonicPhraseToBytes(DEFAULT_ALTERNATIVE_SRP),
+      seed: await mnemonicToSeed(DEFAULT_ALTERNATIVE_SRP),
+    });
+  });
+
+  it('registers `RateLimitController:call`', async () => {
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+
+    expect(
+      await controllerMessenger.call(
+        'RateLimitController:call',
+        MOCK_SNAP_ID,
+        'showNativeNotification',
+        MOCK_SNAP_ID,
+        { message: 'Hello world!' },
+      ),
+    ).toBeNull();
+
+    expect(
+      await controllerMessenger.call(
+        'RateLimitController:call',
+        MOCK_SNAP_ID,
+        'showInAppNotification',
+        MOCK_SNAP_ID,
+        { message: 'Hello world!' },
+      ),
+    ).toBeNull();
   });
 });
