@@ -1,5 +1,6 @@
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import { mnemonicToSeed } from '@metamask/key-tree';
 import type {
   ActionConstraint,
   EventConstraint,
@@ -35,6 +36,7 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
+import { hasProperty } from '@metamask/utils';
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
 import type { Duplex } from 'readable-stream';
 import { pipeline } from 'readable-stream';
@@ -67,7 +69,6 @@ import {
   getShowInAppNotificationImplementation,
   getShowNativeNotificationImplementation,
 } from './methods/hooks';
-import { getGetMnemonicSeedImplementation } from './methods/hooks/get-mnemonic-seed';
 import { createJsonRpcEngine } from './middleware';
 import type {
   SimulationAccount,
@@ -139,18 +140,9 @@ export type RestrictedMiddlewareHooks = {
   /**
    * A hook that returns the user's secret recovery phrase.
    *
-   * @param source - The entropy source to get the mnemonic from.
    * @returns The user's secret recovery phrase.
    */
-  getMnemonic: (source?: string | undefined) => Promise<Uint8Array>;
-
-  /**
-   * A hook that returns the seed derived from the user's secret recovery phrase.
-   *
-   * @param source - The entropy source to get the seed from.
-   * @returns The seed.
-   */
-  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
+  getMnemonic: () => Promise<Uint8Array>;
 
   /**
    * A hook that returns whether the client is locked or not.
@@ -572,9 +564,6 @@ export function getRestrictedHooks(
 ): RestrictedMiddlewareHooks {
   return {
     getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
-    getMnemonicSeed: getGetMnemonicSeedImplementation(
-      options.secretRecoveryPhrase,
-    ),
     getIsLocked: () => false,
     getClientCryptography: () => ({}),
     getSnap: getGetSnapImplementation(true),
@@ -705,6 +694,12 @@ export function getMultichainHooks(
   };
 }
 
+/**
+ * Get the mock mnemonic for a given source ID.
+ *
+ * @param options - The simulation options.
+ * @returns The mnemonic.
+ */
 /**
  * Register mocked action handlers.
  *
@@ -866,6 +861,36 @@ export function registerActions(
         default:
           throw new Error(`Unsupported rate limited call: ${type}`);
       }
+    },
+  );
+
+  const getMnemonic = getGetMnemonicImplementation(
+    options.secretRecoveryPhrase,
+  );
+
+  controllerMessenger.registerActionHandler(
+    // @ts-expect-error - `KeyringController` is not part of the simulation messenger types.
+    'KeyringController:withKeyring',
+    async (
+      selector: { type: string; index?: number } | { id: string },
+      operation: (args: {
+        keyring: { type: string; mnemonic: Uint8Array; seed: Uint8Array };
+      }) => Promise<unknown>,
+    ) => {
+      const source = hasProperty(selector, 'id')
+        ? (selector.id as string)
+        : undefined;
+
+      const mnemonic = await getMnemonic(source);
+      const seed = await mnemonicToSeed(mnemonic);
+
+      return await operation({
+        keyring: {
+          type: 'hd',
+          mnemonic,
+          seed,
+        },
+      });
     },
   );
 }

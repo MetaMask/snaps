@@ -1,3 +1,4 @@
+import type { Messenger } from '@metamask/messenger';
 import {
   createRestrictedMethodMessenger,
   type PermissionConstraint,
@@ -15,7 +16,6 @@ import {
   restrictedMethodPermissionBuilders,
 } from './restricted';
 import { selectHooks } from './utils';
-import { Messenger } from '@metamask/messenger';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
@@ -70,21 +70,27 @@ export const buildSnapRestrictedMethodSpecifications = (
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-   // @ts-expect-error TypeScript not convinced actionNames exists.
-  >((specifications, { targetName, specificationBuilder, methodHooks, actionNames }) => {
-    if (!excludedPermissions.includes(targetName)) {
-      specifications[targetName] = specificationBuilder({
-        // @ts-expect-error The selectHooks type is wonky
-        methodHooks: selectHooks<typeof hooks, keyof typeof methodHooks>(
-          hooks,
-          methodHooks,
-        ) as Pick<typeof hooks, keyof typeof methodHooks>,
-        messenger: createRestrictedMethodMessenger({
-          namespace: targetName,
-          rootMessenger: messenger,
-          actionNames,
-        })
-      });
-    }
-    return specifications;
-  }, {});
+    // @ts-expect-error TypeScript not convinced actionNames exists.
+  >(
+    (
+      specifications,
+      { targetName, specificationBuilder, methodHooks, actionNames },
+    ) => {
+      if (!excludedPermissions.includes(targetName)) {
+        specifications[targetName] = specificationBuilder({
+          // @ts-expect-error The selectHooks type is wonky
+          methodHooks: selectHooks<typeof hooks, keyof typeof methodHooks>(
+            hooks,
+            methodHooks,
+          ) as Pick<typeof hooks, keyof typeof methodHooks>,
+          messenger: createRestrictedMethodMessenger({
+            namespace: targetName,
+            rootMessenger: messenger,
+            actionNames,
+          }),
+        });
+      }
+      return specifications;
+    },
+    {},
+  );

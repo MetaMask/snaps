@@ -20,18 +20,8 @@ import { getGetPreferencesMethodImplementation } from './hooks';
 import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
 
-export type PermissionSpecificationsHooks = {
-  /**
-   * A hook that returns the user's secret recovery phrase.
-   *
-   * @returns The user's secret recovery phrase.
-   */
-  getMnemonic: () => Promise<Uint8Array>;
-};
-
 export type GetPermissionSpecificationsOptions = {
   controllerMessenger: RootControllerMessenger;
-  hooks: PermissionSpecificationsHooks;
   options: SimulationOptions;
 };
 
@@ -61,13 +51,11 @@ export function asyncResolve<Type>(result?: Type) {
  *
  * @param options - The options.
  * @param options.controllerMessenger - The controller messenger.
- * @param options.hooks - The hooks.
  * @param options.options - The simulation options.
  * @returns The permission specifications for the Snap.
  */
 export function getPermissionSpecifications({
   controllerMessenger,
-  hooks,
   options,
 }: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
   return {
@@ -77,10 +65,6 @@ export function getPermissionSpecifications({
     ...buildSnapRestrictedMethodSpecifications(
       EXCLUDED_SNAP_PERMISSIONS,
       {
-        // Shared hooks.
-        ...hooks,
-
-        // Snaps-specific hooks.
         getPreferences: getGetPreferencesMethodImplementation(options),
         getUnlockPromise: asyncResolve(true),
 
