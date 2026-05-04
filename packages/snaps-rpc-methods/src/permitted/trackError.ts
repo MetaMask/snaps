@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
@@ -12,6 +11,7 @@ import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import { create, object, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_trackError';

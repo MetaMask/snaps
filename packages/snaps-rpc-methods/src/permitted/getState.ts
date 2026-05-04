@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { GetStateParams, GetStateResult } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
@@ -18,6 +17,7 @@ import type {
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 

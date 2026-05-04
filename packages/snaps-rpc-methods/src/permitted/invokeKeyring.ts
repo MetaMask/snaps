@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   InvokeKeyringParams,
@@ -16,6 +15,7 @@ import type {
 import { hasProperty } from '@metamask/utils';
 
 import { getValidatedParams } from './invokeSnapSugar';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'wallet_invokeKeyring';

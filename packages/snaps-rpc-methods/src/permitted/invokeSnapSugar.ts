@@ -2,11 +2,12 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
+
+import type { PermittedHandlerExport } from '../types';
 
 const methodName = 'wallet_invokeSnap';
 

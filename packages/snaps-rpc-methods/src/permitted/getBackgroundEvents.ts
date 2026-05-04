@@ -1,5 +1,4 @@
 import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import type { PermittedHandlerExport } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
   BackgroundEvent,
@@ -10,6 +9,7 @@ import type {
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_getBackgroundEvents';
