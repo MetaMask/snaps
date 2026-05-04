@@ -92,7 +92,7 @@
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@lavamoat/allow-scripts": "^4.0.0",
     "@lavamoat/lavatube": "^1.0.0",
-    "@lavamoat/webpack": "^2.1.1",
+    "@lavamoat/webpack": "^2.2.0",
     "@metamask/auto-changelog": "^6.1.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
