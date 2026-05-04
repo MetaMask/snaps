@@ -1,3 +1,4 @@
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -14,20 +15,21 @@ import {
 import type {
   DialogParams,
   Component,
-  InterfaceState,
-  SnapId,
   PromptDialog,
-  ComponentOrElement,
-  InterfaceContext,
-  ContentType,
   DialogResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import type { Infer } from '@metamask/superstruct';
 import { create, object, optional, size, string } from '@metamask/superstruct';
-import type { Json, NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { hasProperty, isObject, isPlainObject } from '@metamask/utils';
 
+import type {
+  ApprovalControllerAddRequestAction,
+  SnapInterfaceControllerCreateInterfaceAction,
+  SnapInterfaceControllerGetInterfaceAction,
+  SnapInterfaceControllerSetInterfaceDisplayedAction,
+} from '../types';
 import { type MethodHooksObject } from '../utils';
 
 const methodName = 'snap_dialog';
@@ -47,67 +49,18 @@ const PlaceholderStruct = optional(size(string(), 1, 40));
 
 export type Placeholder = Infer<typeof PlaceholderStruct>;
 
-type RequestUserApprovalOptions = {
-  id?: string;
-  origin: string;
-  type: string;
-  requestData: {
-    id: string;
-    placeholder?: string;
-  };
-};
+export type DialogMethodHooks = Record<string, never>;
 
-type RequestUserApproval = (
-  opts: RequestUserApprovalOptions,
-) => Promise<boolean | null | string | Json>;
-
-type CreateInterface = (
-  snapId: string,
-  content: ComponentOrElement,
-  context?: InterfaceContext,
-  contentType?: ContentType,
-) => Promise<string>;
-
-type GetInterface = (
-  snapId: string,
-  id: string,
-) => { content: ComponentOrElement; snapId: SnapId; state: InterfaceState };
-
-export type DialogMethodHooks = {
-  /**
-   * @param opts - The `requestUserApproval` options.
-   * @param opts.id - The approval ID. If not provided, a new approval ID will be generated.
-   * @param opts.origin - The origin of the request. In this case, the Snap ID.
-   * @param opts.type - The type of the approval request.
-   * @param opts.requestData - The data of the approval request.
-   * @param opts.requestData.id - The ID of the interface.
-   * @param opts.requestData.placeholder - The placeholder of the `Prompt` dialog.
-   */
-  requestUserApproval: RequestUserApproval;
-
-  /**
-   * @param snapId - The Snap ID creating the interface.
-   * @param content - The content of the interface.
-   */
-  createInterface: CreateInterface;
-  /**
-   * @param snapId - The SnapId requesting the interface.
-   * @param id - The interface ID.
-   */
-  getInterface: GetInterface;
-
-  /**
-   * Set the interface as displayed.
-   *
-   * @param snapId - The Snap ID requesting the interface.
-   * @param id - The interface ID.
-   */
-  setInterfaceDisplayed: (snapId: string, id: string) => void;
-};
+export type DialogMessengerActions =
+  | ApprovalControllerAddRequestAction
+  | SnapInterfaceControllerCreateInterfaceAction
+  | SnapInterfaceControllerGetInterfaceAction
+  | SnapInterfaceControllerSetInterfaceDisplayedAction;
 
 type DialogSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: DialogMethodHooks;
+  messenger: Messenger<string, DialogMessengerActions>;
 };
 
 type DialogSpecification = ValidPermissionSpecification<{
@@ -127,8 +80,8 @@ type DialogSpecification = ValidPermissionSpecification<{
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the
  * permission.
- * @param options.methodHooks - The RPC method hooks needed by the method
- * implementation.
+ * @param options.messenger - The messenger.
+ * @param options.methodHooks - The RPC method hooks.
  * @returns The specification for the `snap_dialog` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
@@ -138,22 +91,18 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({
   allowedCaveats = null,
   methodHooks,
+  messenger,
 }: DialogSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: methodName,
     allowedCaveats,
-    methodImplementation: getDialogImplementation(methodHooks),
+    methodImplementation: getDialogImplementation({ methodHooks, messenger }),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
-const methodHooks: MethodHooksObject<DialogMethodHooks> = {
-  requestUserApproval: true,
-  createInterface: true,
-  getInterface: true,
-  setInterfaceDisplayed: true,
-};
+const methodHooks: MethodHooksObject<DialogMethodHooks> = {};
 
 /* eslint-disable jsdoc/check-indentation */
 /**
@@ -201,6 +150,12 @@ export const dialogBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
   methodHooks,
+  actionNames: [
+    'ApprovalController:addRequest',
+    'SnapInterfaceController:createInterface',
+    'SnapInterfaceController:getInterface',
+    'SnapInterfaceController:setInterfaceDisplayed',
+  ],
 } as const);
 /* eslint-enable jsdoc/check-indentation */
 
@@ -301,22 +256,14 @@ export type DialogParameters = InferMatching<
 /**
  * Builds the method implementation for `snap_dialog`.
  *
- * @param hooks - The RPC method hooks.
- * @param hooks.requestUserApproval - A function that creates a new Approval in the ApprovalController.
- * This function should return a Promise that resolves with the appropriate value when the user has approved or rejected the request.
- * @param hooks.createInterface - A function that creates the interface in SnapInterfaceController.
- * @param hooks.getInterface - A function that gets an interface from SnapInterfaceController.
- * @param hooks.setInterfaceDisplayed - A function that sets the interface as
- * displayed in SnapInterfaceController.
+ * @param options - The options.
+ * @param options.messenger - The messenger.
  * @returns The method implementation which return value depends on the dialog
  * type, valid return types are: string, boolean, null.
  */
 export function getDialogImplementation({
-  requestUserApproval,
-  createInterface,
-  getInterface,
-  setInterfaceDisplayed,
-}: DialogMethodHooks) {
+  messenger,
+}: DialogSpecificationBuilderOptions) {
   return async function dialogImplementation(
     args: RestrictedMethodOptions<DialogParameters>,
   ): Promise<DialogResult> {
@@ -346,33 +293,51 @@ export function getDialogImplementation({
       ];
 
     if (hasProperty(validatedParams, 'content')) {
-      const id = await createInterface(
+      const id = await messenger.call(
+        'SnapInterfaceController:createInterface',
         origin,
         validatedParams.content as Component,
       );
 
-      setInterfaceDisplayed(origin, id);
-
-      return requestUserApproval({
-        id: approvalType === DIALOG_APPROVAL_TYPES.default ? id : undefined,
+      messenger.call(
+        'SnapInterfaceController:setInterfaceDisplayed',
         origin,
-        type: approvalType,
-        requestData: { id, placeholder },
-      });
+        id,
+      );
+
+      return messenger.call(
+        'ApprovalController:addRequest',
+        {
+          id: approvalType === DIALOG_APPROVAL_TYPES.default ? id : undefined,
+          origin,
+          type: approvalType,
+          requestData: { id, placeholder },
+        },
+        true,
+      );
     }
 
-    validateInterface(origin, validatedParams.id, getInterface);
-    setInterfaceDisplayed(origin, validatedParams.id);
+    validateInterface(origin, validatedParams.id, messenger);
 
-    return requestUserApproval({
-      id:
-        approvalType === DIALOG_APPROVAL_TYPES.default
-          ? validatedParams.id
-          : undefined,
+    messenger.call(
+      'SnapInterfaceController:setInterfaceDisplayed',
       origin,
-      type: approvalType,
-      requestData: { id: validatedParams.id, placeholder },
-    });
+      validatedParams.id,
+    );
+
+    return messenger.call(
+      'ApprovalController:addRequest',
+      {
+        id:
+          approvalType === DIALOG_APPROVAL_TYPES.default
+            ? validatedParams.id
+            : undefined,
+        origin,
+        type: approvalType,
+        requestData: { id: validatedParams.id, placeholder },
+      },
+      true,
+    );
   };
 }
 /**
@@ -380,15 +345,15 @@ export function getDialogImplementation({
  *
  * @param origin - The origin of the request.
  * @param id - The interface ID.
- * @param getInterface - The function to get the interface.
+ * @param messenger - The messenger.
  */
 function validateInterface(
   origin: string,
   id: string,
-  getInterface: GetInterface,
+  messenger: Messenger<string, SnapInterfaceControllerGetInterfaceAction>,
 ) {
   try {
-    getInterface(origin, id);
+    messenger.call('SnapInterfaceController:getInterface', origin, id);
   } catch (error) {
     throw rpcErrors.invalidParams({
       message: `Invalid params: ${error.message}`,

@@ -1,4 +1,5 @@
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -13,14 +14,22 @@ import { literal, object, optional, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
+import type { KeyringControllerWithKeyringAction } from '../types';
 import type { MethodHooksObject } from '../utils';
-import { getValueFromEntropySource, deriveEntropyFromSeed } from '../utils';
+import {
+  deriveEntropyFromSeed,
+  getMnemonicSeed,
+  getValueFromEntropySource,
+} from '../utils';
 
 const targetName = 'snap_getEntropy';
+
+export type GetEntropyMessengerActions = KeyringControllerWithKeyringAction;
 
 type GetEntropySpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: GetEntropyHooks;
+  messenger: Messenger<string, GetEntropyMessengerActions>;
 };
 
 type GetEntropySpecification = ValidPermissionSpecification<{
@@ -51,18 +60,18 @@ const specificationBuilder: PermissionSpecificationBuilder<
 > = ({
   allowedCaveats = null,
   methodHooks,
+  messenger,
 }: GetEntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName,
     allowedCaveats,
-    methodImplementation: getEntropyImplementation(methodHooks),
+    methodImplementation: getEntropyImplementation({ methodHooks, messenger }),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
 const methodHooks: MethodHooksObject<GetEntropyHooks> = {
-  getMnemonicSeed: true,
   getUnlockPromise: true,
   getClientCryptography: true,
 };
@@ -106,19 +115,10 @@ export const getEntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
   methodHooks,
+  actionNames: ['KeyringController:withKeyring'],
 } as const);
 
 export type GetEntropyHooks = {
-  /**
-   * Get the mnemonic seed of the provided source. If no source is provided, the
-   * mnemonic seed of the primary keyring will be returned.
-   *
-   * @param source - The optional ID of the source to get the mnemonic of.
-   * @returns The mnemonic seed of the provided source, or the default source if no
-   * source is provided.
-   */
-  getMnemonicSeed: (source?: string | undefined) => Promise<Uint8Array>;
-
   /**
    * Waits for the extension to be unlocked.
    *
@@ -141,20 +141,19 @@ export type GetEntropyHooks = {
  * is based on the reference implementation of
  * [SIP-6](https://metamask.github.io/SIPs/SIPS/sip-6).
  *
- * @param hooks - The RPC method hooks.
- * @param hooks.getMnemonicSeed - A function to retrieve the BIP-39 seed
- * of the user.
- * @param hooks.getUnlockPromise - The method to get a promise that resolves
+ * @param options - The options.
+ * @param options.messenger - The messenger.
+ * @param options.methodHooks - The RPC method hooks.
+ * @param options.methodHooks.getUnlockPromise - The method to get a promise that resolves
  * once the extension is unlocked.
- * @param hooks.getClientCryptography - A function to retrieve the cryptographic
+ * @param options.methodHooks.getClientCryptography - A function to retrieve the cryptographic
  * functions to use for the client.
  * @returns The method implementation.
  */
 function getEntropyImplementation({
-  getMnemonicSeed,
-  getUnlockPromise,
-  getClientCryptography,
-}: GetEntropyHooks) {
+  methodHooks: { getUnlockPromise, getClientCryptography },
+  messenger,
+}: GetEntropySpecificationBuilderOptions) {
   return async function getEntropy(
     options: RestrictedMethodOptions<GetEntropyParams>,
   ): Promise<GetEntropyResult> {
@@ -171,8 +170,9 @@ function getEntropyImplementation({
     );
 
     await getUnlockPromise(true);
+
     const seed = await getValueFromEntropySource(
-      getMnemonicSeed,
+      getMnemonicSeed.bind(null, messenger),
       params.source,
     );
 

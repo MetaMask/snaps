@@ -1,4 +1,5 @@
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -15,6 +16,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
+import type { KeyringControllerWithKeyringAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   getMnemonic,
@@ -23,7 +25,6 @@ import {
   getNodeFromSeed,
   getValueFromEntropySource,
 } from '../utils';
-import { Messenger } from '@metamask/messenger';
 
 const targetName = 'snap_getBip32Entropy';
 
@@ -45,7 +46,8 @@ export type GetBip32EntropyMethodHooks = {
   getClientCryptography: () => CryptographicFunctions | undefined;
 };
 
-export type GetBip32EntropyMessengerActions = never;
+export type GetBip32EntropyMessengerActions =
+  KeyringControllerWithKeyringAction;
 
 type GetBip32EntropySpecificationBuilderOptions = {
   methodHooks: GetBip32EntropyMethodHooks;
@@ -74,12 +76,18 @@ const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   GetBip32EntropySpecificationBuilderOptions,
   GetBip32EntropySpecification
-> = ({ methodHooks, messenger }: GetBip32EntropySpecificationBuilderOptions) => {
+> = ({
+  methodHooks,
+  messenger,
+}: GetBip32EntropySpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName,
     allowedCaveats: [SnapCaveatType.PermittedDerivationPaths],
-    methodImplementation: getBip32EntropyImplementation({ methodHooks, messenger }),
+    methodImplementation: getBip32EntropyImplementation({
+      methodHooks,
+      messenger,
+    }),
     validator: ({ caveats }) => {
       if (
         caveats?.length !== 1 ||
@@ -175,10 +183,8 @@ export const getBip32EntropyBuilder = Object.freeze({
  * @throws If the params are invalid.
  */
 export function getBip32EntropyImplementation({
-  methodHooks: {
-    getUnlockPromise,
-    getClientCryptography,
-  }, messenger
+  methodHooks: { getUnlockPromise, getClientCryptography },
+  messenger,
 }: GetBip32EntropySpecificationBuilderOptions) {
   return async function getBip32Entropy(
     args: RestrictedMethodOptions<GetBip32EntropyParams>,

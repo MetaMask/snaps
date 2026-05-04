@@ -1,4 +1,5 @@
 import type { CryptographicFunctions } from '@metamask/key-tree';
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -8,14 +9,19 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { ManageStateParams, ManageStateResult } from '@metamask/snaps-sdk';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
-import type { Snap } from '@metamask/snaps-utils';
 import {
   getJsonSizeUnsafe,
   STATE_ENCRYPTION_MAGIC_VALUE,
 } from '@metamask/snaps-utils';
-import type { Json, NonEmptyArray } from '@metamask/utils';
+import type { NonEmptyArray } from '@metamask/utils';
 import { isObject, isValidJson } from '@metamask/utils';
 
+import type {
+  SnapControllerClearSnapStateAction,
+  SnapControllerGetSnapAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerUpdateSnapStateAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 import { deriveEntropyFromSeed } from '../utils';
 
@@ -31,44 +37,18 @@ export type ManageStateMethodHooks = {
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-
-  /**
-   * A function that clears the state of the requesting Snap.
-   */
-  clearSnapState: (snapId: string, encrypted: boolean) => void;
-
-  /**
-   * A function that gets the encrypted state of the requesting Snap.
-   *
-   * @returns The current state of the Snap.
-   */
-  getSnapState: (
-    snapId: string,
-    encrypted: boolean,
-  ) => Promise<Record<string, Json>>;
-
-  /**
-   * A function that updates the state of the requesting Snap.
-   *
-   * @param newState - The new state of the Snap.
-   */
-  updateSnapState: (
-    snapId: string,
-    newState: Record<string, Json>,
-    encrypted: boolean,
-  ) => Promise<void>;
-
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
 };
+
+export type ManageStateMessengerActions =
+  | SnapControllerClearSnapStateAction
+  | SnapControllerGetSnapAction
+  | SnapControllerGetSnapStateAction
+  | SnapControllerUpdateSnapStateAction;
 
 type ManageStateSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
   methodHooks: ManageStateMethodHooks;
+  messenger: Messenger<string, ManageStateMessengerActions>;
 };
 
 type ManageStateSpecification = ValidPermissionSpecification<{
@@ -85,6 +65,7 @@ type ManageStateSpecification = ValidPermissionSpecification<{
  *
  * @param options - The specification builder options.
  * @param options.allowedCaveats - The optional allowed caveats for the permission.
+ * @param options.messenger - The messenger.
  * @param options.methodHooks - The RPC method hooks needed by the method implementation.
  * @returns The specification for the `snap_manageState` permission.
  */
@@ -95,22 +76,22 @@ export const specificationBuilder: PermissionSpecificationBuilder<
 > = ({
   allowedCaveats = null,
   methodHooks,
+  messenger,
 }: ManageStateSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: methodName,
     allowedCaveats,
-    methodImplementation: getManageStateImplementation(methodHooks),
+    methodImplementation: getManageStateImplementation({
+      methodHooks,
+      messenger,
+    }),
     subjectTypes: [SubjectType.Snap],
   };
 };
 
 const methodHooks: MethodHooksObject<ManageStateMethodHooks> = {
   getUnlockPromise: true,
-  clearSnapState: true,
-  getSnapState: true,
-  updateSnapState: true,
-  getSnap: true,
 };
 
 /**
@@ -159,6 +140,12 @@ export const manageStateBuilder = Object.freeze({
   targetName: methodName,
   specificationBuilder,
   methodHooks,
+  actionNames: [
+    'SnapController:clearSnapState',
+    'SnapController:getSnap',
+    'SnapController:getSnapState',
+    'SnapController:updateSnapState',
+  ],
 } as const);
 
 export const STORAGE_SIZE_LIMIT = 64_000_000; // In bytes (64 MB)
@@ -201,28 +188,20 @@ export async function getEncryptionEntropy({
 /**
  * Builds the method implementation for `snap_manageState`.
  *
- * @param hooks - The RPC method hooks.
- * @param hooks.clearSnapState - A function that clears the state stored for a
- * snap.
- * @param hooks.getSnapState - A function that fetches the persisted decrypted
- * state for a snap.
- * @param hooks.updateSnapState - A function that updates the state stored for a
- * snap.
- * @param hooks.getUnlockPromise - A function that resolves once the MetaMask
+ * @param options - The options.
+ * @param options.messenger - The messenger.
+ * @param options.methodHooks - The RPC method hooks.
+ * @param options.methodHooks.getUnlockPromise - A function that resolves once the MetaMask
  * extension is unlocked and prompts the user to unlock their MetaMask if it is
  * locked.
- * @param hooks.getSnap - The hook function to get Snap metadata.
  * @returns The method implementation which either returns `null` for a
  * successful state update/deletion or returns the decrypted state.
  * @throws If the params are invalid.
  */
 export function getManageStateImplementation({
-  getUnlockPromise,
-  clearSnapState,
-  getSnapState,
-  updateSnapState,
-  getSnap,
-}: ManageStateMethodHooks) {
+  methodHooks: { getUnlockPromise },
+  messenger,
+}: ManageStateSpecificationBuilderOptions) {
   return async function manageState(
     options: RestrictedMethodOptions<ManageStateParams>,
   ): Promise<ManageStateResult> {
@@ -233,7 +212,7 @@ export function getManageStateImplementation({
     } = options;
     const validatedParams = getValidatedParams(params, method);
 
-    const snap = getSnap(origin);
+    const snap = messenger.call('SnapController:getSnap', origin);
 
     if (
       !snap?.preinstalled &&
@@ -264,15 +243,24 @@ export function getManageStateImplementation({
 
     switch (validatedParams.operation) {
       case ManageStateOperation.ClearState:
-        clearSnapState(origin, shouldEncrypt);
+        messenger.call('SnapController:clearSnapState', origin, shouldEncrypt);
         return null;
 
       case ManageStateOperation.GetState: {
-        return await getSnapState(origin, shouldEncrypt);
+        return await messenger.call(
+          'SnapController:getSnapState',
+          origin,
+          shouldEncrypt,
+        );
       }
 
       case ManageStateOperation.UpdateState: {
-        await updateSnapState(origin, validatedParams.newState, shouldEncrypt);
+        await messenger.call(
+          'SnapController:updateSnapState',
+          origin,
+          validatedParams.newState,
+          shouldEncrypt,
+        );
         return null;
       }
 
