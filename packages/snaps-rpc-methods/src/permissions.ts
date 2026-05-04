@@ -70,10 +70,10 @@ export const buildSnapRestrictedMethodSpecifications = (
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-    // @ts-expect-error TypeScript not convinced actionNames exists.
   >(
     (
       specifications,
+      // @ts-expect-error TypeScript not convinced actionNames exists.
       { targetName, specificationBuilder, methodHooks, actionNames },
     ) => {
       if (!excludedPermissions.includes(targetName)) {
