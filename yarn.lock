@@ -3783,21 +3783,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/messenger-cli@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/messenger-cli@npm:0.1.0"
+"@metamask/messenger-cli@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@metamask/messenger-cli@npm:0.2.0"
   dependencies:
     "@metamask/utils": "npm:^11.9.0"
     yargs: "npm:^17.7.2"
   peerDependencies:
-    eslint: ">=8"
+    oxfmt: ^0.44.0
+    prettier: ^3.0.0
     typescript: ">=5.0.0"
   peerDependenciesMeta:
-    eslint:
+    oxfmt:
+      optional: true
+    prettier:
       optional: true
   bin:
     messenger-action-types: ./dist/cli.mjs
-  checksum: 10/dd359df00f2eba98dcfe5f3d8352d859f2e814220e709efe989ecb68c611ba32ea515fd6099a770a706066f1820abd07a134a2acf5fc6b883518c5d19991a8e2
+  checksum: 10/db8e10215f45d42d165cb85cdbb666956d2cd208fedf65c041f278b5b278aaeec18ad62d0146e0dacac069c145cd1892d84fa9d90e764d544c828bd50b5349fe
   languageName: node
   linkType: hard
 
@@ -4260,7 +4263,7 @@ __metadata:
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^1.1.1"
-    "@metamask/messenger-cli": "npm:^0.1.0"
+    "@metamask/messenger-cli": "npm:^0.2.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^12.3.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
