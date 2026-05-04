@@ -63,7 +63,7 @@ export function asyncResolve<Type>(result?: Type) {
  *
  * @param options - The options.
  * @param options.controllerMessenger - The controller messenger.
- * @param options.hooks - The hooks shared with the restricted method specifications.
+ * @param options.hooks - The hooks.
  * @param options.options - The simulation options.
  * @returns The permission specifications for the Snap.
  */
