@@ -114,7 +114,13 @@ const ENTRY_POINTS = [
     inlineBundle: true,
 
     scuttleGlobalThis: true,
-    scuttleGlobalThisExceptions: ['JSON', 'ReactNativeWebView', 'String'],
+    scuttleGlobalThisExceptions: [
+      'DOMParser',
+      'JSON',
+      'ReactNativeWebView',
+      'String',
+      'XMLSerializer',
+    ],
 
     config: {
       plugins: [
