@@ -2,6 +2,7 @@
   "resources": {
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/snaps-utils>@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
         "@metamask/utils": true
