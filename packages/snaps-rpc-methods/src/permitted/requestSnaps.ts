@@ -3,7 +3,6 @@ import type {
   PermissionConstraint,
   RequestedPermissions,
   Caveat,
-  PermittedHandlerExport,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
@@ -24,6 +23,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import type { PermittedHandlerExport } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'wallet_requestSnaps';
