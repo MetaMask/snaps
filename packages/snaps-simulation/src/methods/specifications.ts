@@ -1,4 +1,5 @@
 import { caip25EndowmentBuilder } from '@metamask/chain-agnostic-permission';
+import type { CryptographicFunctions } from '@metamask/key-tree';
 import type {
   GenericPermissionController,
   PermissionSpecificationConstraint,
@@ -20,8 +21,19 @@ import { getGetPreferencesMethodImplementation } from './hooks';
 import type { RootControllerMessenger } from '../controllers';
 import type { SimulationOptions } from '../options';
 
+export type PermissionSpecificationsHooks = {
+  /**
+   * Get the cryptographic functions to use for the client. This may return an
+   * empty object to fall back to the default cryptographic functions.
+   *
+   * @returns The cryptographic functions to use for the client.
+   */
+  getClientCryptography: () => CryptographicFunctions;
+};
+
 export type GetPermissionSpecificationsOptions = {
   controllerMessenger: RootControllerMessenger;
+  hooks: PermissionSpecificationsHooks;
   options: SimulationOptions;
 };
 
@@ -51,11 +63,13 @@ export function asyncResolve<Type>(result?: Type) {
  *
  * @param options - The options.
  * @param options.controllerMessenger - The controller messenger.
+ * @param options.hooks - The hooks shared with the restricted method specifications.
  * @param options.options - The simulation options.
  * @returns The permission specifications for the Snap.
  */
 export function getPermissionSpecifications({
   controllerMessenger,
+  hooks,
   options,
 }: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
   return {
@@ -65,6 +79,10 @@ export function getPermissionSpecifications({
     ...buildSnapRestrictedMethodSpecifications(
       EXCLUDED_SNAP_PERMISSIONS,
       {
+        // Shared hooks.
+        ...hooks,
+
+        // Snaps-specific hooks.
         getPreferences: getGetPreferencesMethodImplementation(options),
         getUnlockPromise: asyncResolve(true),
 

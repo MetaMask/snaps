@@ -40,6 +40,7 @@ describe('getPermissionSpecifications', () => {
   it('returns the permission specifications', async () => {
     expect(
       getPermissionSpecifications({
+        hooks: MOCK_HOOKS,
         options: getMockOptions(),
         controllerMessenger: new Messenger<MockAnyNamespace>({
           namespace: MOCK_ANY_NAMESPACE,
