@@ -114,7 +114,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^5.3.2",
+    "@metamask/auto-changelog": "^6.1.0",
     "@metamask/browser-passworder": "^6.0.0",
     "@metamask/messenger-cli": "^0.1.0",
     "@noble/hashes": "^1.7.1",
