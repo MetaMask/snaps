@@ -1,9 +1,12 @@
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { DialogType, NodeType } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
-import type { DialogMethodHooks } from './dialog';
+import type { DialogMessengerActions } from './dialog';
 import {
   DIALOG_APPROVAL_TYPES,
   dialogBuilder,
@@ -15,24 +18,19 @@ describe('builder', () => {
     expect(dialogBuilder).toMatchObject({
       targetName: 'snap_dialog',
       specificationBuilder: expect.any(Function),
-      methodHooks: {
-        requestUserApproval: true,
-        createInterface: true,
-        getInterface: true,
-        setInterfaceDisplayed: true,
-      },
+      actionNames: [
+        'ApprovalController:addRequest',
+        'SnapInterfaceController:createInterface',
+        'SnapInterfaceController:getInterface',
+        'SnapInterfaceController:setInterfaceDisplayed',
+      ],
     });
   });
 
   it('builder outputs expected specification', () => {
     expect(
       dialogBuilder.specificationBuilder({
-        methodHooks: {
-          requestUserApproval: jest.fn(),
-          createInterface: jest.fn(),
-          getInterface: jest.fn(),
-          setInterfaceDisplayed: jest.fn(),
-        },
+        messenger: new Messenger({ namespace: 'Dialog' }),
       }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
@@ -45,21 +43,43 @@ describe('builder', () => {
 });
 
 describe('implementation', () => {
-  const getMockDialogHooks = () =>
-    ({
-      requestUserApproval: jest.fn(),
-      createInterface: jest.fn().mockReturnValue('bar'),
-      getInterface: jest.fn().mockReturnValue({
+  const getMessenger = () => {
+    const messenger = new Messenger<MockAnyNamespace, DialogMessengerActions>({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'ApprovalController:addRequest',
+      async () => null,
+    );
+
+    messenger.registerActionHandler(
+      'SnapInterfaceController:createInterface',
+      async () => 'bar',
+    );
+
+    messenger.registerActionHandler(
+      'SnapInterfaceController:getInterface',
+      () => ({
         content: { type: NodeType.Text as const, value: 'foo' },
         state: {},
-        snapId: 'foo',
+        snapId: 'foo' as SnapId,
       }),
-      setInterfaceDisplayed: jest.fn(),
-    }) as DialogMethodHooks;
+    );
+
+    messenger.registerActionHandler(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      () => null,
+    );
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
 
   it('accepts string dialog types', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
     await implementation({
       context: { origin: 'foo' },
       method: 'snap_dialog',
@@ -75,21 +95,25 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: undefined,
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-      requestData: {
-        id: 'bar',
-        placeholder: undefined,
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('accepts no dialog type with an interface ID', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
     await implementation({
       context: { origin: 'foo' },
       method: 'snap_dialog',
@@ -98,21 +122,25 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: 'bar',
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES.default,
-      requestData: {
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
         id: 'bar',
-        placeholder: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES.default,
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('accepts no dialog type with content', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     const content = (
       <Box>
@@ -128,32 +156,30 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: 'bar',
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES.default,
-      requestData: {
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:createInterface',
+      'foo',
+      content,
+    );
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
         id: 'bar',
-        placeholder: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES.default,
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('gets the interface data if an interface ID is passed', async () => {
-    const hooks = {
-      requestUserApproval: jest.fn(),
-      createInterface: jest.fn().mockReturnValue('bar'),
-      getInterface: jest.fn().mockReturnValue({
-        content: { type: NodeType.Text as const, value: 'foo' },
-        state: {},
-        snapId: 'foo',
-      }),
-      setInterfaceDisplayed: jest.fn(),
-    };
-
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     await implementation({
       context: { origin: 'foo' },
@@ -164,21 +190,25 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: undefined,
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-      requestData: {
-        id: 'bar',
-        placeholder: undefined,
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('creates a new interface if some content is passed', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     const content = {
       type: NodeType.Panel as const,
@@ -197,22 +227,30 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: undefined,
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-      requestData: {
-        id: 'bar',
-        placeholder: undefined,
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:createInterface',
+      'foo',
+      content,
+    );
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('creates a new interface if a JSX element is passed', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     const content = (
       <Box>
@@ -229,22 +267,30 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.createInterface).toHaveBeenCalledWith('foo', content);
-    expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-    expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-      id: undefined,
-      origin: 'foo',
-      type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-      requestData: {
-        id: 'bar',
-        placeholder: undefined,
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:createInterface',
+      'foo',
+      content,
+    );
+    expect(messenger.call).toHaveBeenCalledWith(
+      'ApprovalController:addRequest',
+      {
+        id: undefined,
+        origin: 'foo',
+        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+        requestData: {
+          id: 'bar',
+          placeholder: undefined,
+        },
       },
-    });
+      true,
+    );
   });
 
   it('sets an interface as displayed', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     await implementation({
       context: { origin: 'foo' },
@@ -255,13 +301,17 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      'foo',
+      'bar',
+    );
   });
 
   it('sets an interface as displayed if content is passed without an ID', async () => {
-    const hooks = getMockDialogHooks();
-    const implementation = getDialogImplementation(hooks);
+    const messenger = getMessenger();
+    const implementation = getDialogImplementation({ messenger });
 
     await implementation({
       context: { origin: 'foo' },
@@ -272,21 +322,27 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledTimes(1);
-    expect(hooks.setInterfaceDisplayed).toHaveBeenCalledWith('foo', 'bar');
+    expect(messenger.call).toHaveBeenCalledTimes(3);
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapInterfaceController:setInterfaceDisplayed',
+      'foo',
+      'bar',
+    );
   });
 
   it('throws if the requested interface does not exist.', async () => {
-    const hooks = {
-      requestUserApproval: jest.fn(),
-      createInterface: jest.fn(),
-      getInterface: jest.fn().mockImplementation((_snapId, id) => {
-        throw new Error(`Interface with id '${id}' not found.`);
-      }),
-      setInterfaceDisplayed: jest.fn(),
-    };
+    const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
-    const implementation = getDialogImplementation(hooks);
+    messenger.registerActionHandler(
+      'SnapInterfaceController:getInterface',
+      (_origin: string, id: string) => {
+        throw new Error(`Interface with id '${id}' not found.`);
+      },
+    );
+
+    const spy = jest.spyOn(messenger, 'call');
+
+    const implementation = getDialogImplementation({ messenger });
 
     await expect(
       implementation({
@@ -303,14 +359,18 @@ describe('implementation', () => {
       ),
     );
 
-    expect(hooks.getInterface).toHaveBeenCalledTimes(1);
-    expect(hooks.getInterface).toHaveBeenCalledWith('foo', 'bar');
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(
+      'SnapInterfaceController:getInterface',
+      'foo',
+      'bar',
+    );
   });
 
   describe('alerts', () => {
     it('handles alerts', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -326,21 +386,25 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-        requestData: {
-          id: 'bar',
-          placeholder: undefined,
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+          requestData: {
+            id: 'bar',
+            placeholder: undefined,
+          },
         },
-      });
+        true,
+      );
     });
 
     it('handles JSX alerts', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -354,23 +418,27 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
-        requestData: {
-          id: 'bar',
-          placeholder: undefined,
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Alert],
+          requestData: {
+            id: 'bar',
+            placeholder: undefined,
+          },
         },
-      });
+        true,
+      );
     });
   });
 
   describe('confirmations', () => {
     it('handles confirmations', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -386,21 +454,25 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
-        requestData: {
-          id: 'bar',
-          placeholder: undefined,
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+          requestData: {
+            id: 'bar',
+            placeholder: undefined,
+          },
         },
-      });
+        true,
+      );
     });
 
     it('handles JSX confirmations', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -414,21 +486,25 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
-        requestData: {
-          id: 'bar',
-          placeholder: undefined,
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+          requestData: {
+            id: 'bar',
+            placeholder: undefined,
+          },
         },
-      });
+        true,
+      );
     });
 
     it('handles confirmations using an ID', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -438,23 +514,27 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
-        requestData: {
-          id: 'baz',
-          placeholder: undefined,
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Confirmation],
+          requestData: {
+            id: 'baz',
+            placeholder: undefined,
+          },
         },
-      });
+        true,
+      );
     });
   });
 
   describe('prompts', () => {
     it('handles prompts', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -471,21 +551,25 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
-        requestData: {
-          id: 'bar',
-          placeholder: 'foobar',
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+          requestData: {
+            id: 'bar',
+            placeholder: 'foobar',
+          },
         },
-      });
+        true,
+      );
     });
 
     it('handles JSX prompts', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -500,21 +584,25 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
-        requestData: {
-          id: 'bar',
-          placeholder: 'foobar',
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+          requestData: {
+            id: 'bar',
+            placeholder: 'foobar',
+          },
         },
-      });
+        true,
+      );
     });
 
     it('handles prompts using an ID', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
       await implementation({
         context: { origin: 'foo' },
         method: 'snap_dialog',
@@ -525,16 +613,20 @@ describe('implementation', () => {
         },
       });
 
-      expect(hooks.requestUserApproval).toHaveBeenCalledTimes(1);
-      expect(hooks.requestUserApproval).toHaveBeenCalledWith({
-        id: undefined,
-        origin: 'foo',
-        type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
-        requestData: {
-          id: 'baz',
-          placeholder: 'foobar',
+      expect(messenger.call).toHaveBeenCalledTimes(3);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'ApprovalController:addRequest',
+        {
+          id: undefined,
+          origin: 'foo',
+          type: DIALOG_APPROVAL_TYPES[DialogType.Prompt],
+          requestData: {
+            id: 'baz',
+            placeholder: 'foobar',
+          },
         },
-      });
+        true,
+      );
     });
   });
 
@@ -542,8 +634,8 @@ describe('implementation', () => {
     it.each([undefined, null, false, 2])(
       'rejects invalid parameter object',
       async (value) => {
-        const hooks = getMockDialogHooks();
-        const implementation = getDialogImplementation(hooks);
+        const messenger = getMessenger();
+        const implementation = getDialogImplementation({ messenger });
 
         await expect(
           implementation({
@@ -558,8 +650,8 @@ describe('implementation', () => {
     );
 
     it('rejects empty parameter object', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
 
       await expect(
         implementation({
@@ -575,8 +667,8 @@ describe('implementation', () => {
     it.each([{ type: false }, { type: '' }, { type: 'foo' }])(
       'rejects invalid types',
       async (value) => {
-        const hooks = getMockDialogHooks();
-        const implementation = getDialogImplementation(hooks);
+        const messenger = getMessenger();
+        const implementation = getDialogImplementation({ messenger });
 
         await expect(
           implementation({
@@ -599,8 +691,8 @@ describe('implementation', () => {
       { type: DialogType.Alert, content: 2 },
       { type: DialogType.Alert, content: [] },
     ])('rejects invalid fields', async (value) => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
 
       await expect(
         implementation({
@@ -616,8 +708,8 @@ describe('implementation', () => {
     it.each([true, 2, [], {}, new (class {})()])(
       'rejects invalid placeholder contents',
       async (value: any) => {
-        const hooks = getMockDialogHooks();
-        const implementation = getDialogImplementation(hooks);
+        const messenger = getMessenger();
+        const implementation = getDialogImplementation({ messenger });
 
         await expect(
           implementation({
@@ -642,8 +734,8 @@ describe('implementation', () => {
     );
 
     it('rejects placeholders with invalid length', async () => {
-      const hooks = getMockDialogHooks();
-      const implementation = getDialogImplementation(hooks);
+      const messenger = getMessenger();
+      const implementation = getDialogImplementation({ messenger });
 
       await expect(
         implementation({
@@ -669,8 +761,8 @@ describe('implementation', () => {
     it.each([DialogType.Alert, DialogType.Confirmation])(
       'rejects placeholder field for alerts and confirmations',
       async (type) => {
-        const hooks = getMockDialogHooks();
-        const implementation = getDialogImplementation(hooks);
+        const messenger = getMessenger();
+        const implementation = getDialogImplementation({ messenger });
         await expect(
           implementation({
             context: { origin: 'foo' },

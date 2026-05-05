@@ -1,3 +1,5 @@
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { SubjectType, PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
@@ -7,6 +9,7 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha512 } from '@noble/hashes/sha512';
 
+import type { GetBip44EntropyMessengerActions } from './getBip44Entropy';
 import {
   getBip44EntropyBuilder,
   getBip44EntropyImplementation,
@@ -14,13 +17,13 @@ import {
 
 describe('specificationBuilder', () => {
   const methodHooks = {
-    getMnemonicSeed: jest.fn(),
     getUnlockPromise: jest.fn(),
     getClientCryptography: jest.fn(),
   };
 
   const specification = getBip44EntropyBuilder.specificationBuilder({
     methodHooks,
+    messenger: new Messenger({ namespace: 'GetBip44Entropy' }),
   });
 
   it('outputs expected specification', () => {
@@ -62,19 +65,40 @@ describe('specificationBuilder', () => {
 });
 
 describe('getBip44EntropyImplementation', () => {
+  const getMessenger = () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      GetBip44EntropyMessengerActions
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'KeyringController:withKeyring',
+      async (_selector, operation) =>
+        operation({
+          keyring: {
+            type: 'hd',
+            seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+          },
+        }),
+    );
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
+
   describe('getBip44Entropy', () => {
     it('derives the entropy from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip44EntropyImplementation({
-          getUnlockPromise,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: { coinType: 1 },
@@ -96,18 +120,14 @@ describe('getBip44EntropyImplementation', () => {
     });
 
     it('calls `getMnemonic` with a different entropy source', async () => {
-      const getMnemonicSeed = jest
-        .fn()
-        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
-
       const getUnlockPromise = jest.fn();
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip44EntropyImplementation({
-          getUnlockPromise,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
         })({
           method: 'snap_getBip44Entropy',
           context: { origin: MOCK_SNAP_ID },
@@ -128,14 +148,16 @@ describe('getBip44EntropyImplementation', () => {
         }
       `);
 
-      expect(getMnemonicSeed).toHaveBeenCalledWith('source-id');
+      expect(messenger.call).toHaveBeenCalledTimes(1);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'KeyringController:withKeyring',
+        { id: 'source-id' },
+        expect.any(Function),
+      );
     });
 
     it('uses custom client cryptography functions', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
 
       const hmacSha512 = jest
         .fn()
@@ -145,12 +167,12 @@ describe('getBip44EntropyImplementation', () => {
       const getClientCryptography = jest.fn().mockReturnValue({
         hmacSha512,
       });
+      const messenger = getMessenger();
 
       expect(
         await getBip44EntropyImplementation({
-          getUnlockPromise,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: { coinType: 1 },

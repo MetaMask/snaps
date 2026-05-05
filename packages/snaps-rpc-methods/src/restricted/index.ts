@@ -1,11 +1,23 @@
+import type { Messenger } from '@metamask/messenger';
+
+import type { DialogMessengerActions } from './dialog';
 import { dialogBuilder } from './dialog';
-import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
+import type {
+  GetBip32EntropyMessengerActions,
+  GetBip32EntropyMethodHooks,
+} from './getBip32Entropy';
 import { getBip32EntropyBuilder } from './getBip32Entropy';
-import type { GetBip32PublicKeyMethodHooks } from './getBip32PublicKey';
+import type {
+  GetBip32PublicKeyMessengerActions,
+  GetBip32PublicKeyMethodHooks,
+} from './getBip32PublicKey';
 import { getBip32PublicKeyBuilder } from './getBip32PublicKey';
-import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
+import type {
+  GetBip44EntropyMessengerActions,
+  GetBip44EntropyMethodHooks,
+} from './getBip44Entropy';
 import { getBip44EntropyBuilder } from './getBip44Entropy';
-import type { GetEntropyHooks } from './getEntropy';
+import type { GetEntropyHooks, GetEntropyMessengerActions } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
@@ -14,13 +26,30 @@ import { getPreferencesBuilder } from './getPreferences';
 import { invokeSnapBuilder } from './invokeSnap';
 import type { ManageAccountsMethodHooks } from './manageAccounts';
 import { manageAccountsBuilder } from './manageAccounts';
-import type { ManageStateMethodHooks } from './manageState';
+import type {
+  ManageStateMessengerActions,
+  ManageStateMethodHooks,
+} from './manageState';
 import { manageStateBuilder } from './manageState';
-import type { NotifyMethodHooks } from './notify';
+import type { NotifyMessengerActions, NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionEntropy } from './manageState';
+
+export type RestrictedMethodActions =
+  | DialogMessengerActions
+  | GetBip32EntropyMessengerActions
+  | GetBip32PublicKeyMessengerActions
+  | GetBip44EntropyMessengerActions
+  | GetEntropyMessengerActions
+  | ManageStateMessengerActions
+  | NotifyMessengerActions;
+
+export type RestrictedMethodMessenger = Messenger<
+  string,
+  RestrictedMethodActions
+>;
 
 export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
   GetBip32PublicKeyMethodHooks &

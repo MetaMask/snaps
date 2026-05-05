@@ -1,5 +1,4 @@
 import { selectHooks } from '@metamask/json-rpc-engine/v2';
-import type { Messenger } from '@metamask/messenger';
 import {
   createRestrictedMethodMessenger,
   type PermissionConstraint,
@@ -12,6 +11,7 @@ import {
   endowmentCaveatMappers,
   endowmentPermissionBuilders,
 } from './endowments';
+import type { RestrictedMethodMessenger } from './restricted';
 import {
   caveatMappers,
   restrictedMethodPermissionBuilders,
@@ -66,7 +66,7 @@ export const buildSnapEndowmentSpecifications = (
 export const buildSnapRestrictedMethodSpecifications = (
   excludedPermissions: string[],
   hooks: Record<string, unknown>,
-  messenger: Messenger<string>,
+  messenger: RestrictedMethodMessenger,
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>

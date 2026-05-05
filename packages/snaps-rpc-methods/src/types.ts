@@ -133,7 +133,7 @@ export type SnapControllerGetSnapStateAction = {
   handler: (
     snapId: string,
     encrypted: boolean,
-  ) => Promise<Record<string, Json>>;
+  ) => Promise<Record<string, Json> | null>;
 };
 
 export type SnapControllerUpdateSnapStateAction = {

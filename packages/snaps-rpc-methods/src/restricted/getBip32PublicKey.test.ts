@@ -1,3 +1,5 @@
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
@@ -8,6 +10,7 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha512 } from '@noble/hashes/sha512';
 
+import type { GetBip32PublicKeyMessengerActions } from './getBip32PublicKey';
 import {
   getBip32PublicKeyBuilder,
   getBip32PublicKeyImplementation,
@@ -15,14 +18,13 @@ import {
 
 describe('specificationBuilder', () => {
   const methodHooks = {
-    getMnemonic: jest.fn(),
-    getMnemonicSeed: jest.fn(),
     getUnlockPromise: jest.fn(),
     getClientCryptography: jest.fn(),
   };
 
   const specification = getBip32PublicKeyBuilder.specificationBuilder({
     methodHooks,
+    messenger: new Messenger({ namespace: 'GetBip32PublicKey' }),
   });
 
   it('outputs expected specification', () => {
@@ -64,23 +66,41 @@ describe('specificationBuilder', () => {
 });
 
 describe('getBip32PublicKeyImplementation', () => {
+  const getMessenger = () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      GetBip32PublicKeyMessengerActions
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'KeyringController:withKeyring',
+      async (_selector, operation) =>
+        operation({
+          keyring: {
+            type: 'hd',
+            mnemonic: TEST_SECRET_RECOVERY_PHRASE_BYTES,
+            seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
+          },
+        }),
+    );
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
+
   describe('getBip32PublicKey', () => {
     it('derives the public key from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -95,20 +115,13 @@ describe('getBip32PublicKeyImplementation', () => {
 
     it('derives the ed25519 public key from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -123,20 +136,13 @@ describe('getBip32PublicKeyImplementation', () => {
 
     it('derives the ed25519Bip32 public key from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -151,20 +157,13 @@ describe('getBip32PublicKeyImplementation', () => {
 
     it('derives the compressed public key from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
@@ -179,22 +178,14 @@ describe('getBip32PublicKeyImplementation', () => {
     });
 
     it('calls `getMnemonic` with a different entropy source', async () => {
-      const getMnemonic = jest
-        .fn()
-        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
-
       const getUnlockPromise = jest.fn();
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
         })({
           method: 'snap_getBip32PublicKey',
           context: { origin: MOCK_SNAP_ID },
@@ -208,27 +199,23 @@ describe('getBip32PublicKeyImplementation', () => {
         `"0x03303da49ddfafc90587b7559eacdd5523028e75be81f2a9f158733fee1211a6"`,
       );
 
-      expect(getMnemonic).toHaveBeenCalledWith('source-id');
-      expect(getMnemonicSeed).not.toHaveBeenCalled();
+      expect(messenger.call).toHaveBeenCalledTimes(1);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'KeyringController:withKeyring',
+        { id: 'source-id' },
+        expect.any(Function),
+      );
     });
 
     it('calls `getMnemonicSeed` with a different entropy source', async () => {
-      const getMnemonic = jest
-        .fn()
-        .mockImplementation(() => TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
-
       const getUnlockPromise = jest.fn();
       const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
         })({
           method: 'snap_getBip32PublicKey',
           context: { origin: MOCK_SNAP_ID },
@@ -242,18 +229,16 @@ describe('getBip32PublicKeyImplementation', () => {
         `"0x042de17487a660993177ce2a85bb73b6cd9ad436184d57bdf5a93f5db430bea914f7c31d378fe68f4723b297a04e49ef55fbf490605c4a3f9ca947a4af4f06526a"`,
       );
 
-      expect(getMnemonicSeed).toHaveBeenCalledWith('source-id');
-      expect(getMnemonic).not.toHaveBeenCalled();
+      expect(messenger.call).toHaveBeenCalledTimes(1);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'KeyringController:withKeyring',
+        { id: 'source-id' },
+        expect.any(Function),
+      );
     });
 
     it('uses custom client cryptography functions', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getMnemonic = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_BYTES);
-      const getMnemonicSeed = jest
-        .fn()
-        .mockResolvedValue(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES);
 
       const hmacSha512 = jest
         .fn()
@@ -263,13 +248,12 @@ describe('getBip32PublicKeyImplementation', () => {
       const getClientCryptography = jest.fn().mockReturnValue({
         hmacSha512,
       });
+      const messenger = getMessenger();
 
       expect(
         await getBip32PublicKeyImplementation({
-          getUnlockPromise,
-          getMnemonic,
-          getMnemonicSeed,
-          getClientCryptography,
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
           // @ts-expect-error Missing other required properties.
         })({
           params: {
