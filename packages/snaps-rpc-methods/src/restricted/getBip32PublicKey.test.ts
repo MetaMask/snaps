@@ -177,6 +177,28 @@ describe('getBip32PublicKeyImplementation', () => {
       );
     });
 
+    it('derives the compressed public key from the path using ed25519Bip32', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getClientCryptography = jest.fn().mockReturnValue({});
+      const messenger = getMessenger();
+
+      expect(
+        await getBip32PublicKeyImplementation({
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "1'", '1', '2', '3'],
+            curve: 'ed25519Bip32',
+            compressed: true,
+          },
+        }),
+      ).toMatchInlineSnapshot(
+        `"0x03303da49ddfafc90587b7559eacdd5523028e75be81f2a9f158733fee1211a6"`,
+      );
+    });
+
     it('calls `getMnemonic` with a different entropy source', async () => {
       const getUnlockPromise = jest.fn();
       const getClientCryptography = jest.fn().mockReturnValue({});
