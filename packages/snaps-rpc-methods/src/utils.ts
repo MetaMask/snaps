@@ -432,12 +432,10 @@ export async function getMnemonic(
       mnemonic?: Uint8Array;
     };
 
-    if (type !== HD_KEYRING || !mnemonic) {
-      // The keyring isn't guaranteed to have a mnemonic (e.g.,
-      // hardware wallets, which can't be used as entropy sources),
-      // so we throw an error if it doesn't.
-      throw new Error(`Entropy source with ID "${source}" not found.`);
-    }
+    // The keyring isn't guaranteed to have a mnemonic (e.g.,
+    // hardware wallets, which can't be used as entropy sources),
+    // so we throw an error if it doesn't.
+    assert(type === HD_KEYRING && mnemonic);
 
     return mnemonic;
   } catch {
@@ -488,12 +486,10 @@ export async function getMnemonicSeed(
 
     const { type, seed } = keyringData as { type: string; seed?: Uint8Array };
 
-    if (type !== HD_KEYRING || !seed) {
-      // The keyring isn't guaranteed to have a mnemonic (e.g.,
-      // hardware wallets, which can't be used as entropy sources),
-      // so we throw an error if it doesn't.
-      throw new Error(`Entropy source with ID "${source}" not found.`);
-    }
+    // The keyring isn't guaranteed to have a mnemonic (e.g.,
+    // hardware wallets, which can't be used as entropy sources),
+    // so we throw an error if it doesn't.
+    assert(type === HD_KEYRING && seed);
 
     return seed;
   } catch {

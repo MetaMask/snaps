@@ -330,5 +330,133 @@ describe('getBip32EntropyImplementation', () => {
 
       expect(hmacSha512).toHaveBeenCalledTimes(3);
     });
+
+    it('throws if invalid primary keyring is returned', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        GetBip32EntropyMessengerActions
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      messenger.registerActionHandler(
+        'KeyringController:withKeyring',
+        async (_selector, operation) =>
+          operation({
+            keyring: {
+              type: 'hd',
+            },
+          }),
+      );
+
+      await expect(
+        getBip32EntropyImplementation({
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: { path: ['m', "44'", "1'"], curve: 'secp256k1' },
+        }),
+      ).rejects.toThrow('Primary keyring mnemonic unavailable.');
+    });
+
+    it('throws if invalid primary keyring is returned for ed25519Bip32', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        GetBip32EntropyMessengerActions
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      messenger.registerActionHandler(
+        'KeyringController:withKeyring',
+        async (_selector, operation) =>
+          operation({
+            keyring: {
+              type: 'hd',
+            },
+          }),
+      );
+
+      await expect(
+        getBip32EntropyImplementation({
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: { path: ['m', "44'", "1'"], curve: 'ed25519Bip32' },
+        }),
+      ).rejects.toThrow('Primary keyring mnemonic unavailable.');
+    });
+
+    it('throws if invalid keyring is returned when selected using entropy source ID', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        GetBip32EntropyMessengerActions
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      messenger.registerActionHandler(
+        'KeyringController:withKeyring',
+        async (_selector, operation) =>
+          operation({
+            keyring: {
+              type: 'hd',
+            },
+          }),
+      );
+
+      await expect(
+        getBip32EntropyImplementation({
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "1'"],
+            curve: 'secp256k1',
+            source: 'foo',
+          },
+        }),
+      ).rejects.toThrow('Entropy source with ID "foo" not found.');
+    });
+
+    it('throws if invalid keyring is returned when selected using entropy source ID for ed25519Bip32', async () => {
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const getClientCryptography = jest.fn().mockReturnValue({});
+
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        GetBip32EntropyMessengerActions
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      messenger.registerActionHandler(
+        'KeyringController:withKeyring',
+        async (_selector, operation) =>
+          operation({
+            keyring: {
+              type: 'hd',
+            },
+          }),
+      );
+
+      await expect(
+        getBip32EntropyImplementation({
+          methodHooks: { getUnlockPromise, getClientCryptography },
+          messenger,
+          // @ts-expect-error Missing other required properties.
+        })({
+          params: {
+            path: ['m', "44'", "1'"],
+            curve: 'ed25519Bip32',
+            source: 'foo',
+          },
+        }),
+      ).rejects.toThrow('Entropy source with ID "foo" not found.');
+    });
   });
 });
