@@ -5,6 +5,7 @@ import type {
   PermissionSpecificationConstraint,
   PermissionSpecificationMap,
 } from '@metamask/permission-controller';
+import type { RestrictedMethodMessenger } from '@metamask/snaps-rpc-methods';
 import {
   endowmentPermissionBuilders,
   buildSnapEndowmentSpecifications,
@@ -91,7 +92,7 @@ export function getPermissionSpecifications({
 
         maybeUpdatePhishingList: asyncResolve(),
       },
-      controllerMessenger,
+      controllerMessenger as RestrictedMethodMessenger,
     ),
   };
 }
