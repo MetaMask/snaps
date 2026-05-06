@@ -1,4 +1,8 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
@@ -6,7 +10,7 @@ import type {
   EndTraceResult,
   EndTraceRequest,
 } from '@metamask/snaps-sdk';
-import type { InferMatching, Snap } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
 import {
   number,
   create,
@@ -17,14 +21,11 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import type { SnapControllerGetAction } from '../types';
 import type { MethodHooksObject } from '../utils';
-
-const methodName = 'snap_endTrace';
 
 const hookNames: MethodHooksObject<EndTraceMethodHooks> = {
   endTrace: true,
-  getSnap: true,
 };
 
 export type EndTraceMethodHooks = {
@@ -35,14 +36,9 @@ export type EndTraceMethodHooks = {
    * @returns The performance trace context.
    */
   endTrace: (request: EndTraceRequest) => void;
-
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
 };
+
+export type EndTraceMethodActions = SnapControllerGetAction;
 
 const EndTraceParametersStruct = object({
   id: exactOptional(string()),
@@ -62,13 +58,15 @@ export type EndTraceParameters = InferMatching<
  * @internal
  */
 export const endTraceHandler = {
-  methodNames: [methodName] as const,
   implementation: getEndTraceImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
+  actionNames: ['SnapController:getSnap'],
+} satisfies MethodHandler<
   EndTraceMethodHooks,
+  EndTraceMethodActions,
   EndTraceParameters,
-  EndTraceResult
+  EndTraceResult,
+  { origin: string }
 >;
 
 /**
@@ -82,19 +80,18 @@ export const endTraceHandler = {
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.endTrace - The hook function to end a performance trace.
- * @param hooks.getSnap - The hook function to get Snap metadata.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getEndTraceImplementation(
-  request: JsonRpcRequest<EndTraceParameters>,
+  request: JsonRpcRequest<EndTraceParameters> & { origin: string },
   response: PendingJsonRpcResponse,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { endTrace, getSnap }: EndTraceMethodHooks,
+  { endTrace }: EndTraceMethodHooks,
+  messenger: Messenger<string, EndTraceMethodActions>,
 ): void {
-  const snap = getSnap(
-    (request as JsonRpcRequest<EndTraceParams> & { origin: string }).origin,
-  );
+  const snap = messenger.call('SnapController:getSnap', request.origin);
 
   if (!snap?.preinstalled) {
     return end(rpcErrors.methodNotFound());

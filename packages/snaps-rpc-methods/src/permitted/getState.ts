@@ -1,4 +1,9 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { GetStateParams, GetStateResult } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
@@ -17,17 +22,26 @@ import type {
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
-import type { PermittedHandlerExport } from '../types';
+import type { SnapControllerGetSnapStateAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
-const methodName = 'snap_getState';
-
 const hookNames: MethodHooksObject<GetStateHooks> = {
-  hasPermission: true,
-  getSnapState: true,
   getUnlockPromise: true,
 };
+
+export type GetStateHooks = {
+  /**
+   * Wait for the extension to be unlocked.
+   *
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+};
+
+export type GetStateMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapControllerGetSnapStateAction;
 
 /**
  * Get the state of the Snap, or a specific value within the state. By default,
@@ -54,38 +68,19 @@ const hookNames: MethodHooksObject<GetStateHooks> = {
  * ```
  */
 export const getStateHandler = {
-  methodNames: [methodName] as const,
   implementation: getStateImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapController:getSnapState',
+  ],
+} satisfies MethodHandler<
   GetStateHooks,
+  GetStateMethodActions,
   GetStateParameters,
-  GetStateResult
+  GetStateResult,
+  { origin: string }
 >;
-
-export type GetStateHooks = {
-  /**
-   * Check if the requesting origin has a given permission.
-   *
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the origin has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * Get the state of the requesting Snap.
-   *
-   * @returns The current state of the Snap.
-   */
-  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
-
-  /**
-   * Wait for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-};
 
 const GetStateParametersStruct = object({
   key: optional(StateKeyStruct),
@@ -106,14 +101,12 @@ export type GetStateParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - Check whether a given origin has a given
- * permission.
- * @param hooks.getSnapState - Get the state of the requesting Snap.
  * @param hooks.getUnlockPromise - Wait for the extension to be unlocked.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function getStateImplementation(
-  request: JsonRpcRequest<GetStateParameters>,
+  request: JsonRpcRequest<GetStateParameters> & { origin: string },
   // `GetStateResult` is an alias for `Json` (which is the default type argument
   // for `PendingJsonRpcResponse`), but that may not be the case in the future.
   // We use `GetStateResult` here to make it clear that this is the expected
@@ -122,11 +115,18 @@ async function getStateImplementation(
   response: PendingJsonRpcResponse<GetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, getSnapState, getUnlockPromise }: GetStateHooks,
+  { getUnlockPromise }: GetStateHooks,
+  messenger: Messenger<string, GetStateMethodActions>,
 ): Promise<void> {
-  const { params } = request;
+  const { params, origin } = request;
 
-  if (!hasPermission(manageStateBuilder.targetName)) {
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      manageStateBuilder.targetName,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
@@ -138,7 +138,11 @@ async function getStateImplementation(
       await getUnlockPromise(true);
     }
 
-    const state = await getSnapState(encrypted);
+    const state = await messenger.call(
+      'SnapController:getSnapState',
+      origin,
+      encrypted,
+    );
     response.result = get(state, key);
   } catch (error) {
     return end(error);

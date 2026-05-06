@@ -1,29 +1,26 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
   CancelBackgroundEventParams,
   CancelBackgroundEventResult,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { CronjobControllerCancelAction } from '../types';
 
-const methodName = 'snap_cancelBackgroundEvent';
-
-const hookNames: MethodHooksObject<CancelBackgroundEventMethodHooks> = {
-  cancelBackgroundEvent: true,
-  hasPermission: true,
-};
-
-export type CancelBackgroundEventMethodHooks = {
-  cancelBackgroundEvent: (id: string) => void;
-  hasPermission: (permissionName: string) => boolean;
-};
+export type CancelBackgroundEventMethodActions =
+  | PermissionControllerHasPermissionAction
+  | CronjobControllerCancelAction;
 
 /**
  * Cancel a background event created by
@@ -46,13 +43,17 @@ export type CancelBackgroundEventMethodHooks = {
  * ```
  */
 export const cancelBackgroundEventHandler = {
-  methodNames: [methodName] as const,
   implementation: getCancelBackgroundEventImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  CancelBackgroundEventMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'CronjobController:cancel',
+  ],
+} satisfies MethodHandler<
+  never,
+  CancelBackgroundEventMethodActions,
   CancelBackgroundEventParameters,
-  CancelBackgroundEventResult
+  CancelBackgroundEventResult,
+  { origin: SnapId }
 >;
 
 const CancelBackgroundEventsParametersStruct = object({
@@ -72,21 +73,27 @@ export type CancelBackgroundEventParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.cancelBackgroundEvent - The function to cancel a background event.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:cronjob` permission.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function getCancelBackgroundEventImplementation(
-  req: JsonRpcRequest<CancelBackgroundEventParameters>,
+  req: JsonRpcRequest<CancelBackgroundEventParameters> & { origin: SnapId },
   res: PendingJsonRpcResponse<CancelBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { cancelBackgroundEvent, hasPermission }: CancelBackgroundEventMethodHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, CancelBackgroundEventMethodActions>,
 ): Promise<void> {
-  const { params } = req;
+  const { params, origin } = req;
 
-  if (!hasPermission(SnapEndowments.Cronjob)) {
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.Cronjob,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
@@ -95,7 +102,7 @@ async function getCancelBackgroundEventImplementation(
 
     const { id } = validatedParams;
 
-    cancelBackgroundEvent(id);
+    messenger.call('CronjobController:cancel', origin, id);
     res.result = null;
   } catch (error) {
     return end(error);

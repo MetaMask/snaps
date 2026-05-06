@@ -1,11 +1,14 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
   JsonRpcRequest,
-  ComponentOrElement,
-  InterfaceContext,
 } from '@metamask/snaps-sdk';
 import {
   ComponentOrElementStruct,
@@ -21,35 +24,12 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { SnapInterfaceControllerUpdateInterfaceAction } from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
-const methodName = 'snap_updateInterface';
-
-const hookNames: MethodHooksObject<UpdateInterfaceMethodHooks> = {
-  hasPermission: true,
-  updateInterface: true,
-};
-
-export type UpdateInterfaceMethodHooks = {
-  /**
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the Snap has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * @param id - The interface ID.
-   * @param ui - The UI components.
-   * @param context - The optional interface context object.
-   */
-  updateInterface: (
-    id: string,
-    ui: ComponentOrElement,
-    context?: InterfaceContext,
-  ) => void;
-};
+export type UpdateInterfaceMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapInterfaceControllerUpdateInterfaceAction;
 
 /**
  * Update an interactive interface. For use in
@@ -87,13 +67,17 @@ export type UpdateInterfaceMethodHooks = {
  * ```
  */
 export const updateInterfaceHandler = {
-  methodNames: [methodName] as const,
   implementation: getUpdateInterfaceImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  UpdateInterfaceMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapInterfaceController:updateInterface',
+  ],
+} satisfies MethodHandler<
+  never,
+  UpdateInterfaceMethodActions,
   UpdateInterfaceParameters,
-  UpdateInterfaceResult
+  UpdateInterfaceResult,
+  { origin: string }
 >;
 
 const UpdateInterfaceParametersStruct = object({
@@ -115,20 +99,25 @@ export type UpdateInterfaceParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if the Snap has a given
- * permission.
- * @param hooks.updateInterface - The function to update the interface.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getUpdateInterfaceImplementation(
-  req: JsonRpcRequest<UpdateInterfaceParameters>,
+  req: JsonRpcRequest<UpdateInterfaceParameters> & { origin: string },
   res: PendingJsonRpcResponse<UpdateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, updateInterface }: UpdateInterfaceMethodHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, UpdateInterfaceMethodActions>,
 ): void {
-  if (!UI_PERMISSIONS.some(hasPermission)) {
+  const { params, origin } = req;
+
+  const isPermitted = UI_PERMISSIONS.some((permission) =>
+    messenger.call('PermissionController:hasPermission', origin, permission),
+  );
+
+  if (!isPermitted) {
     return end(
       providerErrors.unauthorized({
         message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
@@ -136,14 +125,18 @@ function getUpdateInterfaceImplementation(
     );
   }
 
-  const { params } = req;
-
   try {
     const validatedParams = getValidatedParams(params);
 
     const { id, ui, context } = validatedParams;
 
-    updateInterface(id, ui, context);
+    messenger.call(
+      'SnapInterfaceController:updateInterface',
+      origin,
+      id,
+      ui,
+      context,
+    );
     res.result = null;
   } catch (error) {
     return end(error);

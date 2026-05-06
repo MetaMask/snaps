@@ -1,12 +1,14 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
   JsonRpcRequest,
-  ComponentOrElement,
-  InterfaceContext,
-  ContentType,
 } from '@metamask/snaps-sdk';
 import {
   ComponentOrElementStruct,
@@ -16,36 +18,12 @@ import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, optional } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { SnapInterfaceControllerCreateInterfaceAction } from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
-const methodName = 'snap_createInterface';
-
-const hookNames: MethodHooksObject<CreateInterfaceMethodHooks> = {
-  hasPermission: true,
-  createInterface: true,
-};
-
-export type CreateInterfaceMethodHooks = {
-  /**
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the Snap has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * @param ui - The UI components.
-   * @param context - An optional interface context object.
-   * @param contentType - The optional content type.
-   * @returns The unique identifier of the interface.
-   */
-  createInterface: (
-    ui: ComponentOrElement,
-    context?: InterfaceContext,
-    contentType?: ContentType,
-  ) => string;
-};
+export type CreateInterfaceMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapInterfaceControllerCreateInterfaceAction;
 
 /**
  * Create the interactive interface for use in the
@@ -69,13 +47,17 @@ export type CreateInterfaceMethodHooks = {
  * ```
  */
 export const createInterfaceHandler = {
-  methodNames: [methodName] as const,
   implementation: getCreateInterfaceImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  CreateInterfaceMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapInterfaceController:createInterface',
+  ],
+} satisfies MethodHandler<
+  never,
+  CreateInterfaceMethodActions,
   CreateInterfaceParameters,
-  CreateInterfaceResult
+  CreateInterfaceResult,
+  { origin: string }
 >;
 
 const CreateInterfaceParametersStruct = object({
@@ -96,20 +78,25 @@ export type CreateInterfaceParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if the Snap has a given
- * permission.
- * @param hooks.createInterface - The function to create the interface.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getCreateInterfaceImplementation(
-  req: JsonRpcRequest<CreateInterfaceParameters>,
+  req: JsonRpcRequest<CreateInterfaceParameters> & { origin: string },
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, createInterface }: CreateInterfaceMethodHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, CreateInterfaceMethodActions>,
 ): void {
-  if (!UI_PERMISSIONS.some(hasPermission)) {
+  const { params, origin } = req;
+
+  const isPermitted = UI_PERMISSIONS.some((permission) =>
+    messenger.call('PermissionController:hasPermission', origin, permission),
+  );
+
+  if (!isPermitted) {
     return end(
       providerErrors.unauthorized({
         message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
@@ -117,14 +104,17 @@ function getCreateInterfaceImplementation(
     );
   }
 
-  const { params } = req;
-
   try {
     const validatedParams = getValidatedParams(params);
 
     const { ui, context } = validatedParams;
 
-    res.result = createInterface(ui, context);
+    res.result = messenger.call(
+      'SnapInterfaceController:createInterface',
+      origin,
+      ui,
+      context,
+    );
   } catch (error) {
     return end(error);
   }

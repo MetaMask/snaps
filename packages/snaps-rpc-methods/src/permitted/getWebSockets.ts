@@ -1,4 +1,9 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
   GetWebSocketsParams,
@@ -8,20 +13,11 @@ import type {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { WebSocketServiceGetAllAction } from '../types';
 
-const methodName = 'snap_getWebSockets';
-
-const hookNames: MethodHooksObject<GetWebSocketsMethodHooks> = {
-  hasPermission: true,
-  getWebSockets: true,
-};
-
-export type GetWebSocketsMethodHooks = {
-  hasPermission: (permissionName: string) => boolean;
-  getWebSockets: () => GetWebSocketsResult;
-};
+export type GetWebSocketsMethodActions =
+  | PermissionControllerHasPermissionAction
+  | WebSocketServiceGetAllAction;
 
 /**
  * Get the connected WebSockets for the Snap.
@@ -53,40 +49,52 @@ export type GetWebSocketsMethodHooks = {
  * ```
  */
 export const getWebSocketsHandler = {
-  methodNames: [methodName] as const,
   implementation: getWebSocketsImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  GetWebSocketsMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'WebSocketService:getAll',
+  ],
+} satisfies MethodHandler<
+  never,
+  GetWebSocketsMethodActions,
   GetWebSocketsParams,
-  GetWebSocketsResult
+  GetWebSocketsResult,
+  { origin: string }
 >;
 
 /**
  * The `snap_getWebSockets` method implementation.
  *
- * @param _req - The JSON-RPC request object. Not used by this function.
+ * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:network-access` permission.
- * @param hooks.getWebSockets - The function to get the connected WebSockets for the origin.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getWebSocketsImplementation(
-  _req: JsonRpcRequest<GetWebSocketsParams>,
+  req: JsonRpcRequest<GetWebSocketsParams> & { origin: string },
   res: PendingJsonRpcResponse<GetWebSocketsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, getWebSockets }: GetWebSocketsMethodHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, GetWebSocketsMethodActions>,
 ): void {
-  if (!hasPermission(SnapEndowments.NetworkAccess)) {
+  const { origin } = req;
+
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.NetworkAccess,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
   try {
-    res.result = getWebSockets();
+    res.result = messenger.call('WebSocketService:getAll', origin);
   } catch (error) {
     return end(error);
   }

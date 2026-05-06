@@ -1,4 +1,9 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
@@ -7,33 +12,15 @@ import type {
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
-import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { SnapInterfaceControllerResolveInterfaceAction } from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
-const methodName = 'snap_resolveInterface';
-
-const hookNames: MethodHooksObject<ResolveInterfaceMethodHooks> = {
-  hasPermission: true,
-  resolveInterface: true,
-};
-
-export type ResolveInterfaceMethodHooks = {
-  /**
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the Snap has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * @param id - The interface id.
-   * @param value - The value to resolve the interface with.
-   */
-  resolveInterface: (id: string, value: Json) => Promise<void>;
-};
+export type ResolveInterfaceMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapInterfaceControllerResolveInterfaceAction;
 
 /**
  * Resolve an interactive interface. For use in
@@ -62,13 +49,17 @@ export type ResolveInterfaceMethodHooks = {
  * ```
  */
 export const resolveInterfaceHandler = {
-  methodNames: [methodName] as const,
   implementation: getResolveInterfaceImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  ResolveInterfaceMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapInterfaceController:resolveInterface',
+  ],
+} satisfies MethodHandler<
+  never,
+  ResolveInterfaceMethodActions,
   ResolveInterfaceParameters,
-  ResolveInterfaceResult
+  ResolveInterfaceResult,
+  { origin: string }
 >;
 
 const ResolveInterfaceParametersStruct = object({
@@ -89,20 +80,25 @@ export type ResolveInterfaceParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if the Snap has a given
- * permission.
- * @param hooks.resolveInterface - The function to resolve the interface.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function getResolveInterfaceImplementation(
-  req: JsonRpcRequest<ResolveInterfaceParameters>,
+  req: JsonRpcRequest<ResolveInterfaceParameters> & { origin: string },
   res: PendingJsonRpcResponse<ResolveInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, resolveInterface }: ResolveInterfaceMethodHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, ResolveInterfaceMethodActions>,
 ): Promise<void> {
-  if (!UI_PERMISSIONS.some(hasPermission)) {
+  const { params, origin } = req;
+
+  const isPermitted = UI_PERMISSIONS.some((permission) =>
+    messenger.call('PermissionController:hasPermission', origin, permission),
+  );
+
+  if (!isPermitted) {
     return end(
       providerErrors.unauthorized({
         message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
@@ -110,14 +106,17 @@ async function getResolveInterfaceImplementation(
     );
   }
 
-  const { params } = req;
-
   try {
     const validatedParams = getValidatedParams(params);
 
     const { id, value } = validatedParams;
 
-    await resolveInterface(id, value);
+    await messenger.call(
+      'SnapInterfaceController:resolveInterface',
+      origin,
+      id,
+      value,
+    );
     res.result = null;
   } catch (error) {
     return end(error);

@@ -1,4 +1,8 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   JsonRpcRequest,
@@ -7,7 +11,7 @@ import type {
   TraceContext,
   TraceRequest,
 } from '@metamask/snaps-sdk';
-import type { InferMatching, Snap } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
 import {
   boolean,
   number,
@@ -22,14 +26,11 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import type { SnapControllerGetAction } from '../types';
 import type { MethodHooksObject } from '../utils';
-
-const methodName = 'snap_startTrace';
 
 const hookNames: MethodHooksObject<StartTraceMethodHooks> = {
   startTrace: true,
-  getSnap: true,
 };
 
 export type StartTraceMethodHooks = {
@@ -40,14 +41,9 @@ export type StartTraceMethodHooks = {
    * @returns The performance trace context.
    */
   startTrace: (request: TraceRequest) => TraceContext;
-
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
 };
+
+export type StartTraceMethodActions = SnapControllerGetAction;
 
 const StartTraceParametersStruct = object({
   data: exactOptional(record(string(), union([string(), number(), boolean()]))),
@@ -69,13 +65,15 @@ export type StartTraceParameters = InferMatching<
  * @internal
  */
 export const startTraceHandler = {
-  methodNames: [methodName] as const,
   implementation: getStartTraceImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
+  actionNames: ['SnapController:getSnap'],
+} satisfies MethodHandler<
   StartTraceMethodHooks,
+  StartTraceMethodActions,
   StartTraceParameters,
-  StartTraceResult
+  StartTraceResult,
+  { origin: string }
 >;
 
 /**
@@ -89,19 +87,18 @@ export const startTraceHandler = {
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.startTrace - The hook function to start a performance trace.
- * @param hooks.getSnap - The hook function to get Snap metadata.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getStartTraceImplementation(
-  request: JsonRpcRequest<StartTraceParameters>,
+  request: JsonRpcRequest<StartTraceParameters> & { origin: string },
   response: PendingJsonRpcResponse,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { startTrace, getSnap }: StartTraceMethodHooks,
+  { startTrace }: StartTraceMethodHooks,
+  messenger: Messenger<string, StartTraceMethodActions>,
 ): void {
-  const snap = getSnap(
-    (request as JsonRpcRequest<StartTraceParams> & { origin: string }).origin,
-  );
+  const snap = messenger.call('SnapController:getSnap', request.origin);
 
   if (!snap?.preinstalled) {
     return end(rpcErrors.methodNotFound());

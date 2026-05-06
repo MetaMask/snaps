@@ -1,20 +1,21 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type { GetSnapsResult } from '@metamask/snaps-sdk';
+import type { TruncatedSnap } from '@metamask/snaps-utils';
 import type {
   JsonRpcParams,
   JsonRpcRequest,
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { SnapControllerGetAllSnapsAction } from '../types';
 
-const methodName = 'wallet_getAllSnaps';
+export type GetAllSnapsResult = TruncatedSnap[];
 
-const hookNames: MethodHooksObject<GetAllSnapsHooks> = {
-  getAllSnaps: true,
-};
+export type GetAllSnapsMethodActions = SnapControllerGetAllSnapsAction;
 
 /**
  * `wallet_getAllSnaps` gets all installed Snaps. Currently, this can only be
@@ -23,21 +24,15 @@ const hookNames: MethodHooksObject<GetAllSnapsHooks> = {
  * @internal
  */
 export const getAllSnapsHandler = {
-  methodNames: [methodName] as const,
   implementation: getAllSnapsImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  GetAllSnapsHooks,
+  actionNames: ['SnapController:getAllSnaps'],
+} satisfies MethodHandler<
+  never,
+  GetAllSnapsMethodActions,
   JsonRpcParams,
-  GetSnapsResult
+  GetAllSnapsResult,
+  { origin: string }
 >;
-
-export type GetAllSnapsHooks = {
-  /**
-   * @returns All installed Snaps.
-   */
-  getAllSnaps: () => Promise<GetSnapsResult>;
-};
 
 /**
  * The `wallet_getAllSnaps` method implementation.
@@ -48,24 +43,24 @@ export type GetAllSnapsHooks = {
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.getAllSnaps - A function that returns all installed snaps.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function getAllSnapsImplementation(
-  request: JsonRpcRequest,
-  response: PendingJsonRpcResponse<GetSnapsResult>,
+  request: JsonRpcRequest & { origin: string },
+  response: PendingJsonRpcResponse<GetAllSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getAllSnaps }: GetAllSnapsHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, GetAllSnapsMethodActions>,
 ): Promise<void> {
-  // The origin is added by the MetaMask middleware stack.
-  const { origin } = request as JsonRpcRequest & { origin: string };
+  const { origin } = request;
 
   if (origin !== 'https://snaps.metamask.io') {
     return end(rpcErrors.methodNotFound());
   }
 
-  response.result = await getAllSnaps();
+  response.result = messenger.call('SnapController:getAllSnaps');
   return end();
 }
