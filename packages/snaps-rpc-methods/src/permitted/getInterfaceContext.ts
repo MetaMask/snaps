@@ -124,6 +124,7 @@ function getInterfaceContextImplementation(
       origin,
       id,
     );
+
     res.result = context;
   } catch (error) {
     return end(error);

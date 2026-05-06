@@ -15,7 +15,7 @@ import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import { create, object, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapControllerGetAction } from '../types';
+import type { SnapControllerGetSnapAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<TrackErrorMethodHooks> = {
@@ -33,7 +33,7 @@ export type TrackErrorMethodHooks = {
   trackError: (error: Error) => string;
 };
 
-export type TrackErrorMethodActions = SnapControllerGetAction;
+export type TrackErrorMethodActions = SnapControllerGetSnapAction;
 
 const TrackErrorParametersStruct = object({
   error: TrackableErrorStruct,

@@ -32,7 +32,7 @@ import {
   STORAGE_SIZE_LIMIT,
 } from '../restricted/manageState';
 import type {
-  SnapControllerGetAction,
+  SnapControllerGetSnapAction,
   SnapControllerGetSnapStateAction,
   SnapControllerUpdateSnapStateAction,
 } from '../types';
@@ -56,7 +56,7 @@ export type SetStateMethodActions =
   | PermissionControllerHasPermissionAction
   | SnapControllerGetSnapStateAction
   | SnapControllerUpdateSnapStateAction
-  | SnapControllerGetAction;
+  | SnapControllerGetSnapAction;
 
 /**
  * Allow the Snap to persist up to 64 MB of data to disk and retrieve it at

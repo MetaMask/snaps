@@ -26,7 +26,7 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { SnapControllerGetAction } from '../types';
+import type { SnapControllerGetSnapAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<StartTraceMethodHooks> = {
@@ -43,7 +43,7 @@ export type StartTraceMethodHooks = {
   startTrace: (request: TraceRequest) => TraceContext;
 };
 
-export type StartTraceMethodActions = SnapControllerGetAction;
+export type StartTraceMethodActions = SnapControllerGetSnapAction;
 
 const StartTraceParametersStruct = object({
   data: exactOptional(record(string(), union([string(), number(), boolean()]))),

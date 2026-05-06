@@ -22,7 +22,7 @@ import {
 import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { SnapControllerGetAction } from '../types';
+import type { SnapControllerGetSnapAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const PropertiesStruct = optional(record(string(), JsonStruct));
@@ -54,7 +54,7 @@ export type TrackEventMethodHooks = {
   trackEvent: (event: TrackEventObject) => void;
 };
 
-export type TrackEventMethodActions = SnapControllerGetAction;
+export type TrackEventMethodActions = SnapControllerGetSnapAction;
 
 export type TrackEventObject = {
   event: string;

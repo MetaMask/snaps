@@ -20,7 +20,7 @@ import { hasProperty } from '@metamask/utils';
 
 import { getValidatedParams } from './invokeSnapSugar';
 import type {
-  SnapControllerGetAction,
+  SnapControllerGetSnapAction,
   SnapControllerHandleRequestAction,
 } from '../types';
 import type { MethodHooksObject } from '../utils';
@@ -41,7 +41,7 @@ export type InvokeKeyringMethodHooks = {
 export type InvokeKeyringMethodActions =
   | PermissionControllerHasPermissionAction
   | SnapControllerHandleRequestAction
-  | SnapControllerGetAction;
+  | SnapControllerGetSnapAction;
 
 /**
  * Invoke a keyring method of a Snap. This calls the `onKeyringRequest` handler

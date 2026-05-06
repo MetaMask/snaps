@@ -21,7 +21,7 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapControllerGetAction } from '../types';
+import type { SnapControllerGetSnapAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<EndTraceMethodHooks> = {
@@ -38,7 +38,7 @@ export type EndTraceMethodHooks = {
   endTrace: (request: EndTraceRequest) => void;
 };
 
-export type EndTraceMethodActions = SnapControllerGetAction;
+export type EndTraceMethodActions = SnapControllerGetSnapAction;
 
 const EndTraceParametersStruct = object({
   id: exactOptional(string()),
