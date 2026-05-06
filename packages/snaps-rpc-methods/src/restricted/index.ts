@@ -23,6 +23,7 @@ import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
 import type { GetPreferencesMethodHooks } from './getPreferences';
 import { getPreferencesBuilder } from './getPreferences';
+import type { InvokeSnapMessengerActions } from './invokeSnap';
 import { invokeSnapBuilder } from './invokeSnap';
 import type { ManageAccountsMethodHooks } from './manageAccounts';
 import { manageAccountsBuilder } from './manageAccounts';
@@ -43,6 +44,7 @@ export type RestrictedMethodActions =
   | GetBip32PublicKeyMessengerActions
   | GetBip44EntropyMessengerActions
   | GetEntropyMessengerActions
+  | InvokeSnapMessengerActions
   | ManageStateMessengerActions
   | NotifyMessengerActions;
 
