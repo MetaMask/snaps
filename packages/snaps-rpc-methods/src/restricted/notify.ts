@@ -27,7 +27,7 @@ import {
 import type { InferMatching } from '@metamask/snaps-utils';
 import { object, string, optional } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
-import { hasProperty, isObject } from '@metamask/utils';
+import { assertExhaustive, hasProperty, isObject } from '@metamask/utils';
 
 import type {
   RateLimitControllerCallAction,
@@ -285,10 +285,9 @@ export function getImplementation({
           },
         )) as NotifyResult;
       }
+      /* istanbul ignore next */
       default:
-        throw rpcErrors.invalidParams({
-          message: 'Must specify a valid notification "type".',
-        });
+        return assertExhaustive(validatedParams.type as never);
     }
   };
 }
