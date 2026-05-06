@@ -1,15 +1,19 @@
 import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerExecuteRestrictedMethodAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
 
-const methodName = 'wallet_invokeSnap';
+export type InvokeSnapSugarMethodActions =
+  PermissionControllerExecuteRestrictedMethodAction;
 
 /**
  * Invoke a method of a Snap, designated by the `snapId` parameter, with a
@@ -37,20 +41,15 @@ const methodName = 'wallet_invokeSnap';
  * ```
  */
 export const invokeSnapSugarHandler = {
-  methodNames: [methodName] as const,
   implementation: invokeSnapSugar,
-  hookNames: {
-    invokeSnap: true,
-  },
-} satisfies PermittedHandlerExport<
-  InvokeSnapSugarHooks,
+  actionNames: ['PermissionController:executeRestrictedMethod'],
+} satisfies MethodHandler<
+  never,
+  InvokeSnapSugarMethodActions,
   InvokeSnapParams,
-  InvokeSnapResult
+  InvokeSnapResult,
+  { origin: string }
 >;
-
-export type InvokeSnapSugarHooks = {
-  invokeSnap: (params: InvokeSnapParams) => Promise<InvokeSnapResult>;
-};
 
 /**
  * The `wallet_invokeSnap` method implementation.
@@ -60,14 +59,13 @@ export type InvokeSnapSugarHooks = {
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.invokeSnap - A function to invoke a snap designated by its parameters,
- * bound to the requesting origin.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  * @throws If the params are invalid.
  */
 export async function invokeSnapSugar(
-  req: JsonRpcRequest<InvokeSnapParams>,
+  req: JsonRpcRequest<InvokeSnapParams> & { origin: string },
   // `InvokeSnapResult` is an alias for `Json` (which is the default type
   // argument for `PendingJsonRpcResponse`), but that may not be the case in the
   // future. We use `InvokeSnapResult` here to make it clear that this is the
@@ -76,11 +74,17 @@ export async function invokeSnapSugar(
   res: PendingJsonRpcResponse<InvokeSnapResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { invokeSnap }: InvokeSnapSugarHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, InvokeSnapSugarMethodActions>,
 ): Promise<void> {
   try {
     const params = getValidatedParams(req.params);
-    res.result = await invokeSnap(params);
+    res.result = await messenger.call(
+      'PermissionController:executeRestrictedMethod',
+      req.origin,
+      WALLET_SNAP_PERMISSION_KEY,
+      params,
+    );
   } catch (error) {
     return end(error);
   }

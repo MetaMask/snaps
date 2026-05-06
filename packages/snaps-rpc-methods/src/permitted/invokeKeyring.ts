@@ -1,11 +1,15 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
   InvokeSnapParams,
 } from '@metamask/snaps-sdk';
-import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import type {
   PendingJsonRpcResponse,
@@ -15,17 +19,29 @@ import type {
 import { hasProperty } from '@metamask/utils';
 
 import { getValidatedParams } from './invokeSnapSugar';
-import type { PermittedHandlerExport } from '../types';
+import type {
+  SnapControllerGetAction,
+  SnapControllerHandleRequestAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
-const methodName = 'wallet_invokeKeyring';
-
-const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
-  hasPermission: true,
-  handleSnapRpcRequest: true,
-  getSnap: true,
+const hookNames: MethodHooksObject<InvokeKeyringMethodHooks> = {
   getAllowedKeyringMethods: true,
 };
+
+export type InvokeKeyringMethodHooks = {
+  /**
+   * Get the list of allowed Keyring methods for a given origin.
+   *
+   * @returns The list of allowed Keyring methods.
+   */
+  getAllowedKeyringMethods: () => string[];
+};
+
+export type InvokeKeyringMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapControllerHandleRequestAction
+  | SnapControllerGetAction;
 
 /**
  * Invoke a keyring method of a Snap. This calls the `onKeyringRequest` handler
@@ -36,28 +52,20 @@ const hookNames: MethodHooksObject<InvokeKeyringHooks> = {
  * request permission to communicate with it using [`wallet_requestSnaps`](https://docs.metamask.io/snaps/reference/snaps-api/wallet_requestsnaps).
  */
 export const invokeKeyringHandler = {
-  methodNames: [methodName] as const,
   implementation: invokeKeyringImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
-  InvokeKeyringHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapController:handleRequest',
+    'SnapController:getSnap',
+  ],
+} satisfies MethodHandler<
+  InvokeKeyringMethodHooks,
+  InvokeKeyringMethodActions,
   InvokeSnapParams,
-  InvokeKeyringResult
+  InvokeKeyringResult,
+  { origin: string }
 >;
-
-export type InvokeKeyringHooks = {
-  hasPermission: (permissionName: string) => boolean;
-
-  handleSnapRpcRequest: ({
-    snapId,
-    handler,
-    request,
-  }: Omit<SnapRpcHookArgs, 'origin'> & { snapId: string }) => Promise<unknown>;
-
-  getSnap: (snapId: string) => Snap | undefined;
-
-  getAllowedKeyringMethods: () => string[];
-};
 
 /**
  * The `wallet_invokeKeyring` method implementation.
@@ -69,15 +77,13 @@ export type InvokeKeyringHooks = {
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.handleSnapRpcRequest - Invokes a snap with a given RPC request.
- * @param hooks.hasPermission - Checks whether a given origin has a given permission.
- * @param hooks.getSnap - Gets information about a given snap.
  * @param hooks.getAllowedKeyringMethods - Get the list of allowed Keyring
  * methods for a given origin.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function invokeKeyringImplementation(
-  req: JsonRpcRequest<InvokeKeyringParams>,
+  req: JsonRpcRequest<InvokeKeyringParams> & { origin: string },
   // `InvokeKeyringResult` is an alias for `Json` (which is the default type
   // argument for `PendingJsonRpcResponse`), but that may not be the case in the
   // future. We use `InvokeKeyringResult` here to make it clear that this is the
@@ -86,12 +92,8 @@ async function invokeKeyringImplementation(
   res: PendingJsonRpcResponse<InvokeKeyringResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  {
-    handleSnapRpcRequest,
-    hasPermission,
-    getSnap,
-    getAllowedKeyringMethods,
-  }: InvokeKeyringHooks,
+  { getAllowedKeyringMethods }: InvokeKeyringMethodHooks,
+  messenger: Messenger<string, InvokeKeyringMethodActions>,
 ): Promise<void> {
   let params: InvokeSnapParams;
   try {
@@ -100,11 +102,17 @@ async function invokeKeyringImplementation(
     return end(error);
   }
 
-  // We expect the MM middleware stack to always add the origin to requests
-  const { origin } = req as JsonRpcRequest & { origin: string };
+  const { origin } = req;
   const { snapId, request } = params;
 
-  if (!origin || !hasPermission(WALLET_SNAP_PERMISSION_KEY)) {
+  if (
+    !origin ||
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      WALLET_SNAP_PERMISSION_KEY,
+    )
+  ) {
     return end(
       rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
@@ -112,7 +120,7 @@ async function invokeKeyringImplementation(
     );
   }
 
-  if (!getSnap(snapId)) {
+  if (!messenger.call('SnapController:getSnap', snapId)) {
     return end(
       // Mirror error message from SnapController.
       rpcErrors.invalidRequest({
@@ -139,7 +147,8 @@ async function invokeKeyringImplementation(
   }
 
   try {
-    res.result = (await handleSnapRpcRequest({
+    res.result = (await messenger.call('SnapController:handleRequest', {
+      origin,
       snapId,
       request,
       handler: HandlerType.OnKeyringRequest,

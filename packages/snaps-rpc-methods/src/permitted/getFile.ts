@@ -102,7 +102,8 @@ async function implementation(
       'SnapController:getSnapFile',
       origin,
       params.path,
-      params.encoding ?? AuxiliaryFileEncoding.Base64,
+      (params.encoding as AuxiliaryFileEncoding) ??
+        AuxiliaryFileEncoding.Base64,
     );
   } catch (error) {
     return end(error);

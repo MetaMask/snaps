@@ -39,11 +39,11 @@ import type {
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
-const hookNames: MethodHooksObject<SetStateHooks> = {
+const hookNames: MethodHooksObject<SetStateMethodHooks> = {
   getUnlockPromise: true,
 };
 
-export type SetStateHooks = {
+export type SetStateMethodHooks = {
   /**
    * Wait for the extension to be unlocked.
    *
@@ -116,7 +116,7 @@ export const setStateHandler = {
     'SnapController:getSnap',
   ],
 } satisfies MethodHandler<
-  SetStateHooks,
+  SetStateMethodHooks,
   SetStateMethodActions,
   SetStateParameters,
   SetStateResult,
@@ -167,7 +167,7 @@ async function setStateImplementation(
   response: PendingJsonRpcResponse<SetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getUnlockPromise }: SetStateHooks,
+  { getUnlockPromise }: SetStateMethodHooks,
   messenger: Messenger<string, SetStateMethodActions>,
 ): Promise<void> {
   const { params, origin } = request;

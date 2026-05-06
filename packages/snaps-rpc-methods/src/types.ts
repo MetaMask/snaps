@@ -8,6 +8,7 @@ import type {
   InterfaceState,
   RequestSnapsResult,
   ContentType,
+  RequestSnapsParams,
 } from '@metamask/snaps-sdk';
 import type {
   Snap,
@@ -60,7 +61,7 @@ export type SnapControllerInstallSnapsAction = {
   type: `SnapController:installSnaps`;
   handler: (
     origin: string,
-    requestedSnaps: RequestSnapsResult,
+    requestedSnaps: RequestSnapsParams,
   ) => Promise<RequestSnapsResult>;
 };
 
@@ -173,54 +174,13 @@ export type WebSocketServiceGetAllAction = {
   handler: (snapId: string) => GetWebSocketsResult;
 };
 
-export type HdKeyring = {
-  type: 'HD Key Tree';
-  seed?: Uint8Array;
-  mnemonic?: Uint8Array;
-};
-
-export type KeyringControllerWithKeyringAction = {
-  type: 'KeyringController:withKeyring';
-  handler: (
-    selector:
-      | {
-          type: string;
-          index?: number;
-        }
-      | { id: string },
-    operation: (args: { keyring: HdKeyring }) => Promise<unknown>,
-  ) => Promise<unknown>;
-};
-
-export type ApprovalControllerAddRequestAction = {
-  type: 'ApprovalController:addRequest';
-  handler: (
-    opts: {
-      id?: string;
-      origin: string;
+export type KeyringControllerGetStateAction = {
+  type: `KeyringController:getState`;
+  handler: () => {
+    isUnlocked: boolean;
+    keyrings: {
       type: string;
-      requestData?: Record<string, unknown>;
-      requestState?: Record<string, Json>;
-    },
-    shouldShowRequest: boolean,
-  ) => Promise<Json>;
-};
-
-export type SnapInterfaceControllerSetInterfaceDisplayedAction = {
-  type: 'SnapInterfaceController:setInterfaceDisplayed';
-  handler: (snapId: string, id: string) => void;
-};
-
-export type SnapControllerGetSnapAction = {
-  type: 'SnapController:getSnap';
-  handler: (snapId: string) => Snap | null;
-};
-
-export type RateLimitControllerCallAction = {
-  type: 'RateLimitController:call';
-  handler: (
-    origin: string,
-    type: string,
-    ...args: unknown[]
-  ) => Promise<unknown>;
+      metadata: { id: string; name: string };
+    }[];
+  };
 };

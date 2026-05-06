@@ -1,8 +1,14 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
 import type {
-  PermissionConstraint,
-  RequestedPermissions,
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type {
   Caveat,
+  PermissionConstraint,
+  PermissionControllerGetPermissionsAction,
+  PermissionControllerRequestPermissionsAction,
+  RequestedPermissions,
 } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
@@ -23,16 +29,12 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type { SnapControllerInstallSnapsAction } from '../types';
 
-const methodName = 'wallet_requestSnaps';
-
-const hookNames: MethodHooksObject<RequestSnapsHooks> = {
-  installSnaps: true,
-  requestPermissions: true,
-  getPermissions: true,
-};
+export type RequestSnapsMethodActions =
+  | SnapControllerInstallSnapsAction
+  | PermissionControllerRequestPermissionsAction
+  | PermissionControllerGetPermissionsAction;
 
 /**
  * Request permission for a dapp to communicate with the specified Snaps and
@@ -60,46 +62,19 @@ const hookNames: MethodHooksObject<RequestSnapsHooks> = {
  * ```
  */
 export const requestSnapsHandler = {
-  methodNames: [methodName] as const,
   implementation: requestSnapsImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  RequestSnapsHooks,
+  actionNames: [
+    'SnapController:installSnaps',
+    'PermissionController:requestPermissions',
+    'PermissionController:getPermissions',
+  ],
+} satisfies MethodHandler<
+  never,
+  RequestSnapsMethodActions,
   RequestSnapsParams,
-  RequestSnapsResult
+  RequestSnapsResult,
+  { origin: string }
 >;
-
-export type RequestSnapsHooks = {
-  /**
-   * Installs the requested snaps if they are permitted.
-   */
-  installSnaps: (
-    requestedSnaps: RequestSnapsParams,
-  ) => Promise<RequestSnapsResult>;
-
-  /**
-   * Initiates a permission request for the requesting origin.
-   *
-   * @returns The result of the permissions request.
-   */
-  requestPermissions: (
-    permissions: RequestedPermissions,
-  ) => Promise<
-    [
-      Record<string, PermissionConstraint>,
-      { data: Record<string, unknown>; id: string; origin: string },
-    ]
-  >;
-
-  /**
-   * Gets the current permissions for the requesting origin.
-   *
-   * @returns The current permissions of the requesting origin.
-   */
-  getPermissions: () => Promise<
-    Record<string, PermissionConstraint> | undefined
-  >;
-};
 
 /**
  * Checks whether an origin has existing `wallet_snap` permission and
@@ -200,20 +175,18 @@ function getMutex(origin: string) {
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.installSnaps - A function that tries to install a given snap, prompting the user if necessary.
- * @param hooks.requestPermissions - A function that requests permissions on
- * behalf of a subject.
- * @param hooks.getPermissions - A function that gets the current permissions.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns A promise that resolves once the JSON-RPC response has been modified.
  * @throws If the params are invalid.
  */
 async function requestSnapsImplementation(
-  req: JsonRpcRequest<RequestSnapsParams>,
+  req: JsonRpcRequest<RequestSnapsParams> & { origin: string },
   res: PendingJsonRpcResponse<RequestSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { installSnaps, requestPermissions, getPermissions }: RequestSnapsHooks,
+  _hooks: Record<string, never>,
+  messenger: Messenger<string, RequestSnapsMethodActions>,
 ): Promise<void> {
   const requestedSnaps = req.params;
   if (!isObject(requestedSnaps)) {
@@ -232,8 +205,7 @@ async function requestSnapsImplementation(
     );
   }
 
-  // We expect the MM middleware stack to always add the origin to requests
-  const { origin } = req as JsonRpcRequest & { origin: string };
+  const { origin } = req;
 
   const mutex = getMutex(origin);
 
@@ -246,22 +218,37 @@ async function requestSnapsImplementation(
           caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],
         },
       } as RequestedPermissions;
-      const existingPermissions = await getPermissions();
+      const existingPermissions = messenger.call(
+        'PermissionController:getPermissions',
+        origin,
+      );
 
       if (!existingPermissions) {
-        const [, metadata] = await requestPermissions(requestedPermissions);
+        const [, metadata] = await messenger.call(
+          'PermissionController:requestPermissions',
+          { origin },
+          requestedPermissions,
+        );
         res.result = metadata.data[
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;
       } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
-        res.result = await installSnaps(requestedSnaps);
+        res.result = await messenger.call(
+          'SnapController:installSnaps',
+          origin,
+          requestedSnaps,
+        );
       } else {
         const mergedPermissionsRequest = getSnapPermissionsRequest(
           existingPermissions,
           requestedPermissions,
         );
 
-        const [, metadata] = await requestPermissions(mergedPermissionsRequest);
+        const [, metadata] = await messenger.call(
+          'PermissionController:requestPermissions',
+          { origin },
+          mergedPermissionsRequest,
+        );
         res.result = metadata.data[
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;

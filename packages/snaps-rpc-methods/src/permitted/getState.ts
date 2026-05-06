@@ -26,11 +26,11 @@ import type { SnapControllerGetSnapStateAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
-const hookNames: MethodHooksObject<GetStateHooks> = {
+const hookNames: MethodHooksObject<GetStateMethodHooks> = {
   getUnlockPromise: true,
 };
 
-export type GetStateHooks = {
+export type GetStateMethodHooks = {
   /**
    * Wait for the extension to be unlocked.
    *
@@ -75,7 +75,7 @@ export const getStateHandler = {
     'SnapController:getSnapState',
   ],
 } satisfies MethodHandler<
-  GetStateHooks,
+  GetStateMethodHooks,
   GetStateMethodActions,
   GetStateParameters,
   GetStateResult,
@@ -115,7 +115,7 @@ async function getStateImplementation(
   response: PendingJsonRpcResponse<GetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getUnlockPromise }: GetStateHooks,
+  { getUnlockPromise }: GetStateMethodHooks,
   messenger: Messenger<string, GetStateMethodActions>,
 ): Promise<void> {
   const { params, origin } = request;
