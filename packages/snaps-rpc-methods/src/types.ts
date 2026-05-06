@@ -58,7 +58,7 @@ export type PermittedHandlerExport<
 };
 
 export type HdKeyring = {
-  type: 'hd';
+  type: 'HD Key Tree';
   seed?: Uint8Array;
   mnemonic?: Uint8Array;
 };

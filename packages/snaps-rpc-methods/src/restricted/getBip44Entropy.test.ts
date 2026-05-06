@@ -78,7 +78,7 @@ describe('getBip44EntropyImplementation', () => {
       async (_selector, operation) =>
         operation({
           keyring: {
-            type: 'hd',
+            type: 'HD Key Tree',
             seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
           },
         }),

@@ -384,7 +384,7 @@ export const UI_PERMISSIONS = [
   SnapEndowments.SignatureInsight,
 ] as const;
 
-const HD_KEYRING = 'hd';
+export const HD_KEYRING = 'HD Key Tree';
 
 /**
  * Get the mnemonic for a given entropy source. If no source is

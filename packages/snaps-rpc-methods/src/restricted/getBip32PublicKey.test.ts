@@ -79,7 +79,7 @@ describe('getBip32PublicKeyImplementation', () => {
       async (_selector, operation) =>
         operation({
           keyring: {
-            type: 'hd',
+            type: 'HD Key Tree',
             mnemonic: TEST_SECRET_RECOVERY_PHRASE_BYTES,
             seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
           },

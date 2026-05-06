@@ -953,11 +953,11 @@ describe('registerActions', () => {
     expect(
       await controllerMessenger.call(
         'KeyringController:withKeyring',
-        { type: 'hd' },
+        { type: 'HD Key Tree' },
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'hd',
+      type: 'HD Key Tree',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_SRP),
       seed: await mnemonicToSeed(DEFAULT_SRP),
     });
@@ -969,7 +969,7 @@ describe('registerActions', () => {
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'hd',
+      type: 'HD Key Tree',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_ALTERNATIVE_SRP),
       seed: await mnemonicToSeed(DEFAULT_ALTERNATIVE_SRP),
     });
