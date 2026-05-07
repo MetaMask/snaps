@@ -74,7 +74,7 @@ export async function invokeSnapSugar(
   res: PendingJsonRpcResponse<InvokeSnapResult>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, InvokeSnapSugarMethodActions>,
 ): Promise<void> {
   try {

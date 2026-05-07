@@ -93,7 +93,7 @@ async function sendWebSocketMessageImplementation(
   res: PendingJsonRpcResponse<SendWebSocketMessageResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, SendWebSocketMessageMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

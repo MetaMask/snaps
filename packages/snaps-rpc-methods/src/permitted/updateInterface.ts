@@ -108,7 +108,7 @@ function getUpdateInterfaceImplementation(
   res: PendingJsonRpcResponse<UpdateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, UpdateInterfaceMethodActions>,
 ): void {
   const { params, origin } = req;

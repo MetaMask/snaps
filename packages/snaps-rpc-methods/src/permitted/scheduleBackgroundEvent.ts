@@ -122,7 +122,7 @@ async function getScheduleBackgroundEventImplementation(
   res: PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, ScheduleBackgroundEventMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

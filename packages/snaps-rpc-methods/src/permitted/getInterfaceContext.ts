@@ -97,7 +97,7 @@ function getInterfaceContextImplementation(
   res: PendingJsonRpcResponse<GetInterfaceContextResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetInterfaceContextMethodActions>,
 ): void {
   const { params, origin } = req;

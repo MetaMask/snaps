@@ -75,7 +75,7 @@ function getGetInterfaceStateImplementation(
   res: PendingJsonRpcResponse<GetInterfaceStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetInterfaceStateMethodActions>,
 ): void {
   const { params, origin } = req;

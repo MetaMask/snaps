@@ -76,7 +76,7 @@ async function clearStateImplementation(
   response: PendingJsonRpcResponse<ClearStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, ClearStateMethodActions>,
 ): Promise<void> {
   const { params, origin } = request;

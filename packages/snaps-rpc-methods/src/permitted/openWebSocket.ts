@@ -113,7 +113,7 @@ async function openWebSocketImplementation(
   res: PendingJsonRpcResponse<OpenWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, OpenWebSocketMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

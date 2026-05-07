@@ -78,7 +78,7 @@ function getWebSocketsImplementation(
   res: PendingJsonRpcResponse<GetWebSocketsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetWebSocketsMethodActions>,
 ): void {
   const { origin } = req;

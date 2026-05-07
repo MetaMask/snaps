@@ -64,7 +64,7 @@ async function getSnapsImplementation(
   res: PendingJsonRpcResponse<GetSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetSnapsMethodActions>,
 ): Promise<void> {
   res.result = messenger.call('SnapController:getPermittedSnaps', req.origin);

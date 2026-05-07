@@ -82,7 +82,7 @@ async function getCancelBackgroundEventImplementation(
   res: PendingJsonRpcResponse<CancelBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, CancelBackgroundEventMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

@@ -85,7 +85,7 @@ async function implementation(
   res: PendingJsonRpcResponse<GetFileResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetFileMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

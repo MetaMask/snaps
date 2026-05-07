@@ -76,7 +76,7 @@ function closeWebSocketImplementation(
   res: PendingJsonRpcResponse<CloseWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, CloseWebSocketMethodActions>,
 ): void {
   const { params, origin } = req;

@@ -89,7 +89,7 @@ async function getResolveInterfaceImplementation(
   res: PendingJsonRpcResponse<ResolveInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, ResolveInterfaceMethodActions>,
 ): Promise<void> {
   const { params, origin } = req;

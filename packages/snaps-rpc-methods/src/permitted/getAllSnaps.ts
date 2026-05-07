@@ -52,7 +52,7 @@ async function getAllSnapsImplementation(
   response: PendingJsonRpcResponse<GetAllSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetAllSnapsMethodActions>,
 ): Promise<void> {
   const { origin } = request;

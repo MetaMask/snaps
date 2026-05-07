@@ -185,7 +185,7 @@ async function requestSnapsImplementation(
   res: PendingJsonRpcResponse<RequestSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, RequestSnapsMethodActions>,
 ): Promise<void> {
   const requestedSnaps = req.params;

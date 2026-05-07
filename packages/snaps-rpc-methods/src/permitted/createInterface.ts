@@ -87,7 +87,7 @@ function getCreateInterfaceImplementation(
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, CreateInterfaceMethodActions>,
 ): void {
   const { params, origin } = req;

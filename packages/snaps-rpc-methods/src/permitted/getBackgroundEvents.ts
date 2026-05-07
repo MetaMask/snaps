@@ -72,7 +72,7 @@ async function getGetBackgroundEventsImplementation(
   res: PendingJsonRpcResponse<GetBackgroundEventsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  _hooks: Record<string, never>,
+  _hooks: never,
   messenger: Messenger<string, GetBackgroundEventsMethodActions>,
 ): Promise<void> {
   const { origin } = req;
