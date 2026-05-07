@@ -1,9 +1,18 @@
+import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+
 import { createJsonRpcEngine } from './engine';
 import { createStore } from '../store';
-import { getMockOptions } from '../test-utils';
+import { getMockOptions, getRootControllerMessenger } from '../test-utils';
 
 describe('createJsonRpcEngine', () => {
   it('creates a JSON-RPC engine', async () => {
+    const messenger = getRootControllerMessenger();
+
+    messenger.registerActionHandler(
+      'SnapController:getSnapFile',
+      async () => 'foo',
+    );
+
     const { store } = createStore(getMockOptions());
     const engine = createJsonRpcEngine({
       store,
@@ -11,19 +20,29 @@ describe('createJsonRpcEngine', () => {
         getMnemonic: jest.fn(),
         getIsLocked: jest.fn(),
         getClientCryptography: jest.fn(),
+        getSimulationState: jest.fn(),
+        getSnap: jest.fn(),
+        setCurrentChain: jest.fn(),
       },
       permittedHooks: {
-        getSnapFile: jest.fn().mockResolvedValue('foo'),
-        getSnapState: jest.fn(),
-        updateSnapState: jest.fn(),
-        clearSnapState: jest.fn(),
-        getInterfaceState: jest.fn(),
-        getInterfaceContext: jest.fn(),
-        createInterface: jest.fn(),
-        updateInterface: jest.fn(),
-        resolveInterface: jest.fn(),
+        getIsActive: jest.fn(),
+        getVersion: jest.fn(),
+        getUnlockPromise: jest.fn(),
+        trackError: jest.fn(),
+        trackEvent: jest.fn(),
+        startTrace: jest.fn(),
+        endTrace: jest.fn(),
+        getAllowedKeyringMethods: jest.fn(),
       },
-      permissionMiddleware: jest.fn(),
+      multichainHooks: {
+        getAccounts: jest.fn(),
+        getCaveat: jest.fn(),
+        grantPermissions: jest.fn(),
+        revokePermission: jest.fn(),
+      },
+      messenger,
+      isMultichain: false,
+      snapId: MOCK_SNAP_ID,
     });
 
     expect(engine).toBeDefined();
