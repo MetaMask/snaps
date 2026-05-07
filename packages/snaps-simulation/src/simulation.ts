@@ -28,7 +28,7 @@ import type {
   EndTraceRequest,
   TraceContext,
 } from '@metamask/snaps-sdk';
-import type { Snap } from '@metamask/snaps-utils';
+import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
 import { assertExhaustive, hasProperty } from '@metamask/utils';
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
@@ -39,6 +39,7 @@ import { select } from 'redux-saga/effects';
 
 import type { RootControllerMessenger } from './controllers';
 import { getControllers, registerSnap } from './controllers';
+import { getSnapFile } from './files';
 import type { SnapHelpers } from './helpers';
 import { getHelpers } from './helpers';
 import { resolveWithSaga } from './interface';
@@ -307,7 +308,7 @@ export async function installSnap<
     namespace: MOCK_ANY_NAMESPACE,
   });
 
-  registerActions(controllerMessenger, runSaga, options, snapId);
+  registerActions(controllerMessenger, runSaga, options, snapId, snapFiles);
 
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options, store, runSaga);
@@ -532,12 +533,14 @@ export function getMultichainHooks(
  * @param runSaga - The run saga function.
  * @param options - The simulation options.
  * @param snapId - The ID of the Snap.
+ * @param snapFiles - The fetched Snap files.
  */
 export function registerActions(
   controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
   options: SimulationOptions,
   snapId: SnapId,
+  snapFiles: FetchedSnapFiles,
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
@@ -662,6 +665,12 @@ export function registerActions(
   controllerMessenger.registerActionHandler(
     'SnapController:clearSnapState',
     getClearSnapStateMethodImplementation(runSaga),
+  );
+
+  controllerMessenger.registerActionHandler(
+    'SnapController:getSnapFile',
+    async (_snapId, path, encoding) =>
+      getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
   );
 
   const showNativeNotification =
