@@ -229,7 +229,9 @@ async function requestSnapsImplementation(
           { origin },
           requestedPermissions,
         );
-        res.result = metadata.data[
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        res.result = metadata.data![
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;
       } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
@@ -249,7 +251,9 @@ async function requestSnapsImplementation(
           { origin },
           mergedPermissionsRequest,
         );
-        res.result = metadata.data[
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        res.result = metadata.data![
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;
       }
