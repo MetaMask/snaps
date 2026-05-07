@@ -1,41 +1,76 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import type { OpenWebSocketResult } from '@metamask/snaps-sdk';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  createOriginMiddleware,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { OpenWebSocketParameters } from './openWebSocket';
+import type {
+  OpenWebSocketMethodActions,
+  OpenWebSocketParameters,
+} from './openWebSocket';
 import { openWebSocketHandler } from './openWebSocket';
 
 describe('snap_openWebSocket', () => {
   describe('openWebSocketHandler', () => {
     it('has the expected shape', () => {
       expect(openWebSocketHandler).toMatchObject({
-        methodNames: ['snap_openWebSocket'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          openWebSocket: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'WebSocketService:open',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        OpenWebSocketMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'WebSocketService:open',
+        async () => 'foo',
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission', async () => {
       const { implementation } = openWebSocketHandler;
 
-      const openWebSocket = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const hooks = { hasPermission, openWebSocket };
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<OpenWebSocketParameters>,
+          request as JsonRpcRequest<OpenWebSocketParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<OpenWebSocketResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -65,19 +100,21 @@ describe('snap_openWebSocket', () => {
     it('throws if invalid parameters are passed', async () => {
       const { implementation } = openWebSocketHandler;
 
-      const openWebSocket = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, openWebSocket };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<OpenWebSocketParameters>,
+          request as JsonRpcRequest<OpenWebSocketParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<OpenWebSocketResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -107,19 +144,21 @@ describe('snap_openWebSocket', () => {
     it('opens a WebSocket and returns the ID', async () => {
       const { implementation } = openWebSocketHandler;
 
-      const openWebSocket = jest.fn().mockResolvedValue('foo');
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, openWebSocket };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<OpenWebSocketParameters>,
+          request as JsonRpcRequest<OpenWebSocketParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<OpenWebSocketResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -135,7 +174,9 @@ describe('snap_openWebSocket', () => {
       });
 
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
-      expect(openWebSocket).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'WebSocketService:open',
+        MOCK_SNAP_ID,
         'wss://metamask.io',
         undefined,
       );

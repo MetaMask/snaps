@@ -4,19 +4,23 @@ import type {
 } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams } from '@metamask/snaps-sdk';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
+import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { assertIsJsonRpcSuccess, jsonrpc2 } from '@metamask/utils';
 
+import type { InvokeSnapSugarMethodActions } from './invokeSnapSugar';
 import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
 
 describe('wallet_invokeSnap', () => {
   describe('invokeSnapSugar', () => {
-    const getMockRpcRequest = (params: InvokeSnapParams) => ({
-      id: 'some-id',
-      jsonrpc: jsonrpc2,
-      method: 'wallet_invokeSnap',
-      params,
-    });
+    const getMockRpcRequest = (params: InvokeSnapParams) =>
+      ({
+        id: 'some-id',
+        jsonrpc: jsonrpc2,
+        method: 'wallet_invokeSnap',
+        params,
+        origin: 'https://example.com',
+      }) as JsonRpcRequest<InvokeSnapParams> & { origin: string };
 
     const getMockRpcResponse = () =>
       ({
@@ -24,7 +28,23 @@ describe('wallet_invokeSnap', () => {
         jsonrpc: jsonrpc2,
       }) as PendingJsonRpcResponse;
 
-    it('invokes snap using hook', async () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        InvokeSnapSugarMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:executeRestrictedMethod',
+        async () => true,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('invokes snap via the messenger', async () => {
       const params = {
         snapId: 'npm:@metamask/example-snap',
         request: { method: 'hello' },
@@ -33,14 +53,19 @@ describe('wallet_invokeSnap', () => {
       const res = getMockRpcResponse();
       const next: JsonRpcEngineNextCallback = jest.fn();
       const end: JsonRpcEngineEndCallback = jest.fn();
-      const invokeSnap = jest.fn().mockResolvedValue(true);
 
-      await invokeSnapSugar(req, res, next, end, { invokeSnap });
+      const messenger = getMessenger();
+
+      await invokeSnapSugar(req, res, next, end, {} as never, messenger);
 
       assertIsJsonRpcSuccess(res);
       expect(next).not.toHaveBeenCalled();
-      expect(invokeSnap).toHaveBeenCalledTimes(1);
-      expect(invokeSnap).toHaveBeenCalledWith({ ...params });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'PermissionController:executeRestrictedMethod',
+        'https://example.com',
+        'wallet_snap',
+        params,
+      );
       expect(end).toHaveBeenCalledTimes(1);
     });
 
@@ -54,9 +79,10 @@ describe('wallet_invokeSnap', () => {
       const res = getMockRpcResponse();
       const next: JsonRpcEngineNextCallback = jest.fn();
       const end: JsonRpcEngineEndCallback = jest.fn();
-      const invokeSnap = jest.fn();
 
-      await invokeSnapSugar(req, res, next, end, { invokeSnap });
+      const messenger = getMessenger();
+
+      await invokeSnapSugar(req, res, next, end, {} as never, messenger);
 
       expect(next).not.toHaveBeenCalled();
       expect(end).toHaveBeenCalledTimes(1);
@@ -65,7 +91,7 @@ describe('wallet_invokeSnap', () => {
           message: 'Must specify a valid snap ID.',
         }),
       );
-      expect(invokeSnap).not.toHaveBeenCalled();
+      expect(messenger.call).not.toHaveBeenCalled();
     });
   });
 

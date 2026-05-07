@@ -11,43 +11,77 @@ import {
   Footer,
   Copyable,
 } from '@metamask/snaps-sdk/jsx';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  createOriginMiddleware,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { CreateInterfaceParameters } from './createInterface';
+import type {
+  CreateInterfaceMethodActions,
+  CreateInterfaceParameters,
+} from './createInterface';
 import { createInterfaceHandler } from './createInterface';
 
 describe('snap_createInterface', () => {
   describe('createInterfaceHandler', () => {
     it('has the expected shape', () => {
       expect(createInterfaceHandler).toMatchObject({
-        methodNames: ['snap_createInterface'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          createInterface: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapInterfaceController:createInterface',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        CreateInterfaceMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'SnapInterfaceController:createInterface',
+        () => 'foo',
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission to show UI', async () => {
       const { implementation } = createInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const createInterface = jest.fn().mockReturnValue('foo');
+      const messenger = getMessenger();
 
-      const hooks = { hasPermission, createInterface };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CreateInterfaceParameters>,
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<CreateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -78,26 +112,24 @@ describe('snap_createInterface', () => {
       });
     });
 
-    it('returns the result from the `createInterface` hook', async () => {
+    it('returns the result from the `SnapInterfaceController:createInterface` action', async () => {
       const { implementation } = createInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const createInterface = jest.fn().mockReturnValue('foo');
-
-      const hooks = {
-        hasPermission,
-        createInterface,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CreateInterfaceParameters>,
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<CreateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -118,23 +150,21 @@ describe('snap_createInterface', () => {
     it('creates an interface from a JSX element', async () => {
       const { implementation } = createInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const createInterface = jest.fn().mockReturnValue('foo');
-
-      const hooks = {
-        hasPermission,
-        createInterface,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CreateInterfaceParameters>,
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<CreateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -155,162 +185,156 @@ describe('snap_createInterface', () => {
 
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: 'foo' });
     });
-  });
 
-  it('throws on invalid params', async () => {
-    const { implementation } = createInterfaceHandler;
+    it('throws on invalid params', async () => {
+      const { implementation } = createInterfaceHandler;
 
-    const hasPermission = jest.fn().mockReturnValue(true);
-    const createInterface = jest.fn().mockReturnValue('foo');
+      const messenger = getMessenger();
 
-    const hooks = {
-      hasPermission,
-      createInterface,
-    };
+      const engine = new JsonRpcEngine();
 
-    const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
+          response as PendingJsonRpcResponse<CreateInterfaceResult>,
+          next,
+          end,
+          {} as never,
+          messenger,
+        );
 
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<CreateInterfaceParameters>,
-        response as PendingJsonRpcResponse<CreateInterfaceResult>,
-        next,
-        end,
-        hooks,
-      );
+        result?.catch(end);
+      });
 
-      result?.catch(end);
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_createInterface',
+        params: {
+          ui: 'foo',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: ui -- Expected type to be one of: "AccountSelector", "Address", "AssetSelector", "AddressInput", "Bold", "Box", "Button", "Copyable", "DateTimePicker", "Divider", "Dropdown", "RadioGroup", "Field", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Banner", "Skeleton", "CollapsibleSection", "Container", but received: undefined.',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
     });
 
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_createInterface',
-      params: {
-        ui: 'foo',
-      },
-    });
+    it('throws on invalid UI', async () => {
+      const { implementation } = createInterfaceHandler;
 
-    expect(response).toStrictEqual({
-      error: {
-        code: -32602,
-        message:
-          'Invalid params: At path: ui -- Expected type to be one of: "AccountSelector", "Address", "AssetSelector", "AddressInput", "Bold", "Box", "Button", "Copyable", "DateTimePicker", "Divider", "Dropdown", "RadioGroup", "Field", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Banner", "Skeleton", "CollapsibleSection", "Container", but received: undefined.',
-        stack: expect.any(String),
-      },
-      id: 1,
-      jsonrpc: '2.0',
-    });
-  });
+      const messenger = getMessenger();
 
-  it('throws on invalid UI', async () => {
-    const { implementation } = createInterfaceHandler;
+      const engine = new JsonRpcEngine();
 
-    const hasPermission = jest.fn().mockReturnValue(true);
-    const createInterface = jest.fn().mockReturnValue('foo');
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
+          response as PendingJsonRpcResponse<CreateInterfaceResult>,
+          next,
+          end,
+          {} as never,
+          messenger,
+        );
 
-    const hooks = {
-      hasPermission,
-      createInterface,
-    };
+        result?.catch(end);
+      });
 
-    const engine = new JsonRpcEngine();
-
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<CreateInterfaceParameters>,
-        response as PendingJsonRpcResponse<CreateInterfaceResult>,
-        next,
-        end,
-        hooks,
-      );
-
-      result?.catch(end);
-    });
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_createInterface',
-      params: {
-        ui: (
-          <Box>
-            <Field label="Input">
-              <Copyable value="foo" />
-            </Field>
-          </Box>
-        ) as JSXElement,
-      },
-    });
-
-    expect(response).toStrictEqual({
-      error: {
-        code: -32602,
-        message:
-          'Invalid params: At path: ui.props.children.props.children -- Expected type to be one of: "AssetSelector", "AddressInput", "AccountSelector", "Input", "Dropdown", "RadioGroup", "FileInput", "Checkbox", "Selector", "DateTimePicker", but received: "Copyable".',
-        stack: expect.any(String),
-      },
-      id: 1,
-      jsonrpc: '2.0',
-    });
-  });
-
-  it('throws on invalid nested UI', async () => {
-    const { implementation } = createInterfaceHandler;
-
-    const hasPermission = jest.fn().mockReturnValue(true);
-    const createInterface = jest.fn().mockReturnValue('foo');
-
-    const hooks = {
-      hasPermission,
-      createInterface,
-    };
-
-    const engine = new JsonRpcEngine();
-
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<CreateInterfaceParameters>,
-        response as PendingJsonRpcResponse<CreateInterfaceResult>,
-        next,
-        end,
-        hooks,
-      );
-
-      result?.catch(end);
-    });
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_createInterface',
-      params: {
-        ui: (
-          <Container>
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_createInterface',
+        params: {
+          ui: (
             <Box>
-              <Form name="form">
-                <Field label="Input">
-                  <Input name="input" />
-                </Field>
-              </Form>
+              <Field label="Input">
+                <Copyable value="foo" />
+              </Field>
             </Box>
-            <Footer>
-              <Text>Foo</Text>
-            </Footer>
-          </Container>
-        ) as JSXElement,
-      },
+          ) as JSXElement,
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: ui.props.children.props.children -- Expected type to be one of: "AssetSelector", "AddressInput", "AccountSelector", "Input", "Dropdown", "RadioGroup", "FileInput", "Checkbox", "Selector", "DateTimePicker", but received: "Copyable".',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
     });
 
-    expect(response).toStrictEqual({
-      error: {
-        code: -32602,
-        message:
-          'Invalid params: At path: ui.props.children.1.props.children.type -- Expected the literal `"Button"`, but received: "Text".',
-        stack: expect.any(String),
-      },
-      id: 1,
-      jsonrpc: '2.0',
+    it('throws on invalid nested UI', async () => {
+      const { implementation } = createInterfaceHandler;
+
+      const messenger = getMessenger();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<CreateInterfaceParameters> & {
+            origin: string;
+          },
+          response as PendingJsonRpcResponse<CreateInterfaceResult>,
+          next,
+          end,
+          {} as never,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_createInterface',
+        params: {
+          ui: (
+            <Container>
+              <Box>
+                <Form name="form">
+                  <Field label="Input">
+                    <Input name="input" />
+                  </Field>
+                </Form>
+              </Box>
+              <Footer>
+                <Text>Foo</Text>
+              </Footer>
+            </Container>
+          ) as JSXElement,
+        },
+      });
+
+      expect(response).toStrictEqual({
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: ui.props.children.1.props.children.type -- Expected the literal `"Button"`, but received: "Text".',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
     });
   });
 });

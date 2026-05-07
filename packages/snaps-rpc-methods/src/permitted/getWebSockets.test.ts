@@ -4,41 +4,71 @@ import type {
   GetWebSocketsParams,
   GetWebSocketsResult,
 } from '@metamask/snaps-sdk';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  createOriginMiddleware,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { GetWebSocketsMethodActions } from './getWebSockets';
 import { getWebSocketsHandler } from './getWebSockets';
 
 describe('snap_getWebSockets', () => {
   describe('openWebSocketHandler', () => {
     it('has the expected shape', () => {
       expect(getWebSocketsHandler).toMatchObject({
-        methodNames: ['snap_getWebSockets'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          getWebSockets: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'WebSocketService:getAll',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        GetWebSocketsMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler('WebSocketService:getAll', () => [
+        { id: 'foo', url: 'wss://metamask.io', protocols: [] },
+      ]);
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission', async () => {
       const { implementation } = getWebSocketsHandler;
 
-      const getWebSockets = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const hooks = { hasPermission, getWebSockets };
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams>,
+          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -65,21 +95,19 @@ describe('snap_getWebSockets', () => {
     it('returns the open WebSocket connections', async () => {
       const { implementation } = getWebSocketsHandler;
 
-      const getWebSockets = jest
-        .fn()
-        .mockReturnValue([{ id: 'foo', url: 'wss://metamask.io' }]);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, getWebSockets };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams>,
+          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -94,29 +122,34 @@ describe('snap_getWebSockets', () => {
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
-        result: [{ id: 'foo', url: 'wss://metamask.io' }],
+        result: [{ id: 'foo', url: 'wss://metamask.io', protocols: [] }],
       });
-      expect(getWebSockets).toHaveBeenCalledWith();
+      expect(messenger.call).toHaveBeenCalledWith(
+        'WebSocketService:getAll',
+        MOCK_SNAP_ID,
+      );
     });
 
-    it('returns an error thrown by the hook', async () => {
+    it('returns an error thrown by the action', async () => {
       const { implementation } = getWebSocketsHandler;
 
-      const getWebSockets = jest.fn().mockImplementation(() => {
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler('WebSocketService:getAll', () => {
         throw rpcErrors.internal();
       });
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, getWebSockets };
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams>,
+          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

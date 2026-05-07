@@ -24,10 +24,10 @@ import {
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'getFile': {
-      const fileInPlaintext = await snap.request({
+      const fileInPlaintext = (await snap.request({
         method: 'snap_getFile',
         params: { path: './files/foo.json', encoding: 'utf8' },
-      });
+      })) as string;
       return JSON.parse(fileInPlaintext);
     }
 

@@ -5,42 +5,74 @@ import type {
 } from '@metamask/snaps-sdk';
 import { NodeType } from '@metamask/snaps-sdk';
 import { Box, type JSXElement, Text } from '@metamask/snaps-sdk/jsx';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  createOriginMiddleware,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { UpdateInterfaceMethodActions } from './updateInterface';
 import { updateInterfaceHandler } from './updateInterface';
 
 describe('snap_updateInterface', () => {
   describe('updateInterfaceHandler', () => {
     it('has the expected shape', () => {
       expect(updateInterfaceHandler).toMatchObject({
-        methodNames: ['snap_updateInterface'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          updateInterface: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapInterfaceController:updateInterface',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        UpdateInterfaceMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'SnapInterfaceController:updateInterface',
+        () => undefined,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission to show UI', async () => {
       const { implementation } = updateInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const updateInterface = jest.fn();
+      const messenger = getMessenger();
 
-      const hooks = { hasPermission, updateInterface };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<UpdateInterfaceParams>,
+          request as JsonRpcRequest<UpdateInterfaceParams> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<UpdateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -72,26 +104,24 @@ describe('snap_updateInterface', () => {
       });
     });
 
-    it('returns the result from the `updateInterface` hook', async () => {
+    it('returns null after calling the `SnapInterfaceController:updateInterface` action', async () => {
       const { implementation } = updateInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const updateInterface = jest.fn();
-
-      const hooks = {
-        hasPermission,
-        updateInterface,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<UpdateInterfaceParams>,
+          request as JsonRpcRequest<UpdateInterfaceParams> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<UpdateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -113,23 +143,21 @@ describe('snap_updateInterface', () => {
     it('updates a JSX interface', async () => {
       const { implementation } = updateInterfaceHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const updateInterface = jest.fn();
-
-      const hooks = {
-        hasPermission,
-        updateInterface,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<UpdateInterfaceParams>,
+          request as JsonRpcRequest<UpdateInterfaceParams> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<UpdateInterfaceResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -149,7 +177,9 @@ describe('snap_updateInterface', () => {
         },
       });
 
-      expect(updateInterface).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapInterfaceController:updateInterface',
+        MOCK_SNAP_ID,
         'foo',
         <Box>
           <Text>Hello, world!</Text>
@@ -157,100 +187,98 @@ describe('snap_updateInterface', () => {
         undefined,
       );
     });
-  });
 
-  it('updates the interface context', async () => {
-    const { implementation } = updateInterfaceHandler;
+    it('updates the interface context', async () => {
+      const { implementation } = updateInterfaceHandler;
 
-    const hasPermission = jest.fn().mockReturnValue(true);
-    const updateInterface = jest.fn();
+      const messenger = getMessenger();
 
-    const hooks = {
-      hasPermission,
-      updateInterface,
-    };
+      const engine = new JsonRpcEngine();
 
-    const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<UpdateInterfaceParams> & {
+            origin: string;
+          },
+          response as PendingJsonRpcResponse<UpdateInterfaceResult>,
+          next,
+          end,
+          {} as never,
+          messenger,
+        );
 
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<UpdateInterfaceParams>,
-        response as PendingJsonRpcResponse<UpdateInterfaceResult>,
-        next,
-        end,
-        hooks,
+        result?.catch(end);
+      });
+
+      await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_updateInterface',
+        params: {
+          id: 'foo',
+          ui: (
+            <Box>
+              <Text>Hello, world!</Text>
+            </Box>
+          ) as JSXElement,
+          context: { foo: 'bar' },
+        },
+      });
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapInterfaceController:updateInterface',
+        MOCK_SNAP_ID,
+        'foo',
+        <Box>
+          <Text>Hello, world!</Text>
+        </Box>,
+        { foo: 'bar' },
       );
-
-      result?.catch(end);
     });
 
-    await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_updateInterface',
-      params: {
-        id: 'foo',
-        ui: (
-          <Box>
-            <Text>Hello, world!</Text>
-          </Box>
-        ) as JSXElement,
-        context: { foo: 'bar' },
-      },
-    });
+    it('throws on invalid params', async () => {
+      const { implementation } = updateInterfaceHandler;
 
-    expect(updateInterface).toHaveBeenCalledWith(
-      'foo',
-      <Box>
-        <Text>Hello, world!</Text>
-      </Box>,
-      { foo: 'bar' },
-    );
-  });
+      const messenger = getMessenger();
 
-  it('throws on invalid params', async () => {
-    const { implementation } = updateInterfaceHandler;
+      const engine = new JsonRpcEngine();
 
-    const hasPermission = jest.fn().mockReturnValue(true);
-    const updateInterface = jest.fn();
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequest<UpdateInterfaceParams> & {
+            origin: string;
+          },
+          response as PendingJsonRpcResponse<UpdateInterfaceResult>,
+          next,
+          end,
+          {} as never,
+          messenger,
+        );
 
-    const hooks = {
-      hasPermission,
-      updateInterface,
-    };
+        result?.catch(end);
+      });
 
-    const engine = new JsonRpcEngine();
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_updateInterface',
+        params: {
+          id: 42,
+        },
+      });
 
-    engine.push((request, response, next, end) => {
-      const result = implementation(
-        request as JsonRpcRequest<UpdateInterfaceParams>,
-        response as PendingJsonRpcResponse<UpdateInterfaceResult>,
-        next,
-        end,
-        hooks,
-      );
-
-      result?.catch(end);
-    });
-
-    const response = await engine.handle({
-      jsonrpc: '2.0',
-      id: 1,
-      method: 'snap_updateInterface',
-      params: {
-        id: 42,
-      },
-    });
-
-    expect(response).toStrictEqual({
-      error: {
-        code: -32602,
-        message:
-          'Invalid params: At path: id -- Expected a string, but received: 42.',
-        stack: expect.any(String),
-      },
-      id: 1,
-      jsonrpc: '2.0',
+      expect(response).toStrictEqual({
+        error: {
+          code: -32602,
+          message:
+            'Invalid params: At path: id -- Expected a string, but received: 42.',
+          stack: expect.any(String),
+        },
+        id: 1,
+        jsonrpc: '2.0',
+      });
     });
   });
 });
