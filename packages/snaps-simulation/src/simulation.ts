@@ -700,6 +700,30 @@ export function registerActions(
 
   controllerMessenger.registerActionHandler(
     // @ts-expect-error - `KeyringController` is not part of the simulation messenger types.
+    'KeyringController:getState',
+    () => ({
+      isUnlocked: true,
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'default',
+            name: 'Default Secret Recovery Phrase',
+          },
+        },
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'alternative',
+            name: 'Alternative Secret Recovery Phrase',
+          },
+        },
+      ],
+    }),
+  );
+
+  controllerMessenger.registerActionHandler(
+    // @ts-expect-error - `KeyringController` is not part of the simulation messenger types.
     'KeyringController:withKeyring',
     async (
       selector: { type: string; index?: number } | { id: string },

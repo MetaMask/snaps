@@ -1,4 +1,8 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  asLegacyMiddleware,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine/v2';
 import { createPermissionMiddleware } from '@metamask/permission-controller';
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import type { SnapId } from '@metamask/snaps-sdk';
@@ -52,6 +56,9 @@ export function createJsonRpcEngine({
   isMultichain,
 }: CreateJsonRpcEngineOptions) {
   const engine = new JsonRpcEngine();
+
+  // @ts-expect-error MiddlewareContext type mismatch.
+  engine.push(asLegacyMiddleware(createOriginMiddleware(snapId)));
 
   engine.push(createMultichainMiddleware(isMultichain, multichainHooks));
 

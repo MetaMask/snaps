@@ -1,6 +1,5 @@
 export * from './chain';
 export * from './end-trace';
-export * from './get-entropy-sources';
 export * from './get-mnemonic';
 export * from './get-preferences';
 export * from './get-snap';
