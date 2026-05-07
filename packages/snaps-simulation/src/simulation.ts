@@ -12,7 +12,6 @@ import {
   PermissionDoesNotExistError,
   type Caveat,
   type RequestedPermissions,
-  createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import type { ExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -453,25 +452,22 @@ export async function installSnap<
     options,
   });
 
-  const permissionMiddleware = createPermissionMiddleware({
-    origin: snapId,
-    messenger: controllerMessenger,
-  });
-
   const engine = createJsonRpcEngine({
+    snapId,
+    messenger: controllerMessenger,
     store,
     restrictedHooks,
     permittedHooks,
-    permissionMiddleware,
     multichainHooks,
     isMultichain: false,
   });
 
   const multichainEngine = createJsonRpcEngine({
+    snapId,
+    messenger: controllerMessenger,
     store,
     restrictedHooks,
     permittedHooks,
-    permissionMiddleware,
     multichainHooks,
     isMultichain: true,
   });
