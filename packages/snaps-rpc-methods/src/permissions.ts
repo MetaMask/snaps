@@ -11,7 +11,10 @@ import {
   endowmentCaveatMappers,
   endowmentPermissionBuilders,
 } from './endowments';
-import type { RestrictedMethodMessenger } from './restricted';
+import type {
+  RestrictedMethodActions,
+  RestrictedMethodMessenger,
+} from './restricted';
 import {
   caveatMappers,
   restrictedMethodPermissionBuilders,
@@ -73,18 +76,17 @@ export const buildSnapRestrictedMethodSpecifications = (
   >(
     (
       specifications,
-      // @ts-expect-error TypeScript is not convinced methodHooks and actionNames exist
       { targetName, specificationBuilder, methodHooks, actionNames },
     ) => {
       if (!excludedPermissions.includes(targetName)) {
         specifications[targetName] = specificationBuilder({
-          // @ts-expect-error The selectHooks type is wonky
           methodHooks: selectHooks(hooks, methodHooks),
-          // @ts-expect-error Messenger type cannot be narrowed correctly
           messenger: createRestrictedMethodMessenger({
             namespace: targetName,
             rootMessenger: messenger,
-            actionNames,
+            actionNames: actionNames as readonly [
+              RestrictedMethodActions['type'],
+            ],
           }),
         });
       }

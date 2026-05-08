@@ -1,4 +1,9 @@
 import type { Messenger } from '@metamask/messenger';
+import type {
+  PermissionSpecificationBuilder,
+  PermissionType,
+  RestrictedMethodSpecificationConstraint,
+} from '@metamask/permission-controller';
 
 import type { DialogMessengerActions } from './dialog';
 import { dialogBuilder } from './dialog';
@@ -34,6 +39,7 @@ import type {
 import { manageStateBuilder } from './manageState';
 import type { NotifyMessengerActions, NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
+import type { MethodHooksObject } from '../utils';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionEntropy } from './manageState';
@@ -63,7 +69,21 @@ export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
   GetLocaleMethodHooks &
   GetPreferencesMethodHooks;
 
-export const restrictedMethodPermissionBuilders = {
+type RestrictedMethodPermissionBuilder = {
+  targetName: string;
+  specificationBuilder: PermissionSpecificationBuilder<
+    PermissionType.RestrictedMethod,
+    any,
+    RestrictedMethodSpecificationConstraint
+  >;
+  actionNames?: readonly RestrictedMethodActions['type'][];
+  methodHooks?: MethodHooksObject<Record<string, unknown>>;
+};
+
+export const restrictedMethodPermissionBuilders: Record<
+  string,
+  RestrictedMethodPermissionBuilder
+> = {
   [dialogBuilder.targetName]: dialogBuilder,
   [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
   [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,
