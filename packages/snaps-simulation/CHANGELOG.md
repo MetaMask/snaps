@@ -7,16 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
-- chore: Bump @metamask/json-rpc-engine from 10.2.4 to 10.3.0 ([#3982](https://github.com/MetaMask/snaps/pull/3982))
-- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- feat: add capabilities to keyring endowment ([#3903](https://github.com/MetaMask/snaps/pull/3903))
-- chore: Bump @metamask/messenger from 1.1.0 to 1.1.1 ([#3944](https://github.com/MetaMask/snaps/pull/3944))
-
 ## [4.1.3]
 
 ### Changed
@@ -81,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- Bump `@metamask/permission-controller` from `12.0.0` to `12.1.1`, ([#3746](https://github.com/MetaMask/snaps/pull/3746), [#3714](https://github.com/MetaMask/snaps/pull/3714))
+- Bump `@metamask/permission-controller` from `12.0.0` to `12.1.1` ([#3746](https://github.com/MetaMask/snaps/pull/3746)), ([#3714](https://github.com/MetaMask/snaps/pull/3714))
 - Bump `@metamask/phishing-controller` from `13.1.0` to `15.0.0` ([#3707](https://github.com/MetaMask/snaps/pull/3707))
 
 ## [3.5.1]

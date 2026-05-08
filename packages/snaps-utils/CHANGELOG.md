@@ -7,13 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
-- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- fix: Stop relying on account metadata for `MultichainRoutingService` ([#3974](https://github.com/MetaMask/snaps/pull/3974))
-
 ## [12.2.0]
 
 ### Added
@@ -449,14 +442,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
-- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
+- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/metamask/snaps/pull/2593))
 
 ## [7.8.0]
 
 ### Added
 
-- Move `serialiseJsx` function from `snaps-jest` to `snaps-utils` ([#2409](https://github.com/MetaMask/snaps/pull/2409))
+- Move `serialiseJsx` function from `snaps-jest` to `snaps-utils` ([#2409](https://github.com/metamask/snaps/pull/2409))
 
 ### Changed
 
@@ -471,7 +464,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replace `superstruct` with ESM-compatible `@metamask/superstruct` `^3.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
   - This fixes the issue of this package being unusable by any TypeScript project that uses `Node16` or `NodeNext` as its `moduleResolution` option.
-- Fix `allowedOrigins` bypass caused by unterminated regex ([#2576](https://github.com/MetaMask/snaps/pull/2576))
+- Fix `allowedOrigins` bypass caused by unterminated regex ([#2576](https://github.com/metamask/snaps/pull/2576))
 
 ## [7.7.0]
 
@@ -666,7 +659,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `snaps-registry` ([#2020](https://github.com/MetaMask/snaps/pull/2020))
+- Bump `snaps-registry` ([#2020](https://hub.com/MetaMask/snaps/pull/2020))
 
 ## [5.0.1]
 
