@@ -9,16 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.4]
 
-### Uncategorized
+### Changed
 
-- fix: Omit installing Snaps from `getAllSnaps` and `getRunnableSnaps` ([#3990](https://github.com/MetaMask/snaps/pull/3990))
-- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
-- chore: Bump @metamask/json-rpc-engine from 10.2.4 to 10.3.0 ([#3982](https://github.com/MetaMask/snaps/pull/3982))
-- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
-- chore: Bump lodash from 4.17.23 to 4.18.1 ([#3946](https://github.com/MetaMask/snaps/pull/3946))
-- chore: Bump @metamask/messenger-cli from 0.1.0 to 0.2.0 ([#3979](https://github.com/MetaMask/snaps/pull/3979))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- chore: Bump @metamask/base-controller from 9.0.1 to 9.1.0 ([#3959](https://github.com/MetaMask/snaps/pull/3959))
+- Bump `@metamask/permission-controller` from `^12.3.0` to `^13.1.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984), [#3989](https://github.com/MetaMask/snaps/pull/3989))
+- Bump `@metamask/json-rpc-engine` from `10.2.4` to `^10.3.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982))
+- Bump `@metamask/messenger` from `^1.1.1` to `^1.2.0` ([#3981](https://github.com/MetaMask/snaps/pull/3981))
+- Bump `@metamask/base-controller` from `^9.0.1` to `^9.1.0` ([#3959](https://github.com/MetaMask/snaps/pull/3959))
+
+### Fixed
+
+- Omit installing Snaps from `getAllSnaps` and `getRunnableSnaps` ([#3990](https://github.com/MetaMask/snaps/pull/3990))
 
 ## [20.0.3]
 
