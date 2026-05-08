@@ -21,7 +21,7 @@ import {
   verifyRequestedSnapPermissions,
 } from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
-import { hasProperty, isObject } from '@metamask/utils';
+import { assert, hasProperty, isObject } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
@@ -229,8 +229,9 @@ async function requestSnapsImplementation(
           requestedPermissions,
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        res.result = metadata.data![
+        assert(metadata.data);
+
+        res.result = metadata.data[
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;
       } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {
@@ -251,8 +252,9 @@ async function requestSnapsImplementation(
           mergedPermissionsRequest,
         );
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        res.result = metadata.data![
+        assert(metadata.data);
+
+        res.result = metadata.data[
           WALLET_SNAP_PERMISSION_KEY
         ] as RequestSnapsResult;
       }
