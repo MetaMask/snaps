@@ -1,11 +1,13 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeKeyringParams } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcFailure, JsonRpcSuccess } from '@metamask/utils';

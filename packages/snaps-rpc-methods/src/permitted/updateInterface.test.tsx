@@ -1,4 +1,7 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
@@ -8,7 +11,6 @@ import { Box, type JSXElement, Text } from '@metamask/snaps-sdk/jsx';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 

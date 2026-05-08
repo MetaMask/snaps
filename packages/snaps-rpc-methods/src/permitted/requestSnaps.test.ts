@@ -1,4 +1,7 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   RequestedPermissions,
   PermissionConstraint,
@@ -14,7 +17,6 @@ import {
   MOCK_ORIGIN,
   MOCK_LOCAL_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcSuccess, PendingJsonRpcResponse } from '@metamask/utils';

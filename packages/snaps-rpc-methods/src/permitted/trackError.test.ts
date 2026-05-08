@@ -1,10 +1,12 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { TrackErrorParams, TrackErrorResult } from '@metamask/snaps-sdk';
 import { getJsonError } from '@metamask/snaps-sdk';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';

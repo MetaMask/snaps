@@ -1,4 +1,7 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   ListEntropySourcesParams,
   ListEntropySourcesResult,
@@ -6,7 +9,6 @@ import type {
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 

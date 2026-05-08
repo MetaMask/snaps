@@ -1,4 +1,7 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetWebSocketsParams,
@@ -7,7 +10,6 @@ import type {
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 

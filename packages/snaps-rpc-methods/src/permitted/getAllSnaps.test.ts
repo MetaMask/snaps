@@ -1,7 +1,9 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import {
   MockControllerMessenger,
-  createOriginMiddleware,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';

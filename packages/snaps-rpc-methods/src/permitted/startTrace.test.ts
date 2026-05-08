@@ -1,9 +1,11 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { StartTraceParams } from '@metamask/snaps-sdk';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
-  createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
 
