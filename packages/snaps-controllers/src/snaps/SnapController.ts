@@ -2575,7 +2575,11 @@ export class SnapController extends BaseController<
    * @returns All runnable snaps.
    */
   getRunnableSnaps(): TruncatedSnap[] {
-    return getRunnableSnaps(this.getAllSnaps());
+    return getRunnableSnaps(
+      Object.values(this.state.snaps)
+        .filter((snap) => snap.status !== SnapStatus.Installing)
+        .map(truncateSnap),
+    );
   }
 
   /**
