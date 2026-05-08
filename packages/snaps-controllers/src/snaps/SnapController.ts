@@ -2566,7 +2566,9 @@ export class SnapController extends BaseController<
    * @returns All installed snaps in their truncated format.
    */
   getAllSnaps(): TruncatedSnap[] {
-    return Object.values(this.state.snaps).map(truncateSnap);
+    return Object.values(this.state.snaps)
+      .filter((snap) => snap.status !== SnapStatus.Installing)
+      .map(truncateSnap);
   }
 
   /**
@@ -2575,11 +2577,7 @@ export class SnapController extends BaseController<
    * @returns All runnable snaps.
    */
   getRunnableSnaps(): TruncatedSnap[] {
-    return getRunnableSnaps(
-      Object.values(this.state.snaps)
-        .filter((snap) => snap.status !== SnapStatus.Installing)
-        .map(truncateSnap),
-    );
+    return getRunnableSnaps(this.getAllSnaps());
   }
 
   /**
