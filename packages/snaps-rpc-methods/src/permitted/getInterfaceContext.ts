@@ -8,13 +8,15 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceContextParams,
   GetInterfaceContextResult,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapInterfaceControllerGetInterfaceAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerGetInterfaceAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
 export type GetInterfaceContextMethodActions =
@@ -93,7 +95,7 @@ export type GetInterfaceContextParameters = InferMatching<
  * @returns Nothing.
  */
 function getInterfaceContextImplementation(
-  req: JsonRpcRequest<GetInterfaceContextParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<GetInterfaceContextParameters>,
   res: PendingJsonRpcResponse<GetInterfaceContextResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

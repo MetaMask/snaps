@@ -8,7 +8,6 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   literal,
   union,
-  type JsonRpcRequest,
   type OpenWebSocketParams,
   type OpenWebSocketResult,
 } from '@metamask/snaps-sdk';
@@ -24,7 +23,10 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { WebSocketServiceOpenAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceOpenAction,
+} from '../types';
 
 export type OpenWebSocketMethodActions =
   | PermissionControllerHasPermissionAction
@@ -109,7 +111,7 @@ export const openWebSocketHandler = {
  * @returns Nothing.
  */
 async function openWebSocketImplementation(
-  req: JsonRpcRequest<OpenWebSocketParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<OpenWebSocketParameters>,
   res: PendingJsonRpcResponse<OpenWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

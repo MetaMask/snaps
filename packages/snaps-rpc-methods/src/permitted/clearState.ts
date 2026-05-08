@@ -14,10 +14,13 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
-import type { SnapControllerClearSnapStateAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerClearSnapStateAction,
+} from '../types';
 
 export type ClearStateMethodActions =
   | PermissionControllerHasPermissionAction
@@ -72,7 +75,7 @@ export type ClearStateParameters = InferMatching<
  * @returns Nothing.
  */
 async function clearStateImplementation(
-  request: JsonRpcRequest<ClearStateParameters> & { origin: string },
+  request: JsonRpcRequestWithOrigin<ClearStateParameters>,
   response: PendingJsonRpcResponse<ClearStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

@@ -5,11 +5,12 @@ import type {
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams } from '@metamask/snaps-sdk';
 import { MockControllerMessenger } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { assertIsJsonRpcSuccess, jsonrpc2 } from '@metamask/utils';
 
 import type { InvokeSnapSugarMethodActions } from './invokeSnapSugar';
 import { getValidatedParams, invokeSnapSugar } from './invokeSnapSugar';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('wallet_invokeSnap', () => {
   describe('invokeSnapSugar', () => {
@@ -20,7 +21,7 @@ describe('wallet_invokeSnap', () => {
         method: 'wallet_invokeSnap',
         params,
         origin: 'https://example.com',
-      }) as JsonRpcRequest<InvokeSnapParams> & { origin: string };
+      }) as JsonRpcRequestWithOrigin<InvokeSnapParams>;
 
     const getMockRpcResponse = () =>
       ({

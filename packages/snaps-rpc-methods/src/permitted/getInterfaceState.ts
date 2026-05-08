@@ -8,13 +8,15 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceStateParams,
   GetInterfaceStateResult,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapInterfaceControllerGetInterfaceStateAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerGetInterfaceStateAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
 export type GetInterfaceStateMethodActions =
@@ -71,7 +73,7 @@ export type GetInterfaceStateParameters = InferMatching<
  * @returns Nothing.
  */
 function getGetInterfaceStateImplementation(
-  req: JsonRpcRequest<GetInterfaceStateParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<GetInterfaceStateParameters>,
   res: PendingJsonRpcResponse<GetInterfaceStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

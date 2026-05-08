@@ -5,7 +5,6 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   TrackableError,
   TrackErrorParams,
   TrackErrorResult,
@@ -15,7 +14,10 @@ import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import { create, object, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapControllerGetSnapAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<TrackErrorMethodHooks> = {
@@ -76,7 +78,7 @@ export const trackErrorHandler = {
  * @returns Nothing.
  */
 function getTrackErrorImplementation(
-  request: JsonRpcRequest<TrackErrorParameters> & { origin: string },
+  request: JsonRpcRequestWithOrigin<TrackErrorParameters>,
   response: PendingJsonRpcResponse<TrackErrorResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

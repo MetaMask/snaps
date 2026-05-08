@@ -8,10 +8,13 @@ import type { GetFileParams, GetFileResult } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, enumValue } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { object, optional, string, union } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
-import type { SnapControllerGetSnapFileAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapFileAction,
+} from '../types';
 
 export const GetFileArgsStruct = object({
   path: string(),
@@ -81,7 +84,7 @@ export const getFileHandler = {
  * @returns Nothing.
  */
 async function implementation(
-  req: JsonRpcRequest<InferredGetFileParams> & { origin: string },
+  req: JsonRpcRequestWithOrigin<InferredGetFileParams>,
   res: PendingJsonRpcResponse<GetFileResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

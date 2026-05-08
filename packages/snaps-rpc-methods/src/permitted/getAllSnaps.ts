@@ -5,13 +5,12 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { TruncatedSnap } from '@metamask/snaps-utils';
-import type {
-  JsonRpcParams,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcParams, PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapControllerGetAllSnapsAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetAllSnapsAction,
+} from '../types';
 
 export type GetAllSnapsResult = TruncatedSnap[];
 
@@ -48,7 +47,7 @@ export const getAllSnapsHandler = {
  * @returns Nothing.
  */
 async function getAllSnapsImplementation(
-  request: JsonRpcRequest & { origin: string },
+  request: JsonRpcRequestWithOrigin,
   response: PendingJsonRpcResponse<GetAllSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

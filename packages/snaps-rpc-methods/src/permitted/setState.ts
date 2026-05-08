@@ -19,11 +19,7 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type {
-  PendingJsonRpcResponse,
-  Json,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty, isObject, assert, JsonStruct } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
@@ -32,6 +28,7 @@ import {
   STORAGE_SIZE_LIMIT,
 } from '../restricted/manageState';
 import type {
+  JsonRpcRequestWithOrigin,
   SnapControllerGetSnapAction,
   SnapControllerGetSnapStateAction,
   SnapControllerUpdateSnapStateAction,
@@ -163,7 +160,7 @@ export type SetStateParameters = InferMatching<
  * @returns Nothing.
  */
 async function setStateImplementation(
-  request: JsonRpcRequest<SetStateParameters> & { origin: SnapId },
+  request: JsonRpcRequestWithOrigin<SetStateParameters>,
   response: PendingJsonRpcResponse<SetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
@@ -198,14 +195,16 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    const mutex = getMutex(origin);
+    const snapId = origin as SnapId;
+
+    const mutex = getMutex(snapId);
 
     // The expectation when using `snap_setState` is for the operation to safe
     // to do in parallel. The mutex ensures that and prevents a bug that was
     // mostly prevalent on mobile and caused data loss.
     await mutex.runExclusive(async () => {
       const newState = await getNewState(
-        origin,
+        snapId,
         key,
         value,
         encrypted,

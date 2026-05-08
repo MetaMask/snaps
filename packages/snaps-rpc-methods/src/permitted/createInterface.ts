@@ -8,7 +8,6 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import {
   ComponentOrElementStruct,
@@ -18,7 +17,10 @@ import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, optional } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapInterfaceControllerCreateInterfaceAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerCreateInterfaceAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
 export type CreateInterfaceMethodActions =
@@ -83,7 +85,7 @@ export type CreateInterfaceParameters = InferMatching<
  * @returns Nothing.
  */
 function getCreateInterfaceImplementation(
-  req: JsonRpcRequest<CreateInterfaceParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<CreateInterfaceParameters>,
   res: PendingJsonRpcResponse<CreateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

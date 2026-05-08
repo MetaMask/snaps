@@ -14,15 +14,14 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type {
-  PendingJsonRpcResponse,
-  Json,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
-import type { SnapControllerGetSnapStateAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapStateAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
@@ -106,7 +105,7 @@ export type GetStateParameters = InferMatching<
  * @returns Nothing.
  */
 async function getStateImplementation(
-  request: JsonRpcRequest<GetStateParameters> & { origin: string },
+  request: JsonRpcRequestWithOrigin<GetStateParameters>,
   // `GetStateResult` is an alias for `Json` (which is the default type argument
   // for `PendingJsonRpcResponse`), but that may not be the case in the future.
   // We use `GetStateResult` here to make it clear that this is the expected

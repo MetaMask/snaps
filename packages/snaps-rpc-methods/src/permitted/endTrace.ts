@@ -5,7 +5,6 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   EndTraceParams,
   EndTraceResult,
   EndTraceRequest,
@@ -21,7 +20,10 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapControllerGetSnapAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const hookNames: MethodHooksObject<EndTraceMethodHooks> = {
@@ -84,7 +86,7 @@ export const endTraceHandler = {
  * @returns Nothing.
  */
 function getEndTraceImplementation(
-  request: JsonRpcRequest<EndTraceParameters> & { origin: string },
+  request: JsonRpcRequestWithOrigin<EndTraceParameters>,
   response: PendingJsonRpcResponse,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

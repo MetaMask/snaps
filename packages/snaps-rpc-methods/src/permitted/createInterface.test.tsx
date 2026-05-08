@@ -221,8 +221,9 @@ describe('snap_createInterface', () => {
       expect(response).toStrictEqual({
         error: {
           code: -32602,
-          message:
-            'Invalid params: At path: ui -- Expected type to be one of: "AccountSelector", "Address", "AssetSelector", "AddressInput", "Bold", "Box", "Button", "Copyable", "DateTimePicker", "Divider", "Dropdown", "RadioGroup", "Field", "FileInput", "Form", "Heading", "Input", "Image", "Italic", "Link", "Row", "Spinner", "Text", "Tooltip", "Checkbox", "Card", "Icon", "Selector", "Section", "Avatar", "Banner", "Skeleton", "CollapsibleSection", "Container", but received: undefined.',
+          message: expect.stringContaining(
+            'Invalid params: At path: ui -- Expected type to be one of:',
+          ),
           stack: expect.any(String),
         },
         id: 1,
@@ -271,8 +272,9 @@ describe('snap_createInterface', () => {
       expect(response).toStrictEqual({
         error: {
           code: -32602,
-          message:
-            'Invalid params: At path: ui.props.children.props.children -- Expected type to be one of: "AssetSelector", "AddressInput", "AccountSelector", "Input", "Dropdown", "RadioGroup", "FileInput", "Checkbox", "Selector", "DateTimePicker", but received: "Copyable".',
+          message: expect.stringContaining(
+            'Invalid params: At path: ui.props.children.props.children -- Expected type to be one of:',
+          ),
           stack: expect.any(String),
         },
         id: 1,

@@ -8,7 +8,6 @@ import {
   createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
 import type {
-  JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcFailure,
   JsonRpcSuccess,
@@ -17,6 +16,7 @@ import { stringToBytes } from '@metamask/utils';
 
 import type { GetFileMethodActions } from './getFile';
 import { getFileHandler } from './getFile';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_getFile', () => {
   describe('getFileHandler', () => {
@@ -65,7 +65,7 @@ describe('snap_getFile', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams> & { origin: string },
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -114,7 +114,7 @@ describe('snap_getFile', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams> & { origin: string },
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
@@ -161,7 +161,7 @@ describe('snap_getFile', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams> & { origin: string },
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,

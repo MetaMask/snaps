@@ -6,13 +6,14 @@ import {
   MockControllerMessenger,
   createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type {
   ClearStateMethodActions,
   ClearStateParameters,
 } from './clearState';
 import { clearStateHandler } from './clearState';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_clearState', () => {
   describe('clearStateHandler', () => {
@@ -59,7 +60,7 @@ describe('snap_clearState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
@@ -99,7 +100,7 @@ describe('snap_clearState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
@@ -146,7 +147,7 @@ describe('snap_clearState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
@@ -191,7 +192,7 @@ describe('snap_clearState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,

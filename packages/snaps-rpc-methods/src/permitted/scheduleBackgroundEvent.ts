@@ -7,7 +7,6 @@ import type { PermissionControllerHasPermissionAction } from '@metamask/permissi
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   selectiveUnion,
-  type JsonRpcRequest,
   type ScheduleBackgroundEventParams,
   type ScheduleBackgroundEventResult,
   type SnapId,
@@ -22,7 +21,10 @@ import { StructError, create, object } from '@metamask/superstruct';
 import { hasProperty, type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { CronjobControllerScheduleAction } from '../types';
+import type {
+  CronjobControllerScheduleAction,
+  JsonRpcRequestWithOrigin,
+} from '../types';
 
 export type ScheduleBackgroundEventMethodActions =
   | PermissionControllerHasPermissionAction
@@ -118,7 +120,7 @@ function getSchedule(params: ScheduleBackgroundEventParameters): string {
  * @returns An id representing the background event.
  */
 async function getScheduleBackgroundEventImplementation(
-  req: JsonRpcRequest<ScheduleBackgroundEventParameters> & { origin: SnapId },
+  req: JsonRpcRequestWithOrigin<ScheduleBackgroundEventParameters>,
   res: PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

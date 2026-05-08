@@ -7,10 +7,11 @@ import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerExecuteRestrictedMethodAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeSnapParams, InvokeSnapResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { isObject } from '@metamask/utils';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 export type InvokeSnapSugarMethodActions =
   PermissionControllerExecuteRestrictedMethodAction;
@@ -65,7 +66,7 @@ export const invokeSnapSugarHandler = {
  * @throws If the params are invalid.
  */
 export async function invokeSnapSugar(
-  req: JsonRpcRequest<InvokeSnapParams> & { origin: string },
+  req: JsonRpcRequestWithOrigin<InvokeSnapParams>,
   // `InvokeSnapResult` is an alias for `Json` (which is the default type
   // argument for `PendingJsonRpcResponse`), but that may not be the case in the
   // future. We use `InvokeSnapResult` here to make it clear that this is the

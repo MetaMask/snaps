@@ -8,7 +8,6 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import {
   ComponentOrElementStruct,
@@ -24,7 +23,10 @@ import {
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SnapInterfaceControllerUpdateInterfaceAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerUpdateInterfaceAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
 export type UpdateInterfaceMethodActions =
@@ -104,7 +106,7 @@ export type UpdateInterfaceParameters = InferMatching<
  * @returns Nothing.
  */
 function getUpdateInterfaceImplementation(
-  req: JsonRpcRequest<UpdateInterfaceParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<UpdateInterfaceParameters>,
   res: PendingJsonRpcResponse<UpdateInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

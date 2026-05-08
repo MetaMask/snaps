@@ -1,5 +1,6 @@
 import {
   MethodNotFoundError,
+  assert,
   type OnRpcRequestHandler,
 } from '@metamask/snaps-sdk';
 
@@ -24,10 +25,11 @@ import {
 export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   switch (request.method) {
     case 'getFile': {
-      const fileInPlaintext = (await snap.request({
+      const fileInPlaintext = await snap.request({
         method: 'snap_getFile',
         params: { path: './files/foo.json', encoding: 'utf8' },
-      })) as string;
+      });
+      assert(fileInPlaintext);
       return JSON.parse(fileInPlaintext);
     }
 

@@ -6,7 +6,6 @@ import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   SendWebSocketMessageParams,
   SendWebSocketMessageResult,
 } from '@metamask/snaps-sdk';
@@ -23,7 +22,10 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { WebSocketServiceSendMessageAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceSendMessageAction,
+} from '../types';
 
 export type SendWebSocketMessageMethodActions =
   | PermissionControllerHasPermissionAction
@@ -89,7 +91,7 @@ export const sendWebSocketMessageHandler = {
  * @returns Nothing.
  */
 async function sendWebSocketMessageImplementation(
-  req: JsonRpcRequest<SendWebSocketMessageParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<SendWebSocketMessageParameters>,
   res: PendingJsonRpcResponse<SendWebSocketMessageResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

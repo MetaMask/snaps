@@ -16,7 +16,11 @@ import type {
   SnapRpcHookArgs,
   TruncatedSnap,
 } from '@metamask/snaps-utils';
-import type { Json } from '@metamask/utils';
+import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
+
+export type JsonRpcRequestWithOrigin<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = JsonRpcRequest<Params> & { origin: string };
 
 export type HdKeyring = {
   type: 'HD Key Tree';

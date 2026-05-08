@@ -7,10 +7,11 @@ import {
   createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { TrackErrorMethodActions } from './trackError';
 import { trackErrorHandler } from './trackError';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_trackError', () => {
   describe('trackErrorHandler', () => {
@@ -55,7 +56,7 @@ describe('snap_trackError', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
@@ -111,7 +112,7 @@ describe('snap_trackError', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
@@ -180,7 +181,7 @@ describe('snap_trackError', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
@@ -234,7 +235,7 @@ describe('snap_trackError', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
@@ -286,7 +287,7 @@ describe('snap_trackError', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
@@ -355,7 +356,7 @@ describe('snap_trackError', () => {
         engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<TrackErrorParams> & { origin: string },
+            request as JsonRpcRequestWithOrigin<TrackErrorParams>,
             response as PendingJsonRpcResponse<TrackErrorResult>,
             next,
             end,

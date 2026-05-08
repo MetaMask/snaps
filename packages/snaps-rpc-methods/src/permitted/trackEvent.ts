@@ -4,11 +4,7 @@ import type {
 } from '@metamask/json-rpc-engine';
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
-import type {
-  JsonRpcRequest,
-  TrackEventParams,
-  TrackEventResult,
-} from '@metamask/snaps-sdk';
+import type { TrackEventParams, TrackEventResult } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import {
   create,
@@ -22,7 +18,10 @@ import {
 import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { SnapControllerGetSnapAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
 const PropertiesStruct = optional(record(string(), JsonStruct));
@@ -106,7 +105,7 @@ export const trackEventHandler = {
  * @returns Nothing.
  */
 function getTrackEventImplementation(
-  req: JsonRpcRequest<TrackEventParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<TrackEventParameters>,
   res: PendingJsonRpcResponse<TrackEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

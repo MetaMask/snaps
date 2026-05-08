@@ -8,12 +8,14 @@ import { providerErrors } from '@metamask/rpc-errors';
 import type {
   GetWebSocketsParams,
   GetWebSocketsResult,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { WebSocketServiceGetAllAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceGetAllAction,
+} from '../types';
 
 export type GetWebSocketsMethodActions =
   | PermissionControllerHasPermissionAction
@@ -74,7 +76,7 @@ export const getWebSocketsHandler = {
  * @returns Nothing.
  */
 function getWebSocketsImplementation(
-  req: JsonRpcRequest<GetWebSocketsParams> & { origin: string },
+  req: JsonRpcRequestWithOrigin<GetWebSocketsParams>,
   res: PendingJsonRpcResponse<GetWebSocketsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

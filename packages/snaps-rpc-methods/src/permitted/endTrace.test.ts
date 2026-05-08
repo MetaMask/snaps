@@ -6,10 +6,11 @@ import {
   createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { EndTraceMethodActions } from './endTrace';
 import { endTraceHandler } from './endTrace';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_endTrace', () => {
   describe('endTraceHandler', () => {
@@ -54,7 +55,7 @@ describe('snap_endTrace', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<EndTraceParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<EndTraceParams>,
           response as PendingJsonRpcResponse<EndTraceResult>,
           next,
           end,
@@ -102,7 +103,7 @@ describe('snap_endTrace', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<EndTraceParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<EndTraceParams>,
           response as PendingJsonRpcResponse<EndTraceResult>,
           next,
           end,
@@ -167,7 +168,7 @@ describe('snap_endTrace', () => {
         engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<EndTraceParams> & { origin: string },
+            request as JsonRpcRequestWithOrigin<EndTraceParams>,
             response as PendingJsonRpcResponse<EndTraceResult>,
             next,
             end,

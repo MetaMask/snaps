@@ -8,13 +8,15 @@ import { providerErrors } from '@metamask/rpc-errors';
 import type {
   GetBackgroundEventsParams,
   GetBackgroundEventsResult,
-  JsonRpcRequest,
   SnapId,
 } from '@metamask/snaps-sdk';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { CronjobControllerGetAction } from '../types';
+import type {
+  CronjobControllerGetAction,
+  JsonRpcRequestWithOrigin,
+} from '../types';
 
 export type GetBackgroundEventsMethodActions =
   | PermissionControllerHasPermissionAction
@@ -68,7 +70,7 @@ export const getBackgroundEventsHandler = {
  * @returns An array of background events.
  */
 async function getGetBackgroundEventsImplementation(
-  req: JsonRpcRequest<GetBackgroundEventsParams> & { origin: SnapId },
+  req: JsonRpcRequestWithOrigin<GetBackgroundEventsParams>,
   res: PendingJsonRpcResponse<GetBackgroundEventsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

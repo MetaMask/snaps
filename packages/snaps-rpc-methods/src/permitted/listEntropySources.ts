@@ -7,7 +7,6 @@ import type { PermissionControllerHasPermissionAction } from '@metamask/permissi
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
   EntropySource,
-  JsonRpcRequest,
   ListEntropySourcesParams,
   ListEntropySourcesResult,
 } from '@metamask/snaps-sdk';
@@ -17,7 +16,10 @@ import { getBip32EntropyBuilder } from '../restricted/getBip32Entropy';
 import { getBip32PublicKeyBuilder } from '../restricted/getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../restricted/getBip44Entropy';
 import { getEntropyBuilder } from '../restricted/getEntropy';
-import type { KeyringControllerGetStateAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  KeyringControllerGetStateAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
 /**
@@ -120,7 +122,7 @@ export const listEntropySourcesHandler = {
  * @returns Nothing.
  */
 async function listEntropySourcesImplementation(
-  request: JsonRpcRequest<ListEntropySourcesParams> & { origin: string },
+  request: JsonRpcRequestWithOrigin<ListEntropySourcesParams>,
   response: PendingJsonRpcResponse<ListEntropySourcesResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

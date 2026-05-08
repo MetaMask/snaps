@@ -6,10 +6,10 @@ import {
   createOriginMiddleware,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { StartTraceMethodActions } from './startTrace';
 import { startTraceHandler } from './startTrace';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_startTrace', () => {
   describe('startTraceHandler', () => {
@@ -56,7 +56,7 @@ describe('snap_startTrace', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<StartTraceParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<StartTraceParams>,
           response,
           next,
           end,
@@ -110,7 +110,7 @@ describe('snap_startTrace', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<StartTraceParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<StartTraceParams>,
           response,
           next,
           end,
@@ -182,7 +182,7 @@ describe('snap_startTrace', () => {
         engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<StartTraceParams> & { origin: string },
+            request as JsonRpcRequestWithOrigin<StartTraceParams>,
             response,
             next,
             end,

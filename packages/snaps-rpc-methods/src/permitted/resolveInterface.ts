@@ -6,7 +6,6 @@ import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   ResolveInterfaceParams,
   ResolveInterfaceResult,
 } from '@metamask/snaps-sdk';
@@ -15,7 +14,10 @@ import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { SnapInterfaceControllerResolveInterfaceAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerResolveInterfaceAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
 export type ResolveInterfaceMethodActions =
@@ -85,7 +87,7 @@ export type ResolveInterfaceParameters = InferMatching<
  * @returns Nothing.
  */
 async function getResolveInterfaceImplementation(
-  req: JsonRpcRequest<ResolveInterfaceParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<ResolveInterfaceParameters>,
   res: PendingJsonRpcResponse<ResolveInterfaceResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

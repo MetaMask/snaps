@@ -17,11 +17,7 @@ import {
   createOriginMiddleware,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
-import type {
-  JsonRpcRequest,
-  JsonRpcSuccess,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcSuccess, PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { RequestSnapsMethodActions } from './requestSnaps';
 import {
@@ -30,6 +26,7 @@ import {
   getSnapPermissionsRequest,
 } from './requestSnaps';
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
@@ -238,7 +235,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
@@ -305,7 +302,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
@@ -407,7 +404,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
@@ -468,7 +465,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
@@ -523,7 +520,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
@@ -561,7 +558,7 @@ describe('implementation', () => {
     engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams> & { origin: string },
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,

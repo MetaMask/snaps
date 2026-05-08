@@ -6,7 +6,6 @@ import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   CloseWebSocketParams,
   CloseWebSocketResult,
 } from '@metamask/snaps-sdk';
@@ -15,7 +14,10 @@ import { create, object, string, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { WebSocketServiceCloseAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceCloseAction,
+} from '../types';
 
 export type CloseWebSocketMethodActions =
   | PermissionControllerHasPermissionAction
@@ -72,7 +74,7 @@ export const closeWebSocketHandler = {
  * @returns Nothing.
  */
 function closeWebSocketImplementation(
-  req: JsonRpcRequest<CloseWebSocketParameters> & { origin: string },
+  req: JsonRpcRequestWithOrigin<CloseWebSocketParameters>,
   res: PendingJsonRpcResponse<CloseWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

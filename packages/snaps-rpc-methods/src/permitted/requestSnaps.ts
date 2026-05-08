@@ -20,16 +20,15 @@ import {
   SnapCaveatType,
   verifyRequestedSnapPermissions,
 } from '@metamask/snaps-utils';
-import type {
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-  Json,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
-import type { SnapControllerInstallSnapsAction } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerInstallSnapsAction,
+} from '../types';
 
 export type RequestSnapsMethodActions =
   | SnapControllerInstallSnapsAction
@@ -181,7 +180,7 @@ function getMutex(origin: string) {
  * @throws If the params are invalid.
  */
 async function requestSnapsImplementation(
-  req: JsonRpcRequest<RequestSnapsParams> & { origin: string },
+  req: JsonRpcRequestWithOrigin<RequestSnapsParams>,
   res: PendingJsonRpcResponse<RequestSnapsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

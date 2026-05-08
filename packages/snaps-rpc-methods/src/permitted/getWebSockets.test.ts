@@ -9,10 +9,11 @@ import {
   MockControllerMessenger,
   createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import type { GetWebSocketsMethodActions } from './getWebSockets';
 import { getWebSocketsHandler } from './getWebSockets';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_getWebSockets', () => {
   describe('openWebSocketHandler', () => {
@@ -63,7 +64,7 @@ describe('snap_getWebSockets', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetWebSocketsParams>,
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,
@@ -102,7 +103,7 @@ describe('snap_getWebSockets', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetWebSocketsParams>,
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,
@@ -144,7 +145,7 @@ describe('snap_getWebSockets', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetWebSocketsParams> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetWebSocketsParams>,
           response as PendingJsonRpcResponse<GetWebSocketsResult>,
           next,
           end,

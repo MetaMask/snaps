@@ -6,7 +6,6 @@ import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   CancelBackgroundEventParams,
   CancelBackgroundEventResult,
   SnapId,
@@ -16,7 +15,10 @@ import { StructError, create, object, string } from '@metamask/superstruct';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { CronjobControllerCancelAction } from '../types';
+import type {
+  CronjobControllerCancelAction,
+  JsonRpcRequestWithOrigin,
+} from '../types';
 
 export type CancelBackgroundEventMethodActions =
   | PermissionControllerHasPermissionAction
@@ -78,7 +80,7 @@ export type CancelBackgroundEventParameters = InferMatching<
  * @returns Nothing.
  */
 async function getCancelBackgroundEventImplementation(
-  req: JsonRpcRequest<CancelBackgroundEventParameters> & { origin: SnapId },
+  req: JsonRpcRequestWithOrigin<CancelBackgroundEventParameters>,
   res: PendingJsonRpcResponse<CancelBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,

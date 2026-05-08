@@ -5,10 +5,10 @@ import {
   MockControllerMessenger,
   createOriginMiddleware,
 } from '@metamask/snaps-utils/test-utils';
-import type { JsonRpcRequest } from '@metamask/utils';
 
 import type { GetStateMethodActions, GetStateParameters } from './getState';
 import { get, getStateHandler } from './getState';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_getState', () => {
   describe('getStateHandler', () => {
@@ -61,7 +61,7 @@ describe('snap_getState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
           response,
           next,
           end,
@@ -106,7 +106,7 @@ describe('snap_getState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
           response,
           next,
           end,
@@ -151,7 +151,7 @@ describe('snap_getState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
           response,
           next,
           end,
@@ -202,7 +202,7 @@ describe('snap_getState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
           response,
           next,
           end,
@@ -250,7 +250,7 @@ describe('snap_getState', () => {
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetStateParameters> & { origin: string },
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
           response,
           next,
           end,
