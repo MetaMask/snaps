@@ -43,6 +43,10 @@ describe('snap_listEntropySources', () => {
         type: 'HD Key Tree',
         metadata: { id: 'bar', name: 'Secret recovery phrase 2' },
       },
+      {
+        type: 'Ledger Hardware',
+        metadata: { id: 'ledger', name: 'Ledger' },
+      },
     ];
 
     const getMessenger = () => {

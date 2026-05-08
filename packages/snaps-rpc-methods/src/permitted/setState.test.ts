@@ -14,8 +14,8 @@ import {
   type PendingJsonRpcResponse,
 } from '@metamask/utils';
 
-import type {
-  SetStateMethodActions,
+import {
+  type SetStateMethodActions,
   setStateHandler,
   type SetStateParameters,
   set,

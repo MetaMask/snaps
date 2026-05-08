@@ -184,7 +184,7 @@ describe('implementation', () => {
 
     messenger.registerActionHandler(
       'PermissionController:getPermissions',
-      () => ({}),
+      () => undefined,
     );
 
     messenger.registerActionHandler(
