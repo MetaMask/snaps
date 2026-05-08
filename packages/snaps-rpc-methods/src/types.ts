@@ -97,7 +97,7 @@ export type SnapInterfaceControllerCreateInterfaceAction = {
     content: ComponentOrElement,
     context?: InterfaceContext,
     contentType?: ContentType,
-  ) => Promise<string>;
+  ) => string;
 };
 
 export type SnapInterfaceControllerGetInterfaceAction = {
@@ -105,7 +105,12 @@ export type SnapInterfaceControllerGetInterfaceAction = {
   handler: (
     snapId: string,
     id: string,
-  ) => { content: ComponentOrElement; snapId: SnapId; state: InterfaceState };
+  ) => {
+    content: ComponentOrElement;
+    snapId: SnapId;
+    state: InterfaceState;
+    context: InterfaceContext | null;
+  };
 };
 
 export type SnapInterfaceControllerSetInterfaceDisplayedAction = {

@@ -55,7 +55,7 @@ describe('implementation', () => {
 
     messenger.registerActionHandler(
       'SnapInterfaceController:createInterface',
-      async () => 'bar',
+      () => 'bar',
     );
 
     messenger.registerActionHandler(

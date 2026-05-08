@@ -29,7 +29,7 @@ describe('snap_notify', () => {
 
     messenger.registerActionHandler(
       'SnapInterfaceController:createInterface',
-      async () => 'foo',
+      () => 'foo',
     );
 
     messenger.registerActionHandler('SnapController:getSnap', () => null);

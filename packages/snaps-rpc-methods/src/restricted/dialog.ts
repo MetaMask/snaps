@@ -284,7 +284,7 @@ export function getDialogImplementation({
       ];
 
     if (hasProperty(validatedParams, 'content')) {
-      const id = await messenger.call(
+      const id = messenger.call(
         'SnapInterfaceController:createInterface',
         origin,
         validatedParams.content as Component,
