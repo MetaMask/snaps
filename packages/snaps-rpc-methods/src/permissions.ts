@@ -1,4 +1,4 @@
-import { selectHooks } from '@metamask/json-rpc-engine/v2';
+import { selectHooks, assertExpectedHooks } from '@metamask/json-rpc-engine/v2';
 import {
   createRestrictedMethodMessenger,
   type PermissionConstraint,
@@ -70,8 +70,20 @@ export const buildSnapRestrictedMethodSpecifications = (
   excludedPermissions: string[],
   hooks: Record<string, unknown>,
   messenger: RestrictedMethodMessenger,
-) =>
-  Object.values(restrictedMethodPermissionBuilders).reduce<
+) => {
+  const permissionBuilders = Object.values(restrictedMethodPermissionBuilders);
+
+  const expectedHookNames = new Set(
+    permissionBuilders.flatMap((builder) =>
+      builder.methodHooks
+        ? Object.getOwnPropertyNames(builder.methodHooks)
+        : [],
+    ),
+  );
+
+  assertExpectedHooks(hooks, expectedHookNames);
+
+  return permissionBuilders.reduce<
     Record<string, PermissionSpecificationConstraint>
   >(
     (
@@ -94,3 +106,4 @@ export const buildSnapRestrictedMethodSpecifications = (
     },
     {},
   );
+};
