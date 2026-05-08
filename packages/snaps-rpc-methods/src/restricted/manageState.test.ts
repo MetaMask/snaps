@@ -1,10 +1,15 @@
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { ManageStateOperation } from '@metamask/snaps-sdk';
+import type { Snap } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
+import type { Json } from '@metamask/utils';
 
+import type { ManageStateMessengerActions } from './manageState';
 import {
   getEncryptionEntropy,
   getManageStateImplementation,
@@ -41,17 +46,14 @@ describe('snap_manageState', () => {
   describe('specification', () => {
     it('builds specification', () => {
       const methodHooks = {
-        clearSnapState: jest.fn(),
-        getSnapState: jest.fn(),
-        updateSnapState: jest.fn(),
         getUnlockPromise: jest.fn(),
-        getSnap: jest.fn(),
       };
 
       expect(
         specificationBuilder({
           allowedCaveats: null,
           methodHooks,
+          messenger: new Messenger({ namespace: 'ManageState' }),
         }),
       ).toStrictEqual({
         allowedCaveats: null,
@@ -64,6 +66,42 @@ describe('snap_manageState', () => {
   });
 
   describe('getManageStateImplementation', () => {
+    const getMessenger = ({
+      snap = { preinstalled: false } as Snap,
+      snapState = null as Record<string, Json> | null,
+    }: {
+      snap?: Snap | null;
+      snapState?: Record<string, Json> | null;
+    } = {}) => {
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        ManageStateMessengerActions
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
+
+      messenger.registerActionHandler('SnapController:getSnap', () => snap);
+
+      messenger.registerActionHandler(
+        'SnapController:getSnapState',
+        async () => snapState,
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:clearSnapState',
+        () => undefined,
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:updateSnapState',
+        async () => undefined,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('gets snap state', async () => {
       const mockSnapState = {
         some: {
@@ -71,17 +109,11 @@ describe('snap_manageState', () => {
         },
       };
 
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger({ snapState: mockSnapState });
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       const result = await manageStateImplementation({
@@ -90,7 +122,11 @@ describe('snap_manageState', () => {
         params: { operation: ManageStateOperation.GetState },
       });
 
-      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
       expect(result).toStrictEqual(mockSnapState);
     });
 
@@ -101,18 +137,12 @@ describe('snap_manageState', () => {
         },
       };
 
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(mockSnapState);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger({ snapState: mockSnapState });
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        getSnap,
+        methodHooks: { getUnlockPromise },
+        messenger,
       });
 
       const result = await manageStateImplementation({
@@ -121,23 +151,21 @@ describe('snap_manageState', () => {
         params: { operation: ManageStateOperation.GetState, encrypted: false },
       });
 
-      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, false);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        false,
+      );
       expect(getUnlockPromise).not.toHaveBeenCalled();
       expect(result).toStrictEqual(mockSnapState);
     });
 
     it('supports empty state', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(null);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger({ snapState: null });
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       const result = await manageStateImplementation({
@@ -146,23 +174,21 @@ describe('snap_manageState', () => {
         params: { operation: ManageStateOperation.GetState },
       });
 
-      expect(getSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
       expect(result).toBeNull();
     });
 
     it('clears snap state', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        getSnap,
+        methodHooks: { getUnlockPromise },
+        messenger,
       });
 
       await manageStateImplementation({
@@ -171,23 +197,21 @@ describe('snap_manageState', () => {
         params: { operation: ManageStateOperation.ClearState },
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, true);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:clearSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
       expect(getUnlockPromise).not.toHaveBeenCalled();
     });
 
     it('clears unencrypted snap state', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        getSnap,
+        methodHooks: { getUnlockPromise },
+        messenger,
       });
 
       await manageStateImplementation({
@@ -199,7 +223,11 @@ describe('snap_manageState', () => {
         },
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(MOCK_SNAP_ID, false);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:clearSnapState',
+        MOCK_SNAP_ID,
+        false,
+      );
       expect(getUnlockPromise).not.toHaveBeenCalled();
     });
 
@@ -210,17 +238,11 @@ describe('snap_manageState', () => {
         },
       };
 
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       await manageStateImplementation({
@@ -232,7 +254,8 @@ describe('snap_manageState', () => {
         },
       });
 
-      expect(updateSnapState).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         mockSnapState,
         true,
@@ -246,20 +269,12 @@ describe('snap_manageState', () => {
         },
       };
 
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest
-        .fn()
-        .mockReturnValueOnce(JSON.stringify(mockSnapState));
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
       const getUnlockPromise = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        getSnap,
+        methodHooks: { getUnlockPromise },
+        messenger,
       });
 
       await manageStateImplementation({
@@ -272,7 +287,8 @@ describe('snap_manageState', () => {
         },
       });
 
-      expect(updateSnapState).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         mockSnapState,
         false,
@@ -287,17 +303,11 @@ describe('snap_manageState', () => {
         },
       };
 
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       expect(async () =>
@@ -313,17 +323,11 @@ describe('snap_manageState', () => {
     });
 
     it('throws an error on update if the new state is not plain object', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       const newState = (a: unknown) => {
@@ -344,7 +348,8 @@ describe('snap_manageState', () => {
         'Invalid snap_manageState "newState" parameter: The new state must be a plain object.',
       );
 
-      expect(updateSnapState).not.toHaveBeenCalledWith(
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
         MOCK_SNAP_ID,
         newState,
         true,
@@ -352,17 +357,11 @@ describe('snap_manageState', () => {
     });
 
     it('throws an error on update if the new state is not valid json serializable object', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       const newState = {
@@ -387,7 +386,8 @@ describe('snap_manageState', () => {
         'Invalid snap_manageState "newState" parameter: The new state must be JSON serializable.',
       );
 
-      expect(updateSnapState).not.toHaveBeenCalledWith(
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
         'snap-origin',
         newState,
         true,
@@ -395,17 +395,11 @@ describe('snap_manageState', () => {
     });
 
     it('throws an error on update if the new state is too large', async () => {
-      const clearSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnapState = jest.fn().mockReturnValueOnce(true);
-      const updateSnapState = jest.fn().mockReturnValueOnce(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const messenger = getMessenger();
 
       const manageStateImplementation = getManageStateImplementation({
-        clearSnapState,
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise: jest.fn(),
-        getSnap,
+        methodHooks: { getUnlockPromise: jest.fn() },
+        messenger,
       });
 
       const newState = {
@@ -425,7 +419,8 @@ describe('snap_manageState', () => {
         'Invalid snap_manageState "newState" parameter: The new state must not exceed 64 MB in size.',
       );
 
-      expect(updateSnapState).not.toHaveBeenCalledWith(
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
         'snap-origin',
         newState,
         true,

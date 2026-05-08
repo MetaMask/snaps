@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/messenger';
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import type { PermissionsRequest } from '@metamask/permission-controller';
 import { PermissionType } from '@metamask/permission-controller';
 import { SnapCaveatType } from '@metamask/snaps-utils';
@@ -11,6 +12,7 @@ import {
 } from '@metamask/snaps-utils/test-utils';
 
 import type {
+  InvokeSnapMessengerActions,
   SnapControllerInstallSnapsAction,
   SnapControllerGetPermittedSnapsAction,
 } from './invokeSnap';
@@ -26,18 +28,14 @@ describe('builder', () => {
     expect(invokeSnapBuilder).toMatchObject({
       targetName: WALLET_SNAP_PERMISSION_KEY,
       specificationBuilder: expect.any(Function),
-      methodHooks: {
-        handleSnapRpcRequest: true,
-      },
+      actionNames: ['SnapController:handleRequest'],
     });
   });
 
   it('builder outputs expected specification', () => {
     expect(
       invokeSnapBuilder.specificationBuilder({
-        methodHooks: {
-          handleSnapRpcRequest: jest.fn(),
-        },
+        messenger: new Messenger({ namespace: 'InvokeSnap' }),
       }),
     ).toStrictEqual({
       permissionType: PermissionType.RestrictedMethod,
@@ -54,9 +52,7 @@ describe('builder', () => {
 
 describe('specificationBuilder', () => {
   const specification = invokeSnapBuilder.specificationBuilder({
-    methodHooks: {
-      handleSnapRpcRequest: jest.fn(),
-    },
+    messenger: new Messenger({ namespace: 'InvokeSnap' }),
   });
   describe('validator', () => {
     it('throws if the caveat is not a single "snapIds"', () => {
@@ -84,14 +80,27 @@ describe('specificationBuilder', () => {
 });
 
 describe('implementation', () => {
-  const getMockHooks = () =>
-    ({
-      getSnap: jest.fn(),
-      handleSnapRpcRequest: jest.fn(),
-    }) as any;
-  it('calls handleSnapRpcRequest', async () => {
-    const hooks = getMockHooks();
-    const implementation = getInvokeSnapImplementation(hooks);
+  const getMessenger = () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      InvokeSnapMessengerActions
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'SnapController:handleRequest',
+      async () => null,
+    );
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
+
+  it('calls SnapController:handleRequest', async () => {
+    const messenger = getMessenger();
+    const implementation = getInvokeSnapImplementation({ messenger });
     await implementation({
       context: { origin: MOCK_ORIGIN },
       method: WALLET_SNAP_PERMISSION_KEY,
@@ -101,15 +110,18 @@ describe('implementation', () => {
       },
     });
 
-    expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
-      handler: 'onRpcRequest',
-      origin: MOCK_ORIGIN,
-      request: {
-        method: 'hello',
-        params: {},
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapController:handleRequest',
+      {
+        handler: 'onRpcRequest',
+        origin: MOCK_ORIGIN,
+        request: {
+          method: 'hello',
+          params: {},
+        },
+        snapId: MOCK_SNAP_ID,
       },
-      snapId: MOCK_SNAP_ID,
-    });
+    );
   });
 });
 

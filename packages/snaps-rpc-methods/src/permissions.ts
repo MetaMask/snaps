@@ -1,6 +1,8 @@
-import type {
-  PermissionConstraint,
-  PermissionSpecificationConstraint,
+import { selectHooks } from '@metamask/json-rpc-engine/v2';
+import {
+  createRestrictedMethodMessenger,
+  type PermissionConstraint,
+  type PermissionSpecificationConstraint,
 } from '@metamask/permission-controller';
 import type { SnapPermissions } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
@@ -9,11 +11,14 @@ import {
   endowmentCaveatMappers,
   endowmentPermissionBuilders,
 } from './endowments';
+import type {
+  RestrictedMethodActions,
+  RestrictedMethodMessenger,
+} from './restricted';
 import {
   caveatMappers,
   restrictedMethodPermissionBuilders,
 } from './restricted';
-import { selectHooks } from './utils';
 
 /**
  * Map initial permissions as defined in a Snap manifest to something that can
@@ -64,18 +69,28 @@ export const buildSnapEndowmentSpecifications = (
 export const buildSnapRestrictedMethodSpecifications = (
   excludedPermissions: string[],
   hooks: Record<string, unknown>,
+  messenger: RestrictedMethodMessenger,
 ) =>
   Object.values(restrictedMethodPermissionBuilders).reduce<
     Record<string, PermissionSpecificationConstraint>
-  >((specifications, { targetName, specificationBuilder, methodHooks }) => {
-    if (!excludedPermissions.includes(targetName)) {
-      specifications[targetName] = specificationBuilder({
-        // @ts-expect-error The selectHooks type is wonky
-        methodHooks: selectHooks<typeof hooks, keyof typeof methodHooks>(
-          hooks,
-          methodHooks,
-        ) as Pick<typeof hooks, keyof typeof methodHooks>,
-      });
-    }
-    return specifications;
-  }, {});
+  >(
+    (
+      specifications,
+      { targetName, specificationBuilder, methodHooks, actionNames },
+    ) => {
+      if (!excludedPermissions.includes(targetName)) {
+        specifications[targetName] = specificationBuilder({
+          methodHooks: selectHooks(hooks, methodHooks),
+          messenger: createRestrictedMethodMessenger({
+            namespace: targetName,
+            rootMessenger: messenger,
+            actionNames: actionNames as readonly [
+              RestrictedMethodActions['type'],
+            ],
+          }),
+        });
+      }
+      return specifications;
+    },
+    {},
+  );

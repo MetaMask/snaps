@@ -1,3 +1,4 @@
+import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
   RestrictedMethodOptions,
@@ -13,11 +14,10 @@ import type {
   RequestSnapsParams,
   RequestSnapsResult,
 } from '@metamask/snaps-sdk';
-import type { SnapRpcHookArgs } from '@metamask/snaps-utils';
 import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import type { Json, NonEmptyArray } from '@metamask/utils';
 
-import type { MethodHooksObject } from '../utils';
+import type { SnapControllerHandleRequestAction } from '../types';
 
 export const WALLET_SNAP_PERMISSION_KEY = 'wallet_snap';
 
@@ -39,18 +39,11 @@ type AllowedActions =
   | SnapControllerInstallSnapsAction
   | SnapControllerGetPermittedSnapsAction;
 
-export type InvokeSnapMethodHooks = {
-  handleSnapRpcRequest: ({
-    snapId,
-    origin,
-    handler,
-    request,
-  }: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
-};
+export type InvokeSnapMessengerActions = SnapControllerHandleRequestAction;
 
 type InvokeSnapSpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
-  methodHooks: InvokeSnapMethodHooks;
+  messenger: Messenger<string, InvokeSnapMessengerActions>;
 };
 
 type InvokeSnapSpecification = ValidPermissionSpecification<{
@@ -109,19 +102,21 @@ export const handleSnapInstall: PermissionSideEffect<
  * and install it if it's not available yet.
  *
  * @param options - The specification builder options.
- * @param options.methodHooks - The RPC method hooks needed by the method implementation.
+ * @param options.messenger - The messenger.
  * @returns The specification for the `wallet_snap_*` permission.
  */
 const specificationBuilder: PermissionSpecificationBuilder<
   PermissionType.RestrictedMethod,
   InvokeSnapSpecificationBuilderOptions,
   InvokeSnapSpecification
-> = ({ methodHooks }: InvokeSnapSpecificationBuilderOptions) => {
+> = ({ messenger }: InvokeSnapSpecificationBuilderOptions) => {
   return {
     permissionType: PermissionType.RestrictedMethod,
     targetName: WALLET_SNAP_PERMISSION_KEY,
     allowedCaveats: [SnapCaveatType.SnapIds],
-    methodImplementation: getInvokeSnapImplementation(methodHooks),
+    methodImplementation: getInvokeSnapImplementation({
+      messenger,
+    }),
     validator: ({ caveats }) => {
       if (caveats?.length !== 1 || caveats[0].type !== SnapCaveatType.SnapIds) {
         throw rpcErrors.invalidParams({
@@ -133,10 +128,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
       onPermitted: handleSnapInstall,
     },
   };
-};
-
-const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
-  handleSnapRpcRequest: true,
 };
 
 /**
@@ -164,20 +155,20 @@ const methodHooks: MethodHooksObject<InvokeSnapMethodHooks> = {
 export const invokeSnapBuilder = Object.freeze({
   targetName: WALLET_SNAP_PERMISSION_KEY,
   specificationBuilder,
-  methodHooks,
+  actionNames: ['SnapController:handleRequest'],
 } as const);
 
 /**
  * Builds the method implementation for `wallet_snap_*`.
  *
- * @param hooks - The RPC method hooks.
- * @param hooks.handleSnapRpcRequest - A function that sends an RPC request to a snap's RPC handler or throws if that fails.
- * @returns The method implementation which returns the result of `handleSnapRpcRequest`.
+ * @param options - The options.
+ * @param options.messenger - The messenger.
+ * @returns The method implementation which returns the result of `SnapController:handleRequest`.
  * @throws If the params are invalid.
  */
 export function getInvokeSnapImplementation({
-  handleSnapRpcRequest,
-}: InvokeSnapMethodHooks) {
+  messenger,
+}: InvokeSnapSpecificationBuilderOptions) {
   return async function invokeSnap(
     options: RestrictedMethodOptions<InvokeSnapParams>,
   ): Promise<InvokeSnapResult> {
@@ -187,7 +178,7 @@ export function getInvokeSnapImplementation({
 
     const { origin } = context;
 
-    return (await handleSnapRpcRequest({
+    return (await messenger.call('SnapController:handleRequest', {
       snapId,
       origin,
       request,

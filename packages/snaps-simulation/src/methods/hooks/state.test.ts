@@ -57,7 +57,7 @@ describe('getUpdateSnapStateMethodImplementation', () => {
 
     expect(getState(true)(store.getState())).toBeNull();
 
-    fn(MOCK_SNAP_ID, { foo: 'bar' });
+    await fn(MOCK_SNAP_ID, { foo: 'bar' });
 
     expect(getState(true)(store.getState())).toStrictEqual(
       JSON.stringify({
@@ -72,7 +72,7 @@ describe('getUpdateSnapStateMethodImplementation', () => {
 
     expect(getState(false)(store.getState())).toBeNull();
 
-    fn(MOCK_SNAP_ID, { foo: 'bar' }, false);
+    await fn(MOCK_SNAP_ID, { foo: 'bar' }, false);
 
     expect(getState(false)(store.getState())).toStrictEqual(
       JSON.stringify({

@@ -1,42 +1,89 @@
-import type { DialogMethodHooks } from './dialog';
+import type { Messenger } from '@metamask/messenger';
+import type {
+  PermissionSpecificationBuilder,
+  PermissionType,
+  RestrictedMethodSpecificationConstraint,
+} from '@metamask/permission-controller';
+
+import type { DialogMessengerActions } from './dialog';
 import { dialogBuilder } from './dialog';
-import type { GetBip32EntropyMethodHooks } from './getBip32Entropy';
+import type {
+  GetBip32EntropyMessengerActions,
+  GetBip32EntropyMethodHooks,
+} from './getBip32Entropy';
 import { getBip32EntropyBuilder } from './getBip32Entropy';
-import type { GetBip32PublicKeyMethodHooks } from './getBip32PublicKey';
+import type {
+  GetBip32PublicKeyMessengerActions,
+  GetBip32PublicKeyMethodHooks,
+} from './getBip32PublicKey';
 import { getBip32PublicKeyBuilder } from './getBip32PublicKey';
-import type { GetBip44EntropyMethodHooks } from './getBip44Entropy';
+import type {
+  GetBip44EntropyMessengerActions,
+  GetBip44EntropyMethodHooks,
+} from './getBip44Entropy';
 import { getBip44EntropyBuilder } from './getBip44Entropy';
-import type { GetEntropyHooks } from './getEntropy';
+import type { GetEntropyHooks, GetEntropyMessengerActions } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
 import type { GetLocaleMethodHooks } from './getLocale';
 import { getLocaleBuilder } from './getLocale';
 import type { GetPreferencesMethodHooks } from './getPreferences';
 import { getPreferencesBuilder } from './getPreferences';
-import type { InvokeSnapMethodHooks } from './invokeSnap';
+import type { InvokeSnapMessengerActions } from './invokeSnap';
 import { invokeSnapBuilder } from './invokeSnap';
 import type { ManageAccountsMethodHooks } from './manageAccounts';
 import { manageAccountsBuilder } from './manageAccounts';
-import type { ManageStateMethodHooks } from './manageState';
+import type {
+  ManageStateMessengerActions,
+  ManageStateMethodHooks,
+} from './manageState';
 import { manageStateBuilder } from './manageState';
-import type { NotifyMethodHooks } from './notify';
+import type { NotifyMessengerActions, NotifyMethodHooks } from './notify';
 import { notifyBuilder } from './notify';
+import type { MethodHooksObject } from '../utils';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionEntropy } from './manageState';
 
-export type RestrictedMethodHooks = DialogMethodHooks &
-  GetBip32EntropyMethodHooks &
+export type RestrictedMethodActions =
+  | DialogMessengerActions
+  | GetBip32EntropyMessengerActions
+  | GetBip32PublicKeyMessengerActions
+  | GetBip44EntropyMessengerActions
+  | GetEntropyMessengerActions
+  | InvokeSnapMessengerActions
+  | ManageStateMessengerActions
+  | NotifyMessengerActions;
+
+export type RestrictedMethodMessenger = Messenger<
+  string,
+  RestrictedMethodActions
+>;
+
+export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
   GetBip32PublicKeyMethodHooks &
   GetBip44EntropyMethodHooks &
   GetEntropyHooks &
-  InvokeSnapMethodHooks &
   ManageStateMethodHooks &
   NotifyMethodHooks &
   ManageAccountsMethodHooks &
   GetLocaleMethodHooks &
   GetPreferencesMethodHooks;
 
-export const restrictedMethodPermissionBuilders = {
+type RestrictedMethodPermissionBuilder = {
+  targetName: string;
+  specificationBuilder: PermissionSpecificationBuilder<
+    PermissionType.RestrictedMethod,
+    any,
+    RestrictedMethodSpecificationConstraint
+  >;
+  actionNames?: readonly RestrictedMethodActions['type'][];
+  methodHooks?: MethodHooksObject<Record<string, unknown>>;
+};
+
+export const restrictedMethodPermissionBuilders: Record<
+  string,
+  RestrictedMethodPermissionBuilder
+> = {
   [dialogBuilder.targetName]: dialogBuilder,
   [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
   [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,

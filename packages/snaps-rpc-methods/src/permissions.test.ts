@@ -1,3 +1,5 @@
+import { Messenger } from '@metamask/messenger';
+
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
@@ -193,7 +195,11 @@ describe('buildSnapEndowmentSpecifications', () => {
 
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('returns the expected object', () => {
-    const specifications = buildSnapRestrictedMethodSpecifications([], {});
+    const specifications = buildSnapRestrictedMethodSpecifications(
+      [],
+      {},
+      new Messenger({ namespace: 'SnapsRestrictedMethods' }),
+    );
     expect(specifications).toMatchInlineSnapshot(`
       {
         "snap_dialog": {

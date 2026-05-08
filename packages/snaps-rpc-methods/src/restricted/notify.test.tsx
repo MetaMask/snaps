@@ -1,7 +1,10 @@
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { ContentType, NotificationType } from '@metamask/snaps-sdk';
 import { Box, Text } from '@metamask/snaps-sdk/jsx';
 
+import type { NotifyMessengerActions } from './notify';
 import {
   getImplementation,
   getValidatedParams,
@@ -14,20 +17,39 @@ describe('snap_notify', () => {
     message: 'Some message',
   };
 
+  const getMessenger = () => {
+    const messenger = new Messenger<MockAnyNamespace, NotifyMessengerActions>({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+
+    messenger.registerActionHandler(
+      'RateLimitController:call',
+      async () => true,
+    );
+
+    messenger.registerActionHandler(
+      'SnapInterfaceController:createInterface',
+      () => 'foo',
+    );
+
+    messenger.registerActionHandler('SnapController:getSnap', () => null);
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
+
   describe('specification', () => {
     it('builds specification', () => {
       const methodHooks = {
-        showNativeNotification: jest.fn(),
-        showInAppNotification: jest.fn(),
         isOnPhishingList: jest.fn(),
         maybeUpdatePhishingList: jest.fn(),
-        createInterface: jest.fn(),
-        getSnap: jest.fn(),
       };
 
       expect(
         specificationBuilder({
           methodHooks,
+          messenger: new Messenger({ namespace: 'Notify' }),
         }),
       ).toStrictEqual({
         allowedCaveats: null,
@@ -41,20 +63,13 @@ describe('snap_notify', () => {
 
   describe('getImplementation', () => {
     it('shows inApp notification', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
-      const getSnap = jest.fn();
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await notificationImplementation({
@@ -68,27 +83,28 @@ describe('snap_notify', () => {
         },
       });
 
-      expect(showInAppNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.InApp,
-        message: 'Some message',
-      });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RateLimitController:call',
+        'extension',
+        'showInAppNotification',
+        'extension',
+        {
+          interfaceId: undefined,
+          message: 'Some message',
+          title: undefined,
+          footerLink: undefined,
+        },
+      );
     });
 
     it('shows inApp notifications with a detailed view', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn().mockResolvedValueOnce(1);
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await notificationImplementation({
@@ -104,36 +120,36 @@ describe('snap_notify', () => {
         },
       });
 
-      expect(showInAppNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.InApp,
-        message: 'Some message',
-        title: 'Detailed view title',
-        content: 1,
-      });
-
-      expect(createInterface).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapInterfaceController:createInterface',
         'extension',
         <Text>Hello</Text>,
         undefined,
         ContentType.Notification,
       );
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RateLimitController:call',
+        'extension',
+        'showInAppNotification',
+        'extension',
+        {
+          interfaceId: 'foo',
+          message: 'Some message',
+          title: 'Detailed view title',
+          footerLink: undefined,
+        },
+      );
     });
 
     it('shows native notification', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await notificationImplementation({
@@ -147,27 +163,23 @@ describe('snap_notify', () => {
         },
       });
 
-      expect(showNativeNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.Native,
-        message: 'Some message',
-      });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RateLimitController:call',
+        'extension',
+        'showNativeNotification',
+        'extension',
+        'Some message',
+      );
     });
 
     it('accepts string notification types', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await notificationImplementation({
@@ -181,27 +193,23 @@ describe('snap_notify', () => {
         },
       });
 
-      expect(showNativeNotification).toHaveBeenCalledWith('extension', {
-        type: NotificationType.Native,
-        message: 'Some message',
-      });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'RateLimitController:call',
+        'extension',
+        'showNativeNotification',
+        'extension',
+        'Some message',
+      );
     });
 
     it('throws an error if the notification type is invalid', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await expect(
@@ -223,9 +231,9 @@ describe('snap_notify', () => {
   describe('getValidatedParams', () => {
     it('throws an error if the params is not an object', () => {
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
-      expect(() => getValidatedParams([], isOnPhishingList, jest.fn())).toThrow(
-        'Expected params to be a single object.',
-      );
+      expect(() =>
+        getValidatedParams([], isOnPhishingList, getMessenger()),
+      ).toThrow('Expected params to be a single object.');
     });
 
     it('throws an error if the type is missing from params object', () => {
@@ -234,7 +242,7 @@ describe('snap_notify', () => {
         getValidatedParams(
           { type: undefined, message: 'Something happened.' },
           isOnPhishingList,
-          jest.fn(),
+          getMessenger(),
         ),
       ).toThrow('Must specify a valid notification "type".');
     });
@@ -245,7 +253,7 @@ describe('snap_notify', () => {
         getValidatedParams(
           { type: NotificationType.InApp, message: '' },
           isOnPhishingList,
-          jest.fn(),
+          getMessenger(),
         ),
       ).toThrow(
         'Must specify a non-empty string "message" less than 500 characters long.',
@@ -258,7 +266,7 @@ describe('snap_notify', () => {
         getValidatedParams(
           { type: NotificationType.InApp, message: 123 },
           isOnPhishingList,
-          jest.fn(),
+          getMessenger(),
         ),
       ).toThrow(
         'Must specify a non-empty string "message" less than 500 characters long.',
@@ -274,7 +282,7 @@ describe('snap_notify', () => {
             message: 'test'.repeat(20),
           },
           isOnPhishingList,
-          jest.fn(),
+          getMessenger(),
         ),
       ).toThrow(
         'Must specify a non-empty string "message" less than 50 characters long.',
@@ -290,7 +298,7 @@ describe('snap_notify', () => {
             message: 'test'.repeat(150),
           },
           isOnPhishingList,
-          jest.fn(),
+          getMessenger(),
         ),
       ).toThrow(
         'Must specify a non-empty string "message" less than 500 characters long.',
@@ -298,20 +306,13 @@ describe('snap_notify', () => {
     });
 
     it('throws an error if a link in the `message` property is on the phishing list', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await expect(
@@ -329,20 +330,13 @@ describe('snap_notify', () => {
     });
 
     it('throws an error if a link in the `message` property is invalid', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       await expect(
@@ -362,20 +356,13 @@ describe('snap_notify', () => {
     });
 
     it('throws an error if a link in the `footerLink` property is on the phishing list', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       const content = (
@@ -402,20 +389,13 @@ describe('snap_notify', () => {
     });
 
     it('throws an error if a link in the `footerLink` property is invalid', async () => {
-      const showNativeNotification = jest.fn().mockResolvedValueOnce(true);
-      const showInAppNotification = jest.fn().mockResolvedValueOnce(true);
       const isOnPhishingList = jest.fn().mockResolvedValue(true);
       const maybeUpdatePhishingList = jest.fn();
-      const createInterface = jest.fn();
-      const getSnap = jest.fn();
+      const messenger = getMessenger();
 
       const notificationImplementation = getImplementation({
-        showNativeNotification,
-        showInAppNotification,
-        isOnPhishingList,
-        maybeUpdatePhishingList,
-        createInterface,
-        getSnap,
+        methodHooks: { isOnPhishingList, maybeUpdatePhishingList },
+        messenger,
       });
 
       const content = (
@@ -446,7 +426,7 @@ describe('snap_notify', () => {
     it('returns valid parameters', () => {
       const isNotOnPhishingList = jest.fn().mockResolvedValueOnce(false);
       expect(
-        getValidatedParams(validParams, isNotOnPhishingList, jest.fn()),
+        getValidatedParams(validParams, isNotOnPhishingList, getMessenger()),
       ).toStrictEqual(validParams);
     });
   });
