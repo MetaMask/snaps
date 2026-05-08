@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Omit installing Snaps from `getAllSnaps` and `getRunnableSnaps` ([#3990](https://github.com/MetaMask/snaps/pull/3990))
+- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
+- chore: Bump @metamask/json-rpc-engine from 10.2.4 to 10.3.0 ([#3982](https://github.com/MetaMask/snaps/pull/3982))
+- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
+- chore: Bump lodash from 4.17.23 to 4.18.1 ([#3946](https://github.com/MetaMask/snaps/pull/3946))
+- chore: Bump @metamask/messenger-cli from 0.1.0 to 0.2.0 ([#3979](https://github.com/MetaMask/snaps/pull/3979))
+- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+- chore: Bump @metamask/base-controller from 9.0.1 to 9.1.0 ([#3959](https://github.com/MetaMask/snaps/pull/3959))
+
 ## [20.0.3]
 
 ### Fixed
@@ -766,20 +777,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/approval-controller` from `^7.0.0` to `^7.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/json-rpc-engine` from `^9.0.0` to `^9.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/json-rpc-middleware-stream` from `^8.0.0` to `^8.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/phishing-controller` from `^10.0.0` to `^10.1.1` ([#2593](https://github.com/metamask/snaps/pull/2593))
+- Bump `@metamask/approval-controller` from `^7.0.0` to `^7.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/base-controller` from `^6.0.1` to `^6.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/json-rpc-engine` from `^9.0.0` to `^9.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/json-rpc-middleware-stream` from `^8.0.0` to `^8.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/phishing-controller` from `^10.0.0` to `^10.1.1` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
 - Bump `@metamask/snaps-utils` from `^7.8.0` to `^7.8.1` ([#2595](https://github.com/MetaMask/snaps/pull/2595))
 
 ## [9.3.0]
 
 ### Added
 
-- Add `snap_resolveInterface` RPC method to the `SnapInterfaceController` ([#2509](https://github.com/metamask/snaps/pull/2509))
-- Add `SnapInsightsController` ([#2555](https://github.com/metamask/snaps/pull/2555))
+- Add `snap_resolveInterface` RPC method to the `SnapInterfaceController` ([#2509](https://github.com/MetaMask/snaps/pull/2509))
+- Add `SnapInsightsController` ([#2555](https://github.com/MetaMask/snaps/pull/2555))
 
 ### Changed
 
@@ -796,10 +807,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Handle initial connections for preinstalled Snaps ([#2591](https://github.com/MetaMask/snaps/pull/2591))
-- Account for revoked origins when calculating the difference in `initialConnections` ([#2535](https://github.com/metamask/snaps/pull/2535))
+- Account for revoked origins when calculating the difference in `initialConnections` ([#2535](https://github.com/MetaMask/snaps/pull/2535))
   - Fixes issue of revoking permissions that are already revoked.
   - Enables revoked connections to be highlighted as being re-added in the UI.
-- Enforce stricter size limits for source code, static auxiliary files, and `snap_getFile` return values ([#2527](https://github.com/metamask/snaps/pull/2527))
+- Enforce stricter size limits for source code, static auxiliary files, and `snap_getFile` return values ([#2527](https://github.com/MetaMask/snaps/pull/2527))
   - Prevent communication failures by enabling compliance with JSON-RPC extension message requirements.
 
 ## [9.2.0]

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+
 ## [11.1.0]
 
 ### Added
@@ -453,22 +457,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/providers` from `17.0.0` to `^17.1.2` ([#2598](https://github.com/metamask/snaps/pull/2598))
+- Bump `@metamask/providers` from `17.0.0` to `^17.1.2` ([#2598](https://github.com/MetaMask/snaps/pull/2598))
 
 ## [6.1.0]
 
 ### Added
 
-- Add non-restricted RPC method `snap_resolveInterface` ([#2509](https://github.com/metamask/snaps/pull/2509))
+- Add non-restricted RPC method `snap_resolveInterface` ([#2509](https://github.com/MetaMask/snaps/pull/2509))
   - This method allows a Snap to resolve a given user interface bound to a `snap_dialog` with a custom value.
   - Add new types `ResolveInterfaceParams`, `ResolveInterfaceResult`.
-- Add `Card` component ([#2480](https://github.com/metamask/snaps/pull/2480))
-- Add `BoxChildStruct`, `FormChildStruct`, `FieldChildUnionStruct` ([#2409](https://github.com/metamask/snaps/pull/2409))
-- Add `Container` and `Footer` components ([#2517](https://github.com/metamask/snaps/pull/2517))
+- Add `Card` component ([#2480](https://github.com/MetaMask/snaps/pull/2480))
+- Add `BoxChildStruct`, `FormChildStruct`, `FieldChildUnionStruct` ([#2409](https://github.com/MetaMask/snaps/pull/2409))
+- Add `Container` and `Footer` components ([#2517](https://github.com/MetaMask/snaps/pull/2517))
 
 ### Changed
 
-- Update `RootJSXElement` to allow `Container` or `Box` at the root ([#2526](https://github.com/metamask/snaps/pull/2526))
+- Update `RootJSXElement` to allow `Container` or `Box` at the root ([#2526](https://github.com/MetaMask/snaps/pull/2526))
 - Bump `@metamask/key-tree` from `^9.1.1` to `^9.1.2` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/rpc-errors` from `^6.2.1` to `^6.3.1` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
 - Bump `@metamask/utils` from `^8.3.0` to `^9.1.0` ([#2445](https://github.com/MetaMask/snaps/pull/2445))
