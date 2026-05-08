@@ -64,6 +64,7 @@ describe('implementation', () => {
         content: { type: NodeType.Text as const, value: 'foo' },
         state: {},
         snapId: 'foo' as SnapId,
+        context: null,
       }),
     );
 

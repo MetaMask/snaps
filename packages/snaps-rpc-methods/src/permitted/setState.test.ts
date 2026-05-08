@@ -1,6 +1,12 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
-import type { SetStateResult } from '@metamask/snaps-sdk';
+import type { SetStateResult, SnapId } from '@metamask/snaps-sdk';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  createOriginMiddleware,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
 import {
   createDeferredPromise,
   type Json,
@@ -8,52 +14,81 @@ import {
   type PendingJsonRpcResponse,
 } from '@metamask/utils';
 
-import { setStateHandler, type SetStateParameters, set } from './setState';
+import type {
+  SetStateMethodActions,
+  setStateHandler,
+  type SetStateParameters,
+  set,
+} from './setState';
 
 describe('snap_setState', () => {
   describe('setStateHandler', () => {
     it('has the expected shape', () => {
       expect(setStateHandler).toMatchObject({
-        methodNames: ['snap_setState'],
         implementation: expect.any(Function),
         hookNames: {
-          getSnapState: true,
-          hasPermission: true,
+          getUnlockPromise: true,
         },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapController:getSnapState',
+          'SnapController:updateSnapState',
+          'SnapController:getSnap',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        SetStateMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:getSnapState',
+        async () => ({ foo: 'bar' }),
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:updateSnapState',
+        async () => undefined,
+      );
+
+      messenger.registerActionHandler('SnapController:getSnap', () =>
+        getSnapObject(),
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('sets the encrypted state', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -70,8 +105,17 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
-      expect(getSnapState).toHaveBeenCalledWith(true);
-      expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'baz' },
+        true,
+      );
 
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
@@ -83,32 +127,22 @@ describe('snap_setState', () => {
     it('sets the entire state if no key is specified', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -126,8 +160,17 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).toHaveBeenCalled();
-      expect(getSnapState).not.toHaveBeenCalled();
-      expect(updateSnapState).toHaveBeenCalledWith({ foo: 'baz' }, true);
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        expect.anything(),
+        expect.anything(),
+      );
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'baz' },
+        true,
+      );
 
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
@@ -139,32 +182,22 @@ describe('snap_setState', () => {
     it('sets the unencrypted state', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -182,11 +215,15 @@ describe('snap_setState', () => {
       });
 
       expect(getUnlockPromise).not.toHaveBeenCalled();
-      expect(getSnapState).toHaveBeenCalledWith(false);
-      expect(updateSnapState).toHaveBeenCalledWith(
-        {
-          foo: 'baz',
-        },
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapState',
+        MOCK_SNAP_ID,
+        false,
+      );
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'baz' },
         false,
       );
 
@@ -202,36 +239,41 @@ describe('snap_setState', () => {
 
       const { promise: getStateCalled, resolve: resolveGetStateCalled } =
         createDeferredPromise();
-      const getSnapState = jest.fn().mockImplementation(() => {
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      const getSnapState = jest.fn().mockImplementation(async () => {
         resolveGetStateCalled();
         return {};
       });
+      messenger.registerActionHandler(
+        'SnapController:getSnapState',
+        getSnapState,
+      );
 
       const { promise: updateSnapStatePromise, resolve } =
         createDeferredPromise();
 
       const updateSnapState = jest.fn().mockReturnValue(updateSnapStatePromise);
-      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
-
-      const hooks = {
-        getSnapState,
+      messenger.registerActionHandler(
+        'SnapController:updateSnapState',
         updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -269,7 +311,12 @@ describe('snap_setState', () => {
       const response2 = await responsePromise2;
 
       expect(getSnapState).toHaveBeenCalledTimes(2);
-      expect(updateSnapState).toHaveBeenNthCalledWith(2, { foo: 'bar' }, false);
+      expect(updateSnapState).toHaveBeenNthCalledWith(
+        2,
+        MOCK_SNAP_ID,
+        { foo: 'bar' },
+        false,
+      );
 
       expect(response1).toStrictEqual({
         jsonrpc: '2.0',
@@ -287,32 +334,27 @@ describe('snap_setState', () => {
     it('throws if the requesting origin does not have the required permission', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -325,7 +367,12 @@ describe('snap_setState', () => {
         params: {},
       });
 
-      expect(updateSnapState).not.toHaveBeenCalled();
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+      );
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -341,32 +388,22 @@ describe('snap_setState', () => {
     it('throws if the parameters are invalid', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -394,32 +431,22 @@ describe('snap_setState', () => {
     it('throws if the encrypted parameter is invalid', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -451,32 +478,22 @@ describe('snap_setState', () => {
     it('throws if `key` is not provided and `value` is not an object', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue({
-        foo: 'bar',
-      });
-
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -506,29 +523,22 @@ describe('snap_setState', () => {
     it('throws if the new state is not JSON serialisable', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue(null);
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -561,29 +571,22 @@ describe('snap_setState', () => {
     it('throws if the new state exceeds the size limit', async () => {
       const { implementation } = setStateHandler;
 
-      const getSnapState = jest.fn().mockReturnValue(null);
-      const updateSnapState = jest.fn().mockReturnValue(null);
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
+      const hooks = { getUnlockPromise };
 
-      const hooks = {
-        getSnapState,
-        updateSnapState,
-        getUnlockPromise,
-        hasPermission,
-        getSnap,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SetStateParameters>,
+          request as JsonRpcRequest<SetStateParameters> & { origin: SnapId },
           response as PendingJsonRpcResponse<SetStateResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
