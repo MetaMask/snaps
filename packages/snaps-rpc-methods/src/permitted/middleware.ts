@@ -88,6 +88,7 @@ export function createSnapsMethodMiddleware(
     onError: logError,
   });
 
+  // This is not actually a misused promise, the type is just wrong
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async function methodMiddleware(request, response, next, end) {
     if (String.prototype.startsWith.call(request.method, 'snap_') && !isSnap) {
