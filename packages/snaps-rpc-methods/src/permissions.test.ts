@@ -197,7 +197,14 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
   it('returns the expected object', () => {
     const specifications = buildSnapRestrictedMethodSpecifications(
       [],
-      {},
+      {
+        getUnlockPromise: jest.fn(),
+        getClientCryptography: jest.fn(),
+        isOnPhishingList: jest.fn(),
+        maybeUpdatePhishingList: jest.fn(),
+        getSnapKeyring: jest.fn(),
+        getPreferences: jest.fn(),
+      },
       new Messenger({ namespace: 'SnapsRestrictedMethods' }),
     );
     expect(specifications).toMatchInlineSnapshot(`

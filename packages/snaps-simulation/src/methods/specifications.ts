@@ -73,6 +73,7 @@ export function getPermissionSpecifications({
   hooks,
   options,
 }: GetPermissionSpecificationsOptions): PermissionSpecificationMap<PermissionSpecificationConstraint> {
+  const { getClientCryptography } = hooks;
   return {
     [caip25EndowmentBuilder.targetName]:
       caip25EndowmentBuilder.specificationBuilder({}),
@@ -81,11 +82,12 @@ export function getPermissionSpecifications({
       EXCLUDED_SNAP_PERMISSIONS,
       {
         // Shared hooks.
-        ...hooks,
+        getClientCryptography,
 
         // Snaps-specific hooks.
         getPreferences: getGetPreferencesMethodImplementation(options),
         getUnlockPromise: asyncResolve(true),
+        getSnapKeyring: asyncResolve(null),
 
         // TODO: Allow the user to specify the result of this function.
         isOnPhishingList: resolve(false),
