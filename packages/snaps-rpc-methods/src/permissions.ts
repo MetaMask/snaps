@@ -71,7 +71,9 @@ export const buildSnapRestrictedMethodSpecifications = (
   hooks: Record<string, unknown>,
   messenger: RestrictedMethodMessenger,
 ) => {
-  const permissionBuilders = Object.values(restrictedMethodPermissionBuilders);
+  const permissionBuilders = Object.values(
+    restrictedMethodPermissionBuilders,
+  ).filter((builder) => !excludedPermissions.includes(builder.targetName));
 
   const expectedHookNames = new Set(
     permissionBuilders.flatMap((builder) =>
@@ -90,18 +92,16 @@ export const buildSnapRestrictedMethodSpecifications = (
       specifications,
       { targetName, specificationBuilder, methodHooks, actionNames },
     ) => {
-      if (!excludedPermissions.includes(targetName)) {
-        specifications[targetName] = specificationBuilder({
-          methodHooks: selectHooks(hooks, methodHooks),
-          messenger: createRestrictedMethodMessenger({
-            namespace: targetName,
-            rootMessenger: messenger,
-            actionNames: actionNames as readonly [
-              RestrictedMethodActions['type'],
-            ],
-          }),
-        });
-      }
+      specifications[targetName] = specificationBuilder({
+        methodHooks: selectHooks(hooks, methodHooks),
+        messenger: createRestrictedMethodMessenger({
+          namespace: targetName,
+          rootMessenger: messenger,
+          actionNames: actionNames as readonly [
+            RestrictedMethodActions['type'],
+          ],
+        }),
+      });
       return specifications;
     },
     {},
