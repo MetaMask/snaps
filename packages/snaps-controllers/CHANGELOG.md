@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.5]
+
 ### Uncategorized
 
 - chore: Bump @metamask/json-rpc-engine from 10.4.0 to 10.5.0 ([#3998](https://github.com/MetaMask/snaps/pull/3998))
@@ -1225,7 +1227,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.5...HEAD
+[20.0.5]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.4...@metamask/snaps-controllers@20.0.5
 [20.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.3...@metamask/snaps-controllers@20.0.4
 [20.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.2...@metamask/snaps-controllers@20.0.3
 [20.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.1...@metamask/snaps-controllers@20.0.2

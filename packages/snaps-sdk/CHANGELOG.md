@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.1.1]
+
 ### Uncategorized
 
 - refactor(snaps-rpc-methods)!: Use messenger for permitted methods ([#3987](https://github.com/MetaMask/snaps/pull/3987))
@@ -720,7 +722,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.1...HEAD
+[11.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.0...@metamask/snaps-sdk@11.1.1
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...@metamask/snaps-sdk@11.1.0
 [11.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.4.0...@metamask/snaps-sdk@11.0.0
 [10.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@10.3.0...@metamask/snaps-sdk@10.4.0
