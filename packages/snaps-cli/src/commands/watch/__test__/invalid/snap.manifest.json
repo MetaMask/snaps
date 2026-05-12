@@ -3,7 +3,7 @@
   "description": "E2E test for Snap `watch` command with invalid manifest",
   "proposedName": "E2E Test",
   "source": {
-    "shasum": "0dGMDeEjohTfA0Enj2jEQpUuaMF1OAj39RnapuP+rEI=",
+    "shasum": "N8WHKJjH9XvinQGxr9jmH8bwRZItMKR2CdH20SIYVw0=",
     "location": {
       "npm": {
         "filePath": "bundle.js",
@@ -13,6 +13,6 @@
     }
   },
   "initialPermissions": {},
-  "platformVersion": "11.1.0",
+  "platformVersion": "11.1.1",
   "manifestVersion": "0.1"
 }

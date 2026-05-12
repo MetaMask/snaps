@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.1.3]
+
+### Changed
+
+- Bump `@metamask/snaps-rpc-methods` from `^15.1.1` to `16.0.0` and handle breaking changes ([#3968](https://github.com/MetaMask/snaps/pull/3968), [#3987](https://github.com/MetaMask/snaps/pull/3987), [#3993](https://github.com/MetaMask/snaps/pull/3993))
+
 ## [10.1.2]
 
 ### Changed
@@ -490,7 +496,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.3...HEAD
+[10.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.2...@metamask/snaps-jest@10.1.3
 [10.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.1...@metamask/snaps-jest@10.1.2
 [10.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.0...@metamask/snaps-jest@10.1.1
 [10.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.0.0...@metamask/snaps-jest@10.1.0

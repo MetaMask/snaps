@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [16.0.0]
+
+### Changed
+
+- **BREAKING:** Use messenger for permitted method implementations ([#3987](https://github.com/MetaMask/snaps/pull/3987))
+  - `createSnapsMethodMiddleware` now requires a `messenger` parameter.
+  - `createSnapsMethodMiddleware` will throw if the expected hooks are not passed.
+  - Most previously used method hooks are no longer required.
+- **BREAKING:** Use messenger for restricted method implementations ([#3968](https://github.com/MetaMask/snaps/pull/3968))
+  - `buildSnapRestrictedMethodSpecifications` now requires a `messenger` parameter.
+  - Most previously used method hooks are no longer required.
+- **BREAKING:** Assert expected hooks for restricted method specifications ([#3993](https://github.com/MetaMask/snaps/pull/3993))
+  - `buildSnapRestrictedMethodSpecifications` will now throw if the expected hooks are not passed.
+- Bump `@metamask/permission-controller` `12.3.0` to `^13.1.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984), [#3989](https://github.com/MetaMask/snaps/pull/3989))
+- Bump `@metamask/json-rpc-engine` from `^10.2.4` to `^10.5.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982),[#3992](https://github.com/MetaMask/snaps/pull/3992), [#3998](https://github.com/MetaMask/snaps/pull/3998))
+- Bump `@metamask/messenger` from `^1.1.1` to `^1.2.0` ([#3981](https://github.com/MetaMask/snaps/pull/3981))
+
+### Removed
+
+- **BREAKING:** `selectHooks` and `permittedMethods` are no longer exported ([#3987](https://github.com/MetaMask/snaps/pull/3987))
+  - A `selectHooks` implementation is exported from `@metamask/json-rpc-engine` if needed.
+
 ## [15.1.1]
 
 ### Fixed
@@ -370,15 +392,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/json-rpc-engine` from `^9.0.0` to `^9.0.2` ([#2593](https://github.com/metamask/snaps/pull/2593))
-- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/metamask/snaps/pull/2593))
+- Bump `@metamask/json-rpc-engine` from `^9.0.0` to `^9.0.2` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
+- Bump `@metamask/permission-controller` from `^10.0.1` to `^11.0.0` ([#2593](https://github.com/MetaMask/snaps/pull/2593))
 - Bump `@metamask/snaps-utils` from `^7.8.0` to `^7.8.1` ([#2595](https://github.com/MetaMask/snaps/pull/2595))
 
 ## [10.0.0]
 
 ### Added
 
-- **BREAKING:** `snap_dialog` now takes the `requestUserApproval` hook ([#2509](https://github.com/metamask/snaps/pull/2509))
+- **BREAKING:** `snap_dialog` now takes the `requestUserApproval` hook ([#2509](https://github.com/MetaMask/snaps/pull/2509))
   - It should bind to the `addAndShowRequest` method of the `ApprovalController`.
   - Add type `DialogApprovalTypes` and object `DIALOG_APPROVAL_TYPES`.
 
@@ -615,7 +637,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@16.0.0...HEAD
+[16.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.1.1...@metamask/snaps-rpc-methods@16.0.0
 [15.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.1.0...@metamask/snaps-rpc-methods@15.1.1
 [15.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.2...@metamask/snaps-rpc-methods@15.1.0
 [15.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.0.1...@metamask/snaps-rpc-methods@15.0.2
