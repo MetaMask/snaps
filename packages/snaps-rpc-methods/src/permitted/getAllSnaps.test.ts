@@ -1,41 +1,60 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
-import type { GetSnapsResult } from '@metamask/snaps-sdk';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
+import {
+  MockControllerMessenger,
+  getTruncatedSnap,
+} from '@metamask/snaps-utils/test-utils';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type {
+  GetAllSnapsMethodActions,
+  GetAllSnapsResult,
+} from './getAllSnaps';
 import { getAllSnapsHandler } from './getAllSnaps';
 
 describe('wallet_getAllSnaps', () => {
   describe('getAllSnapsHandler', () => {
     it('has the expected shape', () => {
       expect(getAllSnapsHandler).toMatchObject({
-        methodNames: ['wallet_getAllSnaps'],
         implementation: expect.any(Function),
-        hookNames: {
-          getAllSnaps: true,
-        },
+        actionNames: ['SnapController:getAllSnaps'],
       });
     });
   });
 
   describe('implementation', () => {
-    it('returns the result received from the `getAllSnaps` hook', async () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        GetAllSnapsMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler('SnapController:getAllSnaps', () => [
+        getTruncatedSnap(),
+      ]);
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('returns the result received from the `SnapController:getAllSnaps` action', async () => {
       const { implementation } = getAllSnapsHandler;
 
-      const getAllSnaps = jest.fn().mockResolvedValue(['foo', 'bar']);
-      const hooks = {
-        getAllSnaps,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('https://snaps.metamask.io'));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          // @ts-expect-error - `origin` is not part of the type, but in practice
-          // it is added by the MetaMask middleware stack.
-          { ...request, origin: 'https://snaps.metamask.io' },
-          response as PendingJsonRpcResponse<GetSnapsResult>,
+          request as Parameters<typeof implementation>[0],
+          response as PendingJsonRpcResponse<GetAllSnapsResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -50,28 +69,25 @@ describe('wallet_getAllSnaps', () => {
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
-        result: ['foo', 'bar'],
+        result: [getTruncatedSnap()],
       });
     });
 
     it('returns an error if the origin is not allowed', async () => {
       const { implementation } = getAllSnapsHandler;
 
-      const getAllSnaps = jest.fn().mockResolvedValue(['foo', 'bar']);
-      const hooks = {
-        getAllSnaps,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
+      engine.push(createOriginMiddleware('https://example.com'));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          // @ts-expect-error - `origin` is not part of the type, but in practice
-          // it is added by the MetaMask middleware stack.
-          { ...request, origin: 'https://example.com' },
-          response as PendingJsonRpcResponse<GetSnapsResult>,
+          request as Parameters<typeof implementation>[0],
+          response as PendingJsonRpcResponse<GetAllSnapsResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

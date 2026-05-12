@@ -1,17 +1,40 @@
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { rpcErrors, serializeError } from '@metamask/rpc-errors';
 import {
   MOCK_SNAP_ID,
   getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
 
+import type { PermittedRpcMethodActions } from '.';
 import { createSnapsMethodMiddleware } from './middleware';
 
 describe('createSnapsMethodMiddleware', () => {
-  it('supports wallet_getSnaps', async () => {
-    const middleware = createSnapsMethodMiddleware(true, {
-      getSnaps: () => ({ [MOCK_SNAP_ID]: getTruncatedSnap() }),
+  const getHooks = () => ({
+    getAllowedKeyringMethods: jest.fn(),
+    getIsActive: jest.fn(),
+    getVersion: jest.fn(),
+    getUnlockPromise: jest.fn(),
+    trackError: jest.fn(),
+    trackEvent: jest.fn(),
+    startTrace: jest.fn(),
+    endTrace: jest.fn(),
+  });
+
+  const getMessenger = () =>
+    new Messenger<MockAnyNamespace, PermittedRpcMethodActions>({
+      namespace: MOCK_ANY_NAMESPACE,
     });
+
+  it('supports wallet_getSnaps', async () => {
+    const messenger = getMessenger();
+
+    messenger.registerActionHandler('SnapController:getPermittedSnaps', () => ({
+      [MOCK_SNAP_ID]: getTruncatedSnap(),
+    }));
+
+    const middleware = createSnapsMethodMiddleware(true, getHooks(), messenger);
 
     const engine = new JsonRpcEngine();
 
@@ -32,7 +55,11 @@ describe('createSnapsMethodMiddleware', () => {
   });
 
   it('blocks snap_ prefixed RPC methods for non-snaps', async () => {
-    const middleware = createSnapsMethodMiddleware(false, {});
+    const middleware = createSnapsMethodMiddleware(
+      false,
+      getHooks(),
+      getMessenger(),
+    );
 
     const engine = new JsonRpcEngine();
 
@@ -57,11 +84,13 @@ describe('createSnapsMethodMiddleware', () => {
   });
 
   it('handles errors', async () => {
-    const middleware = createSnapsMethodMiddleware(true, {
-      getSnaps: () => {
-        throw new Error('foo');
-      },
+    const messenger = getMessenger();
+
+    messenger.registerActionHandler('SnapController:getPermittedSnaps', () => {
+      throw new Error('foo');
     });
+
+    const middleware = createSnapsMethodMiddleware(true, getHooks(), messenger);
 
     const engine = new JsonRpcEngine();
 
@@ -88,7 +117,11 @@ describe('createSnapsMethodMiddleware', () => {
   });
 
   it('ignores unknown methods', async () => {
-    const middleware = createSnapsMethodMiddleware(true, {});
+    const middleware = createSnapsMethodMiddleware(
+      true,
+      getHooks(),
+      getMessenger(),
+    );
 
     const engine = new JsonRpcEngine();
 

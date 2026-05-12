@@ -1,41 +1,69 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { TrackEventParams, TrackEventResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { TrackEventMethodActions } from './trackEvent';
 import { trackEventHandler } from './trackEvent';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 describe('snap_trackEvent', () => {
   describe('trackEventHandler', () => {
     it('has the expected shape', () => {
       expect(trackEventHandler).toMatchObject({
-        methodNames: ['snap_trackEvent'],
         implementation: expect.any(Function),
         hookNames: {
           trackEvent: true,
-          getSnap: true,
         },
+        actionNames: ['SnapController:getSnap'],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = (preinstalled = true) => {
+      const messenger = new MockControllerMessenger<
+        TrackEventMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler('SnapController:getSnap', () => ({
+        ...getSnapObject(),
+        preinstalled,
+      }));
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('tracks an event with no properties', async () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -62,18 +90,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -108,18 +139,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -154,18 +188,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -203,18 +240,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -252,18 +292,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -295,18 +338,21 @@ describe('snap_trackEvent', () => {
       const { implementation } = trackEventHandler;
 
       const trackEvent = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
-      const hooks = { trackEvent, getSnap };
+      const hooks = { trackEvent };
+
+      const messenger = getMessenger(false);
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackEventParams>,
+          request as JsonRpcRequestWithOrigin<TrackEventParams>,
           response as PendingJsonRpcResponse<TrackEventResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);

@@ -1,4 +1,9 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { ClearStateParams, ClearStateResult } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
@@ -9,18 +14,17 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerClearSnapStateAction,
+} from '../types';
 
-const methodName = 'snap_clearState';
-
-const hookNames: MethodHooksObject<ClearStateHooks> = {
-  clearSnapState: true,
-  hasPermission: true,
-};
+export type ClearStateMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapControllerClearSnapStateAction;
 
 /**
  * Clear the entire state of the Snap.
@@ -36,29 +40,18 @@ const hookNames: MethodHooksObject<ClearStateHooks> = {
  * ```
  */
 export const clearStateHandler = {
-  methodNames: [methodName] as const,
   implementation: clearStateImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  ClearStateHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapController:clearSnapState',
+  ],
+} satisfies MethodHandler<
+  never,
+  ClearStateMethodActions,
   ClearStateParameters,
-  ClearStateResult
+  ClearStateResult,
+  { origin: string }
 >;
-
-export type ClearStateHooks = {
-  /**
-   * A function that clears the state of the requesting Snap.
-   */
-  clearSnapState: (encrypted: boolean) => void;
-
-  /**
-   * Check if the requesting origin has a given permission.
-   *
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the origin has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-};
 
 const ClearStateParametersStruct = object({
   encrypted: optional(boolean()),
@@ -77,23 +70,27 @@ export type ClearStateParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.clearSnapState - A function that clears the state of the
- * requesting Snap.
- * @param hooks.hasPermission - Check whether a given origin has a given
- * permission.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function clearStateImplementation(
-  request: JsonRpcRequest<ClearStateParameters>,
+  request: JsonRpcRequestWithOrigin<ClearStateParameters>,
   response: PendingJsonRpcResponse<ClearStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { clearSnapState, hasPermission }: ClearStateHooks,
+  _hooks: never,
+  messenger: Messenger<string, ClearStateMethodActions>,
 ): Promise<void> {
-  const { params } = request;
+  const { params, origin } = request;
 
-  if (!hasPermission(manageStateBuilder.targetName)) {
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      manageStateBuilder.targetName,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
@@ -101,7 +98,7 @@ async function clearStateImplementation(
     const validatedParams = getValidatedParams(params);
     const { encrypted = true } = validatedParams;
 
-    clearSnapState(encrypted);
+    messenger.call('SnapController:clearSnapState', origin, encrypted);
     response.result = null;
   } catch (error) {
     return end(error);

@@ -1,39 +1,27 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   GetInterfaceContextParams,
   GetInterfaceContextResult,
-  InterfaceContext,
-  JsonRpcRequest,
 } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import { StructError, create, object, string } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapInterfaceControllerGetInterfaceAction,
+} from '../types';
 import { UI_PERMISSIONS } from '../utils';
 
-const methodName = 'snap_getInterfaceContext';
-
-const hookNames: MethodHooksObject<GetInterfaceContextMethodHooks> = {
-  hasPermission: true,
-  getInterfaceContext: true,
-};
-
-export type GetInterfaceContextMethodHooks = {
-  /**
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the Snap has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * @param id - The interface ID.
-   * @returns The interface context.
-   */
-  getInterfaceContext: (id: string) => InterfaceContext | null;
-};
+export type GetInterfaceContextMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapInterfaceControllerGetInterfaceAction;
 
 /**
  * Get the context of an [interface](https://docs.metamask.io/snaps/features/custom-ui/interactive-ui/)
@@ -72,13 +60,17 @@ export type GetInterfaceContextMethodHooks = {
  * ```
  */
 export const getInterfaceContextHandler = {
-  methodNames: [methodName] as const,
   implementation: getInterfaceContextImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  GetInterfaceContextMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapInterfaceController:getInterface',
+  ],
+} satisfies MethodHandler<
+  never,
+  GetInterfaceContextMethodActions,
   GetInterfaceContextParameters,
-  GetInterfaceContextResult
+  GetInterfaceContextResult,
+  { origin: string }
 >;
 
 const GetInterfaceContextParametersStruct = object({
@@ -98,20 +90,25 @@ export type GetInterfaceContextParameters = InferMatching<
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if the Snap has a given
- * permission.
- * @param hooks.getInterfaceContext - The function to get the interface context.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getInterfaceContextImplementation(
-  req: JsonRpcRequest<GetInterfaceContextParameters>,
+  req: JsonRpcRequestWithOrigin<GetInterfaceContextParameters>,
   res: PendingJsonRpcResponse<GetInterfaceContextResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, getInterfaceContext }: GetInterfaceContextMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, GetInterfaceContextMethodActions>,
 ): void {
-  if (!UI_PERMISSIONS.some(hasPermission)) {
+  const { params, origin } = req;
+
+  const isPermitted = UI_PERMISSIONS.some((permission) =>
+    messenger.call('PermissionController:hasPermission', origin, permission),
+  );
+
+  if (!isPermitted) {
     return end(
       providerErrors.unauthorized({
         message: `This method can only be used if the Snap has one of the following permissions: ${UI_PERMISSIONS.join(', ')}.`,
@@ -119,14 +116,18 @@ function getInterfaceContextImplementation(
     );
   }
 
-  const { params } = req;
-
   try {
     const validatedParams = getValidatedParams(params);
 
     const { id } = validatedParams;
 
-    res.result = getInterfaceContext(id);
+    const { context } = messenger.call(
+      'SnapInterfaceController:getInterface',
+      origin,
+      id,
+    );
+
+    res.result = context;
   } catch (error) {
     return end(error);
   }

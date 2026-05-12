@@ -1,4 +1,9 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
   SetStateParams,
@@ -6,11 +11,7 @@ import type {
   SnapId,
 } from '@metamask/snaps-sdk';
 import type { JsonObject } from '@metamask/snaps-sdk/jsx';
-import {
-  getJsonSizeUnsafe,
-  type InferMatching,
-  type Snap,
-} from '@metamask/snaps-utils';
+import { getJsonSizeUnsafe, type InferMatching } from '@metamask/snaps-utils';
 import {
   boolean,
   create,
@@ -18,11 +19,7 @@ import {
   optional,
   StructError,
 } from '@metamask/superstruct';
-import type {
-  PendingJsonRpcResponse,
-  Json,
-  JsonRpcRequest,
-} from '@metamask/utils';
+import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty, isObject, assert, JsonStruct } from '@metamask/utils';
 import { Mutex } from 'async-mutex';
 
@@ -30,19 +27,33 @@ import {
   manageStateBuilder,
   STORAGE_SIZE_LIMIT,
 } from '../restricted/manageState';
-import type { PermittedHandlerExport } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+  SnapControllerGetSnapStateAction,
+  SnapControllerUpdateSnapStateAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
 
-const methodName = 'snap_setState';
-
-const hookNames: MethodHooksObject<SetStateHooks> = {
-  hasPermission: true,
-  getSnapState: true,
+const hookNames: MethodHooksObject<SetStateMethodHooks> = {
   getUnlockPromise: true,
-  updateSnapState: true,
-  getSnap: true,
 };
+
+export type SetStateMethodHooks = {
+  /**
+   * Wait for the extension to be unlocked.
+   *
+   * @returns A promise that resolves once the extension is unlocked.
+   */
+  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+};
+
+export type SetStateMethodActions =
+  | PermissionControllerHasPermissionAction
+  | SnapControllerGetSnapStateAction
+  | SnapControllerUpdateSnapStateAction
+  | SnapControllerGetSnapAction;
 
 /**
  * Allow the Snap to persist up to 64 MB of data to disk and retrieve it at
@@ -93,57 +104,21 @@ const hookNames: MethodHooksObject<SetStateHooks> = {
  * ```
  */
 export const setStateHandler = {
-  methodNames: [methodName] as const,
   implementation: setStateImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
-  SetStateHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'SnapController:getSnapState',
+    'SnapController:updateSnapState',
+    'SnapController:getSnap',
+  ],
+} satisfies MethodHandler<
+  SetStateMethodHooks,
+  SetStateMethodActions,
   SetStateParameters,
-  SetStateResult
+  SetStateResult,
+  { origin: SnapId }
 >;
-
-export type SetStateHooks = {
-  /**
-   * Check if the requesting origin has a given permission.
-   *
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the origin has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * Get the state of the requesting Snap.
-   *
-   * @param encrypted - Whether the state is encrypted.
-   * @returns The current state of the Snap.
-   */
-  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
-
-  /**
-   * Wait for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-
-  /**
-   * Update the state of the requesting Snap.
-   *
-   * @param newState - The new state of the Snap.
-   * @param encrypted - Whether the state should be encrypted.
-   */
-  updateSnapState: (
-    newState: Record<string, Json>,
-    encrypted: boolean,
-  ) => Promise<void>;
-
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
-};
 
 const mutexes = new Map();
 
@@ -180,30 +155,27 @@ export type SetStateParameters = InferMatching<
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - Check whether a given origin has a given
- * permission.
- * @param hooks.getSnapState - Get the state of the requesting Snap.
  * @param hooks.getUnlockPromise - Wait for the extension to be unlocked.
- * @param hooks.updateSnapState - Update the state of the requesting Snap.
- * @param hooks.getSnap - The hook function to get Snap metadata.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function setStateImplementation(
-  request: JsonRpcRequest<SetStateParameters>,
+  request: JsonRpcRequestWithOrigin<SetStateParameters>,
   response: PendingJsonRpcResponse<SetStateResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  {
-    hasPermission,
-    getSnapState,
-    getUnlockPromise,
-    updateSnapState,
-    getSnap,
-  }: SetStateHooks,
+  { getUnlockPromise }: SetStateMethodHooks,
+  messenger: Messenger<string, SetStateMethodActions>,
 ): Promise<void> {
-  const { params } = request;
+  const { params, origin } = request;
 
-  if (!hasPermission(manageStateBuilder.targetName)) {
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      manageStateBuilder.targetName,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
@@ -223,9 +195,7 @@ async function setStateImplementation(
       await getUnlockPromise(true);
     }
 
-    const snapId = (
-      request as JsonRpcRequest<SetStateParams> & { origin: string }
-    ).origin as SnapId;
+    const snapId = origin as SnapId;
 
     const mutex = getMutex(snapId);
 
@@ -233,9 +203,15 @@ async function setStateImplementation(
     // to do in parallel. The mutex ensures that and prevents a bug that was
     // mostly prevalent on mobile and caused data loss.
     await mutex.runExclusive(async () => {
-      const newState = await getNewState(key, value, encrypted, getSnapState);
+      const newState = await getNewState(
+        snapId,
+        key,
+        value,
+        encrypted,
+        messenger,
+      );
 
-      const snap = getSnap(snapId);
+      const snap = messenger.call('SnapController:getSnap', origin);
 
       if (!snap?.preinstalled) {
         // We know that the state is valid JSON as per previous validation.
@@ -249,7 +225,12 @@ async function setStateImplementation(
         }
       }
 
-      await updateSnapState(newState, encrypted);
+      await messenger.call(
+        'SnapController:updateSnapState',
+        origin,
+        newState,
+        encrypted,
+      );
       response.result = null;
     });
   } catch (error) {
@@ -290,24 +271,30 @@ function getValidatedParams(params?: unknown) {
  * the key does not exist, it is created (and any missing intermediate keys are
  * created as well).
  *
+ * @param snapId - The Snap ID.
  * @param key - The key to set.
  * @param value - The value to set the key to.
  * @param encrypted - Whether the state is encrypted.
- * @param getSnapState - The `getSnapState` hook.
+ * @param messenger - The messenger used to call controller actions.
  * @returns The new state of the Snap.
  */
 async function getNewState(
+  snapId: SnapId,
   key: string | undefined,
   value: Json,
   encrypted: boolean,
-  getSnapState: SetStateHooks['getSnapState'],
-) {
+  messenger: Messenger<string, SetStateMethodActions>,
+): Promise<Record<string, Json>> {
   if (key === undefined) {
     assert(isObject(value));
     return value;
   }
 
-  const state = await getSnapState(encrypted);
+  const state = await messenger.call(
+    'SnapController:getSnapState',
+    snapId,
+    encrypted,
+  );
   return set(state, key, value);
 }
 

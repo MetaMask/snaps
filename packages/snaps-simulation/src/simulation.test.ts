@@ -5,20 +5,18 @@ import {
 import { mnemonicPhraseToBytes, mnemonicToSeed } from '@metamask/key-tree';
 import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import {
-  detectSnapLocation,
-  fetchSnap,
   NodeProcessExecutionService,
   NodeThreadExecutionService,
-  SnapInterfaceController,
 } from '@metamask/snaps-controllers/node';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type { CaipAssetType, CaipChainId } from '@metamask/snaps-sdk';
-import { AuxiliaryFileEncoding, NodeType } from '@metamask/snaps-sdk';
+import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
 import {
   getSnapManifest,
   MOCK_SNAP_ID,
 } from '@metamask/snaps-utils/test-utils';
+import { stringToBytes } from '@metamask/utils';
 
 import { DEFAULT_ALTERNATIVE_SRP, DEFAULT_SRP } from './constants';
 import { MOCK_CAVEAT } from './middleware/multichain/test-utils';
@@ -29,11 +27,10 @@ import {
   installSnap,
   registerActions,
 } from './simulation';
-import { createStore, setInterface, setState } from './store';
+import { createStore, setInterface } from './store';
 import {
   getMockOptions,
   getMockServer,
-  getRestrictedSnapInterfaceControllerMessenger,
   getRootControllerMessenger,
 } from './test-utils';
 import { addSnapMetadataToAccount } from './utils/account';
@@ -255,453 +252,30 @@ describe('getRestrictedHooks', () => {
 });
 
 describe('getPermittedHooks', () => {
-  const { runSaga, store } = createStore(getMockOptions());
-  let controllerMessenger = getRootControllerMessenger();
-
-  beforeEach(() => {
-    controllerMessenger = getRootControllerMessenger();
-  });
-
-  it('returns the `hasPermission` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { hasPermission } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    expect(hasPermission('snap_manageState')).toBe(true);
-
-    await close();
-  });
+  const { runSaga } = createStore(getMockOptions());
 
   it('returns the `getUnlockPromise` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getUnlockPromise } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
+    const { getUnlockPromise } = getPermittedHooks(runSaga);
 
     expect(await getUnlockPromise(true)).toBeUndefined();
-
-    await close();
-  });
-
-  it('returns the `getIsLocked` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getIsLocked } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    expect(getIsLocked()).toBe(false);
-
-    await close();
   });
 
   it('returns the `getIsActive` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getIsActive } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
+    const { getIsActive } = getPermittedHooks(runSaga);
 
     expect(getIsActive()).toBe(true);
-
-    await close();
   });
 
   it('returns the `getVersion` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getVersion } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
+    const { getVersion } = getPermittedHooks(runSaga);
 
     expect(getVersion()).toBe('13.6.0-flask.0');
-
-    await close();
   });
 
-  it('returns the `getSnapFile` hook', async () => {
-    const value = JSON.stringify({ bar: 'baz' });
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest({
-        files: ['foo.json'],
-      }),
-      auxiliaryFiles: [
-        new VirtualFile({
-          path: 'foo.json',
-          value,
-        }),
-      ],
-    });
+  it('returns the `getAllowedKeyringMethods` hook', async () => {
+    const { getAllowedKeyringMethods } = getPermittedHooks(runSaga);
 
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getSnapFile } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    const file = await getSnapFile('foo.json', AuxiliaryFileEncoding.Utf8);
-    expect(file).toStrictEqual(value);
-
-    await close();
-  });
-
-  it('returns the `getSnapState` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { getSnapState } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    store.dispatch(
-      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
-    );
-
-    expect(await getSnapState(true)).toStrictEqual({ foo: 'bar' });
-
-    await close();
-  });
-
-  it('returns the `updateSnapState` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { updateSnapState } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    store.dispatch(
-      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
-    );
-
-    await updateSnapState({ bar: 'baz' }, true);
-
-    expect(store.getState().state.encrypted).toStrictEqual(
-      JSON.stringify({ bar: 'baz' }),
-    );
-
-    await close();
-  });
-
-  it('returns the `clearSnapState` hook', async () => {
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { clearSnapState } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    store.dispatch(
-      setState({ state: JSON.stringify({ foo: 'bar' }), encrypted: true }),
-    );
-
-    await clearSnapState(true);
-
-    expect(store.getState().state.encrypted).toBeNull();
-
-    await close();
-  });
-  it('returns the `createInterface` hook', async () => {
-    // eslint-disable-next-line no-new
-    new SnapInterfaceController({
-      messenger:
-        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
-    });
-
-    jest.spyOn(controllerMessenger, 'call');
-
-    const content = { type: NodeType.Text as const, value: 'foo' };
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { createInterface } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    createInterface(content);
-
-    expect(controllerMessenger.call).toHaveBeenCalledWith(
-      'SnapInterfaceController:createInterface',
-      snapId,
-      content,
-    );
-
-    await close();
-  });
-
-  it('returns the `updateInterface` hook', async () => {
-    // eslint-disable-next-line no-new
-    new SnapInterfaceController({
-      messenger:
-        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
-    });
-
-    jest.spyOn(controllerMessenger, 'call');
-
-    const content = { type: NodeType.Text as const, value: 'bar' };
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { createInterface, updateInterface } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    const id = createInterface({ type: NodeType.Text as const, value: 'foo' });
-
-    updateInterface(id, content);
-
-    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      2,
-      'SnapInterfaceController:updateInterface',
-      snapId,
-      id,
-      content,
-    );
-
-    await close();
-  });
-
-  it('returns the `getInterfaceState` hook', async () => {
-    const controller = new SnapInterfaceController({
-      messenger:
-        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
-    });
-
-    jest.spyOn(controllerMessenger, 'call');
-
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { createInterface, getInterfaceState } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    const id = createInterface({ type: NodeType.Text as const, value: 'foo' });
-    controller.setInterfaceDisplayed(snapId, id);
-
-    const result = getInterfaceState(id);
-
-    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      2,
-      'SnapInterfaceController:getInterfaceState',
-      snapId,
-      id,
-    );
-
-    expect(result).toStrictEqual({});
-    await close();
-  });
-
-  it('returns the `getInterfaceContext` hook', async () => {
-    // eslint-disable-next-line no-new
-    new SnapInterfaceController({
-      messenger:
-        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
-    });
-
-    jest.spyOn(controllerMessenger, 'call');
-
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const { createInterface, getInterfaceContext } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    const id = createInterface(
-      { type: NodeType.Text as const, value: 'foo' },
-      { bar: 'baz' },
-    );
-
-    const result = getInterfaceContext(id);
-
-    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      2,
-      'SnapInterfaceController:getInterface',
-      snapId,
-      id,
-    );
-
-    expect(result).toStrictEqual({ bar: 'baz' });
-    await close();
-  });
-
-  it('returns the `resolveInterface` hook', async () => {
-    const snapInterfaceController = new SnapInterfaceController({
-      messenger:
-        getRestrictedSnapInterfaceControllerMessenger(controllerMessenger),
-    });
-
-    jest.spyOn(controllerMessenger, 'call');
-
-    const { snapId, close } = await getMockServer({
-      manifest: getSnapManifest(),
-    });
-
-    const location = detectSnapLocation(snapId, {
-      allowLocal: true,
-    });
-
-    const snapFiles = await fetchSnap(snapId, location);
-
-    const id = snapInterfaceController.createInterface(snapId, {
-      type: NodeType.Text as const,
-      value: 'foo',
-    });
-
-    const { resolveInterface } = getPermittedHooks(
-      snapId,
-      snapFiles,
-      controllerMessenger,
-      runSaga,
-    );
-
-    await resolveInterface(id, 'foobar');
-
-    expect(controllerMessenger.call).toHaveBeenNthCalledWith(
-      1,
-      'SnapInterfaceController:resolveInterface',
-      snapId,
-      id,
-      'foobar',
-    );
-
-    await close();
+    expect(getAllowedKeyringMethods()).toStrictEqual([]);
   });
 });
 
@@ -846,7 +420,7 @@ describe('registerActions', () => {
   const controllerMessenger = getRootControllerMessenger(false);
 
   it('registers `PhishingController:testOrigin`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       controllerMessenger.call('PhishingController:testOrigin', 'foo'),
@@ -854,7 +428,7 @@ describe('registerActions', () => {
   });
 
   it('registers `ApprovalController:hasRequest`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     store.dispatch(
       setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
@@ -866,7 +440,7 @@ describe('registerActions', () => {
   });
 
   it('registers `ApprovalController:acceptRequest`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     store.dispatch(
       setInterface({ type: DIALOG_APPROVAL_TYPES.default, id: 'foo' }),
@@ -882,7 +456,7 @@ describe('registerActions', () => {
   });
 
   it('registers `AccountsController:getAccountByAddress`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       controllerMessenger.call(
@@ -897,7 +471,7 @@ describe('registerActions', () => {
   });
 
   it('registers `AccountsController:getSelectedMultichainAccount`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       controllerMessenger.call(
@@ -912,6 +486,7 @@ describe('registerActions', () => {
       runSaga,
       { ...options, accounts: [] },
       MOCK_SNAP_ID,
+      [],
     );
 
     expect(
@@ -922,7 +497,7 @@ describe('registerActions', () => {
   });
 
   it('registers `AccountsController:listMultichainAccounts`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       controllerMessenger.call('AccountsController:listMultichainAccounts'),
@@ -934,7 +509,7 @@ describe('registerActions', () => {
   });
 
   it('registers `MultichainAssetsController:getState`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       controllerMessenger.call('MultichainAssetsController:getState'),
@@ -948,7 +523,7 @@ describe('registerActions', () => {
   });
 
   it('registers `KeyringController:withKeyring`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       await controllerMessenger.call(
@@ -976,7 +551,7 @@ describe('registerActions', () => {
   });
 
   it('registers `RateLimitController:call`', async () => {
-    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID);
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       await controllerMessenger.call(
@@ -997,5 +572,46 @@ describe('registerActions', () => {
         { message: 'Hello world!' },
       ),
     ).toBeNull();
+  });
+
+  it('registers `KeyringController:getState`', async () => {
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
+
+    expect(
+      controllerMessenger.call('KeyringController:getState'),
+    ).toStrictEqual({
+      isUnlocked: true,
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'default',
+            name: 'Default Secret Recovery Phrase',
+          },
+        },
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'alternative',
+            name: 'Alternative Secret Recovery Phrase',
+          },
+        },
+      ],
+    });
+  });
+
+  it('registers `SnapController:getSnapFile`', async () => {
+    registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, [
+      new VirtualFile({ value: stringToBytes('bar'), path: 'foo.txt' }),
+    ]);
+
+    expect(
+      await controllerMessenger.call(
+        'SnapController:getSnapFile',
+        MOCK_SNAP_ID,
+        'foo.txt',
+        AuxiliaryFileEncoding.Utf8,
+      ),
+    ).toBe('bar');
   });
 });

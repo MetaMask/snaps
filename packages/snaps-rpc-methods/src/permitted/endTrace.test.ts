@@ -1,41 +1,68 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { EndTraceParams, EndTraceResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { EndTraceMethodActions } from './endTrace';
 import { endTraceHandler } from './endTrace';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_endTrace', () => {
   describe('endTraceHandler', () => {
     it('has the expected shape', () => {
       expect(endTraceHandler).toMatchObject({
-        methodNames: ['snap_endTrace'],
         implementation: expect.any(Function),
         hookNames: {
           endTrace: true,
-          getSnap: true,
         },
+        actionNames: ['SnapController:getSnap'],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = (preinstalled = true) => {
+      const messenger = new MockControllerMessenger<
+        EndTraceMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler('SnapController:getSnap', () => ({
+        ...getSnapObject(),
+        preinstalled,
+      }));
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('calls the `endTrace` hook with the provided parameters', async () => {
       const { implementation } = endTraceHandler;
 
       const endTrace = jest.fn().mockReturnValue(null);
+      const hooks = { endTrace };
 
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { endTrace, getSnap };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<EndTraceParams>,
+          request as JsonRpcRequestWithOrigin<EndTraceParams>,
           response as PendingJsonRpcResponse<EndTraceResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -69,18 +96,21 @@ describe('snap_endTrace', () => {
       const { implementation } = endTraceHandler;
 
       const endTrace = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
-      const hooks = { endTrace, getSnap };
+      const hooks = { endTrace };
+
+      const messenger = getMessenger(false);
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<EndTraceParams>,
+          request as JsonRpcRequestWithOrigin<EndTraceParams>,
           response as PendingJsonRpcResponse<EndTraceResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -131,18 +161,21 @@ describe('snap_endTrace', () => {
         const { implementation } = endTraceHandler;
 
         const endTrace = jest.fn();
-        const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-        const hooks = { endTrace, getSnap };
+        const hooks = { endTrace };
+
+        const messenger = getMessenger();
 
         const engine = new JsonRpcEngine();
 
+        engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<EndTraceParams>,
+            request as JsonRpcRequestWithOrigin<EndTraceParams>,
             response as PendingJsonRpcResponse<EndTraceResult>,
             next,
             end,
             hooks,
+            messenger,
           );
 
           result?.catch(end);

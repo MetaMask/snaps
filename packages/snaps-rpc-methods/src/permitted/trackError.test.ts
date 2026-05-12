@@ -1,41 +1,69 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { TrackErrorParams, TrackErrorResult } from '@metamask/snaps-sdk';
 import { getJsonError } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { TrackErrorMethodActions } from './trackError';
 import { trackErrorHandler } from './trackError';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_trackError', () => {
   describe('trackErrorHandler', () => {
     it('has the expected shape', () => {
       expect(trackErrorHandler).toMatchObject({
-        methodNames: ['snap_trackError'],
         implementation: expect.any(Function),
         hookNames: {
           trackError: true,
-          getSnap: true,
         },
+        actionNames: ['SnapController:getSnap'],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = (preinstalled = true) => {
+      const messenger = new MockControllerMessenger<
+        TrackErrorMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler('SnapController:getSnap', () => ({
+        ...getSnapObject(),
+        preinstalled,
+      }));
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('tracks an error with a name, message, and stack', async () => {
       const { implementation } = trackErrorHandler;
 
       const trackError = jest.fn().mockReturnValue('test-id');
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackError, getSnap };
+      const hooks = { trackError };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams>,
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -77,18 +105,21 @@ describe('snap_trackError', () => {
       const { implementation } = trackErrorHandler;
 
       const trackError = jest.fn().mockReturnValue('test-id');
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackError, getSnap };
+      const hooks = { trackError };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams>,
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -143,18 +174,21 @@ describe('snap_trackError', () => {
       const { implementation } = trackErrorHandler;
 
       const trackError = jest.fn().mockReturnValue('test-id');
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackError, getSnap };
+      const hooks = { trackError };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams>,
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -194,18 +228,21 @@ describe('snap_trackError', () => {
       const { implementation } = trackErrorHandler;
 
       const trackError = jest.fn().mockReturnValue('test-id');
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { trackError, getSnap };
+      const hooks = { trackError };
+
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams>,
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -243,18 +280,21 @@ describe('snap_trackError', () => {
       const { implementation } = trackErrorHandler;
 
       const trackError = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
-      const hooks = { trackError, getSnap };
+      const hooks = { trackError };
+
+      const messenger = getMessenger(false);
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<TrackErrorParams>,
+          request as JsonRpcRequestWithOrigin<TrackErrorParams>,
           response as PendingJsonRpcResponse<TrackErrorResult>,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -309,18 +349,21 @@ describe('snap_trackError', () => {
         const { implementation } = trackErrorHandler;
 
         const trackError = jest.fn();
-        const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-        const hooks = { trackError, getSnap };
+        const hooks = { trackError };
+
+        const messenger = getMessenger();
 
         const engine = new JsonRpcEngine();
 
+        engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<TrackErrorParams>,
+            request as JsonRpcRequestWithOrigin<TrackErrorParams>,
             response as PendingJsonRpcResponse<TrackErrorResult>,
             next,
             end,
             hooks,
+            messenger,
           );
 
           result?.catch(end);

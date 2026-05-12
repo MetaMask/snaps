@@ -1,14 +1,20 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { GetFileParams, GetFileResult } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding, enumValue } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
 import { object, optional, string, union } from '@metamask/superstruct';
-import type { PendingJsonRpcResponse, JsonRpcRequest } from '@metamask/utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapFileAction,
+} from '../types';
 
 export const GetFileArgsStruct = object({
   path: string(),
@@ -26,11 +32,7 @@ export type InferredGetFileParams = InferMatching<
   GetFileParams
 >;
 
-const methodName = 'snap_getFile';
-
-const hookNames: MethodHooksObject<GetFileHooks> = {
-  getSnapFile: true,
-};
+export type GetFileMethodActions = SnapControllerGetSnapFileAction;
 
 /**
  * Gets a static file's content in UTF-8, Base64, or hexadecimal.
@@ -59,17 +61,15 @@ const hookNames: MethodHooksObject<GetFileHooks> = {
  * ```
  */
 export const getFileHandler = {
-  methodNames: [methodName] as const,
   implementation,
-  hookNames,
-} satisfies PermittedHandlerExport<GetFileHooks, InferredGetFileParams, string>;
-
-export type GetFileHooks = {
-  getSnapFile: (
-    path: InferredGetFileParams['path'],
-    encoding: InferredGetFileParams['encoding'],
-  ) => Promise<string>;
-};
+  actionNames: ['SnapController:getSnapFile'],
+} satisfies MethodHandler<
+  never,
+  GetFileMethodActions,
+  InferredGetFileParams,
+  GetFileResult,
+  { origin: string }
+>;
 
 /**
  * The `snap_getFile` method implementation.
@@ -79,18 +79,19 @@ export type GetFileHooks = {
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.getSnapFile - The function to load a static snap file.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function implementation(
-  req: JsonRpcRequest<InferredGetFileParams>,
+  req: JsonRpcRequestWithOrigin<InferredGetFileParams>,
   res: PendingJsonRpcResponse<GetFileResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getSnapFile }: GetFileHooks,
+  _hooks: never,
+  messenger: Messenger<string, GetFileMethodActions>,
 ): Promise<void> {
-  const { params } = req;
+  const { params, origin } = req;
 
   assertStruct(
     params,
@@ -100,9 +101,12 @@ async function implementation(
   );
 
   try {
-    res.result = await getSnapFile(
+    res.result = await messenger.call(
+      'SnapController:getSnapFile',
+      origin,
       params.path,
-      params.encoding ?? AuxiliaryFileEncoding.Base64,
+      (params.encoding as AuxiliaryFileEncoding) ??
+        AuxiliaryFileEncoding.Base64,
     );
   } catch (error) {
     return end(error);

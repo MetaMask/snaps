@@ -1,61 +1,26 @@
 import type {
-  JsonRpcEngineEndCallback,
-  JsonRpcEngineNextCallback,
-} from '@metamask/json-rpc-engine';
-import type {
+  AuxiliaryFileEncoding,
+  BackgroundEvent,
   ComponentOrElement,
-  ContentType,
+  GetSnapsResult,
+  GetWebSocketsResult,
   InterfaceContext,
   InterfaceState,
+  RequestSnapsResult,
+  ContentType,
+  RequestSnapsParams,
   SnapId,
 } from '@metamask/snaps-sdk';
-import type { Snap, SnapRpcHookArgs } from '@metamask/snaps-utils';
 import type {
-  Json,
-  JsonRpcParams,
-  JsonRpcRequest,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+  Snap,
+  SnapRpcHookArgs,
+  TruncatedSnap,
+} from '@metamask/snaps-utils';
+import type { Json, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 
-// The types below are temporarily copied to this repo until we can migrate away from `PermittedHandlerExport`.
-
-/**
- * A middleware function for handling a permitted method.
- */
-type HandlerMiddlewareFunction<
-  Hooks,
-  Params extends JsonRpcParams,
-  Result extends Json,
-> = (
-  req: JsonRpcRequest<Params>,
-  res: PendingJsonRpcResponse<Result>,
-  next: JsonRpcEngineNextCallback,
-  end: JsonRpcEngineEndCallback,
-  hooks: Hooks,
-) => void | Promise<void>;
-
-/**
- * We use a mapped object type in order to create a type that requires the
- * presence of the names of all hooks for the given handler.
- * This can then be used to select only the necessary hooks whenever a method
- * is called for purposes of POLA.
- */
-type HookNames<HookMap> = {
-  [Property in keyof HookMap]: true;
-};
-
-/**
- * A handler for a permitted method.
- */
-export type PermittedHandlerExport<
-  Hooks,
-  Params extends JsonRpcParams,
-  Result extends Json,
-> = {
-  implementation: HandlerMiddlewareFunction<Hooks, Params, Result>;
-  hookNames: HookNames<Hooks>;
-  methodNames: string[];
-};
+export type JsonRpcRequestWithOrigin<
+  Params extends JsonRpcParams = JsonRpcParams,
+> = JsonRpcRequest<Params> & { origin: string };
 
 export type HdKeyring = {
   type: 'HD Key Tree';
@@ -74,6 +39,17 @@ export type KeyringControllerWithKeyringAction = {
       | { id: string },
     operation: (args: { keyring: HdKeyring }) => Promise<unknown>,
   ) => Promise<unknown>;
+};
+
+export type KeyringControllerGetStateAction = {
+  type: `KeyringController:getState`;
+  handler: () => {
+    isUnlocked: boolean;
+    keyrings: {
+      type: string;
+      metadata: { id: string; name: string };
+    }[];
+  };
 };
 
 export type ApprovalControllerAddRequestAction = {
@@ -118,6 +94,26 @@ export type SnapInterfaceControllerSetInterfaceDisplayedAction = {
   handler: (snapId: string, id: string) => void;
 };
 
+export type SnapInterfaceControllerGetInterfaceStateAction = {
+  type: `SnapInterfaceController:getInterfaceState`;
+  handler: (snapId: string, id: string) => InterfaceState;
+};
+
+export type SnapInterfaceControllerUpdateInterfaceAction = {
+  type: `SnapInterfaceController:updateInterface`;
+  handler: (
+    snapId: string,
+    id: string,
+    content: ComponentOrElement,
+    context?: InterfaceContext,
+  ) => void;
+};
+
+export type SnapInterfaceControllerResolveInterfaceAction = {
+  type: `SnapInterfaceController:resolveInterface`;
+  handler: (snapId: string, id: string, value: Json) => Promise<void>;
+};
+
 export type SnapControllerHandleRequestAction = {
   type: 'SnapController:handleRequest';
   handler: (args: SnapRpcHookArgs & { snapId: string }) => Promise<unknown>;
@@ -150,6 +146,33 @@ export type SnapControllerUpdateSnapStateAction = {
   ) => Promise<void>;
 };
 
+export type SnapControllerGetAllSnapsAction = {
+  type: `SnapController:getAllSnaps`;
+  handler: () => TruncatedSnap[];
+};
+
+export type SnapControllerGetPermittedSnapsAction = {
+  type: `SnapController:getPermittedSnaps`;
+  handler: (origin: string) => GetSnapsResult;
+};
+
+export type SnapControllerInstallSnapsAction = {
+  type: `SnapController:installSnaps`;
+  handler: (
+    origin: string,
+    requestedSnaps: RequestSnapsParams,
+  ) => Promise<RequestSnapsResult>;
+};
+
+export type SnapControllerGetSnapFileAction = {
+  type: `SnapController:getSnapFile`;
+  handler: (
+    snapId: string,
+    path: string,
+    encoding?: AuxiliaryFileEncoding,
+  ) => Promise<string | null>;
+};
+
 export type RateLimitControllerCallAction = {
   type: 'RateLimitController:call';
   handler: (
@@ -157,4 +180,57 @@ export type RateLimitControllerCallAction = {
     type: string,
     ...args: unknown[]
   ) => Promise<unknown>;
+};
+
+export type CronjobControllerCancelAction = {
+  type: `CronjobController:cancel`;
+  handler: (origin: string, id: string) => void;
+};
+
+export type CronjobControllerScheduleAction = {
+  type: `CronjobController:schedule`;
+  handler: (event: {
+    snapId: string;
+    request: {
+      method: string;
+      jsonrpc?: '2.0';
+      id?: string | number | null;
+      params?: Json[] | Record<string, Json>;
+    };
+    schedule: string;
+    id?: string;
+  }) => string;
+};
+
+export type CronjobControllerGetAction = {
+  type: `CronjobController:get`;
+  handler: (snapId: string) => BackgroundEvent[];
+};
+
+export type WebSocketServiceOpenAction = {
+  type: `WebSocketService:open`;
+  handler: (
+    snapId: string,
+    url: string,
+    protocols?: string[],
+  ) => Promise<string>;
+};
+
+export type WebSocketServiceCloseAction = {
+  type: `WebSocketService:close`;
+  handler: (snapId: string, id: string) => void;
+};
+
+export type WebSocketServiceSendMessageAction = {
+  type: `WebSocketService:sendMessage`;
+  handler: (
+    snapId: string,
+    id: string,
+    data: string | number[],
+  ) => Promise<void>;
+};
+
+export type WebSocketServiceGetAllAction = {
+  type: `WebSocketService:getAll`;
+  handler: (snapId: string) => GetWebSocketsResult;
 };

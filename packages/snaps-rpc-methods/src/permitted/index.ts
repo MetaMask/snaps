@@ -1,50 +1,86 @@
-import type { CancelBackgroundEventMethodHooks } from './cancelBackgroundEvent';
-import type { ClearStateHooks } from './clearState';
-import type { CloseWebSocketMethodHooks } from './closeWebSocket';
-import type { CreateInterfaceMethodHooks } from './createInterface';
-import type { EndTraceMethodHooks } from './endTrace';
-import type { GetAllSnapsHooks } from './getAllSnaps';
-import type { GetBackgroundEventsMethodHooks } from './getBackgroundEvents';
-import type { GetClientStatusHooks } from './getClientStatus';
-import type { GetInterfaceStateMethodHooks } from './getInterfaceState';
-import type { GetSnapsHooks } from './getSnaps';
-import type { GetStateHooks } from './getState';
-import type { GetWebSocketsMethodHooks } from './getWebSockets';
-import type { ListEntropySourcesHooks } from './listEntropySources';
-import type { OpenWebSocketMethodHooks } from './openWebSocket';
-import type { RequestSnapsHooks } from './requestSnaps';
-import type { ResolveInterfaceMethodHooks } from './resolveInterface';
-import type { ScheduleBackgroundEventMethodHooks } from './scheduleBackgroundEvent';
-import type { SendWebSocketMessageMethodHooks } from './sendWebSocketMessage';
-import type { SetStateHooks } from './setState';
-import type { StartTraceMethodHooks } from './startTrace';
-import type { TrackErrorMethodHooks } from './trackError';
-import type { TrackEventMethodHooks } from './trackEvent';
-import type { UpdateInterfaceMethodHooks } from './updateInterface';
+import type { CancelBackgroundEventMethodActions } from './cancelBackgroundEvent';
+import type { ClearStateMethodActions } from './clearState';
+import type { CloseWebSocketMethodActions } from './closeWebSocket';
+import type { CreateInterfaceMethodActions } from './createInterface';
+import type { EndTraceMethodActions, EndTraceMethodHooks } from './endTrace';
+import type { GetAllSnapsMethodActions } from './getAllSnaps';
+import type { GetBackgroundEventsMethodActions } from './getBackgroundEvents';
+import type {
+  GetClientStatusMethodActions,
+  GetClientStatusMethodHooks,
+} from './getClientStatus';
+import type { GetFileMethodActions } from './getFile';
+import type { GetInterfaceContextMethodActions } from './getInterfaceContext';
+import type { GetInterfaceStateMethodActions } from './getInterfaceState';
+import type { GetSnapsMethodActions } from './getSnaps';
+import type { GetStateMethodActions, GetStateMethodHooks } from './getState';
+import type { GetWebSocketsMethodActions } from './getWebSockets';
+import type {
+  InvokeKeyringMethodActions,
+  InvokeKeyringMethodHooks,
+} from './invokeKeyring';
+import type { InvokeSnapSugarMethodActions } from './invokeSnapSugar';
+import type {
+  ListEntropySourcesMethodActions,
+  ListEntropySourcesMethodHooks,
+} from './listEntropySources';
+import type { OpenWebSocketMethodActions } from './openWebSocket';
+import type { RequestSnapsMethodActions } from './requestSnaps';
+import type { ResolveInterfaceMethodActions } from './resolveInterface';
+import type { ScheduleBackgroundEventMethodActions } from './scheduleBackgroundEvent';
+import type { SendWebSocketMessageMethodActions } from './sendWebSocketMessage';
+import type { SetStateMethodActions, SetStateMethodHooks } from './setState';
+import type {
+  StartTraceMethodActions,
+  StartTraceMethodHooks,
+} from './startTrace';
+import type {
+  TrackErrorMethodActions,
+  TrackErrorMethodHooks,
+} from './trackError';
+import type {
+  TrackEventMethodActions,
+  TrackEventMethodHooks,
+} from './trackEvent';
+import type { UpdateInterfaceMethodActions } from './updateInterface';
 
-export type PermittedRpcMethodHooks = ClearStateHooks &
-  GetAllSnapsHooks &
-  GetClientStatusHooks &
-  GetSnapsHooks &
-  GetStateHooks &
-  ListEntropySourcesHooks &
-  RequestSnapsHooks &
-  CreateInterfaceMethodHooks &
-  UpdateInterfaceMethodHooks &
-  GetInterfaceStateMethodHooks &
-  ResolveInterfaceMethodHooks &
-  ScheduleBackgroundEventMethodHooks &
-  CancelBackgroundEventMethodHooks &
-  GetBackgroundEventsMethodHooks &
-  SetStateHooks &
-  OpenWebSocketMethodHooks &
-  CloseWebSocketMethodHooks &
-  SendWebSocketMessageMethodHooks &
-  GetWebSocketsMethodHooks &
+export type PermittedRpcMethodActions =
+  | CancelBackgroundEventMethodActions
+  | ClearStateMethodActions
+  | CloseWebSocketMethodActions
+  | CreateInterfaceMethodActions
+  | EndTraceMethodActions
+  | GetAllSnapsMethodActions
+  | GetBackgroundEventsMethodActions
+  | GetClientStatusMethodActions
+  | GetFileMethodActions
+  | GetInterfaceContextMethodActions
+  | GetInterfaceStateMethodActions
+  | GetSnapsMethodActions
+  | GetStateMethodActions
+  | GetWebSocketsMethodActions
+  | InvokeKeyringMethodActions
+  | InvokeSnapSugarMethodActions
+  | ListEntropySourcesMethodActions
+  | OpenWebSocketMethodActions
+  | RequestSnapsMethodActions
+  | ResolveInterfaceMethodActions
+  | ScheduleBackgroundEventMethodActions
+  | SendWebSocketMessageMethodActions
+  | SetStateMethodActions
+  | StartTraceMethodActions
+  | TrackErrorMethodActions
+  | TrackEventMethodActions
+  | UpdateInterfaceMethodActions;
+
+export type PermittedRpcMethodHooks = GetClientStatusMethodHooks &
+  GetStateMethodHooks &
+  ListEntropySourcesMethodHooks &
+  SetStateMethodHooks &
   TrackEventMethodHooks &
   TrackErrorMethodHooks &
   StartTraceMethodHooks &
-  EndTraceMethodHooks;
+  EndTraceMethodHooks &
+  InvokeKeyringMethodHooks;
 
-export * from './handlers';
 export * from './middleware';

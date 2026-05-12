@@ -1,42 +1,78 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import { type GetInterfaceStateResult } from '@metamask/snaps-sdk';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type {
+  GetInterfaceStateMethodActions,
+  GetInterfaceStateParameters,
+} from './getInterfaceState';
 import { getInterfaceStateHandler } from './getInterfaceState';
-import type { GetInterfaceStateParameters } from './getInterfaceState';
 
 describe('snap_getInterfaceState', () => {
   describe('getInterfaceStateHandler', () => {
     it('has the expected shape', () => {
       expect(getInterfaceStateHandler).toMatchObject({
-        methodNames: ['snap_getInterfaceState'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          getInterfaceState: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapInterfaceController:getInterfaceState',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        GetInterfaceStateMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'SnapInterfaceController:getInterfaceState',
+        () => ({ foo: 'bar' }),
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission to show UI', async () => {
       const { implementation } = getInterfaceStateHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
+      const messenger = getMessenger();
 
-      const hooks = { hasPermission, getInterfaceState };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetInterfaceStateParameters>,
+          request as JsonRpcRequest<GetInterfaceStateParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<GetInterfaceStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -63,26 +99,24 @@ describe('snap_getInterfaceState', () => {
       });
     });
 
-    it('returns the result from the `getInterfaceState` hook', async () => {
+    it('returns the result from the `SnapInterfaceController:getInterfaceState` action', async () => {
       const { implementation } = getInterfaceStateHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
-
-      const hooks = {
-        hasPermission,
-        getInterfaceState,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetInterfaceStateParameters>,
+          request as JsonRpcRequest<GetInterfaceStateParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<GetInterfaceStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -107,23 +141,21 @@ describe('snap_getInterfaceState', () => {
     it('throws on invalid params', async () => {
       const { implementation } = getInterfaceStateHandler;
 
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const getInterfaceState = jest.fn().mockReturnValue({ foo: 'bar' });
-
-      const hooks = {
-        hasPermission,
-        getInterfaceState,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<GetInterfaceStateParameters>,
+          request as JsonRpcRequest<GetInterfaceStateParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<GetInterfaceStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

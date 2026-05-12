@@ -1,24 +1,27 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   TrackableError,
   TrackErrorParams,
   TrackErrorResult,
 } from '@metamask/snaps-sdk';
-import type { InferMatching, Snap } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
 import { TrackableErrorStruct } from '@metamask/snaps-utils';
 import { create, object, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
-
-const methodName = 'snap_trackError';
 
 const hookNames: MethodHooksObject<TrackErrorMethodHooks> = {
   trackError: true,
-  getSnap: true,
 };
 
 export type TrackErrorMethodHooks = {
@@ -30,14 +33,9 @@ export type TrackErrorMethodHooks = {
    * in the client.
    */
   trackError: (error: Error) => string;
-
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
 };
+
+export type TrackErrorMethodActions = SnapControllerGetSnapAction;
 
 const TrackErrorParametersStruct = object({
   error: TrackableErrorStruct,
@@ -54,13 +52,15 @@ export type TrackErrorParameters = InferMatching<
  * @internal
  */
 export const trackErrorHandler = {
-  methodNames: [methodName] as const,
   implementation: getTrackErrorImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
+  actionNames: ['SnapController:getSnap'],
+} satisfies MethodHandler<
   TrackErrorMethodHooks,
+  TrackErrorMethodActions,
   TrackErrorParameters,
-  TrackErrorResult
+  TrackErrorResult,
+  { origin: string }
 >;
 
 /**
@@ -74,19 +74,18 @@ export const trackErrorHandler = {
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.trackError - The hook function to track an error.
- * @param hooks.getSnap - The hook function to get Snap metadata.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getTrackErrorImplementation(
-  request: JsonRpcRequest<TrackErrorParameters>,
+  request: JsonRpcRequestWithOrigin<TrackErrorParameters>,
   response: PendingJsonRpcResponse<TrackErrorResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { trackError, getSnap }: TrackErrorMethodHooks,
+  { trackError }: TrackErrorMethodHooks,
+  messenger: Messenger<string, TrackErrorMethodActions>,
 ): void {
-  const snap = getSnap(
-    (request as JsonRpcRequest<TrackErrorParams> & { origin: string }).origin,
-  );
+  const snap = messenger.call('SnapController:getSnap', request.origin);
 
   if (!snap?.preinstalled) {
     return end(rpcErrors.methodNotFound());

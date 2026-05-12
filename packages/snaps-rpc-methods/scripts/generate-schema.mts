@@ -1294,7 +1294,7 @@ async function processPermittedHandler(
 }
 
 /**
- * Process the permitted handlers defined in `src/permitted/handlers.ts`,
+ * Process the permitted handlers defined in `src/permitted/middleware.ts`,
  * extracting the method names, descriptions, parameters, return types, and
  * subject types for each handler.
  *
@@ -1303,7 +1303,7 @@ async function processPermittedHandler(
  * @returns An array of method schemas extracted from the permitted handlers.
  */
 async function processPermittedHandlers(project: Project) {
-  const handlersFile = project.getSourceFile('src/permitted/handlers.ts');
+  const handlersFile = project.getSourceFile('src/permitted/middleware.ts');
   assert(handlersFile, 'Handlers file not found.');
 
   const permittedHandlers =

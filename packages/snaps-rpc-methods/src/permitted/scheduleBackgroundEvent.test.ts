@@ -1,23 +1,30 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   ScheduleBackgroundEventParams,
   ScheduleBackgroundEventResult,
+  SnapId,
 } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { ScheduleBackgroundEventMethodActions } from './scheduleBackgroundEvent';
 import { scheduleBackgroundEventHandler } from './scheduleBackgroundEvent';
 
 describe('snap_scheduleBackgroundEvent', () => {
   describe('scheduleBackgroundEventHandler', () => {
     it('has the expected shape', () => {
       expect(scheduleBackgroundEventHandler).toMatchObject({
-        methodNames: ['snap_scheduleBackgroundEvent'],
         implementation: expect.any(Function),
-        hookNames: {
-          scheduleBackgroundEvent: true,
-          hasPermission: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'CronjobController:schedule',
+        ],
       });
     });
   });
@@ -34,34 +41,45 @@ describe('snap_scheduleBackgroundEvent', () => {
       jest.useRealTimers();
     });
 
-    const createOriginMiddleware =
-      (origin: string) =>
-      (request: any, _response: unknown, next: () => void, _end: unknown) => {
-        request.origin = origin;
-        next();
-      };
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        ScheduleBackgroundEventMethodActions,
+        never
+      >();
 
-    it('returns an id after calling the `scheduleBackgroundEvent` hook', async () => {
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'CronjobController:schedule',
+        () => 'foo',
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('returns an id after calling the `CronjobController:schedule` action', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn().mockImplementation(() => 'foo');
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -86,24 +104,21 @@ describe('snap_scheduleBackgroundEvent', () => {
     it('schedules a background event', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -122,36 +137,37 @@ describe('snap_scheduleBackgroundEvent', () => {
         },
       });
 
-      expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        schedule: '2022-01-01T01:00:35.786+02:00',
-        request: {
-          method: 'handleExport',
-          params: ['p1'],
+      expect(messenger.call).toHaveBeenCalledWith(
+        'CronjobController:schedule',
+        {
+          snapId: MOCK_SNAP_ID,
+          schedule: '2022-01-01T01:00:35.786+02:00',
+          request: {
+            method: 'handleExport',
+            params: ['p1'],
+          },
         },
-      });
+      );
     });
 
     it('schedules a background event using a duration', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -170,36 +186,37 @@ describe('snap_scheduleBackgroundEvent', () => {
         },
       });
 
-      expect(scheduleBackgroundEvent).toHaveBeenCalledWith({
-        schedule: 'PT1S',
-        request: {
-          method: 'handleExport',
-          params: ['p1'],
+      expect(messenger.call).toHaveBeenCalledWith(
+        'CronjobController:schedule',
+        {
+          snapId: MOCK_SNAP_ID,
+          schedule: 'PT1S',
+          request: {
+            method: 'handleExport',
+            params: ['p1'],
+          },
         },
-      });
+      );
     });
 
     it('throws on an invalid duration', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -233,24 +250,26 @@ describe('snap_scheduleBackgroundEvent', () => {
     it('throws if a snap does not have the "endowment:cronjob" permission', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => false);
+      const messenger = getMessenger();
 
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -284,24 +303,21 @@ describe('snap_scheduleBackgroundEvent', () => {
     it('throws if no timezone information is provided in the ISO 8601 date', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -335,24 +351,21 @@ describe('snap_scheduleBackgroundEvent', () => {
     it('throws on invalid params', async () => {
       const { implementation } = scheduleBackgroundEventHandler;
 
-      const scheduleBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        scheduleBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ScheduleBackgroundEventParams>,
+          request as JsonRpcRequest<ScheduleBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

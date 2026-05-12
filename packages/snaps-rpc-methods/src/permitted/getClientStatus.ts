@@ -1,4 +1,8 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
 import type { GetClientStatusResult } from '@metamask/snaps-sdk';
 import { getPlatformVersion } from '@metamask/snaps-utils';
 import type {
@@ -7,16 +11,27 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import type { KeyringControllerGetStateAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 
-const methodName = 'snap_getClientStatus';
-
-const hookNames: MethodHooksObject<GetClientStatusHooks> = {
-  getIsLocked: true,
+const hookNames: MethodHooksObject<GetClientStatusMethodHooks> = {
   getIsActive: true,
   getVersion: true,
 };
+
+export type GetClientStatusMethodHooks = {
+  /**
+   * @returns Whether the client is active or not.
+   */
+  getIsActive: () => boolean;
+
+  /**
+   * @returns The version string for the client.
+   */
+  getVersion: () => string;
+};
+
+export type GetClientStatusMethodActions = KeyringControllerGetStateAction;
 
 /**
  * Get the status of the client running the Snap.
@@ -46,31 +61,15 @@ const hookNames: MethodHooksObject<GetClientStatusHooks> = {
  * ```
  */
 export const getClientStatusHandler = {
-  methodNames: [methodName] as const,
   implementation: getClientStatusImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
-  GetClientStatusHooks,
+  actionNames: ['KeyringController:getState'],
+} satisfies MethodHandler<
+  GetClientStatusMethodHooks,
+  GetClientStatusMethodActions,
   JsonRpcParams,
   GetClientStatusResult
 >;
-
-export type GetClientStatusHooks = {
-  /**
-   * @returns Whether the client is locked or not.
-   */
-  getIsLocked: () => boolean;
-
-  /**
-   * @returns Whether the client is active or not.
-   */
-  getIsActive: () => boolean;
-
-  /**
-   * @returns The version string for the client.
-   */
-  getVersion: () => string;
-};
 
 /**
  * The `snap_getClientStatus` method implementation.
@@ -82,9 +81,9 @@ export type GetClientStatusHooks = {
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.getIsLocked - A function that returns whether the client is locked or not.
  * @param hooks.getIsActive - A function that returns whether the client is opened or not.
  * @param hooks.getVersion - A function that returns the client version.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function getClientStatusImplementation(
@@ -92,10 +91,13 @@ async function getClientStatusImplementation(
   response: PendingJsonRpcResponse<GetClientStatusResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getIsLocked, getIsActive, getVersion }: GetClientStatusHooks,
+  { getIsActive, getVersion }: GetClientStatusMethodHooks,
+  messenger: Messenger<string, GetClientStatusMethodActions>,
 ): Promise<void> {
+  const { isUnlocked } = messenger.call('KeyringController:getState');
+
   response.result = {
-    locked: getIsLocked(),
+    locked: !isUnlocked,
     active: getIsActive(),
     clientVersion: getVersion(),
     platformVersion: getPlatformVersion(),

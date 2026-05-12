@@ -1,55 +1,74 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   CancelBackgroundEventParams,
   CancelBackgroundEventResult,
+  SnapId,
 } from '@metamask/snaps-sdk';
-import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { CancelBackgroundEventMethodActions } from './cancelBackgroundEvent';
 import { cancelBackgroundEventHandler } from './cancelBackgroundEvent';
 
 describe('snap_cancelBackgroundEvent', () => {
   describe('cancelBackgroundEventHandler', () => {
     it('has the expected shape', () => {
       expect(cancelBackgroundEventHandler).toMatchObject({
-        methodNames: ['snap_cancelBackgroundEvent'],
         implementation: expect.any(Function),
-        hookNames: {
-          cancelBackgroundEvent: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'CronjobController:cancel',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
-    const createOriginMiddleware =
-      (origin: string) =>
-      (request: any, _response: unknown, next: () => void, _end: unknown) => {
-        request.origin = origin;
-        next();
-      };
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        CancelBackgroundEventMethodActions,
+        never
+      >();
 
-    it('returns null after calling the `cancelBackgroundEvent` hook', async () => {
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'CronjobController:cancel',
+        () => undefined,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('returns null after calling the `CronjobController:cancel` action', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
-      const cancelBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        cancelBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CancelBackgroundEventParams>,
+          request as JsonRpcRequest<CancelBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<CancelBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -70,24 +89,21 @@ describe('snap_cancelBackgroundEvent', () => {
     it('cancels a background event', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
-      const cancelBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        cancelBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CancelBackgroundEventParams>,
+          request as JsonRpcRequest<CancelBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<CancelBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -102,30 +118,36 @@ describe('snap_cancelBackgroundEvent', () => {
         },
       });
 
-      expect(cancelBackgroundEvent).toHaveBeenCalledWith('foo');
+      expect(messenger.call).toHaveBeenCalledWith(
+        'CronjobController:cancel',
+        MOCK_SNAP_ID,
+        'foo',
+      );
     });
 
     it('throws if a snap does not have the "endowment:cronjob" permission', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
-      const cancelBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => false);
+      const messenger = getMessenger();
 
-      const hooks = {
-        cancelBackgroundEvent,
-        hasPermission,
-      };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CancelBackgroundEventParams>,
+          request as JsonRpcRequest<CancelBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<CancelBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -155,24 +177,21 @@ describe('snap_cancelBackgroundEvent', () => {
     it('throws on invalid params', async () => {
       const { implementation } = cancelBackgroundEventHandler;
 
-      const cancelBackgroundEvent = jest.fn();
-      const hasPermission = jest.fn().mockImplementation(() => true);
-
-      const hooks = {
-        cancelBackgroundEvent,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
       engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<CancelBackgroundEventParams>,
+          request as JsonRpcRequest<CancelBackgroundEventParams> & {
+            origin: SnapId;
+          },
           response as PendingJsonRpcResponse<CancelBackgroundEventResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

@@ -12,7 +12,6 @@ import {
   PermissionDoesNotExistError,
   type Caveat,
   type RequestedPermissions,
-  createPermissionMiddleware,
 } from '@metamask/permission-controller';
 import type { ExecutionService } from '@metamask/snaps-controllers';
 import {
@@ -24,17 +23,12 @@ import {
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import type {
   TrackEventParams,
-  AuxiliaryFileEncoding,
-  Component,
-  InterfaceState,
-  InterfaceContext,
   SnapId,
-  EntropySource,
   TraceRequest,
   EndTraceRequest,
   TraceContext,
 } from '@metamask/snaps-sdk';
-import type { FetchedSnapFiles, Snap } from '@metamask/snaps-utils';
+import type { Snap, VirtualFile } from '@metamask/snaps-utils';
 import { logError } from '@metamask/snaps-utils';
 import { assertExhaustive, hasProperty } from '@metamask/utils';
 import type { CaipAssetType, Hex, Json } from '@metamask/utils';
@@ -51,10 +45,6 @@ import { getHelpers } from './helpers';
 import { resolveWithSaga } from './interface';
 import { asyncResolve, getEndowments } from './methods';
 import {
-  getPermittedClearSnapStateMethodImplementation,
-  getPermittedGetSnapStateMethodImplementation,
-  getPermittedUpdateSnapStateMethodImplementation,
-  getGetEntropySourcesImplementation,
   getGetMnemonicImplementation,
   getGetSnapImplementation,
   getTrackEventImplementation,
@@ -184,34 +174,12 @@ export type RestrictedMiddlewareHooks = {
 
 export type PermittedMiddlewareHooks = {
   /**
-   * A hook that gets whether the requesting origin has a given permission.
-   *
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the origin has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * A hook that returns the entropy sources available to the Snap.
-   *
-   * @returns The entropy sources available to the Snap.
-   */
-  getEntropySources: () => EntropySource[];
-
-  /**
    * A hook that returns a promise that resolves once the extension is unlocked.
    *
    * @param shouldShowUnlockRequest - Whether to show the unlock request.
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-
-  /**
-   * A hook that returns whether the client is locked or not.
-   *
-   * @returns A boolean flag signaling whether the client is locked.
-   */
-  getIsLocked: () => boolean;
 
   /**
    * A hook that returns whether the client is active or not.
@@ -226,101 +194,6 @@ export type PermittedMiddlewareHooks = {
    * @returns A string that corresponds to the client version.
    */
   getVersion: () => string;
-
-  /**
-   * A hook that returns the Snap's auxiliary file for the given path. This hook
-   * is bound to the Snap ID.
-   *
-   * @param path - The path of the auxiliary file to get.
-   * @param encoding - The encoding to use when returning the file.
-   * @returns The Snap's auxiliary file for the given path.
-   */
-  getSnapFile: (
-    path: string,
-    encoding: AuxiliaryFileEncoding,
-  ) => Promise<string | null>;
-
-  /**
-   * A hook that gets the state of the Snap. This hook is bound to the Snap ID.
-   *
-   * @param encrypted - Whether to get the encrypted or unencrypted state.
-   * @returns The current state of the Snap.
-   */
-  getSnapState: (encrypted: boolean) => Promise<Record<string, Json>>;
-
-  /**
-   * A hook that updates the state of the Snap. This hook is bound to the Snap
-   * ID.
-   *
-   * @param newState - The new state.
-   * @param encrypted - Whether to update the encrypted or unencrypted state.
-   */
-  updateSnapState: (
-    newState: Record<string, Json>,
-    encrypted: boolean,
-  ) => Promise<void>;
-
-  /**
-   * A hook that clears the state of the Snap. This hook is bound to the Snap
-   * ID.
-   *
-   * @param encrypted - Whether to clear the encrypted or unencrypted state.
-   */
-  clearSnapState: (encrypted: boolean) => Promise<void>;
-
-  /**
-   * A hook that creates an interface for the Snap. This hook is bound to the
-   * Snap ID.
-   *
-   * @param content - The content of the interface.
-   * @param context - The context of the interface.
-   * @returns The ID of the created interface.
-   */
-  createInterface: (content: Component, context?: InterfaceContext) => string;
-
-  /**
-   * A hook that updates an interface for the Snap. This hook is bound to the
-   * Snap ID.
-   *
-   * @param id - The ID of the interface to update.
-   * @param content - The content of the interface.
-   */
-  updateInterface: (id: string, content: Component) => void;
-
-  /**
-   * A hook that gets the state of an interface for the Snap. This hook is bound
-   * to the Snap ID.
-   *
-   * @param id - The ID of the interface to get.
-   * @returns The state of the interface.
-   */
-  getInterfaceState: (id: string) => InterfaceState;
-
-  /**
-   * A hook that gets the context of an interface for the Snap. This hook is
-   * bound to the Snap ID.
-   *
-   * @param id - The ID of the interface to get.
-   * @returns The context of the interface.
-   */
-  getInterfaceContext: (id: string) => InterfaceContext | null;
-
-  /**
-   * A hook that resolves an interface for the Snap. This hook is bound to the
-   * Snap ID.
-   *
-   * @param id - The ID of the interface to resolve.
-   * @param value - The value to resolve the interface with.
-   */
-  resolveInterface: (id: string, value: Json) => Promise<void>;
-
-  /**
-   * A hook that gets the Snap's metadata.
-   *
-   * @param snapId - The ID of the Snap to get.
-   * @returns The Snap's metadata.
-   */
-  getSnap(snapId: string): Snap;
 
   /**
    * A hook that tracks an error.
@@ -350,6 +223,13 @@ export type PermittedMiddlewareHooks = {
    * @returns The trace data.
    */
   endTrace(request: EndTraceRequest): void;
+
+  /**
+   * A hook that returns the allowed keyring methods.
+   *
+   * @returns The keyring methods.
+   */
+  getAllowedKeyringMethods(): string[];
 };
 
 export type MultichainMiddlewareHooks = {
@@ -428,17 +308,18 @@ export async function installSnap<
     namespace: MOCK_ANY_NAMESPACE,
   });
 
-  registerActions(controllerMessenger, runSaga, options, snapId);
+  registerActions(
+    controllerMessenger,
+    runSaga,
+    options,
+    snapId,
+    snapFiles.auxiliaryFiles,
+  );
 
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options, store, runSaga);
 
-  const permittedHooks = getPermittedHooks(
-    snapId,
-    snapFiles,
-    controllerMessenger,
-    runSaga,
-  );
+  const permittedHooks = getPermittedHooks(runSaga);
 
   const multichainHooks = getMultichainHooks(
     snapId,
@@ -453,25 +334,22 @@ export async function installSnap<
     options,
   });
 
-  const permissionMiddleware = createPermissionMiddleware({
-    origin: snapId,
-    messenger: controllerMessenger,
-  });
-
   const engine = createJsonRpcEngine({
+    snapId,
+    messenger: controllerMessenger,
     store,
     restrictedHooks,
     permittedHooks,
-    permissionMiddleware,
     multichainHooks,
     isMultichain: false,
   });
 
   const multichainEngine = createJsonRpcEngine({
+    snapId,
+    messenger: controllerMessenger,
     store,
     restrictedHooks,
     permittedHooks,
-    permissionMiddleware,
     multichainHooks,
     isMultichain: true,
   });
@@ -575,65 +453,19 @@ export function getRestrictedHooks(
 /**
  * Get the permitted hooks for the simulation.
  *
- * @param snapId - The ID of the Snap.
- * @param snapFiles - The fetched Snap files.
- * @param controllerMessenger - The controller messenger.
  * @param runSaga - The run saga function.
  * @returns The permitted hooks for the simulation.
  */
 export function getPermittedHooks(
-  snapId: SnapId,
-  snapFiles: FetchedSnapFiles,
-  controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
 ): PermittedMiddlewareHooks {
   return {
-    hasPermission: () => true,
     getUnlockPromise: asyncResolve(),
-    getIsLocked: () => false,
     getIsActive: () => true,
     getVersion: () => '13.6.0-flask.0',
 
-    getSnapFile: async (path: string, encoding: AuxiliaryFileEncoding) =>
-      await getSnapFile(snapFiles.auxiliaryFiles, path, encoding),
+    getAllowedKeyringMethods: () => [],
 
-    createInterface: (...args) =>
-      controllerMessenger.call(
-        'SnapInterfaceController:createInterface',
-        snapId,
-        ...args,
-      ),
-    updateInterface: (...args) =>
-      controllerMessenger.call(
-        'SnapInterfaceController:updateInterface',
-        snapId,
-        ...args,
-      ),
-    getInterfaceState: (...args) =>
-      controllerMessenger.call(
-        'SnapInterfaceController:getInterfaceState',
-        snapId,
-        ...args,
-      ),
-    getInterfaceContext: (...args) =>
-      controllerMessenger.call(
-        'SnapInterfaceController:getInterface',
-        snapId,
-        ...args,
-      ).context,
-    resolveInterface: async (...args) =>
-      controllerMessenger.call(
-        'SnapInterfaceController:resolveInterface',
-        snapId,
-        ...args,
-      ),
-
-    getEntropySources: getGetEntropySourcesImplementation(),
-    getSnapState: getPermittedGetSnapStateMethodImplementation(runSaga),
-    updateSnapState: getPermittedUpdateSnapStateMethodImplementation(runSaga),
-    clearSnapState: getPermittedClearSnapStateMethodImplementation(runSaga),
-
-    getSnap: getGetSnapImplementation(true),
     trackError: getTrackErrorImplementation(runSaga),
     trackEvent: getTrackEventImplementation(runSaga),
     startTrace: getStartTraceImplementation(runSaga),
@@ -707,12 +539,14 @@ export function getMultichainHooks(
  * @param runSaga - The run saga function.
  * @param options - The simulation options.
  * @param snapId - The ID of the Snap.
+ * @param auxiliaryFiles - Auxiliary files from the fetched Snap.
  */
 export function registerActions(
   controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
   options: SimulationOptions,
   snapId: SnapId,
+  auxiliaryFiles: VirtualFile[],
 ) {
   controllerMessenger.registerActionHandler(
     'PhishingController:testOrigin',
@@ -839,6 +673,12 @@ export function registerActions(
     getClearSnapStateMethodImplementation(runSaga),
   );
 
+  controllerMessenger.registerActionHandler(
+    'SnapController:getSnapFile',
+    async (_snapId, path, encoding) =>
+      getSnapFile(auxiliaryFiles, path, encoding),
+  );
+
   const showNativeNotification =
     getShowNativeNotificationImplementation(runSaga);
   const showInAppNotification = getShowInAppNotificationImplementation(runSaga);
@@ -871,6 +711,30 @@ export function registerActions(
 
   const getMnemonic = getGetMnemonicImplementation(
     options.secretRecoveryPhrase,
+  );
+
+  controllerMessenger.registerActionHandler(
+    // @ts-expect-error - `KeyringController` is not part of the simulation messenger types.
+    'KeyringController:getState',
+    () => ({
+      isUnlocked: true,
+      keyrings: [
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'default',
+            name: 'Default Secret Recovery Phrase',
+          },
+        },
+        {
+          type: 'HD Key Tree',
+          metadata: {
+            id: 'alternative',
+            name: 'Alternative Secret Recovery Phrase',
+          },
+        },
+      ],
+    }),
   );
 
   controllerMessenger.registerActionHandler(

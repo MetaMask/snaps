@@ -1,41 +1,78 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { SendWebSocketMessageResult } from '@metamask/snaps-sdk';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
 import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { SendWebSocketMessageParameters } from './sendWebSocketMessage';
+import type {
+  SendWebSocketMessageMethodActions,
+  SendWebSocketMessageParameters,
+} from './sendWebSocketMessage';
 import { sendWebSocketMessageHandler } from './sendWebSocketMessage';
 
 describe('snap_sendWebSocketMessage', () => {
   describe('sendWebSocketMessageHandler', () => {
     it('has the expected shape', () => {
       expect(sendWebSocketMessageHandler).toMatchObject({
-        methodNames: ['snap_sendWebSocketMessage'],
         implementation: expect.any(Function),
-        hookNames: {
-          hasPermission: true,
-          sendWebSocketMessage: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'WebSocketService:sendMessage',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        SendWebSocketMessageMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'WebSocketService:sendMessage',
+        async () => undefined,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('throws if the origin does not have permission', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(false);
-      const hooks = { hasPermission, sendWebSocketMessage };
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SendWebSocketMessageParameters>,
+          request as JsonRpcRequest<SendWebSocketMessageParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<SendWebSocketMessageResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -63,19 +100,21 @@ describe('snap_sendWebSocketMessage', () => {
     it('throws if invalid parameters are passed', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, sendWebSocketMessage };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SendWebSocketMessageParameters>,
+          request as JsonRpcRequest<SendWebSocketMessageParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<SendWebSocketMessageResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -103,19 +142,21 @@ describe('snap_sendWebSocketMessage', () => {
     it('sends a WebSocket message and returns null', async () => {
       const { implementation } = sendWebSocketMessageHandler;
 
-      const sendWebSocketMessage = jest.fn().mockResolvedValue(undefined);
-      const hasPermission = jest.fn().mockReturnValue(true);
-      const hooks = { hasPermission, sendWebSocketMessage };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<SendWebSocketMessageParameters>,
+          request as JsonRpcRequest<SendWebSocketMessageParameters> & {
+            origin: string;
+          },
           response as PendingJsonRpcResponse<SendWebSocketMessageResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -132,7 +173,12 @@ describe('snap_sendWebSocketMessage', () => {
       });
 
       expect(response).toStrictEqual({ jsonrpc: '2.0', id: 1, result: null });
-      expect(sendWebSocketMessage).toHaveBeenCalledWith('foo', 'Hello world!');
+      expect(messenger.call).toHaveBeenCalledWith(
+        'WebSocketService:sendMessage',
+        MOCK_SNAP_ID,
+        'foo',
+        'Hello world!',
+      );
     });
   });
 });

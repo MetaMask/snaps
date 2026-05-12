@@ -1,8 +1,12 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
   EntropySource,
-  JsonRpcRequest,
   ListEntropySourcesParams,
   ListEntropySourcesResult,
 } from '@metamask/snaps-sdk';
@@ -12,7 +16,10 @@ import { getBip32EntropyBuilder } from '../restricted/getBip32Entropy';
 import { getBip32PublicKeyBuilder } from '../restricted/getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../restricted/getBip44Entropy';
 import { getEntropyBuilder } from '../restricted/getEntropy';
-import type { PermittedHandlerExport } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  KeyringControllerGetStateAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 
 /**
@@ -26,30 +33,16 @@ const REQUIRED_PERMISSIONS = [
   getEntropyBuilder.targetName,
 ];
 
-const methodName = 'snap_listEntropySources';
+/**
+ * The keyring type used by HD (mnemonic-based) keyrings.
+ */
+const HD_KEYRING_TYPE = 'HD Key Tree';
 
-const hookNames: MethodHooksObject<ListEntropySourcesHooks> = {
-  hasPermission: true,
-  getEntropySources: true,
+const hookNames: MethodHooksObject<ListEntropySourcesMethodHooks> = {
   getUnlockPromise: true,
 };
 
-export type ListEntropySourcesHooks = {
-  /**
-   * Check if the requesting origin has a given permission.
-   *
-   * @param permissionName - The name of the permission to check.
-   * @returns Whether the origin has the permission.
-   */
-  hasPermission: (permissionName: string) => boolean;
-
-  /**
-   * Get the entropy sources from the client.
-   *
-   * @returns The entropy sources.
-   */
-  getEntropySources: () => EntropySource[];
-
+export type ListEntropySourcesMethodHooks = {
   /**
    * Wait for the extension to be unlocked.
    *
@@ -57,6 +50,10 @@ export type ListEntropySourcesHooks = {
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
 };
+
+export type ListEntropySourcesMethodActions =
+  | PermissionControllerHasPermissionAction
+  | KeyringControllerGetStateAction;
 
 /**
  * Get a list of entropy sources available to the Snap. The requesting origin
@@ -97,48 +94,71 @@ export type ListEntropySourcesHooks = {
  * ```
  */
 export const listEntropySourcesHandler = {
-  methodNames: [methodName] as const,
   implementation: listEntropySourcesImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
-  ListEntropySourcesHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'KeyringController:getState',
+  ],
+} satisfies MethodHandler<
+  ListEntropySourcesMethodHooks,
+  ListEntropySourcesMethodActions,
   ListEntropySourcesParams,
-  ListEntropySourcesResult
+  ListEntropySourcesResult,
+  { origin: string }
 >;
 
 /**
  * The `snap_listEntropySources` method implementation.
  *
- * @param _request - The JSON-RPC request object. Not used by this function.
+ * @param request - The JSON-RPC request object.
  * @param response - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if the origin has a
- * permission.
- * @param hooks.getEntropySources - The function to get the entropy sources.
  * @param hooks.getUnlockPromise - The function to get the unlock promise.
- * @returns Noting.
+ * @param messenger - The messenger used to call controller actions.
+ * @returns Nothing.
  */
 async function listEntropySourcesImplementation(
-  _request: JsonRpcRequest<ListEntropySourcesParams>,
+  request: JsonRpcRequestWithOrigin<ListEntropySourcesParams>,
   response: PendingJsonRpcResponse<ListEntropySourcesResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  {
-    hasPermission,
-    getEntropySources,
-    getUnlockPromise,
-  }: ListEntropySourcesHooks,
+  { getUnlockPromise }: ListEntropySourcesMethodHooks,
+  messenger: Messenger<string, ListEntropySourcesMethodActions>,
 ): Promise<void> {
-  const isPermitted = REQUIRED_PERMISSIONS.some(hasPermission);
+  const { origin } = request;
+
+  const isPermitted = REQUIRED_PERMISSIONS.some((permission) =>
+    messenger.call('PermissionController:hasPermission', origin, permission),
+  );
+
   if (!isPermitted) {
     return end(providerErrors.unauthorized());
   }
 
   await getUnlockPromise(true);
 
-  response.result = getEntropySources();
+  const { keyrings } = messenger.call('KeyringController:getState');
+
+  response.result = keyrings
+    .map((keyring, index) => {
+      if (keyring.type === HD_KEYRING_TYPE) {
+        return {
+          id: keyring.metadata.id,
+          name: keyring.metadata.name,
+          type: 'mnemonic',
+          primary: index === 0,
+        };
+      }
+
+      return null;
+    })
+    .filter((entropySource): entropySource is EntropySource =>
+      Boolean(entropySource),
+    );
+
   return end();
 }

@@ -1,7 +1,11 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   SendWebSocketMessageParams,
   SendWebSocketMessageResult,
 } from '@metamask/snaps-sdk';
@@ -18,20 +22,14 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceSendMessageAction,
+} from '../types';
 
-const methodName = 'snap_sendWebSocketMessage';
-
-const hookNames: MethodHooksObject<SendWebSocketMessageMethodHooks> = {
-  hasPermission: true,
-  sendWebSocketMessage: true,
-};
-
-export type SendWebSocketMessageMethodHooks = {
-  hasPermission: (permissionName: string) => boolean;
-  sendWebSocketMessage: (id: string, data: string | number[]) => Promise<void>;
-};
+export type SendWebSocketMessageMethodActions =
+  | PermissionControllerHasPermissionAction
+  | WebSocketServiceSendMessageAction;
 
 const SendWebSocketMessageParametersStruct = object({
   id: string(),
@@ -68,13 +66,17 @@ export type SendWebSocketMessageParameters = InferMatching<
  * ```
  */
 export const sendWebSocketMessageHandler = {
-  methodNames: [methodName] as const,
   implementation: sendWebSocketMessageImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  SendWebSocketMessageMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'WebSocketService:sendMessage',
+  ],
+} satisfies MethodHandler<
+  never,
+  SendWebSocketMessageMethodActions,
   SendWebSocketMessageParams,
-  SendWebSocketMessageResult
+  SendWebSocketMessageResult,
+  { origin: string }
 >;
 
 /**
@@ -84,27 +86,33 @@ export const sendWebSocketMessageHandler = {
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:network-access` permission.
- * @param hooks.sendWebSocketMessage - The function to send a WebSocket message.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function sendWebSocketMessageImplementation(
-  req: JsonRpcRequest<SendWebSocketMessageParameters>,
+  req: JsonRpcRequestWithOrigin<SendWebSocketMessageParameters>,
   res: PendingJsonRpcResponse<SendWebSocketMessageResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, sendWebSocketMessage }: SendWebSocketMessageMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, SendWebSocketMessageMethodActions>,
 ): Promise<void> {
-  if (!hasPermission(SnapEndowments.NetworkAccess)) {
+  const { params, origin } = req;
+
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.NetworkAccess,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
-  const { params } = req;
-
   try {
     const { id, message } = getValidatedParams(params);
-    await sendWebSocketMessage(id, message);
+    await messenger.call('WebSocketService:sendMessage', origin, id, message);
     res.result = null;
   } catch (error) {
     return end(error);

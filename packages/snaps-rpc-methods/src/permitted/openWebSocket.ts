@@ -1,9 +1,13 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   literal,
   union,
-  type JsonRpcRequest,
   type OpenWebSocketParams,
   type OpenWebSocketResult,
 } from '@metamask/snaps-sdk';
@@ -19,20 +23,14 @@ import {
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceOpenAction,
+} from '../types';
 
-const methodName = 'snap_openWebSocket';
-
-const hookNames: MethodHooksObject<OpenWebSocketMethodHooks> = {
-  hasPermission: true,
-  openWebSocket: true,
-};
-
-export type OpenWebSocketMethodHooks = {
-  hasPermission: (permissionName: string) => boolean;
-  openWebSocket: (url: string, protocols?: string[]) => Promise<string>;
-};
+export type OpenWebSocketMethodActions =
+  | PermissionControllerHasPermissionAction
+  | WebSocketServiceOpenAction;
 
 const OpenWebSocketParametersStruct = object({
   url: uri({ protocol: union([literal('wss:'), literal('ws:')]) }),
@@ -91,13 +89,14 @@ export type OpenWebSocketParameters = InferMatching<
  * ```
  */
 export const openWebSocketHandler = {
-  methodNames: [methodName] as const,
   implementation: openWebSocketImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  OpenWebSocketMethodHooks,
+  actionNames: ['PermissionController:hasPermission', 'WebSocketService:open'],
+} satisfies MethodHandler<
+  never,
+  OpenWebSocketMethodActions,
   OpenWebSocketParams,
-  OpenWebSocketResult
+  OpenWebSocketResult,
+  { origin: string }
 >;
 
 /**
@@ -107,27 +106,38 @@ export const openWebSocketHandler = {
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:network-access` permission.
- * @param hooks.openWebSocket - The function to open a WebSocket.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 async function openWebSocketImplementation(
-  req: JsonRpcRequest<OpenWebSocketParameters>,
+  req: JsonRpcRequestWithOrigin<OpenWebSocketParameters>,
   res: PendingJsonRpcResponse<OpenWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, openWebSocket }: OpenWebSocketMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, OpenWebSocketMethodActions>,
 ): Promise<void> {
-  if (!hasPermission(SnapEndowments.NetworkAccess)) {
+  const { params, origin } = req;
+
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.NetworkAccess,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
-  const { params } = req;
-
   try {
     const { url, protocols } = getValidatedParams(params);
-    res.result = await openWebSocket(url, protocols);
+    res.result = await messenger.call(
+      'WebSocketService:open',
+      origin,
+      url,
+      protocols,
+    );
   } catch (error) {
     return end(error);
   }

@@ -1,46 +1,73 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import type { ClearStateResult } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
+import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import type { ClearStateParameters } from './clearState';
+import type {
+  ClearStateMethodActions,
+  ClearStateParameters,
+} from './clearState';
 import { clearStateHandler } from './clearState';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_clearState', () => {
   describe('clearStateHandler', () => {
     it('has the expected shape', () => {
       expect(clearStateHandler).toMatchObject({
-        methodNames: ['snap_clearState'],
         implementation: expect.any(Function),
-        hookNames: {
-          clearSnapState: true,
-          hasPermission: true,
-        },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapController:clearSnapState',
+        ],
       });
     });
   });
 
   describe('implementation', () => {
-    it('returns the result from the `clearSnapState` hook', async () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        ClearStateMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:clearSnapState',
+        () => undefined,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('returns the result from the `clearSnapState` action', async () => {
       const { implementation } = clearStateHandler;
 
-      const clearSnapState = jest.fn().mockReturnValue(null);
-      const hasPermission = jest.fn().mockReturnValue(true);
-
-      const hooks = {
-        clearSnapState,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters>,
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -53,7 +80,11 @@ describe('snap_clearState', () => {
         params: {},
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(true);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:clearSnapState',
+        MOCK_SNAP_ID,
+        true,
+      );
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -64,23 +95,19 @@ describe('snap_clearState', () => {
     it('clears unencrypted state if specified', async () => {
       const { implementation } = clearStateHandler;
 
-      const clearSnapState = jest.fn().mockReturnValue(null);
-      const hasPermission = jest.fn().mockReturnValue(true);
-
-      const hooks = {
-        clearSnapState,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters>,
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -95,7 +122,11 @@ describe('snap_clearState', () => {
         },
       });
 
-      expect(clearSnapState).toHaveBeenCalledWith(false);
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:clearSnapState',
+        MOCK_SNAP_ID,
+        false,
+      );
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -106,23 +137,24 @@ describe('snap_clearState', () => {
     it('throws if the requesting origin does not have the required permission', async () => {
       const { implementation } = clearStateHandler;
 
-      const clearSnapState = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(false);
+      const messenger = getMessenger();
 
-      const hooks = {
-        clearSnapState,
-        hasPermission,
-      };
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters>,
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -135,7 +167,11 @@ describe('snap_clearState', () => {
         params: {},
       });
 
-      expect(clearSnapState).not.toHaveBeenCalled();
+      expect(messenger.call).not.toHaveBeenCalledWith(
+        'SnapController:clearSnapState',
+        expect.anything(),
+        expect.anything(),
+      );
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,
@@ -151,23 +187,19 @@ describe('snap_clearState', () => {
     it('throws if the parameters are invalid', async () => {
       const { implementation } = clearStateHandler;
 
-      const clearSnapState = jest.fn();
-      const hasPermission = jest.fn().mockReturnValue(true);
-
-      const hooks = {
-        clearSnapState,
-        hasPermission,
-      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<ClearStateParameters>,
+          request as JsonRpcRequestWithOrigin<ClearStateParameters>,
           response as PendingJsonRpcResponse<ClearStateResult>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);

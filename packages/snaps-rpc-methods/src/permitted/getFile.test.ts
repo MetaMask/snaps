@@ -1,58 +1,78 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { GetFileParams } from '@metamask/snaps-sdk';
 import { AuxiliaryFileEncoding } from '@metamask/snaps-sdk';
 import { VirtualFile } from '@metamask/snaps-utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+} from '@metamask/snaps-utils/test-utils';
 import type {
-  JsonRpcRequest,
   PendingJsonRpcResponse,
   JsonRpcFailure,
   JsonRpcSuccess,
 } from '@metamask/utils';
 import { stringToBytes } from '@metamask/utils';
 
-import type { GetFileHooks } from './getFile';
+import type { GetFileMethodActions } from './getFile';
 import { getFileHandler } from './getFile';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_getFile', () => {
   describe('getFileHandler', () => {
     it('has the expected shape', () => {
       expect(getFileHandler).toMatchObject({
-        methodNames: ['snap_getFile'],
         implementation: expect.any(Function),
-        hookNames: {
-          getSnapFile: true,
-        },
+        actionNames: ['SnapController:getSnapFile'],
       });
     });
   });
 
   describe('implementation', () => {
-    const getMockHooks = () =>
-      ({
-        getSnapFile: jest.fn(),
-      }) as GetFileHooks;
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        GetFileMethodActions,
+        never
+      >();
 
-    it('returns the result received from the getSnapFile hook', async () => {
+      messenger.registerActionHandler(
+        'SnapController:getSnapFile',
+        async () => null,
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    it('returns the result received from the `SnapController:getSnapFile` action', async () => {
       const { implementation } = getFileHandler;
 
-      const hooks = getMockHooks();
+      const messenger = getMessenger();
 
       const vfile = new VirtualFile(
         stringToBytes(JSON.stringify({ foo: 'bar' })),
       );
       const base64 = vfile.toString('base64');
-      (
-        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
-      ).mockImplementation(async (_path: string) => base64);
+
+      messenger.registerActionHandler(
+        'SnapController:getSnapFile',
+        async () => base64,
+      );
 
       const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams>,
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -68,7 +88,9 @@ describe('snap_getFile', () => {
       })) as JsonRpcSuccess<string>;
 
       expect(response.result).toBe(base64);
-      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapFile',
+        MOCK_SNAP_ID,
         './src/foo.json',
         AuxiliaryFileEncoding.Base64,
       );
@@ -77,24 +99,29 @@ describe('snap_getFile', () => {
     it('supports hex in encoding parameter', async () => {
       const { implementation } = getFileHandler;
 
-      const hooks = getMockHooks();
+      const messenger = getMessenger();
 
       const vfile = new VirtualFile(
         stringToBytes(JSON.stringify({ foo: 'bar' })),
       );
       const hexadecimal = vfile.toString('hex');
-      (
-        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
-      ).mockImplementation(async (_path: string) => hexadecimal);
+
+      messenger.registerActionHandler(
+        'SnapController:getSnapFile',
+        async () => hexadecimal,
+      );
 
       const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams>,
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -111,31 +138,37 @@ describe('snap_getFile', () => {
       })) as JsonRpcSuccess<string>;
 
       expect(response.result).toBe(hexadecimal);
-      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapFile',
+        MOCK_SNAP_ID,
         './src/foo.json',
         AuxiliaryFileEncoding.Hex,
       );
     });
 
-    it('ends with error if hook throws', async () => {
+    it('ends with error if action throws', async () => {
       const { implementation } = getFileHandler;
 
-      const hooks = getMockHooks();
+      const messenger = getMessenger();
 
-      (
-        hooks.getSnapFile as jest.MockedFunction<typeof hooks.getSnapFile>
-      ).mockImplementation(async (_path: string) => {
-        throw new Error('foo bar');
-      });
+      messenger.registerActionHandler(
+        'SnapController:getSnapFile',
+        async () => {
+          throw new Error('foo bar');
+        },
+      );
 
       const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<GetFileParams>,
+          req as JsonRpcRequestWithOrigin<GetFileParams>,
           res as PendingJsonRpcResponse<string>,
           next,
           end,
-          hooks,
+          {} as never,
+          messenger,
         );
 
         result?.catch(end);
@@ -161,7 +194,9 @@ describe('snap_getFile', () => {
         },
       });
 
-      expect(hooks.getSnapFile).toHaveBeenCalledWith(
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:getSnapFile',
+        MOCK_SNAP_ID,
         './src/foo.json',
         AuxiliaryFileEncoding.Base64,
       );

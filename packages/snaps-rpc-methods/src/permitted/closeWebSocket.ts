@@ -1,7 +1,11 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
   CloseWebSocketParams,
   CloseWebSocketResult,
 } from '@metamask/snaps-sdk';
@@ -10,20 +14,14 @@ import { create, object, string, StructError } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  JsonRpcRequestWithOrigin,
+  WebSocketServiceCloseAction,
+} from '../types';
 
-const methodName = 'snap_closeWebSocket';
-
-const hookNames: MethodHooksObject<CloseWebSocketMethodHooks> = {
-  hasPermission: true,
-  closeWebSocket: true,
-};
-
-export type CloseWebSocketMethodHooks = {
-  hasPermission: (permissionName: string) => boolean;
-  closeWebSocket: (id: string) => void;
-};
+export type CloseWebSocketMethodActions =
+  | PermissionControllerHasPermissionAction
+  | WebSocketServiceCloseAction;
 
 const CloseWebSocketParametersStruct = object({
   id: string(),
@@ -54,13 +52,14 @@ export type CloseWebSocketParameters = InferMatching<
  * ```
  */
 export const closeWebSocketHandler = {
-  methodNames: [methodName] as const,
   implementation: closeWebSocketImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  CloseWebSocketMethodHooks,
+  actionNames: ['PermissionController:hasPermission', 'WebSocketService:close'],
+} satisfies MethodHandler<
+  never,
+  CloseWebSocketMethodActions,
   CloseWebSocketParams,
-  CloseWebSocketResult
+  CloseWebSocketResult,
+  { origin: string }
 >;
 
 /**
@@ -70,27 +69,33 @@ export const closeWebSocketHandler = {
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:network-access` permission.
- * @param hooks.closeWebSocket - The function to close a WebSocket.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function closeWebSocketImplementation(
-  req: JsonRpcRequest<CloseWebSocketParameters>,
+  req: JsonRpcRequestWithOrigin<CloseWebSocketParameters>,
   res: PendingJsonRpcResponse<CloseWebSocketResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { hasPermission, closeWebSocket }: CloseWebSocketMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, CloseWebSocketMethodActions>,
 ): void {
-  if (!hasPermission(SnapEndowments.NetworkAccess)) {
+  const { params, origin } = req;
+
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.NetworkAccess,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
-  const { params } = req;
-
   try {
     const { id } = getValidatedParams(params);
-    closeWebSocket(id);
+    messenger.call('WebSocketService:close', origin, id);
     res.result = null;
   } catch (error) {
     return end(error);

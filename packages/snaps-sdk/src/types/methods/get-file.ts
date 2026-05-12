@@ -26,6 +26,7 @@ export type GetFileParams = {
 };
 
 /**
- * The file content as a string in the requested encoding.
+ * The file content as a string in the requested encoding, or `null` if the
+ * file does not exist.
  */
-export type GetFileResult = string;
+export type GetFileResult = string | null;

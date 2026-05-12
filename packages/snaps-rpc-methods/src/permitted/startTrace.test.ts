@@ -1,43 +1,69 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type { StartTraceParams } from '@metamask/snaps-sdk';
-import type { JsonRpcRequest } from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
 
+import type { StartTraceMethodActions } from './startTrace';
 import { startTraceHandler } from './startTrace';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('snap_startTrace', () => {
   describe('startTraceHandler', () => {
     it('has the expected shape', () => {
       expect(startTraceHandler).toMatchObject({
-        methodNames: ['snap_startTrace'],
         implementation: expect.any(Function),
         hookNames: {
           startTrace: true,
-          getSnap: true,
         },
+        actionNames: ['SnapController:getSnap'],
       });
     });
   });
 
   describe('implementation', () => {
+    const getMessenger = (preinstalled = true) => {
+      const messenger = new MockControllerMessenger<
+        StartTraceMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler('SnapController:getSnap', () => ({
+        ...getSnapObject(),
+        preinstalled,
+      }));
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
     it('calls the `startTrace` hook with the provided parameters', async () => {
       const { implementation } = startTraceHandler;
 
       const startTrace = jest.fn().mockReturnValue({
         traceId: 'test-trace-id',
       });
+      const hooks = { startTrace };
 
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-      const hooks = { startTrace, getSnap };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<StartTraceParams>,
+          request as JsonRpcRequestWithOrigin<StartTraceParams>,
           response,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -77,18 +103,21 @@ describe('snap_startTrace', () => {
       const { implementation } = startTraceHandler;
 
       const startTrace = jest.fn();
-      const getSnap = jest.fn().mockReturnValue({ preinstalled: false });
-      const hooks = { startTrace, getSnap };
+      const hooks = { startTrace };
+
+      const messenger = getMessenger(false);
 
       const engine = new JsonRpcEngine();
 
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
       engine.push((request, response, next, end) => {
         const result = implementation(
-          request as JsonRpcRequest<StartTraceParams>,
+          request as JsonRpcRequestWithOrigin<StartTraceParams>,
           response,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -146,18 +175,21 @@ describe('snap_startTrace', () => {
         const { implementation } = startTraceHandler;
 
         const startTrace = jest.fn();
-        const getSnap = jest.fn().mockReturnValue({ preinstalled: true });
-        const hooks = { startTrace, getSnap };
+        const hooks = { startTrace };
+
+        const messenger = getMessenger();
 
         const engine = new JsonRpcEngine();
 
+        engine.push(createOriginMiddleware(MOCK_SNAP_ID));
         engine.push((request, response, next, end) => {
           const result = implementation(
-            request as JsonRpcRequest<StartTraceParams>,
+            request as JsonRpcRequestWithOrigin<StartTraceParams>,
             response,
             next,
             end,
             hooks,
+            messenger,
           );
 
           result?.catch(end);

@@ -1,28 +1,26 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors } from '@metamask/rpc-errors';
 import type {
-  BackgroundEvent,
   GetBackgroundEventsParams,
   GetBackgroundEventsResult,
-  JsonRpcRequest,
+  SnapId,
 } from '@metamask/snaps-sdk';
 import { type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  CronjobControllerGetAction,
+  JsonRpcRequestWithOrigin,
+} from '../types';
 
-const methodName = 'snap_getBackgroundEvents';
-
-const hookNames: MethodHooksObject<GetBackgroundEventsMethodHooks> = {
-  getBackgroundEvents: true,
-  hasPermission: true,
-};
-
-export type GetBackgroundEventsMethodHooks = {
-  getBackgroundEvents: () => BackgroundEvent[];
-  hasPermission: (permissionName: string) => boolean;
-};
+export type GetBackgroundEventsMethodActions =
+  | PermissionControllerHasPermissionAction
+  | CronjobControllerGetAction;
 
 /**
  * Get the scheduled background events for the Snap.
@@ -49,41 +47,49 @@ export type GetBackgroundEventsMethodHooks = {
  * ```
  */
 export const getBackgroundEventsHandler = {
-  methodNames: [methodName] as const,
   implementation: getGetBackgroundEventsImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  GetBackgroundEventsMethodHooks,
+  actionNames: ['PermissionController:hasPermission', 'CronjobController:get'],
+} satisfies MethodHandler<
+  never,
+  GetBackgroundEventsMethodActions,
   GetBackgroundEventsParams,
-  GetBackgroundEventsResult
+  GetBackgroundEventsResult,
+  { origin: SnapId }
 >;
 
 /**
  * The `snap_getBackgroundEvents` method implementation.
  *
- * @param _req - The JSON-RPC request object. Not used by this function.
+ * @param req - The JSON-RPC request object.
  * @param res - The JSON-RPC response object.
  * @param _next - The `json-rpc-engine` "next" callback.
  * Not used by this function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.getBackgroundEvents - The function to get the background events.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:cronjob` permission.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns An array of background events.
  */
 async function getGetBackgroundEventsImplementation(
-  _req: JsonRpcRequest<GetBackgroundEventsParams>,
+  req: JsonRpcRequestWithOrigin<GetBackgroundEventsParams>,
   res: PendingJsonRpcResponse<GetBackgroundEventsResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { getBackgroundEvents, hasPermission }: GetBackgroundEventsMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, GetBackgroundEventsMethodActions>,
 ): Promise<void> {
-  if (!hasPermission(SnapEndowments.Cronjob)) {
+  const { origin } = req;
+
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.Cronjob,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
   try {
-    const events = getBackgroundEvents();
-    res.result = events;
+    res.result = messenger.call('CronjobController:get', origin);
   } catch (error) {
     return end(error);
   }

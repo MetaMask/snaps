@@ -1,66 +1,84 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeKeyringParams } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
-import { MOCK_SNAP_ID, getSnapObject } from '@metamask/snaps-utils/test-utils';
-import type {
-  JsonRpcRequest,
-  JsonRpcFailure,
-  JsonRpcSuccess,
-} from '@metamask/utils';
+import {
+  MOCK_SNAP_ID,
+  MockControllerMessenger,
+  getSnapObject,
+} from '@metamask/snaps-utils/test-utils';
+import type { JsonRpcFailure, JsonRpcSuccess } from '@metamask/utils';
 
+import type { InvokeKeyringMethodActions } from './invokeKeyring';
 import { invokeKeyringHandler } from './invokeKeyring';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('wallet_invokeKeyring', () => {
   describe('invokeKeyringHandler', () => {
     it('has the expected shape', () => {
       expect(invokeKeyringHandler).toMatchObject({
-        methodNames: ['wallet_invokeKeyring'],
         implementation: expect.any(Function),
         hookNames: {
-          getSnap: true,
-          handleSnapRpcRequest: true,
-          hasPermission: true,
+          getAllowedKeyringMethods: true,
         },
+        actionNames: [
+          'PermissionController:hasPermission',
+          'SnapController:handleRequest',
+          'SnapController:getSnap',
+        ],
       });
     });
   });
-  describe('invokeKeyringImplementation', () => {
-    // Mirror the origin middleware in the extension
-    const createOriginMiddleware =
-      (origin: string) =>
-      (request: any, _response: unknown, next: () => void, _end: unknown) => {
-        request.origin = origin;
-        next();
-      };
 
-    const getMockHooks = () =>
-      ({
-        getSnap: jest.fn(),
-        hasPermission: jest.fn(),
-        handleSnapRpcRequest: jest.fn(),
-        getAllowedKeyringMethods: jest.fn(),
-      }) as any;
+  describe('invokeKeyringImplementation', () => {
+    const getMessenger = () => {
+      const messenger = new MockControllerMessenger<
+        InvokeKeyringMethodActions,
+        never
+      >();
+
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => true,
+      );
+
+      messenger.registerActionHandler('SnapController:getSnap', () =>
+        getSnapObject(),
+      );
+
+      messenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async () => 'bar',
+      );
+
+      jest.spyOn(messenger, 'call');
+
+      return messenger;
+    };
+
+    const getMockHooks = () => ({
+      getAllowedKeyringMethods: jest.fn().mockReturnValue(['foo']),
+    });
 
     it('invokes the snap and returns the result', async () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
-
-      hooks.hasPermission.mockImplementation(() => true);
-      hooks.getSnap.mockImplementation(() => getSnapObject());
-      hooks.handleSnapRpcRequest.mockImplementation(() => 'bar');
-      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -77,36 +95,42 @@ describe('wallet_invokeKeyring', () => {
       })) as JsonRpcSuccess<string>;
 
       expect(response.result).toBe('bar');
-      expect(hooks.handleSnapRpcRequest).toHaveBeenCalledWith({
-        handler: HandlerType.OnKeyringRequest,
-        request: { method: 'foo' },
-        snapId: MOCK_SNAP_ID,
-      });
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:handleRequest',
+        {
+          handler: HandlerType.OnKeyringRequest,
+          origin: 'metamask.io',
+          request: { method: 'foo' },
+          snapId: MOCK_SNAP_ID,
+        },
+      );
     });
 
     it('fails if invoking the snap fails', async () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
+      const messenger = getMessenger();
 
-      hooks.hasPermission.mockImplementation(() => true);
-      hooks.getSnap.mockImplementation(() => getSnapObject());
-      hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw rpcErrors.invalidRequest({
-          message: 'Failed to start snap.',
-        });
-      });
-      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+      messenger.registerActionHandler(
+        'SnapController:handleRequest',
+        async () => {
+          throw rpcErrors.invalidRequest({
+            message: 'Failed to start snap.',
+          });
+        },
+      );
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -135,26 +159,21 @@ describe('wallet_invokeKeyring', () => {
     it('fails if origin is not authorized to call the method', async () => {
       const { implementation } = invokeKeyringHandler;
 
-      const hooks = getMockHooks();
-
-      hooks.hasPermission.mockImplementation(() => true);
-      hooks.getSnap.mockImplementation(() => getSnapObject());
-      hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw rpcErrors.invalidRequest({
-          message: 'Failed to start snap.',
-        });
-      });
-      hooks.getAllowedKeyringMethods.mockImplementation(() => ['bar']);
+      const hooks = {
+        getAllowedKeyringMethods: jest.fn().mockReturnValue(['bar']),
+      };
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -185,25 +204,18 @@ describe('wallet_invokeKeyring', () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
-
-      hooks.hasPermission.mockImplementation(() => true);
-      hooks.getSnap.mockImplementation(() => getSnapObject());
-      hooks.handleSnapRpcRequest.mockImplementation(() => {
-        throw rpcErrors.invalidRequest({
-          message: 'Failed to start snap.',
-        });
-      });
-      hooks.getAllowedKeyringMethods.mockImplementation(() => ['foo']);
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -231,18 +243,23 @@ describe('wallet_invokeKeyring', () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
+      const messenger = getMessenger();
 
-      hooks.hasPermission.mockImplementation(() => false);
+      messenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        () => false,
+      );
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -272,19 +289,20 @@ describe('wallet_invokeKeyring', () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
+      const messenger = getMessenger();
 
-      hooks.hasPermission.mockImplementation(() => true);
-      hooks.getSnap.mockImplementation(() => undefined);
+      messenger.registerActionHandler('SnapController:getSnap', () => null);
 
       const engine = new JsonRpcEngine();
       engine.push(createOriginMiddleware('metamask.io'));
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);
@@ -314,15 +332,17 @@ describe('wallet_invokeKeyring', () => {
       const { implementation } = invokeKeyringHandler;
 
       const hooks = getMockHooks();
+      const messenger = getMessenger();
 
       const engine = new JsonRpcEngine();
       engine.push((req, res, next, end) => {
         const result = implementation(
-          req as JsonRpcRequest<InvokeKeyringParams>,
+          req as JsonRpcRequestWithOrigin<InvokeKeyringParams>,
           res,
           next,
           end,
           hooks,
+          messenger,
         );
 
         result?.catch(end);

@@ -1,11 +1,11 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
-import { rpcErrors } from '@metamask/rpc-errors';
 import type {
-  JsonRpcRequest,
-  TrackEventParams,
-  TrackEventResult,
-} from '@metamask/snaps-sdk';
-import type { InferMatching, Snap } from '@metamask/snaps-utils';
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import { rpcErrors } from '@metamask/rpc-errors';
+import type { TrackEventParams, TrackEventResult } from '@metamask/snaps-sdk';
+import type { InferMatching } from '@metamask/snaps-utils';
 import {
   create,
   object,
@@ -18,10 +18,11 @@ import {
 import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
-import type { PermittedHandlerExport } from '../types';
+import type {
+  JsonRpcRequestWithOrigin,
+  SnapControllerGetSnapAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
-
-const methodName = 'snap_trackEvent';
 
 const PropertiesStruct = optional(record(string(), JsonStruct));
 
@@ -41,7 +42,6 @@ const SnakeCasePropertiesStruct = refine(
 
 const hookNames: MethodHooksObject<TrackEventMethodHooks> = {
   trackEvent: true,
-  getSnap: true,
 };
 
 export type TrackEventMethodHooks = {
@@ -51,13 +51,9 @@ export type TrackEventMethodHooks = {
    * @param event - The event object containing event details and properties.
    */
   trackEvent: (event: TrackEventObject) => void;
-  /**
-   * Get Snap metadata.
-   *
-   * @param snapId - The ID of a Snap.
-   */
-  getSnap: (snapId: string) => Snap | undefined;
 };
+
+export type TrackEventMethodActions = SnapControllerGetSnapAction;
 
 export type TrackEventObject = {
   event: string;
@@ -84,13 +80,15 @@ export type TrackEventParameters = InferMatching<
  * @internal
  */
 export const trackEventHandler = {
-  methodNames: [methodName] as const,
   implementation: getTrackEventImplementation,
   hookNames,
-} satisfies PermittedHandlerExport<
+  actionNames: ['SnapController:getSnap'],
+} satisfies MethodHandler<
   TrackEventMethodHooks,
+  TrackEventMethodActions,
   TrackEventParameters,
-  TrackEventResult
+  TrackEventResult,
+  { origin: string }
 >;
 
 /**
@@ -103,19 +101,18 @@ export const trackEventHandler = {
  * @param end - The `json-rpc-engine` "end" callback.
  * @param hooks - The RPC method hooks.
  * @param hooks.trackEvent - The function to track the event.
- * @param hooks.getSnap - The function to get Snap metadata.
+ * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
 function getTrackEventImplementation(
-  req: JsonRpcRequest<TrackEventParameters>,
+  req: JsonRpcRequestWithOrigin<TrackEventParameters>,
   res: PendingJsonRpcResponse<TrackEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  { trackEvent, getSnap }: TrackEventMethodHooks,
+  { trackEvent }: TrackEventMethodHooks,
+  messenger: Messenger<string, TrackEventMethodActions>,
 ): void {
-  const snap = getSnap(
-    (req as JsonRpcRequest<TrackEventParams> & { origin: string }).origin,
-  );
+  const snap = messenger.call('SnapController:getSnap', req.origin);
 
   if (!snap?.preinstalled) {
     return end(rpcErrors.methodNotFound());

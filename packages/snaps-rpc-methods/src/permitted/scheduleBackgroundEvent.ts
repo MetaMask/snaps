@@ -1,12 +1,17 @@
-import type { JsonRpcEngineEndCallback } from '@metamask/json-rpc-engine';
+import type {
+  JsonRpcEngineEndCallback,
+  MethodHandler,
+} from '@metamask/json-rpc-engine';
+import type { Messenger } from '@metamask/messenger';
+import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import {
   selectiveUnion,
-  type JsonRpcRequest,
   type ScheduleBackgroundEventParams,
   type ScheduleBackgroundEventResult,
+  type SnapId,
 } from '@metamask/snaps-sdk';
-import type { CronjobRpcRequest, InferMatching } from '@metamask/snaps-utils';
+import type { InferMatching } from '@metamask/snaps-utils';
 import {
   CronjobRpcRequestStruct,
   ISO8601DateStruct,
@@ -16,28 +21,14 @@ import { StructError, create, object } from '@metamask/superstruct';
 import { hasProperty, type PendingJsonRpcResponse } from '@metamask/utils';
 
 import { SnapEndowments } from '../endowments';
-import type { PermittedHandlerExport } from '../types';
-import type { MethodHooksObject } from '../utils';
+import type {
+  CronjobControllerScheduleAction,
+  JsonRpcRequestWithOrigin,
+} from '../types';
 
-const methodName = 'snap_scheduleBackgroundEvent';
-
-const hookNames: MethodHooksObject<ScheduleBackgroundEventMethodHooks> = {
-  scheduleBackgroundEvent: true,
-  hasPermission: true,
-};
-
-type ScheduleBackgroundEventHookParams = {
-  schedule: string;
-  request: CronjobRpcRequest;
-};
-
-export type ScheduleBackgroundEventMethodHooks = {
-  scheduleBackgroundEvent: (
-    snapEvent: ScheduleBackgroundEventHookParams,
-  ) => string;
-
-  hasPermission: (permissionName: string) => boolean;
-};
+export type ScheduleBackgroundEventMethodActions =
+  | PermissionControllerHasPermissionAction
+  | CronjobControllerScheduleAction;
 
 /**
  * Schedule a background event for a Snap. The background event will trigger a
@@ -66,13 +57,17 @@ export type ScheduleBackgroundEventMethodHooks = {
  * ```
  */
 export const scheduleBackgroundEventHandler = {
-  methodNames: [methodName] as const,
   implementation: getScheduleBackgroundEventImplementation,
-  hookNames,
-} satisfies PermittedHandlerExport<
-  ScheduleBackgroundEventMethodHooks,
+  actionNames: [
+    'PermissionController:hasPermission',
+    'CronjobController:schedule',
+  ],
+} satisfies MethodHandler<
+  never,
+  ScheduleBackgroundEventMethodActions,
   ScheduleBackgroundEventParameters,
-  ScheduleBackgroundEventResult
+  ScheduleBackgroundEventResult,
+  { origin: SnapId }
 >;
 
 const ScheduleBackgroundEventParametersWithDateStruct = object({
@@ -120,24 +115,27 @@ function getSchedule(params: ScheduleBackgroundEventParameters): string {
  * @param _next - The `json-rpc-engine` "next" callback. Not used by this
  * function.
  * @param end - The `json-rpc-engine` "end" callback.
- * @param hooks - The RPC method hooks.
- * @param hooks.scheduleBackgroundEvent - The function to schedule a background event.
- * @param hooks.hasPermission - The function to check if a snap has the `endowment:cronjob` permission.
+ * @param _hooks - The RPC method hooks. Not used by this function.
+ * @param messenger - The messenger used to call controller actions.
  * @returns An id representing the background event.
  */
 async function getScheduleBackgroundEventImplementation(
-  req: JsonRpcRequest<ScheduleBackgroundEventParameters>,
+  req: JsonRpcRequestWithOrigin<ScheduleBackgroundEventParameters>,
   res: PendingJsonRpcResponse<ScheduleBackgroundEventResult>,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
-  {
-    scheduleBackgroundEvent,
-    hasPermission,
-  }: ScheduleBackgroundEventMethodHooks,
+  _hooks: never,
+  messenger: Messenger<string, ScheduleBackgroundEventMethodActions>,
 ): Promise<void> {
-  const { params } = req;
+  const { params, origin } = req;
 
-  if (!hasPermission(SnapEndowments.Cronjob)) {
+  if (
+    !messenger.call(
+      'PermissionController:hasPermission',
+      origin,
+      SnapEndowments.Cronjob,
+    )
+  ) {
     return end(providerErrors.unauthorized());
   }
 
@@ -146,7 +144,8 @@ async function getScheduleBackgroundEventImplementation(
     const { request } = validatedParams;
     const schedule = getSchedule(validatedParams);
 
-    const id = scheduleBackgroundEvent({
+    const id = messenger.call('CronjobController:schedule', {
+      snapId: origin,
       schedule,
       request,
     });

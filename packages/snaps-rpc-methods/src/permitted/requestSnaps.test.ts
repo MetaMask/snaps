@@ -1,7 +1,11 @@
-import { JsonRpcEngine } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngine,
+  createOriginMiddleware,
+} from '@metamask/json-rpc-engine';
 import type {
   RequestedPermissions,
   PermissionConstraint,
+  PermissionController,
 } from '@metamask/permission-controller';
 import type {
   RequestSnapsParams,
@@ -11,32 +15,30 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MOCK_ORIGIN,
-  getTruncatedSnap,
   MOCK_LOCAL_SNAP_ID,
+  MockControllerMessenger,
+  getTruncatedSnap,
 } from '@metamask/snaps-utils/test-utils';
-import type {
-  JsonRpcRequest,
-  JsonRpcSuccess,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcSuccess, PendingJsonRpcResponse } from '@metamask/utils';
 
+import type { RequestSnapsMethodActions } from './requestSnaps';
 import {
   requestSnapsHandler,
   hasRequestedSnaps,
   getSnapPermissionsRequest,
 } from './requestSnaps';
 import { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';
+import type { JsonRpcRequestWithOrigin } from '../types';
 
 describe('requestSnapsHandler', () => {
   it('has the expected shape', () => {
     expect(requestSnapsHandler).toMatchObject({
-      methodNames: ['wallet_requestSnaps'],
       implementation: expect.any(Function),
-      hookNames: {
-        installSnaps: true,
-        requestPermissions: true,
-        getPermissions: true,
-      },
+      actionNames: [
+        'SnapController:installSnaps',
+        'PermissionController:requestPermissions',
+        'PermissionController:getPermissions',
+      ],
     });
   });
 });
@@ -173,46 +175,74 @@ describe('getSnapPermissionsRequest', () => {
 });
 
 describe('implementation', () => {
-  const getMockHooks = () =>
-    ({
-      installSnaps: jest.fn(),
-      requestPermissions: jest.fn(),
-      getPermissions: jest.fn(),
-    }) as any;
+  const getMessenger = () => {
+    const messenger = new MockControllerMessenger<
+      RequestSnapsMethodActions,
+      never
+    >();
+
+    messenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => undefined,
+    );
+
+    messenger.registerActionHandler(
+      'PermissionController:requestPermissions',
+      async () =>
+        [
+          {
+            [WALLET_SNAP_PERMISSION_KEY]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.SnapIds,
+                  value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+                },
+              ],
+              date: 1661166080905,
+              id: 'VyAsBJiDDKawv_XlNcm13',
+              invoker: 'https://metamask.github.io',
+              parentCapability: WALLET_SNAP_PERMISSION_KEY,
+            },
+          },
+          {
+            id: 'foo',
+            origin: MOCK_ORIGIN,
+            data: {
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                [MOCK_SNAP_ID]: getTruncatedSnap(),
+              },
+            },
+          },
+        ] as Awaited<ReturnType<PermissionController['requestPermissions']>>,
+    );
+
+    messenger.registerActionHandler(
+      'SnapController:installSnaps',
+      async () => ({
+        [MOCK_SNAP_ID]: getTruncatedSnap(),
+      }),
+    );
+
+    jest.spyOn(messenger, 'call');
+
+    return messenger;
+  };
 
   it('requests permissions if needed', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
-
-    hooks.requestPermissions.mockImplementation(() => [
-      {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
-          },
-        ],
-        date: 1661166080905,
-        id: 'VyAsBJiDDKawv_XlNcm13',
-        invoker: 'https://metamask.github.io',
-        parentCapability: WALLET_SNAP_PERMISSION_KEY,
-      },
-      {
-        data: {
-          [WALLET_SNAP_PERMISSION_KEY]: { [MOCK_SNAP_ID]: getTruncatedSnap() },
-        },
-      },
-    ]);
+    const messenger = getMessenger();
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
@@ -227,54 +257,59 @@ describe('implementation', () => {
       },
     })) as JsonRpcSuccess<RequestSnapsResult>;
 
-    expect(hooks.requestPermissions).toHaveBeenCalledWith({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
-          },
-        ],
+    expect(messenger.call).toHaveBeenCalledWith(
+      'PermissionController:requestPermissions',
+      { origin: MOCK_ORIGIN },
+      {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+            },
+          ],
+        },
       },
-    });
+    );
 
     expect(response.result).toStrictEqual({
       [MOCK_SNAP_ID]: getTruncatedSnap(),
     });
   });
 
-  it('doesnt request permissions if already present', async () => {
+  it('does not request permissions if already present', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
+    const messenger = getMessenger();
 
-    hooks.getPermissions.mockImplementation(() => ({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
-          },
-        ],
-        date: 1661166080905,
-        id: 'VyAsBJiDDKawv_XlNcm13',
-        invoker: 'https://metamask.github.io',
-        parentCapability: WALLET_SNAP_PERMISSION_KEY,
-      },
-    }));
-
-    hooks.installSnaps.mockImplementation(() => ({
-      [MOCK_SNAP_ID]: getTruncatedSnap(),
-    }));
+    messenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+            },
+          ],
+          date: 1661166080905,
+          id: 'VyAsBJiDDKawv_XlNcm13',
+          invoker: 'https://metamask.github.io',
+          parentCapability: WALLET_SNAP_PERMISSION_KEY,
+        },
+      }),
+    );
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
@@ -289,17 +324,19 @@ describe('implementation', () => {
       },
     })) as JsonRpcSuccess<RequestSnapsResult>;
 
-    expect(hooks.requestPermissions).not.toHaveBeenCalledWith({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          { type: SnapCaveatType.SnapIds, value: { [MOCK_SNAP_ID]: {} } },
-        ],
-      },
-    });
+    expect(messenger.call).not.toHaveBeenCalledWith(
+      'PermissionController:requestPermissions',
+      expect.anything(),
+      expect.anything(),
+    );
 
-    expect(hooks.installSnaps).toHaveBeenCalledWith({
-      [MOCK_SNAP_ID]: { version: '^1.0.0' },
-    });
+    expect(messenger.call).toHaveBeenCalledWith(
+      'SnapController:installSnaps',
+      MOCK_ORIGIN,
+      {
+        [MOCK_SNAP_ID]: { version: '^1.0.0' },
+      },
+    );
 
     expect(response.result).toStrictEqual({
       [MOCK_SNAP_ID]: getTruncatedSnap(),
@@ -309,57 +346,72 @@ describe('implementation', () => {
   it('merges permission requests when missing snaps', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
+    const messenger = getMessenger();
 
-    hooks.getPermissions.mockImplementation(() => ({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
-          },
-        ],
-        date: 1661166080905,
-        id: 'VyAsBJiDDKawv_XlNcm13',
-        invoker: 'https://metamask.github.io',
-        parentCapability: WALLET_SNAP_PERMISSION_KEY,
-      },
-    }));
+    messenger.registerActionHandler(
+      'PermissionController:getPermissions',
+      () => ({
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+            },
+          ],
+          date: 1661166080905,
+          id: 'VyAsBJiDDKawv_XlNcm13',
+          invoker: 'https://metamask.github.io',
+          parentCapability: WALLET_SNAP_PERMISSION_KEY,
+        },
+      }),
+    );
 
-    hooks.requestPermissions.mockImplementation(() => [
-      {
-        caveats: [
+    messenger.registerActionHandler(
+      'PermissionController:requestPermissions',
+      async () =>
+        [
           {
-            type: SnapCaveatType.SnapIds,
-            value: {
-              [MOCK_SNAP_ID]: { version: '^1.0.0' },
-              [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+            [WALLET_SNAP_PERMISSION_KEY]: {
+              caveats: [
+                {
+                  type: SnapCaveatType.SnapIds,
+                  value: {
+                    [MOCK_SNAP_ID]: { version: '^1.0.0' },
+                    [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+                  },
+                },
+              ],
+              date: 1661166080905,
+              id: 'VyAsBJiDDKawv_XlNcm13',
+              invoker: 'https://metamask.github.io',
+              parentCapability: WALLET_SNAP_PERMISSION_KEY,
             },
           },
-        ],
-        date: 1661166080905,
-        id: 'VyAsBJiDDKawv_XlNcm13',
-        invoker: 'https://metamask.github.io',
-        parentCapability: WALLET_SNAP_PERMISSION_KEY,
-      },
-      {
-        data: {
-          [WALLET_SNAP_PERMISSION_KEY]: {
-            [MOCK_SNAP_ID]: getTruncatedSnap(),
-            [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({ id: MOCK_LOCAL_SNAP_ID }),
+          {
+            id: 'foo',
+            origin: MOCK_ORIGIN,
+            data: {
+              [WALLET_SNAP_PERMISSION_KEY]: {
+                [MOCK_SNAP_ID]: getTruncatedSnap(),
+                [MOCK_LOCAL_SNAP_ID]: getTruncatedSnap({
+                  id: MOCK_LOCAL_SNAP_ID,
+                }),
+              },
+            },
           },
-        },
-      },
-    ]);
+        ] as Awaited<ReturnType<PermissionController['requestPermissions']>>,
+    );
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
@@ -375,19 +427,23 @@ describe('implementation', () => {
       },
     })) as JsonRpcSuccess<RequestSnapsResult>;
 
-    expect(hooks.requestPermissions).toHaveBeenCalledWith({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: {
-              [MOCK_SNAP_ID]: { version: '^1.0.0' },
-              [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+    expect(messenger.call).toHaveBeenCalledWith(
+      'PermissionController:requestPermissions',
+      { origin: MOCK_ORIGIN },
+      {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: {
+                [MOCK_SNAP_ID]: { version: '^1.0.0' },
+                [MOCK_LOCAL_SNAP_ID]: { version: '^1.0.0' },
+              },
             },
-          },
-        ],
+          ],
+        },
       },
-    });
+    );
 
     expect(response.result).toStrictEqual({
       [MOCK_SNAP_ID]: getTruncatedSnap(),
@@ -398,20 +454,25 @@ describe('implementation', () => {
   it('throws with the appropriate error if the side-effect fails', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
+    const messenger = getMessenger();
 
-    hooks.requestPermissions.mockImplementation(async () => {
-      throw new Error('error');
-    });
+    messenger.registerActionHandler(
+      'PermissionController:requestPermissions',
+      async () => {
+        throw new Error('error');
+      },
+    );
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
@@ -426,16 +487,20 @@ describe('implementation', () => {
       },
     })) as JsonRpcSuccess<RequestSnapsResult>;
 
-    expect(hooks.requestPermissions).toHaveBeenCalledWith({
-      [WALLET_SNAP_PERMISSION_KEY]: {
-        caveats: [
-          {
-            type: SnapCaveatType.SnapIds,
-            value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
-          },
-        ],
+    expect(messenger.call).toHaveBeenCalledWith(
+      'PermissionController:requestPermissions',
+      { origin: MOCK_ORIGIN },
+      {
+        [WALLET_SNAP_PERMISSION_KEY]: {
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: { [MOCK_SNAP_ID]: { version: '^1.0.0' } },
+            },
+          ],
+        },
       },
-    });
+    );
 
     expect(response).toStrictEqual({
       error: {
@@ -451,16 +516,18 @@ describe('implementation', () => {
   it('throws if params is not an object', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
+    const messenger = getMessenger();
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
@@ -487,16 +554,18 @@ describe('implementation', () => {
   it('throws if params is an empty object', async () => {
     const { implementation } = requestSnapsHandler;
 
-    const hooks = getMockHooks();
+    const messenger = getMessenger();
 
     const engine = new JsonRpcEngine();
+    engine.push(createOriginMiddleware(MOCK_ORIGIN));
     engine.push((req, res, next, end) => {
       const result = implementation(
-        req as JsonRpcRequest<RequestSnapsParams>,
+        req as JsonRpcRequestWithOrigin<RequestSnapsParams>,
         res as PendingJsonRpcResponse<RequestSnapsResult>,
         next,
         end,
-        hooks,
+        {} as never,
+        messenger,
       );
 
       result?.catch(end);
