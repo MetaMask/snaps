@@ -9,10 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.1.1]
 
-### Uncategorized
+### Fixed
 
-- refactor(snaps-rpc-methods)!: Use messenger for permitted methods ([#3987](https://github.com/MetaMask/snaps/pull/3987))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+- Clarify return type for `snap_getFile` can be `null` ([#3987](https://github.com/MetaMask/snaps/pull/3987))
 
 ## [11.1.0]
 

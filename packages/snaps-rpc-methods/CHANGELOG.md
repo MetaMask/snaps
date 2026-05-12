@@ -9,18 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [16.0.0]
 
-### Uncategorized
+### Changed
 
-- refactor(snaps-rpc-methods)!: Use messenger for permitted methods ([#3987](https://github.com/MetaMask/snaps/pull/3987))
-- fix: Assert expected hooks for restricted method specifications ([#3993](https://github.com/MetaMask/snaps/pull/3993))
-- chore: Bump @metamask/json-rpc-engine from 10.4.0 to 10.5.0 ([#3998](https://github.com/MetaMask/snaps/pull/3998))
-- chore: Bump @metamask/json-rpc-engine from 10.3.0 to 10.4.0 ([#3992](https://github.com/MetaMask/snaps/pull/3992))
-- refactor(snaps-rpc-methods)!: Use messenger for restricted method implementations ([#3968](https://github.com/MetaMask/snaps/pull/3968))
-- chore: Bump @metamask/permission-controller from 13.0.0 to 13.1.0 ([#3989](https://github.com/MetaMask/snaps/pull/3989))
-- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
-- chore: Bump @metamask/json-rpc-engine from 10.2.4 to 10.3.0 ([#3982](https://github.com/MetaMask/snaps/pull/3982))
-- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+- **BREAKING:** Use messenger for permitted method implementations ([#3987](https://github.com/MetaMask/snaps/pull/3987))
+  - `createSnapsMethodMiddleware` now requires a `messenger` parameter.
+  - `createSnapsMethodMiddleware` will throw if the expected hooks are not passed.
+  - Most previously used method hooks are no longer required.
+- **BREAKING:** Use messenger for restricted method implementations ([#3968](https://github.com/MetaMask/snaps/pull/3968))
+  - `buildSnapRestrictedMethodSpecifications` now requires a `messenger` parameter.
+  - Most previously used method hooks are no longer required.
+- **BREAKING** Assert expected hooks for restricted method specifications ([#3993](https://github.com/MetaMask/snaps/pull/3993))
+  - `buildSnapRestrictedMethodSpecifications` will now throw if the expected hooks are not passed.
+- Bump `@metamask/permission-controller` `12.3.0` to `^13.1.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984), [#3989](https://github.com/MetaMask/snaps/pull/3989))
+- Bump `@metamask/json-rpc-engine` from `^10.2.4` to `^10.5.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982),[#3992](https://github.com/MetaMask/snaps/pull/3992), [#3998](https://github.com/MetaMask/snaps/pull/3998))
+- Bump `@metamask/messenger` from `^1.1.1` to `^1.2.0` ([#3981](https://github.com/MetaMask/snaps/pull/3981))
+
+### Removed
+
+- **BREAKING:** `selectHooks` and `permittedMethods` is no longer exported ([#3987](https://github.com/MetaMask/snaps/pull/3987))
+  - A `selectHooks` implementation is exported from `@metamask/json-rpc-engine` if needed.
 
 ## [15.1.1]
 
