@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/snaps-rpc-methods` from  `^15.1.1` to `16.0.0` and handle breaking changes ([#3968](https://github.com/MetaMask/snaps/pull/3968), [#3987](https://github.com/MetaMask/snaps/pull/3987), [#3993](https://github.com/MetaMask/snaps/pull/3993))
+- Bump `@metamask/snaps-rpc-methods` from `^15.1.1` to `16.0.0` and handle breaking changes ([#3968](https://github.com/MetaMask/snaps/pull/3968), [#3987](https://github.com/MetaMask/snaps/pull/3987), [#3993](https://github.com/MetaMask/snaps/pull/3993))
 - Bump `@metamask/permission-controller` `12.3.0` to `^13.1.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984), [#3989](https://github.com/MetaMask/snaps/pull/3989))
 - Bump `@metamask/json-rpc-engine` from `^10.2.4` to `^10.5.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982),[#3992](https://github.com/MetaMask/snaps/pull/3992), [#3998](https://github.com/MetaMask/snaps/pull/3998))
 - Bump `@metamask/messenger` from `^1.1.1` to `^1.2.0` ([#3981](https://github.com/MetaMask/snaps/pull/3981))
