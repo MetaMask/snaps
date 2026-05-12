@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bump `@metamask/snaps-rpc-methods` from  `^15.1.1` to `16.0.0` and handle breaking changes ([#3968](https://github.com/MetaMask/snaps/pull/3968), [#3987](https://github.com/MetaMask/snaps/pull/3987), [#3993](https://github.com/MetaMask/snaps/pull/3993))
 
-
 ## [10.1.2]
 
 ### Changed
