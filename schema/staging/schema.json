@@ -911,8 +911,8 @@
     },
     "result": {
       "kind": "primitive",
-      "type": "string",
-      "description": "The file content as a string in the requested encoding."
+      "type": "string | null",
+      "description": "The file content as a string in the requested encoding, or `null` if the\nfile does not exist."
     },
     "subjectTypes": [
       "snap"
