@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/json-rpc-engine from 10.4.0 to 10.5.0 ([#3998](https://github.com/MetaMask/snaps/pull/3998))
+- chore: Bump @metamask/json-rpc-engine from 10.3.0 to 10.4.0 ([#3992](https://github.com/MetaMask/snaps/pull/3992))
+
 ## [20.0.4]
 
 ### Changed
