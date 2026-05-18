@@ -366,7 +366,10 @@ export function validateLink(
     } else if (url.protocol === 'mailto:') {
       const emails = url.pathname.split(',');
       for (const email of emails) {
-        const hostname = email.split('@')[1];
+        const parts = email.split('@');
+        assert(parts.length === 2, `Unable to parse email address "${email}".`);
+
+        const hostname = parts[1];
         assert(!hostname.includes(':'));
         const href = `https://${hostname}`;
         assert(!isOnPhishingList(href), 'The specified URL is not allowed.');

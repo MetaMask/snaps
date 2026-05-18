@@ -750,6 +750,19 @@ describe('validateLink', () => {
     expect(fn).toHaveBeenCalledWith('https://test.metamask-phishing.io');
   });
 
+  it('throws an error for an email containing more than one "@" symbol', () => {
+    const fn = jest.fn().mockReturnValue(false);
+    const getSnap = jest.fn();
+
+    expect(() =>
+      validateLink('mailto:foo@bar.com@baz.com', fn, getSnap),
+    ).toThrow(
+      'Invalid URL: Unable to parse email address "foo@bar.com@baz.com".',
+    );
+
+    expect(fn).not.toHaveBeenCalled();
+  });
+
   it('throws an error for a phishing email when using parameters', () => {
     const fn = jest.fn().mockImplementation((email) => {
       if (email === 'https://test.metamask-phishing.io') {
