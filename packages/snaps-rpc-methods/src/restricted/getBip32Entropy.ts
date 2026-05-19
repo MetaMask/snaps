@@ -16,7 +16,10 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
-import type { KeyringControllerWithKeyringAction } from '../types';
+import type {
+  GetUnlockPromise,
+  KeyringControllerWithKeyringAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   getMnemonic,
@@ -29,12 +32,7 @@ import {
 const targetName = 'snap_getBip32Entropy';
 
 export type GetBip32EntropyMethodHooks = {
-  /**
-   * Waits for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 
   /**
    * Get the cryptographic functions to use for the client. This may return an

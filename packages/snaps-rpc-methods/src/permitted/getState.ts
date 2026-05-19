@@ -19,6 +19,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 
 import { manageStateBuilder } from '../restricted/manageState';
 import type {
+  GetUnlockPromise,
   JsonRpcRequestWithOrigin,
   SnapControllerGetSnapStateAction,
 } from '../types';
@@ -30,12 +31,7 @@ const hookNames: MethodHooksObject<GetStateMethodHooks> = {
 };
 
 export type GetStateMethodHooks = {
-  /**
-   * Wait for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 };
 
 export type GetStateMethodActions =
@@ -134,7 +130,7 @@ async function getStateImplementation(
     const { key, encrypted = true } = validatedParams;
 
     if (encrypted) {
-      await getUnlockPromise(true);
+      await getUnlockPromise(true, true);
     }
 
     const state = await messenger.call(

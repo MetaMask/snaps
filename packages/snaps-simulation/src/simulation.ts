@@ -179,7 +179,10 @@ export type PermittedMiddlewareHooks = {
    * @param shouldShowUnlockRequest - Whether to show the unlock request.
    * @returns A promise that resolves once the extension is unlocked.
    */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: (
+    shouldShowUnlockRequest: boolean,
+    skipCount?: boolean,
+  ) => Promise<void>;
 
   /**
    * A hook that returns whether the client is active or not.
