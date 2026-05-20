@@ -261,6 +261,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
     ),
   ),
   'endowment:webassembly': optional(EmptyObjectStruct),
+  snap_confirmTransaction: optional(EmptyObjectStruct),
   snap_dialog: optional(EmptyObjectStruct),
   snap_manageState: optional(EmptyObjectStruct),
   snap_manageAccounts: optional(EmptyObjectStruct),

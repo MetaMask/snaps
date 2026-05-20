@@ -5,6 +5,8 @@ import type {
   RestrictedMethodSpecificationConstraint,
 } from '@metamask/permission-controller';
 
+import type { ConfirmTransactionMethodHooks } from './confirmTransaction';
+import { confirmTransactionBuilder } from './confirmTransaction';
 import type { DialogMessengerActions } from './dialog';
 import { dialogBuilder } from './dialog';
 import type {
@@ -60,6 +62,7 @@ export type RestrictedMethodMessenger = Messenger<
 >;
 
 export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
+  ConfirmTransactionMethodHooks &
   GetBip32PublicKeyMethodHooks &
   GetBip44EntropyMethodHooks &
   GetEntropyHooks &
@@ -84,6 +87,7 @@ export const restrictedMethodPermissionBuilders: Record<
   string,
   RestrictedMethodPermissionBuilder
 > = {
+  [confirmTransactionBuilder.targetName]: confirmTransactionBuilder,
   [dialogBuilder.targetName]: dialogBuilder,
   [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
   [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,

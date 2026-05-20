@@ -3,6 +3,7 @@ import { HandlerType } from '@metamask/snaps-utils';
 
 // These permissions are allowed without being on the allowlist.
 export const ALLOWED_PERMISSIONS = Object.freeze([
+  'snap_confirmTransaction',
   'snap_dialog',
   'snap_manageState',
   'snap_notify',
