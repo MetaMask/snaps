@@ -28,8 +28,8 @@ export type HdKeyring = {
   mnemonic?: Uint8Array;
 };
 
-export type KeyringControllerWithKeyringAction = {
-  type: 'KeyringController:withKeyring';
+export type KeyringControllerWithKeyringV2Action = {
+  type: 'KeyringController:withKeyringV2';
   handler: (
     selector:
       | {

@@ -74,7 +74,7 @@ describe('getBip44EntropyImplementation', () => {
     });
 
     messenger.registerActionHandler(
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       async (_selector, operation) =>
         operation({
           keyring: {
@@ -150,7 +150,7 @@ describe('getBip44EntropyImplementation', () => {
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
-        'KeyringController:withKeyring',
+        'KeyringController:withKeyringV2',
         { id: 'source-id' },
         expect.any(Function),
       );
