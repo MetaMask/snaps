@@ -24,7 +24,8 @@ import {
 
 const targetName = 'snap_getEntropy';
 
-export type GetEntropyMessengerActions = KeyringControllerWithKeyringV2UnsafeAction;
+export type GetEntropyMessengerActions =
+  KeyringControllerWithKeyringV2UnsafeAction;
 
 type GetEntropySpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
