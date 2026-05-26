@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `withKeyring` to `withKeyringV2` ([#xxx](https://github.com/MetaMask/snaps/pull/xxxx))
+
 ## [16.0.0]
 
 ### Changed
