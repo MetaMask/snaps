@@ -14,7 +14,7 @@ import { literal, object, optional, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
-import type { KeyringControllerWithKeyringV2Action } from '../types';
+import type { KeyringControllerWithKeyringV2UnsafeAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   deriveEntropyFromSeed,
@@ -24,7 +24,7 @@ import {
 
 const targetName = 'snap_getEntropy';
 
-export type GetEntropyMessengerActions = KeyringControllerWithKeyringV2Action;
+export type GetEntropyMessengerActions = KeyringControllerWithKeyringV2UnsafeAction;
 
 type GetEntropySpecificationBuilderOptions = {
   allowedCaveats?: Readonly<NonEmptyArray<string>> | null;
@@ -115,7 +115,7 @@ export const getEntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
   methodHooks,
-  actionNames: ['KeyringController:withKeyringV2'],
+  actionNames: ['KeyringController:withKeyringV2Unsafe'],
 } as const);
 
 export type GetEntropyHooks = {

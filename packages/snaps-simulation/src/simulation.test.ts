@@ -522,12 +522,12 @@ describe('registerActions', () => {
     });
   });
 
-  it('registers `KeyringController:withKeyringV2`', async () => {
+  it('registers `KeyringController:withKeyringV2Unsafe`', async () => {
     registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       await controllerMessenger.call(
-        'KeyringController:withKeyringV2',
+        'KeyringController:withKeyringV2Unsafe',
         { type: 'HD Key Tree' },
         ({ keyring }) => keyring,
       ),
@@ -539,7 +539,7 @@ describe('registerActions', () => {
 
     expect(
       await controllerMessenger.call(
-        'KeyringController:withKeyringV2',
+        'KeyringController:withKeyringV2Unsafe',
         { id: 'alternative' },
         ({ keyring }) => keyring,
       ),

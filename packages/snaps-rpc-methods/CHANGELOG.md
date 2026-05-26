@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update `withKeyring` to `withKeyringV2` ([#4009](https://github.com/MetaMask/snaps/pull/4009))
+- Update `withKeyring` to `withKeyringV2Unsafe` ([#4009](https://github.com/MetaMask/snaps/pull/4009))
 
 ## [16.0.0]
 

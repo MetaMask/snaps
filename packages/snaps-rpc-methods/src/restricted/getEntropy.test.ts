@@ -20,7 +20,7 @@ describe('getEntropyBuilder', () => {
         getUnlockPromise: true,
         getClientCryptography: true,
       },
-      actionNames: ['KeyringController:withKeyringV2'],
+      actionNames: ['KeyringController:withKeyringV2Unsafe'],
     });
   });
 
@@ -55,7 +55,7 @@ describe('getEntropyImplementation', () => {
     });
 
     messenger.registerActionHandler(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       async (_selector, operation) =>
         operation({
           keyring: {
@@ -133,7 +133,7 @@ describe('getEntropyImplementation', () => {
     );
 
     expect(messenger.call).toHaveBeenCalledWith(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       { id: 'source-id' },
       expect.any(Function),
     );

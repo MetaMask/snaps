@@ -16,7 +16,7 @@ import { SnapCaveatType } from '@metamask/snaps-utils';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assert } from '@metamask/utils';
 
-import type { KeyringControllerWithKeyringV2Action } from '../types';
+import type { KeyringControllerWithKeyringV2UnsafeAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   getMnemonic,
@@ -47,7 +47,7 @@ export type GetBip32EntropyMethodHooks = {
 };
 
 export type GetBip32EntropyMessengerActions =
-  KeyringControllerWithKeyringV2Action;
+  KeyringControllerWithKeyringV2UnsafeAction;
 
 type GetBip32EntropySpecificationBuilderOptions = {
   methodHooks: GetBip32EntropyMethodHooks;
@@ -166,7 +166,7 @@ export const getBip32EntropyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
   methodHooks,
-  actionNames: ['KeyringController:withKeyringV2'],
+  actionNames: ['KeyringController:withKeyringV2Unsafe'],
 } as const);
 
 /**

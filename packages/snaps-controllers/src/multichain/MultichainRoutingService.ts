@@ -38,7 +38,7 @@ type SnapKeyring = {
   }) => Promise<Json>;
 };
 
-// Expecting a bound function that calls KeyringController.withKeyringV2 selecting the Snap keyring
+// Expecting a bound function that calls KeyringController.withKeyringV2Unsafe selecting the Snap keyring
 export type WithSnapKeyringFunction = <ReturnType>(
   operation: ({ keyring }: { keyring: SnapKeyring }) => Promise<ReturnType>,
 ) => Promise<ReturnType>;

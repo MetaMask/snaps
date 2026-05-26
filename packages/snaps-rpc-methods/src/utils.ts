@@ -21,7 +21,7 @@ import {
 import { keccak_256 as keccak256 } from '@noble/hashes/sha3';
 
 import { SnapEndowments } from './endowments';
-import type { KeyringControllerWithKeyringV2Action } from './types';
+import type { KeyringControllerWithKeyringV2UnsafeAction } from './types';
 
 const HARDENED_VALUE = 0x80000000;
 
@@ -363,12 +363,12 @@ export const HD_KEYRING = 'HD Key Tree';
  * @returns The mnemonic.
  */
 export async function getMnemonic(
-  messenger: Messenger<string, KeyringControllerWithKeyringV2Action>,
+  messenger: Messenger<string, KeyringControllerWithKeyringV2UnsafeAction>,
   source?: string | undefined,
 ): Promise<Uint8Array> {
   if (!source) {
     const mnemonic = (await messenger.call(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       {
         type: HD_KEYRING,
         index: 0,
@@ -385,7 +385,7 @@ export async function getMnemonic(
 
   try {
     const keyringData = await messenger.call(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       {
         id: source,
       },
@@ -420,12 +420,12 @@ export async function getMnemonic(
  * @returns The mnemonic seed.
  */
 export async function getMnemonicSeed(
-  messenger: Messenger<string, KeyringControllerWithKeyringV2Action>,
+  messenger: Messenger<string, KeyringControllerWithKeyringV2UnsafeAction>,
   source?: string | undefined,
 ): Promise<Uint8Array> {
   if (!source) {
     const seed = (await messenger.call(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       {
         type: HD_KEYRING,
         index: 0,
@@ -442,7 +442,7 @@ export async function getMnemonicSeed(
 
   try {
     const keyringData = await messenger.call(
-      'KeyringController:withKeyringV2',
+      'KeyringController:withKeyringV2Unsafe',
       {
         id: source,
       },
