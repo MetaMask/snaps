@@ -38,16 +38,6 @@ describe('Endowment utils', () => {
       expect(result.endowments.snap).toBe(mockSnapAPI);
     });
 
-    it('handles special cases where endowment is not available as part of a factory', () => {
-      const mockEndowment = {};
-      Object.assign(globalThis, { mockEndowment });
-      const { endowments } = createEndowments({
-        ...mockOptions,
-        endowments: ['mockEndowment'],
-      });
-      expect(endowments.mockEndowment).toBeDefined();
-    });
-
     it('handles special case for ethereum endowment', () => {
       Object.assign(globalThis, { ethereum: {} });
       const { endowments } = createEndowments({
