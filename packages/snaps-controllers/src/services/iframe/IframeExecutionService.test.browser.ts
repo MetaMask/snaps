@@ -180,27 +180,27 @@ describe('IframeExecutionService', () => {
       snapId: MOCK_SNAP_ID,
       sourceCode: `
         module.exports.onRpcRequest = async ({ request }) => {
-            let result;
-            const promise = new Promise((resolve) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://metamask.io/');
-                xhr.send();
-                xhr.onreadystatechange = (ev) => {
-                  result = ev;
-                  resolve();
-                };
+          const controller = new AbortController();
+          let result;
+          const promise = new Promise((resolve) => {
+            controller.signal.addEventListener('abort', (ev) => {
+              result = ev;
+              resolve();
             });
-            await promise;
+          });
 
-            return {
-              targetIsUndefined: result.target === undefined,
-              currentTargetIsUndefined: result.target === undefined,
-              srcElementIsUndefined: result.target === undefined,
-              composedPathIsUndefined: result.target === undefined
-            };
+          controller.abort();
+          await promise;
+
+          return {
+            targetIsUndefined: result.target === undefined,
+            currentTargetIsUndefined: result.currentTarget === undefined,
+            srcElementIsUndefined: result.srcElement === undefined,
+            composedPathIsUndefined: result.composedPath === undefined,
+          };
         };
       `,
-      endowments: ['console', 'XMLHttpRequest'],
+      endowments: ['console', 'AbortController'],
     });
 
     const result = await service.handleRpcRequest(MOCK_SNAP_ID, {
