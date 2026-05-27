@@ -104,7 +104,7 @@ describe('snap_listEntropySources', () => {
         method: 'snap_listEntropySources',
       });
 
-      expect(getUnlockPromise).toHaveBeenCalledWith(true);
+      expect(getUnlockPromise).toHaveBeenCalledWith(true, true);
       expect(response).toStrictEqual({
         jsonrpc: '2.0',
         id: 1,

@@ -17,6 +17,7 @@ import type { NonEmptyArray } from '@metamask/utils';
 import { isObject, isValidJson } from '@metamask/utils';
 
 import type {
+  GetUnlockPromise,
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapAction,
   SnapControllerGetSnapStateAction,
@@ -31,12 +32,7 @@ export const STATE_ENCRYPTION_SALT = 'snap_manageState encryption';
 const methodName = 'snap_manageState';
 
 export type ManageStateMethodHooks = {
-  /**
-   * Waits for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 };
 
 export type ManageStateMessengerActions =

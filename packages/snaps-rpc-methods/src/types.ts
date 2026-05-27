@@ -234,3 +234,8 @@ export type WebSocketServiceGetAllAction = {
   type: `WebSocketService:getAll`;
   handler: (snapId: string) => GetWebSocketsResult;
 };
+
+export type GetUnlockPromise = (
+  shouldShowUnlockRequest: boolean,
+  skipCount?: boolean,
+) => Promise<void>;

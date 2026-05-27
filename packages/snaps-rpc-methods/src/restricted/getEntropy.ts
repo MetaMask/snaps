@@ -14,7 +14,10 @@ import { literal, object, optional, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
-import type { KeyringControllerWithKeyringAction } from '../types';
+import type {
+  GetUnlockPromise,
+  KeyringControllerWithKeyringAction,
+} from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   deriveEntropyFromSeed,
@@ -119,12 +122,7 @@ export const getEntropyBuilder = Object.freeze({
 } as const);
 
 export type GetEntropyHooks = {
-  /**
-   * Waits for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 
   /**
    * Get the cryptographic functions to use for the client. This may return an
@@ -169,7 +167,7 @@ function getEntropyImplementation({
       rpcErrors.invalidParams,
     );
 
-    await getUnlockPromise(true);
+    await getUnlockPromise(true, true);
 
     const seed = await getValueFromEntropySource(
       getMnemonicSeed.bind(null, messenger),

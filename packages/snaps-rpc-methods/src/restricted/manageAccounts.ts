@@ -20,6 +20,8 @@ import {
 import type { Json, NonEmptyArray } from '@metamask/utils';
 import { JsonStruct } from '@metamask/utils';
 
+import type { GetUnlockPromise } from '../types';
+
 const SnapMessageStruct = union([
   object({
     method: string(),
@@ -45,12 +47,7 @@ export type ManageAccountsMethodHooks = {
     ) => Promise<Json>;
   }>;
 
-  /**
-   * Wait for the client to be unlocked.
-   *
-   * @returns A promise that resolves once the client is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 };
 
 type ManageAccountsSpecificationBuilderOptions = {
@@ -115,7 +112,7 @@ export function manageAccountsImplementation({
 
     assert(params, SnapMessageStruct);
 
-    await getUnlockPromise(true);
+    await getUnlockPromise(true, true);
 
     const keyring = await getSnapKeyring(origin);
     return await keyring.handleKeyringSnapMessage(origin, params);

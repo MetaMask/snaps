@@ -17,6 +17,7 @@ import { getBip32PublicKeyBuilder } from '../restricted/getBip32PublicKey';
 import { getBip44EntropyBuilder } from '../restricted/getBip44Entropy';
 import { getEntropyBuilder } from '../restricted/getEntropy';
 import type {
+  GetUnlockPromise,
   JsonRpcRequestWithOrigin,
   KeyringControllerGetStateAction,
 } from '../types';
@@ -43,12 +44,7 @@ const hookNames: MethodHooksObject<ListEntropySourcesMethodHooks> = {
 };
 
 export type ListEntropySourcesMethodHooks = {
-  /**
-   * Wait for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 };
 
 export type ListEntropySourcesMethodActions =
@@ -139,7 +135,7 @@ async function listEntropySourcesImplementation(
     return end(providerErrors.unauthorized());
   }
 
-  await getUnlockPromise(true);
+  await getUnlockPromise(true, true);
 
   const { keyrings } = messenger.call('KeyringController:getState');
 

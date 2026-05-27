@@ -28,6 +28,7 @@ import {
   STORAGE_SIZE_LIMIT,
 } from '../restricted/manageState';
 import type {
+  GetUnlockPromise,
   JsonRpcRequestWithOrigin,
   SnapControllerGetSnapAction,
   SnapControllerGetSnapStateAction,
@@ -41,12 +42,7 @@ const hookNames: MethodHooksObject<SetStateMethodHooks> = {
 };
 
 export type SetStateMethodHooks = {
-  /**
-   * Wait for the extension to be unlocked.
-   *
-   * @returns A promise that resolves once the extension is unlocked.
-   */
-  getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
+  getUnlockPromise: GetUnlockPromise;
 };
 
 export type SetStateMethodActions =
@@ -192,7 +188,7 @@ async function setStateImplementation(
     }
 
     if (encrypted) {
-      await getUnlockPromise(true);
+      await getUnlockPromise(true, true);
     }
 
     const snapId = origin as SnapId;
