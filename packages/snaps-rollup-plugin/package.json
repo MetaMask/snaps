@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.1.0",
+    "@metamask/auto-changelog": "^6.1.1",
     "@rollup/plugin-virtual": "^2.1.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
