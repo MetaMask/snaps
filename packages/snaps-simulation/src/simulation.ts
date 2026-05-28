@@ -755,7 +755,7 @@ export function registerActions(
 
       return await operation({
         keyring: {
-          type: 'HD Key Tree',
+          type: 'hd',
           mnemonic,
           seed,
         },

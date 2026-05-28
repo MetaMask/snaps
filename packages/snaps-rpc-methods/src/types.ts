@@ -23,7 +23,7 @@ export type JsonRpcRequestWithOrigin<
 > = JsonRpcRequest<Params> & { origin: string };
 
 export type HdKeyring = {
-  type: 'HD Key Tree';
+  type: 'hd';
   seed?: Uint8Array;
   mnemonic?: Uint8Array;
 };

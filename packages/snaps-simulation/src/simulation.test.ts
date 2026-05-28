@@ -528,11 +528,11 @@ describe('registerActions', () => {
     expect(
       await controllerMessenger.call(
         'KeyringController:withKeyringV2Unsafe',
-        { type: 'HD Key Tree' },
+        { type: 'hd' },
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'HD Key Tree',
+      type: 'hd',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_SRP),
       seed: await mnemonicToSeed(DEFAULT_SRP),
     });
@@ -544,7 +544,7 @@ describe('registerActions', () => {
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'HD Key Tree',
+      type: 'hd',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_ALTERNATIVE_SRP),
       seed: await mnemonicToSeed(DEFAULT_ALTERNATIVE_SRP),
     });
