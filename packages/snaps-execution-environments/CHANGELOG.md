@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Simplify endowment handling ([#4012](https://github.com/MetaMask/snaps/pull/4012))
+- chore: Bump lavamoat from 11.1.1 to 11.1.2 ([#4004](https://github.com/MetaMask/snaps/pull/4004))
+- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
+- chore: Bump @lavamoat/webpack from 2.2.0 to 2.2.1 ([#4003](https://github.com/MetaMask/snaps/pull/4003))
+- chore: Bump @metamask/json-rpc-engine from 10.4.0 to 10.5.0 ([#3998](https://github.com/MetaMask/snaps/pull/3998))
+- chore: Bump @metamask/json-rpc-engine from 10.3.0 to 10.4.0 ([#3992](https://github.com/MetaMask/snaps/pull/3992))
+- chore: Bump @lavamoat/webpack from 2.1.1 to 2.2.0 ([#3977](https://github.com/MetaMask/snaps/pull/3977))
+- chore: Bump lavamoat from 11.0.0 to 11.1.1 ([#3978](https://github.com/MetaMask/snaps/pull/3978))
+- chore: Bump @metamask/json-rpc-engine from 10.2.4 to 10.3.0 ([#3982](https://github.com/MetaMask/snaps/pull/3982))
+- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+
 ## [11.1.0]
 
 ### Added
