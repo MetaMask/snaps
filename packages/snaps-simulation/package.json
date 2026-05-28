@@ -55,7 +55,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/chain-agnostic-permission": "^1.6.0",
+    "@metamask/chain-agnostic-permission": "^1.6.1",
     "@metamask/json-rpc-engine": "^10.5.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.8",
     "@metamask/key-tree": "^10.1.1",
@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.1.0",
+    "@metamask/auto-changelog": "^6.1.1",
     "@ts-bridge/cli": "^0.6.1",
     "@types/express": "^5.0.1",
     "@types/jest": "^27.5.1",

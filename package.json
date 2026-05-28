@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-monorepo",
-  "version": "157.0.0",
+  "version": "158.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -76,8 +76,8 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.1.0",
-    "@metamask/create-release-branch": "^4.2.0",
+    "@metamask/auto-changelog": "^6.1.1",
+    "@metamask/create-release-branch": "^4.2.1",
     "@metamask/eslint-config": "^14.0.0",
     "@metamask/eslint-config-browser": "^14.0.0",
     "@metamask/eslint-config-jest": "^14.0.0",

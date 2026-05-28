@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "12.2.0",
+  "version": "12.2.1",
   "description": "A collection of utilities for MetaMask Snaps",
   "keywords": [
     "MetaMask",
@@ -104,7 +104,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.1.0",
+    "@metamask/auto-changelog": "^6.1.1",
     "@metamask/post-message-stream": "^10.0.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
