@@ -9,17 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.2.1]
 
-### Uncategorized
+### Fixed
 
-- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
-- chore: Bump @metamask/permission-controller from 13.1.0 to 13.1.1 ([#4002](https://github.com/MetaMask/snaps/pull/4002))
-- fix: Validate email addresses ([#4005](https://github.com/MetaMask/snaps/pull/4005))
-- release: `157.0.0` ([#3999](https://github.com/MetaMask/snaps/pull/3999))
-- chore: Bump @metamask/permission-controller from 13.0.0 to 13.1.0 ([#3989](https://github.com/MetaMask/snaps/pull/3989))
-- chore: Bump `@metamask/permission-controller` to `^13.0.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984))
-- chore: Bump @metamask/messenger from 1.1.1 to 1.2.0 ([#3981](https://github.com/MetaMask/snaps/pull/3981))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- fix: Stop relying on account metadata for `MultichainRoutingService` ([#3974](https://github.com/MetaMask/snaps/pull/3974))
+- Improve email addresses validation in `validateLink` function ([#4005](https://github.com/MetaMask/snaps/pull/4005))
 
 ## [12.2.0]
 
