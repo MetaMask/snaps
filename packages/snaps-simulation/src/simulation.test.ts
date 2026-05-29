@@ -522,29 +522,29 @@ describe('registerActions', () => {
     });
   });
 
-  it('registers `KeyringController:withKeyring`', async () => {
+  it('registers `KeyringController:withKeyringV2Unsafe`', async () => {
     registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
     expect(
       await controllerMessenger.call(
-        'KeyringController:withKeyring',
-        { type: 'HD Key Tree' },
+        'KeyringController:withKeyringV2Unsafe',
+        { type: 'hd' },
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'HD Key Tree',
+      type: 'hd',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_SRP),
       seed: await mnemonicToSeed(DEFAULT_SRP),
     });
 
     expect(
       await controllerMessenger.call(
-        'KeyringController:withKeyring',
+        'KeyringController:withKeyringV2Unsafe',
         { id: 'alternative' },
         ({ keyring }) => keyring,
       ),
     ).toStrictEqual({
-      type: 'HD Key Tree',
+      type: 'hd',
       mnemonic: mnemonicPhraseToBytes(DEFAULT_ALTERNATIVE_SRP),
       seed: await mnemonicToSeed(DEFAULT_ALTERNATIVE_SRP),
     });

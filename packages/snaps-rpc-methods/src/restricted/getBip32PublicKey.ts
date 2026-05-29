@@ -22,7 +22,7 @@ import { boolean, object, optional, string } from '@metamask/superstruct';
 import type { NonEmptyArray } from '@metamask/utils';
 import { assertStruct } from '@metamask/utils';
 
-import type { KeyringControllerWithKeyringAction } from '../types';
+import type { KeyringControllerWithKeyringV2UnsafeAction } from '../types';
 import type { MethodHooksObject } from '../utils';
 import {
   getMnemonic,
@@ -53,7 +53,7 @@ export type GetBip32PublicKeyMethodHooks = {
 };
 
 export type GetBip32PublicKeyMessengerActions =
-  KeyringControllerWithKeyringAction;
+  KeyringControllerWithKeyringV2UnsafeAction;
 
 type GetBip32PublicKeySpecificationBuilderOptions = {
   methodHooks: GetBip32PublicKeyMethodHooks;
@@ -162,7 +162,7 @@ export const getBip32PublicKeyBuilder = Object.freeze({
   targetName,
   specificationBuilder,
   methodHooks,
-  actionNames: ['KeyringController:withKeyring'],
+  actionNames: ['KeyringController:withKeyringV2Unsafe'],
 } as const);
 
 /**

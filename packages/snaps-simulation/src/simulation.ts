@@ -739,7 +739,7 @@ export function registerActions(
 
   controllerMessenger.registerActionHandler(
     // @ts-expect-error - `KeyringController` is not part of the simulation messenger types.
-    'KeyringController:withKeyring',
+    'KeyringController:withKeyringV2Unsafe',
     async (
       selector: { type: string; index?: number } | { id: string },
       operation: (args: {
@@ -755,7 +755,7 @@ export function registerActions(
 
       return await operation({
         keyring: {
-          type: 'HD Key Tree',
+          type: 'hd',
           mnemonic,
           seed,
         },

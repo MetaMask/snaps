@@ -75,11 +75,11 @@ describe('getBip32PublicKeyImplementation', () => {
     });
 
     messenger.registerActionHandler(
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2Unsafe',
       async (_selector, operation) =>
         operation({
           keyring: {
-            type: 'HD Key Tree',
+            type: 'hd',
             mnemonic: TEST_SECRET_RECOVERY_PHRASE_BYTES,
             seed: TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
           },
@@ -223,7 +223,7 @@ describe('getBip32PublicKeyImplementation', () => {
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
-        'KeyringController:withKeyring',
+        'KeyringController:withKeyringV2Unsafe',
         { id: 'source-id' },
         expect.any(Function),
       );
@@ -253,7 +253,7 @@ describe('getBip32PublicKeyImplementation', () => {
 
       expect(messenger.call).toHaveBeenCalledTimes(1);
       expect(messenger.call).toHaveBeenCalledWith(
-        'KeyringController:withKeyring',
+        'KeyringController:withKeyringV2Unsafe',
         { id: 'source-id' },
         expect.any(Function),
       );

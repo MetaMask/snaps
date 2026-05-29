@@ -23,13 +23,13 @@ export type JsonRpcRequestWithOrigin<
 > = JsonRpcRequest<Params> & { origin: string };
 
 export type HdKeyring = {
-  type: 'HD Key Tree';
+  type: 'hd';
   seed?: Uint8Array;
   mnemonic?: Uint8Array;
 };
 
-export type KeyringControllerWithKeyringAction = {
-  type: 'KeyringController:withKeyring';
+export type KeyringControllerWithKeyringV2UnsafeAction = {
+  type: 'KeyringController:withKeyringV2Unsafe';
   handler: (
     selector:
       | {

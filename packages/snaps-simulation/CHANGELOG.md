@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `withKeyringV2Unsafe` for accessing entropy ([#4009](https://github.com/MetaMask/snaps/pull/4009))
+
 ## [4.1.4]
 
 ### Changed
