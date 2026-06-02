@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0]
+
 ### Changed
 
 - Use `withKeyringV2Unsafe` for accessing entropy ([#4009](https://github.com/MetaMask/snaps/pull/4009))
+- Bump `@metamask/snaps-rpc-methods` from `16.0.0` to `17.0.0` ([#4020](https://github.com/MetaMask/snaps/pull/4020))
 
 ## [4.1.4]
 
@@ -17,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bump `@metamask/snaps-rpc-methods` from `^15.1.1` to `16.0.0` and handle breaking changes ([#3968](https://github.com/MetaMask/snaps/pull/3968), [#3987](https://github.com/MetaMask/snaps/pull/3987), [#3993](https://github.com/MetaMask/snaps/pull/3993))
 - Bump `@metamask/permission-controller` `12.3.0` to `^13.1.0` ([#3984](https://github.com/MetaMask/snaps/pull/3984), [#3989](https://github.com/MetaMask/snaps/pull/3989))
-- Bump `@metamask/json-rpc-engine` from `^10.2.4` to `^10.5.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982),[#3992](https://github.com/MetaMask/snaps/pull/3992), [#3998](https://github.com/MetaMask/snaps/pull/3998))
+- Bump `@metamask/json-rpc-engine` from `^10.2.4` to `^10.5.0` ([#3982](https://github.com/MetaMask/snaps/pull/3982), [#3992](https://github.com/MetaMask/snaps/pull/3992), [#3998](https://github.com/MetaMask/snaps/pull/3998))
 - Bump `@metamask/messenger` from `^1.1.1` to `^1.2.0` ([#3981](https://github.com/MetaMask/snaps/pull/3981))
 - Bump `@metamask/chain-agnostic-permission` from `^1.5.0` to `^1.6.0` ([#3997](https://github.com/MetaMask/snaps/pull/3997))
 
@@ -314,7 +317,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.2.0...HEAD
+[4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.4...@metamask/snaps-simulation@4.2.0
 [4.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.3...@metamask/snaps-simulation@4.1.4
 [4.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.2...@metamask/snaps-simulation@4.1.3
 [4.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.1...@metamask/snaps-simulation@4.1.2
