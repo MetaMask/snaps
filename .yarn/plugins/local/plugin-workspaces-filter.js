@@ -1,6 +1,23 @@
 module.exports = {
   name: `plugin-workspaces-filter`,
   factory: (require) => {
+    /**
+     * Match a string against a glob pattern. Supports `*` (matches within a
+     * single path segment) and `**` (matches across segments).
+     *
+     * @param {string} str - The string to match.
+     * @param {string} pattern - The glob pattern.
+     * @returns {boolean}
+     */
+    function minimatch(str, pattern) {
+      const regex = pattern
+        .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*\*/g, '\x00')
+        .replace(/\*/g, '[^/]*')
+        .replace(/\x00/g, '.*');
+      return new RegExp(`^${regex}$`).test(str);
+    }
+
     const { BaseCommand } = require('@yarnpkg/cli');
     const { Configuration, Project, StreamReport } = require('@yarnpkg/core');
     const { Command, Option, UsageError } = require('clipanion');
@@ -71,11 +88,6 @@ module.exports = {
       }
 
       async execute() {
-        // Note: We have to import `minimatch` here, because Yarn will always
-        // load the plugin, even if the command is not used, and `minimatch`
-        // may not be installed.
-        const { minimatch } = await import('minimatch');
-
         const configuration = await Configuration.find(
           this.context.cwd,
           this.context.plugins,
@@ -203,11 +215,6 @@ module.exports = {
       }
 
       async execute() {
-        // Note: We have to import `minimatch` here, because Yarn will always
-        // load the plugin, even if the command is not used, and `minimatch`
-        // may not be installed.
-        const { minimatch } = await import('minimatch');
-
         const configuration = await Configuration.find(
           this.context.cwd,
           this.context.plugins,
