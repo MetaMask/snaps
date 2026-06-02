@@ -71,10 +71,13 @@ module.exports = {
       }
 
       async execute() {
-        // Note: We have to import `minimatch` here, because Yarn will always
+        // Note: We have to require `minimatch` here, because Yarn will always
         // load the plugin, even if the command is not used, and `minimatch`
-        // may not be installed.
-        const { minimatch } = await import('minimatch');
+        // may not be installed. We use `createRequire` from Node's built-in
+        // `module` package to bypass Yarn's restricted plugin `require`, which
+        // only allows access to Yarn's own bundled packages.
+        const { createRequire } = require('module');
+        const { minimatch } = createRequire(__filename)('minimatch');
 
         const configuration = await Configuration.find(
           this.context.cwd,
@@ -203,10 +206,13 @@ module.exports = {
       }
 
       async execute() {
-        // Note: We have to import `minimatch` here, because Yarn will always
+        // Note: We have to require `minimatch` here, because Yarn will always
         // load the plugin, even if the command is not used, and `minimatch`
-        // may not be installed.
-        const { minimatch } = await import('minimatch');
+        // may not be installed. We use `createRequire` from Node's built-in
+        // `module` package to bypass Yarn's restricted plugin `require`, which
+        // only allows access to Yarn's own bundled packages.
+        const { createRequire } = require('module');
+        const { minimatch } = createRequire(__filename)('minimatch');
 
         const configuration = await Configuration.find(
           this.context.cwd,
