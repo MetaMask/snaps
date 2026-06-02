@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.6]
+
 ### Uncategorized
 
 - fix: Simplify endowment handling ([#4012](https://github.com/MetaMask/snaps/pull/4012))
@@ -1233,7 +1235,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.5...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.6...HEAD
+[20.0.6]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.5...@metamask/snaps-controllers@20.0.6
 [20.0.5]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.4...@metamask/snaps-controllers@20.0.5
 [20.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.3...@metamask/snaps-controllers@20.0.4
 [20.0.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.2...@metamask/snaps-controllers@20.0.3
