@@ -9,11 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.6]
 
-### Uncategorized
+### Changed
 
-- fix: Simplify endowment handling ([#4012](https://github.com/MetaMask/snaps/pull/4012))
-- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
-- chore: Bump @metamask/permission-controller from 13.1.0 to 13.1.1 ([#4002](https://github.com/MetaMask/snaps/pull/4002))
+- Bump `@metamask/permission-controller` from `13.1.0` to `13.1.1` ([#4002](https://github.com/MetaMask/snaps/pull/4002))
+- Bump `@metamask/snaps-rpc-methods` from `16.0.0` to `17.0.0` ([#4020](https://github.com/MetaMask/snaps/pull/4020))
 
 ## [20.0.5]
 
