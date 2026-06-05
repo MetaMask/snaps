@@ -108,6 +108,7 @@ jobs:
       - npm-publish-dry-run
       - get-release-tag
     permissions:
+      contents: read
       id-token: write
     steps:
       - name: Checkout and setup environment
