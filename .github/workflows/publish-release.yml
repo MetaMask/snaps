@@ -26,6 +26,9 @@ on:
       SLACK_WEBHOOK_URL:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   get-release-tag:
     name: Get release tag
