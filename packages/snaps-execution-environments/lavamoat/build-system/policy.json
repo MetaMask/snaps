@@ -126,9 +126,10 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@lavamoat/webpack>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "lavamoat>@lavamoat/aa": true,
         "@lavamoat/webpack>browser-resolve": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "webpack": true
       }
@@ -731,7 +732,7 @@
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
