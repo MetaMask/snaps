@@ -121,7 +121,6 @@ jobs:
       slack-subteam: S05RL9W7H54 # @metamask-snaps-publishers
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   all-jobs-complete:

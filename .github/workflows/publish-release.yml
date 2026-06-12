@@ -21,8 +21,6 @@ on:
     secrets:
       NPM_TOKEN:
         required: false
-      PUBLISH_PAGES_TOKEN:
-        required: true
       SLACK_WEBHOOK_URL:
         required: false
 
@@ -139,8 +137,6 @@ jobs:
       build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
       destination_dir: schema/latest
       publish_dir: ./packages/snaps-rpc-methods/schema
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   is-sdk-release:
     name: Determine whether this release updates Snaps SDK
@@ -180,8 +176,6 @@ jobs:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
       destination_dir: docs/${{ needs.is-sdk-release.outputs.SDK_VERSION }}
       publish_dir: ./packages/snaps-sdk/docs
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   publish-docs-to-latest-gh-pages:
     name: Publish docs to `docs/latest` directory of `gh-pages` branch
@@ -193,8 +187,6 @@ jobs:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
       destination_dir: docs/latest
       publish_dir: ./packages/snaps-sdk/docs
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   is-environment-release:
     name: Determine whether this release updates the iframe execution environment
@@ -320,8 +312,6 @@ jobs:
       build_script: yarn workspace @metamask/test-snaps build
       destination_dir: test-snaps/${{ needs.is-test-snaps-release.outputs.TEST_SNAPS_VERSION }}
       publish_dir: ./packages/test-snaps/dist
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
 
   publish-test-snaps-latest:
     name: Publish test snaps to `latest` folder
@@ -336,5 +326,3 @@ jobs:
       build_script: yarn workspace @metamask/test-snaps build
       destination_dir: test-snaps/latest
       publish_dir: ./packages/test-snaps/dist
-    secrets:
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
