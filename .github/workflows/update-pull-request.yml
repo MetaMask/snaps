@@ -19,6 +19,9 @@ on:
         required: false
         default: ''
 
+permissions:
+  contents: read
+
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
@@ -44,6 +47,8 @@ jobs:
     # Early exit if this is a fork, since later steps are skipped for forks.
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
     environment: default-branch
+    permissions:
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -76,6 +81,9 @@ jobs:
     environment: default-branch
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -112,6 +120,9 @@ jobs:
     environment: default-branch
     outputs:
       YARN_LOCK_CHANGED: ${{ steps.check-yarn-lock.outputs.YARN_LOCK_CHANGED }}
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -157,6 +168,9 @@ jobs:
     needs:
       - prepare
       - dedupe-yarn-lock
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -203,6 +217,9 @@ jobs:
       - prepare
       - dedupe-yarn-lock
       - build
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -257,6 +274,9 @@ jobs:
       - prepare
       - dedupe-yarn-lock
       - build
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
@@ -314,6 +334,9 @@ jobs:
       - dedupe-yarn-lock
       - regenerate-lavamoat-policies
       - update-examples
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Get access token
         id: get-token
