@@ -88,8 +88,6 @@ jobs:
       dependabot: true
       pull-request: ${{ github.event.pull_request.number }}
       pull-request-title: ${{ github.event.pull_request.title }}
-    secrets:
-      PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
 
   lint-build-test:
     name: Build, lint, and test
@@ -123,7 +121,6 @@ jobs:
       slack-subteam: S05RL9W7H54 # @metamask-snaps-publishers
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      PUBLISH_PAGES_TOKEN: ${{ secrets.PUBLISH_PAGES_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   all-jobs-complete:

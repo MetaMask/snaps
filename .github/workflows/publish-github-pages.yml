@@ -12,9 +12,6 @@ on:
       publish_dir:
         required: true
         type: string
-    secrets:
-      PUBLISH_PAGES_TOKEN:
-        required: true
 
 jobs:
   publish-environment:
@@ -33,6 +30,13 @@ jobs:
       - name: Ensure `publish_dir` is not empty
         if: ${{ inputs.publish_dir == '' }}
         run: exit 1
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
@@ -42,6 +46,6 @@ jobs:
       - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch
         uses: peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935
         with:
-          personal_token: ${{ secrets.PUBLISH_PAGES_TOKEN }}
+          personal_token: ${{ steps.get-token.outputs.token }}
           publish_dir: ${{ inputs.publish_dir }}
           destination_dir: ${{ inputs.destination_dir }}
