@@ -5,9 +5,6 @@ on:
     types:
       - created
   workflow_call:
-    secrets:
-      PULL_REQUEST_UPDATE_TOKEN:
-        required: true
     inputs:
       dependabot:
         type: boolean
@@ -48,8 +45,14 @@ jobs:
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' && inputs.dependabot == false }}
     environment: default-branch
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            pull_requests: write
+
       - name: React to the comment
         run: |
           gh api \
@@ -60,7 +63,7 @@ jobs:
             -f content='+1'
         env:
           COMMENT_ID: ${{ github.event.comment.id }}
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           REPO: ${{ github.repository }}
 
   prepare:
@@ -74,18 +77,30 @@ jobs:
     outputs:
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
           cache-node-modules: true
+
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -98,23 +113,37 @@ jobs:
     outputs:
       YARN_LOCK_CHANGED: ${{ steps.check-yarn-lock.outputs.YARN_LOCK_CHANGED }}
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+
       - name: Deduplicate yarn.lock
         run: yarn dedupe
+
       - name: Check if yarn.lock changed
         id: check-yarn-lock
         run: |
           git diff --exit-code yarn.lock || echo "YARN_LOCK_CHANGED=true" >> "$GITHUB_OUTPUT"
+
       - name: Save yarn.lock
         uses: actions/upload-artifact@v7
         with:
@@ -129,13 +158,24 @@ jobs:
       - prepare
       - dedupe-yarn-lock
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Restore yarn.lock
         uses: actions/download-artifact@v8
         with:
@@ -164,28 +204,43 @@ jobs:
       - dedupe-yarn-lock
       - build
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Restore yarn.lock
         uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Restore packages
         uses: actions/download-artifact@v8
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
+
       - name: Regenerate LavaMoat policies
         run: yarn build:lavamoat:policy
+
       - name: Save LavaMoat policies
         uses: actions/upload-artifact@v7
         with:
@@ -203,28 +258,43 @@ jobs:
       - dedupe-yarn-lock
       - build
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: read
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Restore yarn.lock
         uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Restore packages
         uses: actions/download-artifact@v8
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
+
       - name: Update examples
         run: yarn build:examples
+
       - name: Save examples
         uses: actions/upload-artifact@v7
         with:
@@ -245,50 +315,70 @@ jobs:
       - regenerate-lavamoat-policies
       - update-examples
     steps:
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+            pull_requests: read
+
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check
           # workflows.
-          token: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          token: ${{ steps.get-token.outputs.token }}
+
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
-          GITHUB_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.get-token.outputs.token }}
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
+
       - name: Configure Git
         run: |
           git config --global user.name 'MetaMask Bot'
           git config --global user.email 'metamaskbot@users.noreply.github.com'
+
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+
       - name: Restore yarn.lock
         uses: actions/download-artifact@v8
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Set commit prefix
         if: ${{ inputs.dependabot == true }}
         run: echo "COMMIT_PREFIX=[dependabot skip] " >> "$GITHUB_ENV"
+
       - name: Commit yarn.lock
         run: |
           git add yarn.lock
           git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
+
       - name: Restore LavaMoat policies
         uses: actions/download-artifact@v8
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Commit LavaMoat policies
         run: |
           git add packages/snaps-execution-environments/lavamoat
           git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
+
       - name: Restore examples
         uses: actions/download-artifact@v8
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
+
       - name: Commit examples
         run: |
           git add packages/examples/packages
           git commit -m "${COMMIT_PREFIX}Update example snaps" || true
+
       - name: Push changes
         run: git push

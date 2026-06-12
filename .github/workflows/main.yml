@@ -88,8 +88,6 @@ jobs:
       dependabot: true
       pull-request: ${{ github.event.pull_request.number }}
       pull-request-title: ${{ github.event.pull_request.title }}
-    secrets:
-      PULL_REQUEST_UPDATE_TOKEN: ${{ secrets.PULL_REQUEST_UPDATE_TOKEN }}
 
   lint-build-test:
     name: Build, lint, and test
