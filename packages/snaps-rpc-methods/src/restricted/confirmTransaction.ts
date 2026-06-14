@@ -7,48 +7,41 @@ import { PermissionType, SubjectType } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import {
   create,
-  literal,
-  number,
   object,
   optional,
   string,
-  union,
 } from '@metamask/superstruct';
-import type { NonEmptyArray } from '@metamask/utils';
-import { isObject } from '@metamask/utils';
+import type { CaipAssetType, CaipChainId, NonEmptyArray } from '@metamask/utils';
+import { CaipAssetTypeStruct, CaipChainIdStruct, isObject } from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_confirmTransaction';
 
 export type ConfirmTransactionParams = {
-  chainNamespace: 'solana' | 'bip122' | 'tron';
-  chain: string;
+  chainId: CaipChainId;
   accountId: string;
-  from: string;
   to: string;
-  value: string;
-  assetType: string;
-  assetSymbol: string;
-  assetDecimals: number;
-  feeRaw?: string;
-  feeAssetType?: string;
-  origin?: string;
+  amount: string;
+  assetId?: CaipAssetType;
+  fee?: {
+    amount: string;
+    assetId?: CaipAssetType;
+  };
 };
 
 const ConfirmTransactionParametersStruct = object({
-  chainNamespace: union([literal('solana'), literal('bip122'), literal('tron')]),
-  chain: string(),
+  chainId: CaipChainIdStruct,
   accountId: string(),
-  from: string(),
   to: string(),
-  value: string(),
-  assetType: string(),
-  assetSymbol: string(),
-  assetDecimals: number(),
-  feeRaw: optional(string()),
-  feeAssetType: optional(string()),
-  origin: optional(string()),
+  amount: string(),
+  assetId: optional(CaipAssetTypeStruct),
+  fee: optional(
+    object({
+      amount: string(),
+      assetId: optional(CaipAssetTypeStruct),
+    }),
+  ),
 });
 
 export type ConfirmTransactionMethodHooks = {
@@ -118,15 +111,13 @@ const methodHooks: MethodHooksObject<ConfirmTransactionMethodHooks> = {
  * const approved = await snap.request({
  *   method: 'snap_confirmTransaction',
  *   params: {
- *     chainNamespace: 'solana',
- *     chain: 'solana:mainnet',
+ *     chainId: 'solana:mainnet',
  *     accountId: 'solana:mainnet:account',
- *     from: 'from-address',
  *     to: 'to-address',
- *     value: '1000000',
- *     assetType: 'solana:mainnet/slip44:501',
- *     assetSymbol: 'SOL',
- *     assetDecimals: 9,
+ *     amount: '1000000',
+ *     fee: {
+ *       amount: '5000',
+ *     },
  *   },
  * });
  * ```
