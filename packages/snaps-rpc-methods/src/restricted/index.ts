@@ -7,6 +7,8 @@ import type {
 
 import type { ConfirmTransactionMethodHooks } from './confirmTransaction';
 import { confirmTransactionBuilder } from './confirmTransaction';
+import type { UpdateConfirmTransactionMethodHooks } from './updateConfirmTransaction';
+import { updateConfirmTransactionBuilder } from './updateConfirmTransaction';
 import type { DialogMessengerActions } from './dialog';
 import { dialogBuilder } from './dialog';
 import type {
@@ -45,6 +47,8 @@ import type { MethodHooksObject } from '../utils';
 
 export { WALLET_SNAP_PERMISSION_KEY } from './invokeSnap';
 export { getEncryptionEntropy } from './manageState';
+export type { ConfirmTransactionParams } from './confirmTransaction';
+export type { UpdateConfirmTransactionParams } from './updateConfirmTransaction';
 
 export type RestrictedMethodActions =
   | DialogMessengerActions
@@ -63,6 +67,7 @@ export type RestrictedMethodMessenger = Messenger<
 
 export type RestrictedMethodHooks = GetBip32EntropyMethodHooks &
   ConfirmTransactionMethodHooks &
+  UpdateConfirmTransactionMethodHooks &
   GetBip32PublicKeyMethodHooks &
   GetBip44EntropyMethodHooks &
   GetEntropyHooks &
@@ -88,6 +93,7 @@ export const restrictedMethodPermissionBuilders: Record<
   RestrictedMethodPermissionBuilder
 > = {
   [confirmTransactionBuilder.targetName]: confirmTransactionBuilder,
+  [updateConfirmTransactionBuilder.targetName]: updateConfirmTransactionBuilder,
   [dialogBuilder.targetName]: dialogBuilder,
   [getBip32EntropyBuilder.targetName]: getBip32EntropyBuilder,
   [getBip32PublicKeyBuilder.targetName]: getBip32PublicKeyBuilder,

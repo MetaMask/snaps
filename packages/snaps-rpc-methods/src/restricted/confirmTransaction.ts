@@ -9,16 +9,28 @@ import {
   create,
   object,
   optional,
+  record,
   string,
 } from '@metamask/superstruct';
-import type { CaipAssetType, CaipChainId, NonEmptyArray } from '@metamask/utils';
-import { CaipAssetTypeStruct, CaipChainIdStruct, isObject } from '@metamask/utils';
+import type {
+  CaipAssetType,
+  CaipChainId,
+  Json,
+  NonEmptyArray,
+} from '@metamask/utils';
+import {
+  CaipAssetTypeStruct,
+  CaipChainIdStruct,
+  isObject,
+  JsonStruct,
+} from '@metamask/utils';
 
 import type { MethodHooksObject } from '../utils';
 
 const methodName = 'snap_confirmTransaction';
 
 export type ConfirmTransactionParams = {
+  id?: string;
   chainId: CaipChainId;
   accountId: string;
   to: string;
@@ -28,9 +40,11 @@ export type ConfirmTransactionParams = {
     amount: string;
     assetId?: CaipAssetType;
   };
+  custom?: Record<string, Json>;
 };
 
 const ConfirmTransactionParametersStruct = object({
+  id: optional(string()),
   chainId: CaipChainIdStruct,
   accountId: string(),
   to: string(),
@@ -42,6 +56,7 @@ const ConfirmTransactionParametersStruct = object({
       assetId: optional(CaipAssetTypeStruct),
     }),
   ),
+  custom: optional(record(string(), JsonStruct)),
 });
 
 export type ConfirmTransactionMethodHooks = {
