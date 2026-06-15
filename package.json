@@ -125,7 +125,7 @@
     "vite": "^6.4.1",
     "yargs": "^17.7.1"
   },
-  "packageManager": "yarn@4.16.0",
+  "packageManager": "yarn@4.16.0+sha256.ba05224324578801b9cc98170d64aa50b9a36733b440fb0942306da3fbbdc7d1",
   "engines": {
     "node": "^20 || >=22"
   },
