@@ -88,6 +88,10 @@ jobs:
       dependabot: true
       pull-request: ${{ github.event.pull_request.number }}
       pull-request-title: ${{ github.event.pull_request.title }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: read
 
   lint-build-test:
     name: Build, lint, and test
