@@ -101,7 +101,7 @@
     "@types/jest": "^27.5.1",
     "@types/node": "18.14.2",
     "@types/webpack-env": "^1.18.1",
-    "@vitest/browser": "^3.1.1",
+    "@vitest/browser": "^3.2.5",
     "@vitest/coverage-v8": "^3.1.1",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
