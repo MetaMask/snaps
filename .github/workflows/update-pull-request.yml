@@ -34,7 +34,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -98,7 +98,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -137,7 +137,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -185,7 +185,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -234,7 +234,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -291,7 +291,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -351,7 +351,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Use PAT to ensure that the commit later can trigger status check
           # workflows.
