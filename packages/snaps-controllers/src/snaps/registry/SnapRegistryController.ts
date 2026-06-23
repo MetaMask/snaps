@@ -54,6 +54,7 @@ export type SnapRegistryControllerArgs = {
   fetchFunction?: typeof fetch;
   url?: JsonSnapsRegistryUrl;
   recentFetchThreshold?: number;
+  periodicFetchThreshold?: number;
   refetchOnAllowlistMiss?: boolean;
   publicKey?: Hex;
   clientConfig: ClientConfig;
@@ -128,6 +129,8 @@ export class SnapRegistryController extends BaseController<
 
   readonly #refetchOnAllowlistMiss: boolean;
 
+  readonly #periodicFetchThreshold: number;
+
   #currentUpdate: Promise<void> | null;
 
   constructor({
@@ -141,6 +144,7 @@ export class SnapRegistryController extends BaseController<
     clientConfig,
     fetchFunction = globalThis.fetch.bind(undefined),
     recentFetchThreshold = inMilliseconds(5, Duration.Minute),
+    periodicFetchThreshold = inMilliseconds(4, Duration.Hour),
     refetchOnAllowlistMiss = true,
   }: SnapRegistryControllerArgs) {
     super({
@@ -182,6 +186,7 @@ export class SnapRegistryController extends BaseController<
     this.#clientConfig = clientConfig;
     this.#fetchFunction = fetchFunction;
     this.#recentFetchThreshold = recentFetchThreshold;
+    this.#periodicFetchThreshold = periodicFetchThreshold;
     this.#refetchOnAllowlistMiss = refetchOnAllowlistMiss;
     this.#currentUpdate = null;
 
@@ -191,11 +196,32 @@ export class SnapRegistryController extends BaseController<
     );
   }
 
-  #wasRecentlyFetched() {
+  /**
+   * Get whether the registry was recently fetched.
+   *
+   * @param threshold - The threshold in milliseconds to consider the registry
+   * as recently fetched.
+   * @returns Whether the registry was recently fetched.
+   */
+  #wasRecentlyFetched(threshold = this.#recentFetchThreshold) {
     return (
-      this.state.lastUpdated &&
-      Date.now() - this.state.lastUpdated < this.#recentFetchThreshold
+      this.state.lastUpdated && Date.now() - this.state.lastUpdated < threshold
     );
+  }
+
+  /**
+   * Trigger a periodic update of the registry database.
+   *
+   * This useful for updating the database with a longer interval than the
+   * recent fetch threshold, which can help to reduce the number of fetches
+   * while still keeping the database reasonably up to date.
+   */
+  async requestPeriodicUpdate() {
+    if (this.#wasRecentlyFetched(this.#periodicFetchThreshold)) {
+      return;
+    }
+
+    await this.requestUpdate();
   }
 
   /**
@@ -220,7 +246,7 @@ export class SnapRegistryController extends BaseController<
   /**
    * Updates the registry database if the registry hasn't been updated recently.
    *
-   * NOTE: SHOULD NOT be called directly, instead `triggerUpdate` should be used.
+   * NOTE: SHOULD NOT be called directly, instead `requestUpdate` should be used.
    */
   async #update() {
     // No-op if we recently fetched the registry.

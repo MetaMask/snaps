@@ -611,6 +611,51 @@ describe('SnapRegistryController', () => {
     });
   });
 
+  describe('requestPeriodicUpdate', () => {
+    it('fetches the registry if it has never been fetched', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { registry } = getRegistry();
+      await registry.requestPeriodicUpdate();
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('skips the update if the registry was fetched within the periodic threshold', async () => {
+      const { registry } = getRegistry({
+        state: {
+          lastUpdated: Date.now(),
+          database: MOCK_DATABASE,
+          signature: MOCK_SIGNATURE,
+          databaseUnavailable: false,
+        },
+      });
+      await registry.requestPeriodicUpdate();
+
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('fetches the registry if the last update was older than the periodic threshold', async () => {
+      fetchMock
+        .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
+        .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
+
+      const { registry } = getRegistry({
+        state: {
+          lastUpdated: 0,
+          database: MOCK_DATABASE,
+          signature: MOCK_SIGNATURE,
+          databaseUnavailable: false,
+        },
+      });
+      await registry.requestPeriodicUpdate();
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+  });
+
   describe('update', () => {
     it('updates the database', async () => {
       fetchMock
