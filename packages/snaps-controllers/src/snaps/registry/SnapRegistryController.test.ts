@@ -624,7 +624,7 @@ describe('SnapRegistryController', () => {
     });
 
     it('skips the update if the registry was fetched within the periodic threshold', async () => {
-      const { registry } = getRegistry({
+      const { registry, messenger } = getRegistry({
         state: {
           lastUpdated: Date.now(),
           database: MOCK_DATABASE,
@@ -632,9 +632,14 @@ describe('SnapRegistryController', () => {
           databaseUnavailable: false,
         },
       });
+
+      const listener = jest.fn();
+      messenger.subscribe('SnapRegistryController:registryUpdated', listener);
+
       await registry.requestPeriodicUpdate();
 
       expect(fetchMock).not.toHaveBeenCalled();
+      expect(listener).toHaveBeenCalledWith(false);
     });
 
     it('fetches the registry if the last update was older than the periodic threshold', async () => {

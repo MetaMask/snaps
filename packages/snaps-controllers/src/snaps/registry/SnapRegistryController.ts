@@ -218,6 +218,7 @@ export class SnapRegistryController extends BaseController<
    */
   async requestPeriodicUpdate() {
     if (this.#wasRecentlyFetched(this.#periodicFetchThreshold)) {
+      this.messenger.publish('SnapRegistryController:registryUpdated', false);
       return;
     }
 
