@@ -940,31 +940,92 @@ export class SnapController extends BaseController<
 
     this.messenger.subscribe(
       'SnapController:snapInstalled',
-      ({ id }, origin) => {
-        this.#callLifecycleHook(origin, id, HandlerType.OnInstall).catch(
+      (snap: TruncatedSnap, origin: string, preinstalled: boolean) => {
+        this.#callLifecycleHook(origin, snap.id, HandlerType.OnInstall).catch(
           (error) => {
             logError(
-              `Error when calling \`onInstall\` lifecycle hook for snap "${id}": ${getErrorMessage(
+              `Error when calling \`onInstall\` lifecycle hook for snap "${snap.id}": ${getErrorMessage(
                 error,
               )}`,
             );
           },
         );
+
+        if (preinstalled) {
+          return;
+        }
+
+        try {
+          const snapMetadata = this.messenger.call(
+            'SnapRegistryController:getMetadata',
+            snap.id,
+          );
+          this.messenger.call('AnalyticsController:trackEvent', {
+            name: 'Snap Installed',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_id: snap.id,
+              version: snap.version,
+              origin,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_category: snapMetadata?.category ?? null,
+            },
+            sensitiveProperties: {},
+            saveDataRecording: false,
+            hasProperties: true,
+          });
+        } catch (error) {
+          logError(
+            `Error tracking analytics for Snap "${snap.id}": ${getErrorMessage(error)}`,
+          );
+        }
       },
     );
 
     this.messenger.subscribe(
       'SnapController:snapUpdated',
-      ({ id }, _oldVersion, origin) => {
-        this.#callLifecycleHook(origin, id, HandlerType.OnUpdate).catch(
+      (snap, oldVersion, origin, preinstalled) => {
+        this.#callLifecycleHook(origin, snap.id, HandlerType.OnUpdate).catch(
           (error) => {
             logError(
-              `Error when calling \`onUpdate\` lifecycle hook for snap "${id}": ${getErrorMessage(
+              `Error when calling \`onUpdate\` lifecycle hook for snap "${snap.id}": ${getErrorMessage(
                 error,
               )}`,
             );
           },
         );
+
+        if (preinstalled) {
+          return;
+        }
+
+        try {
+          const snapMetadata = this.messenger.call(
+            'SnapRegistryController:getMetadata',
+            snap.id,
+          );
+          this.messenger.call('AnalyticsController:trackEvent', {
+            name: 'Snap Updated',
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_id: snap.id,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              old_version: oldVersion,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              new_version: snap.version,
+              origin,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              snap_category: snapMetadata?.category ?? null,
+            },
+            sensitiveProperties: {},
+            saveDataRecording: false,
+            hasProperties: true,
+          });
+        } catch (error) {
+          logError(
+            `Error tracking analytics for Snap "${snap.id}": ${getErrorMessage(error)}`,
+          );
+        }
       },
     );
 
@@ -1041,77 +1102,6 @@ export class SnapController extends BaseController<
         } catch (trackError) {
           logError(
             `Error tracking analytics for Snap "${snapId}": ${getErrorMessage(trackError)}`,
-          );
-        }
-      },
-    );
-
-    this.messenger.subscribe(
-      'SnapController:snapInstalled',
-      (snap, origin, preinstalled) => {
-        try {
-          if (preinstalled) {
-            return;
-          }
-
-          const snapMetadata = this.messenger.call(
-            'SnapRegistryController:getMetadata',
-            snap.id,
-          );
-          this.messenger.call('AnalyticsController:trackEvent', {
-            name: 'Snap Installed',
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              snap_id: snap.id,
-              version: snap.version,
-              origin,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              snap_category: snapMetadata?.category ?? null,
-            },
-            sensitiveProperties: {},
-            saveDataRecording: false,
-            hasProperties: true,
-          });
-        } catch (error) {
-          logError(
-            `Error tracking analytics for Snap "${snap.id}": ${getErrorMessage(error)}`,
-          );
-        }
-      },
-    );
-
-    this.messenger.subscribe(
-      'SnapController:snapUpdated',
-      (snap, oldVersion, origin, preinstalled) => {
-        try {
-          if (preinstalled) {
-            return;
-          }
-
-          const snapMetadata = this.messenger.call(
-            'SnapRegistryController:getMetadata',
-            snap.id,
-          );
-          this.messenger.call('AnalyticsController:trackEvent', {
-            name: 'Snap Updated',
-            properties: {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              snap_id: snap.id,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              old_version: oldVersion,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              new_version: snap.version,
-              origin,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              snap_category: snapMetadata?.category ?? null,
-            },
-            sensitiveProperties: {},
-            saveDataRecording: false,
-            hasProperties: true,
-          });
-        } catch (error) {
-          logError(
-            `Error tracking analytics for Snap "${snap.id}": ${getErrorMessage(error)}`,
           );
         }
       },
