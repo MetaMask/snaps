@@ -908,6 +908,7 @@ describe('SnapController', () => {
       MOCK_SNAP_ID,
       MOCK_ORIGIN,
       false,
+      false,
     );
     expect(options.messenger.publish).toHaveBeenCalledWith(
       'SnapController:snapInstalled',
@@ -8828,6 +8829,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         MOCK_ORIGIN,
         false,
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -8850,6 +8852,33 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('does not track `Snap Install Started` for preinstalled Snaps', async () => {
+      const options = getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ preinstalled: true }),
+          ),
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      options.messenger.publish(
+        'SnapController:snapInstallStarted',
+        MOCK_SNAP_ID,
+        MOCK_ORIGIN,
+        false,
+        true,
+      );
+
+      expect(options.messenger.call).not.toHaveBeenCalledWith(
+        'AnalyticsController:trackEvent',
+        expect.objectContaining({ name: 'Snap Install Started' }),
+      );
+
+      snapController.destroy();
+    });
+
     it('tracks `Snap Install Failed` when a Snap installation fails', async () => {
       const options = getSnapControllerOptions({
         state: {
@@ -8865,6 +8894,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         false,
         'Installation failed.',
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -8902,6 +8932,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         false,
         'User rejected the request.',
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -8919,6 +8950,34 @@ describe('SnapController', () => {
           saveDataRecording: false,
           hasProperties: true,
         },
+      );
+
+      snapController.destroy();
+    });
+
+    it('does not track `Snap Install Failed` for preinstalled Snaps', async () => {
+      const options = getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ preinstalled: true }),
+          ),
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      options.messenger.publish(
+        'SnapController:snapInstallFailed',
+        MOCK_SNAP_ID,
+        MOCK_ORIGIN,
+        false,
+        'Installation failed.',
+        true,
+      );
+
+      expect(options.messenger.call).not.toHaveBeenCalledWith(
+        'AnalyticsController:trackEvent',
+        expect.objectContaining({ name: 'Snap Install Failed' }),
       );
 
       snapController.destroy();
@@ -9103,6 +9162,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         MOCK_ORIGIN,
         true,
+        false,
       );
       expect(newSnap?.version).toStrictEqual(snap.version);
       expect(onSnapUpdated).not.toHaveBeenCalled();
@@ -9112,6 +9172,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         true,
         errorMessage,
+        false,
       );
 
       controller.destroy();
@@ -9258,6 +9319,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         MOCK_ORIGIN,
         true,
+        false,
       );
       expect(onSnapUpdated).toHaveBeenCalledTimes(1);
       expect(onSnapUpdated).toHaveBeenCalledWith(
@@ -10334,6 +10396,7 @@ describe('SnapController', () => {
         MOCK_SNAP_ID,
         MOCK_ORIGIN,
         true,
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -10356,6 +10419,33 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it('does not track `Snap Update Started` for preinstalled Snaps', async () => {
+      const options = getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ preinstalled: true }),
+          ),
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      options.messenger.publish(
+        'SnapController:snapInstallStarted',
+        MOCK_SNAP_ID,
+        MOCK_ORIGIN,
+        true,
+        true,
+      );
+
+      expect(options.messenger.call).not.toHaveBeenCalledWith(
+        'AnalyticsController:trackEvent',
+        expect.objectContaining({ name: 'Snap Update Started' }),
+      );
+
+      snapController.destroy();
+    });
+
     it('tracks `Snap Update Failed` when a Snap update fails', async () => {
       const options = getSnapControllerOptions({
         state: {
@@ -10371,6 +10461,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         true,
         'Update failed.',
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -10408,6 +10499,7 @@ describe('SnapController', () => {
         MOCK_ORIGIN,
         true,
         'User rejected the request.',
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
@@ -10491,6 +10583,34 @@ describe('SnapController', () => {
       expect(options.messenger.call).not.toHaveBeenCalledWith(
         'AnalyticsController:trackEvent',
         expect.objectContaining({ name: 'Snap Updated' }),
+      );
+
+      snapController.destroy();
+    });
+
+    it('does not track `Snap Update Failed` for preinstalled Snaps', async () => {
+      const options = getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ preinstalled: true }),
+          ),
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      options.messenger.publish(
+        'SnapController:snapInstallFailed',
+        MOCK_SNAP_ID,
+        MOCK_ORIGIN,
+        true,
+        'Update failed.',
+        true,
+      );
+
+      expect(options.messenger.call).not.toHaveBeenCalledWith(
+        'AnalyticsController:trackEvent',
+        expect.objectContaining({ name: 'Snap Update Failed' }),
       );
 
       snapController.destroy();
@@ -11177,7 +11297,7 @@ describe('SnapController', () => {
       expect(updatedSnap.preinstalled).toBe(true);
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        9,
+        7,
         'StorageService:setItem',
         controllerName,
         snapId,
@@ -11185,13 +11305,13 @@ describe('SnapController', () => {
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        11,
+        9,
         'PermissionController:revokePermissions',
         { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        12,
+        10,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
@@ -11278,7 +11398,7 @@ describe('SnapController', () => {
       expect(updatedSnap.preinstalled).toBe(true);
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        9,
+        7,
         'StorageService:setItem',
         controllerName,
         snapId,
@@ -11286,13 +11406,13 @@ describe('SnapController', () => {
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        11,
+        9,
         'PermissionController:revokePermissions',
         { [snapId]: [SnapEndowments.Rpc, SnapEndowments.LifecycleHooks] },
       );
 
       expect(options.messenger.call).toHaveBeenNthCalledWith(
-        12,
+        10,
         'PermissionController:grantPermissions',
         {
           approvedPermissions: {
