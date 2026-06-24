@@ -78,7 +78,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@babel/core": "^7.23.2",
+    "@babel/core": "^7.29.6",
     "@babel/types": "^7.23.0",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^1.2.0",
