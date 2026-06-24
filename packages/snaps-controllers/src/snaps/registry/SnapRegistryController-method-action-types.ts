@@ -6,6 +6,18 @@
 import type { SnapRegistryController } from './SnapRegistryController';
 
 /**
+ * Request a periodic update of the registry database.
+ *
+ * This useful for updating the database with a longer interval than the
+ * recent fetch threshold, which can help to reduce the number of fetches
+ * while still keeping the database reasonably up to date.
+ */
+export type SnapRegistryControllerRequestPeriodicUpdateAction = {
+  type: `SnapRegistryController:requestPeriodicUpdate`;
+  handler: SnapRegistryController['requestPeriodicUpdate'];
+};
+
+/**
  * Triggers an update of the registry database.
  *
  * If an existing update is in progress this function will await that update.
@@ -49,6 +61,7 @@ export type SnapRegistryControllerGetMetadataAction = {
  * Union of all SnapRegistryController action types.
  */
 export type SnapRegistryControllerMethodActions =
+  | SnapRegistryControllerRequestPeriodicUpdateAction
   | SnapRegistryControllerRequestUpdateAction
   | SnapRegistryControllerGetAction
   | SnapRegistryControllerResolveVersionAction
