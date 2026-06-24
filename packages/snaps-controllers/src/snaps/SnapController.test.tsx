@@ -8789,32 +8789,6 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
-    it('throws if the Snap source code is too large', async () => {
-      const { manifest, sourceCode, svgIcon, localizationFiles } =
-        await getMockSnapFilesWithUpdatedChecksum({
-          sourceCode: 'a'.repeat(64_000_001),
-        });
-
-      const snapController = await getSnapController(
-        getSnapControllerOptions({
-          detectSnapLocation: loopbackDetect({
-            manifest,
-            files: [sourceCode, svgIcon as VirtualFile, ...localizationFiles],
-          }),
-        }),
-      );
-
-      await expect(
-        snapController.installSnaps(MOCK_ORIGIN, {
-          [MOCK_SNAP_ID]: {},
-        }),
-      ).rejects.toThrow(
-        'Failed to fetch snap "npm:@metamask/example-snap": Snap source code must be smaller than 64 MB..',
-      );
-
-      snapController.destroy();
-    });
-
     it('tracks `Snap Install Started` when a Snap installation starts', async () => {
       const options = getSnapControllerOptions({
         state: {
@@ -9043,6 +9017,32 @@ describe('SnapController', () => {
 
       snapController.destroy();
     });
+  });
+
+  it('throws if the Snap source code is too large', async () => {
+    const { manifest, sourceCode, svgIcon, localizationFiles } =
+      await getMockSnapFilesWithUpdatedChecksum({
+        sourceCode: 'a'.repeat(64_000_001),
+      });
+
+    const snapController = await getSnapController(
+      getSnapControllerOptions({
+        detectSnapLocation: loopbackDetect({
+          manifest,
+          files: [sourceCode, svgIcon as VirtualFile, ...localizationFiles],
+        }),
+      }),
+    );
+
+    await expect(
+      snapController.installSnaps(MOCK_ORIGIN, {
+        [MOCK_SNAP_ID]: {},
+      }),
+    ).rejects.toThrow(
+      'Failed to fetch snap "npm:@metamask/example-snap": Snap source code must be smaller than 64 MB..',
+    );
+
+    snapController.destroy();
   });
 
   describe('Updating Snaps', () => {
