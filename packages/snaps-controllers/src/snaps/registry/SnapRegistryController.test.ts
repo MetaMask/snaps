@@ -617,14 +617,14 @@ describe('SnapRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
-      const { registry } = getRegistry();
-      await registry.requestPeriodicUpdate();
+      const { messenger } = getRegistry();
+      await messenger.call('SnapRegistryController:requestPeriodicUpdate');
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
     it('skips the update if the registry was fetched within the periodic threshold', async () => {
-      const { registry, messenger } = getRegistry({
+      const { messenger } = getRegistry({
         state: {
           lastUpdated: Date.now(),
           database: MOCK_DATABASE,
@@ -636,7 +636,7 @@ describe('SnapRegistryController', () => {
       const listener = jest.fn();
       messenger.subscribe('SnapRegistryController:registryUpdated', listener);
 
-      await registry.requestPeriodicUpdate();
+      await messenger.call('SnapRegistryController:requestPeriodicUpdate');
 
       expect(fetchMock).not.toHaveBeenCalled();
       expect(listener).toHaveBeenCalledWith(false);
@@ -647,7 +647,7 @@ describe('SnapRegistryController', () => {
         .mockResponseOnce(JSON.stringify(MOCK_DATABASE))
         .mockResponseOnce(JSON.stringify(MOCK_SIGNATURE_FILE));
 
-      const { registry } = getRegistry({
+      const { messenger } = getRegistry({
         state: {
           lastUpdated: 0,
           database: MOCK_DATABASE,
@@ -655,7 +655,7 @@ describe('SnapRegistryController', () => {
           databaseUnavailable: false,
         },
       });
-      await registry.requestPeriodicUpdate();
+      await messenger.call('SnapRegistryController:requestPeriodicUpdate');
 
       expect(fetchMock).toHaveBeenCalledTimes(2);
     });

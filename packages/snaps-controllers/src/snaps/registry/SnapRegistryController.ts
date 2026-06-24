@@ -103,6 +103,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'getMetadata',
   'resolveVersion',
   'requestUpdate',
+  'requestPeriodicUpdate',
 ] as const;
 
 const defaultState = {
