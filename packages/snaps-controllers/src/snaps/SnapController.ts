@@ -1,3 +1,4 @@
+import type { AnalyticsControllerTrackEventAction } from '@metamask/analytics-controller';
 import {
   ORIGIN_METAMASK,
   type ApprovalControllerAddRequestAction,
@@ -513,6 +514,7 @@ export type SnapControllerEvents =
   | SnapControllerStateChangeEvent;
 
 type AllowedActions =
+  | AnalyticsControllerTrackEventAction
   | PermissionControllerGetEndowmentsAction
   | PermissionControllerGetPermissionsAction
   | PermissionControllerGetSubjectNamesAction
@@ -544,7 +546,10 @@ type AllowedActions =
 
 type AllowedEvents =
   | ExecutionServiceEvents
+  | SnapControllerSnapInstallStartedEvent
+  | SnapControllerSnapInstallFailedEvent
   | SnapControllerSnapInstalledEvent
+  | SnapControllerSnapUninstalledEvent
   | SnapControllerSnapUpdatedEvent
   | KeyringControllerLockEvent
   | SnapRegistryControllerRegistryUpdatedEvent;
@@ -678,11 +683,6 @@ export type SnapControllerArgs = {
   clientCryptography?: CryptographicFunctions;
 
   /**
-   * MetaMetrics event tracking hook.
-   */
-  trackEvent: TrackEventHook;
-
-  /**
    * A hook that returns a promise that resolves when the onboarding has completed.
    *
    * @returns A promise that resolves when onboarding is complete.
@@ -707,14 +707,6 @@ type SetSnapArgs = Omit<AddSnapArgs, 'location' | 'versionRange'> & {
   hidden?: boolean;
   hideSnapBranding?: boolean;
 };
-
-type TrackingEventPayload = {
-  event: string;
-  category: string;
-  properties: Record<string, Json | undefined>;
-};
-
-type TrackEventHook = (event: TrackingEventPayload) => void;
 
 const defaultState: SnapControllerState = {
   snaps: {},
@@ -800,8 +792,6 @@ export class SnapController extends BaseController<
 
   readonly #preinstalledSnaps: PreinstalledSnap[] | null;
 
-  readonly #trackEvent: TrackEventHook;
-
   readonly #trackSnapExport: ReturnType<typeof throttleTracking>;
 
   readonly #ensureOnboardingComplete: () => Promise<void>;
@@ -829,7 +819,6 @@ export class SnapController extends BaseController<
     getMnemonicSeed,
     getFeatureFlags = () => ({}),
     clientCryptography,
-    trackEvent,
     ensureOnboardingComplete,
   }: SnapControllerArgs) {
     super({
@@ -917,7 +906,6 @@ export class SnapController extends BaseController<
     this._onOutboundResponse = this._onOutboundResponse.bind(this);
     this.#rollbackSnapshots = new Map();
     this.#snapsRuntimeData = new Map();
-    this.#trackEvent = trackEvent;
     this.#ensureOnboardingComplete = ensureOnboardingComplete;
 
     this.#pollForLastRequestStatus();
@@ -970,6 +958,142 @@ export class SnapController extends BaseController<
     );
 
     this.messenger.subscribe(
+      'SnapController:snapInstallStarted',
+      (snapId, origin, isUpdate) => {
+        const snapMetadata = this.messenger.call(
+          'SnapRegistryController:getMetadata',
+          snapId,
+        );
+        this.messenger.call('AnalyticsController:trackEvent', {
+          name: isUpdate ? 'Snap Update Started' : 'Snap Install Started',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            origin,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+          },
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
+        });
+      },
+    );
+
+    this.messenger.subscribe(
+      'SnapController:snapInstallFailed',
+      (snapId, origin, isUpdate, error) => {
+        const isRejected = error.includes('User rejected the request.');
+        const snapMetadata = this.messenger.call(
+          'SnapRegistryController:getMetadata',
+          snapId,
+        );
+
+        // eslint-disable-next-line no-nested-ternary
+        const name = isUpdate
+          ? isRejected
+            ? 'Snap Update Rejected'
+            : 'Snap Update Failed'
+          : isRejected
+            ? 'Snap Install Rejected'
+            : 'Snap Install Failed';
+
+        this.messenger.call('AnalyticsController:trackEvent', {
+          name,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snapId,
+            origin,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+          },
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
+        });
+      },
+    );
+
+    this.messenger.subscribe(
+      'SnapController:snapInstalled',
+      (snap, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
+        const snapMetadata = this.messenger.call(
+          'SnapRegistryController:getMetadata',
+          snap.id,
+        );
+        this.messenger.call('AnalyticsController:trackEvent', {
+          name: 'Snap Installed',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snap.id,
+            version: snap.version,
+            origin,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+          },
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
+        });
+      },
+    );
+
+    this.messenger.subscribe(
+      'SnapController:snapUpdated',
+      (snap, oldVersion, origin, preinstalled) => {
+        if (preinstalled) {
+          return;
+        }
+
+        const snapMetadata = this.messenger.call(
+          'SnapRegistryController:getMetadata',
+          snap.id,
+        );
+        this.messenger.call('AnalyticsController:trackEvent', {
+          name: 'Snap Updated',
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_id: snap.id,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            old_version: oldVersion,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            new_version: snap.version,
+            origin,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            snap_category: snapMetadata?.category ?? null,
+          },
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
+        });
+      },
+    );
+
+    this.messenger.subscribe('SnapController:snapUninstalled', (snap) => {
+      const snapMetadata = this.messenger.call(
+        'SnapRegistryController:getMetadata',
+        snap.id,
+      );
+      this.messenger.call('AnalyticsController:trackEvent', {
+        name: 'Snap Uninstalled',
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: snap.id,
+          version: snap.version,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_category: snapMetadata?.category ?? null,
+        },
+        sensitiveProperties: {},
+        saveDataRecording: false,
+        hasProperties: true,
+      });
+    });
+
+    this.messenger.subscribe(
       'KeyringController:lock',
       this.#handleLock.bind(this),
     );
@@ -997,18 +1121,21 @@ export class SnapController extends BaseController<
           'SnapRegistryController:getMetadata',
           snapId,
         );
-        this.#trackEvent({
-          event: 'Snap Export Used',
-          category: 'Snaps',
+
+        this.messenger.call('AnalyticsController:trackEvent', {
+          name: 'Snap Export Used',
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: snapId,
             export: handler,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            snap_category: snapMetadata?.category,
+            snap_category: snapMetadata?.category ?? null,
             success,
             origin,
           },
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
         });
       },
     );

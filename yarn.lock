@@ -2805,6 +2805,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/analytics-controller@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@metamask/analytics-controller@npm:1.1.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.9.0"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  checksum: 10/2a64ac0e397a27ac029a324646ebd91c8f9afa6ae2d1b5786042eaf5ad9b4b946c85b6d311ad75319562f8952649c54e80a9e8efb37879bef82ee1b5afe3513b
+  languageName: node
+  linkType: hard
+
 "@metamask/api-specs@npm:^0.14.0":
   version: 0.14.0
   resolution: "@metamask/api-specs@npm:0.14.0"
@@ -4217,6 +4230,7 @@ __metadata:
   resolution: "@metamask/snaps-controllers@workspace:packages/snaps-controllers"
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
+    "@metamask/analytics-controller": "npm:^1.1.1"
     "@metamask/approval-controller": "npm:^9.0.2"
     "@metamask/auto-changelog": "npm:^6.1.1"
     "@metamask/base-controller": "npm:^9.1.0"
