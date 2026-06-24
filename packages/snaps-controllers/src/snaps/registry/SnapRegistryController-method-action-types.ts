@@ -6,7 +6,7 @@
 import type { SnapRegistryController } from './SnapRegistryController';
 
 /**
- * Trigger a periodic update of the registry database.
+ * Request a periodic update of the registry database.
  *
  * This useful for updating the database with a longer interval than the
  * recent fetch threshold, which can help to reduce the number of fetches
