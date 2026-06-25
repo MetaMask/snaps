@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [21.0.0]
+
+### Added
+
+- **BREAKING:** Track Snap lifecycle analytics events in `SnapController` ([#4048](https://github.com/MetaMask/snaps/pull/4048))
+  - This logic was previously in the clients, but can now be removed there.
+  - The `SnapController` messenger now requires the following actions and events:
+    - `AnalyticsController:trackEvent`
+    - `SnapController:snapInstallStarted`
+    - `SnapController:snapInstallFailed`
+    - `SnapController:snapInstalled`
+    - `SnapController:snapUpdated`
+    - `SnapController:snapUninstalled`
+- **BREAKING:** Track analytics for OTA Snap updates ([#4049](https://github.com/MetaMask/snaps/pull/4049))
+  - The `SnapController` constructor now requires a `clientConfig` parameter.
+- Add `requestPeriodicUpdate` method to `SnapRegistryController` ([#4043](https://github.com/MetaMask/snaps/pull/4043))
+
+### Changed
+
+- Bump `@metamask/storage-service` from `1.0.1` to `1.0.2` ([#4035](https://github.com/MetaMask/snaps/pull/4035))
+- Bump `@metamask/approval-controller` from `9.0.1` to `9.0.2` ([#4026](https://github.com/MetaMask/snaps/pull/4026))
+
 ## [20.0.6]
 
 ### Changed
@@ -1234,7 +1256,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.6...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.0.0...HEAD
+[21.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.6...@metamask/snaps-controllers@21.0.0
 [20.0.6]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.5...@metamask/snaps-controllers@20.0.6
 [20.0.5]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.4...@metamask/snaps-controllers@20.0.5
 [20.0.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.3...@metamask/snaps-controllers@20.0.4

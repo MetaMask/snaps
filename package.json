@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-monorepo",
-  "version": "159.0.0",
+  "version": "160.0.0",
   "private": true,
   "repository": {
     "type": "git",
