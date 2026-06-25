@@ -460,6 +460,11 @@ export const getRootMessenger = () => {
     () => undefined,
   );
 
+  messenger.registerActionHandler(
+    'AnalyticsController:trackEvent',
+    () => undefined,
+  );
+
   jest.spyOn(messenger, 'call');
 
   return messenger;
@@ -503,6 +508,7 @@ export const getSnapControllerMessenger = (
       'StorageService:getItem',
       'StorageService:removeItem',
       'StorageService:clear',
+      'AnalyticsController:trackEvent',
     ],
     events: [
       'ExecutionService:unhandledError',
@@ -600,7 +606,6 @@ export const getSnapControllerOptions = ({
       Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
-    trackEvent: jest.fn(),
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     ...opts,
   } as SnapControllerConstructorParamsWithStorage & {
