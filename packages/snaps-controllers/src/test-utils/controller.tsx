@@ -49,7 +49,7 @@ import {
   InMemoryStorageAdapter,
   StorageService,
 } from '@metamask/storage-service';
-import type { Json } from '@metamask/utils';
+import type { Json, SemVerVersion } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
@@ -64,7 +64,6 @@ import type { MultichainRoutingServiceMessenger } from '../multichain/Multichain
 import type { ExecutionService, ExecutionServiceMessenger } from '../services';
 import type { SnapRegistryControllerMessenger } from '../snaps';
 import { SnapController } from '../snaps';
-import type { ClientConfig } from '../snaps/registry';
 import type {
   PersistedSnapControllerState,
   SnapControllerMessenger,
@@ -610,8 +609,8 @@ export const getSnapControllerOptions = ({
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     clientConfig: {
       type: 'extension',
-      version: '1.0.0',
-    } as ClientConfig,
+      version: '1.0.0' as SemVerVersion,
+    },
     ...opts,
   } as SnapControllerConstructorParamsWithStorage & {
     rootMessenger: ReturnType<typeof getRootMessenger>;
