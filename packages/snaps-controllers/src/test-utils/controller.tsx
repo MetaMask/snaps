@@ -64,6 +64,7 @@ import type { MultichainRoutingServiceMessenger } from '../multichain/Multichain
 import type { ExecutionService, ExecutionServiceMessenger } from '../services';
 import type { SnapRegistryControllerMessenger } from '../snaps';
 import { SnapController } from '../snaps';
+import type { ClientConfig } from '../snaps/registry';
 import type {
   PersistedSnapControllerState,
   SnapControllerMessenger,
@@ -607,6 +608,10 @@ export const getSnapControllerOptions = ({
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
+    clientConfig: {
+      type: 'extension',
+      version: '1.0.0',
+    } as ClientConfig,
     ...opts,
   } as SnapControllerConstructorParamsWithStorage & {
     rootMessenger: ReturnType<typeof getRootMessenger>;

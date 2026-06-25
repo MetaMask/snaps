@@ -162,6 +162,7 @@ import {
 import type { SnapLocation } from './location';
 import { detectSnapLocation } from './location';
 import type {
+  ClientConfig,
   SnapRegistryControllerGetAction,
   SnapRegistryControllerGetMetadataAction,
   SnapRegistryControllerResolveVersionAction,
@@ -460,6 +461,7 @@ export type SnapControllerSnapUpdatedEvent = {
     oldVersion: string,
     origin: string,
     preinstalled: boolean,
+    ota: boolean,
   ];
 };
 
@@ -699,6 +701,11 @@ export type SnapControllerArgs = {
    * @returns A promise that resolves when onboarding is complete.
    */
   ensureOnboardingComplete: () => Promise<void>;
+
+  /**
+   * The client configuration, containing the client type and version.
+   */
+  clientConfig: ClientConfig;
 };
 
 type AddSnapArgs = {
@@ -787,6 +794,8 @@ export class SnapController extends BaseController<
 
   readonly #clientCryptography: CryptographicFunctions | undefined;
 
+  readonly #clientConfig: ClientConfig;
+
   readonly #detectSnapLocation: typeof detectSnapLocation;
 
   readonly #snapsRuntimeData: Map<SnapId, SnapRuntimeData>;
@@ -831,6 +840,7 @@ export class SnapController extends BaseController<
     getFeatureFlags = () => ({}),
     clientCryptography,
     ensureOnboardingComplete,
+    clientConfig,
   }: SnapControllerArgs) {
     super({
       messenger,
@@ -911,6 +921,7 @@ export class SnapController extends BaseController<
     this.#getMnemonicSeed = getMnemonicSeed;
     this.#getFeatureFlags = getFeatureFlags;
     this.#clientCryptography = clientCryptography;
+    this.#clientConfig = clientConfig;
     this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
     this._onOutboundRequest = this._onOutboundRequest.bind(this);
@@ -978,7 +989,7 @@ export class SnapController extends BaseController<
 
     this.messenger.subscribe(
       'SnapController:snapUpdated',
-      (snap, oldVersion, origin, preinstalled) => {
+      (snap, oldVersion, origin, preinstalled, ota) => {
         this.#callLifecycleHook(origin, snap.id, HandlerType.OnUpdate).catch(
           (error) => {
             logError(
@@ -989,7 +1000,7 @@ export class SnapController extends BaseController<
           },
         );
 
-        if (preinstalled) {
+        if (preinstalled && !ota) {
           return;
         }
 
@@ -999,17 +1010,18 @@ export class SnapController extends BaseController<
         );
         this.messenger.call('AnalyticsController:trackEvent', {
           name: 'Snap Updated',
+          /* eslint-disable @typescript-eslint/naming-convention */
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: snap.id,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             old_version: oldVersion,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             new_version: snap.version,
             origin,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_category: snapMetadata?.category ?? null,
+            ota,
+            client_version: this.#clientConfig.version,
+            client_type: this.#clientConfig.type,
           },
+          /* eslint-enable @typescript-eslint/naming-convention */
           sensitiveProperties: {},
           saveDataRecording: false,
           hasProperties: true,
@@ -1485,6 +1497,7 @@ export class SnapController extends BaseController<
           existingSnap.version,
           METAMASK_ORIGIN,
           true,
+          false,
         );
       } else if (!isMissingSource) {
         this.messenger.publish(
@@ -1641,6 +1654,7 @@ export class SnapController extends BaseController<
             resolvedVersion !== preinstalledVersionRange &&
             gtVersion(resolvedVersion as unknown as SemVerVersion, snap.version)
           ) {
+            const oldVersion = snap.version;
             const location = this.#detectSnapLocation(snap.id, {
               versionRange: resolvedVersion,
               fetch: this.#fetchFunction,
@@ -1655,6 +1669,15 @@ export class SnapController extends BaseController<
               versionRange: resolvedVersion,
               automaticUpdate: true,
             });
+
+            this.messenger.publish(
+              'SnapController:snapUpdated',
+              this.#getTruncatedSnapExpect(snap.id),
+              oldVersion,
+              ORIGIN_METAMASK,
+              true,
+              true,
+            );
           }
         }),
     );
@@ -2835,6 +2858,7 @@ export class SnapController extends BaseController<
           this.#getTruncatedSnapExpect(snapId),
           oldVersion,
           origin,
+          false,
           false,
         ),
       );

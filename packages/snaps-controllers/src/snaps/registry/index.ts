@@ -1,4 +1,5 @@
 export type {
+  ClientConfig,
   SnapRegistryControllerActions,
   SnapRegistryControllerEvents,
   SnapRegistryControllerArgs,

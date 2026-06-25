@@ -6651,6 +6651,7 @@ describe('SnapController', () => {
         '1.0.0',
         METAMASK_ORIGIN,
         true,
+        false,
       );
 
       const result = await snapController.handleRequest({
@@ -9327,6 +9328,7 @@ describe('SnapController', () => {
         '1.0.0',
         MOCK_ORIGIN,
         false,
+        false,
       );
 
       controller.destroy();
@@ -10537,23 +10539,25 @@ describe('SnapController', () => {
         '0.9.0',
         MOCK_ORIGIN,
         false,
+        false,
       );
 
       expect(options.messenger.call).toHaveBeenCalledWith(
         'AnalyticsController:trackEvent',
         {
           name: 'Snap Updated',
+          /* eslint-disable @typescript-eslint/naming-convention */
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_id: MOCK_SNAP_ID,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             old_version: '0.9.0',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             new_version: '1.0.0',
             origin: MOCK_ORIGIN,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             snap_category: null,
+            ota: false,
+            client_version: '1.0.0',
+            client_type: 'extension',
           },
+          /* eslint-enable @typescript-eslint/naming-convention */
           sensitiveProperties: {},
           saveDataRecording: false,
           hasProperties: true,
@@ -10578,6 +10582,7 @@ describe('SnapController', () => {
         '0.9.0',
         MOCK_ORIGIN,
         true,
+        false,
       );
 
       expect(options.messenger.call).not.toHaveBeenCalledWith(
@@ -11324,6 +11329,84 @@ describe('SnapController', () => {
             snap_manageState: {},
           },
           subject: { origin: snapId },
+        },
+      );
+
+      snapController.destroy();
+    });
+
+    it('tracks `Snap Updated` with `ota: true` when a preinstalled Snap is OTA-updated', async () => {
+      const rootMessenger = getRootMessenger();
+      const registry = new MockSnapRegistryController(rootMessenger);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:getPermissions',
+        () => ({
+          [SnapEndowments.Rpc]: MOCK_RPC_ORIGINS_PERMISSION,
+          [SnapEndowments.LifecycleHooks]: MOCK_LIFECYCLE_HOOKS_PERMISSION,
+        }),
+      );
+
+      const snapId = 'npm:@metamask/jsx-example-snap' as SnapId;
+
+      const mockSnap = getPersistedSnapObject({
+        id: snapId,
+        preinstalled: true,
+      });
+
+      const updateVersion = '1.2.1';
+
+      registry.resolveVersion.mockResolvedValue(updateVersion);
+      const fetchFunction = jest.fn().mockResolvedValueOnce({
+        // eslint-disable-next-line no-restricted-globals
+        headers: new Headers({ 'content-length': '5477' }),
+        ok: true,
+        body: Readable.toWeb(
+          createReadStream(
+            path.resolve(
+              __dirname,
+              `../../test/fixtures/metamask-jsx-example-snap-${updateVersion}.tgz`,
+            ),
+          ),
+        ),
+      });
+
+      const options = getSnapControllerOptions({
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(mockSnap),
+        },
+        fetchFunction,
+        featureFlags: {
+          autoUpdatePreinstalledSnaps: true,
+        },
+      });
+
+      const snapController = await getSnapController(options);
+
+      await snapController.updateRegistry();
+      await waitForStateChange(options.messenger);
+      await sleep(100);
+
+      expect(options.messenger.call).toHaveBeenCalledWith(
+        'AnalyticsController:trackEvent',
+        {
+          name: 'Snap Updated',
+          /* eslint-disable @typescript-eslint/naming-convention */
+          properties: {
+            snap_id: snapId,
+            old_version: mockSnap.version,
+            new_version: updateVersion,
+            origin: METAMASK_ORIGIN,
+            snap_category: null,
+            ota: true,
+            client_version: '1.0.0',
+            client_type: 'extension',
+          },
+          /* eslint-enable @typescript-eslint/naming-convention */
+          sensitiveProperties: {},
+          saveDataRecording: false,
+          hasProperties: true,
         },
       );
 
@@ -13437,6 +13520,7 @@ describe('SnapController', () => {
         '0.9.0',
         MOCK_ORIGIN,
         false,
+        false,
       );
 
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -13543,6 +13627,7 @@ describe('SnapController', () => {
         getTruncatedSnap(),
         '0.9.0',
         MOCK_ORIGIN,
+        false,
         false,
       );
       await new Promise((resolve) => setTimeout(resolve, 10));

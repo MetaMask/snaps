@@ -488,6 +488,7 @@ describe('WebSocketService', () => {
       '1.0.0',
       MOCK_ORIGIN,
       false,
+      false,
     );
 
     expect(
