@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump vite from 6.4.1 to 6.4.3 ([#4045](https://github.com/MetaMask/snaps/pull/4045))
-- chore: Bump ses from 1.15.0 to 2.1.0 ([#4017](https://github.com/MetaMask/snaps/pull/4017))
-- chore: Bump @lavamoat/webpack from 2.2.1 to 2.2.3 ([#4025](https://github.com/MetaMask/snaps/pull/4025))
-
 ## [11.1.1]
 
 ### Fixed
