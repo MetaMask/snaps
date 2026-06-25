@@ -96,7 +96,7 @@
     "@metamask/snaps-rpc-methods": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/storage-service": "^1.0.1",
+    "@metamask/storage-service": "^1.0.2",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/utils": "^11.11.0",
     "@xstate/fsm": "^2.0.0",
