@@ -11967,7 +11967,7 @@ describe('SnapController', () => {
         snapController.destroy();
       });
 
-      it('should properly handle error when MetaMetrics hook throws an error', async () => {
+      it('should properly handle error when AnalyticsController throws an error', async () => {
         const log = jest.spyOn(console, 'error').mockImplementation();
         const error = new Error('MetaMetrics hook error');
         const rootMessenger = getRootMessenger();
