@@ -779,6 +779,7 @@ describe('CronjobController', () => {
       snapInfo.version,
       MOCK_ORIGIN,
       false,
+      false,
     );
 
     expect(cronjobController.state.events).toStrictEqual({

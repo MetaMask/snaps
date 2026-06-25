@@ -49,7 +49,7 @@ import {
   InMemoryStorageAdapter,
   StorageService,
 } from '@metamask/storage-service';
-import type { Json } from '@metamask/utils';
+import type { Json, SemVerVersion } from '@metamask/utils';
 
 import { MOCK_CRONJOB_PERMISSION } from './cronjob';
 import { getNodeEES, getNodeEESMessenger } from './execution-environment';
@@ -607,6 +607,10 @@ export const getSnapControllerOptions = ({
     clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
+    clientConfig: {
+      type: 'extension',
+      version: '1.0.0' as SemVerVersion,
+    },
     ...opts,
   } as SnapControllerConstructorParamsWithStorage & {
     rootMessenger: ReturnType<typeof getRootMessenger>;
