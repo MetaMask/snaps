@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat!: track analytics for OTA Snap updates ([#4049](https://github.com/MetaMask/snaps/pull/4049))
+- chore: Bump @metamask/storage-service from 1.0.1 to 1.0.2 ([#4035](https://github.com/MetaMask/snaps/pull/4035))
+- chore: Bump vite from 6.4.1 to 6.4.3 ([#4045](https://github.com/MetaMask/snaps/pull/4045))
+- feat!: track Snap lifecycle analytics events in `SnapController` ([#4048](https://github.com/MetaMask/snaps/pull/4048))
+- feat: add `requestPeriodicUpdate` method to `SnapRegistryController` ([#4043](https://github.com/MetaMask/snaps/pull/4043))
+- chore: Bump @metamask/approval-controller from 9.0.1 to 9.0.2 ([#4026](https://github.com/MetaMask/snaps/pull/4026))
+
 ## [20.0.6]
 
 ### Changed
