@@ -14,4 +14,5 @@ export enum SnapEndowments {
   SettingsPage = 'endowment:page-settings',
   Assets = 'endowment:assets',
   Protocol = 'endowment:protocol',
+  Messenger = 'endowment:messenger',
 }
