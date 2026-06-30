@@ -1,12 +1,12 @@
-import { Messenger } from '@metamask/messenger';
+import { Messenger } from "@metamask/messenger";
 
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-} from './permissions';
+} from "./permissions";
 
-describe('buildSnapEndowmentSpecifications', () => {
-  it('returns the expected object', () => {
+describe("buildSnapEndowmentSpecifications", () => {
+  it("returns the expected object", () => {
     const specifications = buildSnapEndowmentSpecifications([]);
     expect(specifications).toMatchInlineSnapshot(`
       {
@@ -69,6 +69,18 @@ describe('buildSnapEndowmentSpecifications', () => {
             "snap",
           ],
           "targetName": "endowment:lifecycle-hooks",
+          "validator": [Function],
+        },
+        "endowment:messenger": {
+          "allowedCaveats": [
+            "messengerScopes",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:messenger",
           "validator": [Function],
         },
         "endowment:multichain-provider": {
@@ -193,8 +205,8 @@ describe('buildSnapEndowmentSpecifications', () => {
   });
 });
 
-describe('buildSnapRestrictedMethodSpecifications', () => {
-  it('returns the expected object', () => {
+describe("buildSnapRestrictedMethodSpecifications", () => {
+  it("returns the expected object", () => {
     const specifications = buildSnapRestrictedMethodSpecifications(
       [],
       {
@@ -205,7 +217,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
         getSnapKeyring: jest.fn(),
         getPreferences: jest.fn(),
       },
-      new Messenger({ namespace: 'SnapsRestrictedMethods' }),
+      new Messenger({ namespace: "SnapsRestrictedMethods" })
     );
     expect(specifications).toMatchInlineSnapshot(`
       {
@@ -324,9 +336,9 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
     `);
   });
 
-  it('excludes the specified permissions', () => {
+  it("excludes the specified permissions", () => {
     const specifications = buildSnapRestrictedMethodSpecifications(
-      ['snap_dialog'],
+      ["snap_dialog"],
       {
         getUnlockPromise: jest.fn(),
         getClientCryptography: jest.fn(),
@@ -335,7 +347,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
         getSnapKeyring: jest.fn(),
         getPreferences: jest.fn(),
       },
-      new Messenger({ namespace: 'SnapsRestrictedMethods' }),
+      new Messenger({ namespace: "SnapsRestrictedMethods" })
     );
 
     expect(specifications.snap_dialog).toBeUndefined();
