@@ -24,6 +24,10 @@ import type {
   ListEntropySourcesMethodActions,
   ListEntropySourcesMethodHooks,
 } from './listEntropySources';
+import type {
+  MessengerCallMethodActions,
+  MessengerCallMethodHooks,
+} from './messengerCall';
 import type { OpenWebSocketMethodActions } from './openWebSocket';
 import type { RequestSnapsMethodActions } from './requestSnaps';
 import type { ResolveInterfaceMethodActions } from './resolveInterface';
@@ -71,7 +75,8 @@ export type PermittedRpcMethodActions =
   | StartTraceMethodActions
   | TrackErrorMethodActions
   | TrackEventMethodActions
-  | UpdateInterfaceMethodActions;
+  | UpdateInterfaceMethodActions
+  | MessengerCallMethodActions;
 
 export type PermittedRpcMethodHooks = GetClientStatusMethodHooks &
   GetStateMethodHooks &
@@ -81,6 +86,7 @@ export type PermittedRpcMethodHooks = GetClientStatusMethodHooks &
   TrackErrorMethodHooks &
   StartTraceMethodHooks &
   EndTraceMethodHooks &
-  InvokeKeyringMethodHooks;
+  InvokeKeyringMethodHooks &
+  MessengerCallMethodHooks;
 
 export * from './middleware';
