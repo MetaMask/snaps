@@ -16,9 +16,7 @@ describe('endowment:messenger', () => {
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Messenger,
       endowmentGetter: expect.any(Function),
-      allowedCaveats: [
-        SnapCaveatType.MessengerScopes,
-      ],
+      allowedCaveats: [SnapCaveatType.MessengerScopes],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
@@ -63,14 +61,14 @@ describe('getMessengerCaveatMapper', () => {
   it('maps a value to a caveat', () => {
     expect(
       getMessengerCaveatMapper({
-        actions: ["Foo:bar"],
+        actions: ['Foo:bar'],
       }),
     ).toStrictEqual({
       caveats: [
         {
           type: SnapCaveatType.MessengerScopes,
           value: {
-            actions: ["Foo:bar"]
+            actions: ['Foo:bar'],
           },
         },
       ],
@@ -90,11 +88,11 @@ describe('getMessengerCaveatActions', () => {
         caveats: [
           {
             type: SnapCaveatType.MessengerScopes,
-            value: { actions: ["Foo:bar"] }
+            value: { actions: ['Foo:bar'] },
           },
         ],
       }),
-    ).toStrictEqual(["Foo:bar"]);
+    ).toStrictEqual(['Foo:bar']);
   });
 
   it('returns null if no caveat found', () => {
@@ -134,7 +132,7 @@ describe('messengerCaveatSpecifications', () => {
         'Invalid messenger scopes specified: At path: actions -- Expected an array value, but received: undefined.',
       );
 
-            expect(() =>
+      expect(() =>
         messengerCaveatSpecifications[
           SnapCaveatType.MessengerScopes
         ].validator?.({
