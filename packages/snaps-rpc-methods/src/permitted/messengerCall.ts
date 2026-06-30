@@ -2,11 +2,7 @@ import type {
   JsonRpcEngineEndCallback,
   MethodHandler,
 } from '@metamask/json-rpc-engine';
-import type {
-  ActionConstraint,
-  EventConstraint,
-  Messenger,
-} from '@metamask/messenger';
+import type { Messenger, NamespacedName } from '@metamask/messenger';
 import type { PermissionControllerGetPermissionAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
@@ -14,18 +10,12 @@ import type {
   MessengerCallResult,
 } from '@metamask/snaps-sdk';
 import type { InferMatching } from '@metamask/snaps-utils';
-import {
-  create,
-  object,
-  string,
-  StructError,
-  array,
-} from '@metamask/superstruct';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
-import { JsonStruct } from '@metamask/utils';
-import { SnapEndowments } from 'src';
-import { getMessengerCaveatActions } from 'src/endowments/messenger';
+import { create, object, StructError, array } from '@metamask/superstruct';
+import type { Json, PendingJsonRpcResponse } from '@metamask/utils';
+import { definePattern, JsonStruct } from '@metamask/utils';
 
+import { SnapEndowments } from '../endowments';
+import { getMessengerCaveatActions } from '../endowments/messenger';
 import type {
   JsonRpcRequestWithOrigin,
   SnapControllerGetSnapAction,
@@ -36,11 +26,16 @@ const hookNames: MethodHooksObject<MessengerCallMethodHooks> = {
   getMessenger: true,
 };
 
+type GenericMessengerAction = {
+  type: NamespacedName;
+  handler: (...args: Json[]) => Promise<Json>;
+};
+
 export type MessengerCallMethodHooks = {
   getMessenger: (
     actions: string[],
     events: string[],
-  ) => Messenger<string, ActionConstraint, EventConstraint>;
+  ) => Messenger<string, GenericMessengerAction>;
 };
 
 export type MessengerCallMethodActions =
@@ -48,7 +43,7 @@ export type MessengerCallMethodActions =
   | PermissionControllerGetPermissionAction;
 
 const MessengerCallParametersStruct = object({
-  action: string(),
+  action: definePattern<`${string}:${string}`>('MessengerAction', /^.+:.+$/u),
   params: array(JsonStruct),
 });
 
@@ -88,14 +83,14 @@ export const messengerCallHandler = {
  * @param messenger - The messenger used to call controller actions.
  * @returns Nothing.
  */
-function getMessengerCallImplementation(
+async function getMessengerCallImplementation(
   request: JsonRpcRequestWithOrigin<MessengerCallParams>,
   response: PendingJsonRpcResponse,
   _next: unknown,
   end: JsonRpcEngineEndCallback,
   { getMessenger }: MessengerCallMethodHooks,
   messenger: Messenger<string, MessengerCallMethodActions>,
-): void {
+): Promise<void> {
   const snap = messenger.call('SnapController:getSnap', request.origin);
   const permission = messenger.call(
     'PermissionController:getPermission',
@@ -109,13 +104,14 @@ function getMessengerCallImplementation(
 
   const actions = getMessengerCaveatActions(permission);
 
+  // TODO: Consider if we need to ban any actions.
   const snapMessenger = getMessenger(actions ?? [], []);
 
   const { params } = request;
 
   try {
     const { action, params: actionParams } = getValidatedParams(params);
-    response.result = snapMessenger.call(action, ...actionParams);
+    response.result = await snapMessenger.call(action, ...actionParams);
   } catch (error) {
     return end(error);
   }

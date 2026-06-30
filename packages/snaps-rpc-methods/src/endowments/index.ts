@@ -23,6 +23,7 @@ import {
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
 import {
   getMessengerCaveatMapper,
+  messengerCaveatSpecifications,
   messengerEndowmentBuilder,
 } from './messenger';
 import { multichainProviderEndowmentBuilder } from './multichain-provider';
@@ -87,6 +88,7 @@ export const endowmentCaveatSpecifications = {
   ...signatureInsightCaveatSpecifications,
   ...maxRequestTimeCaveatSpecifications,
   ...protocolCaveatSpecifications,
+  ...messengerCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
