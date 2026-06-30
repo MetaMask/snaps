@@ -254,28 +254,67 @@ describe('getRestrictedHooks', () => {
 describe('getPermittedHooks', () => {
   const { runSaga } = createStore(getMockOptions());
 
+  let controllerMessenger = getRootControllerMessenger();
+
+  beforeEach(() => {
+    controllerMessenger = getRootControllerMessenger();
+  });
+
   it('returns the `getUnlockPromise` hook', async () => {
-    const { getUnlockPromise } = getPermittedHooks(runSaga);
+    const { getUnlockPromise } = getPermittedHooks(
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      runSaga,
+    );
 
     expect(await getUnlockPromise(true)).toBeUndefined();
   });
 
   it('returns the `getIsActive` hook', async () => {
-    const { getIsActive } = getPermittedHooks(runSaga);
+    const { getIsActive } = getPermittedHooks(
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      runSaga,
+    );
 
     expect(getIsActive()).toBe(true);
   });
 
   it('returns the `getVersion` hook', async () => {
-    const { getVersion } = getPermittedHooks(runSaga);
+    const { getVersion } = getPermittedHooks(
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      runSaga,
+    );
 
     expect(getVersion()).toBe('13.6.0-flask.0');
   });
 
   it('returns the `getAllowedKeyringMethods` hook', async () => {
-    const { getAllowedKeyringMethods } = getPermittedHooks(runSaga);
+    const { getAllowedKeyringMethods } = getPermittedHooks(
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      runSaga,
+    );
 
     expect(getAllowedKeyringMethods()).toStrictEqual([]);
+  });
+
+  it('returns the `getMessenger` hook', () => {
+    const { getMessenger } = getPermittedHooks(
+      MOCK_SNAP_ID,
+      controllerMessenger,
+      runSaga,
+    );
+
+    const messenger = getMessenger(['PhishingController:testOrigin'], []);
+
+    expect(
+      messenger.call('PhishingController:testOrigin', 'https://example.com'),
+    ).toStrictEqual({
+      result: false,
+      type: 'all',
+    });
   });
 });
 

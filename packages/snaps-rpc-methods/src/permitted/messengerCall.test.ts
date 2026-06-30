@@ -2,25 +2,25 @@ import {
   JsonRpcEngine,
   createOriginMiddleware,
 } from '@metamask/json-rpc-engine';
-import type { MessengerCallParams, MessengerCallResult } from '@metamask/snaps-sdk';
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
+import type { MessengerCallParams } from '@metamask/snaps-sdk';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
   getSnapObject,
 } from '@metamask/snaps-utils/test-utils';
-import type { PendingJsonRpcResponse } from '@metamask/utils';
 
-import { MessengerCallMethodActions, messengerCallHandler } from './messengerCall';
+import type { MessengerCallMethodActions } from './messengerCall';
+import { messengerCallHandler } from './messengerCall';
 import { SnapEndowments } from '../endowments';
 import type { JsonRpcRequestWithOrigin } from '../types';
-import { MOCK_ANY_NAMESPACE, Messenger, MockAnyNamespace } from '@metamask/messenger';
 
 type FooBarAction = {
   type: 'Foo:bar';
   handler: (parameter: string) => string;
 };
-
 
 describe('snap_messengerCall', () => {
   describe('messengerCallHandler', () => {
@@ -30,7 +30,10 @@ describe('snap_messengerCall', () => {
         hookNames: {
           getMessenger: true,
         },
-        actionNames: ['SnapController:getSnap', 'PermissionController:getPermission'],
+        actionNames: [
+          'SnapController:getSnap',
+          'PermissionController:getPermission',
+        ],
       });
     });
   });
@@ -47,18 +50,21 @@ describe('snap_messengerCall', () => {
         preinstalled,
       }));
 
-      messenger.registerActionHandler('PermissionController:getPermission', () => ({
-        caveats: [
-          {
-            type: SnapCaveatType.MessengerScopes,
-            value: { actions: ['Foo:bar'] },
-          },
-        ],
-        date: 1661166080905,
-        id: 'VyAsBJiDDKawv_XlNcm13',
-        invoker: MOCK_SNAP_ID,
-        parentCapability: SnapEndowments.Messenger,
-      }));
+      messenger.registerActionHandler(
+        'PermissionController:getPermission',
+        () => ({
+          caveats: [
+            {
+              type: SnapCaveatType.MessengerScopes,
+              value: { actions: ['Foo:bar'] },
+            },
+          ],
+          date: 1661166080905,
+          id: 'VyAsBJiDDKawv_XlNcm13',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.Messenger,
+        }),
+      );
 
       jest.spyOn(messenger, 'call');
 
@@ -68,7 +74,9 @@ describe('snap_messengerCall', () => {
     it('calls an action', async () => {
       const { implementation } = messengerCallHandler;
 
-      const snapMessenger = new Messenger<MockAnyNamespace, FooBarAction>({ namespace: MOCK_ANY_NAMESPACE });
+      const snapMessenger = new Messenger<MockAnyNamespace, FooBarAction>({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       snapMessenger.registerActionHandler('Foo:bar', (arg) => arg);
 
@@ -83,7 +91,7 @@ describe('snap_messengerCall', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequestWithOrigin<MessengerCallParams>,
-          response as PendingJsonRpcResponse<MessengerCallResult>,
+          response,
           next,
           end,
           hooks,
@@ -108,7 +116,7 @@ describe('snap_messengerCall', () => {
         id: 1,
         result: 'baz',
       });
-      expect(getSnapMessenger).toBeCalledWith(["Foo:bar"], []);
+      expect(getSnapMessenger).toHaveBeenCalledWith(['Foo:bar'], []);
     });
 
     it('throws an error if the Snap is not preinstalled', async () => {
@@ -125,7 +133,7 @@ describe('snap_messengerCall', () => {
       engine.push((request, response, next, end) => {
         const result = implementation(
           request as JsonRpcRequestWithOrigin<MessengerCallParams>,
-          response as PendingJsonRpcResponse<MessengerCallResult>,
+          response,
           next,
           end,
           hooks,
@@ -171,7 +179,7 @@ describe('snap_messengerCall', () => {
         'Invalid params: At path: action -- Expected a value of type `MessengerAction`, but received: `1`.',
       ],
       [
-        { action: "Foo:bar" },
+        { action: 'Foo:bar' },
         'Invalid params: At path: params -- Expected an array value, but received: undefined.',
       ],
     ])(
@@ -179,13 +187,15 @@ describe('snap_messengerCall', () => {
       async (params, error) => {
         const { implementation } = messengerCallHandler;
 
-              const snapMessenger = new Messenger<MockAnyNamespace, FooBarAction>({ namespace: MOCK_ANY_NAMESPACE });
+        const snapMessenger = new Messenger<MockAnyNamespace, FooBarAction>({
+          namespace: MOCK_ANY_NAMESPACE,
+        });
 
-      snapMessenger.registerActionHandler('Foo:bar', (arg) => arg);
+        snapMessenger.registerActionHandler('Foo:bar', (arg) => arg);
 
-      const getSnapMessenger = jest.fn().mockReturnValue(snapMessenger);
+        const getSnapMessenger = jest.fn().mockReturnValue(snapMessenger);
 
-      const callSpy = jest.spyOn(snapMessenger, 'call');
+        const callSpy = jest.spyOn(snapMessenger, 'call');
 
         const hooks = { getMessenger: getSnapMessenger };
 
@@ -197,7 +207,7 @@ describe('snap_messengerCall', () => {
         engine.push((request, response, next, end) => {
           const result = implementation(
             request as JsonRpcRequestWithOrigin<MessengerCallParams>,
-            response as PendingJsonRpcResponse<MessengerCallResult>,
+            response,
             next,
             end,
             hooks,
