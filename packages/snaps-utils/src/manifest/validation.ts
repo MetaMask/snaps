@@ -192,6 +192,12 @@ export const ProtocolScopesStruct = record(
   object({ methods: array(string()) }),
 );
 
+export const MessengerActionsStruct = size(array(string()), 1, Infinity);
+
+export const MessengerScopesStruct = object({
+  actions: MessengerActionsStruct,
+});
+
 // Utility type to union with for all handler structs
 export const HandlerCaveatsStruct = object({
   maxRequestTime: optional(MaxRequestTimeStruct),
@@ -229,6 +235,7 @@ export const PermissionsStruct: Describe<InitialPermissions> = type({
       object({ scopes: ProtocolScopesStruct }),
     ),
   ),
+  'endowment:messenger': optional(MessengerScopesStruct),
   'endowment:lifecycle-hooks': optional(HandlerCaveatsStruct),
   'endowment:name-lookup': optional(
     mergeStructs(

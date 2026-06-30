@@ -63,4 +63,9 @@ export enum SnapCaveatType {
    * Caveat specifying a list of scopes serviced by an endowment.
    */
   ProtocolSnapScopes = 'protocolSnapScopes',
+
+  /**
+   * Caveat specifying the required messenger actions and events by a Snap.
+   */
+  MessengerScopes = 'messengerScopes',
 }
