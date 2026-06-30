@@ -69,6 +69,10 @@ import type {
 } from './manage-accounts';
 import type { ManageStateParams, ManageStateResult } from './manage-state';
 import type {
+  MessengerCallParams,
+  MessengerCallResult,
+} from './messenger-call';
+import type {
   CreateSessionParams,
   CreateSessionResult,
   GetSessionParams,
@@ -127,6 +131,7 @@ export type SnapMethods = {
   snap_listEntropySources: [ListEntropySourcesParams, ListEntropySourcesResult];
   snap_manageAccounts: [ManageAccountsParams, ManageAccountsResult];
   snap_manageState: [ManageStateParams, ManageStateResult];
+  snap_messengerCall: [MessengerCallParams, MessengerCallResult];
   snap_notify: [NotifyParams, NotifyResult];
   snap_scheduleBackgroundEvent: [
     ScheduleBackgroundEventParams,
