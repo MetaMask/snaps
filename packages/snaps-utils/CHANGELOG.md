@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `KeyringAccountType` members ([#4057](https://github.com/MetaMask/snaps/pull/4057))
+  - Removed bad member `entropy:account`.
+  - Added `any:account` and missing `stellar:account`.
+
 ## [12.2.1]
 
 ### Fixed
