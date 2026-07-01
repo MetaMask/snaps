@@ -307,7 +307,9 @@ describe('getPermittedHooks', () => {
       runSaga,
     );
 
-    const messenger = getMessenger(['PhishingController:testOrigin'], []);
+    const messenger = getMessenger({
+      actions: ['PhishingController:testOrigin'],
+    });
 
     expect(
       messenger.call('PhishingController:testOrigin', 'https://example.com'),
