@@ -117,7 +117,7 @@ describe('messengerCaveatSpecifications', () => {
             type: SnapCaveatType.MessengerScopes,
           },
         ),
-      ).toThrow('Expected a plain object.');
+      ).toThrow('Expected an object.');
 
       expect(() =>
         messengerCaveatSpecifications[
