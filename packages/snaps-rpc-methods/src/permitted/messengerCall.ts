@@ -42,6 +42,8 @@ export type MessengerCallMethodActions =
   | SnapControllerGetSnapAction
   | PermissionControllerGetPermissionAction;
 
+const BLOCKED_MESSENGER_CLIENTS = ['KeyringController', 'PermissionController'];
+
 const MessengerCallParametersStruct = object({
   action: definePattern<`${string}:${string}`>('MessengerAction', /^.+:.+$/u),
   params: array(JsonStruct),
@@ -104,13 +106,25 @@ async function getMessengerCallImplementation(
 
   const actions = getMessengerCaveatActions(permission);
 
-  // TODO: Consider if we need to ban any actions.
   const snapMessenger = getMessenger(actions ?? [], []);
 
   const { params } = request;
 
   try {
     const { action, params: actionParams } = getValidatedParams(params);
+
+    if (
+      BLOCKED_MESSENGER_CLIENTS.some((namespace) =>
+        action.startsWith(namespace),
+      )
+    ) {
+      return end(
+        rpcErrors.invalidParams({
+          message: `Access to the following messenger clients are disallowed in Snaps: ${BLOCKED_MESSENGER_CLIENTS.join(', ')}.`,
+        }),
+      );
+    }
+
     response.result = await snapMessenger.call(action, ...actionParams);
   } catch (error) {
     return end(error);
