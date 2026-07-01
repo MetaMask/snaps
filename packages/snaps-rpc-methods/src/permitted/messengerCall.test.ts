@@ -148,12 +148,59 @@ describe('snap_messengerCall', () => {
         id: 1,
         method: 'snap_messengerCall',
         params: {
-          error: {
-            name: 'TestError',
-            message: 'This is a test error.',
-            stack:
-              'Error: This is a test error\n    at Object.<anonymous> (test.js:1:1)',
-          },
+          action: 'Foo:bar',
+          params: [],
+        },
+      });
+
+      expect(getSnapMessenger).not.toHaveBeenCalled();
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: -32601,
+          message: 'The method does not exist / is not available.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
+    it('throws an error if the Snap does not have the messenger endowment', async () => {
+      const { implementation } = messengerCallHandler;
+
+      const getSnapMessenger = jest.fn();
+      const hooks = { getMessenger: getSnapMessenger };
+
+      const messenger = getMessenger(true);
+
+      messenger.registerActionHandler(
+        'PermissionController:getPermission',
+        () => undefined,
+      );
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<MessengerCallParams>,
+          response,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_messengerCall',
+        params: {
+          action: 'Foo:bar',
+          params: [],
         },
       });
 
