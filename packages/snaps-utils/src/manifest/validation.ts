@@ -195,7 +195,7 @@ export const ProtocolScopesStruct = record(
 export const MessengerActionsStruct = size(array(string()), 1, Infinity);
 
 export const MessengerScopesStruct = object({
-  actions: MessengerActionsStruct,
+  actions: optional(MessengerActionsStruct),
 });
 
 // Utility type to union with for all handler structs
