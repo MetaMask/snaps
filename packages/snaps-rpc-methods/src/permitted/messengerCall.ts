@@ -32,10 +32,10 @@ type GenericMessengerAction = {
 };
 
 export type MessengerCallMethodHooks = {
-  getMessenger: (
-    actions: string[],
-    events: string[],
-  ) => Messenger<string, GenericMessengerAction>;
+  getMessenger: (args: {
+    actions?: string[] | null;
+    events?: string[] | null;
+  }) => Messenger<string, GenericMessengerAction>;
 };
 
 export type MessengerCallMethodActions =
@@ -106,7 +106,7 @@ async function getMessengerCallImplementation(
 
   const actions = getMessengerCaveatActions(permission);
 
-  const snapMessenger = getMessenger(actions ?? [], []);
+  const snapMessenger = getMessenger({ actions });
 
   const { params } = request;
 

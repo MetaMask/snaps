@@ -116,7 +116,7 @@ describe('snap_messengerCall', () => {
         id: 1,
         result: 'baz',
       });
-      expect(getSnapMessenger).toHaveBeenCalledWith(['Foo:bar'], []);
+      expect(getSnapMessenger).toHaveBeenCalledWith({ actions: ['Foo:bar'] });
     });
 
     it('throws an error if the Snap is not preinstalled', async () => {
