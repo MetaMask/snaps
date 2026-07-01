@@ -112,7 +112,7 @@ export function getMessengerCaveatActions(
 function validateCaveat(caveat: Caveat<string, any>): void {
   if (!hasProperty(caveat, 'value') || !isObject(caveat)) {
     throw rpcErrors.invalidParams({
-      message: 'Expected a plain object.',
+      message: 'Expected an object.',
     });
   }
 
