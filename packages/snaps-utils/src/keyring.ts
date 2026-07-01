@@ -32,7 +32,8 @@ const KeyringAccountTypeStruct = enums([
   'bip122:p2tr',
   'solana:data-account',
   'tron:eoa',
-  'entropy:account',
+  'stellar:account',
+  'any:account',
 ]);
 
 /**

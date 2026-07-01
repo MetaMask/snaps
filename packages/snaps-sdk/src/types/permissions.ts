@@ -97,7 +97,8 @@ type KeyringAccountType =
   | 'bip122:p2tr'
   | 'solana:data-account'
   | 'tron:eoa'
-  | 'entropy:account';
+  | 'stellar:account'
+  | 'any:account';
 
 /**
  * Capabilities object supported by a keyring Snap.
