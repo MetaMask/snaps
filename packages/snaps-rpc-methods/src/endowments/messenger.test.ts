@@ -129,7 +129,7 @@ describe('messengerCaveatSpecifications', () => {
           },
         }),
       ).toThrow(
-        'Invalid messenger scopes specified: At path: actions -- Expected an array value, but received: undefined.',
+        'Invalid messenger scopes specified: At path: foo -- Expected a value of type `never`, but received: `"bar"`',
       );
 
       expect(() =>
