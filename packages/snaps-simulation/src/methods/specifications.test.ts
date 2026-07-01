@@ -1,20 +1,20 @@
-import { mnemonicPhraseToBytes } from "@metamask/key-tree";
-import type { MockAnyNamespace } from "@metamask/messenger";
-import { MOCK_ANY_NAMESPACE, Messenger } from "@metamask/messenger";
+import { mnemonicPhraseToBytes } from '@metamask/key-tree';
+import type { MockAnyNamespace } from '@metamask/messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import {
   getSnapManifest,
   MOCK_SNAP_ID,
-} from "@metamask/snaps-utils/test-utils";
+} from '@metamask/snaps-utils/test-utils';
 
 import {
   asyncResolve,
   getEndowments,
   getPermissionSpecifications,
   resolve,
-} from "./specifications";
-import { DEFAULT_SRP } from "../constants";
-import { getControllers, registerSnap } from "../controllers";
-import { getMockOptions } from "../test-utils/options";
+} from './specifications';
+import { DEFAULT_SRP } from '../constants';
+import { getControllers, registerSnap } from '../controllers';
+import { getMockOptions } from '../test-utils/options';
 
 const MOCK_HOOKS = {
   getClientCryptography: jest.fn(),
@@ -22,22 +22,22 @@ const MOCK_HOOKS = {
   getIsLocked: jest.fn(),
 };
 
-describe("resolve", () => {
-  it("returns a function which resolves with the specified result", async () => {
+describe('resolve', () => {
+  it('returns a function which resolves with the specified result', async () => {
     const result = {};
     expect(await resolve(result)()).toBe(result);
   });
 });
 
-describe("asyncResolve", () => {
-  it("returns a function which resolves with the specified result", async () => {
+describe('asyncResolve', () => {
+  it('returns a function which resolves with the specified result', async () => {
     const result = {};
     expect(await asyncResolve(result)()).toBe(result);
   });
 });
 
-describe("getPermissionSpecifications", () => {
-  it("returns the permission specifications", async () => {
+describe('getPermissionSpecifications', () => {
+  it('returns the permission specifications', async () => {
     expect(
       getPermissionSpecifications({
         hooks: MOCK_HOOKS,
@@ -45,7 +45,7 @@ describe("getPermissionSpecifications", () => {
         controllerMessenger: new Messenger<MockAnyNamespace>({
           namespace: MOCK_ANY_NAMESPACE,
         }),
-      })
+      }),
     ).toMatchInlineSnapshot(`
       {
         "endowment:assets": {
@@ -363,10 +363,10 @@ describe("getPermissionSpecifications", () => {
   });
 });
 
-describe("getEndowments", () => {
-  it("returns the endowments", async () => {
+describe('getEndowments', () => {
+  it('returns the endowments', async () => {
     MOCK_HOOKS.getMnemonic.mockResolvedValue(
-      mnemonicPhraseToBytes(DEFAULT_SRP)
+      mnemonicPhraseToBytes(DEFAULT_SRP),
     );
 
     const controllers = getControllers({
@@ -382,15 +382,15 @@ describe("getEndowments", () => {
       MOCK_SNAP_ID,
       getSnapManifest({
         initialPermissions: {
-          "endowment:network-access": {},
+          'endowment:network-access': {},
         },
       }),
-      controllers
+      controllers,
     );
 
     const endowments = await getEndowments(
       controllers.permissionController,
-      MOCK_SNAP_ID
+      MOCK_SNAP_ID,
     );
     expect(endowments).toMatchInlineSnapshot(`
       [
