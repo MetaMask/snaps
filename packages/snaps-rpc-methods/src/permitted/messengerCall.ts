@@ -42,7 +42,11 @@ export type MessengerCallMethodActions =
   | SnapControllerGetSnapAction
   | PermissionControllerGetPermissionAction;
 
-const BLOCKED_MESSENGER_CLIENTS = ['KeyringController', 'PermissionController'];
+const BLOCKED_MESSENGER_CLIENTS = [
+  'ApprovalController',
+  'KeyringController',
+  'PermissionController',
+];
 
 const MessengerCallParametersStruct = object({
   action: definePattern<`${string}:${string}`>('MessengerAction', /^.+:.+$/u),
