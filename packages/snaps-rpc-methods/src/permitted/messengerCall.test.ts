@@ -216,6 +216,69 @@ describe('snap_messengerCall', () => {
       });
     });
 
+    it('throws an error if the Snap calls a disallowed action', async () => {
+      const { implementation } = messengerCallHandler;
+
+      const getSnapMessenger = jest.fn();
+      const hooks = { getMessenger: getSnapMessenger };
+
+      const messenger = getMessenger(true);
+
+      messenger.registerActionHandler(
+        'PermissionController:getPermission',
+        () => ({
+          caveats: [
+            {
+              type: SnapCaveatType.MessengerScopes,
+              value: { actions: ['PermissionController:getPermission'] },
+            },
+          ],
+          date: 1661166080905,
+          id: 'VyAsBJiDDKawv_XlNcm13',
+          invoker: MOCK_SNAP_ID,
+          parentCapability: SnapEndowments.Messenger,
+        }),
+      );
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<MessengerCallParams>,
+          response,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_messengerCall',
+        params: {
+          action: 'PermissionController:getPermission',
+          params: [],
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: -32602,
+          message: expect.stringContaining(
+            'Access to the following messenger clients are disallowed in Snaps:',
+          ),
+          stack: expect.any(String),
+        },
+      });
+    });
+
     it.each([
       [
         { foo: 'bar' },
