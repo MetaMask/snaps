@@ -236,7 +236,10 @@ export type PermittedMiddlewareHooks = {
    *
    * @returns The messenger.
    */
-  getMessenger(actions: string[], events: string[]): Messenger<string>;
+  getMessenger(args: {
+    actions?: string[];
+    events?: string[];
+  }): Messenger<string>;
 };
 
 export type MultichainMiddlewareHooks = {
@@ -486,7 +489,7 @@ export function getPermittedHooks(
     startTrace: getStartTraceImplementation(runSaga),
     endTrace: getEndTraceImplementation(runSaga),
 
-    getMessenger: (actions, events) => {
+    getMessenger: ({ actions, events }) => {
       const messenger = new Messenger({
         namespace: `${snapId}-messenger`,
         parent: controllerMessenger,
