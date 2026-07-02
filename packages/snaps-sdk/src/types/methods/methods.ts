@@ -8,6 +8,10 @@ import type {
   CloseWebSocketResult,
 } from './close-web-socket';
 import type {
+  ConfirmTransactionParams,
+  ConfirmTransactionResult,
+} from './confirm-transaction';
+import type {
   CreateInterfaceParams,
   CreateInterfaceResult,
 } from './create-interface';
@@ -104,6 +108,10 @@ import type {
   UpdateInterfaceParams,
   UpdateInterfaceResult,
 } from './update-interface';
+import type {
+  UpdateConfirmTransactionParams,
+  UpdateConfirmTransactionResult,
+} from './update-confirm-transaction';
 import type { Method } from '../../internals';
 
 /**
@@ -141,7 +149,15 @@ export type SnapMethods = {
     GetBackgroundEventsResult,
   ];
   snap_createInterface: [CreateInterfaceParams, CreateInterfaceResult];
+  snap_confirmTransaction: [
+    ConfirmTransactionParams,
+    ConfirmTransactionResult,
+  ];
   snap_updateInterface: [UpdateInterfaceParams, UpdateInterfaceResult];
+  snap_updateConfirmTransaction: [
+    UpdateConfirmTransactionParams,
+    UpdateConfirmTransactionResult,
+  ];
   snap_getInterfaceState: [GetInterfaceStateParams, GetInterfaceStateResult];
   snap_getInterfaceContext: [
     GetInterfaceContextParams,

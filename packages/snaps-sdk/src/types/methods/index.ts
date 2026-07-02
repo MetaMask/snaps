@@ -1,4 +1,5 @@
 export type * from './clear-state';
+export type * from './confirm-transaction';
 export type * from './create-interface';
 export * from './dialog';
 export type * from './end-trace';
@@ -32,6 +33,7 @@ export type * from './get-background-events';
 export type * from './set-state';
 export type * from './track-error';
 export type * from './track-event';
+export type * from './update-confirm-transaction';
 export type * from './open-web-socket';
 export type * from './close-web-socket';
 export type * from './send-web-socket-message';
