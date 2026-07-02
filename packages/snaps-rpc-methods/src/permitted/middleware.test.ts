@@ -20,6 +20,7 @@ describe('createSnapsMethodMiddleware', () => {
     trackEvent: jest.fn(),
     startTrace: jest.fn(),
     endTrace: jest.fn(),
+    getMessenger: jest.fn(),
   });
 
   const getMessenger = () =>

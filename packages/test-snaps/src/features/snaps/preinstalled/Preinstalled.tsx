@@ -51,6 +51,13 @@ export const Preinstalled: FunctionComponent = () => {
     }).catch(logError);
   };
 
+  const handleMessengerCall = () => {
+    invokeSnap({
+      snapId: PREINSTALLED_SNAP_ID,
+      method: 'messengerCall',
+    }).catch(logError);
+  };
+
   return (
     <Snap
       name="Preinstalled Snap"
@@ -108,6 +115,14 @@ export const Preinstalled: FunctionComponent = () => {
           onClick={handleEndTrace}
         >
           End trace
+        </Button>
+        <Button
+          variant="primary"
+          id="messenger-call"
+          disabled={isLoading}
+          onClick={handleMessengerCall}
+        >
+          Messenger call
         </Button>
       </ButtonGroup>
       <Result>
