@@ -133,7 +133,7 @@
     "@types/readable-stream": "^4.0.15",
     "@types/semver": "^7.5.0",
     "@types/tar-stream": "^3.1.1",
-    "@vitest/browser": "^3.1.1",
+    "@vitest/browser": "^3.2.5",
     "deepmerge": "^4.2.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
