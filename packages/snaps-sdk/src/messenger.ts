@@ -1,55 +1,37 @@
-/**
- * A constraint type matching a single messenger action.
- */
-type ActionConstraint = {
-  type: `${string}:${string}`;
-  handler: (...args: never[]) => unknown;
-};
+import type {
+  ActionConstraint,
+  EventConstraint,
+  ExtractActionParameters,
+  ExtractActionResponse,
+  Messenger,
+  MessengerActions,
+  NamespacedName,
+} from '@metamask/messenger';
+import type { Json } from '@metamask/utils';
 
 /**
- * Extract the parameters of a messenger action by its type.
- *
- * @template Action - The union of actions to extract from.
- * @template ActionType - The type of the action to extract the parameters of.
+ * A constraint type matching any messenger. Used to constrain the generic
+ * messenger type accepted by {@link getMessenger} and {@link AsyncMessenger}.
  */
-type ExtractActionParameters<
-  Action extends ActionConstraint,
-  ActionType extends Action['type'],
-> = Action extends {
-  type: ActionType;
-  handler: (...args: infer Params) => unknown;
-}
-  ? Params
-  : never;
-
-/**
- * Extract the response of a messenger action by its type.
- *
- * @template Action - The union of actions to extract from.
- * @template ActionType - The type of the action to extract the response of.
- */
-type ExtractActionResponse<
-  Action extends ActionConstraint,
-  ActionType extends Action['type'],
-> = Action extends {
-  type: ActionType;
-  handler: (...args: never[]) => infer Response;
-}
-  ? Response
-  : never;
+type MessengerConstraint = Messenger<string, ActionConstraint, EventConstraint>;
 
 /**
  * An asynchronous version of a messenger's `call` method. Calls made from
  * within a Snap are dispatched to the client via the `snap_messengerCall`
  * method, so the original (synchronous) return type is wrapped in a `Promise`.
  *
- * @template Action - The union of actions the messenger can call.
+ * @template MessengerType - The messenger the Snap can call actions on.
  */
-export type AsyncMessenger<Action extends ActionConstraint> = {
-  call: <ActionType extends Action['type']>(
+export type AsyncMessenger<MessengerType extends MessengerConstraint> = {
+  call: <ActionType extends MessengerActions<MessengerType>['type']>(
     actionType: ActionType,
-    ...params: ExtractActionParameters<Action, ActionType>
-  ) => Promise<Awaited<ExtractActionResponse<Action, ActionType>>>;
+    ...params: ExtractActionParameters<
+      MessengerActions<MessengerType>,
+      ActionType
+    >
+  ) => Promise<
+    Awaited<ExtractActionResponse<MessengerActions<MessengerType>, ActionType>>
+  >;
 };
 
 /**
@@ -58,17 +40,20 @@ export type AsyncMessenger<Action extends ActionConstraint> = {
  *
  * Note that this is only available to preinstalled Snaps.
  *
- * @template Action - The union of actions the messenger can call.
+ * @template MessengerType - The messenger the Snap can call actions on. This is
+ * a `Messenger` type from `@metamask/messenger`; the callable actions are
+ * derived from it automatically.
  * @returns An asynchronous messenger.
  */
 export function getMessenger<
-  Action extends ActionConstraint,
->(): AsyncMessenger<Action> {
+  MessengerType extends MessengerConstraint,
+>(): AsyncMessenger<MessengerType> {
   return {
-    call: async (action, ...params) =>
-      snap.request({
+    async call(action: NamespacedName, ...params: Json[]) {
+      return snap.request({
         method: 'snap_messengerCall',
         params: { action, params },
-      }),
-  } as AsyncMessenger<Action>;
+      });
+    },
+  } as AsyncMessenger<MessengerType>;
 }

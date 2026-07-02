@@ -1,3 +1,4 @@
+import type { Messenger } from '@metamask/messenger';
 import {
   getJsonError,
   getMessenger,
@@ -22,6 +23,8 @@ type PhishingControllerTestOrigin = {
   type: 'PhishingController:testOrigin';
   handler: (origin: string) => { result: boolean; type: string };
 };
+
+type SnapMessenger = Messenger<string, PhishingControllerTestOrigin>;
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -104,7 +107,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     case 'messengerCall': {
-      const messenger = getMessenger<PhishingControllerTestOrigin>();
+      const messenger = getMessenger<SnapMessenger>();
       const { result } = await messenger.call(
         'PhishingController:testOrigin',
         'https://metamask.io',

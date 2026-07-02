@@ -1,3 +1,5 @@
+import type { Messenger } from '@metamask/messenger';
+
 import { getMessenger } from './messenger';
 import type { SnapsProvider } from './types';
 
@@ -5,6 +7,8 @@ type FooBarAction = {
   type: 'Foo:bar';
   handler: (parameter: string) => string;
 };
+
+type FooMessenger = Messenger<'Foo', FooBarAction>;
 
 describe('getMessenger', () => {
   it('calls `snap_messengerCall` with the action and params', async () => {
@@ -16,7 +20,7 @@ describe('getMessenger', () => {
       snap: { request } as unknown as SnapsProvider,
     });
 
-    const messenger = getMessenger<FooBarAction>();
+    const messenger = getMessenger<FooMessenger>();
 
     const result = await messenger.call('Foo:bar', 'baz');
 
