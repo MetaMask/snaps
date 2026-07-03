@@ -38,4 +38,5 @@ export const DEFAULT_ENDOWMENTS: readonly string[] = Object.freeze([
   // https://github.com/MetaMask/snaps-monorepo/discussions/678
   'AbortController',
   'AbortSignal',
+  'Blob',
 ]);

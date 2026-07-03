@@ -82,6 +82,7 @@ const commonEndowments: CommonEndowmentSpecification[] = [
   { endowment: BigInt, name: 'BigInt' },
   { endowment: BigInt64Array, name: 'BigInt64Array' },
   { endowment: BigUint64Array, name: 'BigUint64Array' },
+  { endowment: Blob, name: 'Blob' },
   { endowment: btoa, name: 'btoa', bind: true },
   { endowment: DataView, name: 'DataView' },
   { endowment: Float32Array, name: 'Float32Array' },
