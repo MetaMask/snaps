@@ -1113,6 +1113,69 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('exposes a Blob global works with instanceof', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = () => fetch('https://metamask.io').then(res => res.blob()).then(blob => blob instanceof Blob);
+    `;
+
+    const fetchSpy = spy(globalThis, 'fetch');
+
+    fetchSpy.mockImplementation(async () => {
+      return new Response('foo');
+    });
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['fetch', 'Blob']);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+      params: { source: 'fetch' },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+      params: { source: 'fetch' },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundRequest',
+      params: { source: 'fetch' },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      method: 'OutboundResponse',
+      params: { source: 'fetch' },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: true,
+    });
+  });
+
   it('notifies execution service of out of band errors via unhandledrejection', async () => {
     const CODE = `
       module.exports.onRpcRequest = async () => 'foo';
