@@ -46,6 +46,14 @@ const BLOCKED_MESSENGER_CLIENTS = [
   'ApprovalController',
   'KeyringController',
   'PermissionController',
+  'SnapController',
+  'WebSocketService',
+  'CronjobController',
+  'SnapInsightsController',
+  'SnapInterfaceController',
+  'MultichainRoutingService',
+  'ExecutionService',
+  'SnapRegistryController',
 ];
 
 const MessengerCallParametersStruct = object({
