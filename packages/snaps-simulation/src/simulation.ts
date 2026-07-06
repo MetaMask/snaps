@@ -230,6 +230,16 @@ export type PermittedMiddlewareHooks = {
    * @returns The keyring methods.
    */
   getAllowedKeyringMethods(): string[];
+
+  /**
+   * A hook that returns a specialized messenger for the Snap.
+   *
+   * @returns The messenger.
+   */
+  getMessenger(args: {
+    actions?: string[];
+    events?: string[];
+  }): Messenger<string>;
 };
 
 export type MultichainMiddlewareHooks = {
@@ -319,7 +329,11 @@ export async function installSnap<
   // Set up controllers and JSON-RPC stack.
   const restrictedHooks = getRestrictedHooks(options, store, runSaga);
 
-  const permittedHooks = getPermittedHooks(runSaga);
+  const permittedHooks = getPermittedHooks(
+    snapId,
+    controllerMessenger,
+    runSaga,
+  );
 
   const multichainHooks = getMultichainHooks(
     snapId,
@@ -453,10 +467,14 @@ export function getRestrictedHooks(
 /**
  * Get the permitted hooks for the simulation.
  *
+ * @param snapId - The Snap ID.
+ * @param controllerMessenger - The controller messenger.
  * @param runSaga - The run saga function.
  * @returns The permitted hooks for the simulation.
  */
 export function getPermittedHooks(
+  snapId: string,
+  controllerMessenger: RootControllerMessenger,
   runSaga: RunSagaFunction,
 ): PermittedMiddlewareHooks {
   return {
@@ -470,6 +488,21 @@ export function getPermittedHooks(
     trackEvent: getTrackEventImplementation(runSaga),
     startTrace: getStartTraceImplementation(runSaga),
     endTrace: getEndTraceImplementation(runSaga),
+
+    getMessenger: ({ actions, events }) => {
+      const messenger = new Messenger({
+        namespace: `${snapId}-messenger`,
+        parent: controllerMessenger,
+      });
+
+      controllerMessenger.delegate({
+        actions: actions as never[],
+        events: events as never[],
+        messenger,
+      });
+
+      return messenger;
+    },
   };
 }
 

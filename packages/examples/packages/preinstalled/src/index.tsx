@@ -1,5 +1,7 @@
+import type { Messenger } from '@metamask/messenger';
 import {
   getJsonError,
+  getMessenger,
   MethodNotFoundError,
   UserInputEventType,
 } from '@metamask/snaps-sdk';
@@ -16,6 +18,13 @@ type SnapState = {
   setting2?: 'option1' | 'option2';
   setting3?: 'option1' | 'option2';
 };
+
+type PhishingControllerTestOrigin = {
+  type: 'PhishingController:testOrigin';
+  handler: (origin: string) => { result: boolean; type: string };
+};
+
+type SnapMessenger = Messenger<string, PhishingControllerTestOrigin>;
 
 /**
  * Handle incoming JSON-RPC requests from the dapp, sent through the
@@ -95,6 +104,15 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
           name: 'Test Snap Trace',
         },
       });
+    }
+
+    case 'messengerCall': {
+      const messenger = getMessenger<SnapMessenger>();
+      const { result } = await messenger.call(
+        'PhishingController:testOrigin',
+        'https://metamask.io',
+      );
+      return result;
     }
 
     default:

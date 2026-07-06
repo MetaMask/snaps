@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "HEK+eFeY5FqLG4XSbZzP7BoXJgXptNV0lHtuxuFEym8=",
+    "shasum": "4Orr2LFWey4elfpvTf6tdUOBsaVCnahshTHv3v9Bf7I=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -25,7 +25,10 @@
     },
     "snap_dialog": {},
     "endowment:page-settings": {},
-    "snap_manageState": {}
+    "snap_manageState": {},
+    "endowment:messenger": {
+      "actions": ["PhishingController:testOrigin"]
+    }
   },
   "platformVersion": "11.1.1",
   "manifestVersion": "0.1"

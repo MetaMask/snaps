@@ -25,6 +25,7 @@ import { getWebSocketsHandler } from './getWebSockets';
 import { invokeKeyringHandler } from './invokeKeyring';
 import { invokeSnapSugarHandler } from './invokeSnapSugar';
 import { listEntropySourcesHandler } from './listEntropySources';
+import { messengerCallHandler } from './messengerCall';
 import { openWebSocketHandler } from './openWebSocket';
 import { requestSnapsHandler } from './requestSnaps';
 import { resolveInterfaceHandler } from './resolveInterface';
@@ -65,6 +66,7 @@ const methodHandlers = {
   snap_getWebSockets: getWebSocketsHandler,
   snap_startTrace: startTraceHandler,
   snap_endTrace: endTraceHandler,
+  snap_messengerCall: messengerCallHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

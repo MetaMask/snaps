@@ -38,5 +38,6 @@ export { assert } from '@metamask/utils';
 export * from './errors';
 export * from './error-wrappers';
 export * from './images';
+export * from './messenger';
 export * from './types';
 export * from './ui';

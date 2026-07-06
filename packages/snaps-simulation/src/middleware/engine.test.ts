@@ -33,6 +33,7 @@ describe('createJsonRpcEngine', () => {
         startTrace: jest.fn(),
         endTrace: jest.fn(),
         getAllowedKeyringMethods: jest.fn(),
+        getMessenger: jest.fn(),
       },
       multichainHooks: {
         getAccounts: jest.fn(),

@@ -118,6 +118,18 @@ describe('getPermissionSpecifications', () => {
           "targetName": "endowment:lifecycle-hooks",
           "validator": [Function],
         },
+        "endowment:messenger": {
+          "allowedCaveats": [
+            "messengerScopes",
+          ],
+          "endowmentGetter": [Function],
+          "permissionType": "Endowment",
+          "subjectTypes": [
+            "snap",
+          ],
+          "targetName": "endowment:messenger",
+          "validator": [Function],
+        },
         "endowment:multichain-provider": {
           "allowedCaveats": null,
           "endowmentGetter": [Function],

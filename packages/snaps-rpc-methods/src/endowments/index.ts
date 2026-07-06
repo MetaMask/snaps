@@ -21,6 +21,11 @@ import {
   keyringEndowmentBuilder,
 } from './keyring';
 import { lifecycleHooksEndowmentBuilder } from './lifecycle-hooks';
+import {
+  getMessengerCaveatMapper,
+  messengerCaveatSpecifications,
+  messengerEndowmentBuilder,
+} from './messenger';
 import { multichainProviderEndowmentBuilder } from './multichain-provider';
 import {
   getNameLookupCaveatMapper,
@@ -71,6 +76,7 @@ export const endowmentPermissionBuilders = {
   [signatureInsightEndowmentBuilder.targetName]:
     signatureInsightEndowmentBuilder,
   [assetsEndowmentBuilder.targetName]: assetsEndowmentBuilder,
+  [messengerEndowmentBuilder.targetName]: messengerEndowmentBuilder,
 } as const;
 
 export const endowmentCaveatSpecifications = {
@@ -82,6 +88,7 @@ export const endowmentCaveatSpecifications = {
   ...signatureInsightCaveatSpecifications,
   ...maxRequestTimeCaveatSpecifications,
   ...protocolCaveatSpecifications,
+  ...messengerCaveatSpecifications,
 };
 
 export const endowmentCaveatMappers: Record<
@@ -114,6 +121,7 @@ export const endowmentCaveatMappers: Record<
   [assetsEndowmentBuilder.targetName]: createMaxRequestTimeMapper(
     getAssetsCaveatMapper,
   ),
+  [messengerEndowmentBuilder.targetName]: getMessengerCaveatMapper,
 };
 
 // We allow null because a permitted handler does not have an endowment

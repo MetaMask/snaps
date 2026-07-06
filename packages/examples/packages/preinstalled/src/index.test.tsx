@@ -150,6 +150,18 @@ describe('onRpcRequest', () => {
       });
     });
   });
+
+  describe('messengerCall', () => {
+    it('calls the PhishingController', async () => {
+      const { request } = await installSnap();
+
+      const response = await request({
+        method: 'messengerCall',
+      });
+
+      expect(response).toRespondWith(false);
+    });
+  });
 });
 
 describe('onSettingsPage', () => {
