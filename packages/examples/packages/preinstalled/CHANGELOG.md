@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
@@ -85,7 +87,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add preinstalled example Snap ([#2721](https://github.com/MetaMask/snaps/pull/2721))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.8.0...HEAD
+[0.8.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.2...@metamask/preinstalled-example-snap@0.8.0
 [0.7.2]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.1...@metamask/preinstalled-example-snap@0.7.2
 [0.7.1]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.7.0...@metamask/preinstalled-example-snap@0.7.1
 [0.7.0]: https://github.com/MetaMask/snaps/compare/@metamask/preinstalled-example-snap@0.6.0...@metamask/preinstalled-example-snap@0.7.0

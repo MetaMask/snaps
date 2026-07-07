@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
@@ -324,7 +326,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.0...HEAD
+[4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.2.0...@metamask/snaps-simulation@4.3.0
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.4...@metamask/snaps-simulation@4.2.0
 [4.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.3...@metamask/snaps-simulation@4.1.4
 [4.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.2...@metamask/snaps-simulation@4.1.3

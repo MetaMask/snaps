@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [17.1.0]
+
 ### Uncategorized
 
 - chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
@@ -650,7 +652,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.0...HEAD
+[17.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.0.0...@metamask/snaps-rpc-methods@17.1.0
 [17.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@16.0.0...@metamask/snaps-rpc-methods@17.0.0
 [16.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.1.1...@metamask/snaps-rpc-methods@16.0.0
 [15.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@15.1.0...@metamask/snaps-rpc-methods@15.1.1
