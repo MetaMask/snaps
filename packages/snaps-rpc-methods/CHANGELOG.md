@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
+- feat: Add support for using the messenger in preinstalled Snaps ([#4055](https://github.com/MetaMask/snaps/pull/4055))
+- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+
 ## [17.0.0]
 
 ### Changed

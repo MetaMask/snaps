@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+
 ## [10.1.4]
 
 ### Changed
