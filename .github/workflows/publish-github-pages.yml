@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     steps:
       - name: Ensure `build_script` is not empty
         if: ${{ inputs.destination_dir == '' }}
