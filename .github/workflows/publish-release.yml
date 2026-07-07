@@ -131,7 +131,8 @@ jobs:
     name: Publish schema to `schema/latest` directory of `gh-pages` branch
     needs: publish-release
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
@@ -170,7 +171,8 @@ jobs:
     needs: is-sdk-release
     if: ${{ needs.is-sdk-release.outputs.IS_SDK_RELEASE == 'true' }}
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
@@ -181,7 +183,8 @@ jobs:
     name: Publish docs to `docs/latest` directory of `gh-pages` branch
     needs: publish-docs-to-gh-pages
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
@@ -306,7 +309,8 @@ jobs:
     needs: is-test-snaps-release
     if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/test-snaps build
@@ -320,7 +324,8 @@ jobs:
       - publish-test-snaps
     if: ${{ needs.is-test-snaps-release.outputs.IS_TEST_SNAPS_RELEASE == 'true' }}
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/test-snaps build

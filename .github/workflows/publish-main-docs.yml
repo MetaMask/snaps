@@ -9,7 +9,8 @@ jobs:
   publish-to-gh-pages:
     name: Publish docs to `staging` directory of `gh-pages` branch
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-sdk build:docs
@@ -21,7 +22,8 @@ jobs:
     needs:
       - publish-to-gh-pages
     permissions:
-      contents: write
+      contents: read
+      id-token: write
     uses: ./.github/workflows/publish-github-pages.yml
     with:
       build_script: yarn workspace @metamask/snaps-rpc-methods build:schema
