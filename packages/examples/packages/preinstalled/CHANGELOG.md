@@ -9,29 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
-- feat: Add support for using the messenger in preinstalled Snaps ([#4055](https://github.com/MetaMask/snaps/pull/4055))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
-- release: `157.0.0` ([#3999](https://github.com/MetaMask/snaps/pull/3999))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- release: `150.0.0` ([#3954](https://github.com/MetaMask/snaps/pull/3954))
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
-- release: `146.0.0` ([#3896](https://github.com/MetaMask/snaps/pull/3896))
-- chore: Bump @metamask/auto-changelog from 5.3.1 to 5.3.2 ([#3855](https://github.com/MetaMask/snaps/pull/3855))
-- chore: Bump @lavamoat/allow-scripts from 3.4.2 to 3.4.3 ([#3844](https://github.com/MetaMask/snaps/pull/3844))
-- chore: Bump @metamask/auto-changelog from 5.0.2 to 5.3.1 ([#3839](https://github.com/MetaMask/snaps/pull/3839))
-- chore: Move example dependencies to devDependencies ([#3824](https://github.com/MetaMask/snaps/pull/3824))
-- release: `139.0.0` ([#3813](https://github.com/MetaMask/snaps/pull/3813))
-- chore: Bump @lavamoat/allow-scripts from 3.4.1 to 3.4.2 ([#3809](https://github.com/MetaMask/snaps/pull/3809))
-- feat: Add `--preinstalled` flag to build command to create preinstalled Snap bundle ([#3805](https://github.com/MetaMask/snaps/pull/3805))
-- chore: Bump @lavamoat/allow-scripts from 3.4.0 to 3.4.1 ([#3744](https://github.com/MetaMask/snaps/pull/3744))
-- chore: Bump @metamask/utils from 11.8.1 to 11.9.0 ([#3783](https://github.com/MetaMask/snaps/pull/3783))
-- release: `137.0.0` ([#3780](https://github.com/MetaMask/snaps/pull/3780))
-- release: `134.0.0` ([#3761](https://github.com/MetaMask/snaps/pull/3761))
+- Add `messengerCall` RPC method ([#4055](https://github.com/MetaMask/snaps/pull/4055))
 
 ## [0.7.2]
 

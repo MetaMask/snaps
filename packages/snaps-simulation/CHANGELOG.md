@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.3.0]
 
-### Uncategorized
+### Added
 
-- chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
-- feat: Add support for using the messenger in preinstalled Snaps ([#4055](https://github.com/MetaMask/snaps/pull/4055))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @metamask/chain-agnostic-permission from 1.6.1 to 1.6.2 ([#4036](https://github.com/MetaMask/snaps/pull/4036))
+- Add support for `endowment:messenger` ([#4055](https://github.com/MetaMask/snaps/pull/4055))
+
+### Changed
+
+- Bump `@metamask/messenger` from `^1.2.0` to `^2.0.0` ([#4064](https://github.com/MetaMask/snaps/pull/4064))
+- Bump `@metamask/superstruct` from `^3.2.1` to `^3.3.0` ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+- Bump `@metamask/chain-agnostic-permission` from `^1.6.1` to `^1.6.2` ([#4036](https://github.com/MetaMask/snaps/pull/4036))
 
 ## [4.2.0]
 

@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.5.0]
 
-### Uncategorized
+### Added
 
-- feat: Add support for using the messenger in preinstalled Snaps ([#4055](https://github.com/MetaMask/snaps/pull/4055))
-- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
+- Add button for testing messenger support preinstalled example Snap ([#4055](https://github.com/MetaMask/snaps/pull/4055))
 
 ## [3.4.2]
 
