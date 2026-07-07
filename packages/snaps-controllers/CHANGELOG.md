@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @metamask/analytics-controller from 1.1.1 to 1.2.1 ([#4059](https://github.com/MetaMask/snaps/pull/4059))
-
 ## [21.0.0]
 
 ### Added

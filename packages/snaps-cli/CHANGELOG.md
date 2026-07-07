@@ -7,19 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- release: `161.0.0` ([#4065](https://github.com/MetaMask/snaps/pull/4065))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @metamask/auto-changelog from 6.1.0 to 6.1.1 ([#4011](https://github.com/MetaMask/snaps/pull/4011))
-- release: `157.0.0` ([#3999](https://github.com/MetaMask/snaps/pull/3999))
-- chore: Bump @metamask/auto-changelog from 5.3.2 to 6.1.0 ([#3960](https://github.com/MetaMask/snaps/pull/3960))
-- release: `150.0.0` ([#3954](https://github.com/MetaMask/snaps/pull/3954))
-- chore: Bump @metamask/utils from 11.10.0 to 11.11.0 ([#3935](https://github.com/MetaMask/snaps/pull/3935))
-- chore: Bump @lavamoat/allow-scripts from 3.4.3 to 4.0.0 ([#3910](https://github.com/MetaMask/snaps/pull/3910))
-- test: Silence deprecation warnings ([#3904](https://github.com/MetaMask/snaps/pull/3904))
-- release: `146.0.0` ([#3896](https://github.com/MetaMask/snaps/pull/3896))
-
 ## [8.4.1]
 
 ### Changed
