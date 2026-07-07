@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.5.1]
 
+### Fixed
+
+- Re-release of `3.5.0` ([#4067](https://github.com/MetaMask/snaps/pull/4067))
+
 ## [3.5.0]
 
 ### Added
