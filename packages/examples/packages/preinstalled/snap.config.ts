@@ -10,7 +10,7 @@ const config: SnapConfig = {
   },
   preinstalled: {
     hideSnapBranding: true,
-    hidden: false,
+    hidden: true,
     removable: false,
   },
   stats: {
