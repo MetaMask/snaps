@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.0]
+
+### Added
+
+- Add support for `endowment:messenger` ([#4055](https://github.com/MetaMask/snaps/pull/4055))
+
+### Changed
+
+- Bump `@metamask/superstruct` from `^3.2.1` to `^3.3.0` ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+
 ## [10.1.4]
 
 ### Changed
@@ -503,7 +513,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.4...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.0...HEAD
+[10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.4...@metamask/snaps-jest@10.2.0
 [10.1.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.3...@metamask/snaps-jest@10.1.4
 [10.1.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.2...@metamask/snaps-jest@10.1.3
 [10.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.1...@metamask/snaps-jest@10.1.2

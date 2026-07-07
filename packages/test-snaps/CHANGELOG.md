@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0]
+
+### Added
+
+- Add button for testing messenger support preinstalled example Snap ([#4055](https://github.com/MetaMask/snaps/pull/4055))
+
 ## [3.4.2]
 
 ### Changed
@@ -442,7 +448,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.5.0...HEAD
+[3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.2...@metamask/test-snaps@3.5.0
 [3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.1...@metamask/test-snaps@3.4.2
 [3.4.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.0...@metamask/test-snaps@3.4.1
 [3.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.3.0...@metamask/test-snaps@3.4.0
