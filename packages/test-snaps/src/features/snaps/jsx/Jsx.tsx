@@ -35,7 +35,7 @@ export const Jsx: FunctionComponent = () => {
         Show JSX dialog
       </Button>
       <Result>
-        <span id="rpcResult">
+        <span id="jsxResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
