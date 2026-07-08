@@ -1,5 +1,5 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "MetaMask example snap demonstrating preinstalled Snaps.",
   "proposedName": "Preinstalled Example Snap",
   "repository": {
@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "+jUzz6C8lCErEW83eTA9K/+whRdVo5Nr5rs1JRlEohE=",
+    "shasum": "NFAEoPMpWTYUKmBjRZ/wrHAfGsb512DI0BTyNhgVzkA=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
