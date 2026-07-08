@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.5.2]
 
-### Uncategorized
+### Fixed
 
-- fix: Rename duplicate identifiers ([#4069](https://github.com/MetaMask/snaps/pull/4069))
+- Rename duplicate identifiers ([#4069](https://github.com/MetaMask/snaps/pull/4069))
 
 ## [3.5.1]
 
