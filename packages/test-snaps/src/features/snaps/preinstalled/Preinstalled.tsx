@@ -126,7 +126,7 @@ export const Preinstalled: FunctionComponent = () => {
         </Button>
       </ButtonGroup>
       <Result>
-        <span id="rpcResult">
+        <span id="preinstalledResult">
           {JSON.stringify(data, null, 2)}
           {JSON.stringify(error, null, 2)}
         </span>
