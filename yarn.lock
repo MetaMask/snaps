@@ -3166,17 +3166,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.6.2":
-  version: 1.6.2
-  resolution: "@metamask/chain-agnostic-permission@npm:1.6.2"
+"@metamask/chain-agnostic-permission@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "@metamask/chain-agnostic-permission@npm:1.7.0"
   dependencies:
     "@metamask/api-specs": "npm:^0.15.0"
-    "@metamask/controller-utils": "npm:^12.2.0"
+    "@metamask/controller-utils": "npm:^12.3.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.11.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/ff3c2ab116a612010b4bb7b5406f80fa77392c09d3c07be1fb88787bef599b7c11b5267c8378b9c8ee2de7ae04d08a7050f56f9f54df3a00fbac358d683d21df
+  checksum: 10/25de22b86057c64828b12c4424770c7a4668ca7eb54186e06fb4c8a5f56d1d1e625686f7834fdfee47733e9a64d1f2213f5efef5e3488d9b541b1218da11789c
   languageName: node
   linkType: hard
 
@@ -3233,7 +3233,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/controller-utils@npm:^12.0.0, @metamask/controller-utils@npm:^12.2.0":
+"@metamask/controller-utils@npm:^12.0.0, @metamask/controller-utils@npm:^12.3.0":
   version: 12.3.0
   resolution: "@metamask/controller-utils@npm:12.3.0"
   dependencies:
@@ -4797,7 +4797,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.1.1"
-    "@metamask/chain-agnostic-permission": "npm:^1.6.2"
+    "@metamask/chain-agnostic-permission": "npm:^1.7.0"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
