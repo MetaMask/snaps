@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.2]
+
 ### Uncategorized
 
 - fix: Rename duplicate identifiers ([#4069](https://github.com/MetaMask/snaps/pull/4069))
@@ -458,7 +460,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix NPM package name of the network access snap ([#1621](https://github.com/MetaMask/snaps/pull/1621))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.5.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.5.2...HEAD
+[3.5.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.5.1...@metamask/test-snaps@3.5.2
 [3.5.1]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.5.0...@metamask/test-snaps@3.5.1
 [3.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.2...@metamask/test-snaps@3.5.0
 [3.4.2]: https://github.com/MetaMask/snaps/compare/@metamask/test-snaps@3.4.1...@metamask/test-snaps@3.4.2
