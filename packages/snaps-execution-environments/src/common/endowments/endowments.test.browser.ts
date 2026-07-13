@@ -166,6 +166,10 @@ describe('endowments', () => {
         endowments: { DateAttenuated },
         factory: () => new DateAttenuated(),
       },
+      Blob: {
+        endowments: { Blob },
+        factory: () => new Blob([new ArrayBuffer(64)]),
+      },
 
       // Objects.
       consoleAttenuated: {
@@ -347,6 +351,10 @@ describe('endowments', () => {
         {
           factory: expect.any(Function),
           names: ['BigUint64Array'],
+        },
+        {
+          factory: expect.any(Function),
+          names: ['Blob'],
         },
         {
           factory: expect.any(Function),

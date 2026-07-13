@@ -427,6 +427,7 @@ describe('getEndowments', () => {
         "ArrayBuffer",
         "AbortController",
         "AbortSignal",
+        "Blob",
         "fetch",
         "Request",
         "Headers",
