@@ -9,16 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.2.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
-- feat: Add support for using the messenger in preinstalled Snaps ([#4055](https://github.com/MetaMask/snaps/pull/4055))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @lavamoat/webpack from 2.2.3 to 2.2.4 ([#4051](https://github.com/MetaMask/snaps/pull/4051))
-- chore: Bump lavamoat from 11.1.2 to 11.1.4 ([#4053](https://github.com/MetaMask/snaps/pull/4053))
-- chore: Bump vite from 6.4.1 to 6.4.3 ([#4045](https://github.com/MetaMask/snaps/pull/4045))
-- chore: Bump ses from 1.15.0 to 2.1.0 ([#4017](https://github.com/MetaMask/snaps/pull/4017))
-- chore: Bump @lavamoat/webpack from 2.2.1 to 2.2.3 ([#4025](https://github.com/MetaMask/snaps/pull/4025))
+- Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
+
+### Changed
+
+- Bump `@metamask/superstruct` from `^3.2.1` to `^3.3.0` ([#4062](https://github.com/MetaMask/snaps/pull/4062))
 
 ## [11.1.1]
 
