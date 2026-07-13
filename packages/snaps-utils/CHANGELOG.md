@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
+
 ## [12.3.0]
 
 ### Added
