@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- feat: Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
-- chore: Bump @metamask/chain-agnostic-permission from 1.6.2 to 1.7.0 ([#4070](https://github.com/MetaMask/snaps/pull/4070))
-
 ## [4.3.0]
 
 ### Added
