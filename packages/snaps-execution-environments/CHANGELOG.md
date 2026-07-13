@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.2.0]
+
+### Added
+
+- Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
+
+### Changed
+
+- Bump `@metamask/superstruct` from `^3.2.1` to `^3.3.0` ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+
 ## [11.1.1]
 
 ### Fixed
@@ -635,7 +645,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.2.0...HEAD
+[11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.1.1...@metamask/snaps-execution-environments@11.2.0
 [11.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.1.0...@metamask/snaps-execution-environments@11.1.1
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.2...@metamask/snaps-execution-environments@11.1.0
 [11.0.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.0.1...@metamask/snaps-execution-environments@11.0.2
