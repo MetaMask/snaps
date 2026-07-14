@@ -174,6 +174,8 @@ export type InitialPermissions = Partial<{
   'endowment:webassembly': EmptyObject;
 
   /* eslint-disable @typescript-eslint/naming-convention */
+  snap_confirmTransaction: EmptyObject;
+  snap_updateConfirmTransaction: EmptyObject;
   snap_dialog: EmptyObject;
   snap_getBip32Entropy: Bip32Entropy[];
   snap_getBip32PublicKey: Bip32Entropy[];
