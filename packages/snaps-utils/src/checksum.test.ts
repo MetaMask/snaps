@@ -37,7 +37,7 @@ describe('checksum', () => {
   });
 });
 
-describe('checkumFiles', () => {
+describe('checksumFiles', () => {
   it('throws on duplicated paths', async () => {
     const files = [
       new VirtualFile({ value: 'foo', path: '/foo' }),
