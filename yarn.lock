@@ -4935,14 +4935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/superstruct@npm:^3.1.0, @metamask/superstruct@npm:^3.2.1":
-  version: 3.3.0
-  resolution: "@metamask/superstruct@npm:3.3.0"
-  checksum: 10/664d5e330484a86420bc004b1c7f8301e1501cce712f611fe657176b2979edbd7cc6f4c77c8b1610486a685ebbd0b72dacf4bd6cf143d6b52038069d2f4e84ab
-  languageName: node
-  linkType: hard
-
-"@metamask/superstruct@npm:^3.4.0":
+"@metamask/superstruct@npm:^3.1.0, @metamask/superstruct@npm:^3.2.1, @metamask/superstruct@npm:^3.4.0":
   version: 3.4.0
   resolution: "@metamask/superstruct@npm:3.4.0"
   checksum: 10/915a6c10019631855368c75c4295a48ece7891cd6e1ab67ed65070142ef24ab019b12d6a71aff7a747a7d5273f64f61fcc42cded4def5d7519ed8441f12884a0
