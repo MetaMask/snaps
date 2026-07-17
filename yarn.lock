@@ -4366,7 +4366,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4452,7 +4452,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/storage-service": "npm:^1.0.2"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
@@ -4524,7 +4524,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4577,7 +4577,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-simulation": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4705,7 +4705,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
@@ -4769,7 +4769,7 @@ __metadata:
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/jest": "npm:^27.5.1"
@@ -4809,7 +4809,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@reduxjs/toolkit": "npm:^1.9.5"
     "@ts-bridge/cli": "npm:^0.6.1"
@@ -4852,7 +4852,7 @@ __metadata:
     "@metamask/slip44": "npm:^4.5.0"
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/superstruct": "npm:^3.3.0"
+    "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^11.11.0"
     "@scure/base": "npm:^1.1.1"
     "@swc/core": "npm:1.11.31"
@@ -4935,10 +4935,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/superstruct@npm:^3.1.0, @metamask/superstruct@npm:^3.2.1, @metamask/superstruct@npm:^3.3.0":
+"@metamask/superstruct@npm:^3.1.0, @metamask/superstruct@npm:^3.2.1":
   version: 3.3.0
   resolution: "@metamask/superstruct@npm:3.3.0"
   checksum: 10/664d5e330484a86420bc004b1c7f8301e1501cce712f611fe657176b2979edbd7cc6f4c77c8b1610486a685ebbd0b72dacf4bd6cf143d6b52038069d2f4e84ab
+  languageName: node
+  linkType: hard
+
+"@metamask/superstruct@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@metamask/superstruct@npm:3.4.1"
+  checksum: 10/d37b5662dc9bbe0d99e06eb951167fa745829ae3abfa103423e9d8c05e8712f1451376f8479d484722e1e1c1d881732da1efddccaca8868b530a786264b903b5
   languageName: node
   linkType: hard
 
