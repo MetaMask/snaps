@@ -3444,16 +3444,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/eslint-config-browser@npm:^14.0.0":
-  version: 14.0.0
-  resolution: "@metamask/eslint-config-browser@npm:14.0.0"
+"@metamask/eslint-config-browser@npm:^15.0.1":
+  version: 15.0.1
+  resolution: "@metamask/eslint-config-browser@npm:15.0.1"
   dependencies:
     "@eslint/js": "npm:^9.11.0"
     globals: "npm:^15.9.0"
   peerDependencies:
-    "@metamask/eslint-config": ^14.0.0
+    "@metamask/eslint-config": "workspace:^"
     eslint: ^9.11.0
-  checksum: 10/22f628799d6d2d6a537ffbb72ecf777632b1824ff87e81edcce77f1793b4617f20e185012c45020a75df308e895d5d88f125444ad7e6cb419d90e14368ca145a
+  checksum: 10/138621ae9b092c71de95553b3e3560c50f7809c9a8c92fb910d8f527691902fc1197c13708a8f643b700e0ef68f2099437c0739b25f91c2a09d785f9d249a6b0
   languageName: node
   linkType: hard
 
@@ -4607,7 +4607,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^6.1.1"
     "@metamask/create-release-branch": "npm:^4.2.1"
     "@metamask/eslint-config": "npm:^14.0.0"
-    "@metamask/eslint-config-browser": "npm:^14.0.0"
+    "@metamask/eslint-config-browser": "npm:^15.0.1"
     "@metamask/eslint-config-jest": "npm:^14.0.0"
     "@metamask/eslint-config-nodejs": "npm:^14.0.0"
     "@metamask/eslint-config-typescript": "npm:^14.0.0"
