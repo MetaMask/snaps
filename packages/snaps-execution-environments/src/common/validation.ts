@@ -86,7 +86,7 @@ export const SnapRpcRequestArgumentsStruct = object({
   snapId: string(),
   handler: enums(Object.values(HandlerType)),
   origin: string(),
-  originMetadata: optional(OriginMetadataStruct),
+  originMetadata: optional(nullable(OriginMetadataStruct)),
   request: assign(
     JsonRpcRequestWithoutIdStruct,
     object({
