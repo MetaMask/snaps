@@ -284,6 +284,7 @@ export type SnapControllerInstallSnapsAction = {
  * @param options - A bag of options.
  * @param options.snapId - The ID of the recipient snap.
  * @param options.origin - The origin of the RPC request.
+ * @param options.originMetadata - Optional additional origin metadata for the RPC request.
  * @param options.handler - The handler to trigger on the snap for the request.
  * @param options.request - The JSON-RPC request object.
  * @returns The result of the JSON-RPC request.

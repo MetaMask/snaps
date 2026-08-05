@@ -505,7 +505,7 @@ export abstract class ExecutionService<WorkerType = unknown> {
     snapId: string,
     options: SnapRpcHookArgs,
   ): Promise<unknown> {
-    const { handler, request, origin, originMetadata } = options;
+    const { handler, request, origin, originMetadata = null } = options;
 
     return await this.#command(snapId, {
       id: nanoid(),

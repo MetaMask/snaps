@@ -4,7 +4,7 @@ import type { SNAP_EXPORTS } from './exports';
 
 export type SnapRpcHookArgs = {
   origin: string;
-  originMetadata?: OriginMetadata;
+  originMetadata?: OriginMetadata | null;
   handler: HandlerType;
   request: Record<string, unknown>;
 };

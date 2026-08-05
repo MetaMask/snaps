@@ -16,6 +16,7 @@ import type { MultichainRoutingService } from './MultichainRoutingService';
  * @param options.connectedAddresses - Addresses currently connected to the
  * origin for the requested scope.
  * @param options.origin - The origin of the RPC request.
+ * @param options.originMetadata - Optional additional origin metadata.
  * @param options.request - The JSON-RPC request.
  * @param options.scope - The CAIP-2 scope for the request.
  * @returns The response from the chosen Snap.
