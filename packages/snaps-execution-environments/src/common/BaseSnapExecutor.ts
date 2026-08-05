@@ -237,9 +237,9 @@ export class BaseSnapExecutor {
   }: SnapRpcRequestArguments) {
     const args = getHandlerArguments(
       origin,
-      originMetadata,
       handlerType,
       request,
+      originMetadata,
     );
 
     const data = this.#snapData.get(snapId);
