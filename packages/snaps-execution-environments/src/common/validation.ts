@@ -4,6 +4,7 @@ import {
   literal as customLiteral,
   typedUnion,
   UserInputEventStruct,
+  OriginMetadataStruct,
 } from '@metamask/snaps-sdk';
 import { HandlerType } from '@metamask/snaps-utils';
 import type { Infer, Struct } from '@metamask/superstruct';
@@ -79,11 +80,6 @@ export const ExecuteSnapRequestArgumentsStruct = object({
   snapId: string(),
   sourceCode: string(),
   endowments: array(EndowmentStruct),
-});
-
-const OriginMetadataStruct = object({
-  transport: string(),
-  selfReportedOrigin: string(),
 });
 
 export const SnapRpcRequestArgumentsStruct = object({
