@@ -1,9 +1,7 @@
+import type { Infer } from '@metamask/superstruct';
 import { object, string } from '@metamask/superstruct';
 
-export type OriginMetadata = {
-  transport: string;
-  selfReportedOrigin: string;
-};
+export type OriginMetadata = Infer<typeof OriginMetadataStruct>;
 
 export const OriginMetadataStruct = object({
   transport: string(),
