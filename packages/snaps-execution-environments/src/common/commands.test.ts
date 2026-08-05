@@ -6,7 +6,7 @@ import { getHandlerArguments } from './commands';
 describe('getHandlerArguments', () => {
   it('validates the request params for the OnTransaction handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnTransaction, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnTransaction, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -17,7 +17,7 @@ describe('getHandlerArguments', () => {
 
   it('validates the request params for the OnSignature handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnSignature, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnSignature, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -28,7 +28,7 @@ describe('getHandlerArguments', () => {
 
   it('validates the request params for the OnUserInput handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnUserInput, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnUserInput, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -39,7 +39,7 @@ describe('getHandlerArguments', () => {
 
   it('validates the request params for the OnAssetsConversion handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetsConversion, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnAssetsConversion, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -50,7 +50,7 @@ describe('getHandlerArguments', () => {
 
   it('validates the request params for the OnAssetsLookup handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetsLookup, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnAssetsLookup, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -61,18 +61,23 @@ describe('getHandlerArguments', () => {
 
   it('validates the request params for the OnAssetHistoricalPrice handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnAssetHistoricalPrice, {
-        id: 1,
-        jsonrpc: '2.0',
-        method: 'foo',
-        params: {},
-      }),
+      getHandlerArguments(
+        MOCK_ORIGIN,
+        null,
+        HandlerType.OnAssetHistoricalPrice,
+        {
+          id: 1,
+          jsonrpc: '2.0',
+          method: 'foo',
+          params: {},
+        },
+      ),
     ).toThrow('Invalid request params');
   });
 
   it('validates the request params for the OnWebSocketEvent handler', () => {
     expect(() =>
-      getHandlerArguments(MOCK_ORIGIN, HandlerType.OnWebSocketEvent, {
+      getHandlerArguments(MOCK_ORIGIN, null, HandlerType.OnWebSocketEvent, {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',
@@ -84,7 +89,7 @@ describe('getHandlerArguments', () => {
   it('throws for invalid handler types', () => {
     expect(() =>
       // @ts-expect-error Invalid handler type.
-      getHandlerArguments(MOCK_ORIGIN, 'foo', {
+      getHandlerArguments(MOCK_ORIGIN, null, 'foo', {
         id: 1,
         jsonrpc: '2.0',
         method: 'foo',

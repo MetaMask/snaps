@@ -224,6 +224,7 @@ export class BaseSnapExecutor {
    * @param options.snapId - The Snap ID.
    * @param options.handler - The handler to invoke.
    * @param options.origin - The origin invoking the handler.
+   * @param options.originMetadata - The optional metadata for the origin invoking the handler.
    * @param options.request - The JSON-RPC request to invoke the handler with.
    * @returns The result of invoking the handler on the Snap.
    */
@@ -231,9 +232,15 @@ export class BaseSnapExecutor {
     snapId,
     handler: handlerType,
     origin,
+    originMetadata,
     request,
   }: SnapRpcRequestArguments) {
-    const args = getHandlerArguments(origin, handlerType, request);
+    const args = getHandlerArguments(
+      origin,
+      originMetadata,
+      handlerType,
+      request,
+    );
 
     const data = this.#snapData.get(snapId);
     // We're capturing the handler in case someone modifies the data object
