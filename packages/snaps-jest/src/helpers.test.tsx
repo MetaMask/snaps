@@ -319,6 +319,7 @@ describe('installSnap', () => {
             result: {
               request: {
                 origin: 'https://metamask.io',
+                originMetadata: null,
                 request: {
                   id: 1,
                   jsonrpc: '2.0',

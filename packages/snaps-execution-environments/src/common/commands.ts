@@ -51,16 +51,16 @@ export function assertCommandParams<Type extends Json | undefined, Schema>(
  * Formats the arguments for the given handler.
  *
  * @param origin - The origin of the request.
- * @param originMetadata - The optional metadata for the origin of the request.
  * @param handler - The handler to pass the request to.
  * @param request - The request object.
+ * @param originMetadata - The optional metadata for the origin of the request.
  * @returns The formatted arguments.
  */
 export function getHandlerArguments(
   origin: string,
-  originMetadata: OriginMetadata | undefined | null,
   handler: HandlerType,
   request: JsonRpcRequestWithoutId,
+  originMetadata: OriginMetadata | undefined | null = null,
 ): InvokeSnapArgs {
   // `request` is already validated by the time this function is called.
 
