@@ -1,3 +1,5 @@
+import type { OriginMetadata } from '../origin';
+
 /**
  * A lifecycle event handler. This is called whenever a lifecycle event occurs,
  * such as the Snap being installed or updated.
@@ -7,9 +9,13 @@
  *
  * @param args - The request arguments.
  * @param args.origin - The origin that triggered the lifecycle event hook.
+ * @param args.originMetadata - Optional metadata about the origin. This is only
+ * present if the origin is not directly verifiable, e.g., when the request
+ * comes from a transport that cannot verify the origin.
  */
 export type LifecycleEventHandler = (args: {
   origin: string;
+  originMetadata: OriginMetadata | null;
 }) => Promise<unknown>;
 
 /**

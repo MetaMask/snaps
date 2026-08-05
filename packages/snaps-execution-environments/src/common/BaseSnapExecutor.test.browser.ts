@@ -33,6 +33,8 @@ describe('BaseSnapExecutor', () => {
     'console',
   ];
 
+  const MOCK_WALLETCONNECT_SESSION_ID = 'f7a0a2e3-9a4b-4c1d-8e5f-6b7c8d9e0f1a';
+
   describe('timers', () => {
     it("doesn't leak execution outside of expected timeshare during initial eval", async () => {
       const CODE = `
@@ -1501,6 +1503,78 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('passes `originMetadata` to `onRpcRequest`', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = ({ originMetadata }) => originMetadata;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const originMetadata = {
+      transport: 'WalletConnect',
+      selfReportedOrigin: MOCK_ORIGIN,
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_WALLETCONNECT_SESSION_ID,
+        originMetadata,
+        request: { jsonrpc: '2.0', method: '' },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: originMetadata,
+    });
+  });
+
+  it('defaults `originMetadata` to `null` in `onRpcRequest` when not provided', async () => {
+    const CODE = `
+      module.exports.onRpcRequest = ({ originMetadata }) => originMetadata;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnRpcRequest,
+        origin: MOCK_ORIGIN,
+        request: { jsonrpc: '2.0', method: '' },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: null,
+    });
+  });
+
   it('supports onKeyringRequest export', async () => {
     const CODE = `
       module.exports.onKeyringRequest = ({ request }) => request.params[0];
@@ -1531,6 +1605,45 @@ describe('BaseSnapExecutor', () => {
       id: 2,
       jsonrpc: '2.0',
       result: 'bar',
+    });
+  });
+
+  it('passes `originMetadata` to `onKeyringRequest`', async () => {
+    const CODE = `
+      module.exports.onKeyringRequest = ({ originMetadata }) => originMetadata;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const originMetadata = {
+      transport: 'WalletConnect',
+      selfReportedOrigin: MOCK_ORIGIN,
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnKeyringRequest,
+        origin: MOCK_WALLETCONNECT_SESSION_ID,
+        originMetadata,
+        request: { jsonrpc: '2.0', method: 'foo', params: ['bar'] },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: originMetadata,
     });
   });
 
@@ -1949,6 +2062,54 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('passes `originMetadata` to `onProtocolRequest`', async () => {
+    const CODE = `
+      module.exports.onProtocolRequest = ({ originMetadata }) => originMetadata;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    const originMetadata = {
+      transport: 'WalletConnect',
+      selfReportedOrigin: MOCK_ORIGIN,
+    };
+
+    const params = {
+      scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      request: {
+        jsonrpc: '2.0',
+        id: 'foo',
+        method: 'getVersion',
+      },
+    };
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'snapRpc',
+      params: {
+        snapId: MOCK_SNAP_ID,
+        handler: HandlerType.OnProtocolRequest,
+        origin: MOCK_WALLETCONNECT_SESSION_ID,
+        originMetadata,
+        request: { jsonrpc: '2.0', method: '', params },
+      },
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      id: 2,
+      jsonrpc: '2.0',
+      result: originMetadata,
+    });
+  });
+
   it('supports onClientRequest export', async () => {
     const CODE = `
       module.exports.onClientRequest = ({ request }) => ({ request });
@@ -2096,6 +2257,45 @@ describe('BaseSnapExecutor', () => {
           id: 2,
           jsonrpc: '2.0',
           result: null,
+        });
+      });
+
+      it(`passes \`originMetadata\` to \`${handler}\``, async () => {
+        const CODE = `
+          module.exports.${handler} = ({ originMetadata }) => originMetadata;
+        `;
+
+        const executor = new TestSnapExecutor();
+        await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+        expect(await executor.readCommand()).toStrictEqual({
+          jsonrpc: '2.0',
+          id: 1,
+          result: 'OK',
+        });
+
+        const originMetadata = {
+          transport: 'WalletConnect',
+          selfReportedOrigin: MOCK_ORIGIN,
+        };
+
+        await executor.writeCommand({
+          jsonrpc: '2.0',
+          id: 2,
+          method: 'snapRpc',
+          params: {
+            snapId: MOCK_SNAP_ID,
+            handler,
+            origin: MOCK_WALLETCONNECT_SESSION_ID,
+            originMetadata,
+            request: { jsonrpc: '2.0', method: handler },
+          },
+        });
+
+        expect(await executor.readCommand()).toStrictEqual({
+          id: 2,
+          jsonrpc: '2.0',
+          result: originMetadata,
         });
       });
     }
