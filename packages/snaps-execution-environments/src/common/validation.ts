@@ -81,10 +81,16 @@ export const ExecuteSnapRequestArgumentsStruct = object({
   endowments: array(EndowmentStruct),
 });
 
+const OriginMetadataStruct = object({
+  transport: string(),
+  selfReportedOrigin: string(),
+});
+
 export const SnapRpcRequestArgumentsStruct = object({
   snapId: string(),
   handler: enums(Object.values(HandlerType)),
   origin: string(),
+  originMetadata: optional(OriginMetadataStruct),
   request: assign(
     JsonRpcRequestWithoutIdStruct,
     object({

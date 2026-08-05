@@ -7,6 +7,7 @@ import './images';
 export * from './caip';
 export * from './handlers';
 export * from './methods';
+export type * from './origin';
 export type * from './permissions';
 export type * from './provider';
 export type * from './snap';

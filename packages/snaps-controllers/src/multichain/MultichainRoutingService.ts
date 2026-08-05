@@ -5,7 +5,12 @@ import {
   getProtocolCaveatScopes,
   SnapEndowments,
 } from '@metamask/snaps-rpc-methods';
-import type { Json, JsonRpcRequest, SnapId } from '@metamask/snaps-sdk';
+import type {
+  Json,
+  JsonRpcRequest,
+  SnapId,
+  OriginMetadata,
+} from '@metamask/snaps-sdk';
 import type { InternalAccount } from '@metamask/snaps-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import type {
@@ -31,6 +36,7 @@ import type {
 type SnapKeyring = {
   submitRequest: (request: {
     origin: string;
+    originMetadata?: OriginMetadata;
     account: string;
     method: string;
     params?: Json[] | Record<string, Json>;
@@ -258,6 +264,7 @@ export class MultichainRoutingService {
    * @param options.connectedAddresses - Addresses currently connected to the
    * origin for the requested scope.
    * @param options.origin - The origin of the RPC request.
+   * @param options.originMetadata - Optional additional origin metadata.
    * @param options.request - The JSON-RPC request.
    * @param options.scope - The CAIP-2 scope for the request.
    * @returns The response from the chosen Snap.
@@ -266,11 +273,13 @@ export class MultichainRoutingService {
   async handleRequest({
     connectedAddresses,
     origin,
+    originMetadata,
     scope,
     request: rawRequest,
   }: {
     connectedAddresses: CaipAccountId[];
     origin: string;
+    originMetadata?: OriginMetadata;
     scope: CaipChainId;
     request: JsonRpcRequest;
   }): Promise<Json> {
@@ -301,6 +310,7 @@ export class MultichainRoutingService {
       return this.#withSnapKeyring(async ({ keyring }) =>
         keyring.submitRequest({
           origin,
+          originMetadata,
           account: accountId,
           scope,
           method,
@@ -320,6 +330,7 @@ export class MultichainRoutingService {
       return this.#messenger.call('SnapController:handleRequest', {
         snapId: protocolSnap.snapId,
         origin,
+        originMetadata,
         request: {
           method: '',
           params: {

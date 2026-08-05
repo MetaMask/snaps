@@ -3708,6 +3708,7 @@ export class SnapController extends BaseController<
    * @param options - A bag of options.
    * @param options.snapId - The ID of the recipient snap.
    * @param options.origin - The origin of the RPC request.
+   * @param options.originMetadata - Optional additional origin metadata for the RPC request.
    * @param options.handler - The handler to trigger on the snap for the request.
    * @param options.request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
@@ -3715,6 +3716,7 @@ export class SnapController extends BaseController<
   async handleRequest({
     snapId,
     origin,
+    originMetadata,
     handler: handlerType,
     request: rawRequest,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
@@ -3847,7 +3849,12 @@ export class SnapController extends BaseController<
     const handleRpcRequestPromise = this.messenger.call(
       'ExecutionService:handleRpcRequest',
       snapId,
-      { origin, handler: handlerType, request: transformedRequest },
+      {
+        origin,
+        originMetadata,
+        handler: handlerType,
+        request: transformedRequest,
+      },
     );
 
     // This will either get the result or reject due to the timeout.

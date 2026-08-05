@@ -1,7 +1,10 @@
+import type { OriginMetadata } from '@metamask/snaps-sdk';
+
 import type { SNAP_EXPORTS } from './exports';
 
 export type SnapRpcHookArgs = {
   origin: string;
+  originMetadata?: OriginMetadata;
   handler: HandlerType;
   request: Record<string, unknown>;
 };
