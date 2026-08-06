@@ -514,7 +514,7 @@ export abstract class ExecutionService<WorkerType = unknown> {
       params: {
         snapId,
         origin,
-        ...(originMetadata ? { originMetadata } : {}),
+        ...(originMetadata && { originMetadata }),
         handler,
         request: request as JsonRpcRequest,
       },
