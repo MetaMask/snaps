@@ -36,7 +36,7 @@ import type {
 type SnapKeyring = {
   submitRequest: (request: {
     origin: string;
-    originMetadata?: OriginMetadata;
+    originMetadata?: OriginMetadata | null;
     account: string;
     method: string;
     params?: Json[] | Record<string, Json>;
@@ -279,7 +279,7 @@ export class MultichainRoutingService {
   }: {
     connectedAddresses: CaipAccountId[];
     origin: string;
-    originMetadata?: OriginMetadata;
+    originMetadata?: OriginMetadata | null;
     scope: CaipChainId;
     request: JsonRpcRequest;
   }): Promise<Json> {
