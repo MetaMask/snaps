@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.0.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
+- **BREAKING:** `KeyringRequest` may now include an optional `originMetadata` property 
+  - This requires `@metamask/keyring-api` version `24.1.0` or newer.
+- Add support for the optional `originMetadata` property to all handlers that also support `origin` ([#4093](https://github.com/MetaMask/snaps/pull/4093))
 
 ## [11.2.0]
 

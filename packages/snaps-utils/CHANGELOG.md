@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.5.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
+- Add optional `originMetadata` property to `SnapRpcHookArgs` type ([#4093](https://github.com/MetaMask/snaps/pull/4093))
 
 ## [12.4.0]
 

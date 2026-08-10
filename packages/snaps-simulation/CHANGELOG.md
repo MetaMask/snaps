@@ -9,11 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.3.1]
 
-### Uncategorized
+### Changed
 
-- feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
-- feat: Add `Blob` as a default endowment ([#4063](https://github.com/MetaMask/snaps/pull/4063))
-- chore: Bump @metamask/chain-agnostic-permission from 1.6.2 to 1.7.0 ([#4070](https://github.com/MetaMask/snaps/pull/4070))
+- Bump `@metamask/snaps-sdk` from `^11.2.0` to `^12.0.0` ([#4094](https://github.com/MetaMask/snaps/pull/4094))
 
 ## [4.3.0]
 

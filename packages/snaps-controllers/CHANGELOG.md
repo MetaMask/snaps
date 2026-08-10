@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [21.1.0]
 
-### Uncategorized
+### Added
 
-- feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
-- chore: Bump @metamask/messenger from 1.2.0 to 2.0.0 ([#4064](https://github.com/MetaMask/snaps/pull/4064))
-- chore: Bump @metamask/superstruct from 3.2.1 to 3.3.0 ([#4062](https://github.com/MetaMask/snaps/pull/4062))
-- chore: Bump @metamask/analytics-controller from 1.1.1 to 1.2.1 ([#4059](https://github.com/MetaMask/snaps/pull/4059))
+- Add optional `originMetadata` parameter to `SnapController`, `MultichainRoutingService` and `ExecutionService` ([#4093](https://github.com/MetaMask/snaps/pull/4093))
+  - This parameter can be used for specifying additional metadata about the origin of a request.
+
+### Changed
+
+- Bump `@metamask/messenger` from `^1.2.0` to `^2.0.0` ([#4064](https://github.com/MetaMask/snaps/pull/4064))
+- Bump `@metamask/superstruct` from `^3.2.1` to `^3.3.0` ([#4062](https://github.com/MetaMask/snaps/pull/4062))
+- Bump `@metamask/analytics-controller` from `^1.1.1` to `^1.2.1` ([#4059](https://github.com/MetaMask/snaps/pull/4059))
 
 ## [21.0.0]
 
