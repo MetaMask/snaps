@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.0.0]
+
 ### Uncategorized
 
 - feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
@@ -742,7 +744,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.0.0...HEAD
+[12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.2.0...@metamask/snaps-sdk@12.0.0
 [11.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.1...@metamask/snaps-sdk@11.2.0
 [11.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.1.0...@metamask/snaps-sdk@11.1.1
 [11.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.0.0...@metamask/snaps-sdk@11.1.0
