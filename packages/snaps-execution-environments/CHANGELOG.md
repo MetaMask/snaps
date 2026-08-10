@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- feat: Add `originMetadata` to requests ([#4093](https://github.com/MetaMask/snaps/pull/4093))
+
 ## [11.2.0]
 
 ### Added
