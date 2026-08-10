@@ -10,6 +10,12 @@ describe('getSnapDerivationPathName', () => {
     );
   });
 
+  it('returns a name for ed25519 paths that only SLIP-44 would miss', () => {
+    expect(getSnapDerivationPathName(['m', `44'`, `148'`], 'ed25519')).toBe(
+      'Stellar',
+    );
+  });
+
   it("returns a name from the hardcoded list starting with `1852'`, `1815'`", () => {
     expect(
       getSnapDerivationPathName(['m', `1852'`, `1815'`], 'ed25519Bip32'),

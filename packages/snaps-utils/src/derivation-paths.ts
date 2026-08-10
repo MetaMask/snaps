@@ -106,6 +106,11 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Sui',
   },
   {
+    path: ['m', `44'`, `148'`],
+    curve: 'ed25519',
+    name: 'Stellar',
+  },
+  {
     path: ['m', `44'`, `931'`],
     curve: 'secp256k1',
     name: 'THORChain (RUNE)',
