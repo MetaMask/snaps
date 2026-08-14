@@ -43,6 +43,7 @@ export type MessengerCallMethodActions =
   | PermissionControllerGetPermissionAction;
 
 const BLOCKED_MESSENGER_CLIENTS = [
+  'AccountTreeController',
   'ApprovalController',
   'KeyringController',
   'PermissionController',
