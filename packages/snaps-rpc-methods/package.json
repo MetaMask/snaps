@@ -62,7 +62,7 @@
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/superstruct": "^3.3.0",
+    "@metamask/superstruct": "^3.4.1",
     "@metamask/utils": "^11.11.0",
     "@noble/hashes": "^1.7.1",
     "async-mutex": "^0.5.0"
