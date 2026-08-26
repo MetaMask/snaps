@@ -16,7 +16,7 @@ import { assertStruct, CaipChainIdStruct } from '@metamask/utils';
  * Mirrors `PrivateKeyEncoding` from `@metamask/keyring-api` to avoid pulling
  * in that package's Node.js-only transitive dependencies into browser bundles.
  */
-const PrivateKeyEncodingStruct = enums(['hexadecimal', 'base58']);
+const PrivateKeyEncodingStruct = enums(['hexadecimal', 'base58', 'base32']);
 
 /**
  * Supported account types for keyring accounts.
