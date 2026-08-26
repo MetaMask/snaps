@@ -80,7 +80,7 @@ export type RequestedSnap = {
  * Mirrors `PrivateKeyEncoding` from `@metamask/keyring-api`.
  * Keep in sync with `PrivateKeyEncoding` in `@metamask/keyring-api`.
  */
-type PrivateKeyEncoding = 'hexadecimal' | 'base58';
+type PrivateKeyEncoding = 'hexadecimal' | 'base58' | 'base32';
 
 /**
  * Supported account types for keyring accounts.
