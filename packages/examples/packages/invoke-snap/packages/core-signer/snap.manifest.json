@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "Vacw1q5M+KGVaCb6PrjJtNVba0EsVaYoi67KnAzuZsk=",
+    "shasum": "N6cBdrBGDtkdaTbIYw+rrBe0VpvaMa2oD5K623YQrjM=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -23,6 +23,6 @@
     "snap_dialog": {},
     "snap_manageState": {}
   },
-  "platformVersion": "12.0.0",
+  "platformVersion": "12.0.1",
   "manifestVersion": "0.1"
 }

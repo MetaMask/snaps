@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.6.0]
+
+### Added
+
+- Add Stellar to the known Snap derivation paths ([#4097](https://github.com/MetaMask/snaps/pull/4097))
+
+### Fixed
+
+- Sync `PrivateKeyEncoding` struct with `@metamask/keyring-api` ([#4104](https://github.com/MetaMask/snaps/pull/4104))
+
 ## [12.5.0]
 
 ### Added
@@ -853,7 +863,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.0...HEAD
+[12.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.5.0...@metamask/snaps-utils@12.6.0
 [12.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.4.0...@metamask/snaps-utils@12.5.0
 [12.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.3.0...@metamask/snaps-utils@12.4.0
 [12.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.2.1...@metamask/snaps-utils@12.3.0
