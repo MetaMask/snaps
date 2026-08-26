@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.6.0]
 
-### Uncategorized
+### Added
 
-- fix: Sync `PrivateKeyEncoding` type and struct ([#4104](https://github.com/MetaMask/snaps/pull/4104))
-- feat: Add Stellar to the known Snap derivation paths ([#4097](https://github.com/MetaMask/snaps/pull/4097))
-- chore: Bump @metamask/auto-changelog from 6.1.1 to 6.2.0 ([#4102](https://github.com/MetaMask/snaps/pull/4102))
+- Add Stellar to the known Snap derivation paths ([#4097](https://github.com/MetaMask/snaps/pull/4097))
+
+### Fixed
+
+- Sync `PrivateKeyEncoding` struct with `@metamask/keyring-api` ([#4104](https://github.com/MetaMask/snaps/pull/4104))
 
 ## [12.5.0]
 
