@@ -7,11 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Uncategorized
-
-- chore: Bump @metamask/auto-changelog from 6.1.1 to 6.2.0 ([#4102](https://github.com/MetaMask/snaps/pull/4102))
-- feat: block `AccountTreeController` messenger calls ([#4100](https://github.com/MetaMask/snaps/pull/4100))
-
 ## [17.1.1]
 
 ### Changed
