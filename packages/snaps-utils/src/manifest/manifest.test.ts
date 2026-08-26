@@ -206,7 +206,7 @@ describe('checkManifest', () => {
 
     const newManifest = getSnapManifest({
       proposedName: 'Main Snap',
-      shasum: '6r3zuujQECWiOkp2HmJ4HK4LFcIjLTUMb6pxH4wjMb8=',
+      shasum: 'KcSqntrdRN9rcWMoiMDeIlZg/oEGIKx9dqbuIi01H/A=',
       platformVersion: getPlatformVersion(),
     });
 
