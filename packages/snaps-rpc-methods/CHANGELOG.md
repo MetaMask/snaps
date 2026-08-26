@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Block messenger calls to `AccountTreeController` ([#4100](https://github.com/MetaMask/snaps/pull/4100))
 
-
 ## [17.1.1]
 
 ### Changed
