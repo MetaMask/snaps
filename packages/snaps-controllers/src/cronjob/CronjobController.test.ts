@@ -23,15 +23,37 @@ const MOCK_VERSION = '1.0.0' as SemVerVersion;
 /**
  * Get a mock state manager for the `CronjobController`.
  *
- * @returns A state manager object with `get` and `set` methods.
+ * @returns A state manager object with `getInitialState`, `set` and
+ * `setEventDate` methods.
  */
 function getMockStateManager(): CronjobControllerStateManager {
   let state: CronjobControllerState | undefined;
 
+  // Dates are stored apart from the rest of the state, mirroring how a client
+  // is expected to implement this, and merged back on read.
+  const dates = new Map<string, string>();
+
   return {
-    getInitialState: () => state,
+    getInitialState: () => {
+      if (!state) {
+        return undefined;
+      }
+
+      return {
+        ...state,
+        events: Object.fromEntries(
+          Object.entries(state.events).map(([id, event]) => [
+            id,
+            { ...event, date: dates.get(id) ?? event.date },
+          ]),
+        ),
+      };
+    },
     set: (newState) => {
       state = newState;
+    },
+    setEventDate: (id, date) => {
+      dates.set(id, date);
     },
   };
 }
@@ -465,6 +487,59 @@ describe('CronjobController', () => {
     );
 
     expect(cronjobController.state.events).toStrictEqual({});
+
+    cronjobController.destroy();
+  });
+
+  it('persists a reschedule through `setEventDate`, without rewriting all state', async () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const handleRequest = jest.fn().mockResolvedValue(undefined);
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      handleRequest,
+    );
+
+    const stateManager = getMockStateManager();
+    const set = jest.spyOn(stateManager, 'set');
+    const setEventDate = jest.spyOn(stateManager, 'setEventDate');
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      stateManager,
+      state: {
+        events: {
+          [`cronjob-${MOCK_SNAP_ID}-0`]: {
+            id: `cronjob-${MOCK_SNAP_ID}-0`,
+            snapId: MOCK_SNAP_ID,
+            date: new Date('2022-01-01T00:00Z').toISOString(),
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: 'PT25H',
+            recurring: true,
+            request: {
+              method: 'exampleMethod',
+              params: ['p1'],
+            },
+          },
+        },
+      },
+    });
+
+    cronjobController.init();
+
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+    expect(handleRequest).toHaveBeenCalledTimes(1);
+
+    // Firing the event reschedules it, which is the write this change is
+    // about: one date, not the whole event map.
+    expect(setEventDate).toHaveBeenCalledWith(
+      `cronjob-${MOCK_SNAP_ID}-0`,
+      expect.any(String),
+    );
+
+    expect(set).not.toHaveBeenCalled();
 
     cronjobController.destroy();
   });

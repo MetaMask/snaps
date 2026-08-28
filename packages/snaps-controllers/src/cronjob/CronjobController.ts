@@ -71,6 +71,20 @@ export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
 
 export type CronjobControllerStateManager = {
   set(state: CronjobControllerState): void;
+
+  /**
+   * Persist a single event's next execution date.
+   *
+   * Rescheduling is by far the most frequent write this controller makes — a
+   * snap with a `PT30S` schedule reschedules every thirty seconds — and it
+   * changes one field. Routing it here lets an implementation store dates
+   * separately instead of re-serialising every event on each tick.
+   *
+   * @param id - The ID of the event.
+   * @param date - The next execution date, as an ISO 8601 string.
+   */
+  setEventDate(id: string, date: string): void;
+
   getInitialState(): CronjobControllerState | undefined;
 };
 
@@ -389,11 +403,11 @@ export class CronjobController extends BaseController<
     }
 
     const date = getExecutionDate(event.schedule);
-    const { nextState } = this.update((state) => {
+    this.update((state) => {
       state.events[event.id].date = date;
     });
 
-    this.#stateManager.set(nextState);
+    this.#stateManager.setEventDate(event.id, date);
 
     this.#startTimer({
       ...event,
