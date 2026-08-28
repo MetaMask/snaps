@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **BREAKING:** Add `setEventDate` to `CronjobControllerStateManager` ([#4107](https://github.com/MetaMask/snaps/pull/4107))
+  - `CronjobController` now persists a rescheduled event's next execution date through `setEventDate(id, date)` rather than passing the entire state to `set`. Rescheduling is the controller's most frequent write and changes only this field, so clients may now store dates separately and merge them back in `getInitialState`.
+  - Implementers of `CronjobControllerStateManager` must add the method. Delegating to `set` with the date applied preserves existing behaviour.
+
 ## [21.1.0]
 
 ### Added
