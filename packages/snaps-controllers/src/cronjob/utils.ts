@@ -118,6 +118,16 @@ export function recoverEventDate({
   scheduledAt: string;
   recurring: boolean;
 }): string | undefined {
+  // `cron-parser` accepts an empty or whitespace-only expression and treats it
+  // as `* * * * *`, so without this a schedule that did not survive storage
+  // would be "recovered" as firing every minute forever, rather than being
+  // reported unrecoverable so the caller can cancel it. This matters here more
+  // than at scheduling time: recovery runs on whatever came back from disk,
+  // not on a schedule that was validated when the event was created.
+  if (typeof schedule !== 'string' || schedule.trim() === '') {
+    return undefined;
+  }
+
   // An absolute date is its own answer, whether or not it has passed. A past
   // date means the event was due while the date was missing, and the caller
   // already executes past-due events on startup.
@@ -148,7 +158,9 @@ export function recoverEventDate({
   try {
     const parsed = parseExpression(schedule, { utc: true });
     const next = DateTime.fromJSDate(parsed.next().toDate());
-    return next.isValid ? next.toUTC().toISO() : undefined;
+    // `toISO()` already returns null for an invalid DateTime, so coalescing is
+    // equivalent to testing `isValid` and leaves no unreachable branch behind.
+    return next.toUTC().toISO() ?? undefined;
   } catch {
     return undefined;
   }
