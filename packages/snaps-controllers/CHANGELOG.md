@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `recoverEventDate` for reconstructing a background event's next execution date ([#4107](https://github.com/MetaMask/snaps/pull/4107))
+  - A client that stores dates separately can lose one without losing the event. `schedule` and `scheduledAt` are written once when the event is added and never mutated, so the date is reconstructible from them.
+  - Unlike `getExecutionDate`, this function is pure and total: it anchors a non-recurring event's duration on `scheduledAt` rather than on the current time, and returns `undefined` instead of throwing when the schedule cannot be parsed.
+
 ### Changed
 
-- **BREAKING:** Add `setEventDate` to `CronjobControllerStateManager` ([#4107](https://github.com/MetaMask/snaps/pull/4107))
+- **BREAKING:** Add `setEventDate` and `deleteEventDate` to `CronjobControllerStateManager` ([#4107](https://github.com/MetaMask/snaps/pull/4107))
   - `CronjobController` now persists a rescheduled event's next execution date through `setEventDate(id, date)` rather than passing the entire state to `set`. Rescheduling is the controller's most frequent write and changes only this field, so clients may now store dates separately and merge them back in `getInitialState`.
-  - Implementers of `CronjobControllerStateManager` must add the method. Delegating to `set` with the date applied preserves existing behaviour.
+  - `deleteEventDate(id)` is called when an event is cancelled or when a non-recurring event fires. Without it a client storing dates separately has no signal that an event is gone, and accumulates one orphaned key per completed event.
+  - Implementers of `CronjobControllerStateManager` must add both methods. Delegating each to `set` with the change applied preserves existing behaviour.
+- `CronjobController` no longer stops scheduling every remaining event when one event has an unusable date ([#4107](https://github.com/MetaMask/snaps/pull/4107))
+  - A date that cannot be parsed yields `NaN` milliseconds, which passed both bounds checks in the timer setup and reached the `Timer` constructor, throwing. That threw out of the rescheduling loop, so every event ordered after the offending one was never scheduled, and the daily timer was not re-armed.
+  - Such an event is now reported and skipped individually, and the timer setup rejects an unusable date with a message naming the event.
 
 ## [21.1.0]
 

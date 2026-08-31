@@ -23,8 +23,8 @@ const MOCK_VERSION = '1.0.0' as SemVerVersion;
 /**
  * Get a mock state manager for the `CronjobController`.
  *
- * @returns A state manager object with `getInitialState`, `set` and
- * `setEventDate` methods.
+ * @returns A state manager object with `getInitialState`, `set`,
+ * `setEventDate` and `deleteEventDate` methods.
  */
 function getMockStateManager(): CronjobControllerStateManager {
   let state: CronjobControllerState | undefined;
@@ -54,6 +54,9 @@ function getMockStateManager(): CronjobControllerStateManager {
     },
     setEventDate: (id, date) => {
       dates.set(id, date);
+    },
+    deleteEventDate: (id) => {
+      dates.delete(id);
     },
   };
 }
@@ -540,6 +543,131 @@ describe('CronjobController', () => {
     );
 
     expect(set).not.toHaveBeenCalled();
+
+    cronjobController.destroy();
+  });
+
+  it('removes the persisted date when a one-shot event fires', async () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      jest.fn().mockResolvedValue(undefined),
+    );
+
+    const stateManager = getMockStateManager();
+    const deleteEventDate = jest.spyOn(stateManager, 'deleteEventDate');
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      stateManager,
+      state: {
+        events: {
+          foo: {
+            id: 'foo',
+            snapId: MOCK_SNAP_ID,
+            date: new Date('2022-01-01T00:00Z').toISOString(),
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: '2022-01-01T00:00Z',
+            recurring: false,
+            request: { method: 'exampleMethod', params: [] },
+          },
+        },
+      },
+    });
+
+    cronjobController.init();
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+
+    // Without this the date store keeps a key for every event that has already
+    // fired, growing without bound — which would undo the point of storing
+    // dates separately in the first place.
+    expect(deleteEventDate).toHaveBeenCalledWith('foo');
+
+    cronjobController.destroy();
+  });
+
+  it('removes the persisted date when an event is cancelled', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const stateManager = getMockStateManager();
+    const deleteEventDate = jest.spyOn(stateManager, 'deleteEventDate');
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      stateManager,
+    });
+
+    const id = cronjobController.schedule({
+      snapId: MOCK_SNAP_ID,
+      schedule: new Date(Date.now() + inMilliseconds(1, Duration.Hour))
+        .toISOString()
+        .replace(/\.\d{3}/u, ''),
+      request: { method: 'exampleMethod', params: [] },
+    });
+
+    cronjobController.cancel(MOCK_SNAP_ID, id);
+
+    expect(deleteEventDate).toHaveBeenCalledWith(id);
+
+    cronjobController.destroy();
+  });
+
+  it('schedules the remaining events when one of them has an unusable date', () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      jest.fn().mockResolvedValue(undefined),
+    );
+
+    jest.spyOn(console, 'error').mockImplementation();
+
+    const stateManager = getMockStateManager();
+    const setEventDate = jest.spyOn(stateManager, 'setEventDate');
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      stateManager,
+      state: {
+        events: {
+          // Ordered first on purpose: before the loop caught its own errors,
+          // this one threw out of `init` and every event behind it was never
+          // scheduled at all.
+          broken: {
+            id: 'broken',
+            snapId: MOCK_SNAP_ID,
+            date: undefined as unknown as string,
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: 'PT30S',
+            recurring: true,
+            request: { method: 'brokenMethod', params: [] },
+          },
+          healthy: {
+            id: 'healthy',
+            snapId: MOCK_SNAP_ID,
+            date: new Date('2022-01-01T00:00Z').toISOString(),
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: 'PT25H',
+            recurring: true,
+            request: { method: 'healthyMethod', params: [] },
+          },
+        },
+      },
+    });
+
+    expect(() => cronjobController.init()).not.toThrow();
+
+    // The past-dated healthy event executes immediately and reschedules, which
+    // is only reachable if the loop survived the broken event before it.
+    expect(setEventDate).toHaveBeenCalledWith('healthy', expect.any(String));
+    expect(setEventDate).not.toHaveBeenCalledWith('broken', expect.any(String));
 
     cronjobController.destroy();
   });
