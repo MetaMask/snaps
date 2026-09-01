@@ -2998,14 +2998,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/action-utils@npm:^1.0.0":
-  version: 1.1.1
-  resolution: "@metamask/action-utils@npm:1.1.1"
+"@metamask/action-utils@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/action-utils@npm:2.0.0"
   dependencies:
     "@types/semver": "npm:^7.3.6"
     glob: "npm:^7.1.7"
     semver: "npm:^7.3.5"
-  checksum: 10/de6ac6a3f92f58fd343c5e59f85ab32b26c60e4cd5ec781b541c0e2432b1dc70f442095442bcc1a03b1164ac61708d5855293992f3e0e8265abc93c4024bdbb4
+  checksum: 10/9d0ef99cf7be9314a4996108760acb30071dff9e14f090ff6b8c1a1996effb9b9ef1ba5238dc5cd9c0c5396830a66b60621ef9213457606dc011822154188708
   languageName: node
   linkType: hard
 
@@ -3284,11 +3284,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "@metamask/create-release-branch@npm:4.2.1"
+"@metamask/create-release-branch@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "@metamask/create-release-branch@npm:4.2.2"
   dependencies:
-    "@metamask/action-utils": "npm:^1.0.0"
+    "@metamask/action-utils": "npm:^2.0.0"
     "@metamask/auto-changelog": "npm:^6.1.1"
     "@metamask/utils": "npm:^9.0.0"
     debug: "npm:^4.3.4"
@@ -3311,7 +3311,7 @@ __metadata:
       optional: true
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: 10/76b3f904e6cceeb7f42d2120b6b816fb14a190678ab79a8a6a9033e7a872a083254bc36b153c9e773b9d821ed30f0d302b18adc0f83795cc5dfcec2bb166ada6
+  checksum: 10/35b1e671c53cf0c1c03bb076fe33684bdc4eee55935feb0be4f681d4682c57dd68a953585fb6cac8707117218716156ade715db5484d9ade4e25ec79aeba27c1
   languageName: node
   linkType: hard
 
@@ -4605,7 +4605,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.0"
-    "@metamask/create-release-branch": "npm:^4.2.1"
+    "@metamask/create-release-branch": "npm:^4.2.2"
     "@metamask/eslint-config": "npm:^14.0.0"
     "@metamask/eslint-config-browser": "npm:^14.0.0"
     "@metamask/eslint-config-jest": "npm:^14.0.0"
