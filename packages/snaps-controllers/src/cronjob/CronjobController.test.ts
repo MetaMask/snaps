@@ -617,7 +617,7 @@ describe('CronjobController', () => {
     cronjobController.destroy();
   });
 
-  it('schedules the remaining events when one of them has an unusable date', () => {
+  it('schedules the remaining events when one of them has an unusable date', async () => {
     const rootMessenger = getRootCronjobControllerMessenger();
     const controllerMessenger =
       getRestrictedCronjobControllerMessenger(rootMessenger);
@@ -663,6 +663,11 @@ describe('CronjobController', () => {
     });
 
     expect(() => cronjobController.init()).not.toThrow();
+
+    // The healthy event executes asynchronously; without settling it here its
+    // promise outlives `destroy` and reschedules against a torn-down
+    // controller, which leaves the jest worker unable to exit.
+    await new Promise((resolve) => originalProcessNextTick(resolve));
 
     // The past-dated healthy event executes immediately and reschedules, which
     // is only reachable if the loop survived the broken event before it.
