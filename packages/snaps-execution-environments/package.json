@@ -84,7 +84,7 @@
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.3.0",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/utils": "^11.12.1",
     "readable-stream": "^3.6.2"
   },
   "devDependencies": {
