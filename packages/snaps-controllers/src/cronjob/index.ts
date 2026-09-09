@@ -9,6 +9,7 @@ export type {
   CronjobControllerStateManager,
 } from './CronjobController';
 export { CronjobController } from './CronjobController';
+export { recoverEventDate } from './utils';
 export type {
   CronjobControllerInitAction,
   CronjobControllerScheduleAction,
