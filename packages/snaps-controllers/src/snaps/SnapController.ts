@@ -616,7 +616,7 @@ export type SnapControllerArgs = {
   excludedPermissions?: Record<string, string>;
 
   /**
-   * The function that will be used by the controller fo make network requests.
+   * The function that will be used by the controller to make network requests.
    * Should be compatible with {@link fetch}.
    */
   fetchFunction?: typeof fetch;
