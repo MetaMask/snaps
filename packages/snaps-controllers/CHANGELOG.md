@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Keep one background event with an unusable date from stopping all background-event scheduling ([#4120](https://github.com/MetaMask/snaps/pull/4120))
   - An event whose `date` could not be parsed threw during scheduling, which stopped `init` and left every later event unscheduled. The failure is now confined to that event and reported through `logError`.
+- Reject a schedule whose execution date falls outside the representable date range ([#4120](https://github.com/MetaMask/snaps/pull/4120))
+  - A duration such as `P1000000Y` is valid on its own terms, but adding it to the current time leaves the date past year 275760, where Luxon's `toISO()` returns `null`. That `null` was stored as the event's date and became `NaN` at scheduling time. `getExecutionDate` now throws instead.
 
 ## [21.1.0]
 

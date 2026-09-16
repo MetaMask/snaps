@@ -69,7 +69,18 @@ export function getExecutionDate(schedule: string) {
   if (duration.isValid) {
     // This ensures the duration is at least 1 second.
     const validatedDuration = getDuration(duration);
-    return DateTime.now().toUTC().plus(validatedDuration).toISO();
+    const executionDate = DateTime.now().toUTC().plus(validatedDuration);
+
+    // A duration is valid on its own terms however large it is, so one that
+    // lands past the representable range (year 275760) leaves the DateTime
+    // invalid and `toISO()` returns `null`. `plus` keeps the static type valid,
+    // so nothing here is typed as nullable, and the `null` reaches state as the
+    // event's date, where it reads back as `NaN` at scheduling time.
+    if (!executionDate.isValid) {
+      throw new Error('Cannot schedule an event that far in the future.');
+    }
+
+    return executionDate.toISO();
   }
 
   try {

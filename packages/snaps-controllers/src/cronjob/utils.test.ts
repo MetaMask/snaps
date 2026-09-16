@@ -73,4 +73,14 @@ describe('getExecutionDate', () => {
       getExecutionDate(new Date(Date.now() + 100).toISOString()),
     ).toThrow('Cannot schedule an event in the past.');
   });
+
+  it('throws an error for durations past the representable date range', () => {
+    expect(() => getExecutionDate('P1000000Y')).toThrow(
+      'Cannot schedule an event that far in the future.',
+    );
+
+    expect(() => getExecutionDate('PT99999999999999S')).toThrow(
+      'Cannot schedule an event that far in the future.',
+    );
+  });
 });
