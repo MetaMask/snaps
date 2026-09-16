@@ -4485,7 +4485,7 @@ __metadata:
     jest-silent-reporter: "npm:^0.6.0"
     lodash: "npm:^4.18.1"
     luxon: "npm:^3.5.0"
-    nanoid: "npm:^3.3.10"
+    nanoid: "npm:^3.3.18"
     prettier: "npm:^3.3.3"
     readable-stream: "npm:^3.6.2"
     readable-web-to-node-stream: "npm:^3.0.2"
@@ -4748,7 +4748,7 @@ __metadata:
     happy-dom: "npm:^20.0.11"
     jotai: "npm:^2.12.2"
     monaco-editor: "patch:monaco-editor@npm%3A0.52.2#~/.yarn/patches/monaco-editor-npm-0.52.2-584d16bfa6.patch"
-    nanoid: "npm:^3.3.10"
+    nanoid: "npm:^3.3.18"
     prettier: "npm:^3.3.3"
     react: "npm:^19.1.0"
     react-dom: "npm:^19.1.0"
@@ -14811,12 +14811,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.10, nanoid@npm:^3.3.8":
-  version: 3.3.11
-  resolution: "nanoid@npm:3.3.11"
+"nanoid@npm:^3.3.18, nanoid@npm:^3.3.8":
+  version: 3.3.18
+  resolution: "nanoid@npm:3.3.18"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 10/73b5afe5975a307aaa3c95dfe3334c52cdf9ae71518176895229b8d65ab0d1c0417dd081426134eb7571c055720428ea5d57c645138161e7d10df80815527c48
+  checksum: 10/1b3b4fdac831b92b56d1dbe8b1e63a372432faf86ea383134e3b53141ef8108a60b7f84343b5cefecac9550bb74edf8164da93ea07d1c4f757039bc75d8a5d9e
   languageName: node
   linkType: hard
 
