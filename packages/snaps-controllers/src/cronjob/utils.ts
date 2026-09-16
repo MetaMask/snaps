@@ -76,9 +76,10 @@ export function getExecutionDate(schedule: string) {
     // invalid and `toISO()` returns `null`. `plus` keeps the static type valid,
     // so nothing here is typed as nullable, and the `null` reaches state as the
     // event's date, where it reads back as `NaN` at scheduling time.
-    if (!executionDate.isValid) {
-      throw new Error('Cannot schedule an event that far in the future.');
-    }
+    assert(
+      executionDate.isValid,
+      'Cannot schedule an event that far in the future.',
+    );
 
     return executionDate.toISO();
   }
