@@ -411,13 +411,15 @@ export class CronjobController extends BaseController<
     const ms =
       DateTime.fromISO(event.date, { setZone: true }).toMillis() - Date.now();
 
-    // Every comparison against NaN is false, so an unparseable date would fall
-    // through both guards below and reach `new Timer(NaN)`, which throws. That
-    // throw escapes `#reschedule`'s loop and strands every event behind this
-    // one, so a single bad date takes down all scheduling rather than itself.
-    // A client is expected to repair dates before handing state over; this is
-    // the backstop for one that does not.
-    if (Number.isNaN(ms)) {
+    // Every comparison against NaN is false, so a date that does not parse
+    // would fall through both guards below and reach `new Timer(NaN)`, which
+    // throws. That throw escapes `#reschedule`'s loop and strands every event
+    // behind this one, so a single bad date takes down all scheduling rather
+    // than itself. A client is expected to repair dates before handing state
+    // over; this is the backstop for one that does not. The check is for
+    // finiteness rather than for NaN alone, so that any non-finite result is
+    // reported here rather than reaching the timer.
+    if (!Number.isFinite(ms)) {
       throw new Error(
         `Background event "${event.id}" has an unusable date: "${String(
           event.date,
