@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for array `key` parameter in `snap_getState`, returning a `Record<string, Json>` mapping each key to its resolved value
+- Add support for array `key` parameter in `snap_getState`, returning a `Record<string, Json>` mapping each key to its resolved value ([#4125](https://github.com/MetaMask/snaps/pull/4125))
 
 ## [17.1.2]
 

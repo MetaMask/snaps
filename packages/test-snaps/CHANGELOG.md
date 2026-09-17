@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update `GetState` component to support comma-separated keys via `snap_getState` array `key` parameter
+- Update `GetState` component to support comma-separated keys via `snap_getState` array `key` parameter ([#4125](https://github.com/MetaMask/snaps/pull/4125))
 
 ## [3.5.2]
 

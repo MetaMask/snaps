@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for array `key` parameter in `GetStateParams` for `snap_getState`
+- Add support for array `key` parameter in `GetStateParams` for `snap_getState` ([#4125](https://github.com/MetaMask/snaps/pull/4125))
 
 ## [12.0.1]
 
