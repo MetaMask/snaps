@@ -4,7 +4,7 @@ import type { State } from './utils';
 
 export type LegacyParams = { encrypted?: boolean };
 
-export type BaseParams = { key?: string; encrypted?: boolean };
+export type BaseParams = { key?: string | string[]; encrypted?: boolean };
 
 /**
  * The parameters for the `setState` JSON-RPC method.

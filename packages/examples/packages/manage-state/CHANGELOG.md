@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add tests for `snap_getState` with array `key` parameter
+
 ## [3.0.0]
 
 ### Added
