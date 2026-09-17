@@ -85,3 +85,83 @@ export function getExecutionDate(schedule: string) {
     );
   }
 }
+
+/**
+ * Recover an event's next execution date when the stored date is missing.
+ *
+ * This is deliberately NOT `getExecutionDate`. That function is impure for
+ * durations — it returns `now + duration`, so calling it on every read would
+ * push a `PT30S` event forever into the future and it would never fire — and
+ * it throws for an absolute date that has already passed. Recovery needs the
+ * opposite of both: anchor on `scheduledAt` rather than on now, and return
+ * `undefined` rather than throw, so an unrecoverable event can be cancelled
+ * instead of taking the caller down with it.
+ *
+ * Recovery is possible at all because `schedule` and `scheduledAt` are written
+ * once when the event is added and never mutated afterwards. A client that
+ * stores dates separately can lose the date without losing either of them.
+ *
+ * @param event - The event whose date is missing.
+ * @param event.schedule - The cron expression, ISO 8601 duration, or ISO 8601
+ * date that defines the event's schedule.
+ * @param event.scheduledAt - The ISO 8601 date at which the event was added.
+ * @param event.recurring - Whether the event repeats.
+ * @returns The recovered ISO 8601 date, or `undefined` if the schedule cannot
+ * be parsed.
+ */
+export function recoverEventDate({
+  schedule,
+  scheduledAt,
+  recurring,
+}: {
+  schedule: string;
+  scheduledAt: string;
+  recurring: boolean;
+}): string | undefined {
+  // `cron-parser` accepts an empty or whitespace-only expression and treats it
+  // as `* * * * *`, so without this a schedule that did not survive storage
+  // would be "recovered" as firing every minute forever, rather than being
+  // reported unrecoverable so the caller can cancel it. This matters here more
+  // than at scheduling time: recovery runs on whatever came back from disk,
+  // not on a schedule that was validated when the event was created.
+  if (typeof schedule !== 'string' || schedule.trim() === '') {
+    return undefined;
+  }
+
+  // An absolute date is its own answer, whether or not it has passed. A past
+  // date means the event was due while the date was missing, and the caller
+  // already executes past-due events on startup.
+  const absolute = DateTime.fromISO(schedule, { setZone: true });
+  if (absolute.isValid) {
+    return absolute.toUTC().startOf('second').toISO({
+      suppressMilliseconds: true,
+    });
+  }
+
+  const duration = Duration.fromISO(schedule);
+  if (duration.isValid) {
+    // A one-shot's original date is exactly reconstructible. A recurring one's
+    // is not — `scheduledAt` is the creation time and never moves, so after N
+    // intervals it is long stale — but a recurring event only needs a valid
+    // next date, and losing at most one interval of phase is harmless.
+    const anchor = recurring
+      ? DateTime.now()
+      : DateTime.fromISO(scheduledAt, { setZone: true });
+
+    if (!anchor.isValid) {
+      return undefined;
+    }
+
+    return anchor.toUTC().plus(getDuration(duration)).toISO();
+  }
+
+  try {
+    const parsed = parseExpression(schedule, { utc: true });
+    const next = DateTime.fromJSDate(parsed.next().toDate());
+    // `toISO()` already returns null for an invalid DateTime, so coalescing is
+    // equivalent to testing `isValid` and leaves no unreachable branch behind.
+    return next.toUTC().toISO() ?? undefined;
+  } catch {
+    return undefined;
+  }
+}

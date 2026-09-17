@@ -71,6 +71,32 @@ export const DAILY_TIMEOUT = inMilliseconds(24, Duration.Hour);
 
 export type CronjobControllerStateManager = {
   set(state: CronjobControllerState): void;
+
+  /**
+   * Persist a single event's next execution date.
+   *
+   * Rescheduling is by far the most frequent write this controller makes — a
+   * snap with a `PT30S` schedule reschedules every thirty seconds — and it
+   * changes one field. Routing it here lets an implementation store dates
+   * separately instead of re-serialising every event on each tick.
+   *
+   * @param id - The ID of the event.
+   * @param date - The next execution date, as an ISO 8601 string.
+   */
+  setEventDate(id: string, date: string): void;
+
+  /**
+   * Remove an event's persisted date.
+   *
+   * An implementation that stores dates apart from the rest of the state has
+   * no other signal that an event is gone: removing it from `events` says
+   * nothing about the separate date. Without this the date store grows without
+   * bound, one orphaned key per event that is cancelled or fires once.
+   *
+   * @param id - The ID of the event whose date should be removed.
+   */
+  deleteEventDate(id: string): void;
+
   getInitialState(): CronjobControllerState | undefined;
 };
 
@@ -389,11 +415,11 @@ export class CronjobController extends BaseController<
     }
 
     const date = getExecutionDate(event.schedule);
-    const { nextState } = this.update((state) => {
+    this.update((state) => {
       state.events[event.id].date = date;
     });
 
-    this.#stateManager.set(nextState);
+    this.#stateManager.setEventDate(event.id, date);
 
     this.#startTimer({
       ...event,
@@ -410,6 +436,20 @@ export class CronjobController extends BaseController<
   #startTimer(event: InternalBackgroundEvent) {
     const ms =
       DateTime.fromISO(event.date, { setZone: true }).toMillis() - Date.now();
+
+    // Every comparison against NaN is false, so an unparseable date would fall
+    // through both guards below and reach `new Timer(NaN)`, which throws. That
+    // throw escapes `#reschedule`'s loop and strands every event behind this
+    // one, so a single bad date takes down all scheduling rather than itself.
+    // A client is expected to repair dates before handing state over; this is
+    // the backstop for one that does not.
+    if (Number.isNaN(ms)) {
+      throw new Error(
+        `Background event "${event.id}" has an unusable date: "${String(
+          event.date,
+        )}".`,
+      );
+    }
 
     // We don't schedule this job yet as it is too far in the future.
     if (ms > DAILY_TIMEOUT) {
@@ -465,6 +505,7 @@ export class CronjobController extends BaseController<
       });
 
       this.#stateManager.set(nextState);
+      this.#stateManager.deleteEventDate(event.id);
 
       return;
     }
@@ -488,6 +529,7 @@ export class CronjobController extends BaseController<
     });
 
     this.#stateManager.set(nextState);
+    this.#stateManager.deleteEventDate(id);
   }
 
   /**
@@ -599,12 +641,21 @@ export class CronjobController extends BaseController<
 
       // If the event is recurring and the date is in the past, execute it
       // immediately.
-      if (event.recurring && eventDate <= now) {
-        this.#execute(event);
-        continue;
-      }
+      try {
+        if (event.recurring && eventDate <= now) {
+          this.#execute(event);
+          continue;
+        }
 
-      this.#schedule(event, false);
+        this.#schedule(event, false);
+      } catch (error) {
+        // One unschedulable event must not strand the others. Without this the
+        // loop aborts on the first throw, every event after it in iteration
+        // order is silently never scheduled, and — because the daily timer's
+        // callback is `#reschedule(); #start();` — the re-arm is skipped too,
+        // so scheduling stops for the rest of the session.
+        logError(`Failed to schedule background event "${event.id}".`, error);
+      }
     }
   }
 
