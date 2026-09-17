@@ -8,7 +8,6 @@ import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
 import type { GetStateParams, GetStateResult } from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
-  array,
   boolean,
   create,
   object,

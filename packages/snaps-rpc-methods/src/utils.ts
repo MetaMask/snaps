@@ -44,7 +44,7 @@ export type MethodHooksObject<HooksType extends Record<string, unknown>> = {
  * @returns The derived indices as a {@link HardenedBIP32Node} array.
  */
 function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
-  const array: HardenedBIP32Node[] = [];
+  const nodeArray: HardenedBIP32Node[] = [];
   const view = createDataView(hash);
 
   for (let index = 0; index < 8; index++) {
@@ -55,10 +55,10 @@ function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
     // the result is a positive number.
     // eslint-disable-next-line no-bitwise
     const pathIndex = (uint32 | HARDENED_VALUE) >>> 0;
-    array.push(`bip32:${pathIndex - HARDENED_VALUE}'` as const);
+    nodeArray.push(`bip32:${pathIndex - HARDENED_VALUE}'` as const);
   }
 
-  return array;
+  return nodeArray;
 }
 
 type BaseDeriveEntropyOptions = {
