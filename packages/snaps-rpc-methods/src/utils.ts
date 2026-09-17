@@ -9,7 +9,7 @@ import { SLIP10Node } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { MagicValue } from '@metamask/snaps-utils';
-import { refine, string } from '@metamask/superstruct';
+import { array, refine, string } from '@metamask/superstruct';
 import {
   assertExhaustive,
   add0x,
@@ -307,6 +307,8 @@ export const StateKeyStruct = refine(string(), 'state key', (value) => {
 
   return true;
 });
+
+export const StateKeysStruct = array(StateKeyStruct);
 
 /**
  * Get a value using the entropy source hooks: getMnemonic or getMnemonicSeed.
