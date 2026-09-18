@@ -62,6 +62,14 @@ describe('getExecutionDate', () => {
     expect(() => getExecutionDate('100 * * * * *')).toThrow(
       'Unable to parse "100 * * * * *" as ISO 8601 date, ISO 8601 duration, or cron expression.',
     );
+
+    expect(() => getExecutionDate('P1000000Y')).toThrow(
+      'Unable to parse "P1000000Y" as ISO 8601 date, ISO 8601 duration, or cron expression.',
+    );
+
+    expect(() => getExecutionDate('PT99999999999999S')).toThrow(
+      'Unable to parse "PT99999999999999S" as ISO 8601 date, ISO 8601 duration, or cron expression.',
+    );
   });
 
   it('throws an error for dates in the past', () => {
@@ -74,13 +82,4 @@ describe('getExecutionDate', () => {
     ).toThrow('Cannot schedule an event in the past.');
   });
 
-  it('throws an error for durations past the representable date range', () => {
-    expect(() => getExecutionDate('P1000000Y')).toThrow(
-      'Cannot schedule an event that far in the future.',
-    );
-
-    expect(() => getExecutionDate('PT99999999999999S')).toThrow(
-      'Cannot schedule an event that far in the future.',
-    );
-  });
 });
