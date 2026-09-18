@@ -5,7 +5,11 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type { GetStateParams, GetStateResult } from '@metamask/snaps-sdk';
+import {
+  selectiveUnion,
+  type GetStateParams,
+  type GetStateResult,
+} from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
   boolean,
@@ -13,7 +17,6 @@ import {
   object,
   optional,
   StructError,
-  union,
 } from '@metamask/superstruct';
 import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty, isObject } from '@metamask/utils';
@@ -83,7 +86,14 @@ export const getStateHandler = {
 >;
 
 const GetStateParametersStruct = object({
-  key: optional(union([StateKeyStruct, StateKeysStruct])),
+  key: optional(
+    selectiveUnion((value) => {
+      if (Array.isArray(value)) {
+        return StateKeysStruct;
+      }
+      return StateKeyStruct;
+    }),
+  ),
   encrypted: optional(boolean()),
 });
 
