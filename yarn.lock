@@ -1990,12 +1990,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/common@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "@ethereumjs/common@npm:4.4.0"
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+  checksum: 10/dd5cc78575a762b367601f94d6af7e36cb3a5ecab45eec0c1259c433e755a16c867753aa88f331e3963791a18424ad0549682a3a6a0a160640fe846db6ce8014
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/rlp@npm:^4.0.1":
   version: 4.0.1
   resolution: "@ethereumjs/rlp@npm:4.0.1"
   bin:
     rlp: bin/rlp
   checksum: 10/bfdffd634ce72f3b17e3d085d071f2fe7ce9680aebdf10713d74b30afd80ef882d17f19ff7175fcb049431a56e800bd3558d3b028bd0d82341927edb303ab450
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/rlp@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@ethereumjs/rlp@npm:5.0.2"
+  bin:
+    rlp: bin/rlp.cjs
+  checksum: 10/2af80d98faf7f64dfb6d739c2df7da7350ff5ad52426c3219897e843ee441215db0ffa346873200a6be6d11142edb9536e66acd62436b5005fa935baaf7eb6bd
   languageName: node
   linkType: hard
 
@@ -2011,6 +2029,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ethereumjs/tx@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "@ethereumjs/tx@npm:5.4.0"
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    "@ethereumjs/util": "npm:^9.1.0"
+    ethereum-cryptography: "npm:^2.2.1"
+  checksum: 10/8d2c0a69ab37015f945f9de065cfb9f05e8e79179efeed725ea0a14760c3eb8ff900bcf915bb71ec29fe2f753db35d1b78a15ac4ddec489e87c995dec1ba6e85
+  languageName: node
+  linkType: hard
+
 "@ethereumjs/util@npm:^8.1.0":
   version: 8.1.0
   resolution: "@ethereumjs/util@npm:8.1.0"
@@ -2019,6 +2049,16 @@ __metadata:
     ethereum-cryptography: "npm:^2.0.0"
     micro-ftch: "npm:^0.3.1"
   checksum: 10/cc35338932e49b15e54ca6e548b32a1f48eed7d7e1d34ee743e4d3600dd616668bd50f70139e86c5c35f55aac35fba3b6cc4e6f679cf650aeba66bf93016200c
+  languageName: node
+  linkType: hard
+
+"@ethereumjs/util@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@ethereumjs/util@npm:9.1.0"
+  dependencies:
+    "@ethereumjs/rlp": "npm:^5.0.2"
+    ethereum-cryptography: "npm:^2.2.1"
+  checksum: 10/4e22c4081c63eebb808eccd54f7f91cd3407f4cac192da5f30a0d6983fe07d51f25e6a9d08624f1376e604bb7dce574aafcf0fbf0becf42f62687c11e710ac41
   languageName: node
   linkType: hard
 
@@ -3112,7 +3152,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/ed25519": "npm:^1.6.0"
     "@noble/secp256k1": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
@@ -3140,7 +3180,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/bls12-381": "npm:^1.2.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -3217,7 +3257,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -3266,7 +3306,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/curves": "npm:^1.1.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
@@ -3540,7 +3580,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -3619,7 +3659,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -3645,7 +3685,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/bls12-381": "npm:^1.2.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -3744,7 +3784,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -3769,7 +3809,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -3862,7 +3902,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -3948,7 +3988,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -4005,7 +4045,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -4054,7 +4094,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -4202,7 +4242,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -4309,7 +4349,7 @@ __metadata:
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@types/node": "npm:18.14.2"
@@ -4367,7 +4407,7 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/snaps-webpack-plugin": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@ts-bridge/cli": "npm:^0.6.1"
@@ -4453,7 +4493,7 @@ __metadata:
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/storage-service": "npm:^1.0.2"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4525,7 +4565,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@testing-library/dom": "npm:^10.4.0"
@@ -4578,7 +4618,7 @@ __metadata:
     "@metamask/snaps-simulation": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@ts-bridge/cli": "npm:^0.6.1"
@@ -4611,7 +4651,7 @@ __metadata:
     "@metamask/eslint-config-jest": "npm:^14.0.0"
     "@metamask/eslint-config-nodejs": "npm:^14.0.0"
     "@metamask/eslint-config-typescript": "npm:^14.0.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/jest": "npm:^27.5.1"
@@ -4706,7 +4746,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@noble/hashes": "npm:^1.7.1"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4734,7 +4774,7 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
     "@metamask/providers": "npm:^22.1.1"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@monaco-editor/react": "npm:^4.7.0"
     "@tanstack/react-query": "npm:^5.71.5"
     "@testing-library/dom": "npm:^10.4.0"
@@ -4770,7 +4810,7 @@ __metadata:
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/jest": "npm:^27.5.1"
     "@types/luxon": "npm:^3"
@@ -4810,7 +4850,7 @@ __metadata:
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@reduxjs/toolkit": "npm:^1.9.5"
     "@ts-bridge/cli": "npm:^0.6.1"
     "@types/express": "npm:^5.0.1"
@@ -4853,7 +4893,7 @@ __metadata:
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/superstruct": "npm:^3.3.0"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@scure/base": "npm:^1.1.1"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
@@ -4904,7 +4944,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@swc/core": "npm:1.11.31"
     "@swc/jest": "npm:^0.2.38"
     "@ts-bridge/cli": "npm:^0.6.1"
@@ -4939,6 +4979,13 @@ __metadata:
   version: 3.3.0
   resolution: "@metamask/superstruct@npm:3.3.0"
   checksum: 10/664d5e330484a86420bc004b1c7f8301e1501cce712f611fe657176b2979edbd7cc6f4c77c8b1610486a685ebbd0b72dacf4bd6cf143d6b52038069d2f4e84ab
+  languageName: node
+  linkType: hard
+
+"@metamask/superstruct@npm:^3.4.1":
+  version: 3.4.1
+  resolution: "@metamask/superstruct@npm:3.4.1"
+  checksum: 10/d37b5662dc9bbe0d99e06eb951167fa745829ae3abfa103423e9d8c05e8712f1451376f8479d484722e1e1c1d881732da1efddccaca8868b530a786264b903b5
   languageName: node
   linkType: hard
 
@@ -4981,7 +5028,7 @@ __metadata:
     "@metamask/signature-insights-example-snap": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^12.0.0"
     "@metamask/wasm-example-snap": "workspace:^"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.10"
     "@popperjs/core": "npm:^2.11.8"
@@ -5039,6 +5086,26 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/c4381b9e451a9616bde84ac659bc0d1848ef06b6e605f877bfa065b78c8ed5015706683ea88a3387de5eaeb3a50d1af9af0994f04f9e06258d992598fe2be3bf
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@metamask/utils@npm:12.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@metamask/scure-bip39": "npm:^2.1.1"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@noble/hashes": "npm:^1.8.0"
+    "@scure/base": "npm:^1.2.6"
+    "@types/debug": "npm:^4.1.7"
+    "@types/lodash": "npm:^4.17.20"
+    debug: "npm:^4.3.4"
+    lodash: "npm:^4.17.21"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.6.3"
+    uuid: "npm:^9.0.1"
+  checksum: 10/3a2c592283b081ac627262d903bbac84d7ce81896c86e5839ffee4c5cbc48b161cc1599c4b57f74bcc576d8b27bb517ced4c9e4e7b31e69e3113873acfde5f03
   languageName: node
   linkType: hard
 
@@ -5197,7 +5264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.7.1":
+"@noble/hashes@npm:^1.1.2, @noble/hashes@npm:^1.3.1, @noble/hashes@npm:^1.3.2, @noble/hashes@npm:^1.7.1, @noble/hashes@npm:^1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -5903,6 +5970,13 @@ __metadata:
   version: 1.1.9
   resolution: "@scure/base@npm:1.1.9"
   checksum: 10/f0ab7f687bbcdee2a01377fe3cd808bf63977999672751295b6a92625d5322f4754a96d40f6bd579bc367aad48ecf8a4e6d0390e70296e6ded1076f52adb16bb
+  languageName: node
+  linkType: hard
+
+"@scure/base@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "@scure/base@npm:1.2.6"
+  checksum: 10/c1a7bd5e0b0c8f94c36fbc220f4a67cc832b00e2d2065c7d8a404ed81ab1c94c5443def6d361a70fc382db3496e9487fb9941728f0584782b274c18a4bed4187
   languageName: node
   linkType: hard
 
@@ -11246,7 +11320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-cryptography@npm:^2.0.0":
+"ethereum-cryptography@npm:^2.0.0, ethereum-cryptography@npm:^2.2.1":
   version: 2.2.1
   resolution: "ethereum-cryptography@npm:2.2.1"
   dependencies:
