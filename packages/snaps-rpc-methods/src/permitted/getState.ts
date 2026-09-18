@@ -206,7 +206,16 @@ export function get(
   }
 
   if (Array.isArray(key)) {
-    return Object.fromEntries(key.map((k) => [k, get(value, k)]));
+    const result: Record<string, Json> = {};
+
+    // Intentionally using a classic for loop here for performance reasons.
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < key.length; i++) {
+      const currentKey = key[i];
+      result[currentKey] = get(value, currentKey);
+    }
+
+    return result;
   }
 
   const keys = key.split('.');
