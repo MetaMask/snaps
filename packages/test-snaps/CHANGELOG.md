@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `SetState` component to support comma-separated keys via `snap_setState` array `key` parameter
+
 ## [3.5.2]
 
 ### Fixed

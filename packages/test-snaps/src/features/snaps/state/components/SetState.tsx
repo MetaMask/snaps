@@ -25,11 +25,14 @@ export const SetState: FunctionComponent<{ encrypted: boolean }> = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const parsedKey = key.includes(',')
+      ? key.split(',').map((k) => k.trim())
+      : key || undefined;
     invokeSnap({
       snapId: getSnapId(MANAGE_STATE_SNAP_ID, MANAGE_STATE_PORT),
       method: 'setState',
       params: {
-        key,
+        key: parsedKey,
         value: JSON.parse(value),
         encrypted,
       },
@@ -44,7 +47,7 @@ export const SetState: FunctionComponent<{ encrypted: boolean }> = ({
           <Form.Label>Key</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Key"
+            placeholder="Key or comma-separated keys"
             value={key}
             onChange={handleChangeKey}
             id={encrypted ? 'setStateKey' : 'setStateKeyUnencrypted'}
