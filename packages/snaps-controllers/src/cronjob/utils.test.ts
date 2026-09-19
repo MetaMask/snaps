@@ -62,6 +62,10 @@ describe('getExecutionDate', () => {
     expect(() => getExecutionDate('100 * * * * *')).toThrow(
       'Unable to parse "100 * * * * *" as ISO 8601 date, ISO 8601 duration, or cron expression.',
     );
+
+    expect(() => getExecutionDate('P1000000Y')).toThrow(
+      'Unable to parse "P1000000Y" as ISO 8601 date, ISO 8601 duration, or cron expression.',
+    );
   });
 
   it('throws an error for dates in the past', () => {
