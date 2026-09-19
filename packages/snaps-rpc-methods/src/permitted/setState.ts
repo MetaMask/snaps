@@ -5,10 +5,11 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type {
-  SetStateParams,
-  SetStateResult,
-  SnapId,
+import {
+  selectiveUnion,
+  type SetStateParams,
+  type SetStateResult,
+  type SnapId,
 } from '@metamask/snaps-sdk';
 import type { JsonObject } from '@metamask/snaps-sdk/jsx';
 import { getJsonSizeUnsafe, type InferMatching } from '@metamask/snaps-utils';
@@ -34,7 +35,7 @@ import type {
   SnapControllerUpdateSnapStateAction,
 } from '../types';
 import type { MethodHooksObject } from '../utils';
-import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
+import { FORBIDDEN_KEYS, StateKeysStruct, StateKeyStruct } from '../utils';
 
 const hookNames: MethodHooksObject<SetStateMethodHooks> = {
   getUnlockPromise: true,
@@ -136,7 +137,14 @@ function getMutex(snapId: SnapId) {
 }
 
 const SetStateParametersStruct = objectStruct({
-  key: optional(StateKeyStruct),
+  key: optional(
+    selectiveUnion((value) => {
+      if (Array.isArray(value)) {
+        return StateKeysStruct;
+      }
+      return StateKeyStruct;
+    }),
+  ),
   value: JsonStruct,
   encrypted: optional(boolean()),
 });
@@ -187,6 +195,14 @@ async function setStateImplementation(
       return end(
         rpcErrors.invalidParams(
           'Invalid params: Value must be an object if key is not provided.',
+        ),
+      );
+    }
+
+    if (Array.isArray(key) && !isObject(value)) {
+      return end(
+        rpcErrors.invalidParams(
+          'Invalid params: Value must be an object if key is an array.',
         ),
       );
     }
@@ -267,20 +283,24 @@ function getValidatedParams(params?: unknown) {
  * If the key is `undefined`, the value is expected to be an object. In this
  * case, the value is returned as the new state.
  *
- * If the key is not `undefined`, the value is set in the state at the key. If
- * the key does not exist, it is created (and any missing intermediate keys are
- * created as well).
+ * If the key is a string, the value is set in the state at the key. If the key
+ * does not exist, it is created (and any missing intermediate keys are created
+ * as well).
+ *
+ * If the key is an array of strings, the value is expected to be an object
+ * mapping each key to its new value. Each key is set in the state.
  *
  * @param snapId - The Snap ID.
- * @param key - The key to set.
- * @param value - The value to set the key to.
+ * @param key - The key or keys to set.
+ * @param value - The value to set the key to. If `key` is an array, this must
+ * be an object mapping each key to its new value.
  * @param encrypted - Whether the state is encrypted.
  * @param messenger - The messenger used to call controller actions.
  * @returns The new state of the Snap.
  */
 async function getNewState(
   snapId: SnapId,
-  key: string | undefined,
+  key: string | string[] | undefined,
   value: Json,
   encrypted: boolean,
   messenger: Messenger<string, SetStateMethodActions>,
@@ -295,6 +315,21 @@ async function getNewState(
     snapId,
     encrypted,
   );
+
+  if (Array.isArray(key)) {
+    assert(isObject(value));
+    let newState = state;
+
+    // Intentionally using a classic for loop here for performance reasons.
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < key.length; i++) {
+      const currentKey = key[i];
+      newState = set(newState, currentKey, value[currentKey] ?? null);
+    }
+
+    return newState;
+  }
+
   return set(state, key, value);
 }
 

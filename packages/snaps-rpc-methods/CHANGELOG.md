@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for array `key` parameter in `snap_setState`, setting each key to its corresponding value in the provided object
+
 ## [17.1.2]
 
 ### Fixed

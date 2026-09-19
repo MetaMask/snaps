@@ -522,6 +522,148 @@ describe('snap_setState', () => {
       });
     });
 
+    it('sets state for multiple keys', async () => {
+      const { implementation } = setStateHandler;
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          key: ['foo', 'baz'],
+          value: { foo: 'newFoo', baz: 'newBaz' },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: null,
+      });
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'newFoo', baz: 'newBaz' },
+        true,
+      );
+    });
+
+    it('sets missing keys to `null` when key is an array and value omits them', async () => {
+      const { implementation } = setStateHandler;
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<SetStateParameters>,
+          response as PendingJsonRpcResponse<SetStateResult>,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          key: ['foo', 'missing'],
+          value: { foo: 'newFoo' },
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: null,
+      });
+
+      expect(messenger.call).toHaveBeenCalledWith(
+        'SnapController:updateSnapState',
+        MOCK_SNAP_ID,
+        { foo: 'newFoo', missing: null },
+        true,
+      );
+    });
+
+    it('throws if key is an array and value is not an object', async () => {
+      const { implementation } = setStateHandler;
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<SetStateParameters>,
+          response,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_setState',
+        params: {
+          key: ['foo', 'baz'],
+          value: 'not-an-object',
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        error: {
+          code: errorCodes.rpc.invalidParams,
+          message:
+            'Invalid params: Value must be an object if key is an array.',
+          stack: expect.any(String),
+        },
+      });
+    });
+
     it('throws if the new state is not JSON serialisable', async () => {
       const { implementation } = setStateHandler;
 
