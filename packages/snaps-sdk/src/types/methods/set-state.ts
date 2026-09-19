@@ -3,10 +3,12 @@ import type { Json } from '@metamask/utils';
 /**
  * The request parameters for the `snap_setState` method.
  *
- * @property key - The key of the state to update. If not provided, the entire
- * state is updated. This may contain Lodash-style path syntax, for example,
- * `a.b.c`, with the exception of array syntax.
- * @property value - The value to set the state to.
+ * @property key - The key or keys of the state to update. If not provided, the
+ * entire state is updated. This may contain Lodash-style path syntax, for
+ * example, `a.b.c`, with the exception of array syntax. If an array of keys is
+ * provided, the value must be an object mapping each key to its new value.
+ * @property value - The value to set the state to. If `key` is an array, this
+ * must be an object mapping each key to its new value.
  * @property encrypted - Whether to use the separate encrypted state, or the
  * unencrypted state. Defaults to the encrypted state. Encrypted state can only
  * be used if the client is unlocked, while unencrypted state can be used
@@ -17,7 +19,7 @@ import type { Json } from '@metamask/utils';
  * while the client is locked.
  */
 export type SetStateParams = {
-  key?: string;
+  key?: string | string[];
   value: Json;
   encrypted?: boolean;
 };
