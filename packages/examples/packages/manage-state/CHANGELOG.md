@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add tests for `snap_setState` with array `key` parameter
+- Add tests for `snap_setState` with array `key` parameter ([#4126](https://github.com/MetaMask/snaps/pull/4126))
 
 ## [3.0.0]
 

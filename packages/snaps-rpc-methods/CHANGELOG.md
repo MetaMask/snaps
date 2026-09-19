@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support for array `key` parameter in `snap_setState`, setting each key to its corresponding value in the provided object
+- Add support for array `key` parameter in `snap_setState`, setting each key to its corresponding value in the provided object ([#4126](https://github.com/MetaMask/snaps/pull/4126))
 
 ## [17.1.2]
 
