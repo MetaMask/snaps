@@ -101,6 +101,29 @@ describe('onRpcRequest', () => {
       });
     });
 
+    it('sets the state for multiple keys', async () => {
+      const { request } = await installSnap();
+
+      expect(
+        await request({
+          method: 'setState',
+          params: {
+            key: ['foo', 'baz'],
+            value: { foo: 'bar', baz: 'qux' },
+          },
+        }),
+      ).toRespondWith(null);
+
+      expect(
+        await request({
+          method: 'getState',
+          params: {
+            key: ['foo', 'baz'],
+          },
+        }),
+      ).toRespondWith({ foo: 'bar', baz: 'qux' });
+    });
+
     it('throws if the state is not an object and no key is specified', async () => {
       const { request } = await installSnap();
 
