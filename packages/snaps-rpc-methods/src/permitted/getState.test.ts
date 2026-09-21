@@ -239,6 +239,97 @@ describe('snap_getState', () => {
       });
     });
 
+    it('returns the state for multiple keys', async () => {
+      const { implementation } = getStateHandler;
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      messenger.registerActionHandler(
+        'SnapController:getSnapState',
+        async () => ({ foo: 'bar', baz: 'qux' }),
+      );
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
+          response,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {
+          key: ['foo', 'baz'],
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          foo: 'bar',
+          baz: 'qux',
+        },
+      });
+    });
+
+    it('maps missing keys to `null` when an array of keys is provided', async () => {
+      const { implementation } = getStateHandler;
+
+      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
+      const hooks = { getUnlockPromise };
+
+      const messenger = getMessenger();
+
+      const engine = new JsonRpcEngine();
+
+      engine.push(createOriginMiddleware(MOCK_SNAP_ID));
+      engine.push((request, response, next, end) => {
+        const result = implementation(
+          request as JsonRpcRequestWithOrigin<GetStateParameters>,
+          response,
+          next,
+          end,
+          hooks,
+          messenger,
+        );
+
+        result?.catch(end);
+      });
+
+      const response = await engine.handle({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'snap_getState',
+        params: {
+          key: ['foo', 'missing'],
+        },
+      });
+
+      expect(response).toStrictEqual({
+        jsonrpc: '2.0',
+        id: 1,
+        result: {
+          foo: 'bar',
+          missing: null,
+        },
+      });
+    });
+
     it('throws if the parameters are invalid', async () => {
       const { implementation } = getStateHandler;
 
@@ -319,6 +410,31 @@ describe('get', () => {
 
   it('throws an error if the key is a constructor pollution attempt', () => {
     expect(() => get(object, 'constructor.polluted')).toThrow(
+      'Invalid params: Key contains forbidden characters.',
+    );
+  });
+
+  it('returns a record of values when an array of keys is provided', () => {
+    const state = { a: { b: { c: 'value' } }, d: 'other' };
+    expect(get(state, ['a.b.c', 'd'])).toStrictEqual({
+      'a.b.c': 'value',
+      d: 'other',
+    });
+  });
+
+  it('returns an empty object when an empty array is provided', () => {
+    expect(get(object, [])).toStrictEqual({});
+  });
+
+  it('maps missing keys to `null` in array mode', () => {
+    expect(get(object, ['a.b.c', 'a.b.missing'])).toStrictEqual({
+      'a.b.c': 'value',
+      'a.b.missing': null,
+    });
+  });
+
+  it('throws if an array key contains a forbidden segment', () => {
+    expect(() => get(object, ['a.b.c', '__proto__.polluted'])).toThrow(
       'Invalid params: Key contains forbidden characters.',
     );
   });

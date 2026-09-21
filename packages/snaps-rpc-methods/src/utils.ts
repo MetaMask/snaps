@@ -9,7 +9,7 @@ import { SLIP10Node } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { MagicValue } from '@metamask/snaps-utils';
-import { refine, string } from '@metamask/superstruct';
+import { array, refine, string } from '@metamask/superstruct';
 import {
   assertExhaustive,
   add0x,
@@ -44,7 +44,7 @@ export type MethodHooksObject<HooksType extends Record<string, unknown>> = {
  * @returns The derived indices as a {@link HardenedBIP32Node} array.
  */
 function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
-  const array: HardenedBIP32Node[] = [];
+  const nodeArray: HardenedBIP32Node[] = [];
   const view = createDataView(hash);
 
   for (let index = 0; index < 8; index++) {
@@ -55,10 +55,10 @@ function getDerivationPathArray(hash: Uint8Array): HardenedBIP32Node[] {
     // the result is a positive number.
     // eslint-disable-next-line no-bitwise
     const pathIndex = (uint32 | HARDENED_VALUE) >>> 0;
-    array.push(`bip32:${pathIndex - HARDENED_VALUE}'` as const);
+    nodeArray.push(`bip32:${pathIndex - HARDENED_VALUE}'` as const);
   }
 
-  return array;
+  return nodeArray;
 }
 
 type BaseDeriveEntropyOptions = {
@@ -307,6 +307,8 @@ export const StateKeyStruct = refine(string(), 'state key', (value) => {
 
   return true;
 });
+
+export const StateKeysStruct = array(StateKeyStruct);
 
 /**
  * Get a value using the entropy source hooks: getMnemonic or getMnemonicSeed.

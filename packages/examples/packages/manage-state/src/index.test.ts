@@ -191,6 +191,51 @@ describe('onRpcRequest', () => {
         items: ['foo'],
       });
     });
+
+    it('returns state for multiple keys', async () => {
+      const { request } = await installSnap({
+        options: {
+          state: {
+            nested: { key: 'foo' },
+            items: ['bar'],
+          },
+        },
+      });
+
+      const response = await request({
+        method: 'getState',
+        params: {
+          key: ['nested.key', 'items'],
+        },
+      });
+
+      expect(response).toRespondWith({
+        'nested.key': 'foo',
+        items: ['bar'],
+      });
+    });
+
+    it('maps missing keys to `null` when an array of keys is provided', async () => {
+      const { request } = await installSnap({
+        options: {
+          state: {
+            items: ['foo'],
+          },
+        },
+      });
+
+      const response = await request({
+        method: 'getState',
+        params: {
+          key: ['items', 'missing'],
+        },
+      });
+
+      expect(response).toRespondWith({
+        items: ['foo'],
+        missing: null,
+      });
+    });
   });
 
   describe('clearState', () => {

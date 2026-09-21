@@ -5,7 +5,11 @@ import type {
 import type { Messenger } from '@metamask/messenger';
 import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
 import { providerErrors, rpcErrors } from '@metamask/rpc-errors';
-import type { GetStateParams, GetStateResult } from '@metamask/snaps-sdk';
+import {
+  selectiveUnion,
+  type GetStateParams,
+  type GetStateResult,
+} from '@metamask/snaps-sdk';
 import { type InferMatching } from '@metamask/snaps-utils';
 import {
   boolean,
@@ -23,7 +27,7 @@ import type {
   SnapControllerGetSnapStateAction,
 } from '../types';
 import type { MethodHooksObject } from '../utils';
-import { FORBIDDEN_KEYS, StateKeyStruct } from '../utils';
+import { FORBIDDEN_KEYS, StateKeysStruct, StateKeyStruct } from '../utils';
 
 const hookNames: MethodHooksObject<GetStateMethodHooks> = {
   getUnlockPromise: true,
@@ -82,7 +86,14 @@ export const getStateHandler = {
 >;
 
 const GetStateParametersStruct = object({
-  key: optional(StateKeyStruct),
+  key: optional(
+    selectiveUnion((value) => {
+      if (Array.isArray(value)) {
+        return StateKeysStruct;
+      }
+      return StateKeyStruct;
+    }),
+  ),
   encrypted: optional(boolean()),
 });
 
@@ -174,22 +185,37 @@ function getValidatedParams(params?: unknown) {
 /**
  * Get the value of a key in an object. The key may contain Lodash-style path
  * syntax, e.g., `a.b.c` (with the exception of array syntax). If the key does
- * not exist, `null` is returned.
+ * not exist, `null` is returned. If an array of keys is provided, the result
+ * is an object mapping each key to its value.
  *
  * This is a simplified version of Lodash's `get` function, but Lodash doesn't
  * seem to be maintained anymore, so we're using our own implementation.
  *
  * @param value - The object to get the key from.
- * @param key - The key to get.
+ * @param key - The key or keys to get.
  * @returns The value of the key in the object, or `null` if the key does not
- * exist.
+ * exist. If an array of keys is provided, returns a `Record` mapping each key
+ * to its value.
  */
 export function get(
   value: Record<string, Json> | null,
-  key?: string | undefined,
+  key?: string | string[] | undefined,
 ): Json {
   if (key === undefined) {
     return value;
+  }
+
+  if (Array.isArray(key)) {
+    const result: Record<string, Json> = {};
+
+    // Intentionally using a classic for loop here for performance reasons.
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
+    for (let i = 0; i < key.length; i++) {
+      const currentKey = key[i];
+      result[currentKey] = get(value, currentKey);
+    }
+
+    return result;
   }
 
   const keys = key.split('.');

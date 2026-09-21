@@ -3,9 +3,10 @@ import type { Json } from '@metamask/utils';
 /**
  * An object containing the parameters for the `snap_getState` method.
  *
- * @property key - The key of the state to retrieve. If not provided, the entire
- * state is retrieved. This may contain Lodash-style path syntax, for example,
- * `a.b.c`, with the exception of array syntax.
+ * @property key - The key or keys of the state to retrieve. If not provided,
+ * the entire state is retrieved. This may contain Lodash-style path syntax, for
+ * example, `a.b.c`, with the exception of array syntax. If an array of keys is
+ * provided, the result is an object mapping each key to its value.
  * @property encrypted - Whether to use the separate encrypted state, or the
  * unencrypted state. Defaults to the encrypted state. Encrypted state can only
  * be used if the client is unlocked, while unencrypted state can be used
@@ -16,7 +17,7 @@ import type { Json } from '@metamask/utils';
  * while the client is locked.
  */
 export type GetStateParams = {
-  key?: string;
+  key?: string | string[];
   encrypted?: boolean;
 };
 
