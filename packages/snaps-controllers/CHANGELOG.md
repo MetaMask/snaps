@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep one background event with an unusable date from stopping all background-event scheduling ([#4120](https://github.com/MetaMask/snaps/pull/4120))
+  - An event whose `date` could not be parsed threw during scheduling, which stopped `init` and left every later event unscheduled. The failure is now confined to that event and reported through `logError`.
+
 ## [21.1.0]
 
 ### Added
