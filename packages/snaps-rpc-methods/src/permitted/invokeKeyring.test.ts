@@ -4,7 +4,7 @@ import {
 } from '@metamask/json-rpc-engine';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { InvokeKeyringParams } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, SnapCaveatType } from '@metamask/snaps-utils';
 import {
   MOCK_SNAP_ID,
   MockControllerMessenger,
@@ -25,7 +25,7 @@ describe('wallet_invokeKeyring', () => {
           getAllowedKeyringMethods: true,
         },
         actionNames: [
-          'PermissionController:hasPermission',
+          'PermissionController:getPermission',
           'SnapController:handleRequest',
           'SnapController:getSnap',
         ],
@@ -41,8 +41,15 @@ describe('wallet_invokeKeyring', () => {
       >();
 
       messenger.registerActionHandler(
-        'PermissionController:hasPermission',
-        () => true,
+        'PermissionController:getPermission',
+        () => ({
+          caveats: [
+            {
+              type: SnapCaveatType.SnapIds,
+              value: { [MOCK_SNAP_ID]: {} },
+            },
+          ],
+        }),
       );
 
       messenger.registerActionHandler('SnapController:getSnap', () =>
@@ -246,8 +253,8 @@ describe('wallet_invokeKeyring', () => {
       const messenger = getMessenger();
 
       messenger.registerActionHandler(
-        'PermissionController:hasPermission',
-        () => false,
+        'PermissionController:getPermission',
+        () => null,
       );
 
       const engine = new JsonRpcEngine();
