@@ -3,14 +3,18 @@ import type {
   MethodHandler,
 } from '@metamask/json-rpc-engine';
 import type { Messenger } from '@metamask/messenger';
-import type { PermissionControllerHasPermissionAction } from '@metamask/permission-controller';
+import type { PermissionControllerGetPermissionAction } from '@metamask/permission-controller';
 import { rpcErrors } from '@metamask/rpc-errors';
 import type {
   InvokeKeyringParams,
   InvokeKeyringResult,
   InvokeSnapParams,
 } from '@metamask/snaps-sdk';
-import { HandlerType, WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import {
+  HandlerType,
+  SnapCaveatType,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/snaps-utils';
 import type { PendingJsonRpcResponse, Json } from '@metamask/utils';
 import { hasProperty } from '@metamask/utils';
 
@@ -36,7 +40,7 @@ export type InvokeKeyringMethodHooks = {
 };
 
 export type InvokeKeyringMethodActions =
-  | PermissionControllerHasPermissionAction
+  | PermissionControllerGetPermissionAction
   | SnapControllerHandleRequestAction
   | SnapControllerGetSnapAction;
 
@@ -52,7 +56,7 @@ export const invokeKeyringHandler = {
   implementation: invokeKeyringImplementation,
   hookNames,
   actionNames: [
-    'PermissionController:hasPermission',
+    'PermissionController:getPermission',
     'SnapController:handleRequest',
     'SnapController:getSnap',
   ],
@@ -102,14 +106,19 @@ async function invokeKeyringImplementation(
   const { origin } = req;
   const { snapId, request } = params;
 
-  if (
-    !origin ||
-    !messenger.call(
-      'PermissionController:hasPermission',
-      origin,
-      WALLET_SNAP_PERMISSION_KEY,
-    )
-  ) {
+  const permission = messenger.call(
+    'PermissionController:getPermission',
+    origin,
+    WALLET_SNAP_PERMISSION_KEY,
+  );
+
+  const snapIds = permission?.caveats?.find(
+    (caveat) => caveat.type === SnapCaveatType.SnapIds,
+  )?.value;
+
+  const hasPermission = snapIds && hasProperty(snapIds, snapId);
+
+  if (!hasPermission) {
     return end(
       rpcErrors.invalidRequest({
         message: `The snap "${snapId}" is not connected to "${origin}". Please connect before invoking the snap.`,
