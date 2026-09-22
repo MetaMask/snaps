@@ -28,7 +28,9 @@ const createInterval = () => {
     harden(handler);
     const handle = Object.freeze(Object.create(null));
     const platformHandle = setInterval(
-      handler,
+      (...passedArgs) => {
+        handler(...passedArgs);
+      },
       Math.max(MINIMUM_INTERVAL, timeout ?? 0),
       ...args,
     );
