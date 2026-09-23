@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [17.2.0]
+
 ### Added
 
 - Add support for array `key` parameter in `snap_getState`, returning a `Record<string, Json>` mapping each key to its resolved value ([#4125](https://github.com/MetaMask/snaps/pull/4125))
+
+### Fixed
+
+- Check caveat in `invokeKeyring` ([#4128](https://github.com/MetaMask/snaps/pull/4128))
 
 ## [17.1.2]
 
@@ -671,7 +677,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...HEAD
+[17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...@metamask/snaps-rpc-methods@17.2.0
 [17.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.1...@metamask/snaps-rpc-methods@17.1.2
 [17.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.0...@metamask/snaps-rpc-methods@17.1.1
 [17.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.0.0...@metamask/snaps-rpc-methods@17.1.0
