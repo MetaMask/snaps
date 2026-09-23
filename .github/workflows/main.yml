@@ -19,13 +19,13 @@ jobs:
       skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: github.event_name == 'merge_group'
 
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
         if: github.event_name == 'merge_group'
-        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
 
   check-workflows:
     name: Check workflows
@@ -34,7 +34,7 @@ jobs:
     if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Download actionlint
         id: download-actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.7.7
@@ -46,7 +46,7 @@ jobs:
   analyse-code:
     name: Analyse code
     needs: check-workflows
-    uses: MetaMask/action-security-code-scanner/.github/workflows/security-scan.yml@v2
+    uses: MetaMask/action-security-code-scanner/.github/workflows/security-scan.yml@becb242930b3cc271c26da0280050db9c157e291 # v2.1.1
     with:
       scanner-ref: v2
       paths-ignored: |
@@ -109,7 +109,7 @@ jobs:
       IS_RELEASE: ${{ steps.is-release.outputs.IS_RELEASE }}
     steps:
       - id: is-release
-        uses: MetaMask/action-is-release@v2
+        uses: MetaMask/action-is-release@3cd51b98fa98d1347d06f5961299b0172ee31ae8 # v2.3.0
         with:
           commit-starts-with: 'Release [version],Release `[version]`,release: [version],release: `[version]`'
 

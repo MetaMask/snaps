@@ -34,7 +34,7 @@ jobs:
       pull-requests: read
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Determine whether this PR is from a fork
         id: is-fork
         run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -55,7 +55,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -90,7 +90,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -98,7 +98,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -107,7 +107,7 @@ jobs:
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
           cache-node-modules: true
@@ -129,7 +129,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -137,7 +137,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -146,7 +146,7 @@ jobs:
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: false
 
@@ -159,7 +159,7 @@ jobs:
           git diff --exit-code yarn.lock || echo "YARN_LOCK_CHANGED=true" >> "$GITHUB_OUTPUT"
 
       - name: Save yarn.lock
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: yarn.lock
@@ -177,7 +177,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -185,7 +185,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -194,18 +194,18 @@ jobs:
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
       - name: Build packages
         run: yarn build:ci
       - name: Save packages
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -226,7 +226,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -234,7 +234,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -243,17 +243,17 @@ jobs:
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
 
       - name: Restore packages
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
@@ -262,7 +262,7 @@ jobs:
         run: yarn build:lavamoat:policy
 
       - name: Save LavaMoat policies
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -283,7 +283,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -291,7 +291,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
@@ -300,17 +300,17 @@ jobs:
           PR_NUMBER: ${{ inputs.pull-request != 0 && inputs.pull-request || github.event.issue.number }}
 
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
 
       - name: Restore packages
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: packages-${{ needs.prepare.outputs.COMMIT_SHA }}
 
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           # If the Yarn lock changed we need to reinstall the dependencies.
           is-high-risk-environment: ${{ needs.dedupe-yarn-lock.outputs.YARN_LOCK_CHANGED == 'true' }}
@@ -319,7 +319,7 @@ jobs:
         run: yarn build:examples
 
       - name: Save examples
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
           path: |
@@ -343,7 +343,7 @@ jobs:
     steps:
       - name: Get access token
         id: get-token
-        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        uses: MetaMask/github-tools/.github/actions/get-token@7e0d74bc7b79ce9601e52f58d5e4d36c19591df9 # v1.19.0
         with:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
@@ -351,7 +351,7 @@ jobs:
             pull_requests: read
 
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Use PAT to ensure that the commit later can trigger status check
           # workflows.
@@ -373,7 +373,7 @@ jobs:
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Restore yarn.lock
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: yarn-lock-${{ needs.prepare.outputs.COMMIT_SHA }}
 
@@ -387,7 +387,7 @@ jobs:
           git commit -m "${COMMIT_PREFIX}Deduplicate yarn.lock" || true
 
       - name: Restore LavaMoat policies
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: lavamoat-policies-${{ needs.prepare.outputs.COMMIT_SHA }}
 
@@ -397,7 +397,7 @@ jobs:
           git commit -m "${COMMIT_PREFIX}Update LavaMoat policies" || true
 
       - name: Restore examples
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: examples-${{ needs.prepare.outputs.COMMIT_SHA }}
 

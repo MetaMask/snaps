@@ -35,7 +35,7 @@ jobs:
       tag: ${{ steps.get-release-tag.outputs.tag }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -52,12 +52,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
       - name: Publish release to GitHub
-        uses: MetaMask/action-publish-release@v3
+        uses: MetaMask/action-publish-release@f01f1be110d60fb07d86c880ce3d6bdb353524d3 # v3.3.1
         id: publish-release
         with:
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
@@ -70,7 +70,7 @@ jobs:
       - name: Build test-snaps
         run: yarn workspace @metamask/test-snaps build
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: publish-release-artifacts-${{ github.sha }}
           include-hidden-files: true
@@ -86,16 +86,16 @@ jobs:
     needs: publish-release
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
       - name: Restore build artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: publish-release-artifacts-${{ github.sha }}
       - name: Dry run publish to NPM
-        uses: MetaMask/action-npm-publish@v6
+        uses: MetaMask/action-npm-publish@18df42148c35aabb98e00f9fda127d421af141df # v6.5.0
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           subteam: ${{ inputs.slack-subteam }}
@@ -113,16 +113,16 @@ jobs:
       id-token: write
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
       - name: Restore build artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: publish-release-artifacts-${{ github.sha }}
       - name: Publish ${{ needs.get-release-tag.outputs.tag }} to NPM
-        uses: MetaMask/action-npm-publish@v6
+        uses: MetaMask/action-npm-publish@18df42148c35aabb98e00f9fda127d421af141df # v6.5.0
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           npm-tag: ${{ needs.get-release-tag.outputs.tag }}
@@ -148,7 +148,7 @@ jobs:
       SDK_VERSION: ${{ steps.set-output.outputs.SDK_VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -199,7 +199,7 @@ jobs:
       IS_ENVIRONMENT_RELEASE: ${{ steps.is-environment-release.outputs.IS_ENVIRONMENT_RELEASE }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -221,7 +221,7 @@ jobs:
       version: ${{ steps.version.outputs.VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -288,7 +288,7 @@ jobs:
       TEST_SNAPS_VERSION: ${{ steps.set-output.outputs.TEST_SNAPS_VERSION }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v3
+        uses: MetaMask/action-checkout-and-setup@0543b5929698c71e3ccc6ed24eac87825669b5de # v3.5.0
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
