@@ -9,10 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.1.0]
 
-### Uncategorized
-
-- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
-
 ### Added
 
 - Add support for array `key` parameter in `GetStateParams` for `snap_getState` ([#4125](https://github.com/MetaMask/snaps/pull/4125))

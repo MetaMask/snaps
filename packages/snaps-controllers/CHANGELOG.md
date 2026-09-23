@@ -9,12 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [21.1.1]
 
-### Uncategorized
+### Fixed
 
-- fix: Validate date after duration offset ([#4124](https://github.com/MetaMask/snaps/pull/4124))
-- chore(license): update email in license ([#4117](https://github.com/MetaMask/snaps/pull/4117))
-- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
-- chore: Bump @metamask/auto-changelog from 6.1.1 to 6.2.0 ([#4102](https://github.com/MetaMask/snaps/pull/4102))
+- Ensure proper validation of dates after duration offset ([#4124](https://github.com/MetaMask/snaps/pull/4124))
 
 ## [21.1.0]
 

@@ -9,15 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [17.2.0]
 
-### Uncategorized
-
-- fix: Check caveat in `invokeKeyring` ([#4128](https://github.com/MetaMask/snaps/pull/4128))
-- chore(license): update email in license ([#4117](https://github.com/MetaMask/snaps/pull/4117))
-- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
-
 ### Added
 
 - Add support for array `key` parameter in `snap_getState`, returning a `Record<string, Json>` mapping each key to its resolved value ([#4125](https://github.com/MetaMask/snaps/pull/4125))
+
+### Fixed
+
+- Check caveat in `invokeKeyring` ([#4128](https://github.com/MetaMask/snaps/pull/4128))
 
 ## [17.1.2]
 
