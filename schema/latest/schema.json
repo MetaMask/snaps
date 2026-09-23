@@ -1115,14 +1115,32 @@
     "description": "Get the state of the Snap, or a specific value within the state. By default,\nthe data is automatically encrypted using a Snap-specific key and\nautomatically decrypted when retrieved. You can set `encrypted` to `false` to\nuse unencrypted storage (available when the client is locked).",
     "parameters": {
       "kind": "object",
-      "type": "{ key?: string | null; encrypted?: boolean | null }",
+      "type": "{ key?: string | string[] | null; encrypted?: boolean | null }",
       "description": "An object containing the parameters for the `snap_getState` method.",
       "required": false,
       "properties": [
         {
-          "kind": "primitive",
-          "type": "string",
-          "description": "The key of the state to retrieve. If not provided, the entire\nstate is retrieved. This may contain Lodash-style path syntax, for example,\n`a.b.c`, with the exception of array syntax.",
+          "kind": "union",
+          "type": "string | string[]",
+          "description": "The key or keys of the state to retrieve. If not provided,\nthe entire state is retrieved. This may contain Lodash-style path syntax, for\nexample, `a.b.c`, with the exception of array syntax. If an array of keys is\nprovided, the result is an object mapping each key to its value.",
+          "commonProperties": [],
+          "options": [
+            {
+              "kind": "primitive",
+              "type": "string",
+              "description": null
+            },
+            {
+              "kind": "array",
+              "type": "string[]",
+              "description": null,
+              "element": {
+                "kind": "primitive",
+                "type": "string",
+                "description": null
+              }
+            }
+          ],
           "name": "key",
           "required": false
         },
