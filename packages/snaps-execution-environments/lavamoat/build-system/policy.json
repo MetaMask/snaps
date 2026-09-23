@@ -252,6 +252,13 @@
         "eslint>chalk>ansi-styles>color-convert": true
       }
     },
+    "webpack>browserslist>baseline-browser-mapping": {
+      "globals": {
+        "SuppressedError": true,
+        "console.warn": true,
+        "process": true
+      }
+    },
     "ts-loader>micromatch>braces": {
       "globals": {
         "console.log": true
@@ -282,15 +289,19 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.posix.join": true,
         "path.relative": true,
         "path.resolve": true
       },
       "globals": {
+        "console.info": true,
+        "console.trace": true,
         "console.warn": true,
         "process.env": true,
         "process.versions.node": true
       },
       "packages": {
+        "webpack>browserslist>baseline-browser-mapping": true,
         "webpack>browserslist>caniuse-lite": true,
         "webpack>browserslist>electron-to-chromium": true,
         "webpack>browserslist>node-releases": true
