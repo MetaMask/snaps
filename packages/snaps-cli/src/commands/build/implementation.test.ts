@@ -271,7 +271,7 @@ describe('build', () => {
                 "registry": "https://registry.npmjs.org",
               },
             },
-            "shasum": "B5VneWmgN+T7BtbYQXAkhDBA6nx28GFw0TU+MEqddJg=",
+            "shasum": "HRrsgQfpwRlLGd731ZWon1tLA5DXPOMWqsAp5j9oN0Q=",
           },
           "version": "1.0.0",
         },
