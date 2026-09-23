@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [21.1.1]
+
 ### Uncategorized
 
 - fix: Validate date after duration offset ([#4124](https://github.com/MetaMask/snaps/pull/4124))
@@ -1276,7 +1278,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.1...HEAD
+[21.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.0...@metamask/snaps-controllers@21.1.1
 [21.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.0.0...@metamask/snaps-controllers@21.1.0
 [21.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.6...@metamask/snaps-controllers@21.0.0
 [20.0.6]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.5...@metamask/snaps-controllers@20.0.6
