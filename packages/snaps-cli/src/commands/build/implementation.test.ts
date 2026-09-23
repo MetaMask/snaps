@@ -256,7 +256,7 @@ describe('build', () => {
             "snap_dialog": {},
           },
           "manifestVersion": "0.1",
-          "platformVersion": "12.0.1",
+          "platformVersion": "12.1.0",
           "proposedName": "@metamask/example-snap",
           "repository": {
             "type": "git",
