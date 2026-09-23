@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Mirror `setTimeout` endowment in `setInterval` ([#4127](https://github.com/MetaMask/snaps/pull/4127))
+- chore: Bump lavamoat from 11.1.4 to 11.1.5 ([#4114](https://github.com/MetaMask/snaps/pull/4114))
+- chore(license): update email in license ([#4117](https://github.com/MetaMask/snaps/pull/4117))
+- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
+- chore: Bump @metamask/auto-changelog from 6.1.1 to 6.2.0 ([#4102](https://github.com/MetaMask/snaps/pull/4102))
+
 ## [11.3.0]
 
 ### Added

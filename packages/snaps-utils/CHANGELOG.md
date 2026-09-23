@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
+
 ## [12.6.0]
 
 ### Added

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
+- chore: Bump @metamask/auto-changelog from 6.1.1 to 6.2.0 ([#4102](https://github.com/MetaMask/snaps/pull/4102))
+
 ### Changed
 
 - Update `GetState` component to support comma-separated keys via `snap_getState` array `key` parameter ([#4125](https://github.com/MetaMask/snaps/pull/4125))
