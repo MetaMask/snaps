@@ -105,17 +105,17 @@ describe('historyAtom', () => {
         timestamp: Date.now(),
       };
 
-      const secondRequst = {
+      const secondRequest = {
         id: '2',
         title: 'Test 2',
         request: JSON.stringify({ method: 'test' }),
         timestamp: Date.now(),
       };
 
-      store.set(persistedHistoryAtom, [firstRequest, secondRequst]);
+      store.set(persistedHistoryAtom, [firstRequest, secondRequest]);
 
       const updatedRequest = {
-        ...secondRequst,
+        ...secondRequest,
         title: 'Updated Test',
       };
 
