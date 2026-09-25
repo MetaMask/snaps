@@ -31,4 +31,4 @@ JSON-RPC methods:
 - `native` - Send a desktop notification to the user.
 
 For more information, you can refer to
-[the end-to-end tests](./src/index.test.ts).
+[the end-to-end tests](./src/index.test.tsx).
