@@ -3394,6 +3394,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/cryptography@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/cryptography@npm:1.0.0"
+  checksum: 10/082ea127ff3a8507aba477a1e1695b0722673c8236bba23234737b0c63d45e2a9639a3ca6f0f1fb826a88b902214cec338322d7242fed7dfb3eed244a36fa485
+  languageName: node
+  linkType: hard
+
 "@metamask/dialog-example-snap@workspace:^, @metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs":
   version: 0.0.0-use.local
   resolution: "@metamask/dialog-example-snap@workspace:packages/examples/packages/dialogs"
@@ -4842,6 +4849,7 @@ __metadata:
     "@babel/types": "npm:^7.23.0"
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
+    "@metamask/cryptography": "npm:^1.0.0"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"
