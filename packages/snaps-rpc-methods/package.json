@@ -85,7 +85,7 @@
     "prettier": "^3.3.3",
     "ts-morph": "^27.0.2",
     "tsx": "^4.20.3",
-    "typescript": "~5.3.3"
+    "typescript": "~5.8.3"
   },
   "engines": {
     "node": "^20 || >=22"

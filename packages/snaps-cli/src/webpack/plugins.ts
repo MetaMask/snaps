@@ -427,7 +427,7 @@ export class SnapsBundleWarningsPlugin implements WebpackPluginInstance {
   #checkBuffer(compiler: Compiler) {
     const plugin = compiler.options.plugins?.find((instance) =>
       this.#isProvidePlugin(instance),
-    ) as ProvidePlugin | undefined;
+    );
 
     // If the `ProvidePlugin` is configured to provide `Buffer`, then we don't
     // need to warn the user.

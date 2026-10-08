@@ -218,7 +218,7 @@ export async function getSnapChecksum(
     ...localizationFiles,
   ].filter((file) => file !== undefined);
 
-  return base64.encode(await checksumFiles(all as VirtualFile[]));
+  return base64.encode(await checksumFiles(all));
 }
 
 /**

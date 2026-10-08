@@ -1,4 +1,4 @@
-import { NodeType } from '@metamask/snaps-sdk';
+import { InputType, NodeType } from '@metamask/snaps-sdk';
 import {
   AssetSelector,
   Address,
@@ -304,7 +304,7 @@ describe('getJsxElementFromComponent', () => {
             name="baz"
             value={undefined}
             placeholder={undefined}
-            type={undefined}
+            type={InputType.Text}
           />
         </Field>
         <Button name={undefined} variant={undefined}>
@@ -344,7 +344,7 @@ describe('getJsxElementFromComponent', () => {
           name="foo"
           value={undefined}
           placeholder={undefined}
-          type={undefined}
+          type={InputType.Text}
         />
       </Field>,
     );
@@ -364,7 +364,7 @@ describe('getJsxElementFromComponent', () => {
           name="foo"
           value={undefined}
           placeholder={undefined}
-          type={undefined}
+          type={InputType.Text}
         />
       </Field>,
     );
@@ -619,7 +619,7 @@ describe('getJsxElementFromComponent', () => {
                   name="baz"
                   value={undefined}
                   placeholder={undefined}
-                  type={undefined}
+                  type={InputType.Text}
                 />
               </Field>
               <Button name={undefined} variant={undefined}>

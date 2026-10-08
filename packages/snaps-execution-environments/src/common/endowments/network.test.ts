@@ -174,6 +174,41 @@ describe('Network endowments', () => {
       expect(await blobResult.text()).toBe(RESULT);
     });
 
+    it('should return when bytes is called', async () => {
+      const onStart = jest.fn();
+      const onFinish = jest.fn();
+      const bytes = new TextEncoder().encode('OK');
+      const wrapper = new ResponseWrapper(
+        { bytes: jest.fn().mockResolvedValue(bytes) } as unknown as Response,
+        { lastTeardown: 0 },
+        onStart,
+        onFinish,
+      );
+
+      expect(await wrapper.bytes()).toBe(bytes);
+      expect(onStart).toHaveBeenCalledTimes(1);
+      expect(onFinish).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return when formData is called', async () => {
+      const onStart = jest.fn();
+      const onFinish = jest.fn();
+      const formData = new FormData();
+      formData.append('foo', 'bar');
+      const wrapper = new ResponseWrapper(
+        {
+          formData: jest.fn().mockResolvedValue(formData),
+        } as unknown as Response,
+        { lastTeardown: 0 },
+        onStart,
+        onFinish,
+      );
+
+      expect(await wrapper.formData()).toBe(formData);
+      expect(onStart).toHaveBeenCalledTimes(1);
+      expect(onFinish).toHaveBeenCalledTimes(1);
+    });
+
     it('should clone the body using the wrapper', async () => {
       const RESULT = 'OK';
       fetchMock.mockOnce(async () => Promise.resolve(RESULT));
