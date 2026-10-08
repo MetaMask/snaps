@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `bytes` method the `fetch` endowment `Response` class ([#4141](https://github.com/MetaMask/snaps/pull/4141))
+
 ## [11.3.1]
 
 ### Fixed
