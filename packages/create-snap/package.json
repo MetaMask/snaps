@@ -83,7 +83,7 @@
     "prettier": "^3.3.3",
     "ts-node": "^10.9.1",
     "tsc-watch": "^4.5.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.8.3"
   },
   "engines": {
     "node": "^20 || >=22"
