@@ -112,6 +112,8 @@ module.exports = {
     '^@metamask/post-message-stream/node$': [
       '@metamask/post-message-stream/node',
     ],
+    '^@metamask/utils$': ['@metamask/utils'],
+    '^@metamask/utils/node$': ['@metamask/utils/node'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
     '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
     '^@metamask/(.+)$': [
