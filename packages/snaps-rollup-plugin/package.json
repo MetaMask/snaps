@@ -76,7 +76,7 @@
     "memfs": "^3.4.13",
     "prettier": "^3.3.3",
     "rollup": "^2.80.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.9.3"
   },
   "engines": {
     "node": "^20 || >=22"

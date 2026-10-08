@@ -127,7 +127,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "tsx": "^4.20.3",
-    "typescript": "~5.3.3",
+    "typescript": "~5.9.3",
     "vite": "^6.4.3",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^4.0.5",
