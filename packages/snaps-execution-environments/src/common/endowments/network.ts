@@ -106,6 +106,20 @@ export class ResponseWrapper implements Response {
     );
   }
 
+  async bytes(): Promise<Uint8Array> {
+    return await withTeardown<Uint8Array>(
+      (async () => {
+        await this.#onStart();
+        try {
+          return await this.#ogResponse.bytes();
+        } finally {
+          await this.#onFinish();
+        }
+      })(),
+      this.#teardownRef,
+    );
+  }
+
   clone(): Response {
     const newResponse = this.#ogResponse.clone();
     return new ResponseWrapper(

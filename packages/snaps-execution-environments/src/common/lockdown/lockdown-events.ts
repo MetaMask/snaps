@@ -14,6 +14,7 @@ if (hasProperty(globalThis, 'UIEvent')) {
   targetEvents.set(UIEvent.prototype, ['view']);
 }
 if (hasProperty(globalThis, 'MutationEvent')) {
+  // @ts-expect-error This was removed in later version of browser and thus TypeScript.
   targetEvents.set(MutationEvent.prototype, ['relatedNode']);
 }
 if (hasProperty(globalThis, 'MessageEvent')) {
