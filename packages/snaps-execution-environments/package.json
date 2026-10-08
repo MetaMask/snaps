@@ -83,7 +83,7 @@
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/superstruct": "^3.3.0",
+    "@metamask/superstruct": "^3.4.1",
     "@metamask/utils": "^11.11.0",
     "readable-stream": "^3.6.2"
   },
