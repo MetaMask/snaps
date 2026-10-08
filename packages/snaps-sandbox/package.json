@@ -61,7 +61,7 @@
     "happy-dom": "^20.0.11",
     "jotai": "^2.12.2",
     "monaco-editor": "patch:monaco-editor@npm%3A0.52.2#~/.yarn/patches/monaco-editor-npm-0.52.2-584d16bfa6.patch",
-    "nanoid": "^3.3.10",
+    "nanoid": "^3.3.18",
     "prettier": "^3.3.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
