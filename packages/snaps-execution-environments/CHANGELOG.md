@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.3.2]
 
-### Uncategorized
+### Changed
 
-- chore: Bump LavaMoat and SES ([#4150](https://github.com/MetaMask/snaps/pull/4150))
-- chore: Bump @metamask/utils from 11.11.0 to 12.0.0 ([#4122](https://github.com/MetaMask/snaps/pull/4122))
-- chore: Bump @metamask/superstruct from 3.3.0 to 3.4.1 ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+- Bump LavaMoat to latest version ([#4150](https://github.com/MetaMask/snaps/pull/4150))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
 
 ### Added
 

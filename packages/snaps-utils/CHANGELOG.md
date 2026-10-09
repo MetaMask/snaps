@@ -9,15 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.6.1]
 
-### Uncategorized
+### Changed
 
-- chore: Use `@metamask/cryptography`package ([#4132](https://github.com/MetaMask/snaps/pull/4132))
-- chore: Bump LavaMoat and SES ([#4150](https://github.com/MetaMask/snaps/pull/4150))
-- chore: Bump @metamask/utils from 11.11.0 to 12.0.0 ([#4122](https://github.com/MetaMask/snaps/pull/4122))
-- chore: Bump TypeScript to 5.8 ([#4141](https://github.com/MetaMask/snaps/pull/4141))
-- chore: Bump @metamask/superstruct from 3.3.0 to 3.4.1 ([#4075](https://github.com/MetaMask/snaps/pull/4075))
-- release: `167.0.0` ([#4129](https://github.com/MetaMask/snaps/pull/4129))
-- chore: Bump @metamask/auto-changelog from 6.2.0 to 6.2.1 ([#4103](https://github.com/MetaMask/snaps/pull/4103))
+- Use `@metamask/cryptography` package for `sha256` ([#4132](https://github.com/MetaMask/snaps/pull/4132))
+- Bump `ses` from `^2.2.0` to `^2.3.0` ([#4150](https://github.com/MetaMask/snaps/pull/4150))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
 
 ## [12.6.0]
 

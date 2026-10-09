@@ -9,14 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [21.1.2]
 
-### Uncategorized
+### Changed
 
-- chore: Bump @metamask/messenger-cli from 0.2.0 to 1.0.0 ([#4149](https://github.com/MetaMask/snaps/pull/4149))
-- chore: Bump @metamask/utils from 11.11.0 to 12.0.0 ([#4122](https://github.com/MetaMask/snaps/pull/4122))
-- chore: Bump TypeScript to 5.8 ([#4141](https://github.com/MetaMask/snaps/pull/4141))
-- chore: Bump @metamask/superstruct from 3.3.0 to 3.4.1 ([#4075](https://github.com/MetaMask/snaps/pull/4075))
-- chore: Bump nanoid from 3.3.11 to 3.3.18 ([#4112](https://github.com/MetaMask/snaps/pull/4112))
-- fix: Improve logging of unhandled errors ([#4135](https://github.com/MetaMask/snaps/pull/4135))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+- Bump `nanoid` from `^3.3.11` to `^3.3.18` ([#4112](https://github.com/MetaMask/snaps/pull/4112))
+
+### Fixed
+
+- Improve logging of unhandled errors ([#4135](https://github.com/MetaMask/snaps/pull/4135))
 
 ## [21.1.1]
 
