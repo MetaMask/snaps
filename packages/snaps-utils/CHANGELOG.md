@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.6.1]
+
+### Changed
+
+- Use `@metamask/cryptography` package for `sha256` ([#4132](https://github.com/MetaMask/snaps/pull/4132))
+- Bump `ses` from `^2.2.0` to `^2.3.0` ([#4150](https://github.com/MetaMask/snaps/pull/4150))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+
 ## [12.6.0]
 
 ### Added
@@ -863,7 +872,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.1...HEAD
+[12.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.0...@metamask/snaps-utils@12.6.1
 [12.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.5.0...@metamask/snaps-utils@12.6.0
 [12.5.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.4.0...@metamask/snaps-utils@12.5.0
 [12.4.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.3.0...@metamask/snaps-utils@12.4.0

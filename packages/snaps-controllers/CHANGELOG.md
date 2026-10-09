@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [21.1.2]
+
+### Changed
+
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+- Bump `nanoid` from `^3.3.11` to `^3.3.18` ([#4112](https://github.com/MetaMask/snaps/pull/4112))
+
+### Fixed
+
+- Improve logging of unhandled errors ([#4135](https://github.com/MetaMask/snaps/pull/4135))
+
 ## [21.1.1]
 
 ### Fixed
@@ -1275,7 +1287,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.2...HEAD
+[21.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.1...@metamask/snaps-controllers@21.1.2
 [21.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.0...@metamask/snaps-controllers@21.1.1
 [21.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.0.0...@metamask/snaps-controllers@21.1.0
 [21.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@20.0.6...@metamask/snaps-controllers@21.0.0
