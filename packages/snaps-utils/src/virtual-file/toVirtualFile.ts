@@ -1,6 +1,7 @@
 import { promises as fsPromises } from 'fs';
 
 import { VirtualFile } from './VirtualFile';
+import type { Value } from './VirtualFile';
 
 /**
  * Reads a file from filesystem and creates a vfile.
@@ -15,7 +16,9 @@ export async function readVirtualFile(
 ) {
   return new VirtualFile({
     path,
-    value: await fsPromises.readFile(path, { encoding }),
+    // `ses` augments the global `ArrayBuffer` type, which makes `Buffer` not
+    // assignable to `Uint8Array`, even though it is at runtime.
+    value: (await fsPromises.readFile(path, { encoding })) as Value,
   });
 }
 

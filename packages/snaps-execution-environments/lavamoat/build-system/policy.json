@@ -542,6 +542,8 @@
         "AggregateError": true,
         "FinalizationRegistry": true,
         "Float16Array": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -733,7 +735,8 @@
       },
       "packages": {
         "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "depcheck>@babel/traverse": true,
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "webpack>loader-runner": {
@@ -1001,6 +1004,8 @@
     "terser": {
       "globals": {
         "Buffer": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "atob": true,
         "btoa": true,
         "console.log": true,
@@ -1127,43 +1132,17 @@
         "perf_hooks.performance": true
       },
       "globals": {
-        "BreakpointResolver": true,
         "Buffer.from": true,
-        "CallHierarchy": true,
-        "Completions": true,
-        "FindAllReferences": true,
-        "GoToDefinition": true,
-        "InlayHintKind": true,
-        "InlayHints": true,
         "Intl.Collator": true,
-        "JsDoc": true,
-        "JsTyping": true,
-        "MapCode": true,
-        "NavigateTo": true,
-        "NavigationBar": true,
-        "OrganizeImports": true,
-        "OutliningElementsCollector": true,
-        "PreparePasteEdits": true,
-        "Rename": true,
-        "SignatureHelp": true,
-        "SmartSelectionRange": true,
-        "SymbolDisplay": true,
         "__dirname": true,
         "__filename": true,
-        "classifier": true,
         "clearTimeout": true,
-        "codefix": true,
         "console": true,
-        "formatting": true,
         "gc": true,
-        "moduleSpecifiers": true,
         "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "refactor": true,
-        "server": true,
-        "setTimeout": true,
-        "textChanges": true
+        "setTimeout": true
       },
       "packages": {
         "jest>@jest/core>jest-runner>source-map-support": true
