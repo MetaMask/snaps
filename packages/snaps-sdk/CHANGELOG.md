@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- chore: Bump @metamask/utils from 11.11.0 to 12.0.0 ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- chore: Bump TypeScript to 5.8 ([#4141](https://github.com/MetaMask/snaps/pull/4141))
+- chore: Bump @metamask/superstruct from 3.3.0 to 3.4.1 ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+
 ## [12.1.0]
 
 ### Added
