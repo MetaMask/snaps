@@ -8640,14 +8640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"apg-js@npm:^4.1.1":
-  version: 4.1.3
-  resolution: "apg-js@npm:4.1.3"
-  checksum: 10/069c8dc6a121389eae2e4282ccb02926d5f9d1bde89a1e5606e2a69ed1758946aea5700d33fbd7cdad62a5371896caa1997e3dd952c5a0f4ee36070d1b053323
-  languageName: node
-  linkType: hard
-
-"apg-js@npm:^4.4.0":
+"apg-js@npm:^4.1.1, apg-js@npm:^4.4.0":
   version: 4.4.0
   resolution: "apg-js@npm:4.4.0"
   checksum: 10/425f19096026742f5f156f26542b68f55602aa60f0c4ae2d72a0a888cf15fe9622223191202262dd8979d76a6125de9d8fd164d56c95fb113f49099f405eb08c
