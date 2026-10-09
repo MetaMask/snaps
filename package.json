@@ -72,10 +72,10 @@
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch",
+    "ses": "^1.15.0",
     "tsconfig-paths@^3.11.0": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
     "tsconfig-paths@^3.14.1": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
-    "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
-    "ses": "^1.15.0"
+    "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
