@@ -3982,14 +3982,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/messenger@npm:2.0.0"
+"@metamask/messenger@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/messenger@npm:3.0.0"
   dependencies:
-    "@metamask/utils": "npm:^11.11.0"
+    "@metamask/utils": "npm:^11.12.0"
   peerDependencies:
     typescript: ">=5.0.0"
-  checksum: 10/c387511edd89db73b774f631fb4bb382c9254af2dd7f80f9bd45f776e618cf90f653cc0e9744b1bf491f71f99c8318b16e8230a847f619a4fca655ea3f6a08e1
+  checksum: 10/ea335702bc818f0ea42ca8af4dd7c5f77562e650b1b4de9df92614dacaae0c29d6956999ae3cc524038d9ffdcd866890b4dee141323fda5072ae70d3c7d05173
   languageName: node
   linkType: hard
 
@@ -4172,7 +4172,7 @@ __metadata:
     "@jest/globals": "npm:^29.5.0"
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/snaps-cli": "workspace:^"
     "@metamask/snaps-jest": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4439,7 +4439,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/messenger-cli": "npm:^1.0.0"
     "@metamask/object-multiplex": "npm:^2.1.0"
     "@metamask/permission-controller": "npm:^13.1.1"
@@ -4698,7 +4698,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^6.2.1"
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-sdk": "workspace:^"
@@ -4764,7 +4764,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/superstruct": "npm:^3.4.1"
@@ -4799,7 +4799,7 @@ __metadata:
     "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.3"
     "@metamask/snaps-controllers": "workspace:^"
@@ -4843,7 +4843,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/messenger": "npm:^2.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/rpc-errors": "npm:^7.0.3"
