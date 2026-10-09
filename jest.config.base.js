@@ -3,7 +3,10 @@
  * https://jestjs.io/docs/configuration
  */
 
-const ESM_DEPENDENCIES_TO_TRANSPILE = ['@metamask/utils'];
+const ESM_DEPENDENCIES_TO_TRANSPILE = [
+  '@metamask/cryptography',
+  '@metamask/utils',
+];
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
@@ -114,6 +117,7 @@ module.exports = {
     ],
     '^@metamask/utils$': ['@metamask/utils'],
     '^@metamask/utils/node$': ['@metamask/utils/node'],
+    '^@metamask/cryptography/(.+)$': ['@metamask/cryptography/$1'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
     '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],
     '^@metamask/(.+)$': [

@@ -1,4 +1,5 @@
-import { assert, concatBytes, sha256 } from '@metamask/utils';
+import { sha256 } from '@metamask/cryptography/sha';
+import { assert, concatBytes } from '@metamask/utils';
 
 import { getBytes } from './bytes';
 import type { VirtualFile } from './virtual-file';
