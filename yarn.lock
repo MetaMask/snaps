@@ -4449,7 +4449,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "workspace:^"
     "@metamask/snaps-sdk": "workspace:^"
     "@metamask/snaps-utils": "workspace:^"
-    "@metamask/storage-service": "npm:^1.0.2"
+    "@metamask/storage-service": "npm:^2.0.0"
     "@metamask/superstruct": "npm:^3.4.1"
     "@metamask/utils": "npm:^12.0.0"
     "@noble/hashes": "npm:^1.7.1"
@@ -4923,13 +4923,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/storage-service@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@metamask/storage-service@npm:1.0.2"
+"@metamask/storage-service@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/storage-service@npm:2.0.0"
   dependencies:
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/dda8f1a6c63c98bbd8fa61cd5863e54f8e9801389a96efc69fd8d10011cd194370990bac5b8693c7861e23769237e617946e0304a1dc9ea4da83b8d3fb6c8942
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.12.0"
+  checksum: 10/d59320e5d40e249d4e4789f3bcd3817e8cff2ddceb5f673a274a613313c9cc42280885358e519006067f37c011e754ce522d7e7ffbfd318f1c282d3f072f5be1
   languageName: node
   linkType: hard
 
