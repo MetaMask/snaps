@@ -3394,10 +3394,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/cryptography@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/cryptography@npm:1.0.0"
-  checksum: 10/082ea127ff3a8507aba477a1e1695b0722673c8236bba23234737b0c63d45e2a9639a3ca6f0f1fb826a88b902214cec338322d7242fed7dfb3eed244a36fa485
+"@metamask/cryptography@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@metamask/cryptography@npm:1.1.2"
+  checksum: 10/567ab4d7a27bbf1be129a120bd0d6d1dfc1677ddc36c2e81c259bebd7824b493fbb67127b585d57f94d98463daa7f7a43296db8ff2d9ed85f440ecc7e9c83dc9
   languageName: node
   linkType: hard
 
@@ -4849,7 +4849,7 @@ __metadata:
     "@babel/types": "npm:^7.23.0"
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
-    "@metamask/cryptography": "npm:^1.0.0"
+    "@metamask/cryptography": "npm:^1.1.2"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/messenger": "npm:^2.0.0"
     "@metamask/permission-controller": "npm:^13.1.1"

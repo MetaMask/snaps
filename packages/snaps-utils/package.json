@@ -80,7 +80,7 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
-    "@metamask/cryptography": "^1.0.0",
+    "@metamask/cryptography": "^1.1.2",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^2.0.0",
     "@metamask/permission-controller": "^13.1.1",
