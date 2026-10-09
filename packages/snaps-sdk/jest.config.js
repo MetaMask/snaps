@@ -3,6 +3,13 @@ const { resolve } = require('path');
 
 const baseConfig = require('../../jest.config.base');
 
+const ESM_DEPENDENCY_TRANSFORM = {
+  '^.+/node_modules/@metamask/utils/.+\\.js$': [
+    '@swc/jest',
+    { jsc: { target: 'es2022' }, sourceMaps: false },
+  ],
+};
+
 module.exports = deepmerge(baseConfig, {
   collectCoverageFrom: [
     '!./src/**/index.ts',
@@ -25,7 +32,9 @@ module.exports = deepmerge(baseConfig, {
         '<rootDir>/src/jsx/validation.test.tsx',
         '<rootDir>/src/jsx/jsx-runtime.test.tsx',
       ],
+      transformIgnorePatterns: baseConfig.transformIgnorePatterns,
       transform: {
+        ...ESM_DEPENDENCY_TRANSFORM,
         '^.+\\.(t|j)sx?$': [
           'ts-jest',
           {
@@ -43,7 +52,9 @@ module.exports = deepmerge(baseConfig, {
         '<rootDir>/src/jsx/validation.test.tsx',
         '<rootDir>/src/jsx/jsx-runtime.test.tsx',
       ],
+      transformIgnorePatterns: baseConfig.transformIgnorePatterns,
       transform: {
+        ...ESM_DEPENDENCY_TRANSFORM,
         '^.+\\.(t|j)sx?$': [
           'ts-jest',
           {
