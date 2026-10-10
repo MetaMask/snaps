@@ -69,8 +69,8 @@ describe('getBrowserslistTargets', () => {
     const targets = await getBrowserslistTargets();
     expect(targets).toMatchInlineSnapshot(`
       [
-        "chrome >= 113",
-        "firefox >= 115",
+        "chrome >= 123",
+        "firefox >= 128",
       ]
     `);
   });
