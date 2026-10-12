@@ -3027,7 +3027,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^9.0.1, @metamask/approval-controller@npm:^9.0.2":
+"@metamask/approval-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/approval-controller@npm:10.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.12.0"
+    nanoid: "npm:^3.3.8"
+  checksum: 10/8a1a0ee2f449699e1d4050b88ff210fc00d393c671c252b2d610adbbe49c78f39e76ca86da598079ea732a1d191d9ab40eadac231550235c4f6cae9da5af7d1a
+  languageName: node
+  linkType: hard
+
+"@metamask/approval-controller@npm:^9.0.1":
   version: 9.0.2
   resolution: "@metamask/approval-controller@npm:9.0.2"
   dependencies:
@@ -3087,6 +3100,17 @@ __metadata:
     typescript: "npm:~5.8.3"
   languageName: unknown
   linkType: soft
+
+"@metamask/base-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/base-controller@npm:10.0.0"
+  dependencies:
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.12.0"
+    immer: "npm:^9.0.6"
+  checksum: 10/b09bbf175fe248c592d1e66dcc7d65b324bfd5b16fa95c751ce163dedc97153f19419fca4bb84d2a1c6cfa7b308572cc8ea2ce88cefff1ab4504dba29e9015df
+  languageName: node
+  linkType: hard
 
 "@metamask/base-controller@npm:^9.1.0":
   version: 9.1.0
@@ -4439,7 +4463,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/analytics-controller": "npm:^1.2.1"
-    "@metamask/approval-controller": "npm:^9.0.2"
+    "@metamask/approval-controller": "npm:^10.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
