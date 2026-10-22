@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [22.0.0]
 
-### Uncategorized
+### Changed
 
-- fix!: Replace `MultichainAssetsController` with `AssetsController` ([#4157](https://github.com/MetaMask/snaps/pull/4157))
+- **BREAKING:** Replace `MultichainAssetsController` with `AssetsController` ([#4157](https://github.com/MetaMask/snaps/pull/4157))
+  - Action delegations for `MultichainAssetsController:getState` must be replaced with `AssetsController:getState`.
 
 ## [21.1.2]
 
