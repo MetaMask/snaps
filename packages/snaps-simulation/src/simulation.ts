@@ -632,18 +632,19 @@ export function registerActions(
   );
 
   controllerMessenger.registerActionHandler(
-    'MultichainAssetsController:getState',
+    'AssetsController:getState',
     () => ({
       // @ts-expect-error - These are partial assets with only the
       // necessary data used by the interface controller.
-      assetsMetadata: options.assets,
-      accountsAssets: options.accounts.reduce<Record<string, CaipAssetType[]>>(
-        (acc, account) => {
-          acc[account.id] = account.assets ?? [];
-          return acc;
-        },
-        {},
-      ),
+      assetsInfo: options.assets,
+      assetsBalance: options.accounts.reduce<
+        Record<string, Record<CaipAssetType, Json>>
+      >((acc, account) => {
+        acc[account.id] = Object.fromEntries(
+          (account.assets ?? []).map((asset) => [asset, {}]),
+        );
+        return acc;
+      }, {}),
     }),
   );
 

@@ -549,18 +549,20 @@ describe('registerActions', () => {
     );
   });
 
-  it('registers `MultichainAssetsController:getState`', async () => {
+  it('registers `AssetsController:getState`', async () => {
     registerActions(controllerMessenger, runSaga, options, MOCK_SNAP_ID, []);
 
-    expect(
-      controllerMessenger.call('MultichainAssetsController:getState'),
-    ).toStrictEqual({
-      assetsMetadata: mockedAssets,
-      accountsAssets: {
-        [mockedAccounts[0].id]: mockedAccounts[0].assets,
-        [mockedAccounts[1].id]: [],
+    expect(controllerMessenger.call('AssetsController:getState')).toStrictEqual(
+      {
+        assetsInfo: mockedAssets,
+        assetsBalance: {
+          [mockedAccounts[0].id]: Object.fromEntries(
+            mockedAccounts[0].assets.map((asset) => [asset, {}]),
+          ),
+          [mockedAccounts[1].id]: {},
+        },
       },
-    });
+    );
   });
 
   it('registers `KeyringController:withKeyringV2Unsafe`', async () => {

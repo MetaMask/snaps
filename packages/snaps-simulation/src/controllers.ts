@@ -99,7 +99,7 @@ export function getControllers(options: GetControllersOptions): Controllers {
       'AccountsController:getAccountByAddress',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
-      'MultichainAssetsController:getState',
+      'AssetsController:getState',
       'PermissionController:hasPermission',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],

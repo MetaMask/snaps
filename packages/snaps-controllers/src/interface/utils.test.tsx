@@ -877,16 +877,16 @@ describe('constructState', () => {
 
   it('sets default value for root level AssetSelector', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {},
+        },
       },
     });
 
@@ -918,16 +918,16 @@ describe('constructState', () => {
 
   it('supports root level AssetSelector', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {},
+        },
       },
     });
 
@@ -956,16 +956,16 @@ describe('constructState', () => {
 
   it('sets default value for AssetSelector in form', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {},
+        },
       },
     });
 
@@ -1003,16 +1003,16 @@ describe('constructState', () => {
 
   it('supports AssetSelector in form', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {},
+        },
       },
     });
 
@@ -1047,14 +1047,14 @@ describe('constructState', () => {
 
   it('sets the value to the default asset if the asset metadata is not found', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1083,14 +1083,14 @@ describe('constructState', () => {
 
   it('sets the value to null if the account has no assets', () => {
     elementDataGetters.getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1271,14 +1271,14 @@ describe('getAssetSelectorStateValue', () => {
 
   it('returns the asset selector state value', () => {
     getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1300,15 +1300,15 @@ describe('getAssetSelectorStateValue', () => {
 
   it('returns null if the asset metadata is not found', () => {
     getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
           {
             name: 'USDC',
             symbol: 'USDC',
           },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1322,13 +1322,13 @@ describe('getAssetSelectorStateValue', () => {
 
   it('sets the asset name to the symbol if the asset name is undefined in state', () => {
     getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1346,13 +1346,13 @@ describe('getAssetSelectorStateValue', () => {
 
   it('sets the asset symbol to "Unknown" if the asset symbol is undefined in state', () => {
     getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           name: 'Solana',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1370,13 +1370,13 @@ describe('getAssetSelectorStateValue', () => {
 
   it('sets the asset symbol and name to "Unknown" if both are undefined in state', () => {
     getAssetsState.mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           fungible: true,
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1396,16 +1396,16 @@ describe('getAssetSelectorStateValue', () => {
 describe('getDefaultAsset', () => {
   it('returns the native asset if available', () => {
     const getAssetsState = jest.fn().mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           name: 'Solana',
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {},
+        },
       },
     });
 
@@ -1436,17 +1436,18 @@ describe('getDefaultAsset', () => {
 
   it('returns the first asset if no native asset is available', () => {
     const getAssetsState = jest.fn().mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
           {
             name: 'USDC',
             symbol: 'USDC',
           },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v':
+            {},
+        },
       },
     });
 
@@ -1478,9 +1479,9 @@ describe('getDefaultAsset', () => {
 
   it('returns undefined if no assets are available', () => {
     const getAssetsState = jest.fn().mockReturnValue({
-      assetsMetadata: {},
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsInfo: {},
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 
@@ -1507,7 +1508,7 @@ describe('getDefaultAsset', () => {
 
   it('selects the default asset from the requested network', () => {
     const getAssetsState = jest.fn().mockReturnValue({
-      assetsMetadata: {
+      assetsInfo: {
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
           name: 'Solana',
           symbol: 'SOL',
@@ -1517,11 +1518,11 @@ describe('getDefaultAsset', () => {
           symbol: 'SOL',
         },
       },
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [
-          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-        ],
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {
+          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1/slip44:501': {},
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {},
+        },
       },
     });
 
@@ -1553,9 +1554,9 @@ describe('getDefaultAsset', () => {
 
   it('throws if the account is not found', () => {
     const getAssetsState = jest.fn().mockReturnValue({
-      assetsMetadata: {},
-      accountsAssets: {
-        [MOCK_ACCOUNT_ID]: [],
+      assetsInfo: {},
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
       },
     });
 

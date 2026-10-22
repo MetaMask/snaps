@@ -53,7 +53,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'AccountsController:getAccountByAddress',
       'AccountsController:getSelectedMultichainAccount',
       'AccountsController:listMultichainAccounts',
-      'MultichainAssetsController:getState',
+      'AssetsController:getState',
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
   });
