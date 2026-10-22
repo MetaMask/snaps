@@ -14,7 +14,6 @@ import type {
   SnapId,
   ComponentOrElement,
   InterfaceContext,
-  FungibleAssetMetadata,
 } from '@metamask/snaps-sdk';
 import { ContentType } from '@metamask/snaps-sdk';
 import type { JSXElement } from '@metamask/snaps-sdk/jsx';
@@ -24,17 +23,13 @@ import {
   snapOwnsAccount,
   validateJsxElements,
 } from '@metamask/snaps-utils';
-import type {
-  CaipAccountId,
-  CaipAssetType,
-  CaipChainId,
-  Json,
-} from '@metamask/utils';
+import type { CaipAccountId, CaipChainId, Json } from '@metamask/utils';
 import { assert, hasProperty, parseCaipAccountId } from '@metamask/utils';
 import { castDraft } from 'immer';
 import { nanoid } from 'nanoid';
 
 import type { SnapInterfaceControllerMethodActions } from './SnapInterfaceController-method-action-types';
+import type { AssetsControllerState } from './utils';
 import {
   constructState,
   getJsxInterface,
@@ -78,14 +73,9 @@ export type SnapInterfaceControllerGetStateAction = ControllerGetStateAction<
   SnapInterfaceControllerState
 >;
 
-type MultichainAssetsControllerGetStateAction = ControllerGetStateAction<
-  'MultichainAssetsController',
-  {
-    assetsMetadata: {
-      [asset: CaipAssetType]: FungibleAssetMetadata;
-    };
-    accountsAssets: { [account: string]: CaipAssetType[] };
-  }
+type AssetsControllerGetStateAction = ControllerGetStateAction<
+  'AssetsController',
+  AssetsControllerState
 >;
 
 type PhishingControllerTestOrigin = {
@@ -98,7 +88,7 @@ type AllowedActions =
   | ApprovalControllerHasRequestAction
   | ApprovalControllerAcceptRequestAction
   | SnapControllerGetSnapAction
-  | MultichainAssetsControllerGetStateAction
+  | AssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
   | AccountsControllerListMultichainAccountsAction
@@ -506,12 +496,12 @@ export class SnapInterfaceController extends BaseController<
   }
 
   /**
-   * Get the MultichainAssetsController state.
+   * Get the AssetsController state.
    *
-   * @returns The MultichainAssetsController state.
+   * @returns The AssetsController state.
    */
   #getAssetsState() {
-    return this.messenger.call('MultichainAssetsController:getState');
+    return this.messenger.call('AssetsController:getState');
   }
 
   /**

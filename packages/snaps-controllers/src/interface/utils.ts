@@ -8,6 +8,7 @@ import type {
   FungibleAssetMetadata,
   AssetSelectorState,
   CaipChainId,
+  Json,
 } from '@metamask/snaps-sdk';
 import type {
   DropdownElement,
@@ -82,18 +83,17 @@ export function isStatefulComponent(component: { type: string }): component is {
   );
 }
 
-/**
- * A function to get the MultichainAssetController state.
- *
- * @returns The MultichainAssetController state.
- */
-type GetAssetsState = () => {
-  assetsMetadata: {
-    [asset: CaipAssetType]: FungibleAssetMetadata;
-  };
-  accountsAssets: { [account: string]: CaipAssetType[] };
+export type AssetsControllerState = {
+  assetsInfo: Record<CaipAssetType, FungibleAssetMetadata>;
+  assetsBalance: Record<string, Record<CaipAssetType, Json>>;
 };
 
+/**
+ * A function to get the AssetsController state.
+ *
+ * @returns The AssetsController state.
+ */
+type GetAssetsState = () => AssetsControllerState;
 /**
  * A function to get an account by its address.
  *
@@ -226,7 +226,7 @@ export function getDefaultAsset(
   chainIds: CaipChainId[] | undefined,
   { getAccountByAddress, getAssetsState }: ElementDataGetters,
 ) {
-  const { assetsMetadata, accountsAssets } = getAssetsState();
+  const { assetsInfo, assetsBalance } = getAssetsState();
 
   const parsedAccounts = addresses.map((address) =>
     parseCaipAccountId(address),
@@ -246,7 +246,9 @@ export function getDefaultAsset(
   // We should never fail on this assertion as the address is already validated.
   assert(accountId, `Account not found for address: ${addresses[0]}.`);
 
-  const accountAssets = accountsAssets[accountId];
+  const accountAssets = Object.keys(
+    assetsBalance[accountId],
+  ) as CaipAssetType[];
 
   // The AssetSelector component in the UI will be disabled if there is no asset available for the account
   // and networks provided. In this case, we return null to indicate that there is no default selected asset.
@@ -263,15 +265,15 @@ export function getDefaultAsset(
   if (nativeAsset) {
     return {
       asset: nativeAsset,
-      name: assetsMetadata[nativeAsset].name,
-      symbol: assetsMetadata[nativeAsset].symbol,
+      name: assetsInfo[nativeAsset].name,
+      symbol: assetsInfo[nativeAsset].symbol,
     };
   }
 
   return {
     asset: accountAssets[0],
-    name: assetsMetadata[accountAssets[0]].name,
-    symbol: assetsMetadata[accountAssets[0]].symbol,
+    name: assetsInfo[accountAssets[0]].name,
+    symbol: assetsInfo[accountAssets[0]].symbol,
   };
 }
 
@@ -397,8 +399,8 @@ export function getAssetSelectorStateValue(
     return null;
   }
 
-  const { assetsMetadata } = getAssetState();
-  const asset = assetsMetadata[value];
+  const { assetsInfo } = getAssetState();
+  const asset = assetsInfo[value];
 
   if (!asset) {
     return null;
