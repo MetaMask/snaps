@@ -34,4 +34,4 @@ For the sake of simplicity, the methods do not accept any parameters, and
 return the value returned by `snap_dialog` directly.
 
 For more information, you can refer to
-[the end-to-end tests](./src/index.test.ts).
+[the end-to-end tests](./src/index.test.tsx).
