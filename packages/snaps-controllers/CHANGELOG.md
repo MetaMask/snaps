@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix!: Replace `MultichainAssetsController` with `AssetsController` ([#4157](https://github.com/MetaMask/snaps/pull/4157))
+
 ## [21.1.2]
 
 ### Changed
