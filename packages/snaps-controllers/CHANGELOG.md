@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [22.0.0]
+
+### Changed
+
+- **BREAKING:** Replace usage of `MultichainAssetsController` with `AssetsController` ([#4157](https://github.com/MetaMask/snaps/pull/4157))
+  - Action delegations for `MultichainAssetsController:getState` must be replaced with `AssetsController:getState`.
+
 ## [21.1.2]
 
 ### Changed
@@ -1287,7 +1294,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.0...HEAD
+[22.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.2...@metamask/snaps-controllers@22.0.0
 [21.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.1...@metamask/snaps-controllers@21.1.2
 [21.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.0...@metamask/snaps-controllers@21.1.1
 [21.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.0.0...@metamask/snaps-controllers@21.1.0
