@@ -1906,12 +1906,7 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
-    const sourceCode = await this.#getSourceCode(snapId);
-
-    await this.#startSnap({
-      snapId,
-      sourceCode,
-    });
+    await this.#startSnap({ snapId });
   }
 
   /**
@@ -1952,6 +1947,16 @@ export class SnapController extends BaseController<
       state.snaps[snapId].enabled = false;
     });
 
+    const { startPromise } = this.#getRuntimeExpect(snapId);
+    if (startPromise) {
+      await startPromise.catch(
+        /* istanbul ignore next */
+        () => {
+          // no-op
+        },
+      );
+    }
+
     if (this.isSnapRunning(snapId)) {
       await this.stopSnap(snapId, SnapStatusEvents.Stop);
     }
@@ -1979,6 +1984,15 @@ export class SnapController extends BaseController<
     const runtime = this.#getRuntime(snapId);
     if (!runtime) {
       throw new Error(`The snap "${snapId}" is not running.`);
+    }
+
+    if (runtime.startPromise) {
+      await runtime.startPromise.catch(
+        /* istanbul ignore next */
+        () => {
+          // no-op
+        },
+      );
     }
 
     // If we are already stopping, wait for that to finish.
@@ -3345,27 +3359,45 @@ export class SnapController extends BaseController<
     }
   }
 
-  async #startSnap(snapData: { snapId: SnapId; sourceCode: string }) {
-    const { snapId } = snapData;
+  async #startSnap({
+    snapId,
+    sourceCode,
+  }: {
+    snapId: SnapId;
+    sourceCode?: string;
+  }) {
+    const runtime = this.#getRuntimeExpect(snapId);
+
+    if (runtime.startPromise) {
+      return await runtime.startPromise;
+    }
+
     if (this.isSnapRunning(snapId)) {
       throw new Error(`Snap "${snapId}" is already started.`);
     }
 
-    try {
-      const runtime = this.#getRuntimeExpect(snapId);
-      const result = await this.messenger.call('ExecutionService:executeSnap', {
-        ...snapData,
-        endowments: await this.#getEndowments(snapId),
-      });
+    const startPromise = (async () => {
+      try {
+        await this.messenger.call('ExecutionService:executeSnap', {
+          snapId,
+          sourceCode: sourceCode ?? (await this.#getSourceCode(snapId)),
+          endowments: await this.#getEndowments(snapId),
+        });
 
-      this.#transition(snapId, SnapStatusEvents.Start);
-      // We treat the initialization of the snap as the first request, for idle timing purposes.
-      runtime.lastRequest = Date.now();
-      return result;
-    } catch (error) {
-      await this.#terminateSnap(snapId);
-      throw error;
-    }
+        this.#transition(snapId, SnapStatusEvents.Start);
+        // We treat the initialization of the snap as the first request, for idle timing purposes.
+        runtime.lastRequest = Date.now();
+      } catch (error) {
+        await this.#terminateSnap(snapId);
+        throw error;
+      }
+    })().finally(() => {
+      runtime.startPromise = null;
+    });
+
+    runtime.startPromise = startPromise;
+
+    return await startPromise;
   }
 
   /**
@@ -3829,15 +3861,7 @@ export class SnapController extends BaseController<
     }
 
     if (!this.isSnapRunning(snapId)) {
-      if (!runtime.startPromise) {
-        runtime.startPromise = this.startSnap(snapId);
-      }
-
-      try {
-        await runtime.startPromise;
-      } finally {
-        runtime.startPromise = null;
-      }
+      await this.startSnap(snapId);
     }
 
     const transformedRequest = this.#transformSnapRpcRequest(
