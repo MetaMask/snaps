@@ -92,7 +92,7 @@ export type InvokeSnap = (
 export type { NotifyFunction } from './endowments/commonEndowmentFactory';
 
 export class BaseSnapExecutor {
-  readonly #snapData: Map<string, SnapData>;
+  #snapData: SnapData | null = null;
 
   readonly #commandStream: Duplex;
 
@@ -105,7 +105,6 @@ export class BaseSnapExecutor {
   readonly #teardownRef = { lastTeardown: 0 };
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
-    this.#snapData = new Map();
     this.#commandStream = commandStream;
     this.#commandStream.on('data', (data) => {
       /* istanbul ignore next 2 */
@@ -242,7 +241,7 @@ export class BaseSnapExecutor {
       originMetadata,
     );
 
-    const data = this.#snapData.get(snapId);
+    const data = this.#snapData;
     // We're capturing the handler in case someone modifies the data object
     // before the call.
     const handler = data?.exports[handlerType];
@@ -348,6 +347,10 @@ export class BaseSnapExecutor {
     sourceCode,
     endowments: endowmentKeys,
   }: ExecuteSnapRequestArguments): Promise<void> {
+    if (this.#snapData) {
+      throw rpcErrors.invalidRequest({ message: 'Snap is already running.' });
+    }
+
     log(`Starting snap '${snapId}' in worker.`);
     if (this.#snapPromiseErrorHandler) {
       removeEventListener('unhandledrejection', this.#snapPromiseErrorHandler);
@@ -408,11 +411,11 @@ export class BaseSnapExecutor {
 
       // !!! Ensure that this is the only place the data is being set.
       // Other methods access the object value and mutate its properties.
-      this.#snapData.set(snapId, {
+      this.#snapData = {
         idleTeardown: endowmentTeardown,
         runningEvaluations: new Set(),
         exports: {},
-      });
+      };
 
       addEventListener('unhandledRejection', this.#snapPromiseErrorHandler);
       addEventListener('error', this.#snapErrorHandler);
@@ -434,10 +437,10 @@ export class BaseSnapExecutor {
 
       await this.#executeInSnapContext(snapId, async () => {
         compartment.evaluate(sourceCode);
-        await this.#registerSnapExports(snapId, snapModule);
+        await this.#registerSnapExports(snapModule);
       });
     } catch (error) {
-      this.#removeSnap(snapId);
+      this.#snapData = null;
 
       const [cause] = unwrapError(error);
       throw rpcErrors.internal({
@@ -457,14 +460,14 @@ export class BaseSnapExecutor {
     // `stop()` tears down snap endowments.
     // Teardown will also be run for each snap as soon as there are
     // no more running evaluations for that snap.
-    this.#snapData.forEach((data) =>
-      data.runningEvaluations.forEach((evaluation) => evaluation.stop()),
+    this.#snapData?.runningEvaluations.forEach((evaluation) =>
+      evaluation.stop(),
     );
-    this.#snapData.clear();
+    this.#snapData = null;
   }
 
-  async #registerSnapExports(snapId: string, snapModule: any) {
-    const data = this.#snapData.get(snapId);
+  async #registerSnapExports(snapModule: any) {
+    const data = this.#snapData;
     // Somebody deleted the snap before we could register.
     if (!data) {
       return;
@@ -549,15 +552,6 @@ export class BaseSnapExecutor {
   }
 
   /**
-   * Removes the snap with the given name.
-   *
-   * @param snapId - The id of the snap to remove.
-   */
-  #removeSnap(snapId: string): void {
-    this.#snapData.delete(snapId);
-  }
-
-  /**
    * Calls the specified executor function in the context of the specified snap.
    * Essentially, this means that the operation performed by the executor is
    * counted as an evaluation of the specified snap. When the count of running
@@ -572,8 +566,8 @@ export class BaseSnapExecutor {
     snapId: string,
     executor: () => Promise<Result> | Result,
   ): Promise<Result> {
-    const data = this.#snapData.get(snapId);
-    if (data === undefined) {
+    const data = this.#snapData;
+    if (data === null) {
       throw rpcErrors.internal(
         `Tried to execute in context of unknown snap: "${snapId}".`,
       );
