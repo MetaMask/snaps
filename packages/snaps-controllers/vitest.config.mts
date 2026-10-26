@@ -1,3 +1,4 @@
+import { playwright } from '@vitest/browser-playwright';
 // eslint-disable-next-line import-x/no-nodejs-modules
 import { join } from 'path';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
@@ -52,7 +53,7 @@ export default defineConfig({
     browser: {
       enabled: true,
       headless: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [{ browser: 'chromium' }],
     },
 

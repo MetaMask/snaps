@@ -1,5 +1,6 @@
 import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+import { playwright } from '@vitest/browser-playwright';
 // eslint-disable-next-line import-x/no-nodejs-modules
 import { join } from 'path';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -88,7 +89,7 @@ export default defineConfig({
     browser: {
       enabled: true,
       headless: true,
-      provider: 'playwright',
+      provider: playwright(),
       instances: [{ browser: 'chromium' }],
     },
 
