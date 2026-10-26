@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.3.3]
 
-### Uncategorized
+### Removed
 
-- refactor: Remove support for executors running multiple Snaps ([#4165](https://github.com/MetaMask/snaps/pull/4165))
+- Remove support for executors running multiple Snaps ([#4165](https://github.com/MetaMask/snaps/pull/4165))
 
 ## [11.3.2]
 
