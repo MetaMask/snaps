@@ -3040,7 +3040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^6.1.1, @metamask/auto-changelog@npm:^6.2.1":
+"@metamask/auto-changelog@npm:^6.2.1":
   version: 6.2.1
   resolution: "@metamask/auto-changelog@npm:6.2.1"
   dependencies:
@@ -3060,6 +3060,29 @@ __metadata:
   bin:
     auto-changelog: dist/cli.mjs
   checksum: 10/88f5bc63ef5003b3e4f88ebf018229ce5e701283cadee1dcbd37f869541a1102ba6a8a96fd54993863e3578c8b79f0c6e0242e4afd08c58d5db529bc75dbaf2c
+  languageName: node
+  linkType: hard
+
+"@metamask/auto-changelog@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "@metamask/auto-changelog@npm:7.0.1"
+  dependencies:
+    "@octokit/rest": "npm:^20.0.0"
+    diff: "npm:^5.0.0"
+    execa: "npm:^8.0.1"
+    semver: "npm:^7.8.5"
+    yargs: "npm:^17.7.2"
+  peerDependencies:
+    oxfmt: ^0.45.0
+    prettier: ">=3.0.0"
+  peerDependenciesMeta:
+    oxfmt:
+      optional: true
+    prettier:
+      optional: true
+  bin:
+    auto-changelog: dist/cli.js
+  checksum: 10/ac0ee2077708ad3d7413c78330984d626ce4f101a6862256d9c2c54fd87bb876bd0f3419ca04dc53bb94f0724bbbe9c257bbe00c5c175f16e97989f81c924ea3
   languageName: node
   linkType: hard
 
@@ -3282,23 +3305,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@metamask/create-release-branch@npm:^4.2.2":
-  version: 4.2.2
-  resolution: "@metamask/create-release-branch@npm:4.2.2"
+"@metamask/create-release-branch@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "@metamask/create-release-branch@npm:4.2.3"
   dependencies:
     "@metamask/action-utils": "npm:^2.0.0"
-    "@metamask/auto-changelog": "npm:^6.1.1"
-    "@metamask/utils": "npm:^9.0.0"
+    "@metamask/auto-changelog": "npm:^7.0.0"
+    "@metamask/utils": "npm:^11.12.0"
     debug: "npm:^4.3.4"
     execa: "npm:^8.0.1"
     express: "npm:^4.21.2"
     open: "npm:^10.1.0"
     pony-cause: "npm:^2.1.9"
-    semver: "npm:^7.5.4"
+    semver: "npm:^7.8.5"
     validate-npm-package-name: "npm:^5.0.0"
     which: "npm:^3.0.0"
     yaml: "npm:^2.2.2"
-    yargs: "npm:^17.7.1"
+    yargs: "npm:^17.7.2"
   peerDependencies:
     oxfmt: ^0.45.0
     prettier: ">=3.0.0"
@@ -3309,7 +3332,7 @@ __metadata:
       optional: true
   bin:
     create-release-branch: bin/create-release-branch.js
-  checksum: 10/35b1e671c53cf0c1c03bb076fe33684bdc4eee55935feb0be4f681d4682c57dd68a953585fb6cac8707117218716156ade715db5484d9ade4e25ec79aeba27c1
+  checksum: 10/64c6e1cb609a66cc42ab05b6c4c87138fc697839b7ce5c2d4c91b1731fe0eda96bfb1085028fb87cc540626c8cad3eac96f57ac794e3a847b750d8e4feb551ed
   languageName: node
   linkType: hard
 
@@ -4610,7 +4633,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/auto-changelog": "npm:^6.2.1"
-    "@metamask/create-release-branch": "npm:^4.2.2"
+    "@metamask/create-release-branch": "npm:^4.2.3"
     "@metamask/eslint-config": "npm:^14.0.0"
     "@metamask/eslint-config-browser": "npm:^14.0.0"
     "@metamask/eslint-config-jest": "npm:^14.0.0"
@@ -16792,6 +16815,15 @@ __metadata:
   bin:
     semver: bin/semver.js
   checksum: 10/4cfa1eb91ef3751e20fc52e47a935a0118d56d6f15a837ab814da0c150778ba2ca4f1a4d9068b33070ea4273629e615066664c2cfcd7c272caf7a8a0f6518b2c
+  languageName: node
+  linkType: hard
+
+"semver@npm:^7.8.5":
+  version: 7.8.5
+  resolution: "semver@npm:7.8.5"
+  bin:
+    semver: bin/semver.js
+  checksum: 10/9b01d2ff11e6e4a4539b7ca3c5f280c8704cb397a28504469f2ed4f00ad2194748d756647362a9712fff30984d15772ab7f083108c2fb508e2096ae9e708f22c
   languageName: node
   linkType: hard
 
