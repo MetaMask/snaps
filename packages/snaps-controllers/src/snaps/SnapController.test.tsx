@@ -1452,6 +1452,40 @@ describe('SnapController', () => {
     snapController.destroy();
   });
 
+  it('does not start a Snap that is being updated', async () => {
+    const snapController = await getSnapController(
+      getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ status: SnapStatus.Updating }),
+          ),
+        },
+      }),
+    );
+
+    await expect(snapController.startSnap(MOCK_SNAP_ID)).rejects.toThrow(
+      `Snap "${MOCK_SNAP_ID}" is currently being updated. Please try again later.`,
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(
+      `Snap "${MOCK_SNAP_ID}" is currently being updated. Please try again later.`,
+    );
+
+    snapController.destroy();
+  });
+
   it('adds a snap, disable/enables it, and still gets a response from an RPC method', async () => {
     const [snapController, service] = await getSnapControllerWithEES(
       getSnapControllerOptions({

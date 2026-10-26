@@ -1906,6 +1906,12 @@ export class SnapController extends BaseController<
       throw new Error(`Snap "${snapId}" is disabled.`);
     }
 
+    if (snap.status === SnapStatus.Updating) {
+      throw new Error(
+        `Snap "${snapId}" is currently being updated. Please try again later.`,
+      );
+    }
+
     await this.#startSnap({ snapId });
   }
 
@@ -3849,6 +3855,12 @@ export class SnapController extends BaseController<
     if (snap.status === SnapStatus.Installing) {
       throw new Error(
         `Snap "${snapId}" is currently being installed. Please try again later.`,
+      );
+    }
+
+    if (snap.status === SnapStatus.Updating) {
+      throw new Error(
+        `Snap "${snapId}" is currently being updated. Please try again later.`,
       );
     }
 
