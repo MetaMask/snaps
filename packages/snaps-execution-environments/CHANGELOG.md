@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.3.3]
+
 ### Uncategorized
 
 - refactor: Remove support for executors running multiple Snaps ([#4165](https://github.com/MetaMask/snaps/pull/4165))
@@ -673,7 +675,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.3...HEAD
+[11.3.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.2...@metamask/snaps-execution-environments@11.3.3
 [11.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.1...@metamask/snaps-execution-environments@11.3.2
 [11.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.0...@metamask/snaps-execution-environments@11.3.1
 [11.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.2.0...@metamask/snaps-execution-environments@11.3.0
