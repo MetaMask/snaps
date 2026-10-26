@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Prevent concurrent calls to start Snaps ([#4164](https://github.com/MetaMask/snaps/pull/4164))
+
 ## [22.0.0]
 
 ### Changed
