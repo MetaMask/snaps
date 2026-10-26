@@ -297,7 +297,7 @@ describe('SnapController', () => {
       `Snap "${MOCK_SNAP_ID}" is already started.`,
     );
 
-    expect(options.messenger.call).toHaveBeenCalledTimes(4);
+    expect(options.messenger.call).toHaveBeenCalledTimes(3);
     expect(options.messenger.call).toHaveBeenNthCalledWith(
       3,
       'ExecutionService:executeSnap',
@@ -307,6 +307,85 @@ describe('SnapController', () => {
         endowments: [...DEFAULT_ENDOWMENTS],
       },
     );
+
+    snapController.destroy();
+  });
+
+  it('stops a Snap that is disabled while it is starting', async () => {
+    const rootMessenger = getRootMessenger();
+    const options = getSnapControllerOptions({
+      rootMessenger,
+      state: {
+        snaps: getPersistedSnapsState(),
+      },
+    });
+
+    const snapController = await getSnapController(options);
+
+    const terminateSnap = jest.fn();
+    const { promise, resolve } = createDeferredPromise();
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:executeSnap',
+      async () => {
+        resolve();
+        await sleep(50);
+        return 'OK';
+      },
+    );
+    rootMessenger.registerActionHandler(
+      'ExecutionService:terminateSnap',
+      terminateSnap,
+    );
+
+    const startPromise = snapController.startSnap(MOCK_SNAP_ID);
+    await promise;
+    await Promise.all([
+      snapController.disableSnap(MOCK_SNAP_ID),
+      expect(startPromise).rejects.toThrow('Invalid state transition'),
+    ]);
+
+    expect(terminateSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
+    expect(snapController.isSnapRunning(MOCK_SNAP_ID)).toBe(false);
+    expect(snapController.getSnapExpect(MOCK_SNAP_ID).enabled).toBe(false);
+
+    snapController.destroy();
+  });
+
+  it('stops a Snap that is stopped while it is starting', async () => {
+    const rootMessenger = getRootMessenger();
+    const options = getSnapControllerOptions({
+      rootMessenger,
+      state: {
+        snaps: getPersistedSnapsState(),
+      },
+    });
+
+    const snapController = await getSnapController(options);
+
+    const terminateSnap = jest.fn();
+    const { promise, resolve } = createDeferredPromise();
+
+    rootMessenger.registerActionHandler(
+      'ExecutionService:executeSnap',
+      async () => {
+        resolve();
+        await sleep(50);
+        return 'OK';
+      },
+    );
+    rootMessenger.registerActionHandler(
+      'ExecutionService:terminateSnap',
+      terminateSnap,
+    );
+
+    const startPromise = snapController.startSnap(MOCK_SNAP_ID);
+    await promise;
+    await snapController.stopSnap(MOCK_SNAP_ID);
+    await startPromise;
+
+    expect(terminateSnap).toHaveBeenCalledWith(MOCK_SNAP_ID);
+    expect(snapController.isSnapRunning(MOCK_SNAP_ID)).toBe(false);
 
     snapController.destroy();
   });
@@ -1368,6 +1447,40 @@ describe('SnapController', () => {
     expect(options.messenger.publish).not.toHaveBeenCalledWith(
       'SnapController:snapUninstalled',
       getTruncatedSnap(),
+    );
+
+    snapController.destroy();
+  });
+
+  it('does not start a Snap that is being updated', async () => {
+    const snapController = await getSnapController(
+      getSnapControllerOptions({
+        state: {
+          snaps: getPersistedSnapsState(
+            getPersistedSnapObject({ status: SnapStatus.Updating }),
+          ),
+        },
+      }),
+    );
+
+    await expect(snapController.startSnap(MOCK_SNAP_ID)).rejects.toThrow(
+      `Snap "${MOCK_SNAP_ID}" is currently being updated. Please try again later.`,
+    );
+
+    await expect(
+      snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'test',
+          params: {},
+          id: 1,
+        },
+      }),
+    ).rejects.toThrow(
+      `Snap "${MOCK_SNAP_ID}" is currently being updated. Please try again later.`,
     );
 
     snapController.destroy();
