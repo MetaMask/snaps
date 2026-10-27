@@ -3027,7 +3027,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^9.0.1, @metamask/approval-controller@npm:^9.0.2":
+"@metamask/approval-controller@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/approval-controller@npm:10.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^10.0.0"
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.12.0"
+    nanoid: "npm:^3.3.8"
+  checksum: 10/8a1a0ee2f449699e1d4050b88ff210fc00d393c671c252b2d610adbbe49c78f39e76ca86da598079ea732a1d191d9ab40eadac231550235c4f6cae9da5af7d1a
+  languageName: node
+  linkType: hard
+
+"@metamask/approval-controller@npm:^9.0.1":
   version: 9.0.2
   resolution: "@metamask/approval-controller@npm:9.0.2"
   dependencies:
@@ -3087,6 +3100,18 @@ __metadata:
     typescript: "npm:~5.8.3"
   languageName: unknown
   linkType: soft
+
+"@metamask/base-controller@npm:^10.0.0":
+  version: 10.1.0
+  resolution: "@metamask/base-controller@npm:10.1.0"
+  dependencies:
+    "@metamask/messenger": "npm:^3.0.0"
+    "@metamask/superstruct": "npm:^3.4.1"
+    "@metamask/utils": "npm:^12.0.0"
+    immer: "npm:^11.1.18"
+  checksum: 10/52391b16210ce91101fc98d8f43d182a63eef776d412be315e7fa426742c9881dd66b90fa22523f6ccc4f89f5d7a1ca481a5125a81f48f2effcb3409b2cfb346
+  languageName: node
+  linkType: hard
 
 "@metamask/base-controller@npm:^9.1.0":
   version: 9.1.0
@@ -4439,7 +4464,7 @@ __metadata:
   dependencies:
     "@lavamoat/allow-scripts": "npm:^4.0.0"
     "@metamask/analytics-controller": "npm:^1.2.1"
-    "@metamask/approval-controller": "npm:^9.0.2"
+    "@metamask/approval-controller": "npm:^10.0.0"
     "@metamask/auto-changelog": "npm:^7.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
@@ -12587,6 +12612,13 @@ __metadata:
   version: 5.3.2
   resolution: "ignore@npm:5.3.2"
   checksum: 10/cceb6a457000f8f6a50e1196429750d782afce5680dd878aa4221bd79972d68b3a55b4b1458fc682be978f4d3c6a249046aa0880637367216444ab7b014cfc98
+  languageName: node
+  linkType: hard
+
+"immer@npm:^11.1.18":
+  version: 11.2.9
+  resolution: "immer@npm:11.2.9"
+  checksum: 10/0ca23e2469152cacb36c1adc8e2fc3e6ab24c85f95b03b3d59c96cf9aff419c806be98825394a7ba40d713f6d4349b57705e633bc057c602b429917b3cdcc7de
   languageName: node
   linkType: hard
 
