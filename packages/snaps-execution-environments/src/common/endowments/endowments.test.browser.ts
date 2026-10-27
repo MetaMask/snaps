@@ -22,6 +22,17 @@ delete globalThis.process;
 const originalAtob = globalThis.atob.bind(globalThis);
 const originalBtoa = globalThis.btoa.bind(globalThis);
 
+// Vitest assigns `Error.stackTraceLimit` when registering tests, which throws
+// once `lockdown` has frozen the original `Error` constructor.
+let { stackTraceLimit } = Error;
+Object.defineProperty(Error, 'stackTraceLimit', {
+  get: () => stackTraceLimit,
+  set: (value: number) => {
+    stackTraceLimit = value;
+  },
+  configurable: true,
+});
+
 lockdown({
   domainTaming: 'unsafe',
   errorTaming: 'unsafe',
