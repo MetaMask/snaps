@@ -83,7 +83,7 @@
     "@metamask/cryptography": "^1.1.2",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^2.0.0",
-    "@metamask/permission-controller": "^13.1.1",
+    "@metamask/permission-controller": "^14.0.0",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/slip44": "^4.5.0",
     "@metamask/snaps-registry": "^4.0.0",
