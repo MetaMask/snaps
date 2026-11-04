@@ -50,7 +50,7 @@ export type SnapConfig = {
    * be generated as separate files. If `'inline'`, source maps will be
    * inlined in the generated JavaScript bundle.
    *
-   * @default true
+   * @default false
    */
   sourceMap?: boolean | 'inline';
 

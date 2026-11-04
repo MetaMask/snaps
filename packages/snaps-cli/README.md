@@ -232,7 +232,7 @@ the bundle, mangle variable names, and perform other optimizations.
 #### `sourceMap`
 
 - Type: `boolean | "inline"`
-- Default: `true`
+- Default: `false`
 
 Whether to generate a source map. If `"inline"`, the source map will be
 inlined in the bundle. Otherwise, it will be written to a separate file.
