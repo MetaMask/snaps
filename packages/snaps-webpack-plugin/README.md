@@ -1,6 +1,6 @@
 # @metamask/snaps-webpack-plugin
 
-A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Webpack](https://webpack.js.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../utils/src/post-process.ts).
+A plugin for developing [MetaMask Snaps](https://docs.metamask.io/guide/snaps.html) using [Webpack](https://webpack.js.org/). This can be used as alternative to the `mm-snap` CLI `build` command. It transforms the bundle to fix common issues with SES. For a list of changes the plugin makes, you can refer to [the source code](../snaps-utils/src/post-process.ts).
 
 ## Installation
 

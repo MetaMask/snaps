@@ -19,4 +19,4 @@ JSON-RPC methods:
   uses it to sign a `message`.
 
 For more information, you can refer to
-[the end-to-end tests](./src/index.test.ts).
+[the end-to-end tests](./src/index.test.tsx).

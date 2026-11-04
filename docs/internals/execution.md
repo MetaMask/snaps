@@ -47,6 +47,6 @@ passed to the snap, see for example [network hardening], which hardens the
 
 -->
 
-[endowment:network-access]: ../../packages/snaps-controllers/src/snaps/endowments/network-access.ts
+[endowment:network-access]: ../../packages/snaps-rpc-methods/src/endowments/network-access.ts
 [network hardening]: ../../packages/snaps-execution-environments/src/common/endowments/network.ts
 [ses]: https://github.com/endojs/endo/tree/master/packages/ses
