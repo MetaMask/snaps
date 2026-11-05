@@ -20,6 +20,7 @@ This repository contains the following packages [^fn1]:
 - [`@metamask/snaps-sdk`](packages/snaps-sdk)
 - [`@metamask/snaps-simulation`](packages/snaps-simulation)
 - [`@metamask/snaps-utils`](packages/snaps-utils)
+- [`@metamask/snaps-vitest`](packages/snaps-vitest)
 - [`@metamask/snaps-webpack-plugin`](packages/snaps-webpack-plugin)
 
 <!-- end package list -->
@@ -43,6 +44,7 @@ linkStyle default opacity:0.5
   snaps_sdk(["@metamask/snaps-sdk"]);
   snaps_simulation(["@metamask/snaps-simulation"]);
   snaps_utils(["@metamask/snaps-utils"]);
+  snaps_vitest(["@metamask/snaps-vitest"]);
   snaps_webpack_plugin(["@metamask/snaps-webpack-plugin"]);
   create_snap --> snaps_utils;
   snaps_cli --> snaps_rpc_methods;

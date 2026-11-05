@@ -4901,6 +4901,20 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@metamask/snaps-vitest@workspace:packages/snaps-vitest":
+  version: 0.0.0-use.local
+  resolution: "@metamask/snaps-vitest@workspace:packages/snaps-vitest"
+  dependencies:
+    "@metamask/auto-changelog": "npm:^7.0.1"
+    "@ts-bridge/cli": "npm:^0.6.1"
+    depcheck: "npm:^1.4.7"
+    eslint: "npm:^9.11.0"
+    prettier: "npm:^3.3.3"
+    typescript: "npm:~5.8.3"
+    vitest: "npm:^3.1.1"
+  languageName: unknown
+  linkType: soft
+
 "@metamask/snaps-webpack-plugin@workspace:^, @metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin":
   version: 0.0.0-use.local
   resolution: "@metamask/snaps-webpack-plugin@workspace:packages/snaps-webpack-plugin"
