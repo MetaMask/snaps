@@ -171,7 +171,8 @@ module.exports = defineConfig({
 
         if (
           workspace.cwd !== 'packages/examples' &&
-          workspace.cwd !== 'packages/snaps-sandbox'
+          workspace.cwd !== 'packages/snaps-sandbox' &&
+          workspace.cwd !== 'packages/snaps-vitest'
         ) {
           // All non-root packages must have the same "test" script.
           if (workspace.manifest.scripts['test:browser']) {

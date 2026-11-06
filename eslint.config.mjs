@@ -307,6 +307,7 @@ const config = createConfig([
       'packages/snaps-rollup-plugin/src/**/*',
       'packages/snaps-simulation/src/**/*',
       'packages/snaps-utils/src/**/*',
+      'packages/snaps-vitest/src/**/*',
       'packages/snaps-webpack-plugin/src/**/*',
       'packages/test-snaps/src/**/*',
       '**/scripts/**/*.ts',
