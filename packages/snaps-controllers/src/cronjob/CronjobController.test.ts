@@ -1190,4 +1190,65 @@ describe('CronjobController', () => {
       ).toMatchInlineSnapshot(`{}`);
     });
   });
+
+  it('schedules the remaining events when one of them has an unusable date', async () => {
+    const rootMessenger = getRootCronjobControllerMessenger();
+    const controllerMessenger =
+      getRestrictedCronjobControllerMessenger(rootMessenger);
+
+    const handleRequest = jest.fn().mockResolvedValue(undefined);
+    rootMessenger.registerActionHandler(
+      'SnapController:handleRequest',
+      handleRequest,
+    );
+
+    jest.spyOn(console, 'error').mockImplementation();
+
+    const cronjobController = new CronjobController({
+      messenger: controllerMessenger,
+      stateManager: getMockStateManager(),
+      state: {
+        events: {
+          // Ordered first on purpose: before the loop caught its own errors,
+          // this one threw out of `init` and every event behind it was never
+          // scheduled at all.
+          broken: {
+            id: 'broken',
+            snapId: MOCK_SNAP_ID,
+            date: undefined as unknown as string,
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: 'PT30S',
+            recurring: true,
+            request: { method: 'brokenMethod', params: [] },
+          },
+          healthy: {
+            id: 'healthy',
+            snapId: MOCK_SNAP_ID,
+            date: new Date('2022-01-01T00:00Z').toISOString(),
+            scheduledAt: new Date('2022-01-01T00:00Z').toISOString(),
+            schedule: 'PT25H',
+            recurring: true,
+            request: { method: 'healthyMethod', params: [] },
+          },
+        },
+      },
+    });
+
+    expect(() => cronjobController.init()).not.toThrow();
+
+    // The healthy event executes asynchronously; without settling it here its
+    // promise outlives `destroy` and reschedules against a torn-down
+    // controller, which leaves the jest worker unable to exit.
+    await new Promise((resolve) => originalProcessNextTick(resolve));
+
+    // The past-dated healthy event executes immediately, which is only
+    // reachable if the loop survived the broken event ordered before it.
+    const methods = handleRequest.mock.calls.map(
+      ([args]) => args.request.method,
+    );
+    expect(methods).toContain('healthyMethod');
+    expect(methods).not.toContain('brokenMethod');
+
+    cronjobController.destroy();
+  });
 });

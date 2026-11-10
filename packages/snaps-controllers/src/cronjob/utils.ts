@@ -2,6 +2,7 @@ import type { CronjobSpecification } from '@metamask/snaps-utils';
 import { assert, hasProperty } from '@metamask/utils';
 import { parseExpression } from 'cron-parser';
 import { DateTime, Duration } from 'luxon';
+import type { DateTimeMaybeValid } from 'luxon';
 
 /**
  * Get the schedule from a cronjob specification.
@@ -40,6 +41,21 @@ function getDuration(duration: Duration): Duration<true> {
 }
 
 /**
+ * Add a duration to the current time.
+ *
+ * The sum may fall outside the representable date range, so the result may be
+ * invalid. `DateTime.plus` is typed to return `this`, which carries the
+ * caller's validity through unchanged and hides that; naming the return type
+ * here makes the compiler require the check at the call site.
+ *
+ * @param duration - The duration to add to the current time.
+ * @returns The resulting date, which may be invalid.
+ */
+function getOffsetDate(duration: Duration<true>): DateTimeMaybeValid {
+  return DateTime.now().toUTC().plus(duration);
+}
+
+/**
  * Get the next execution date from a schedule, which should be either:
  *
  * - An ISO 8601 date string, or
@@ -70,7 +86,7 @@ export function getExecutionDate(schedule: string) {
     if (duration.isValid) {
       // This ensures the duration is at least 1 second.
       const validatedDuration = getDuration(duration);
-      const offsetDate = DateTime.now().toUTC().plus(validatedDuration);
+      const offsetDate = getOffsetDate(validatedDuration);
       assert(offsetDate.isValid);
       return offsetDate.toISO();
     }
