@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.2]
+
+### Changed
+
+- Replace usage of `MultichainAssetsController` with `AssetsController` ([#4157](https://github.com/MetaMask/snaps/pull/4157))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.0` ([#4122](https://github.com/MetaMask/snaps/pull/4122))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+
 ## [4.3.1]
 
 ### Changed
@@ -335,7 +343,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.2...HEAD
+[4.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.1...@metamask/snaps-simulation@4.3.2
 [4.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.0...@metamask/snaps-simulation@4.3.1
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.2.0...@metamask/snaps-simulation@4.3.0
 [4.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.1.4...@metamask/snaps-simulation@4.2.0

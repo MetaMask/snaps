@@ -1,5 +1,5 @@
 import type { CaipAccountId, Component } from '@metamask/snaps-sdk';
-import { NodeType } from '@metamask/snaps-sdk';
+import { InputType, NodeType } from '@metamask/snaps-sdk';
 import type {
   BoldChildren,
   GenericSnapElement,
@@ -186,11 +186,7 @@ export function getTextChildren(
     }
   });
 
-  return children.filter((child) => child !== null) as (
-    | string
-    | StandardFormattingElement
-    | LinkElement
-  )[];
+  return children.filter((child) => child !== null);
 }
 
 /**
@@ -276,7 +272,7 @@ export function getJsxElementFromComponent(
           <Field label={component.label} error={component.error}>
             <Input
               name={component.name}
-              type={component.inputType}
+              type={component.inputType ?? InputType.Text}
               value={component.value}
               placeholder={component.placeholder}
             />

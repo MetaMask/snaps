@@ -149,7 +149,7 @@ describe('SnapInterfaceController', () => {
 
       expect(controllerMessenger.call).toHaveBeenNthCalledWith(
         2,
-        'MultichainAssetsController:getState',
+        'AssetsController:getState',
       );
 
       const { state } = rootMessenger.call(
@@ -690,13 +690,10 @@ describe('SnapInterfaceController', () => {
         () => ({ result: true, type: 'all' }),
       );
 
-      rootMessenger.registerActionHandler(
-        'MultichainAssetsController:getState',
-        () => ({
-          assetsMetadata: {},
-          accountsAssets: {},
-        }),
-      );
+      rootMessenger.registerActionHandler('AssetsController:getState', () => ({
+        assetsInfo: {},
+        assetsBalance: {},
+      }));
 
       rootMessenger.registerActionHandler(
         'AccountsController:getAccountByAddress',

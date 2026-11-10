@@ -48,7 +48,7 @@
     "@babel/preset-typescript": "^7.23.2",
     "@jest/globals": "^29.5.0",
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.2.1",
+    "@metamask/auto-changelog": "^7.0.1",
     "@metamask/snaps-jest": "workspace:^",
     "@metamask/snaps-rollup-plugin": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
@@ -67,7 +67,7 @@
     "prettier": "^3.3.3",
     "rollup": "^2.80.0",
     "ts-node": "^10.9.1",
-    "typescript": "~5.3.3"
+    "typescript": "~5.8.3"
   },
   "engines": {
     "node": "^20 || >=22"

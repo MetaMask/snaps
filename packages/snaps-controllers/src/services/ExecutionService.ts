@@ -88,7 +88,7 @@ export type SnapExecutionData = {
 export type SnapErrorJson = {
   message: string;
   code: number;
-  data?: Json;
+  data?: Record<string, Json>;
 };
 
 export type ExecutionServiceUnhandledErrorEvent = {

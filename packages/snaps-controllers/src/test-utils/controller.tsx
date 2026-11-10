@@ -856,7 +856,7 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       'PhishingController:testOrigin',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
-      'MultichainAssetsController:getState',
+      'AssetsController:getState',
       'AccountsController:getAccountByAddress',
       'SnapController:getSnap',
       'AccountsController:getSelectedMultichainAccount',
@@ -873,21 +873,18 @@ export const getRestrictedSnapInterfaceControllerMessenger = (
       type: 'all',
     }));
 
-    messenger.registerActionHandler(
-      'MultichainAssetsController:getState',
-      () => ({
-        assetsMetadata: {
-          // @ts-expect-error partial mock
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
-            name: 'Solana',
-            symbol: 'SOL',
-          },
+    messenger.registerActionHandler('AssetsController:getState', () => ({
+      assetsInfo: {
+        // @ts-expect-error partial mock
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:105': {
+          name: 'Solana',
+          symbol: 'SOL',
         },
-        accountsAssets: {
-          [MOCK_ACCOUNT_ID]: [],
-        },
-      }),
-    );
+      },
+      assetsBalance: {
+        [MOCK_ACCOUNT_ID]: {},
+      },
+    }));
 
     messenger.registerActionHandler(
       'AccountsController:getAccountByAddress',

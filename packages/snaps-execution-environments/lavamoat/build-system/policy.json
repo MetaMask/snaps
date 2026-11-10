@@ -542,6 +542,8 @@
         "AggregateError": true,
         "FinalizationRegistry": true,
         "Float16Array": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "WeakRef": true
       },
       "packages": {
@@ -733,7 +735,8 @@
       },
       "packages": {
         "depcheck>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "depcheck>@babel/traverse": true,
+        "@metamask/snaps-utils>@babel/types": true
       }
     },
     "webpack>loader-runner": {
@@ -1001,6 +1004,8 @@
     "terser": {
       "globals": {
         "Buffer": true,
+        "Float32Array": true,
+        "Float64Array": true,
         "atob": true,
         "btoa": true,
         "console.log": true,
@@ -1115,7 +1120,6 @@
     },
     "typescript": {
       "builtin": {
-        "buffer.Buffer": true,
         "crypto": true,
         "fs": true,
         "inspector": true,
@@ -1125,12 +1129,11 @@
         "path.dirname": true,
         "path.join": true,
         "path.resolve": true,
-        "perf_hooks.PerformanceObserver": true,
         "perf_hooks.performance": true
       },
       "globals": {
+        "Buffer.from": true,
         "Intl.Collator": true,
-        "PerformanceObserver": true,
         "__dirname": true,
         "__filename": true,
         "clearTimeout": true,

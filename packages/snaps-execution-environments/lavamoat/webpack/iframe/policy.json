@@ -142,11 +142,6 @@
         "console": true
       }
     },
-    "depcheck>lodash": {
-      "globals": {
-        "define": true
-      }
-    },
     "@metamask/snaps-sdk>luxon": {
       "globals": {
         "Intl": true

@@ -1,6 +1,6 @@
 {
   "name": "@metamask/test-snaps",
-  "version": "3.5.2",
+  "version": "3.6.0",
   "description": "The test snaps website for MetaMask Snaps, used for end-to-end testing",
   "keywords": [
     "MetaMask",
@@ -43,7 +43,7 @@
     "test:watch": "jest --watch"
   },
   "devDependencies": {
-    "@metamask/auto-changelog": "^6.2.1",
+    "@metamask/auto-changelog": "^7.0.1",
     "@metamask/background-events-example-snap": "workspace:^",
     "@metamask/bip32-example-snap": "workspace:^",
     "@metamask/bip44-example-snap": "workspace:^",
@@ -78,7 +78,7 @@
     "@metamask/signature-insights-example-snap": "workspace:^",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/utils": "^12.0.0",
     "@metamask/wasm-example-snap": "workspace:^",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@popperjs/core": "^2.11.8",
@@ -113,7 +113,7 @@
     "terser-webpack-plugin": "^5.3.9",
     "ts-node": "^10.9.1",
     "tsconfig-paths-webpack-plugin": "^4.0.1",
-    "typescript": "~5.3.3",
+    "typescript": "~5.8.3",
     "webpack": "^5.97.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.1"
