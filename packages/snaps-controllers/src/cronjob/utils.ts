@@ -65,14 +65,16 @@ export function getExecutionDate(schedule: string) {
     });
   }
 
-  const duration = Duration.fromISO(schedule);
-  if (duration.isValid) {
-    // This ensures the duration is at least 1 second.
-    const validatedDuration = getDuration(duration);
-    return DateTime.now().toUTC().plus(validatedDuration).toISO();
-  }
-
   try {
+    const duration = Duration.fromISO(schedule);
+    if (duration.isValid) {
+      // This ensures the duration is at least 1 second.
+      const validatedDuration = getDuration(duration);
+      const offsetDate = DateTime.now().toUTC().plus(validatedDuration);
+      assert(offsetDate.isValid);
+      return offsetDate.toISO();
+    }
+
     const parsed = parseExpression(schedule, { utc: true });
     const next = parsed.next();
     const nextDate = DateTime.fromJSDate(next.toDate());

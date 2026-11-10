@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.2.0",
+    "@metamask/auto-changelog": "^7.0.1",
     "@rollup/plugin-virtual": "^2.1.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
@@ -76,7 +76,7 @@
     "memfs": "^3.4.13",
     "prettier": "^3.3.3",
     "rollup": "^2.80.0",
-    "typescript": "~5.3.3"
+    "typescript": "~5.8.3"
   },
   "engines": {
     "node": "^20 || >=22"

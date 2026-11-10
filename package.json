@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-monorepo",
-  "version": "166.0.0",
+  "version": "170.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -28,7 +28,7 @@
     "install-chrome": "./scripts/install-chrome.sh",
     "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:tsconfig && yarn constraints && yarn lint:dependencies && yarn messenger-action-types:check",
     "lint:dependencies": "yarn workspaces foreach --all --parallel --verbose run lint:dependencies && yarn dedupe --check",
-    "lint:eslint": "eslint . --cache",
+    "lint:eslint": "NODE_OPTIONS=--max-old-space-size=8192 eslint . --cache",
     "lint:fix": "yarn workspaces foreach --all --parallel run lint:eslint --fix && yarn lint:misc --write && yarn lint:tsconfig && yarn constraints --fix && yarn dedupe && yarn messenger-action-types:generate",
     "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn '**/*.json' '**/*.md' '!**/CHANGELOG.md' '**/*.yml' '**/*.html'",
     "lint:tsconfig": "node scripts/verify-tsconfig.mjs",
@@ -62,6 +62,7 @@
   "resolutions": {
     "@esbuild-plugins/node-modules-polyfill@^0.2.2": "patch:@esbuild-plugins/node-modules-polyfill@npm%3A0.2.2#./.yarn/patches/@esbuild-plugins-node-modules-polyfill-npm-0.2.2-f612681798.patch",
     "@metamask/messenger": "^2.0.0",
+    "@metamask/utils": "^12.0.0",
     "@puppeteer/browsers@1.4.6": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@puppeteer/browsers@^1.6.0": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
@@ -71,20 +72,21 @@
     "jest-util@^29.5.0": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "jest-util@^29.6.3": "patch:jest-util@npm%3A29.6.3#./.yarn/patches/jest-util-npm-29.6.3-6ffdea2c1c.patch",
     "luxon@^3.2.1": "patch:luxon@npm%3A3.3.0#./.yarn/patches/luxon-npm-3.3.0-bdbae9bfd5.patch",
+    "ses": "2.2.0",
     "tsconfig-paths@^3.11.0": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
     "tsconfig-paths@^3.14.1": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch",
     "tsconfig-paths@^4.1.2": "patch:tsconfig-paths@npm%3A3.14.2#./.yarn/patches/tsconfig-paths-npm-3.14.2-90ce75420d.patch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.2.0",
-    "@metamask/create-release-branch": "^4.2.1",
+    "@metamask/auto-changelog": "^7.0.1",
+    "@metamask/create-release-branch": "^4.2.3",
     "@metamask/eslint-config": "^14.0.0",
     "@metamask/eslint-config-browser": "^14.0.0",
     "@metamask/eslint-config-jest": "^14.0.0",
     "@metamask/eslint-config-nodejs": "^14.0.0",
     "@metamask/eslint-config-typescript": "^14.0.0",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/utils": "^12.0.0",
     "@swc/core": "1.11.31",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
@@ -121,7 +123,7 @@
     "supports-color": "^7.2.0",
     "ts-node": "^10.9.1",
     "tsx": "^4.20.3",
-    "typescript": "~5.3.3",
+    "typescript": "~5.8.3",
     "typescript-eslint": "^8.6.0",
     "vite": "^6.4.3",
     "yargs": "^17.7.1"

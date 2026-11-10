@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-utils",
-  "version": "12.6.0",
+  "version": "12.6.1",
   "description": "A collection of utilities for MetaMask Snaps",
   "keywords": [
     "MetaMask",
@@ -80,6 +80,7 @@
   "dependencies": {
     "@babel/core": "^7.23.2",
     "@babel/types": "^7.23.0",
+    "@metamask/cryptography": "^1.1.2",
     "@metamask/key-tree": "^10.1.1",
     "@metamask/messenger": "^2.0.0",
     "@metamask/permission-controller": "^13.1.1",
@@ -87,8 +88,8 @@
     "@metamask/slip44": "^4.5.0",
     "@metamask/snaps-registry": "^4.0.0",
     "@metamask/snaps-sdk": "workspace:^",
-    "@metamask/superstruct": "^3.3.0",
-    "@metamask/utils": "^11.11.0",
+    "@metamask/superstruct": "^3.4.1",
+    "@metamask/utils": "^12.0.0",
     "@scure/base": "^1.1.1",
     "chalk": "^4.1.2",
     "cron-parser": "^4.5.0",
@@ -99,12 +100,12 @@
     "marked": "^12.0.1",
     "rfdc": "^1.3.0",
     "semver": "^7.5.4",
-    "ses": "^2.1.0",
+    "ses": "^2.3.0",
     "validate-npm-package-name": "^5.0.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
-    "@metamask/auto-changelog": "^6.2.0",
+    "@metamask/auto-changelog": "^7.0.1",
     "@metamask/post-message-stream": "^10.0.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
@@ -127,7 +128,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^4.1.2",
     "tsx": "^4.20.3",
-    "typescript": "~5.3.3",
+    "typescript": "~5.8.3",
     "vite": "^6.4.3",
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-tsconfig-paths": "^4.0.5",

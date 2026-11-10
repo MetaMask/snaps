@@ -1,6 +1,7 @@
 import {
   MethodNotFoundError,
   type OnRpcRequestHandler,
+  type GetStateParams,
 } from '@metamask/snaps-sdk';
 
 import type {
@@ -50,7 +51,7 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
     }
 
     case 'getState': {
-      const params = request.params as BaseParams;
+      const params = request.params as GetStateParams;
       return await snap.request({
         method: 'snap_getState',
         params: {

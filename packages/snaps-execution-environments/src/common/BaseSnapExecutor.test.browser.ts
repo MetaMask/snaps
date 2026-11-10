@@ -1331,6 +1331,97 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  it('throws if a Snap is already running', async () => {
+    const CODE = `
+      exports.onRpcRequest = () => null;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.executeSnap(2, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      error: expect.objectContaining({
+        code: -32600,
+        message: 'Snap is already running.',
+      }),
+    });
+  });
+
+  it('allows starting a Snap again after it has been terminated', async () => {
+    const CODE = `
+      exports.onRpcRequest = () => null;
+    `;
+
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      result: 'OK',
+    });
+
+    await executor.writeCommand({
+      jsonrpc: '2.0',
+      id: 2,
+      method: 'terminate',
+      params: [],
+    });
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      result: 'OK',
+    });
+
+    await executor.executeSnap(3, MOCK_SNAP_ID, CODE, []);
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 3,
+      result: 'OK',
+    });
+  });
+
+  it('allows starting a Snap again after it failed to start', async () => {
+    const executor = new TestSnapExecutor();
+    await executor.executeSnap(
+      1,
+      MOCK_SNAP_ID,
+      `throw new Error('Failed to start.');`,
+      [],
+    );
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 1,
+      error: expect.objectContaining({ code: -32603 }),
+    });
+
+    await executor.executeSnap(
+      2,
+      MOCK_SNAP_ID,
+      `exports.onRpcRequest = () => null;`,
+      [],
+    );
+
+    expect(await executor.readCommand()).toStrictEqual({
+      jsonrpc: '2.0',
+      id: 2,
+      result: 'OK',
+    });
+  });
+
   it("throws if the Snap doesn't export anything", async () => {
     const CODE = ``;
 
