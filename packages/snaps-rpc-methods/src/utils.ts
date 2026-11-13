@@ -3,7 +3,6 @@ import type {
   BIP32Node,
   SLIP10PathNode,
   SupportedCurve,
-  CryptographicFunctions,
 } from '@metamask/key-tree';
 import { SLIP10Node } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
@@ -77,11 +76,6 @@ type BaseDeriveEntropyOptions = {
    * mnemonic phrase.
    */
   magic: MagicValue;
-
-  /**
-   * The cryptographic functions to use for the derivation.
-   */
-  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 type SeedDeriveEntropyOptions = BaseDeriveEntropyOptions & {
@@ -108,9 +102,7 @@ function getEntropyDerivationPath({
   input,
   salt,
   magic,
-}: Required<Omit<BaseDeriveEntropyOptions, 'cryptographicFunctions'>>):
-  | BIP32Node[]
-  | SLIP10PathNode[] {
+}: Required<BaseDeriveEntropyOptions>): BIP32Node[] | SLIP10PathNode[] {
   const inputBytes = stringToBytes(input);
   const saltBytes = stringToBytes(salt);
 
@@ -134,8 +126,6 @@ function getEntropyDerivationPath({
  * derivation.
  * @param options.magic - A hardened BIP-32 index, which is used to derive the
  * root key from the mnemonic phrase.
- * @param options.cryptographicFunctions - The cryptographic functions to use
- * for the derivation.
  * @returns The derived entropy.
  */
 export async function deriveEntropyFromSeed({
@@ -143,7 +133,6 @@ export async function deriveEntropyFromSeed({
   salt = '',
   seed,
   magic,
-  cryptographicFunctions,
 }: SeedDeriveEntropyOptions) {
   const computedDerivationPath = getEntropyDerivationPath({
     input,
@@ -152,13 +141,10 @@ export async function deriveEntropyFromSeed({
   });
 
   // Derive the private key using BIP-32.
-  const { privateKey } = await SLIP10Node.fromSeed(
-    {
-      derivationPath: [seed, ...computedDerivationPath],
-      curve: 'secp256k1',
-    },
-    cryptographicFunctions,
-  );
+  const { privateKey } = await SLIP10Node.fromSeed({
+    derivationPath: [seed, ...computedDerivationPath],
+    curve: 'secp256k1',
+  });
 
   // This should never happen, but this keeps TypeScript happy.
   assert(privateKey, 'Failed to derive the entropy.');
@@ -199,7 +185,6 @@ export function getPathPrefix(
 type BaseGetNodeArgs = {
   curve: SupportedCurve;
   path: string[];
-  cryptographicFunctions: CryptographicFunctions | undefined;
 };
 
 type GetNodeArgsMnemonic = BaseGetNodeArgs & {
@@ -222,30 +207,24 @@ type GetNodeArgsSeed = BaseGetNodeArgs & {
  * derivation.
  * @param options.path - The derivation path to use as array, starting with an
  * "m" as the first item.
- * @param options.cryptographicFunctions - The cryptographic functions to use
- * for the node.
  * @returns The `key-tree` SLIP-10 node.
  */
 export async function getNodeFromMnemonic({
   curve,
   secretRecoveryPhrase,
   path,
-  cryptographicFunctions,
 }: GetNodeArgsMnemonic) {
   const prefix = getPathPrefix(curve);
 
-  return await SLIP10Node.fromDerivationPath(
-    {
-      curve,
-      derivationPath: [
-        secretRecoveryPhrase,
-        ...(path.slice(1).map((index) => `${prefix}:${index}`) as
-          | BIP32Node[]
-          | SLIP10PathNode[]),
-      ],
-    },
-    cryptographicFunctions,
-  );
+  return await SLIP10Node.fromDerivationPath({
+    curve,
+    derivationPath: [
+      secretRecoveryPhrase,
+      ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+        | BIP32Node[]
+        | SLIP10PathNode[]),
+    ],
+  });
 }
 
 /**
@@ -260,30 +239,20 @@ export async function getNodeFromMnemonic({
  * derivation.
  * @param options.path - The derivation path to use as array, starting with an
  * "m" as the first item.
- * @param options.cryptographicFunctions - The cryptographic functions to use
- * for the node.
  * @returns The `key-tree` SLIP-10 node.
  */
-export async function getNodeFromSeed({
-  curve,
-  seed,
-  path,
-  cryptographicFunctions,
-}: GetNodeArgsSeed) {
+export async function getNodeFromSeed({ curve, seed, path }: GetNodeArgsSeed) {
   const prefix = getPathPrefix(curve);
 
-  return await SLIP10Node.fromSeed(
-    {
-      curve,
-      derivationPath: [
-        seed,
-        ...(path.slice(1).map((index) => `${prefix}:${index}`) as
-          | BIP32Node[]
-          | SLIP10PathNode[]),
-      ],
-    },
-    cryptographicFunctions,
-  );
+  return await SLIP10Node.fromSeed({
+    curve,
+    derivationPath: [
+      seed,
+      ...(path.slice(1).map((index) => `${prefix}:${index}`) as
+        | BIP32Node[]
+        | SLIP10PathNode[]),
+    ],
+  });
 }
 
 /**

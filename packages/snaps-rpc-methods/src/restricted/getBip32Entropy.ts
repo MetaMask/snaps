@@ -1,4 +1,3 @@
-import type { CryptographicFunctions } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
@@ -35,15 +34,6 @@ export type GetBip32EntropyMethodHooks = {
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-
-  /**
-   * Get the cryptographic functions to use for the client. This may return an
-   * empty object or `undefined` to fall back to the default cryptographic
-   * functions.
-   *
-   * @returns The cryptographic functions to use for the client.
-   */
-  getClientCryptography: () => CryptographicFunctions | undefined;
 };
 
 export type GetBip32EntropyMessengerActions =
@@ -104,7 +94,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<GetBip32EntropyMethodHooks> = {
   getUnlockPromise: true,
-  getClientCryptography: true,
 };
 
 /**
@@ -177,13 +166,11 @@ export const getBip32EntropyBuilder = Object.freeze({
  * @param options.methodHooks - The RPC method hooks.
  * @param options.methodHooks.getUnlockPromise - A function that resolves once the MetaMask extension is unlocked
  * and prompts the user to unlock their MetaMask if it is locked.
- * @param options.methodHooks.getClientCryptography - A function to retrieve the cryptographic
- * functions to use for the client.
  * @returns The method implementation which returns a `JsonSLIP10Node`.
  * @throws If the params are invalid.
  */
 export function getBip32EntropyImplementation({
-  methodHooks: { getUnlockPromise, getClientCryptography },
+  methodHooks: { getUnlockPromise },
   messenger,
 }: GetBip32EntropySpecificationBuilderOptions) {
   return async function getBip32Entropy(
@@ -205,7 +192,6 @@ export function getBip32EntropyImplementation({
         curve: params.curve,
         path: params.path,
         seed,
-        cryptographicFunctions: getClientCryptography(),
       });
 
       return node.toJSON();
@@ -220,7 +206,6 @@ export function getBip32EntropyImplementation({
       curve: params.curve,
       path: params.path,
       secretRecoveryPhrase,
-      cryptographicFunctions: getClientCryptography(),
     });
 
     return node.toJSON();
