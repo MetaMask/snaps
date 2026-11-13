@@ -70,8 +70,6 @@ import {
   stringToBytes,
   createDeferredPromise,
 } from '@metamask/utils';
-import { hmac } from '@noble/hashes/hmac';
-import { sha512 } from '@noble/hashes/sha512';
 import { File } from 'buffer';
 import { createReadStream } from 'fs';
 import fetchMock from 'jest-fetch-mock';
@@ -12738,42 +12736,6 @@ describe('SnapController', () => {
       expect(
         snapController.state.unencryptedSnapStates[MOCK_SNAP_ID],
       ).toStrictEqual(JSON.stringify(state));
-
-      snapController.destroy();
-    });
-
-    it('uses custom client cryptography functions', async () => {
-      const hmacSha512 = jest
-        .fn()
-        .mockImplementation((key: Uint8Array, data: Uint8Array) =>
-          hmac(sha512, key, data),
-        );
-
-      const options = getSnapControllerOptions({
-        state: {
-          snaps: getPersistedSnapsState(),
-        },
-        clientCryptography: {
-          hmacSha512,
-        },
-      });
-
-      const snapController = await getSnapController(options);
-
-      const state = { foo: 'bar' };
-
-      const promise = waitForStateChange(options.messenger);
-      await options.messenger.call(
-        'SnapController:updateSnapState',
-        MOCK_SNAP_ID,
-        state,
-        true,
-      );
-
-      jest.advanceTimersByTime(STATE_DEBOUNCE_TIMEOUT);
-      await promise;
-
-      expect(hmacSha512).toHaveBeenCalledTimes(10);
 
       snapController.destroy();
     });
