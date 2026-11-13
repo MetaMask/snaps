@@ -57,21 +57,21 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/key-tree": "^10.1.1",
-    "@metamask/permission-controller": "^13.1.1",
+    "@metamask/key-tree": "^11.0.0",
+    "@metamask/permission-controller": "^14.1.0",
     "@metamask/rpc-errors": "^7.0.3",
     "@metamask/snaps-sdk": "workspace:^",
     "@metamask/snaps-utils": "workspace:^",
     "@metamask/superstruct": "^3.4.1",
-    "@metamask/utils": "^12.0.0",
+    "@metamask/utils": "^12.0.2",
     "@noble/hashes": "^1.7.1",
     "async-mutex": "^0.5.0"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
     "@metamask/auto-changelog": "^7.0.1",
-    "@metamask/json-rpc-engine": "^10.5.0",
-    "@metamask/messenger": "^2.0.0",
+    "@metamask/json-rpc-engine": "^11.0.0",
+    "@metamask/messenger": "^3.0.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",
     "@ts-bridge/cli": "^0.6.1",
