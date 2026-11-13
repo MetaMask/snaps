@@ -4,8 +4,7 @@
     "baseUrl": "./",
     "jsx": "react-jsx",
     "jsxImportSource": "@metamask/snaps-sdk",
-    "module": "ES2020",
-    "moduleResolution": "Node10"
+    "moduleDetection": "auto"
   },
   "include": [
     "./src",
