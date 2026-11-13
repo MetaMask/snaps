@@ -1,5 +1,4 @@
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
-import type { CryptographicFunctions } from '@metamask/key-tree';
 import { mnemonicToSeed } from '@metamask/key-tree';
 import type {
   ActionConstraint,
@@ -140,14 +139,6 @@ export type RestrictedMiddlewareHooks = {
    * @returns A boolean flag signaling whether the client is locked.
    */
   getIsLocked: () => boolean;
-
-  /**
-   * Get the cryptographic functions to use for the client. This may return an
-   * empty object to fall back to the default cryptographic functions.
-   *
-   * @returns The cryptographic functions to use for the client.
-   */
-  getClientCryptography: () => CryptographicFunctions;
 
   /**
    * A hook that returns metadata about a given Snap.
@@ -457,7 +448,6 @@ export function getRestrictedHooks(
   return {
     getMnemonic: getGetMnemonicImplementation(options.secretRecoveryPhrase),
     getIsLocked: () => false,
-    getClientCryptography: () => ({}),
     getSnap: getGetSnapImplementation(true),
     setCurrentChain: getSetCurrentChainImplementation(runSaga),
     getSimulationState: store.getState.bind(store),

@@ -9,7 +9,6 @@ import type {
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
-import type { CryptographicFunctions } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
@@ -690,12 +689,6 @@ export type SnapControllerArgs = {
   getFeatureFlags: () => DynamicFeatureFlags;
 
   /**
-   * The cryptographic functions to use for the client. This may be an empty
-   * object to fall back to the default cryptographic functions.
-   */
-  clientCryptography?: CryptographicFunctions;
-
-  /**
    * A hook that returns a promise that resolves when the onboarding has completed.
    *
    * @returns A promise that resolves when onboarding is complete.
@@ -792,8 +785,6 @@ export class SnapController extends BaseController<
 
   readonly #getFeatureFlags: () => DynamicFeatureFlags;
 
-  readonly #clientCryptography: CryptographicFunctions | undefined;
-
   readonly #clientConfig: ClientConfig;
 
   readonly #detectSnapLocation: typeof detectSnapLocation;
@@ -838,7 +829,6 @@ export class SnapController extends BaseController<
     encryptor,
     getMnemonicSeed,
     getFeatureFlags = () => ({}),
-    clientCryptography,
     ensureOnboardingComplete,
     clientConfig,
   }: SnapControllerArgs) {
@@ -920,7 +910,6 @@ export class SnapController extends BaseController<
     this.#encryptor = encryptor;
     this.#getMnemonicSeed = getMnemonicSeed;
     this.#getFeatureFlags = getFeatureFlags;
-    this.#clientCryptography = clientCryptography;
     this.#clientConfig = clientConfig;
     this.#preinstalledSnaps = preinstalledSnaps;
     this._onUnhandledSnapError = this._onUnhandledSnapError.bind(this);
@@ -2202,7 +2191,6 @@ export class SnapController extends BaseController<
     const entropy = await getEncryptionEntropy({
       snapId,
       seed,
-      cryptographicFunctions: this.#clientCryptography,
     });
 
     const encryptionKey = await this.#encryptor.keyFromPassword(
