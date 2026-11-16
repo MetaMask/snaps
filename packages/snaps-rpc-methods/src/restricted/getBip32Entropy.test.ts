@@ -7,8 +7,6 @@ import {
   TEST_SECRET_RECOVERY_PHRASE_BYTES,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
-import { hmac } from '@noble/hashes/hmac';
-import { sha512 } from '@noble/hashes/sha512';
 
 import type { GetBip32EntropyMessengerActions } from './getBip32Entropy';
 import {
@@ -19,7 +17,6 @@ import {
 describe('specificationBuilder', () => {
   const methodHooks = {
     getUnlockPromise: jest.fn(),
-    getClientCryptography: jest.fn(),
   };
 
   const specification = getBip32EntropyBuilder.specificationBuilder({
@@ -94,12 +91,11 @@ describe('getBip32EntropyImplementation', () => {
   describe('getBip32Entropy', () => {
     it('derives the entropy from the path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -122,12 +118,11 @@ describe('getBip32EntropyImplementation', () => {
 
     it('derives a BIP-44 path', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -153,12 +148,11 @@ describe('getBip32EntropyImplementation', () => {
 
     it('derives a path using ed25519', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -184,12 +178,11 @@ describe('getBip32EntropyImplementation', () => {
 
     it('derives a path using ed25519Bip32', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -215,12 +208,11 @@ describe('getBip32EntropyImplementation', () => {
 
     it('calls `getMnemonic` with a different entropy source', async () => {
       const getUnlockPromise = jest.fn();
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
         })({
           method: 'snap_getBip32Entropy',
@@ -255,12 +247,11 @@ describe('getBip32EntropyImplementation', () => {
 
     it('calls `getMnemonicSeed` with a different entropy source', async () => {
       const getUnlockPromise = jest.fn();
-      const getClientCryptography = jest.fn().mockReturnValue({});
       const messenger = getMessenger();
 
       expect(
         await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
         })({
           method: 'snap_getBip32Entropy',
@@ -293,48 +284,8 @@ describe('getBip32EntropyImplementation', () => {
       );
     });
 
-    it('uses custom client cryptography functions', async () => {
-      const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-
-      const hmacSha512 = jest
-        .fn()
-        .mockImplementation((key: Uint8Array, data: Uint8Array) =>
-          hmac(sha512, key, data),
-        );
-      const getClientCryptography = jest.fn().mockReturnValue({
-        hmacSha512,
-      });
-      const messenger = getMessenger();
-
-      expect(
-        await getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
-          messenger,
-          // @ts-expect-error Missing other required properties.
-        })({
-          params: { path: ['m', "44'", "1'"], curve: 'secp256k1' },
-        }),
-      ).toMatchInlineSnapshot(`
-        {
-          "chainCode": "0x50ccfa58a885b48b5eed09486b3948e8454f34856fb81da5d7b8519d7997abd1",
-          "curve": "secp256k1",
-          "depth": 2,
-          "index": 2147483649,
-          "masterFingerprint": 1404659567,
-          "network": "mainnet",
-          "parentFingerprint": 1829122711,
-          "privateKey": "0xc73cedb996e7294f032766853a8b7ba11ab4ce9755fc052f2f7b9000044c99af",
-          "publicKey": "0x048e129862c1de5ca86468add43b001d32fd34b8113de716ecd63fa355b7f1165f0e76f5dc6095100f9fdaa76ddf28aa3f21406ac5fda7c71ffbedb45634fe2ceb",
-        }
-      `);
-
-      expect(hmacSha512).toHaveBeenCalledTimes(3);
-    });
-
     it('throws if invalid primary keyring is returned', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
-
       const messenger = new Messenger<
         MockAnyNamespace,
         GetBip32EntropyMessengerActions
@@ -352,7 +303,7 @@ describe('getBip32EntropyImplementation', () => {
 
       await expect(
         getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -363,8 +314,6 @@ describe('getBip32EntropyImplementation', () => {
 
     it('throws if invalid primary keyring is returned for ed25519Bip32', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
-
       const messenger = new Messenger<
         MockAnyNamespace,
         GetBip32EntropyMessengerActions
@@ -382,7 +331,7 @@ describe('getBip32EntropyImplementation', () => {
 
       await expect(
         getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -393,8 +342,6 @@ describe('getBip32EntropyImplementation', () => {
 
     it('throws if invalid keyring is returned when selected using entropy source ID', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
-
       const messenger = new Messenger<
         MockAnyNamespace,
         GetBip32EntropyMessengerActions
@@ -412,7 +359,7 @@ describe('getBip32EntropyImplementation', () => {
 
       await expect(
         getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({
@@ -427,8 +374,6 @@ describe('getBip32EntropyImplementation', () => {
 
     it('throws if invalid keyring is returned when selected using entropy source ID for ed25519Bip32', async () => {
       const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-      const getClientCryptography = jest.fn().mockReturnValue({});
-
       const messenger = new Messenger<
         MockAnyNamespace,
         GetBip32EntropyMessengerActions
@@ -446,7 +391,7 @@ describe('getBip32EntropyImplementation', () => {
 
       await expect(
         getBip32EntropyImplementation({
-          methodHooks: { getUnlockPromise, getClientCryptography },
+          methodHooks: { getUnlockPromise },
           messenger,
           // @ts-expect-error Missing other required properties.
         })({

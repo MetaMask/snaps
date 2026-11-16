@@ -16,11 +16,7 @@ import { DEFAULT_SRP } from '../constants';
 import { getControllers, registerSnap } from '../controllers';
 import { getMockOptions } from '../test-utils/options';
 
-const MOCK_HOOKS = {
-  getClientCryptography: jest.fn(),
-  getMnemonic: jest.fn(),
-  getIsLocked: jest.fn(),
-};
+const MOCK_HOOKS = { getMnemonic: jest.fn(), getIsLocked: jest.fn() };
 
 describe('resolve', () => {
   it('returns a function which resolves with the specified result', async () => {
