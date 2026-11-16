@@ -4,7 +4,10 @@
  */
 
 const ESM_DEPENDENCIES_TO_TRANSPILE = [
+  '@metamask/byte-utils',
   '@metamask/cryptography',
+  '@metamask/key-tree',
+  '@metamask/type-utils',
   '@metamask/utils',
 ];
 
@@ -115,7 +118,9 @@ module.exports = {
     '^@metamask/post-message-stream/node$': [
       '@metamask/post-message-stream/node',
     ],
-    '^@metamask/utils$': ['@metamask/utils'],
+    ...Object.fromEntries(
+      ESM_DEPENDENCIES_TO_TRANSPILE.map((name) => [`^${name}$`, [name]]),
+    ),
     '^@metamask/utils/node$': ['@metamask/utils/node'],
     '^@metamask/cryptography/(.+)$': ['@metamask/cryptography/$1'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
