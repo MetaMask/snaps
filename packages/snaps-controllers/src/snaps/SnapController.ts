@@ -112,6 +112,7 @@ import {
   OnAssetHistoricalPriceResponseStruct,
   OnAssetsConversionResponseStruct,
   OnAssetsMarketDataResponseStruct,
+  TraceContextStruct,
 } from '@metamask/snaps-utils';
 import type {
   StorageServiceGetItemAction,
@@ -119,6 +120,7 @@ import type {
   StorageServiceRemoveItemAction,
   StorageServiceClearAction,
 } from '@metamask/storage-service';
+import { is } from '@metamask/superstruct';
 import type {
   Json,
   NonEmptyArray,
@@ -3752,6 +3754,8 @@ export class SnapController extends BaseController<
    * @param options.originMetadata - Optional additional origin metadata for the RPC request.
    * @param options.handler - The handler to trigger on the snap for the request.
    * @param options.request - The JSON-RPC request object.
+   * @param options.traceContext - Optional trace context of the client span the
+   * request belongs to. Dropped if malformed.
    * @returns The result of the JSON-RPC request.
    */
   async handleRequest({
@@ -3760,6 +3764,7 @@ export class SnapController extends BaseController<
     originMetadata,
     handler: handlerType,
     request: rawRequest,
+    traceContext,
   }: SnapRpcHookArgs & { snapId: SnapId }): Promise<unknown> {
     await this.#ensureCanUsePlatform();
 
@@ -3893,6 +3898,8 @@ export class SnapController extends BaseController<
         originMetadata,
         handler: handlerType,
         request: transformedRequest,
+        // A malformed trace context must not fail the request.
+        ...(is(traceContext, TraceContextStruct) && { traceContext }),
       },
     );
 

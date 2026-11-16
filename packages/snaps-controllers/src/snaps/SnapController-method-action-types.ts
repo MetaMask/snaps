@@ -287,6 +287,8 @@ export type SnapControllerInstallSnapsAction = {
  * @param options.originMetadata - Optional additional origin metadata for the RPC request.
  * @param options.handler - The handler to trigger on the snap for the request.
  * @param options.request - The JSON-RPC request object.
+ * @param options.traceContext - Optional trace context of the client span the
+ * request belongs to. Dropped if malformed.
  * @returns The result of the JSON-RPC request.
  */
 export type SnapControllerHandleRequestAction = {

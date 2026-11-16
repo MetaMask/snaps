@@ -5505,6 +5505,82 @@ describe('SnapController', () => {
       snapController.destroy();
     });
 
+    it.each([
+      {
+        description: 'forwards a valid trace context',
+        traceContext: {
+          traceparent:
+            '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01',
+          baggage: 'a=b',
+          origins: ['https://metamask.io'],
+        },
+        forwarded: true,
+      },
+      {
+        description: 'drops a malformed trace context',
+        traceContext: { traceparent: 'foo', origins: ['https://metamask.io'] },
+        forwarded: false,
+      },
+      {
+        description: 'drops a trace context with a malformed origin',
+        traceContext: {
+          traceparent:
+            '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01',
+          origins: ['metamask.io'],
+        },
+        forwarded: false,
+      },
+    ])('$description', async ({ traceContext, forwarded }) => {
+      const rootMessenger = getRootMessenger();
+
+      const options = getSnapControllerOptions({
+        rootMessenger,
+        state: {
+          snaps: getPersistedSnapsState(),
+        },
+      });
+      const [snapController, service] = await getSnapControllerWithEES(options);
+
+      rootMessenger.registerActionHandler(
+        'PermissionController:hasPermission',
+        (_origin, permission) => {
+          return permission === SnapEndowments.Rpc;
+        },
+      );
+
+      await snapController.handleRequest({
+        snapId: MOCK_SNAP_ID,
+        origin: MOCK_ORIGIN,
+        handler: HandlerType.OnRpcRequest,
+        request: {
+          jsonrpc: '2.0',
+          method: 'bar',
+          params: {},
+          id: 1,
+        },
+        traceContext,
+      });
+
+      expect(options.messenger.call).toHaveBeenCalledWith(
+        'ExecutionService:handleRpcRequest',
+        MOCK_SNAP_ID,
+        {
+          origin: MOCK_ORIGIN,
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            id: 1,
+            method: 'bar',
+            jsonrpc: '2.0',
+            params: {},
+          },
+          ...(forwarded && { traceContext }),
+        },
+      );
+
+      await service.terminateAllSnaps();
+      snapController.destroy();
+    });
+
     it('handlers throw if the request has an invalid "jsonrpc" property', async () => {
       const fakeSnap = getPersistedSnapObject({ status: SnapStatus.Running });
       const snapId = fakeSnap.id;
