@@ -1,3 +1,4 @@
+import type { TraceContext } from '@metamask/snaps-utils';
 import type { JsonRpcNotification } from '@metamask/utils';
 
 import consoleEndowment from './console';
@@ -36,6 +37,12 @@ export type EndowmentFactoryOptions = {
    * operations (e.g., network `fetch`).
    */
   notify?: NotifyFunction;
+
+  /**
+   * Returns the trace context of the request the Snap is currently handling,
+   * or `undefined` if that request cannot be determined unambiguously.
+   */
+  getTraceContext?: () => TraceContext | undefined;
 };
 
 /**

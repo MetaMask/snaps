@@ -6,7 +6,7 @@ import {
   UserInputEventStruct,
   OriginMetadataStruct,
 } from '@metamask/snaps-sdk';
-import { HandlerType } from '@metamask/snaps-utils';
+import { HandlerType, TraceContextStruct } from '@metamask/snaps-utils';
 import type { Infer, Struct } from '@metamask/superstruct';
 import {
   any,
@@ -96,6 +96,7 @@ export const SnapRpcRequestArgumentsStruct = object({
       params: optional(record(string(), any())),
     }),
   ),
+  traceContext: optional(TraceContextStruct),
 });
 
 export type PingRequestArguments = Infer<typeof PingRequestArgumentsStruct>;
