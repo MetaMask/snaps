@@ -10,6 +10,5 @@ type SnapsCliGlobals = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
   var snaps: SnapsCliGlobals;
 }
