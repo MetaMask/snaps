@@ -48,7 +48,6 @@ type InternalSocket = {
   url: string;
   protocols: string[];
   openPromise: Promise<void>;
-  // eslint-disable-next-line no-restricted-globals
   socket: WebSocket;
 };
 

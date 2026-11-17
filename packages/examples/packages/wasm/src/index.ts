@@ -43,7 +43,9 @@ export const onRpcRequest: OnRpcRequestHandler = async ({ request }) => {
   // a real snap, you should validate the request before calling the WASM
   // module.
   const method = request.method as Method;
-  const params = request.params as Parameters<Program[typeof method]>;
+  const params = request.params as unknown as Parameters<
+    Program[typeof method]
+  >;
 
   if (program[method]) {
     return program[method](...params);
