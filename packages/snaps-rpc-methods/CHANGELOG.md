@@ -9,14 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [18.0.0]
 
-### Uncategorized
+### Changed
 
-- chore: Bump MetaMask dependencies ([#4179](https://github.com/MetaMask/snaps/pull/4179))
-- chore!: Bump key-tree to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
-- chore: Bump @metamask/auto-changelog from 6.2.1 to 7.0.1 ([#4170](https://github.com/MetaMask/snaps/pull/4170))
-- chore: Bump @metamask/utils from 11.11.0 to 12.0.0 ([#4122](https://github.com/MetaMask/snaps/pull/4122))
-- chore: Bump TypeScript to 5.8 ([#4141](https://github.com/MetaMask/snaps/pull/4141))
-- chore: Bump @metamask/superstruct from 3.3.0 to 3.4.1 ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+- **BREAKING:** Remove `getClientCryptography` hook from `snap_getBip32Entropy`, `snap_getBip32PublicKey`, `snap_getBip44Entropy` and `snap_getEntropy` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.2` ([#4122](https://github.com/MetaMask/snaps/pull/4122), [#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
 
 ## [17.2.0]
 

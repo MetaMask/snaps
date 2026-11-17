@@ -9,13 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [12.6.2]
 
-### Uncategorized
+### Changed
 
-- chore: Bump vite from 6.4.4 to 6.4.5 ([#4185](https://github.com/MetaMask/snaps/pull/4185))
-- chore: Bump MetaMask dependencies ([#4179](https://github.com/MetaMask/snaps/pull/4179))
-- chore: Bump vite from 6.4.3 to 6.4.4 ([#4159](https://github.com/MetaMask/snaps/pull/4159))
-- chore!: Bump key-tree to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
-- chore: Bump @metamask/auto-changelog from 6.2.1 to 7.0.1 ([#4170](https://github.com/MetaMask/snaps/pull/4170))
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/messenger` from `^2.0.0` to `^3.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
 
 ## [12.6.1]
 

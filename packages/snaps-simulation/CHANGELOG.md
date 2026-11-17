@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.3.3]
 
-### Uncategorized
+### Changed
 
-- chore: Bump MetaMask dependencies ([#4179](https://github.com/MetaMask/snaps/pull/4179))
-- chore!: Bump key-tree to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
-- chore: Bump @metamask/auto-changelog from 6.2.1 to 7.0.1 ([#4170](https://github.com/MetaMask/snaps/pull/4170))
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/chain-agnostic-permission` from `^1.7.0` to `^2.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-engine` from `^10.5.0` to `^11.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-middleware-stream` from `^8.0.8` to `^9.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/messenger` from `^2.0.0` to `^3.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
 
 ## [4.3.2]
 
