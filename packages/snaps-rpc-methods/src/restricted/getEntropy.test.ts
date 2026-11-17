@@ -5,8 +5,6 @@ import {
   MOCK_SNAP_ID,
   TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES,
 } from '@metamask/snaps-utils/test-utils';
-import { hmac } from '@noble/hashes/hmac';
-import { sha512 } from '@noble/hashes/sha512';
 
 import type { GetEntropyMessengerActions } from './getEntropy';
 import { getEntropyBuilder } from './getEntropy';
@@ -18,7 +16,6 @@ describe('getEntropyBuilder', () => {
       specificationBuilder: expect.any(Function),
       methodHooks: {
         getUnlockPromise: true,
-        getClientCryptography: true,
       },
       actionNames: ['KeyringController:withKeyringV2Unsafe'],
     });
@@ -27,7 +24,6 @@ describe('getEntropyBuilder', () => {
   it('returns the expected specification', () => {
     const methodHooks = {
       getUnlockPromise: jest.fn(),
-      getClientCryptography: jest.fn(),
     };
 
     expect(
@@ -72,11 +68,8 @@ describe('getEntropyImplementation', () => {
 
   it('returns the expected result', async () => {
     const getUnlockPromise = jest.fn();
-    const getClientCryptography = jest.fn().mockReturnValue({});
-
     const methodHooks = {
       getUnlockPromise,
-      getClientCryptography,
     };
     const messenger = getMessenger();
 
@@ -103,11 +96,8 @@ describe('getEntropyImplementation', () => {
 
   it('calls `getMnemonic` with a different entropy source', async () => {
     const getUnlockPromise = jest.fn();
-    const getClientCryptography = jest.fn().mockReturnValue({});
-
     const methodHooks = {
       getUnlockPromise,
-      getClientCryptography,
     };
     const messenger = getMessenger();
 
@@ -137,46 +127,5 @@ describe('getEntropyImplementation', () => {
       { id: 'source-id' },
       expect.any(Function),
     );
-  });
-
-  it('uses custom client cryptography functions', async () => {
-    const getUnlockPromise = jest.fn().mockResolvedValue(undefined);
-
-    const hmacSha512 = jest
-      .fn()
-      .mockImplementation((key: Uint8Array, data: Uint8Array) =>
-        hmac(sha512, key, data),
-      );
-    const getClientCryptography = jest.fn().mockReturnValue({
-      hmacSha512,
-    });
-
-    const methodHooks = {
-      getUnlockPromise,
-      getClientCryptography,
-    };
-    const messenger = getMessenger();
-
-    const implementation = getEntropyBuilder.specificationBuilder({
-      methodHooks,
-      messenger,
-    }).methodImplementation;
-
-    const result = await implementation({
-      method: 'snap_getEntropy',
-      params: {
-        version: 1,
-        salt: 'foo',
-      },
-      context: {
-        origin: MOCK_SNAP_ID,
-      },
-    });
-
-    expect(result).toBe(
-      '0x6d8e92de419401c7da3cedd5f60ce5635b26059c2a4a8003877fec83653a4921',
-    );
-
-    expect(hmacSha512).toHaveBeenCalledTimes(10);
   });
 });

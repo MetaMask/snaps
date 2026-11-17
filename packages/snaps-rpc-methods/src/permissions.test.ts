@@ -211,7 +211,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
       [],
       {
         getUnlockPromise: jest.fn(),
-        getClientCryptography: jest.fn(),
         isOnPhishingList: jest.fn(),
         maybeUpdatePhishingList: jest.fn(),
         getSnapKeyring: jest.fn(),
@@ -341,7 +340,6 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
       ['snap_dialog'],
       {
         getUnlockPromise: jest.fn(),
-        getClientCryptography: jest.fn(),
         isOnPhishingList: jest.fn(),
         maybeUpdatePhishingList: jest.fn(),
         getSnapKeyring: jest.fn(),

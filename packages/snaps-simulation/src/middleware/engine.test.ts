@@ -19,7 +19,6 @@ describe('createJsonRpcEngine', () => {
       restrictedHooks: {
         getMnemonic: jest.fn(),
         getIsLocked: jest.fn(),
-        getClientCryptography: jest.fn(),
         getSimulationState: jest.fn(),
         getSnap: jest.fn(),
         setCurrentChain: jest.fn(),

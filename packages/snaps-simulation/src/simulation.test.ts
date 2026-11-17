@@ -234,16 +234,6 @@ describe('getRestrictedHooks', () => {
     expect(getIsLocked()).toBe(false);
   });
 
-  it('returns the `getClientCryptography` hook', async () => {
-    const { getClientCryptography } = getRestrictedHooks(
-      options,
-      store,
-      runSaga,
-    );
-
-    expect(getClientCryptography()).toStrictEqual({});
-  });
-
   it('returns the `getSimulationState` hook', async () => {
     const { getSimulationState } = getRestrictedHooks(options, store, runSaga);
 

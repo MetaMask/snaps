@@ -1,7 +1,6 @@
 // This is intentionally imported, rather than re-exported.
 /* eslint-disable import-x/no-unassigned-import */
 import './global';
-import './images';
 /* eslint-enable import-x/no-unassigned-import */
 
 export * from './caip';
