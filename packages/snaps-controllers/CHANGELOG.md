@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **BREAKING:** Remove `clientCryptography` constructor argument from `SnapController` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+  - The latest version of `@metamask/key-tree` uses `@metamask/cryptography` by default and thus no longer requires clients to provide cryptography.
 - Bump `@metamask/approval-controller` from `^9.0.2` to `^10.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
 - Bump `@metamask/base-controller` from `^9.1.0` to `^10.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
 - Bump `@metamask/json-rpc-engine` from `^10.5.0` to `^11.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
