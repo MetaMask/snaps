@@ -2,6 +2,9 @@ import { BasePostMessageStream } from '@metamask/post-message-stream';
 import { HandlerType } from '@metamask/snaps-utils';
 import { MOCK_SNAP_ID } from '@metamask/snaps-utils/test-utils';
 import { Duration, inMilliseconds } from '@metamask/utils';
+import type { IncomingHttpHeaders } from 'http';
+import { createServer } from 'http';
+import type { AddressInfo } from 'net';
 
 import type { ExecutionServiceArgs } from './ExecutionService';
 import { NodeThreadExecutionService } from './node';
@@ -147,5 +150,50 @@ describe('ExecutionService', () => {
     const { service } = createService(MockExecutionService);
 
     expect(await service.terminateSnap(MOCK_SNAP_ID)).toBeUndefined();
+  });
+
+  it('attaches the trace context to fetches made by the Snap', async () => {
+    const receivedHeaders: IncomingHttpHeaders[] = [];
+    const server = createServer((request, response) => {
+      receivedHeaders.push(request.headers);
+      response.end('OK');
+    });
+    await new Promise<void>((resolve) => server.listen(0, resolve));
+    const { port } = server.address() as AddressInfo;
+
+    const { service } = createService(MockExecutionService);
+    try {
+      await service.executeSnap({
+        snapId: MOCK_SNAP_ID,
+        sourceCode: `
+        module.exports.onRpcRequest = () =>
+          fetch('http://localhost:${port}').then((response) => response.text());
+      `,
+        endowments: ['fetch'],
+      });
+
+      const traceparent =
+        '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
+      const result = await service.handleRpcRequest(MOCK_SNAP_ID, {
+        origin: 'foo.com',
+        handler: HandlerType.OnRpcRequest,
+        request: { jsonrpc: '2.0', id: 1, method: 'foo' },
+        traceContext: {
+          traceparent,
+          baggage: 'a=b',
+          origins: [`http://localhost:${port}`],
+        },
+      });
+
+      expect(result).toBe('OK');
+      expect(receivedHeaders).toHaveLength(1);
+      expect(receivedHeaders[0]).toStrictEqual(
+        expect.objectContaining({ traceparent, baggage: 'a=b' }),
+      );
+    } finally {
+      await service.terminateAllSnaps();
+      server.closeAllConnections();
+      await new Promise((resolve) => server.close(resolve));
+    }
   });
 });

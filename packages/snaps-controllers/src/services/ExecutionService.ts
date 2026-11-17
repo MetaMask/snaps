@@ -505,7 +505,7 @@ export abstract class ExecutionService<WorkerType = unknown> {
     snapId: string,
     options: SnapRpcHookArgs,
   ): Promise<unknown> {
-    const { handler, request, origin, originMetadata } = options;
+    const { handler, request, origin, originMetadata, traceContext } = options;
 
     return await this.#command(snapId, {
       id: nanoid(),
@@ -517,6 +517,8 @@ export abstract class ExecutionService<WorkerType = unknown> {
         ...(originMetadata && { originMetadata }),
         handler,
         request: request as JsonRpcRequest,
+        // Executors reject unknown parameters, so this is only sent when set.
+        ...(traceContext && { traceContext }),
       },
     });
   }
