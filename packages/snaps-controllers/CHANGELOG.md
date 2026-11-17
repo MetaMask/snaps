@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [23.0.0]
+
+### Changed
+
+- **BREAKING:** Remove `clientCryptography` constructor argument from `SnapController` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+  - The latest version of `@metamask/key-tree` uses `@metamask/cryptography` by default and thus no longer requires clients to provide cryptography.
+- Bump `@metamask/approval-controller` from `^9.0.2` to `^10.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/base-controller` from `^9.1.0` to `^10.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-engine` from `^10.5.0` to `^11.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-middleware-stream` from `^8.0.8` to `^9.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/messenger` from `^2.0.0` to `^3.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/storage-service` from `^1.0.2` to `^2.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+
 ## [22.0.1]
 
 ### Fixed
@@ -1300,7 +1315,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@23.0.0...HEAD
+[23.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.1...@metamask/snaps-controllers@23.0.0
 [22.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.0...@metamask/snaps-controllers@22.0.1
 [22.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.2...@metamask/snaps-controllers@22.0.0
 [21.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@21.1.1...@metamask/snaps-controllers@21.1.2

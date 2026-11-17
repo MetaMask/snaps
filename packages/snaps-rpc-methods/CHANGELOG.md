@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [18.0.0]
+
+### Changed
+
+- **BREAKING:** Remove `getClientCryptography` hook from `snap_getBip32Entropy`, `snap_getBip32PublicKey`, `snap_getBip44Entropy` and `snap_getEntropy` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.2` ([#4122](https://github.com/MetaMask/snaps/pull/4122), [#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+
 ## [17.2.0]
 
 ### Added
@@ -677,7 +687,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@18.0.0...HEAD
+[18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...@metamask/snaps-rpc-methods@18.0.0
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...@metamask/snaps-rpc-methods@17.2.0
 [17.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.1...@metamask/snaps-rpc-methods@17.1.2
 [17.1.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.0...@metamask/snaps-rpc-methods@17.1.1

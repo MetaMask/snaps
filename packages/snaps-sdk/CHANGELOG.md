@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.0.0]
+
+### Changed
+
+- **BREAKING:** Remove global image module declarations ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+  - If you import images in your Snap, you may be required to add declarations such as `declare module '*.png' { ... }`.
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/messenger` from `^2.0.0` to `^3.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^11.11.0` to `^12.0.2` ([#4122](https://github.com/MetaMask/snaps/pull/4122), [#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/superstruct` from `^3.3.0` to `^3.4.1` ([#4075](https://github.com/MetaMask/snaps/pull/4075))
+
 ## [12.1.0]
 
 ### Added
@@ -758,7 +769,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.1.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@13.0.0...HEAD
+[13.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.1.0...@metamask/snaps-sdk@13.0.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.0.1...@metamask/snaps-sdk@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.0.0...@metamask/snaps-sdk@12.0.1
 [12.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@11.2.0...@metamask/snaps-sdk@12.0.0
