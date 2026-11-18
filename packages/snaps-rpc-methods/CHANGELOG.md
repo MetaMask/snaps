@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [19.0.0]
 
-### Uncategorized
+### Changed
 
-- fix!: Stop using `wallet:eip155` as a wildcard ([#4190](https://github.com/MetaMask/snaps/pull/4190))
+- **BREAKING:** Stop using `wallet:eip155` as a wildcard in `createPreinstalledSnapsMiddleware` ([#4190](https://github.com/MetaMask/snaps/pull/4190))
+  - The middleware now grants the available EVM accounts to every available EVM scope instead of relying on `wallet:eip155` acting as a wildcard.
+  - The `getEvmScopes` hook is now required and must return all available scopes with the `eip155` prefix.
 
 ## [18.0.0]
 

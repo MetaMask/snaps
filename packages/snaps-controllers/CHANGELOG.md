@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [23.0.1]
 
+### Changed
+
+- Bump `@metamask/snaps-rpc-methods` from `18.0.0` to `19.0.0` ([#4192](https://github.com/MetaMask/snaps/pull/4192))
+
 ## [23.0.0]
 
 ### Changed
