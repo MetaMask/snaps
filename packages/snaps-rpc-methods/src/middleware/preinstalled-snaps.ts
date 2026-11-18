@@ -133,7 +133,10 @@ export function createPreinstalledSnapsMiddleware({
     const optionalScopes = evmScopes.filter(
       (scope) => !requiredScopes.includes(scope),
     );
-    const newOptionalScopes = createScopesObject(optionalScopes, evmAccounts);
+    const newOptionalScopes = {
+      ...createScopesObject(optionalScopes, evmAccounts),
+      'wallet:eip155': { accounts: [] },
+    };
 
     grantPermissions({
       'endowment:caip25': {

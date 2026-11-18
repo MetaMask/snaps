@@ -66,6 +66,9 @@ describe('createPreinstalledSnapsMiddleware', () => {
                     'eip155:1:0x1234567890123456789012345678901234567890',
                   ],
                 },
+                'wallet:eip155': {
+                  accounts: [],
+                },
               },
               requiredScopes: {},
               sessionProperties: {},
@@ -175,6 +178,9 @@ describe('createPreinstalledSnapsMiddleware', () => {
                   accounts: [
                     'eip155:3:0x1234567890123456789012345678901234567890',
                   ],
+                },
+                'wallet:eip155': {
+                  accounts: [],
                 },
               },
               isMultichainOrigin: false,
