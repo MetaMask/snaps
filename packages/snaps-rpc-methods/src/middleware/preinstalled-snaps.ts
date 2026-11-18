@@ -63,7 +63,9 @@ function createScopesObject(
 ): ScopesObject {
   return scopes.reduce<ScopesObject>((accumulator, scope) => {
     accumulator[scope] = {
-      accounts: accounts.map((account) => `${scope}:${account}`),
+      accounts: accounts.map(
+        (account) => `${scope}:${account}`,
+      ) as CaipAccountId[],
     };
     return accumulator;
   }, {});
