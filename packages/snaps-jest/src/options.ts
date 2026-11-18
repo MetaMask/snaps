@@ -28,7 +28,6 @@ const SnapsEnvironmentOptionsStruct = type({
  * {
  *   "testEnvironment": "@metamask/snaps-jest",
  *   "testEnvironmentOptions": {
- *     "executionEnvironmentUrl": "http://localhost:8080",
  *     "server": {
  *       "port": 8080,
  *       /* ... *\/
