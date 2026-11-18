@@ -16,6 +16,12 @@ import { SnapEndowments } from '../endowments';
 
 export type PreinstalledSnapsMiddlewareHooks = {
   /**
+   * Get all available scopes with the eip155 prefix.
+   *
+   * @returns A list of all available scopes.
+   */
+  getEvmScopes: () => CaipChainId[];
+  /**
    * Get all accounts with the eip155 scope.
    *
    * @returns A list of all account addresses from the eip155 scope.
@@ -35,8 +41,6 @@ export type PreinstalledSnapsMiddlewareHooks = {
   grantPermissions: (permissions: RequestedPermissions) => void;
 };
 
-const WILDCARD_SCOPE = 'wallet:eip155';
-
 type ScopesObject = Record<CaipChainId, { accounts: CaipAccountId[] }>;
 
 type AuthorizedScopeCaveat = {
@@ -47,16 +51,37 @@ type AuthorizedScopeCaveat = {
 };
 
 /**
+ * Create a scopes object for a set of scopes and accounts.
+ *
+ * @param scopes - The scopes.
+ * @param accounts - The accounts.
+ * @returns The ScopesObject
+ */
+function createScopesObject(
+  scopes: CaipChainId[],
+  accounts: string[],
+): ScopesObject {
+  return scopes.reduce<ScopesObject>((accumulator, scope) => {
+    accumulator[scope] = {
+      accounts: accounts.map((account) => `${scope}:${account}`),
+    };
+    return accumulator;
+  }, {});
+}
+
+/**
  * Create a middleware that automatically grants account permissions to preinstalled Snaps
  * that want to use the Ethereum provider endowment.
  *
  * @param hooks - The hooks used by the middleware.
- * @param hooks.getAllEvmAccounts - Hook for retriveing all available EVM addresses.
+ * @param hooks.getEvmScopes - Hook for retrieving all available EVM scopes.
+ * @param hooks.getAllEvmAccounts - Hook for retrieving all available EVM addresses.
  * @param hooks.getPermissions - Hook for retrieving the permissions of the requesting origin.
  * @param hooks.grantPermissions - Hook for granting permissions to the requesting origin.
  * @returns The middleware.
  */
 export function createPreinstalledSnapsMiddleware({
+  getEvmScopes,
   getAllEvmAccounts,
   getPermissions,
   grantPermissions,
@@ -83,16 +108,30 @@ export function createPreinstalledSnapsMiddleware({
     const existingRequiredScopes = existingCaveat?.requiredScopes ?? {};
     const existingOptionalScopes = existingCaveat?.optionalScopes ?? {};
 
-    const existingEvmAccounts =
-      existingOptionalScopes[WILDCARD_SCOPE]?.accounts.map((account) =>
-        account.slice(WILDCARD_SCOPE.length + 1),
-      ) ?? [];
-
+    const evmScopes = getEvmScopes();
     const evmAccounts = getAllEvmAccounts();
 
-    if (isEqual(evmAccounts, existingEvmAccounts)) {
+    const hasAllAccounts = evmScopes.every((scope) => {
+      const existingScope =
+        existingRequiredScopes[scope] ?? existingOptionalScopes[scope];
+      const existingScopedAccounts =
+        existingScope?.accounts.map((account) =>
+          account.slice(scope.length + 1),
+        ) ?? [];
+      return isEqual(evmAccounts, existingScopedAccounts);
+    });
+
+    if (hasAllAccounts) {
       return next();
     }
+
+    const requiredScopes = Object.keys(existingRequiredScopes) as CaipChainId[];
+    const newRequiredScopes = createScopesObject(requiredScopes, evmAccounts);
+
+    const optionalScopes = evmScopes.filter(
+      (scope) => !requiredScopes.includes(scope),
+    );
+    const newOptionalScopes = createScopesObject(optionalScopes, evmAccounts);
 
     grantPermissions({
       'endowment:caip25': {
@@ -100,15 +139,8 @@ export function createPreinstalledSnapsMiddleware({
           {
             type: 'authorizedScopes',
             value: {
-              requiredScopes: existingRequiredScopes,
-              optionalScopes: {
-                ...existingOptionalScopes,
-                [WILDCARD_SCOPE]: {
-                  accounts: evmAccounts.map(
-                    (account) => `${WILDCARD_SCOPE}:${account}`,
-                  ),
-                },
-              },
+              requiredScopes: newRequiredScopes,
+              optionalScopes: newOptionalScopes,
               sessionProperties: {},
               isMultichainOrigin: false,
             },
