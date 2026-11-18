@@ -6,6 +6,7 @@ import { SnapEndowments } from '../endowments';
 describe('createPreinstalledSnapsMiddleware', () => {
   it('grants permissions for accounts not already permitted', async () => {
     const hooks = {
+      getEvmScopes: jest.fn().mockReturnValue(['eip155:1']),
       getAllEvmAccounts: jest
         .fn()
         .mockReturnValue(['0x1234567890123456789012345678901234567890']),
@@ -60,10 +61,13 @@ describe('createPreinstalledSnapsMiddleware', () => {
             value: {
               isMultichainOrigin: false,
               optionalScopes: {
-                'wallet:eip155': {
+                'eip155:1': {
                   accounts: [
-                    'wallet:eip155:0x1234567890123456789012345678901234567890',
+                    'eip155:1:0x1234567890123456789012345678901234567890',
                   ],
+                },
+                'wallet:eip155': {
+                  accounts: [],
                 },
               },
               requiredScopes: {},
@@ -77,6 +81,9 @@ describe('createPreinstalledSnapsMiddleware', () => {
 
   it('merges with existing scopes', async () => {
     const hooks = {
+      getEvmScopes: jest
+        .fn()
+        .mockReturnValue(['eip155:1', 'eip155:2', 'eip155:3']),
       getAllEvmAccounts: jest
         .fn()
         .mockReturnValue(['0x1234567890123456789012345678901234567890']),
@@ -162,15 +169,18 @@ describe('createPreinstalledSnapsMiddleware', () => {
                 },
               },
               optionalScopes: {
-                'wallet:eip155': {
-                  accounts: [
-                    'wallet:eip155:0x1234567890123456789012345678901234567890',
-                  ],
-                },
                 'eip155:2': {
                   accounts: [
                     'eip155:2:0x1234567890123456789012345678901234567890',
                   ],
+                },
+                'eip155:3': {
+                  accounts: [
+                    'eip155:3:0x1234567890123456789012345678901234567890',
+                  ],
+                },
+                'wallet:eip155': {
+                  accounts: [],
                 },
               },
               isMultichainOrigin: false,
@@ -184,6 +194,7 @@ describe('createPreinstalledSnapsMiddleware', () => {
 
   it('skips the middleware if the accounts are already permitted', async () => {
     const hooks = {
+      getEvmScopes: jest.fn().mockReturnValue(['eip155:1']),
       getAllEvmAccounts: jest
         .fn()
         .mockReturnValue(['0x1234567890123456789012345678901234567890']),
@@ -196,9 +207,9 @@ describe('createPreinstalledSnapsMiddleware', () => {
               value: {
                 requiredScopes: {},
                 optionalScopes: {
-                  'wallet:eip155': {
+                  'eip155:1': {
                     accounts: [
-                      'wallet:eip155:0x1234567890123456789012345678901234567890',
+                      'eip155:1:0x1234567890123456789012345678901234567890',
                     ],
                   },
                 },
@@ -254,6 +265,7 @@ describe('createPreinstalledSnapsMiddleware', () => {
 
   it('ignores snap methods', async () => {
     const hooks = {
+      getEvmScopes: jest.fn(),
       getAllEvmAccounts: jest.fn(),
       getPermissions: jest.fn(),
       grantPermissions: jest.fn(),
@@ -301,6 +313,7 @@ describe('createPreinstalledSnapsMiddleware', () => {
 
   it('skips the middleware if the Snap doesnt have endowment:ethereum-provider', async () => {
     const hooks = {
+      getEvmScopes: jest.fn(),
       getAllEvmAccounts: jest.fn(),
       getPermissions: jest.fn(),
       grantPermissions: jest.fn(),
