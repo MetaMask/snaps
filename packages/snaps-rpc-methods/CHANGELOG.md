@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [19.0.0]
+
+### Changed
+
+- **BREAKING:** Stop using `wallet:eip155` as a wildcard in `createPreinstalledSnapsMiddleware` ([#4190](https://github.com/MetaMask/snaps/pull/4190))
+  - The middleware now grants the available EVM accounts to every available EVM scope instead of relying on `wallet:eip155` acting as a wildcard.
+  - The `getEvmScopes` hook is now required and must return all available scopes with the `eip155` prefix.
+
 ## [18.0.0]
 
 ### Changed
@@ -687,7 +695,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@18.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@19.0.0...HEAD
+[19.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@18.0.0...@metamask/snaps-rpc-methods@19.0.0
 [18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...@metamask/snaps-rpc-methods@18.0.0
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...@metamask/snaps-rpc-methods@17.2.0
 [17.1.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.1...@metamask/snaps-rpc-methods@17.1.2
