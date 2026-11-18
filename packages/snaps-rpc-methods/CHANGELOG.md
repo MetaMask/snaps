@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix!: Stop using `wallet:eip155` as a wildcard ([#4190](https://github.com/MetaMask/snaps/pull/4190))
+
 ## [18.0.0]
 
 ### Changed
