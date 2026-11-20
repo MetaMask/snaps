@@ -2930,13 +2930,13 @@ __metadata:
   linkType: hard
 
 "@lavamoat/aa@npm:^5.0.0, @lavamoat/aa@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@lavamoat/aa@npm:5.0.1"
+  version: 5.0.2
+  resolution: "@lavamoat/aa@npm:5.0.2"
   dependencies:
     resolve: "npm:1.22.12"
   bin:
     lavamoat-ls: src/cli.js
-  checksum: 10/a93db450b850dde46e5ae12383086bc85244c00c2e380fe04f5c59d1d064a6329c3d7eed3d3e15c926a72c6d72976716d2164fee8c8b00254b03a68ce9c9963f
+  checksum: 10/0f16880717cea1231cd664fe9c511550ded87801348a4a2b7ed884e770731216b7c2be5efcce1ebc7e384ce4f3d0a2b3691612090f04f26a36518508453c3734
   languageName: node
   linkType: hard
 
