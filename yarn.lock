@@ -2929,18 +2929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^5.0.0, @lavamoat/aa@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@lavamoat/aa@npm:5.0.1"
-  dependencies:
-    resolve: "npm:1.22.12"
-  bin:
-    lavamoat-ls: src/cli.js
-  checksum: 10/a93db450b850dde46e5ae12383086bc85244c00c2e380fe04f5c59d1d064a6329c3d7eed3d3e15c926a72c6d72976716d2164fee8c8b00254b03a68ce9c9963f
-  languageName: node
-  linkType: hard
-
-"@lavamoat/aa@npm:^5.0.2":
+"@lavamoat/aa@npm:^5.0.0, @lavamoat/aa@npm:^5.0.1, @lavamoat/aa@npm:^5.0.2":
   version: 5.0.2
   resolution: "@lavamoat/aa@npm:5.0.2"
   dependencies:
@@ -2971,15 +2960,6 @@ __metadata:
   version: 1.0.0
   resolution: "@lavamoat/lavatube@npm:1.0.0"
   checksum: 10/3f5168897a2d7726107e9bb28fc57a1bb64e68e1f69216fd35ba81d5090aba8a4d3e617c1e5c53490a5b51282eae5ffe2d4d19fd65723f6554b98546956971b2
-  languageName: node
-  linkType: hard
-
-"@lavamoat/types@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@lavamoat/types@npm:2.0.0"
-  dependencies:
-    "@babel/types": "npm:7.29.7"
-  checksum: 10/fdcb4aad3813a63e233064d8b486ff68fe5b9ca077c5d3a0286af1a461aa1d9c6ceebff8848a3290fb6907d20bd5b317796be55dcd96750d9e6d5765412ea96c
   languageName: node
   linkType: hard
 
@@ -14017,22 +13997,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^19.0.1":
-  version: 19.0.1
-  resolution: "lavamoat-core@npm:19.0.1"
-  dependencies:
-    "@babel/types": "npm:7.29.7"
-    "@lavamoat/types": "npm:^2.0.0"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^9.1.0"
-    ses: "npm:2.3.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/0e415a5c74ae339bdf17354e207c1a7ce099d71c82e9fd7bb824d82357e0feacee6e95fe6bbe06d47bd7f64f0c9adfae7105c757be5077fe2354ee2668dec157
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^19.0.2":
+"lavamoat-core@npm:^19.0.1, lavamoat-core@npm:^19.0.2":
   version: 19.0.2
   resolution: "lavamoat-core@npm:19.0.2"
   dependencies:
@@ -14047,23 +14012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "lavamoat-tofu@npm:9.1.0"
-  dependencies:
-    "@babel/parser": "npm:7.29.7"
-    "@babel/traverse": "npm:7.29.7"
-    "@babel/types": "npm:7.29.7"
-    "@lavamoat/types": "npm:^2.0.0"
-    "@types/babel__traverse": "npm:7.28.0"
-    type-fest: "npm:4.41.0"
-  peerDependencies:
-    lavamoat-core: ">15.4.0"
-  checksum: 10/c3ff82bd2b2932588939568f996d61ca4d7b8ac0792d761b7011a491b7c548d9e610b9c59d0dbae992e3b9946a55e3f36ca33840c6812921d76a2ea097a73634
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^9.1.1":
+"lavamoat-tofu@npm:^9.1.0, lavamoat-tofu@npm:^9.1.1":
   version: 9.1.1
   resolution: "lavamoat-tofu@npm:9.1.1"
   dependencies:
