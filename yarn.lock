@@ -2964,11 +2964,11 @@ __metadata:
   linkType: hard
 
 "@lavamoat/types@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@lavamoat/types@npm:2.0.0"
+  version: 2.0.1
+  resolution: "@lavamoat/types@npm:2.0.1"
   dependencies:
     "@babel/types": "npm:7.29.7"
-  checksum: 10/fdcb4aad3813a63e233064d8b486ff68fe5b9ca077c5d3a0286af1a461aa1d9c6ceebff8848a3290fb6907d20bd5b317796be55dcd96750d9e6d5765412ea96c
+  checksum: 10/3e011a9e2462cc3d910d8e2e23ff71123c0c28ba1fab30e84ba59cdc76240787d3c6636fd89892ffde60c07ea70c06b90fc9f734d98ef0e79556f53b5b44d081
   languageName: node
   linkType: hard
 
