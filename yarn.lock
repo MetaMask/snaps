@@ -2929,7 +2929,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/aa@npm:^5.0.0, @lavamoat/aa@npm:^5.0.1, @lavamoat/aa@npm:^5.0.2":
+"@lavamoat/aa@npm:^5.0.0, @lavamoat/aa@npm:^5.0.2":
   version: 5.0.2
   resolution: "@lavamoat/aa@npm:5.0.2"
   dependencies:
@@ -4619,7 +4619,7 @@ __metadata:
     jest-environment-node: "npm:^29.5.0"
     jest-fetch-mock: "npm:^3.0.3"
     jest-silent-reporter: "npm:^0.6.0"
-    lavamoat: "npm:^11.1.7"
+    lavamoat: "npm:^11.1.8"
     prettier: "npm:^3.3.3"
     readable-stream: "npm:^3.6.2"
     rimraf: "npm:^4.1.2"
@@ -13997,7 +13997,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^19.0.1, lavamoat-core@npm:^19.0.2":
+"lavamoat-core@npm:^19.0.2":
   version: 19.0.2
   resolution: "lavamoat-core@npm:19.0.2"
   dependencies:
@@ -14012,7 +14012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-tofu@npm:^9.1.0, lavamoat-tofu@npm:^9.1.1":
+"lavamoat-tofu@npm:^9.1.1":
   version: 9.1.1
   resolution: "lavamoat-tofu@npm:9.1.1"
   dependencies:
@@ -14028,24 +14028,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat@npm:^11.1.7":
-  version: 11.1.7
-  resolution: "lavamoat@npm:11.1.7"
+"lavamoat@npm:^11.1.8":
+  version: 11.1.8
+  resolution: "lavamoat@npm:11.1.8"
   dependencies:
     "@babel/code-frame": "npm:7.29.7"
     "@babel/highlight": "npm:7.25.9"
-    "@lavamoat/aa": "npm:^5.0.1"
+    "@lavamoat/aa": "npm:^5.0.2"
     bindings: "npm:1.5.0"
     htmlescape: "npm:1.1.1"
-    lavamoat-core: "npm:^19.0.1"
-    lavamoat-tofu: "npm:^9.1.0"
+    lavamoat-core: "npm:^19.0.2"
+    lavamoat-tofu: "npm:^9.1.1"
     node-gyp-build: "npm:4.8.4"
     resolve: "npm:1.22.12"
     yargs: "npm:17.7.3"
   bin:
     lavamoat: src/cli.js
     lavamoat-run-command: src/run-command.js
-  checksum: 10/9f7d5fd0b837b6b01a6414853b20de23a5a53b70ffd860bacc5f49e26e7318320a1a384f6c24c03869a1a9de89e392022aad9b7cbdab983d940b2136f4a476ed
+  checksum: 10/b811739c8fc534bd8326729fb8253168a488ecbbeb21a5af6f91ce23f036f60c112dea25c9a18674f384a4db778eb4ff2f256dd68e1ce4047098c885c3dafd68
   languageName: node
   linkType: hard
 
