@@ -39,16 +39,6 @@
         "default": "./dist/environment.cjs"
       }
     },
-    "./setup": {
-      "import": {
-        "types": "./dist/setup.d.mts",
-        "default": "./dist/setup.mjs"
-      },
-      "require": {
-        "types": "./dist/setup.d.cts",
-        "default": "./dist/setup.cjs"
-      }
-    },
     "./config": {
       "import": {
         "types": "./dist/config.d.mts",
@@ -83,13 +73,29 @@
     "test:verbose": "vitest run --reporter=verbose",
     "test:watch": "vitest"
   },
+  "dependencies": {
+    "@metamask/snaps-controllers": "workspace:^",
+    "@metamask/snaps-sdk": "workspace:^",
+    "@metamask/snaps-simulation": "workspace:^",
+    "@metamask/snaps-utils": "workspace:^",
+    "@metamask/superstruct": "^3.4.1",
+    "@metamask/utils": "^12.0.0",
+    "express": "^5.1.0",
+    "jest-matcher-utils": "^29.5.0"
+  },
   "devDependencies": {
     "@metamask/auto-changelog": "^7.0.1",
     "@ts-bridge/cli": "^0.6.1",
+    "@types/express": "^5.0.1",
+    "@types/node": "18.14.2",
     "depcheck": "^1.4.7",
     "eslint": "^9.11.0",
     "prettier": "^3.3.3",
     "typescript": "~5.8.3",
+    "vite-tsconfig-paths": "^4.0.5",
+    "vitest": "^3.1.1"
+  },
+  "peerDependencies": {
     "vitest": "^3.1.1"
   },
   "engines": {

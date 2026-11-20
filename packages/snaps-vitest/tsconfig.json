@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "types": ["node", "vitest/globals"]
   },
-  "include": ["./src", "package.json", "vitest.config.mts"],
+  "include": ["./src", "./test", "package.json", "vitest.config.mts"],
   "references": [
     {
       "path": "../snaps-controllers"

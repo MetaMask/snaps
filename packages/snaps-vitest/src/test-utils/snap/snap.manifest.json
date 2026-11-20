@@ -1,0 +1,17 @@
+{
+  "proposedName": "bar",
+  "description": "baz",
+  "version": "1.0.0",
+  "source": {
+    "shasum": "zp08CpwhlXWqh4cq0kjRownzH8Ujte70VVoiqikNKQs=",
+    "location": {
+      "npm": {
+        "filePath": "snap.js",
+        "packageName": "qux",
+        "registry": "https://registry.npmjs.org"
+      }
+    }
+  },
+  "initialPermissions": {},
+  "manifestVersion": "0.1"
+}
