@@ -10,6 +10,7 @@
     { "path": "./packages/snaps-sdk" },
     { "path": "./packages/snaps-simulation" },
     { "path": "./packages/snaps-utils" },
+    { "path": "./packages/snaps-vitest" },
     { "path": "./packages/snaps-webpack-plugin" }
   ],
   "compilerOptions": {

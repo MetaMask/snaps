@@ -11,6 +11,7 @@
     { "path": "./packages/snaps-sdk/tsconfig.build.json" },
     { "path": "./packages/snaps-simulation/tsconfig.build.json" },
     { "path": "./packages/snaps-utils/tsconfig.build.json" },
+    { "path": "./packages/snaps-vitest/tsconfig.build.json" },
     { "path": "./packages/snaps-webpack-plugin/tsconfig.build.json" }
   ]
 }

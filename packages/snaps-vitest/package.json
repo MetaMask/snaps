@@ -1,0 +1,102 @@
+{
+  "name": "@metamask/snaps-vitest",
+  "version": "0.0.0",
+  "description": "A Vitest environment and matchers for end-to-end testing MetaMask Snaps",
+  "keywords": [
+    "MetaMask",
+    "Snaps",
+    "Ethereum",
+    "Vitest"
+  ],
+  "homepage": "https://github.com/MetaMask/snaps/tree/main/packages/snaps-vitest#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/snaps/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/snaps.git"
+  },
+  "license": "ISC",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./environment": {
+      "import": {
+        "types": "./dist/environment.d.mts",
+        "default": "./dist/environment.mjs"
+      },
+      "require": {
+        "types": "./dist/environment.d.cts",
+        "default": "./dist/environment.cjs"
+      }
+    },
+    "./setup": {
+      "import": {
+        "types": "./dist/setup.d.mts",
+        "default": "./dist/setup.mjs"
+      },
+      "require": {
+        "types": "./dist/setup.d.cts",
+        "default": "./dist/setup.cjs"
+      }
+    },
+    "./config": {
+      "import": {
+        "types": "./dist/config.d.mts",
+        "default": "./dist/config.mjs"
+      },
+      "require": {
+        "types": "./dist/config.d.cts",
+        "default": "./dist/config.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "ts-bridge --project tsconfig.build.json --verbose --clean --no-references",
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/snaps-vitest",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/snaps-vitest",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn changelog:validate && yarn lint:dependencies",
+    "lint:ci": "yarn lint",
+    "lint:dependencies": "depcheck",
+    "lint:eslint": "eslint . --cache",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
+    "lint:misc": "prettier --no-error-on-unmatched-pattern --log-level warn \"**/*.json\" \"**/*.md\" \"**/*.html\" \"!CHANGELOG.md\" --ignore-path ../../.gitignore",
+    "publish:preview": "yarn npm publish --tag preview",
+    "since-latest-release": "../../scripts/since-latest-release.sh",
+    "test": "vitest run",
+    "test:verbose": "vitest run --reporter=verbose",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@metamask/auto-changelog": "^7.0.1",
+    "@ts-bridge/cli": "^0.6.1",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.11.0",
+    "prettier": "^3.3.3",
+    "typescript": "~5.8.3",
+    "vitest": "^3.1.1"
+  },
+  "engines": {
+    "node": "^20 || >=22"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
