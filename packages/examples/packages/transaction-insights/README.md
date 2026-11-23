@@ -48,4 +48,4 @@ The snap decodes the transaction data and returns the decoded data as the
 transaction insight.
 
 For more information, you can refer to
-[the end-to-end tests](./src/index.test.ts).
+[the end-to-end tests](./src/index.test.tsx).
