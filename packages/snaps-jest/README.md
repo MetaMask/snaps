@@ -540,9 +540,8 @@ bundle during tests.
 - Default: `true`
 
 Whether to enable the built-in HTTP server. By default, it will be enabled. If
-you want to use your own HTTP server, you can disable this option, and use the
-`executionEnvironmentUrl` and `simulatorUrl` options to configure the URLs of
-your own server.
+you want to use your own HTTP server, you can disable this option and serve the
+snap bundle yourself.
 
 ##### Example
 
