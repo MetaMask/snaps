@@ -57,6 +57,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@metamask/json-rpc-engine": "^11.0.0",
     "@metamask/key-tree": "^11.0.0",
     "@metamask/permission-controller": "^14.1.0",
     "@metamask/rpc-errors": "^7.0.3",
@@ -70,7 +71,6 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
     "@metamask/auto-changelog": "^7.0.1",
-    "@metamask/json-rpc-engine": "^11.0.0",
     "@metamask/messenger": "^3.0.0",
     "@swc/core": "1.11.31",
     "@swc/jest": "^0.2.38",

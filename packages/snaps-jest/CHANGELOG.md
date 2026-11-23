@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Move `@metamask/snaps-utils` from `devDependencies` to `dependencies` ([#4181](https://github.com/MetaMask/snaps/issues/4181))
+
 ## [10.2.3]
 
 ### Changed
