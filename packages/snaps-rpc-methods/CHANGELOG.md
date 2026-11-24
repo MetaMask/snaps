@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Move `@metamask/json-rpc-engine` from `devDependencies` to `dependencies` ([#4181](https://github.com/MetaMask/snaps/issues/4181))
+- Move `@metamask/json-rpc-engine` from `devDependencies` to `dependencies` ([#4198](https://github.com/MetaMask/snaps/pull/4198))
 
 ## [19.0.0]
 
