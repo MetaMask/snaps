@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Move `deepmerge` from `devDependencies` to `dependencies` ([#4198](https://github.com/MetaMask/snaps/pull/4198))
+
 ## [12.6.2]
 
 ### Changed
