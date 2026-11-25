@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Walk props in `walkJsx` ([#4201](https://github.com/MetaMask/snaps/pull/4201))
+- fix: Tighten validation for `Card` component ([#4200](https://github.com/MetaMask/snaps/pull/4200))
+
 ## [12.6.2]
 
 ### Changed

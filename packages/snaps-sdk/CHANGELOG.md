@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- fix: Tighten validation for `Card` component ([#4200](https://github.com/MetaMask/snaps/pull/4200))
+
 ## [13.0.0]
 
 ### Changed
