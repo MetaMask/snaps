@@ -1391,6 +1391,20 @@ describe('walkJsx', () => {
     expect(result).toBe('Hello');
   });
 
+  it('returns the result of the callback if it is not undefined for a component passed as a prop', () => {
+    const tree = (
+      <Box>
+        <Value value={<Text>Hello</Text>} extra="Extra" />
+      </Box>
+    );
+
+    const result = walkJsx(tree, (element: JSXElement) =>
+      element.type === 'Text' ? element.props.children : undefined,
+    );
+
+    expect(result).toBe('Hello');
+  });
+
   it('returns the result of the callback if it is not undefined in an array of nodes', () => {
     const tree = [
       <Box>
