@@ -256,7 +256,7 @@ describe('build', () => {
             "snap_dialog": {},
           },
           "manifestVersion": "0.1",
-          "platformVersion": "13.0.0",
+          "platformVersion": "13.0.1",
           "proposedName": "@metamask/example-snap",
           "repository": {
             "type": "git",
@@ -271,7 +271,7 @@ describe('build', () => {
                 "registry": "https://registry.npmjs.org",
               },
             },
-            "shasum": "/qvajWAptaONwo7swPXvTQSxpTZf3wAMiMOGgmseLjg=",
+            "shasum": "kSaxSr2e/9XzbyVrMyoHSM98ebu9pl5+VLzvCgCsvko=",
           },
           "version": "1.0.0",
         },
