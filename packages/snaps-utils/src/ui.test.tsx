@@ -19,6 +19,7 @@ import {
   Row,
   Spinner,
   Text,
+  Value,
 } from '@metamask/snaps-sdk/jsx';
 
 import {
@@ -1324,6 +1325,23 @@ describe('walkJsx', () => {
       2,
     );
     expect(callback).toHaveBeenCalledWith(tree.props.children[1], 1);
+  });
+
+  it('calls the callback on components passed as props', () => {
+    const link = <Link href="https://metamask.io">Link</Link>;
+    const value = <Text>{link}</Text>;
+    const tree = (
+      <Box>
+        <Value value={value} extra="Extra" />
+      </Box>
+    );
+
+    const callback = jest.fn();
+    walkJsx(tree, callback);
+
+    expect(callback).toHaveBeenCalledTimes(4);
+    expect(callback).toHaveBeenCalledWith(value, 2);
+    expect(callback).toHaveBeenCalledWith(link, 3);
   });
 
   it('calls the callback on each node in an array of nodes', () => {
