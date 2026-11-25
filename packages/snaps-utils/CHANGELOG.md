@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [12.6.3]
+
 ### Uncategorized
 
 - fix: Walk props in `walkJsx` ([#4201](https://github.com/MetaMask/snaps/pull/4201))
@@ -886,7 +888,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.3...HEAD
+[12.6.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.2...@metamask/snaps-utils@12.6.3
 [12.6.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.1...@metamask/snaps-utils@12.6.2
 [12.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.0...@metamask/snaps-utils@12.6.1
 [12.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.5.0...@metamask/snaps-utils@12.6.0

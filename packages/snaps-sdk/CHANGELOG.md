@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.0.1]
+
 ### Uncategorized
 
 - fix: Tighten validation for `Card` component ([#4200](https://github.com/MetaMask/snaps/pull/4200))
@@ -773,7 +775,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of this package.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@13.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@13.0.1...HEAD
+[13.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@13.0.0...@metamask/snaps-sdk@13.0.1
 [13.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.1.0...@metamask/snaps-sdk@13.0.0
 [12.1.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.0.1...@metamask/snaps-sdk@12.1.0
 [12.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-sdk@12.0.0...@metamask/snaps-sdk@12.0.1
