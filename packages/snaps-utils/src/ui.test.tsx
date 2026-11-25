@@ -947,6 +947,7 @@ describe('validateJsxElements', () => {
       </Text>
     </Box>,
     <Image src="https://metamask.io/foo.png" />,
+    <Card image="https://metamask.io/foo.png" title="foo" value="bar" />,
   ])('does not throw for a safe JSX component', async (element) => {
     const isOnPhishingList = () => false;
 
