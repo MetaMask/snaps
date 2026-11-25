@@ -473,6 +473,15 @@ export function validateJsxElements(
         );
         break;
       }
+      case 'Card': {
+        const { image } = childNode.props;
+        const isUrl = isValidUrl(image);
+        assert(
+          !isUrl || (isUrl && hasPermission('endowment:network-access')),
+          'Using external images is only permitted with the `endowment:network-access` permission.',
+        );
+        break;
+      }
       default:
         break;
     }
