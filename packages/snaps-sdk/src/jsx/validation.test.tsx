@@ -869,6 +869,8 @@ describe('CardStruct', () => {
       value="$1200"
       extra="0.12 ETH"
     />,
+    <Card image="https://example.com/image.svg" title="Title" value="$1200" />,
+    <Card title="Title" value="$1200" />,
   ])('validates a card element', (value) => {
     expect(is(value, CardStruct)).toBe(true);
   });
@@ -882,6 +884,9 @@ describe('CardStruct', () => {
     [],
     // @ts-expect-error - Invalid props.
     <Card />,
+    <Card image="foo" title="Title" value="$1200" />,
+    <Card image="http://example.com/image.svg" title="Title" value="$1200" />,
+    <Card image="data:image/png;base64,AAAA" title="Title" value="$1200" />,
     <Row label="label">
       <Image src="<svg />" alt="alt" />
     </Row>,

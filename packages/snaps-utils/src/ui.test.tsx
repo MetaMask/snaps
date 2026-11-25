@@ -5,6 +5,7 @@ import {
   Bold,
   Box,
   Button,
+  Card,
   Copyable,
   Divider,
   Field,
@@ -1084,6 +1085,26 @@ describe('validateJsxElements', () => {
         getSnap: jest.fn(),
         hasPermission: jest.fn().mockReturnValue(false),
       }),
+    ).toThrow(
+      'Using external images is only permitted with the `endowment:network-access` permission.',
+    );
+  });
+
+  it('throws if the Snap tries to use external Card images without permission', () => {
+    expect(() =>
+      validateJsxElements(
+        <Card
+          image="https://metamask.io/foo.png"
+          title="Title"
+          value="$1200"
+        />,
+        {
+          getAccountByAddress: jest.fn(),
+          isOnPhishingList: jest.fn(),
+          getSnap: jest.fn(),
+          hasPermission: jest.fn().mockReturnValue(false),
+        },
+      ),
     ).toThrow(
       'Using external images is only permitted with the `endowment:network-access` permission.',
     );
