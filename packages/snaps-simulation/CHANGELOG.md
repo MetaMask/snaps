@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.3]
+
+### Changed
+
+- Bump `@metamask/key-tree` from `^10.1.1` to `^11.0.0` ([#4180](https://github.com/MetaMask/snaps/pull/4180))
+- Bump `@metamask/chain-agnostic-permission` from `^1.7.0` to `^2.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-engine` from `^10.5.0` to `^11.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/json-rpc-middleware-stream` from `^8.0.8` to `^9.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/messenger` from `^2.0.0` to `^3.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/permission-controller` from `^13.1.1` to `^14.1.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+
 ## [4.3.2]
 
 ### Changed
@@ -343,7 +355,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.3...HEAD
+[4.3.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.2...@metamask/snaps-simulation@4.3.3
 [4.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.1...@metamask/snaps-simulation@4.3.2
 [4.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.0...@metamask/snaps-simulation@4.3.1
 [4.3.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.2.0...@metamask/snaps-simulation@4.3.0

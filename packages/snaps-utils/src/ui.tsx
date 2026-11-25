@@ -473,6 +473,15 @@ export function validateJsxElements(
         );
         break;
       }
+      case 'Card': {
+        const { image } = childNode.props;
+        const isUrl = isValidUrl(image);
+        assert(
+          !isUrl || (isUrl && hasPermission('endowment:network-access')),
+          'Using external images is only permitted with the `endowment:network-access` permission.',
+        );
+        break;
+      }
       default:
         break;
     }
@@ -556,6 +565,23 @@ export function getJsxChildren(element: JSXElement): (JSXElement | string)[] {
 }
 
 /**
+ * Check if a value looks like a JSX element, i.e., a plain object with a
+ * `type` and `props`.
+ *
+ * @param value - The value to check.
+ * @returns `true` if the value looks like a JSX element, `false` otherwise.
+ */
+function isJsxElement(value: unknown): value is JSXElement {
+  return (
+    isPlainObject(value) &&
+    hasProperty(value, 'type') &&
+    typeof value.type === 'string' &&
+    hasProperty(value, 'props') &&
+    isPlainObject(value.props)
+  );
+}
+
+/**
  * Walk a JSX tree and call a callback on each node.
  *
  * @param node - The JSX node to walk.
@@ -584,17 +610,24 @@ export function walkJsx<Value>(
     return result;
   }
 
-  if (
-    hasProperty(node, 'props') &&
-    isPlainObject(node.props) &&
-    hasProperty(node.props, 'children')
-  ) {
-    const children = getJsxChildren(node);
-    for (const child of children) {
-      if (isPlainObject(child)) {
-        const childResult = walkJsx(child, callback, depth + 1);
-        if (childResult !== undefined) {
-          return childResult;
+  if (hasProperty(node, 'props') && isPlainObject(node.props)) {
+    for (const [key, prop] of Object.entries(node.props)) {
+      if (key !== 'children' && isJsxElement(prop)) {
+        const propResult = walkJsx(prop, callback, depth + 1);
+        if (propResult !== undefined) {
+          return propResult;
+        }
+      }
+    }
+
+    if (hasProperty(node.props, 'children')) {
+      const children = getJsxChildren(node);
+      for (const child of children) {
+        if (isPlainObject(child)) {
+          const childResult = walkJsx(child, callback, depth + 1);
+          if (childResult !== undefined) {
+            return childResult;
+          }
         }
       }
     }

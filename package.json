@@ -1,6 +1,6 @@
 {
   "name": "@metamask/snaps-monorepo",
-  "version": "170.0.0",
+  "version": "172.0.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -61,8 +61,8 @@
   },
   "resolutions": {
     "@esbuild-plugins/node-modules-polyfill@^0.2.2": "patch:@esbuild-plugins/node-modules-polyfill@npm%3A0.2.2#./.yarn/patches/@esbuild-plugins-node-modules-polyfill-npm-0.2.2-f612681798.patch",
-    "@metamask/messenger": "^2.0.0",
-    "@metamask/utils": "^12.0.0",
+    "@metamask/messenger": "^3.0.0",
+    "@metamask/utils": "^12.0.2",
     "@puppeteer/browsers@1.4.6": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@puppeteer/browsers@^1.6.0": "patch:@puppeteer/browsers@npm%3A1.7.0#./.yarn/patches/@puppeteer-browsers-npm-1.7.0-203cb4f44b.patch",
     "@types/glob@*": "patch:@types/glob@npm%3A7.1.4#./.yarn/patches/@types-glob-npm-7.1.4-d45247eaa2.patch",
@@ -86,7 +86,7 @@
     "@metamask/eslint-config-jest": "^14.0.0",
     "@metamask/eslint-config-nodejs": "^14.0.0",
     "@metamask/eslint-config-typescript": "^14.0.0",
-    "@metamask/utils": "^12.0.0",
+    "@metamask/utils": "^12.0.2",
     "@swc/core": "1.11.31",
     "@ts-bridge/cli": "^0.6.1",
     "@types/jest": "^27.5.1",
@@ -113,7 +113,7 @@
     "lint-staged": "^12.4.1",
     "lodash": "^4.18.1",
     "minimatch": "^7.4.8",
-    "playwright": "^1.57.0",
+    "playwright": "^1.65.1",
     "prettier": "^3.3.3",
     "prettier-2": "npm:prettier@^2.8.8",
     "prettier-plugin-packagejson": "^2.5.8",
@@ -125,7 +125,7 @@
     "tsx": "^4.20.3",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.6.0",
-    "vite": "^6.4.3",
+    "vite": "^6.4.5",
     "yargs": "^17.7.1"
   },
   "packageManager": "yarn@4.16.0+sha256.ba05224324578801b9cc98170d64aa50b9a36733b440fb0942306da3fbbdc7d1",

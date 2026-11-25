@@ -1,10 +1,27 @@
 {
   "resources": {
-    "@metamask/json-rpc-engine": {
+    "@metamask/utils>@metamask/byte-utils": {
+      "packages": {
+        "@metamask/utils>@metamask/type-utils": true
+      }
+    },
+    "@metamask/utils>@metamask/error-utils": {
+      "packages": {
+        "@metamask/utils>@metamask/type-utils": true,
+        "@metamask/utils>@metamask/error-utils>pony-cause": true
+      }
+    },
+    "@metamask/providers>@metamask/json-rpc-engine": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/snaps-sdk>@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true
       }
     },
@@ -13,8 +30,14 @@
         "console.warn": true,
         "setTimeout": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/providers>@metamask/safe-event-emitter": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "readable-stream": true
       }
@@ -46,7 +69,13 @@
         "process.send": true,
         "removeEventListener": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "readable-stream": true
       }
@@ -56,7 +85,7 @@
         "console": true
       },
       "packages": {
-        "@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/json-rpc-middleware-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/providers>@metamask/safe-event-emitter": true,
@@ -66,7 +95,13 @@
       }
     },
     "@metamask/rpc-errors": {
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/rpc-errors>fast-safe-stringify": true
       }
@@ -83,8 +118,14 @@
       "globals": {
         "URL": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true,
         "@metamask/snaps-sdk>luxon": true
       }
@@ -97,10 +138,16 @@
         "console.log": true,
         "console.warn": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/utils' reexports from '@metamask/utils>@metamask/type-utils' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils": true
       }
     },
@@ -109,11 +156,13 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/utils>@metamask/byte-utils": true,
+        "@metamask/utils>@metamask/error-utils": true,
         "@metamask/superstruct": true,
+        "@metamask/utils>@metamask/type-utils": true,
         "@metamask/utils>@noble/hashes": true,
         "eslint>debug": true,
         "depcheck>lodash": true,
-        "@metamask/utils>pony-cause": true,
         "depcheck>semver": true
       }
     },

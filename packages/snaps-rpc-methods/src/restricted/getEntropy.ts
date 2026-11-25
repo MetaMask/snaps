@@ -1,4 +1,3 @@
-import type { CryptographicFunctions } from '@metamask/key-tree';
 import type { Messenger } from '@metamask/messenger';
 import type {
   PermissionSpecificationBuilder,
@@ -74,7 +73,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
 
 const methodHooks: MethodHooksObject<GetEntropyHooks> = {
   getUnlockPromise: true,
-  getClientCryptography: true,
 };
 
 /**
@@ -126,15 +124,6 @@ export type GetEntropyHooks = {
    * @returns A promise that resolves once the extension is unlocked.
    */
   getUnlockPromise: (shouldShowUnlockRequest: boolean) => Promise<void>;
-
-  /**
-   * Get the cryptographic functions to use for the client. This may return an
-   * empty object or `undefined` to fall back to the default cryptographic
-   * functions.
-   *
-   * @returns The cryptographic functions to use for the client.
-   */
-  getClientCryptography: () => CryptographicFunctions | undefined;
 };
 
 /**
@@ -147,12 +136,10 @@ export type GetEntropyHooks = {
  * @param options.methodHooks - The RPC method hooks.
  * @param options.methodHooks.getUnlockPromise - The method to get a promise that resolves
  * once the extension is unlocked.
- * @param options.methodHooks.getClientCryptography - A function to retrieve the cryptographic
- * functions to use for the client.
  * @returns The method implementation.
  */
 function getEntropyImplementation({
-  methodHooks: { getUnlockPromise, getClientCryptography },
+  methodHooks: { getUnlockPromise },
   messenger,
 }: GetEntropySpecificationBuilderOptions) {
   return async function getEntropy(
@@ -182,7 +169,6 @@ function getEntropyImplementation({
       salt: params.salt,
       seed,
       magic: SIP_6_MAGIC_VALUE,
-      cryptographicFunctions: getClientCryptography(),
     });
   };
 }

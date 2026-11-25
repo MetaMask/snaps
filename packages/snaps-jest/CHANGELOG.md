@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.2.3]
+
+### Changed
+
+- Bump `@metamask/snaps-simulation` from `^4.3.2` to `^4.3.3` ([#4186](https://github.com/MetaMask/snaps/pull/4186))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+
 ## [10.2.2]
 
 ### Changed
@@ -527,7 +534,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.3...HEAD
+[10.2.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.2...@metamask/snaps-jest@10.2.3
 [10.2.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.1...@metamask/snaps-jest@10.2.2
 [10.2.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.2.0...@metamask/snaps-jest@10.2.1
 [10.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-jest@10.1.4...@metamask/snaps-jest@10.2.0

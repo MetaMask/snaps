@@ -4,10 +4,8 @@ const { resolve } = require('path');
 const baseConfig = require('../../jest.config.base');
 
 const ESM_DEPENDENCY_TRANSFORM = {
-  '^.+/node_modules/@metamask/utils/.+\\.js$': [
-    '@swc/jest',
-    { jsc: { target: 'es2022' }, sourceMaps: false },
-  ],
+  '^.+/node_modules/@metamask/(utils|error-utils|type-utils|byte-utils)/.+\\.js$':
+    ['@swc/jest', { jsc: { target: 'es2022' }, sourceMaps: false }],
 };
 
 module.exports = deepmerge(baseConfig, {

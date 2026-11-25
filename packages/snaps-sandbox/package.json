@@ -47,7 +47,7 @@
     "@emotion/react": "^11.14.0",
     "@metamask/auto-changelog": "^7.0.1",
     "@metamask/providers": "^22.1.1",
-    "@metamask/utils": "^12.0.0",
+    "@metamask/utils": "^12.0.2",
     "@monaco-editor/react": "^4.7.0",
     "@tanstack/react-query": "^5.71.5",
     "@testing-library/dom": "^10.4.0",
@@ -67,7 +67,7 @@
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
     "typescript": "~5.8.3",
-    "vite": "^6.4.3",
+    "vite": "^6.4.5",
     "vitest": "^3.1.1"
   },
   "engines": {

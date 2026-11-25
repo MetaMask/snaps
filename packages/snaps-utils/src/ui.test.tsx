@@ -5,6 +5,7 @@ import {
   Bold,
   Box,
   Button,
+  Card,
   Copyable,
   Divider,
   Field,
@@ -18,6 +19,7 @@ import {
   Row,
   Spinner,
   Text,
+  Value,
 } from '@metamask/snaps-sdk/jsx';
 
 import {
@@ -946,6 +948,7 @@ describe('validateJsxElements', () => {
       </Text>
     </Box>,
     <Image src="https://metamask.io/foo.png" />,
+    <Card image="https://metamask.io/foo.png" title="foo" value="bar" />,
   ])('does not throw for a safe JSX component', async (element) => {
     const isOnPhishingList = () => false;
 
@@ -1084,6 +1087,26 @@ describe('validateJsxElements', () => {
         getSnap: jest.fn(),
         hasPermission: jest.fn().mockReturnValue(false),
       }),
+    ).toThrow(
+      'Using external images is only permitted with the `endowment:network-access` permission.',
+    );
+  });
+
+  it('throws if the Snap tries to use external Card images without permission', () => {
+    expect(() =>
+      validateJsxElements(
+        <Card
+          image="https://metamask.io/foo.png"
+          title="Title"
+          value="$1200"
+        />,
+        {
+          getAccountByAddress: jest.fn(),
+          isOnPhishingList: jest.fn(),
+          getSnap: jest.fn(),
+          hasPermission: jest.fn().mockReturnValue(false),
+        },
+      ),
     ).toThrow(
       'Using external images is only permitted with the `endowment:network-access` permission.',
     );
@@ -1304,6 +1327,23 @@ describe('walkJsx', () => {
     expect(callback).toHaveBeenCalledWith(tree.props.children[1], 1);
   });
 
+  it('calls the callback on components passed as props', () => {
+    const link = <Link href="https://metamask.io">Link</Link>;
+    const value = <Text>{link}</Text>;
+    const tree = (
+      <Box>
+        <Value value={value} extra="Extra" />
+      </Box>
+    );
+
+    const callback = jest.fn();
+    walkJsx(tree, callback);
+
+    expect(callback).toHaveBeenCalledTimes(4);
+    expect(callback).toHaveBeenCalledWith(value, 2);
+    expect(callback).toHaveBeenCalledWith(link, 3);
+  });
+
   it('calls the callback on each node in an array of nodes', () => {
     const tree = [
       <Box>
@@ -1348,6 +1388,20 @@ describe('walkJsx', () => {
     });
 
     const result = walkJsx(tree, callback);
+    expect(result).toBe('Hello');
+  });
+
+  it('returns the result of the callback if it is not undefined for a component passed as a prop', () => {
+    const tree = (
+      <Box>
+        <Value value={<Text>Hello</Text>} extra="Extra" />
+      </Box>
+    );
+
+    const result = walkJsx(tree, (element: JSXElement) =>
+      element.type === 'Text' ? element.props.children : undefined,
+    );
+
     expect(result).toBe('Hello');
   });
 

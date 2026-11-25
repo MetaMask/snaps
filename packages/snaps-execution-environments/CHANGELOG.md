@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Headers the Snap sets itself are not overwritten.
   - Allow `URL` for `@metamask/snaps-utils` in the LavaMoat policies of the iframe, Node.js and WebView executors.
 
+## [11.3.4]
+
+### Changed
+
+- Bump `@metamask/json-rpc-engine` from `^10.5.0` to `^11.0.0` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+- Bump `@metamask/utils` from `^12.0.0` to `^12.0.2` ([#4179](https://github.com/MetaMask/snaps/pull/4179))
+
 ## [11.3.3]
 
 ### Removed
@@ -682,7 +689,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.4...HEAD
+[11.3.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.3...@metamask/snaps-execution-environments@11.3.4
 [11.3.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.2...@metamask/snaps-execution-environments@11.3.3
 [11.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.1...@metamask/snaps-execution-environments@11.3.2
 [11.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-execution-environments@11.3.0...@metamask/snaps-execution-environments@11.3.1

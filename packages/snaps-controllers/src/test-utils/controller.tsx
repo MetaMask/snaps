@@ -604,7 +604,6 @@ export const getSnapControllerOptions = ({
     fetchFunction: jest.fn(),
     getMnemonicSeed: async () =>
       Promise.resolve(TEST_SECRET_RECOVERY_PHRASE_SEED_BYTES),
-    clientCryptography: {},
     encryptor: getSnapControllerEncryptor(),
     ensureOnboardingComplete: jest.fn().mockResolvedValue(undefined),
     clientConfig: {

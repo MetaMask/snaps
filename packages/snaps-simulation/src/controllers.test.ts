@@ -20,7 +20,6 @@ describe('getControllers', () => {
       getMnemonic: jest
         .fn()
         .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
-      getClientCryptography: jest.fn(),
       getSimulationState: jest.fn(),
       getSnap: jest.fn(),
       setCurrentChain: jest.fn(),
@@ -44,7 +43,6 @@ describe('getControllers', () => {
         getMnemonic: jest
           .fn()
           .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
-        getClientCryptography: jest.fn(),
         getSimulationState: jest.fn(),
         getSnap: jest.fn(),
         setCurrentChain: jest.fn(),
@@ -79,7 +77,6 @@ describe('getControllers', () => {
         getMnemonic: jest
           .fn()
           .mockResolvedValue(mnemonicPhraseToBytes(DEFAULT_SRP)),
-        getClientCryptography: jest.fn(),
         getSimulationState: jest.fn(),
         getSnap: jest.fn(),
         setCurrentChain: jest.fn(),

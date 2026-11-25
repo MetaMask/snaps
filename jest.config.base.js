@@ -4,8 +4,23 @@
  */
 
 const ESM_DEPENDENCIES_TO_TRANSPILE = [
+  '@metamask/approval-controller',
+  '@metamask/base-controller',
+  '@metamask/byte-utils',
+  '@metamask/chain-agnostic-permission',
+  '@metamask/controller-utils',
   '@metamask/cryptography',
+  '@metamask/error-utils',
+  '@metamask/json-rpc-engine',
+  '@metamask/json-rpc-middleware-stream',
+  '@metamask/key-tree',
+  '@metamask/messenger',
+  '@metamask/node-utils',
+  '@metamask/permission-controller',
+  '@metamask/storage-service',
+  '@metamask/type-utils',
   '@metamask/utils',
+  'lodash-es',
 ];
 
 module.exports = {
@@ -115,8 +130,11 @@ module.exports = {
     '^@metamask/post-message-stream/node$': [
       '@metamask/post-message-stream/node',
     ],
-    '^@metamask/utils$': ['@metamask/utils'],
+    ...Object.fromEntries(
+      ESM_DEPENDENCIES_TO_TRANSPILE.map((name) => [`^${name}$`, [name]]),
+    ),
     '^@metamask/utils/node$': ['@metamask/utils/node'],
+    '^@metamask/json-rpc-engine/v2$': ['@metamask/json-rpc-engine/v2'],
     '^@metamask/cryptography/(.+)$': ['@metamask/cryptography/$1'],
     '^@metamask/(.+)/node$': ['<rootDir>/../$1/src/node'],
     '^@metamask/(.+)/jsx': ['<rootDir>/../$1/src/jsx'],

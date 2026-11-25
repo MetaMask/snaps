@@ -448,7 +448,7 @@ export const AccountSelectorStruct: Describe<AccountSelectorElement> = element(
  * A struct for the {@link CardElement} type.
  */
 export const CardStruct: Describe<CardElement> = element('Card', {
-  image: optional(string()),
+  image: optional(nullUnion([svg(), uri({ protocol: literal('https:') })])),
   title: selectiveUnion((value) => {
     if (typeof value === 'object') {
       return AddressStruct;
