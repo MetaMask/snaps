@@ -1,6 +1,5 @@
 import type {
   PermissionSpecificationBuilder,
-  EndowmentGetterParams,
   ValidPermissionSpecification,
   PermissionConstraint,
 } from '@metamask/permission-controller';
@@ -17,7 +16,6 @@ const permissionName = SnapEndowments.Assets;
 type AssetsEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: any) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
 }>;
 
@@ -36,7 +34,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.ChainIds, SnapCaveatType.MaxRequestTime],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.ChainIds },

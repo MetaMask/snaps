@@ -1,5 +1,4 @@
 import type {
-  EndowmentGetterParams,
   PermissionSpecificationBuilder,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
@@ -12,7 +11,6 @@ const permissionName = SnapEndowments.MultichainProvider;
 type MultichainProviderEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: null;
 }>;
 
@@ -33,7 +31,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: null,
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
   };
 };

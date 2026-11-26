@@ -1,5 +1,4 @@
 import type {
-  EndowmentGetterParams,
   PermissionSpecificationBuilder,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
@@ -12,9 +11,7 @@ const permissionName = SnapEndowments.NetworkAccess;
 type NetworkAccessEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (
-    _options?: any,
-  ) => ['fetch', 'Request', 'Headers', 'Response'];
+  globals: readonly ['fetch', 'Request', 'Headers', 'Response'];
   allowedCaveats: null;
 }>;
 
@@ -35,9 +32,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: null,
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => {
-      return ['fetch', 'Request', 'Headers', 'Response'];
-    },
+    globals: ['fetch', 'Request', 'Headers', 'Response'],
     subjectTypes: [SubjectType.Snap],
   };
 };

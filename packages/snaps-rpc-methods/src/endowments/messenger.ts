@@ -1,7 +1,6 @@
 import type {
   Caveat,
   CaveatSpecificationConstraint,
-  EndowmentGetterParams,
   PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -23,7 +22,6 @@ const permissionName = SnapEndowments.Messenger;
 type MessengerEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
   subjectTypes: readonly SubjectType[];
@@ -46,7 +44,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.MessengerScopes],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.MessengerScopes },
     ]),
