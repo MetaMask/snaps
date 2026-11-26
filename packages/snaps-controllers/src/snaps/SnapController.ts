@@ -12,7 +12,7 @@ import { BaseController } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type {
   Caveat,
-  PermissionControllerGetEndowmentsAction,
+  PermissionControllerGetEndowmentsGlobalsAction,
   PermissionControllerGetPermissionsAction,
   SubjectMetadataControllerGetSubjectMetadataAction,
   SubjectMetadataControllerAddSubjectMetadataAction,
@@ -527,7 +527,7 @@ export type SnapControllerEvents =
 
 type AllowedActions =
   | AnalyticsControllerTrackEventAction
-  | PermissionControllerGetEndowmentsAction
+  | PermissionControllerGetEndowmentsGlobalsAction
   | PermissionControllerGetPermissionsAction
   | PermissionControllerGetSubjectNamesAction
   | SubjectMetadataControllerGetSubjectMetadataAction
@@ -602,12 +602,6 @@ export type SnapControllerArgs = {
    * A list of permissions that are allowed to be dynamic, meaning they can be revoked from the snap whenever.
    */
   dynamicPermissions?: string[];
-
-  /**
-   * The names of endowment permissions whose values are the names of JavaScript
-   * APIs that will be added to the snap execution environment at runtime.
-   */
-  environmentEndowmentPermissions?: string[];
 
   /**
    * Excluded permissions with its associated error message used to forbid certain permissions.
@@ -763,8 +757,6 @@ export class SnapController extends BaseController<
 > {
   readonly #dynamicPermissions: string[];
 
-  readonly #environmentEndowmentPermissions: string[];
-
   readonly #excludedPermissions: Record<string, string>;
 
   readonly #featureFlags: FeatureFlags;
@@ -817,7 +809,6 @@ export class SnapController extends BaseController<
     messenger,
     state,
     dynamicPermissions = ['endowment:caip25', 'wallet_snap'],
-    environmentEndowmentPermissions = [],
     excludedPermissions = {},
     idleTimeCheckInterval = inMilliseconds(5, Duration.Second),
     maxIdleTime = inMilliseconds(30, Duration.Second),
@@ -899,7 +890,6 @@ export class SnapController extends BaseController<
     });
 
     this.#dynamicPermissions = dynamicPermissions;
-    this.#environmentEndowmentPermissions = environmentEndowmentPermissions;
     this.#excludedPermissions = excludedPermissions;
     this.#featureFlags = featureFlags;
     this.#fetchFunction = fetchFunction;
@@ -3375,7 +3365,7 @@ export class SnapController extends BaseController<
         await this.messenger.call('ExecutionService:executeSnap', {
           snapId,
           sourceCode: sourceCode ?? (await this.#getSourceCode(snapId)),
-          endowments: await this.#getEndowments(snapId),
+          endowments: this.#getEndowments(snapId),
         });
 
         this.#transition(snapId, SnapStatusEvents.Start);
@@ -3399,55 +3389,21 @@ export class SnapController extends BaseController<
    * Compartment when it executes. These should be the names of global
    * JavaScript APIs accessible in the root realm of the execution environment.
    *
-   * Throws an error if the endowment getter for a permission returns a truthy
-   * value that is not an array of strings.
-   *
    * @param snapId - The id of the snap whose SES endowments to get.
    * @returns An array of the names of the endowments.
    */
-  async #getEndowments(snapId: string): Promise<string[]> {
-    let allEndowments: string[] = [];
+  #getEndowments(snapId: string): string[] {
+    const globals = this.messenger.call(
+      'PermissionController:getEndowmentsGlobals',
+      snapId,
+    );
 
-    for (const permissionName of this.#environmentEndowmentPermissions) {
-      if (
-        this.messenger.call(
-          'PermissionController:hasPermission',
-          snapId,
-          permissionName,
-        )
-      ) {
-        const endowments = await this.messenger.call(
-          'PermissionController:getEndowments',
-          snapId,
-          permissionName,
-        );
+    const dedupedEndowments = [...new Set([...DEFAULT_ENDOWMENTS, ...globals])];
 
-        if (endowments) {
-          // We don't have any guarantees about the type of the endowments
-          // value, so we have to guard at runtime.
-          if (
-            !Array.isArray(endowments) ||
-            endowments.some((value) => typeof value !== 'string')
-          ) {
-            throw new Error('Expected an array of string endowment names.');
-          }
-
-          allEndowments = allEndowments.concat(endowments as string[]);
-        }
-      }
-    }
-
-    const dedupedEndowments = [
-      ...new Set([...DEFAULT_ENDOWMENTS, ...allEndowments]),
-    ];
-
-    if (
-      dedupedEndowments.length <
-      DEFAULT_ENDOWMENTS.length + allEndowments.length
-    ) {
+    if (dedupedEndowments.length < DEFAULT_ENDOWMENTS.length + globals.length) {
       logError(
         `Duplicate endowments found for ${snapId}. Default endowments should not be requested.`,
-        allEndowments,
+        globals,
       );
     }
     return dedupedEndowments;

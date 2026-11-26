@@ -6,7 +6,6 @@ import type {
 } from '@metamask/permission-controller';
 import type { RestrictedMethodMessenger } from '@metamask/snaps-rpc-methods';
 import {
-  endowmentPermissionBuilders,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
@@ -88,27 +87,11 @@ export function getPermissionSpecifications({
  * @param snapId - The ID of the Snap.
  * @returns The endowments for the Snap.
  */
-export async function getEndowments(
+export function getEndowments(
   permissionController: GenericPermissionController,
   snapId: SnapId,
 ) {
-  const allEndowments = await Object.keys(endowmentPermissionBuilders).reduce<
-    Promise<string[]>
-  >(async (promise, permissionName) => {
-    const accumulator = await promise;
-    if (permissionController.hasPermission(snapId, permissionName)) {
-      const endowments = await permissionController.getEndowments(
-        snapId,
-        permissionName,
-      );
+  const globals = permissionController.getEndowmentsGlobals(snapId);
 
-      if (endowments) {
-        return accumulator.concat(endowments as string[]);
-      }
-    }
-
-    return accumulator;
-  }, Promise.resolve([]));
-
-  return [...new Set([...DEFAULT_ENDOWMENTS, ...allEndowments])];
+  return [...new Set([...DEFAULT_ENDOWMENTS, ...globals])];
 }

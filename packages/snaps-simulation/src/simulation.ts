@@ -410,7 +410,7 @@ export async function installSnap<
   await service.executeSnap({
     snapId,
     sourceCode: snapFiles.sourceCode.toString('utf8'),
-    endowments: await getEndowments(permissionController, snapId),
+    endowments: getEndowments(permissionController, snapId),
   });
 
   const helpers = getHelpers({
