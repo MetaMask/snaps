@@ -75,7 +75,8 @@
     "immer": "^9.0.21",
     "mime": "^3.0.0",
     "readable-stream": "^3.6.2",
-    "redux-saga": "^1.2.3"
+    "redux-saga": "^1.2.3",
+    "reselect": "^4.1.8"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^4.0.0",
