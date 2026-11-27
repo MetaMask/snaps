@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump `@metamask/snaps-simulation` from `^4.3.3` to `^4.3.4` ([#4204](https://github.com/MetaMask/snaps/pull/4205))
+- Bump `@metamask/snaps-simulation` from `^4.3.3` to `^4.3.4` ([#4205](https://github.com/MetaMask/snaps/pull/4205))
 
 ## [10.2.3]
 
