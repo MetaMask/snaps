@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.3.4]
 
-### Uncategorized
+### Changed
 
-- refactor!: Adopt breaking changes to `permission-controller` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- Bump `@metamask/chain-agnostic-permission` from `^2.1.0` to `^3.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
 
 ## [4.3.3]
 

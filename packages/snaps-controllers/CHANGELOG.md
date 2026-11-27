@@ -9,9 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [24.0.0]
 
-### Uncategorized
+### Changed
 
-- refactor!: Adopt breaking changes to `permission-controller` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- **BREAKING:** Remove `environmentEndowmentPermissions` constructor argument from `SnapController` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- **BREAKING:** `PermissionController:getEndowmentsGlobals` is now a required messenger action ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
 
 ## [23.0.1]
 

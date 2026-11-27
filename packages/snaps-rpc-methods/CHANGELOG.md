@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [20.0.0]
 
-### Uncategorized
+### Changed
 
-- refactor!: Adopt breaking changes to `permission-controller` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- **BREAKING:** Replace `endowmentGetter` with `globals` in endowment permission specifications ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+  - Endowments that expose JavaScript globals (`endowment:network-access`, `endowment:ethereum-provider` and `endowment:webassembly`) now declare them using the `globals` property.
+  - All other endowment specifications no longer define `endowmentGetter`.
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
 
 ## [19.0.0]
 
