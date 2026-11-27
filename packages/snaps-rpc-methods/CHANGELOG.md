@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.0]
+
 ### Uncategorized
 
 - refactor!: Adopt breaking changes to `permission-controller` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
@@ -699,7 +701,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@19.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@20.0.0...HEAD
+[20.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@19.0.0...@metamask/snaps-rpc-methods@20.0.0
 [19.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@18.0.0...@metamask/snaps-rpc-methods@19.0.0
 [18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...@metamask/snaps-rpc-methods@18.0.0
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...@metamask/snaps-rpc-methods@17.2.0
