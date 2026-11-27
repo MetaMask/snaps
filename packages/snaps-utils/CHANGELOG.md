@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Uncategorized
+
+- refactor!: Adopt breaking changes to `permission-controller` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+
 ## [12.6.3]
 
 ### Fixed
