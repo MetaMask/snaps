@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [20.0.0]
+
+### Changed
+
+- **BREAKING:** Replace `endowmentGetter` with `globals` in endowment permission specifications ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+  - Endowments that expose JavaScript globals (`endowment:network-access`, `endowment:ethereum-provider` and `endowment:webassembly`) now declare them using the `globals` property.
+  - All other endowment specifications no longer define `endowmentGetter`.
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+
 ## [19.0.0]
 
 ### Changed
@@ -695,7 +704,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@19.0.0...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@20.0.0...HEAD
+[20.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@19.0.0...@metamask/snaps-rpc-methods@20.0.0
 [19.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@18.0.0...@metamask/snaps-rpc-methods@19.0.0
 [18.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.2.0...@metamask/snaps-rpc-methods@18.0.0
 [17.2.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-rpc-methods@17.1.2...@metamask/snaps-rpc-methods@17.2.0

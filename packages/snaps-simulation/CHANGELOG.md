@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.4]
+
+### Changed
+
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- Bump `@metamask/chain-agnostic-permission` from `^2.1.0` to `^3.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+
 ## [4.3.3]
 
 ### Changed
@@ -355,7 +362,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release of `@metamask/snaps-simulation` package ([#2727](https://github.com/MetaMask/snaps/pull/2727))
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.3...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.4...HEAD
+[4.3.4]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.3...@metamask/snaps-simulation@4.3.4
 [4.3.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.2...@metamask/snaps-simulation@4.3.3
 [4.3.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.1...@metamask/snaps-simulation@4.3.2
 [4.3.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-simulation@4.3.0...@metamask/snaps-simulation@4.3.1

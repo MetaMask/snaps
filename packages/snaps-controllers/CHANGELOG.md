@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [24.0.0]
+
+### Changed
+
+- **BREAKING:** Remove `environmentEndowmentPermissions` constructor argument from `SnapController` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- **BREAKING:** `PermissionController:getEndowmentsGlobals` is now a required messenger action ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+- Bump `@metamask/permission-controller` from `^14.1.0` to `^15.0.0` ([#4204](https://github.com/MetaMask/snaps/pull/4204))
+
 ## [23.0.1]
 
 ### Changed
@@ -1321,7 +1329,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@23.0.1...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@24.0.0...HEAD
+[24.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@23.0.1...@metamask/snaps-controllers@24.0.0
 [23.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@23.0.0...@metamask/snaps-controllers@23.0.1
 [23.0.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.1...@metamask/snaps-controllers@23.0.0
 [22.0.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-controllers@22.0.0...@metamask/snaps-controllers@22.0.1
