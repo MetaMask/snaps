@@ -9,11 +9,9 @@ describe('endowment:webassembly', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.WebAssemblyAccess,
-      endowmentGetter: expect.any(Function),
+      globals: ['WebAssembly'],
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toStrictEqual(['WebAssembly']);
   });
 });

@@ -1,7 +1,6 @@
 import type {
   Caveat,
   CaveatSpecificationConstraint,
-  EndowmentGetterParams,
   PermissionConstraint,
   PermissionSpecificationBuilder,
   PermissionValidatorConstraint,
@@ -22,7 +21,6 @@ const targetName = SnapEndowments.Rpc;
 type RpcSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof targetName;
-  endowmentGetter: (_options?: any) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
   subjectTypes: readonly SubjectType[];
@@ -50,7 +48,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName,
     allowedCaveats: [SnapCaveatType.RpcOrigin, SnapCaveatType.MaxRequestTime],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.RpcOrigin },
       { type: SnapCaveatType.MaxRequestTime, optional: true },

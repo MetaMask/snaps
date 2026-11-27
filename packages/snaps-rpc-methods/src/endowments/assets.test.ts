@@ -11,7 +11,6 @@ describe('endowment:assets', () => {
       expect(specification).toStrictEqual({
         permissionType: PermissionType.Endowment,
         targetName: SnapEndowments.Assets,
-        endowmentGetter: expect.any(Function),
         allowedCaveats: [
           SnapCaveatType.ChainIds,
           SnapCaveatType.MaxRequestTime,
@@ -19,8 +18,6 @@ describe('endowment:assets', () => {
         subjectTypes: [SubjectType.Snap],
         validator: expect.any(Function),
       });
-
-      expect(specification.endowmentGetter()).toBeNull();
     });
   });
 

@@ -12,12 +12,9 @@ describe('endowment:lifecycle-hooks', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.LifecycleHooks,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.MaxRequestTime],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 });

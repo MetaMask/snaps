@@ -11,16 +11,9 @@ describe('endowment:network-access', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.NetworkAccess,
-      endowmentGetter: expect.any(Function),
+      globals: ['fetch', 'Request', 'Headers', 'Response'],
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toStrictEqual([
-      'fetch',
-      'Request',
-      'Headers',
-      'Response',
-    ]);
   });
 });

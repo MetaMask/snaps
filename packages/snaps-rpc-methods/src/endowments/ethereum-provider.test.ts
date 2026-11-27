@@ -11,11 +11,9 @@ describe('endowment:eip1193', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.EthereumProvider,
-      endowmentGetter: expect.any(Function),
+      globals: ['ethereum'],
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toStrictEqual(['ethereum']);
   });
 });

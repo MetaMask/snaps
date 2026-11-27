@@ -16,7 +16,6 @@ describe('endowment:keyring', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Keyring,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.KeyringOrigin,
         SnapCaveatType.KeyringCapabilities,
@@ -25,8 +24,6 @@ describe('endowment:keyring', () => {
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

@@ -1,5 +1,4 @@
 import type {
-  EndowmentGetterParams,
   PermissionSpecificationBuilder,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
@@ -12,7 +11,7 @@ const permissionName = SnapEndowments.EthereumProvider;
 type EthereumProviderEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: any) => ['ethereum'];
+  globals: readonly ['ethereum'];
   allowedCaveats: null;
 }>;
 
@@ -35,9 +34,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: null,
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => {
-      return ['ethereum'];
-    },
+    globals: ['ethereum'],
     subjectTypes: [SubjectType.Snap],
   };
 };

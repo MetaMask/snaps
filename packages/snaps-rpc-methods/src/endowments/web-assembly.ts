@@ -1,5 +1,4 @@
 import type {
-  EndowmentGetterParams,
   PermissionSpecificationBuilder,
   ValidPermissionSpecification,
 } from '@metamask/permission-controller';
@@ -12,7 +11,7 @@ const permissionName = SnapEndowments.WebAssemblyAccess;
 type WebAssemblyEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: any) => ['WebAssembly'];
+  globals: readonly ['WebAssembly'];
   allowedCaveats: null;
 }>;
 
@@ -34,9 +33,7 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: null,
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => {
-      return ['WebAssembly'];
-    },
+    globals: ['WebAssembly'],
     subjectTypes: [SubjectType.Snap],
   };
 };

@@ -1,6 +1,5 @@
 import type {
   PermissionSpecificationBuilder,
-  EndowmentGetterParams,
   ValidPermissionSpecification,
   PermissionValidatorConstraint,
 } from '@metamask/permission-controller';
@@ -16,7 +15,6 @@ const permissionName = SnapEndowments.LifecycleHooks;
 type LifecycleHooksEndowmentSpecification = ValidPermissionSpecification<{
   permissionType: PermissionType.Endowment;
   targetName: typeof permissionName;
-  endowmentGetter: (_options?: EndowmentGetterParams) => null;
   allowedCaveats: Readonly<NonEmptyArray<string>> | null;
   validator: PermissionValidatorConstraint;
 }>;
@@ -38,7 +36,6 @@ const specificationBuilder: PermissionSpecificationBuilder<
     permissionType: PermissionType.Endowment,
     targetName: permissionName,
     allowedCaveats: [SnapCaveatType.MaxRequestTime],
-    endowmentGetter: (_getterOptions?: EndowmentGetterParams) => null,
     subjectTypes: [SubjectType.Snap],
     validator: createGenericPermissionValidator([
       { type: SnapCaveatType.MaxRequestTime, optional: true },
