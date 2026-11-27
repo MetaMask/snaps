@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add optional `traceContext` to `SnapRpcHookArgs`, with `TraceContextStruct` and `TraceContext` for validating a W3C `traceparent`, optional `baggage`, and a required non-empty list of exact `origins` allowed to receive them
 
+## [12.6.3]
+
+### Fixed
+
+- Walk components in `props` in `walkJsx` ([#4201](https://github.com/MetaMask/snaps/pull/4201))
+- Improve validation of `image` property in `Card` component ([#4200](https://github.com/MetaMask/snaps/pull/4200))
+
 ## [12.6.2]
 
 ### Changed
@@ -885,7 +892,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - The version of the package no longer needs to match the version of all other
     MetaMask Snaps packages.
 
-[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.2...HEAD
+[Unreleased]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.3...HEAD
+[12.6.3]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.2...@metamask/snaps-utils@12.6.3
 [12.6.2]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.1...@metamask/snaps-utils@12.6.2
 [12.6.1]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.6.0...@metamask/snaps-utils@12.6.1
 [12.6.0]: https://github.com/MetaMask/snaps/compare/@metamask/snaps-utils@12.5.0...@metamask/snaps-utils@12.6.0

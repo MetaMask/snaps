@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/snaps.git"
   },
   "source": {
-    "shasum": "palvrxZwpzGsG5kLtZN4UcFMMs/lfcuNO/wjtHcfz/4=",
+    "shasum": "SPY1kCCB8CINOLSLjbEbKfBBz16rS4UDAqi9XFBUWs4=",
     "location": {
       "npm": {
         "filePath": "dist/bundle.js",
@@ -30,6 +30,6 @@
       "actions": ["PhishingController:testOrigin"]
     }
   },
-  "platformVersion": "13.0.0",
+  "platformVersion": "13.0.1",
   "manifestVersion": "0.1"
 }
