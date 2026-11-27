@@ -15,7 +15,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "chainIds",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -28,7 +27,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "snapCronjob",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -38,7 +36,9 @@ describe('buildSnapEndowmentSpecifications', () => {
         },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "ethereum",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -51,7 +51,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "keyringCapabilities",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -63,7 +62,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -75,7 +73,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           "allowedCaveats": [
             "messengerScopes",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -85,7 +82,6 @@ describe('buildSnapEndowmentSpecifications', () => {
         },
         "endowment:multichain-provider": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -98,7 +94,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "lookupMatchers",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -108,7 +103,12 @@ describe('buildSnapEndowmentSpecifications', () => {
         },
         "endowment:network-access": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "fetch",
+            "Request",
+            "Headers",
+            "Response",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -119,7 +119,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -131,7 +130,6 @@ describe('buildSnapEndowmentSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -144,7 +142,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "protocolSnapScopes",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -157,7 +154,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "rpcOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -170,7 +166,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "signatureOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -183,7 +178,6 @@ describe('buildSnapEndowmentSpecifications', () => {
             "transactionOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -193,7 +187,9 @@ describe('buildSnapEndowmentSpecifications', () => {
         },
         "endowment:webassembly": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "WebAssembly",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",

@@ -49,7 +49,6 @@ describe('getPermissionSpecifications', () => {
             "chainIds",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -61,8 +60,16 @@ describe('getPermissionSpecifications', () => {
           "allowedCaveats": [
             "authorizedScopes",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
+          "rpcMethods": [
+            "eth_sendTransaction",
+            "eth_signTransaction",
+            "eth_signTypedData",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4",
+            "personal_sign",
+            "wallet_sendCalls",
+          ],
           "targetName": "endowment:caip25",
           "validator": [Function],
         },
@@ -71,7 +78,6 @@ describe('getPermissionSpecifications', () => {
             "snapCronjob",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -81,7 +87,9 @@ describe('getPermissionSpecifications', () => {
         },
         "endowment:ethereum-provider": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "ethereum",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -94,7 +102,6 @@ describe('getPermissionSpecifications', () => {
             "keyringCapabilities",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -106,7 +113,6 @@ describe('getPermissionSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -118,7 +124,6 @@ describe('getPermissionSpecifications', () => {
           "allowedCaveats": [
             "messengerScopes",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -128,7 +133,6 @@ describe('getPermissionSpecifications', () => {
         },
         "endowment:multichain-provider": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -141,7 +145,6 @@ describe('getPermissionSpecifications', () => {
             "lookupMatchers",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -151,7 +154,12 @@ describe('getPermissionSpecifications', () => {
         },
         "endowment:network-access": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "fetch",
+            "Request",
+            "Headers",
+            "Response",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -162,7 +170,6 @@ describe('getPermissionSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -174,7 +181,6 @@ describe('getPermissionSpecifications', () => {
           "allowedCaveats": [
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -187,7 +193,6 @@ describe('getPermissionSpecifications', () => {
             "protocolSnapScopes",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -200,7 +205,6 @@ describe('getPermissionSpecifications', () => {
             "rpcOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -213,7 +217,6 @@ describe('getPermissionSpecifications', () => {
             "signatureOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -226,7 +229,6 @@ describe('getPermissionSpecifications', () => {
             "transactionOrigin",
             "maxRequestTime",
           ],
-          "endowmentGetter": [Function],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -236,7 +238,9 @@ describe('getPermissionSpecifications', () => {
         },
         "endowment:webassembly": {
           "allowedCaveats": null,
-          "endowmentGetter": [Function],
+          "globals": [
+            "WebAssembly",
+          ],
           "permissionType": "Endowment",
           "subjectTypes": [
             "snap",
@@ -384,7 +388,7 @@ describe('getEndowments', () => {
       controllers,
     );
 
-    const endowments = await getEndowments(
+    const endowments = getEndowments(
       controllers.permissionController,
       MOCK_SNAP_ID,
     );

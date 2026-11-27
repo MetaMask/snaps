@@ -22,7 +22,6 @@ describe('endowment:cronjob', () => {
       expect(specification).toStrictEqual({
         permissionType: PermissionType.Endowment,
         targetName: SnapEndowments.Cronjob,
-        endowmentGetter: expect.any(Function),
         allowedCaveats: [
           SnapCaveatType.SnapCronjob,
           SnapCaveatType.MaxRequestTime,
@@ -30,8 +29,6 @@ describe('endowment:cronjob', () => {
         subjectTypes: [SubjectType.Snap],
         validator: expect.any(Function),
       });
-
-      expect(specification.endowmentGetter()).toBeNull();
     });
   });
 

@@ -10,12 +10,9 @@ describe('endowment:page-home', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.HomePage,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.MaxRequestTime],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 });

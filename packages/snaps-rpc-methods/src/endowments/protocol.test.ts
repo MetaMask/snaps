@@ -15,7 +15,6 @@ describe('endowment:protocol', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Protocol,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.ProtocolSnapScopes,
         SnapCaveatType.MaxRequestTime,
@@ -23,8 +22,6 @@ describe('endowment:protocol', () => {
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

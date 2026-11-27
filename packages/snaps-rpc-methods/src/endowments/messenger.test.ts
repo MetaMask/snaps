@@ -15,13 +15,10 @@ describe('endowment:messenger', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Messenger,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.MessengerScopes],
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

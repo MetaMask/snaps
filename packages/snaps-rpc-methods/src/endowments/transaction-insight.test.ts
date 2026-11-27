@@ -22,12 +22,9 @@ describe('endowment:transaction-insight', () => {
         SnapCaveatType.TransactionOrigin,
         SnapCaveatType.MaxRequestTime,
       ],
-      endowmentGetter: expect.any(Function),
       validator: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

@@ -17,7 +17,6 @@ describe('endowment:name-lookup', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.NameLookup,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [
         SnapCaveatType.ChainIds,
         SnapCaveatType.LookupMatchers,
@@ -26,8 +25,6 @@ describe('endowment:name-lookup', () => {
       subjectTypes: [SubjectType.Snap],
       validator: expect.any(Function),
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

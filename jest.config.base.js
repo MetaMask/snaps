@@ -21,6 +21,7 @@ const ESM_DEPENDENCIES_TO_TRANSPILE = [
   '@metamask/type-utils',
   '@metamask/utils',
   'lodash-es',
+  'nanoid',
 ];
 
 module.exports = {

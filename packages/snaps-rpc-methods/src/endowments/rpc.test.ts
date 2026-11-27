@@ -15,13 +15,10 @@ describe('endowment:rpc', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.Rpc,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: [SnapCaveatType.RpcOrigin, SnapCaveatType.MaxRequestTime],
       validator: expect.any(Function),
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 
   describe('validator', () => {

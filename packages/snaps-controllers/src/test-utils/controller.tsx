@@ -359,10 +359,8 @@ export const getRootMessenger = () => {
   );
 
   messenger.registerActionHandler(
-    'PermissionController:getEndowments',
-    async () => {
-      return Promise.resolve(['ethereum']);
-    },
+    'PermissionController:getEndowmentsGlobals',
+    () => [],
   );
 
   messenger.registerActionHandler(
@@ -485,7 +483,7 @@ export const getSnapControllerMessenger = (
       'ExecutionService:executeSnap',
       'ExecutionService:terminateSnap',
       'ExecutionService:handleRpcRequest',
-      'PermissionController:getEndowments',
+      'PermissionController:getEndowmentsGlobals',
       'PermissionController:hasPermission',
       'PermissionController:hasPermissions',
       'PermissionController:getPermissions',
@@ -593,7 +591,6 @@ export const getSnapControllerOptions = ({
   const snapControllerMessenger = getSnapControllerMessenger(rootMessenger);
 
   const options = {
-    environmentEndowmentPermissions: [],
     messenger: snapControllerMessenger,
     rootMessenger,
     featureFlags: {

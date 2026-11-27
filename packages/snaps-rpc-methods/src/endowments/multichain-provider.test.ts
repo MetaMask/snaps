@@ -10,11 +10,8 @@ describe('endowment:multichain-provider', () => {
     expect(specification).toStrictEqual({
       permissionType: PermissionType.Endowment,
       targetName: SnapEndowments.MultichainProvider,
-      endowmentGetter: expect.any(Function),
       allowedCaveats: null,
       subjectTypes: [SubjectType.Snap],
     });
-
-    expect(specification.endowmentGetter()).toBeNull();
   });
 });
