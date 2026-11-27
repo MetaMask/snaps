@@ -10,6 +10,7 @@ import type {
   SnapExports,
   HandlerType,
   SnapExportsParameters,
+  TraceContext,
 } from '@metamask/snaps-utils';
 import {
   SNAP_EXPORT_NAMES,
@@ -103,6 +104,8 @@ export class BaseSnapExecutor {
   #snapPromiseErrorHandler?: (event: PromiseRejectionEvent) => void;
 
   readonly #teardownRef = { lastTeardown: 0 };
+
+  readonly #inFlightRequests = new Set<{ traceContext?: TraceContext }>();
 
   protected constructor(commandStream: Duplex, rpcStream: Duplex) {
     this.#commandStream = commandStream;
@@ -225,6 +228,8 @@ export class BaseSnapExecutor {
    * @param options.origin - The origin invoking the handler.
    * @param options.originMetadata - The optional metadata for the origin invoking the handler.
    * @param options.request - The JSON-RPC request to invoke the handler with.
+   * @param options.traceContext - The optional trace context of the client span
+   * the request belongs to.
    * @returns The result of invoking the handler on the Snap.
    */
   async #invokeSnap({
@@ -233,6 +238,7 @@ export class BaseSnapExecutor {
     origin,
     originMetadata,
     request,
+    traceContext,
   }: SnapRpcRequestArguments) {
     const args = getHandlerArguments(
       origin,
@@ -259,10 +265,18 @@ export class BaseSnapExecutor {
       return null;
     }
 
-    const result = await this.#executeInSnapContext(snapId, async () =>
-      // TODO: fix handler args type cast
-      handler(args as any),
-    );
+    const inFlightRequest = { traceContext };
+    this.#inFlightRequests.add(inFlightRequest);
+
+    let result;
+    try {
+      result = await this.#executeInSnapContext(snapId, async () =>
+        // TODO: fix handler args type cast
+        handler(args as any),
+      );
+    } finally {
+      this.#inFlightRequests.delete(inFlightRequest);
+    }
 
     // The handler might not return anything, but undefined is not valid JSON.
     if (result === undefined || result === null) {
@@ -407,6 +421,7 @@ export class BaseSnapExecutor {
         snapId,
         endowments: endowmentKeys,
         notify: this.#notify.bind(this),
+        getTraceContext: this.#getTraceContext.bind(this),
       });
 
       // !!! Ensure that this is the only place the data is being set.
@@ -450,6 +465,19 @@ export class BaseSnapExecutor {
         },
       });
     }
+  }
+
+  /**
+   * @returns The lone in-flight request's trace context. One endowment serves
+   * every request, so with none or several in flight it is `undefined`.
+   */
+  #getTraceContext(): TraceContext | undefined {
+    if (this.#inFlightRequests.size !== 1) {
+      return undefined;
+    }
+
+    const [{ traceContext }] = this.#inFlightRequests;
+    return traceContext;
   }
 
   /**

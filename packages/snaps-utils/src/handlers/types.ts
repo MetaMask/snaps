@@ -1,12 +1,19 @@
 import type { OriginMetadata } from '@metamask/snaps-sdk';
 
 import type { SNAP_EXPORTS } from './exports';
+import type { TraceContext } from './trace-context';
 
 export type SnapRpcHookArgs = {
   origin: string;
   originMetadata?: OriginMetadata | null;
   handler: HandlerType;
   request: Record<string, unknown>;
+  /**
+   * Trace context of the client span this request belongs to. Attached to the
+   * Snap's `fetch` requests to `origins` while this is its only request in
+   * flight.
+   */
+  traceContext?: TraceContext;
 };
 
 /**

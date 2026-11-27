@@ -1,3 +1,4 @@
+import type { TraceContext } from '@metamask/snaps-utils';
 import { assert } from '@metamask/utils';
 
 import type { EndowmentFactoryOptions } from './commonEndowmentFactory';
@@ -169,6 +170,56 @@ class AlteredResponse extends Response {
 }
 
 /**
+ * @param input - The `fetch` input.
+ * @returns The serialized origin, or `null` if the URL cannot be parsed.
+ */
+function getOrigin(input: RequestInfo | URL): string | null {
+  try {
+    return new URL(input instanceof Request ? input.url : input).origin;
+  } catch {
+    return null;
+  }
+}
+
+type TraceHeadersOptions = {
+  input: RequestInfo | URL;
+  init: RequestInit | undefined;
+  traceContext: TraceContext;
+};
+
+/**
+ * @param options - The `fetch` input and options, and the trace context.
+ * @returns The `fetch` options, with trace headers if the origin is allowed.
+ */
+function withTraceHeaders(
+  options: TraceHeadersOptions,
+): RequestInit | undefined {
+  const { input, init, traceContext } = options;
+  const { traceparent, baggage, origins } = traceContext;
+  const origin = getOrigin(input);
+  if (origin === null || !origins.includes(origin)) {
+    return init;
+  }
+
+  // Headers in `init` replace those of a `Request` input, as in `fetch`.
+  const headers = new Headers(
+    init?.headers ?? (input instanceof Request ? input.headers : undefined),
+  );
+
+  // A Snap that propagates its own trace keeps it.
+  if (headers.has('traceparent')) {
+    return init;
+  }
+
+  headers.set('traceparent', traceparent);
+  if (baggage !== undefined && !headers.has('baggage')) {
+    headers.set('baggage', baggage);
+  }
+
+  return { ...init, headers };
+}
+
+/**
  * Create a network endowment, consisting of a `fetch` function.
  * This allows us to provide a teardown function, so that we can cancel
  * any pending requests, connections, streams, etc. that may be open when the
@@ -181,10 +232,15 @@ class AlteredResponse extends Response {
  * @param options - An options bag.
  * @param options.notify - A notification callback for outbound request
  * lifecycle events.
+ * @param options.getTraceContext - Returns the trace context to attach to
+ * outbound requests, if any.
  * @returns An object containing a wrapped `fetch`
  * function, as well as a teardown function.
  */
-const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
+const createNetwork = ({
+  notify,
+  getTraceContext,
+}: EndowmentFactoryOptions = {}) => {
   assert(
     notify,
     'The "notify" callback is required by the network endowment factory.',
@@ -244,8 +300,11 @@ const createNetwork = ({ notify }: EndowmentFactoryOptions = {}) => {
     return await withTeardown(
       (async () => {
         try {
+          const traceContext = getTraceContext?.();
           const fetchPromise = fetch(input, {
-            ...init,
+            ...(traceContext
+              ? withTraceHeaders({ input, init, traceContext })
+              : init),
             signal: abortController.signal,
           });
 

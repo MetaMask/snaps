@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add optional `traceContext` to `SnapRpcHookArgs`, with `TraceContextStruct` and `TraceContext` for validating a W3C `traceparent`, optional `baggage`, and a required non-empty list of exact `origins` allowed to receive them
+
 ## [12.6.3]
 
 ### Fixed

@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Accept an optional `traceContext` in `snapRpc` requests, and attach its `traceparent` and `baggage` headers to the Snap's `fetch` requests to the listed `origins` while that is the Snap's only request in flight
+  - Requests to any other origin are unchanged, so third-party servers see no new CORS preflight.
+  - Headers the Snap sets itself are not overwritten.
+  - Allow `URL` for `@metamask/snaps-utils` in the LavaMoat policies of the iframe, Node.js and WebView executors.
+
 ## [11.3.4]
 
 ### Changed

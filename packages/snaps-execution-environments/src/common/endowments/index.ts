@@ -1,5 +1,6 @@
 import { rpcErrors } from '@metamask/rpc-errors';
 import type { SnapsEthereumProvider, SnapsProvider } from '@metamask/snaps-sdk';
+import type { TraceContext } from '@metamask/snaps-utils';
 import { hasProperty } from '@metamask/utils';
 
 import type {
@@ -39,6 +40,8 @@ const endowmentFactories = registeredEndowments.reduce((factories, builder) => {
  * @param options.snapId - The id of the snap that will use the created endowments.
  * @param options.endowments - The list of endowments to provide to the snap.
  * @param options.notify - A reference to the notify function of the snap executor.
+ * @param options.getTraceContext - Returns the trace context of the request
+ * the Snap is currently handling, if unambiguous.
  * @returns An object containing the Snap's endowments.
  */
 export function createEndowments({
@@ -47,12 +50,14 @@ export function createEndowments({
   snapId,
   endowments,
   notify,
+  getTraceContext,
 }: {
   snap: SnapsProvider;
   ethereum: SnapsEthereumProvider;
   snapId: string;
   endowments: string[];
   notify: NotifyFunction;
+  getTraceContext?: () => TraceContext | undefined;
 }): { endowments: Record<string, unknown>; teardown: () => Promise<void> } {
   const attenuatedEndowments: Record<string, unknown> = {};
 
@@ -77,7 +82,7 @@ export function createEndowments({
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           const { teardownFunction, ...endowment } = endowmentFactories.get(
             endowmentName,
-          )!({ sourceLabel: `Snap: ${snapId}`, notify });
+          )!({ sourceLabel: `Snap: ${snapId}`, notify, getTraceContext });
           Object.assign(attenuatedEndowments, endowment);
           if (teardownFunction) {
             teardowns.push(teardownFunction);

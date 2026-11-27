@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add optional `traceContext` to `SnapController:handleRequest` and `ExecutionService:handleRpcRequest`, forwarded to the execution environment
+  - A malformed trace context is dropped rather than failing the request. Executors that predate this option reject requests carrying it, so only pass it with a matching `@metamask/snaps-execution-environments` version.
+
 ## [23.0.1]
 
 ### Changed

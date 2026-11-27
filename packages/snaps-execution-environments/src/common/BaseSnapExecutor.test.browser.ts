@@ -1064,6 +1064,206 @@ describe('BaseSnapExecutor', () => {
     });
   });
 
+  describe('trace context', () => {
+    const TRACEPARENT_A =
+      '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
+    const TRACEPARENT_B =
+      '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01';
+
+    const getTraceHeaders = (call: { args: any[] }) => {
+      const headers = new Headers(call.args[1]?.headers);
+      return {
+        traceparent: headers.get('traceparent'),
+        baggage: headers.get('baggage'),
+      };
+    };
+
+    // Reads commands until each of `ids` has a response, keyed by request ID.
+    const readResponses = async (executor: TestSnapExecutor, ids: number[]) => {
+      const responses: Record<number, unknown> = {};
+      while (Object.keys(responses).length < ids.length) {
+        const message = (await executor.readCommand()) as any;
+        if (ids.includes(message.id)) {
+          responses[message.id] = message;
+        }
+      }
+      return responses;
+    };
+
+    it('attaches the trace context to fetches made while handling the request', async () => {
+      const CODE = `
+        module.exports.onRpcRequest = () => fetch('https://metamask.io').then(res => res.text());
+      `;
+
+      const fetchSpy = spy(globalThis, 'fetch');
+      fetchSpy.mockImplementation(async () => new Response('foo'));
+
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['fetch']);
+      await readResponses(executor, [1]);
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '' },
+          traceContext: {
+            traceparent: TRACEPARENT_A,
+            baggage: 'a=b',
+            origins: ['https://metamask.io'],
+          },
+        },
+      });
+
+      expect(await readResponses(executor, [2])).toStrictEqual({
+        2: { id: 2, jsonrpc: '2.0', result: 'foo' },
+      });
+      expect(fetchSpy.calls).toHaveLength(1);
+      expect(getTraceHeaders(fetchSpy.calls[0])).toStrictEqual({
+        traceparent: TRACEPARENT_A,
+        baggage: 'a=b',
+      });
+
+      fetchSpy.reset();
+    });
+
+    it('attaches nothing when the request has no trace context', async () => {
+      const CODE = `
+        module.exports.onRpcRequest = () => fetch('https://metamask.io').then(res => res.text());
+      `;
+
+      const fetchSpy = spy(globalThis, 'fetch');
+      fetchSpy.mockImplementation(async () => new Response('foo'));
+
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['fetch']);
+      await readResponses(executor, [1]);
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '' },
+        },
+      });
+
+      await readResponses(executor, [2]);
+      expect(fetchSpy.calls).toHaveLength(1);
+      expect(getTraceHeaders(fetchSpy.calls[0])).toStrictEqual({
+        traceparent: null,
+        baggage: null,
+      });
+
+      fetchSpy.reset();
+    });
+
+    it('attaches nothing when more than one request is in flight', async () => {
+      const CODE = `
+        let release;
+        const gate = new Promise((resolve) => { release = resolve; });
+        module.exports.onRpcRequest = async ({ request }) => {
+          if (request.method === 'wait') {
+            await gate;
+            return null;
+          }
+          const text = await fetch('https://metamask.io').then(res => res.text());
+          release();
+          return text;
+        };
+      `;
+
+      const fetchSpy = spy(globalThis, 'fetch');
+      fetchSpy.mockImplementation(async () => new Response('foo'));
+
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, ['fetch']);
+      await readResponses(executor, [1]);
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: 'wait' },
+          traceContext: {
+            traceparent: TRACEPARENT_A,
+            origins: ['https://metamask.io'],
+          },
+        },
+      });
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 3,
+        method: 'snapRpc',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: 'fetch' },
+          traceContext: {
+            traceparent: TRACEPARENT_B,
+            origins: ['https://metamask.io'],
+          },
+        },
+      });
+
+      expect(await readResponses(executor, [2, 3])).toStrictEqual({
+        2: { id: 2, jsonrpc: '2.0', result: null },
+        3: { id: 3, jsonrpc: '2.0', result: 'foo' },
+      });
+      expect(fetchSpy.calls).toHaveLength(1);
+      expect(getTraceHeaders(fetchSpy.calls[0])).toStrictEqual({
+        traceparent: null,
+        baggage: null,
+      });
+
+      fetchSpy.reset();
+    });
+
+    it.each([
+      { traceparent: 'foo\r\nX-Injected: 1', origins: ['https://metamask.io'] },
+      { traceparent: TRACEPARENT_A },
+      { traceparent: TRACEPARENT_A, origins: [] },
+      { traceparent: TRACEPARENT_A, origins: ['https://metamask.io/api'] },
+    ])('rejects a malformed trace context: %o', async (traceContext) => {
+      const CODE = `
+        module.exports.onRpcRequest = () => null;
+      `;
+
+      const executor = new TestSnapExecutor();
+      await executor.executeSnap(1, MOCK_SNAP_ID, CODE, []);
+      await readResponses(executor, [1]);
+
+      await executor.writeCommand({
+        jsonrpc: '2.0',
+        id: 2,
+        method: 'snapRpc',
+        params: {
+          snapId: MOCK_SNAP_ID,
+          handler: HandlerType.OnRpcRequest,
+          origin: MOCK_ORIGIN,
+          request: { jsonrpc: '2.0', method: '' },
+          traceContext,
+        },
+      });
+
+      const { 2: response } = (await readResponses(executor, [2])) as any;
+      expect(response.error.code).toBe(-32602);
+    });
+  });
+
   it('uses a response for fetch that works with instanceof', async () => {
     const CODE = `
       module.exports.onRpcRequest = () => fetch('https://metamask.io').then(res => res instanceof Response);

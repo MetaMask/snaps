@@ -133,6 +133,7 @@
     "@metamask/snaps-utils": {
       "globals": {
         "TextEncoder": true,
+        "URL": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true

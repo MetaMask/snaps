@@ -118,6 +118,165 @@ describe('Network endowments', () => {
     });
   });
 
+  describe('trace headers', () => {
+    const TRACEPARENT =
+      '00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01';
+    const ORIGINS = ['https://metamask.io'];
+
+    beforeEach(() => {
+      fetchMock.enableMocks();
+      fetchMock.resetMocks();
+      fetchMock.mockResponse('OK');
+    });
+
+    afterEach(() => {
+      fetchMock.disableMocks();
+    });
+
+    const getSentHeaders = () => {
+      const [input, init] = fetchMock.mock.calls[0];
+      return new Headers(
+        init?.headers ?? (input instanceof Request ? input.headers : undefined),
+      );
+    };
+
+    it('attaches `traceparent` and `baggage` from the trace context', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({
+          traceparent: TRACEPARENT,
+          baggage: 'a=b',
+          origins: ORIGINS,
+        }),
+      });
+
+      await fetch('https://metamask.io', { headers: { 'X-Foo': 'bar' } });
+
+      const headers = getSentHeaders();
+      expect(headers.get('traceparent')).toBe(TRACEPARENT);
+      expect(headers.get('baggage')).toBe('a=b');
+      expect(headers.get('x-foo')).toBe('bar');
+    });
+
+    it('attaches only `traceparent` when there is no baggage', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({ traceparent: TRACEPARENT, origins: ORIGINS }),
+      });
+
+      await fetch('https://metamask.io');
+
+      const headers = getSentHeaders();
+      expect(headers.get('traceparent')).toBe(TRACEPARENT);
+      expect(headers.has('baggage')).toBe(false);
+    });
+
+    it('keeps the headers of a `Request` input', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({ traceparent: TRACEPARENT, origins: ORIGINS }),
+      });
+
+      await fetch(
+        new Request('https://metamask.io', { headers: { 'X-Foo': 'bar' } }),
+      );
+
+      const headers = getSentHeaders();
+      expect(headers.get('traceparent')).toBe(TRACEPARENT);
+      expect(headers.get('x-foo')).toBe('bar');
+    });
+
+    it('does not overwrite trace headers set by the Snap', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({
+          traceparent: TRACEPARENT,
+          baggage: 'a=b',
+          origins: ORIGINS,
+        }),
+      });
+
+      const ownTraceparent =
+        '00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-00';
+      await fetch('https://metamask.io', {
+        headers: { traceparent: ownTraceparent },
+      });
+
+      const headers = getSentHeaders();
+      expect(headers.get('traceparent')).toBe(ownTraceparent);
+      expect(headers.has('baggage')).toBe(false);
+    });
+
+    it('does not overwrite `baggage` set by the Snap', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({
+          traceparent: TRACEPARENT,
+          baggage: 'a=b',
+          origins: ORIGINS,
+        }),
+      });
+
+      await fetch('https://metamask.io', { headers: { baggage: 'c=d' } });
+
+      const headers = getSentHeaders();
+      expect(headers.get('traceparent')).toBe(TRACEPARENT);
+      expect(headers.get('baggage')).toBe('c=d');
+    });
+
+    it('attaches nothing when there is no trace context', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => undefined,
+      });
+
+      await fetch('https://metamask.io');
+
+      const headers = getSentHeaders();
+      expect(headers.has('traceparent')).toBe(false);
+      expect(headers.has('baggage')).toBe(false);
+    });
+
+    it('attaches nothing to an origin that is not allowed', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({
+          traceparent: TRACEPARENT,
+          baggage: 'a=b',
+          origins: ORIGINS,
+        }),
+      });
+
+      await fetch('https://metamask.io.example.com/api');
+
+      const headers = getSentHeaders();
+      expect(headers.has('traceparent')).toBe(false);
+      expect(headers.has('baggage')).toBe(false);
+    });
+
+    it('attaches nothing to a `Request` for an origin that is not allowed', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({ traceparent: TRACEPARENT, origins: ORIGINS }),
+      });
+
+      await fetch(new Request('http://metamask.io'));
+
+      expect(getSentHeaders().has('traceparent')).toBe(false);
+    });
+
+    it('attaches nothing when the URL cannot be parsed', async () => {
+      const { fetch } = network.factory({
+        ...factoryOptions,
+        getTraceContext: () => ({ traceparent: TRACEPARENT, origins: ORIGINS }),
+      });
+
+      await fetch('metamask.io');
+
+      expect(getSentHeaders().has('traceparent')).toBe(false);
+    });
+  });
+
   describe('ResponseWrapper', () => {
     beforeEach(() => {
       fetchMock.enableMocks();
